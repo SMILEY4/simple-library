@@ -20,10 +20,8 @@ const commonConfig = {
     alias: {
       _: srcPaths('src'),
       _main: srcPaths('src/main'),
-      _models: srcPaths('src/models'),
       _public: srcPaths('public'),
       _renderer: srcPaths('src/renderer'),
-      _utils: srcPaths('src/utils'),
     },
     extensions: ['.js', '.json', '.ts', '.tsx'],
   },

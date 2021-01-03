@@ -1,0 +1,11 @@
+.gradient-border-wrapper {
+	position:        relative;
+	padding:         1px;
+	background-clip: padding-box;
+	border-radius:   5px;
+}
+
+.gradient-border-wrapper > * {
+	border:        none !important;
+	border-radius: 4px !important;
+}

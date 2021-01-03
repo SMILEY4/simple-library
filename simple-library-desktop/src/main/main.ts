@@ -1,6 +1,3 @@
-/**
- * Entry point of the Election app.
- */
 import * as path from 'path';
 import * as url from 'url';
 // eslint-disable-next-line import/no-extraneous-dependencies

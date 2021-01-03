@@ -7,9 +7,7 @@
       "_/*": ["src/*"],
       "_public/*": ["public/*"],
       "_main/*": ["src/main/*"],
-      "_models/*": ["src/models/*"],
-      "_renderer/*": ["src/renderer/*"],
-      "_utils/*": ["src/utils/*"]
+      "_renderer/*": ["src/renderer/*"]
     },
     "module": "commonjs",
     "moduleResolution": "node",
