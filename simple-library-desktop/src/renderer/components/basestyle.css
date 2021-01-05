@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+
 
 * {
 
@@ -32,6 +33,7 @@
 	--overlay-color-light:      hsla(0, 0%, 0%, 0.3);
 	--overlay-color-dark:       hsla(0, 0%, 60%, 0.3);
 
+	--gradient-none-0:            linear-gradient(155deg, var(--base-color-3), var(--base-color-3));
 	--gradient-info-0:          linear-gradient(155deg, hsl(196, 100%, 74%), hsl(236, 100%, 64%));
 	--gradient-success-0:       linear-gradient(155deg, hsl(87, 67%, 63%), hsl(101, 57%, 43%));
 	--gradient-error-0:         linear-gradient(155deg, hsl(10, 100%, 56%), hsl(333, 80%, 50%));
@@ -93,20 +95,24 @@
 	--gradient-warn-1:    var(--gradient-warn-light-1);
 }
 
+
 .with-shadow-0 {
 	box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.20);
 }
+
 
 .with-shadow-1 {
 	box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12), 0 3px 5px -1px rgba(0, 0, 0, 0.20);
 }
 
+
 .with-shadow-2 {
 	box-shadow: 0 12px 17px 2px rgba(0, 0, 0, 0.14), 0 5px 22px 4px rgba(0, 0, 0, 0.12), 0 7px 8px -4px rgba(0, 0, 0, 0.20);
 }
 
+
 * {
-	font-family: 'Roboto', sans-serif;
+	font-family: "Roboto", sans-serif;
 	font-size:   var(--font--size-default);
 	font-weight: 400;
 	color:       var(--text-color-1)
@@ -158,8 +164,21 @@ h5 {
 	margin:         0;
 }
 
+
 .caption {
 	font-size:   var(--font-size-small);
 	font-weight: 400;
 }
 
+
+body {
+	margin:                  0;
+	-webkit-font-smoothing:  antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+
+#app {
+	width:  100vw;
+	height: 100vh;
+}

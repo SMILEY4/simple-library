@@ -1,0 +1,51 @@
+.showcase-view {
+	width:      100%;
+	height:     100%;
+}
+
+
+.background-0 {
+	background-color: var(--background-color-0);
+}
+
+
+.background-1 {
+	background-color: var(--background-color-1);
+}
+
+
+.showcase-controls {
+	display:        flex;
+	padding-bottom: 10px;
+	border-bottom:  1px solid var(--text-color-1);
+}
+
+
+.showcase-controls > * {
+	cursor:              pointer;
+	-webkit-user-select: none;
+	-moz-user-select:    none;
+	-ms-user-select:     none;
+	user-select:         none;
+	margin:              0.5em;
+	padding:             0.3em;
+	border:              1px solid var(--text-color-1);
+	color:               var(--text-color-1);
+}
+
+
+.showcase-content {
+	display:        flex;
+	flex-direction: column;
+	align-items:    flex-start;
+	gap:            20px;
+	margin:         20px;
+}
+
+
+.showcase-row {
+	display:        flex;
+	flex-direction: row;
+	align-items:    flex-start;
+	gap:            20px;
+}
