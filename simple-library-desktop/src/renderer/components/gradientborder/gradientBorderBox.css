@@ -1,13 +1,13 @@
-.gradient-box-border {
-	position:      relative;
-	border-radius: 5px;
-}
-
-
 .gradient-box-content {
 	border:          1px solid transparent;
 	background-clip: padding-box;
 	border-radius:   5px;
+}
+
+
+.gradient-box-border {
+	position:      relative;
+	border-radius: 5px;
 }
 
 

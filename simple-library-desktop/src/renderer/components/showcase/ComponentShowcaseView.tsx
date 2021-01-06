@@ -5,6 +5,7 @@ import {ButtonFilled, ButtonGhost, ButtonText} from "_renderer/components/button
 import {HighlightType, StyleType} from "_renderer/components/Common";
 import {AiFillCaretRight, AiFillHome, AiOutlineSearch, GoFileDirectory} from "react-icons/all";
 import {InputField} from "_renderer/components/inputfield/InputField";
+import {Dialog} from "_renderer/components/modal/Dialog";
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0")
@@ -22,7 +23,7 @@ export function ComponentShowcaseView(): any {
                 <div onClick={() => setTheme("dark-0")}>Dark-0</div>
                 <div onClick={() => setTheme("dark-1")}>Dark-1</div>
             </div>
-            <div className="showcase-content">
+            <div className="showcase-content" id="showcase-content">
                 {renderContent()}
             </div>
         </div>
@@ -31,6 +32,26 @@ export function ComponentShowcaseView(): any {
     function renderContent() {
         return (
             <>
+
+                <h3>Modals</h3>
+
+                <ToggleableShowcase text={"Default"}>
+                    <Dialog show={true}
+                            modalRootId="showcase-content"
+                            icon={<AiFillHome/>}
+                            title={"Very long Test-Dialog-Title"}
+                            withCloseButton={true}
+                            footerActions={
+                                <>
+                                    <ButtonFilled>Cancel</ButtonFilled>
+                                    <ButtonFilled highlight={HighlightType.INFO}>Accept</ButtonFilled>
+                                </>
+                            }
+                    >
+                        Modal Content
+                    </Dialog>
+                </ToggleableShowcase>
+
 
                 <h3>Input Fields</h3>
 
@@ -171,6 +192,21 @@ function ShowcaseRow(props: React.PropsWithChildren<any>): any {
     return (
         <div className="showcase-row">
             {props.children}
+        </div>
+    )
+}
+
+
+function ToggleableShowcase(props: React.PropsWithChildren<any>): any {
+    const [show, setShow] = useState(false)
+    return (
+        <div>
+            <button onClick={() => setShow(!show)}>{props.text}</button>
+            {
+                show
+                    ? props.children
+                    : null
+            }
         </div>
     )
 }

@@ -7,7 +7,6 @@ import "./buttons.css"
 
 interface ButtonProps {
     style: StyleType,
-    children: any
     highlight?: HighlightType,
     bg?: string,
     small?: boolean,

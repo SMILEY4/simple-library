@@ -5,7 +5,6 @@ import "./gradientBorderWrapper.css"
 
 interface GradientBorderWrapperProps {
     className?: string,
-    children: any
 }
 
 

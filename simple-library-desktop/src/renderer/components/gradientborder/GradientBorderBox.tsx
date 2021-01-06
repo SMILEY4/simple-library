@@ -5,7 +5,6 @@ import {classNameOrEmpty, HighlightType} from "_renderer/components/Common";
 
 
 interface GradientBorderBoxProps {
-    children: any
     gradient: HighlightType,
     className?: string,
     innerClassName?: string

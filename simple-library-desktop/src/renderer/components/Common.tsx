@@ -1,5 +1,5 @@
 export enum HighlightType {
-    NONE= "none",
+    NONE = "none",
     DEFAULT = "default",
     INFO = "info",
     SUCCESS = "success",
@@ -31,4 +31,26 @@ export function classNameOrEmpty(className?: string): string {
  */
 export function toStringOrDefault(value: any, defaultValue: string): string {
     return value === undefined || value === null ? defaultValue : value
+}
+
+/**
+ * Returns either the given value or the default value
+ * @param value the value to check
+ * @param defaultValue the default value to return if the value is null/undefined
+ * @return the given value or the given default value to return if the value is null/undefined
+ */
+export function orDefault<T>(value: T | null | undefined, defaultValue: T): T {
+    return value
+        ? value
+        : defaultValue
+}
+
+/**
+ * Calls the given function if it is not null or undefined
+ * @param func the function to call
+ */
+export function callSafe(func: any) {
+    if (func) {
+        func()
+    }
 }
