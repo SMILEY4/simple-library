@@ -82,6 +82,11 @@
 }
 
 
+.button-wrapper-filled > .button {
+	background-color: var(--base-color-0);
+}
+
+
 .button-force-bg-0 {
 	background-color: var(--background-color-0);
 }
@@ -89,11 +94,6 @@
 
 .button-force-bg-1 {
 	background-color: var(--background-color-1);
-}
-
-
-.button-wrapper-filled > .button {
-	background-color: var(--base-color-0);
 }
 
 

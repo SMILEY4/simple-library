@@ -2,7 +2,7 @@ import * as React from "react";
 import {ReactElement} from "react";
 import {GradientBorderWrapper} from "_renderer/components/GradientBorderWrapper";
 import {HighlightType, StyleType} from "_renderer/components/Common";
-import {classNameOrEmpty} from "_renderer/components/Utilities";
+import {classNameOrEmpty} from "_renderer/components/Common";
 import "./buttons.css"
 
 
