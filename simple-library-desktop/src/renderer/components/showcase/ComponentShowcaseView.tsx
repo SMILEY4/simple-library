@@ -36,9 +36,9 @@ export function ComponentShowcaseView(): any {
 
                 <h5>Styles</h5>
                 <ShowcaseRow>
-                    <TextField highlight={HighlightType.NONE} style={StyleType.FILLED} initialText="Filled"/>
-                    <TextField highlight={HighlightType.NONE} style={StyleType.GHOST} bg={bgNr} initialText="Ghost"/>
-                    <TextField highlight={HighlightType.NONE} style={StyleType.TEXT} initialText="Text"/>
+                    <TextField style={StyleType.FILLED} initialText="Filled"/>
+                    <TextField style={StyleType.GHOST} bg={bgNr} initialText="Ghost"/>
+                    <TextField style={StyleType.TEXT} initialText="Text"/>
                 </ShowcaseRow>
 
                 <h5>Filled</h5>
@@ -50,12 +50,12 @@ export function ComponentShowcaseView(): any {
                     <TextField highlight={HighlightType.WARN} style={StyleType.FILLED} placeholder="TextField Warn"/>
                 </ShowcaseRow>
                 <ShowcaseRow>
-                    <TextField highlight={HighlightType.NONE} style={StyleType.FILLED}/>
-                    <TextField highlight={HighlightType.NONE} style={StyleType.FILLED} placeholder="Placeholder"/>
-                    <TextField highlight={HighlightType.NONE} style={StyleType.FILLED} initialText="InitialText"/>
-                    <TextField highlight={HighlightType.NONE} style={StyleType.FILLED} disabled={true} placeholder="Disabled"/>
-                    <TextField highlight={HighlightType.NONE} style={StyleType.FILLED} disabled={true} initialText="Disabled Non-Editable"/>
-                    <TextField highlight={HighlightType.NONE} style={StyleType.FILLED} editable={false} initialText="Non-Editable"/>
+                    <TextField style={StyleType.FILLED}/>
+                    <TextField style={StyleType.FILLED} placeholder="Placeholder"/>
+                    <TextField style={StyleType.FILLED} initialText="InitialText"/>
+                    <TextField style={StyleType.FILLED} disabled={true} placeholder="Disabled"/>
+                    <TextField style={StyleType.FILLED} disabled={true} initialText="Disabled Non-Editable"/>
+                    <TextField style={StyleType.FILLED} editable={false} initialText="Non-Editable"/>
                 </ShowcaseRow>
 
 
@@ -68,30 +68,30 @@ export function ComponentShowcaseView(): any {
                     <TextField highlight={HighlightType.WARN} style={StyleType.GHOST} bg={bgNr} placeholder="TextField Warn"/>
                 </ShowcaseRow>
                 <ShowcaseRow>
-                    <TextField highlight={HighlightType.NONE} style={StyleType.GHOST} bg={bgNr}/>
-                    <TextField highlight={HighlightType.NONE} style={StyleType.GHOST} bg={bgNr} placeholder="Placeholder"/>
-                    <TextField highlight={HighlightType.NONE} style={StyleType.GHOST} bg={bgNr} initialText="InitialText"/>
-                    <TextField highlight={HighlightType.NONE} style={StyleType.GHOST} bg={bgNr} disabled={true} placeholder="Disabled"/>
-                    <TextField highlight={HighlightType.NONE} style={StyleType.GHOST} bg={bgNr} disabled={true} initialText="Disabled Non-Editable"/>
-                    <TextField highlight={HighlightType.NONE} style={StyleType.GHOST} bg={bgNr} editable={false} initialText="Non-Editable"/>
+                    <TextField style={StyleType.GHOST} bg={bgNr}/>
+                    <TextField style={StyleType.GHOST} bg={bgNr} placeholder="Placeholder"/>
+                    <TextField style={StyleType.GHOST} bg={bgNr} initialText="InitialText"/>
+                    <TextField style={StyleType.GHOST} bg={bgNr} disabled={true} placeholder="Disabled"/>
+                    <TextField style={StyleType.GHOST} bg={bgNr} disabled={true} initialText="Disabled Non-Editable"/>
+                    <TextField style={StyleType.GHOST} bg={bgNr} editable={false} initialText="Non-Editable"/>
                 </ShowcaseRow>
 
                 <h5>Text</h5>
                 <ShowcaseRow>
-                    <TextField highlight={HighlightType.NONE} style={StyleType.TEXT}/>
-                    <TextField highlight={HighlightType.NONE} style={StyleType.TEXT} placeholder="Placeholder"/>
-                    <TextField highlight={HighlightType.NONE} style={StyleType.TEXT} initialText="InitialText"/>
-                    <TextField highlight={HighlightType.NONE} style={StyleType.TEXT} disabled={true} placeholder="Disabled"/>
-                    <TextField highlight={HighlightType.NONE} style={StyleType.TEXT} disabled={true} initialText="Disabled Non-Editable"/>
-                    <TextField highlight={HighlightType.NONE} style={StyleType.TEXT} editable={false} initialText="Non-Editable"/>
+                    <TextField style={StyleType.TEXT}/>
+                    <TextField style={StyleType.TEXT} placeholder="Placeholder"/>
+                    <TextField style={StyleType.TEXT} initialText="InitialText"/>
+                    <TextField style={StyleType.TEXT} disabled={true} placeholder="Disabled"/>
+                    <TextField style={StyleType.TEXT} disabled={true} initialText="Disabled Non-Editable"/>
+                    <TextField style={StyleType.TEXT} editable={false} initialText="Non-Editable"/>
                 </ShowcaseRow>
 
                 <h5>With Content</h5>
                 <ShowcaseRow>
-                    <TextField highlight={HighlightType.NONE} style={StyleType.FILLED} placeholder="With Button">
-                        <ButtonFilled highlight={HighlightType.NONE} small={true}>Button</ButtonFilled>
+                    <TextField style={StyleType.FILLED} placeholder="With Button">
+                        <ButtonFilled small={true}>Button</ButtonFilled>
                     </TextField>
-                    <TextField highlight={HighlightType.NONE} style={StyleType.FILLED} placeholder="With Icon">
+                    <TextField style={StyleType.FILLED} placeholder="With Icon">
                         <AiFillHome/>
                     </TextField>
                 </ShowcaseRow>
@@ -101,9 +101,9 @@ export function ComponentShowcaseView(): any {
 
                 <h5>Styles</h5>
                 <ShowcaseRow>
-                    <ButtonFilled highlight={HighlightType.NONE}>Filled</ButtonFilled>
-                    <ButtonGhost highlight={HighlightType.NONE} bg={bgNr}>Ghost</ButtonGhost>
-                    <ButtonText highlight={HighlightType.NONE}>Text</ButtonText>
+                    <ButtonFilled>Filled</ButtonFilled>
+                    <ButtonGhost bg={bgNr}>Ghost</ButtonGhost>
+                    <ButtonText>Text</ButtonText>
                 </ShowcaseRow>
 
 
@@ -116,15 +116,15 @@ export function ComponentShowcaseView(): any {
                     <ButtonFilled highlight={HighlightType.WARN}>Button Warn</ButtonFilled>
                 </ShowcaseRow>
                 <ShowcaseRow>
-                    <ButtonFilled highlight={HighlightType.NONE}>Enabled</ButtonFilled>
-                    <ButtonFilled highlight={HighlightType.NONE}>
+                    <ButtonFilled>Enabled</ButtonFilled>
+                    <ButtonFilled>
                         <AiFillHome/>
                         With Icons
                         <AiFillCaretRight/>
                     </ButtonFilled>
-                    <ButtonFilled highlight={HighlightType.NONE} disabled={true}>Disabled</ButtonFilled>
-                    <ButtonFilled highlight={HighlightType.NONE} small={true}>Small</ButtonFilled>
-                    <ButtonFilled highlight={HighlightType.NONE} small={true}>
+                    <ButtonFilled disabled={true}>Disabled</ButtonFilled>
+                    <ButtonFilled small={true}>Small</ButtonFilled>
+                    <ButtonFilled small={true}>
                         <AiFillHome/>
                         Small with Icons
                         <AiFillCaretRight/>
@@ -140,15 +140,15 @@ export function ComponentShowcaseView(): any {
                     <ButtonGhost highlight={HighlightType.WARN} bg={bgNr}>Button Warn</ButtonGhost>
                 </ShowcaseRow>
                 <ShowcaseRow>
-                    <ButtonGhost highlight={HighlightType.NONE} bg={bgNr}>Enabled</ButtonGhost>
-                    <ButtonGhost highlight={HighlightType.NONE} bg={bgNr}>
+                    <ButtonGhost bg={bgNr}>Enabled</ButtonGhost>
+                    <ButtonGhost bg={bgNr}>
                         <AiFillHome/>
                         With Icons
                         <AiFillCaretRight/>
                     </ButtonGhost>
-                    <ButtonGhost highlight={HighlightType.NONE} disabled={true} bg={bgNr}>Disabled</ButtonGhost>
-                    <ButtonGhost highlight={HighlightType.NONE} small={true} bg={bgNr}>Small</ButtonGhost>
-                    <ButtonGhost highlight={HighlightType.NONE} small={true} bg={bgNr}>
+                    <ButtonGhost disabled={true} bg={bgNr}>Disabled</ButtonGhost>
+                    <ButtonGhost small={true} bg={bgNr}>Small</ButtonGhost>
+                    <ButtonGhost small={true} bg={bgNr}>
                         <AiFillHome/>
                         Small with Icons
                         <AiFillCaretRight/>
@@ -164,15 +164,15 @@ export function ComponentShowcaseView(): any {
                     <ButtonText highlight={HighlightType.WARN}>Button Warn</ButtonText>
                 </ShowcaseRow>
                 <ShowcaseRow>
-                    <ButtonText highlight={HighlightType.NONE}>Enabled</ButtonText>
-                    <ButtonText highlight={HighlightType.NONE}>
+                    <ButtonText>Enabled</ButtonText>
+                    <ButtonText>
                         <AiFillHome/>
                         With Icons
                         <AiFillCaretRight/>
                     </ButtonText>
-                    <ButtonText highlight={HighlightType.NONE} disabled={true}>Disabled</ButtonText>
-                    <ButtonText highlight={HighlightType.NONE} small={true}>Small</ButtonText>
-                    <ButtonText highlight={HighlightType.NONE} small={true}>
+                    <ButtonText disabled={true}>Disabled</ButtonText>
+                    <ButtonText small={true}>Small</ButtonText>
+                    <ButtonText small={true}>
                         <AiFillHome/>
                         Small with Icons
                         <AiFillCaretRight/>

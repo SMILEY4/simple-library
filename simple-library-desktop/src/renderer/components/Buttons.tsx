@@ -1,15 +1,14 @@
 import * as React from "react";
 import {ReactElement} from "react";
 import {GradientBorderWrapper} from "_renderer/components/GradientBorderWrapper";
-import {HighlightType, StyleType} from "_renderer/components/Common";
-import {classNameOrEmpty} from "_renderer/components/Common";
+import {classNameOrEmpty, HighlightType, StyleType, toStringOrDefault} from "_renderer/components/Common";
 import "./buttons.css"
 
 
 interface ButtonProps {
-    highlight: HighlightType,
     style: StyleType,
     children: any
+    highlight?: HighlightType,
     bg?: string,
     small?: boolean,
     disabled?: boolean,
@@ -31,7 +30,7 @@ export function Button(props: React.PropsWithChildren<ButtonProps>): ReactElemen
 
     function getWrapperClassNames() {
         return "button-wrapper"
-            + " button-wrapper-" + props.highlight
+            + " button-wrapper-" + toStringOrDefault(props.highlight, HighlightType.NONE)
             + " button-wrapper-" + props.style
             + (props.disabled ? " button-wrapper-disabled" : "")
             + classNameOrEmpty(props.className)

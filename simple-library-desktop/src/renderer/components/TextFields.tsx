@@ -6,8 +6,8 @@ import {HighlightType, StyleType, toStringOrDefault} from "_renderer/components/
 
 
 interface TextFieldProps {
-    highlight: HighlightType,
     style: StyleType,
+    highlight?: HighlightType,
     bg?: string,
     initialText?: string,
     placeholder?: string,
@@ -45,7 +45,7 @@ export class TextField extends Component<TextFieldProps, TextFieldState> {
     getWrapperClassNames(): string {
         return "text-field-wrapper"
             + " text-field-wrapper-" + this.props.style
-            + " text-field-wrapper-" + this.props.highlight
+            + " text-field-wrapper-" + toStringOrDefault(this.props.highlight, HighlightType.NONE)
             + (this.props.className ? " " + this.props.className : "")
     }
 
