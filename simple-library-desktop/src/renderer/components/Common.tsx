@@ -1,5 +1,6 @@
 export enum HighlightType {
-    NONE = "none",
+    NONE= "none",
+    DEFAULT = "default",
     INFO = "info",
     SUCCESS = "success",
     ERROR = "error",
@@ -10,6 +11,8 @@ export enum HighlightType {
 export enum StyleType {
     FILLED = "filled",
     GHOST = "ghost",
+    GHOST_BG0 = "ghost-bg0",
+    GHOST_BG1 = "ghost-bg1",
     TEXT = "text",
 }
 

@@ -17,7 +17,7 @@ interface ButtonProps {
     innerClassName?: string
 }
 
-interface GenericButton extends Omit<ButtonProps, 'style'> {
+interface GenericButtonProps extends Omit<ButtonProps, 'style'> {
 }
 
 export function Button(props: React.PropsWithChildren<ButtonProps>): ReactElement {
@@ -30,7 +30,7 @@ export function Button(props: React.PropsWithChildren<ButtonProps>): ReactElemen
 
     function getWrapperClassNames() {
         return "button-wrapper"
-            + " button-wrapper-" + toStringOrDefault(props.highlight, HighlightType.NONE)
+            + " button-wrapper-" + toStringOrDefault(props.highlight, HighlightType.DEFAULT)
             + " button-wrapper-" + props.style
             + (props.disabled ? " button-wrapper-disabled" : "")
             + classNameOrEmpty(props.className)
@@ -56,7 +56,7 @@ export function Button(props: React.PropsWithChildren<ButtonProps>): ReactElemen
 }
 
 
-export function ButtonFilled(props: React.PropsWithChildren<GenericButton>): ReactElement {
+export function ButtonFilled(props: React.PropsWithChildren<GenericButtonProps>): ReactElement {
     const baseProps: ButtonProps = {
         style: StyleType.FILLED,
         ...props
@@ -65,7 +65,7 @@ export function ButtonFilled(props: React.PropsWithChildren<GenericButton>): Rea
 }
 
 
-export function ButtonGhost(props: React.PropsWithChildren<GenericButton>): ReactElement {
+export function ButtonGhost(props: React.PropsWithChildren<GenericButtonProps>): ReactElement {
     const baseProps: ButtonProps = {
         style: StyleType.GHOST,
         ...props
@@ -73,7 +73,7 @@ export function ButtonGhost(props: React.PropsWithChildren<GenericButton>): Reac
     return <Button {...baseProps}/>
 }
 
-export function ButtonText(props: React.PropsWithChildren<GenericButton>): ReactElement {
+export function ButtonText(props: React.PropsWithChildren<GenericButtonProps>): ReactElement {
     const baseProps: ButtonProps = {
         style: StyleType.TEXT,
         ...props

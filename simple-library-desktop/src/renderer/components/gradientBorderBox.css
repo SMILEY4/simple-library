@@ -1,0 +1,41 @@
+.gradient-box-border {
+	position:      relative;
+	border-radius: 5px;
+}
+
+
+.gradient-box-content {
+	border:          1px solid transparent;
+	background-clip: padding-box;
+	border-radius:   5px;
+}
+
+
+.gradient-box-border-none {
+	background: none;
+}
+
+
+.gradient-box-border-default {
+	background: var(--gradient-none-0);
+}
+
+
+.gradient-box-border-info {
+	background: var(--gradient-info-0);
+}
+
+
+.gradient-box-border-success {
+	background: var(--gradient-success-0);
+}
+
+
+.gradient-box-border-error {
+	background: var(--gradient-error-0);
+}
+
+
+.gradient-box-border-warn {
+	background: var(--gradient-warn-0);
+}

@@ -3,8 +3,8 @@ import {useState} from 'react';
 import "./showcase.css"
 import {ButtonFilled, ButtonGhost, ButtonText} from "_renderer/components/Buttons";
 import {HighlightType, StyleType} from "_renderer/components/Common";
-import {AiFillCaretRight, AiFillHome} from "react-icons/all";
-import {TextField} from "_renderer/components/TextFields";
+import {AiFillCaretRight, AiFillHome, AiOutlineSearch, GoFileDirectory} from "react-icons/all";
+import {InputField} from "_renderer/components/InputField";
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0")
@@ -32,69 +32,50 @@ export function ComponentShowcaseView(): any {
         return (
             <>
 
-                <h3>Text Fields</h3>
+                <h3>Input Fields</h3>
 
-                <h5>Styles</h5>
                 <ShowcaseRow>
-                    <TextField style={StyleType.FILLED} initialText="Filled"/>
-                    <TextField style={StyleType.GHOST} bg={bgNr} initialText="Ghost"/>
-                    <TextField style={StyleType.TEXT} initialText="Text"/>
-                </ShowcaseRow>
-
-                <h5>Filled</h5>
-                <ShowcaseRow>
-                    <TextField highlight={HighlightType.NONE} style={StyleType.FILLED} placeholder="TextField None"/>
-                    <TextField highlight={HighlightType.INFO} style={StyleType.FILLED} placeholder="TextField Info"/>
-                    <TextField highlight={HighlightType.SUCCESS} style={StyleType.FILLED} placeholder="TextField Success"/>
-                    <TextField highlight={HighlightType.ERROR} style={StyleType.FILLED} placeholder="TextField Error"/>
-                    <TextField highlight={HighlightType.WARN} style={StyleType.FILLED} placeholder="TextField Warn"/>
-                </ShowcaseRow>
-                <ShowcaseRow>
-                    <TextField style={StyleType.FILLED}/>
-                    <TextField style={StyleType.FILLED} placeholder="Placeholder"/>
-                    <TextField style={StyleType.FILLED} initialText="InitialText"/>
-                    <TextField style={StyleType.FILLED} disabled={true} placeholder="Disabled"/>
-                    <TextField style={StyleType.FILLED} disabled={true} initialText="Disabled Non-Editable"/>
-                    <TextField style={StyleType.FILLED} editable={false} initialText="Non-Editable"/>
+                    <InputField style={StyleType.FILLED} type={HighlightType.DEFAULT}/>
+                    <InputField style={StyleType.FILLED} type={HighlightType.INFO}/>
+                    <InputField style={StyleType.FILLED} type={HighlightType.SUCCESS}/>
+                    <InputField style={StyleType.FILLED} type={HighlightType.ERROR}/>
+                    <InputField style={StyleType.FILLED} type={HighlightType.WARN}/>
                 </ShowcaseRow>
 
-
-                <h5>Ghost</h5>
                 <ShowcaseRow>
-                    <TextField highlight={HighlightType.NONE} style={StyleType.GHOST} bg={bgNr} placeholder="TextField None"/>
-                    <TextField highlight={HighlightType.INFO} style={StyleType.GHOST} bg={bgNr} placeholder="TextField Info"/>
-                    <TextField highlight={HighlightType.SUCCESS} style={StyleType.GHOST} bg={bgNr} placeholder="TextField Success"/>
-                    <TextField highlight={HighlightType.ERROR} style={StyleType.GHOST} bg={bgNr} placeholder="TextField Error"/>
-                    <TextField highlight={HighlightType.WARN} style={StyleType.GHOST} bg={bgNr} placeholder="TextField Warn"/>
-                </ShowcaseRow>
-                <ShowcaseRow>
-                    <TextField style={StyleType.GHOST} bg={bgNr}/>
-                    <TextField style={StyleType.GHOST} bg={bgNr} placeholder="Placeholder"/>
-                    <TextField style={StyleType.GHOST} bg={bgNr} initialText="InitialText"/>
-                    <TextField style={StyleType.GHOST} bg={bgNr} disabled={true} placeholder="Disabled"/>
-                    <TextField style={StyleType.GHOST} bg={bgNr} disabled={true} initialText="Disabled Non-Editable"/>
-                    <TextField style={StyleType.GHOST} bg={bgNr} editable={false} initialText="Non-Editable"/>
+                    <InputField style={(bgNr === "0" ? StyleType.GHOST_BG0 : StyleType.GHOST_BG1)} type={HighlightType.DEFAULT}/>
+                    <InputField style={(bgNr === "0" ? StyleType.GHOST_BG0 : StyleType.GHOST_BG1)} type={HighlightType.INFO}/>
+                    <InputField style={(bgNr === "0" ? StyleType.GHOST_BG0 : StyleType.GHOST_BG1)} type={HighlightType.SUCCESS}/>
+                    <InputField style={(bgNr === "0" ? StyleType.GHOST_BG0 : StyleType.GHOST_BG1)} type={HighlightType.ERROR}/>
+                    <InputField style={(bgNr === "0" ? StyleType.GHOST_BG0 : StyleType.GHOST_BG1)} type={HighlightType.WARN}/>
                 </ShowcaseRow>
 
-                <h5>Text</h5>
-                <ShowcaseRow>
-                    <TextField style={StyleType.TEXT}/>
-                    <TextField style={StyleType.TEXT} placeholder="Placeholder"/>
-                    <TextField style={StyleType.TEXT} initialText="InitialText"/>
-                    <TextField style={StyleType.TEXT} disabled={true} placeholder="Disabled"/>
-                    <TextField style={StyleType.TEXT} disabled={true} initialText="Disabled Non-Editable"/>
-                    <TextField style={StyleType.TEXT} editable={false} initialText="Non-Editable"/>
-                </ShowcaseRow>
+                <InputField style={StyleType.FILLED} type={HighlightType.DEFAULT} placeholder={"Placeholder"}/>
+                <InputField style={StyleType.FILLED} type={HighlightType.DEFAULT} initialText={"Initial"}/>
+                <InputField style={StyleType.FILLED} type={HighlightType.DEFAULT} initialText={"Initial+Placeholder"} placeholder={"Placeholder"}/>
+                <InputField style={StyleType.FILLED} type={HighlightType.DEFAULT} initialText={"Non-Editable"} editable={false}/>
+                <InputField style={StyleType.FILLED} type={HighlightType.DEFAULT} placeholder={"Disabled"} disabled={true}/>
 
-                <h5>With Content</h5>
+                <InputField style={StyleType.FILLED} type={HighlightType.DEFAULT} label={"E-Mail"} placeholder={"you@example.com"}/>
+                <InputField style={StyleType.FILLED} type={HighlightType.DEFAULT} icon={<AiFillHome/>}/>
+                <InputField style={StyleType.FILLED} type={HighlightType.DEFAULT} icon="$" placeholder={"0.00"}/>
+                <InputField style={StyleType.FILLED} type={HighlightType.DEFAULT} icon="http://" placeholder={"website.com"}/>
+                <InputField style={StyleType.FILLED} type={HighlightType.DEFAULT} contentLeading={
+                    <ButtonFilled><GoFileDirectory/>Browse</ButtonFilled>}/>
+                <InputField style={StyleType.FILLED} type={HighlightType.DEFAULT} contentTrailing={
+                    <ButtonFilled>Search</ButtonFilled>}/>
                 <ShowcaseRow>
-                    <TextField style={StyleType.FILLED} placeholder="With Button">
-                        <ButtonFilled small={true}>Button</ButtonFilled>
-                    </TextField>
-                    <TextField style={StyleType.FILLED} placeholder="With Icon">
-                        <AiFillHome/>
-                    </TextField>
+                    <InputField style={StyleType.FILLED} type={HighlightType.DEFAULT} contentTrailing={
+                        <ButtonFilled><AiOutlineSearch/>Search</ButtonFilled>}/>
+                    <InputField style={(bgNr === "0" ? StyleType.GHOST_BG0 : StyleType.GHOST_BG1)} type={HighlightType.DEFAULT} contentTrailing={
+                        <ButtonFilled><AiOutlineSearch/>Search</ButtonFilled>}/>
                 </ShowcaseRow>
+                <InputField style={StyleType.FILLED} type={HighlightType.DEFAULT} contentTrailing={
+                    <ButtonFilled><AiFillHome/>Browse</ButtonFilled>}/>
+                <InputField style={StyleType.FILLED} type={HighlightType.DEFAULT} contentTrailing={
+                    <ButtonGhost>Browse</ButtonGhost>}/>
+                <InputField style={StyleType.FILLED} type={HighlightType.DEFAULT} contentTrailing={
+                    <ButtonText>Browse</ButtonText>}/>
 
 
                 <h3>Buttons</h3>
@@ -109,7 +90,7 @@ export function ComponentShowcaseView(): any {
 
                 <h5>Filled</h5>
                 <ShowcaseRow>
-                    <ButtonFilled highlight={HighlightType.NONE}>Button None</ButtonFilled>
+                    <ButtonFilled highlight={HighlightType.DEFAULT}>Button None</ButtonFilled>
                     <ButtonFilled highlight={HighlightType.INFO}>Button Info</ButtonFilled>
                     <ButtonFilled highlight={HighlightType.SUCCESS}>Button Success</ButtonFilled>
                     <ButtonFilled highlight={HighlightType.ERROR}>Button Error</ButtonFilled>
@@ -133,7 +114,7 @@ export function ComponentShowcaseView(): any {
 
                 <h5>Ghost</h5>
                 <ShowcaseRow>
-                    <ButtonGhost highlight={HighlightType.NONE} bg={bgNr}>Button None</ButtonGhost>
+                    <ButtonGhost highlight={HighlightType.DEFAULT} bg={bgNr}>Button None</ButtonGhost>
                     <ButtonGhost highlight={HighlightType.INFO} bg={bgNr}>Button Info</ButtonGhost>
                     <ButtonGhost highlight={HighlightType.SUCCESS} bg={bgNr}>Button Success</ButtonGhost>
                     <ButtonGhost highlight={HighlightType.ERROR} bg={bgNr}>Button Error</ButtonGhost>
@@ -157,7 +138,7 @@ export function ComponentShowcaseView(): any {
 
                 <h5>Text</h5>
                 <ShowcaseRow>
-                    <ButtonText highlight={HighlightType.NONE}>Button None</ButtonText>
+                    <ButtonText highlight={HighlightType.DEFAULT}>Button None</ButtonText>
                     <ButtonText highlight={HighlightType.INFO}>Button Info</ButtonText>
                     <ButtonText highlight={HighlightType.SUCCESS}>Button Success</ButtonText>
                     <ButtonText highlight={HighlightType.ERROR}>Button Error</ButtonText>
