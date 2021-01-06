@@ -4,18 +4,21 @@
 
 
 .input-field-wrapper-content {
-	display:          flex;
-	flex-direction:   row;
+	display:        flex;
+	flex-direction: row;
 }
+
 
 .input-field-wrapper-content-filled {
 	background-color: var(--base-color-1);
 }
 
+
 .input-field-wrapper-content-ghost,
 .input-field-wrapper-content-ghost-bg0 {
 	background-color: var(--background-color-0);
 }
+
 
 .input-field-wrapper-content-ghost-bg1 {
 	background-color: var(--background-color-1);
@@ -34,6 +37,14 @@
 	color:      var(--text-color-1);
 	font-size:  1em;
 	width:      100%;
+}
+
+
+input:required,
+input:focus,
+input:invalid {
+	box-shadow: none;
+	outline:    none;
 }
 
 

@@ -6,6 +6,7 @@ import {HighlightType, StyleType} from "_renderer/components/Common";
 import {AiFillCaretRight, AiFillHome, AiOutlineSearch, GoFileDirectory} from "react-icons/all";
 import {InputField} from "_renderer/components/inputfield/InputField";
 import {Dialog} from "_renderer/components/modal/Dialog";
+import {ChoiceBox} from "_renderer/components/choicebox/ChoiceBox";
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0")
@@ -32,6 +33,15 @@ export function ComponentShowcaseView(): any {
     function renderContent() {
         return (
             <>
+
+                <h3>Choice Box</h3>
+
+                <ChoiceBox
+                    style={StyleType.FILLED}
+                    title={"Select Item"}
+                    items={["Item A", "Item B", "Item C", "Item D", "Item E"]}
+                />
+
 
                 <h3>Modals</h3>
 
