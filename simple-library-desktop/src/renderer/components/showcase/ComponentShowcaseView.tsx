@@ -1,10 +1,10 @@
 import * as React from 'react';
 import {useState} from 'react';
 import "./showcase.css"
-import {ButtonFilled, ButtonGhost, ButtonText} from "_renderer/components/Buttons";
+import {ButtonFilled, ButtonGhost, ButtonText} from "_renderer/components/buttons/Buttons";
 import {HighlightType, StyleType} from "_renderer/components/Common";
 import {AiFillCaretRight, AiFillHome, AiOutlineSearch, GoFileDirectory} from "react-icons/all";
-import {InputField} from "_renderer/components/InputField";
+import {InputField} from "_renderer/components/inputfield/InputField";
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0")

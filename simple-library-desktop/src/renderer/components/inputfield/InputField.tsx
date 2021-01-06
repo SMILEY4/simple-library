@@ -1,7 +1,7 @@
 import * as React from "react";
 import {Component, ReactElement} from "react";
 import {HighlightType, StyleType, toStringOrDefault} from "_renderer/components/Common";
-import {GradientBorderBox} from "_renderer/components/GradientBorderBox";
+import {GradientBorderBox} from "_renderer/components/gradientborder/GradientBorderBox";
 import "./inputField.css"
 
 interface InputFieldProps {
