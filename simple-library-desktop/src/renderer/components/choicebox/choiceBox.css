@@ -2,7 +2,6 @@
 	position: relative;
 }
 
-
 .choice-box-list {
 	position:         absolute;
 	right:            0;
@@ -16,9 +15,24 @@
 
 .choice-box-item {
 	padding: 0.5em;
+	display: flex;
 }
 
 
 .choice-box-item:hover {
 	background-color: var(--background-color-0);
+}
+
+
+.choice-box-item-content {
+	flex-grow: 1;
+}
+
+
+.choice-box-item-selected-icon {
+}
+
+.choice-box-title-dummy {
+	max-height:    0;
+	overflow:      hidden;
 }

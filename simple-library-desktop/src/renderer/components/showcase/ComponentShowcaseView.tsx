@@ -39,9 +39,8 @@ export function ComponentShowcaseView(): any {
                 <ChoiceBox
                     style={StyleType.FILLED}
                     title={"Select Item"}
-                    items={["Item A", "Item B", "Item C", "Item D", "Item E"]}
+                    items={["1.", "Item A", "Item B", "Item C", "Item D", "Item E", "Last Item in the list"]}
                 />
-
 
                 <h3>Modals</h3>
 
@@ -89,7 +88,21 @@ export function ComponentShowcaseView(): any {
 
                 <InputField style={StyleType.FILLED} type={HighlightType.DEFAULT} label={"E-Mail"} placeholder={"you@example.com"}/>
                 <InputField style={StyleType.FILLED} type={HighlightType.DEFAULT} icon={<AiFillHome/>}/>
+
                 <InputField style={StyleType.FILLED} type={HighlightType.DEFAULT} icon="$" placeholder={"0.00"}/>
+
+                <InputField style={StyleType.FILLED}
+                            type={HighlightType.DEFAULT}
+                            icon="$" contentTrailing={
+                                <ChoiceBox
+                                    style={StyleType.TEXT}
+                                    title={"?"}
+                                    items={["USD", "EUR", "CAD"]}
+                                />
+                            }
+                            placeholder={"0.00"}/>
+
+
                 <InputField style={StyleType.FILLED} type={HighlightType.DEFAULT} icon="http://" placeholder={"website.com"}/>
                 <InputField style={StyleType.FILLED} type={HighlightType.DEFAULT} contentLeading={
                     <ButtonFilled><GoFileDirectory/>Browse</ButtonFilled>}/>
@@ -194,8 +207,6 @@ export function ComponentShowcaseView(): any {
             </>
         )
     }
-
-
 }
 
 function ShowcaseRow(props: React.PropsWithChildren<any>): any {
