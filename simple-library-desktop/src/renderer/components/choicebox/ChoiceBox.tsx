@@ -10,39 +10,45 @@ import "./choiceBox.css"
 
 /*
 TODO:
-- multiselect
-- define max number of visible items -> scroll if more than that
-- allow more complex items -> icons, images, secondary text ...
-- label above checkbox (see inputfield)
 - control initially selected item
 - styles (filled, ghost, text)
+- dividers in list
  */
 
-interface ListItemType {
+interface ExtendedPropListItemType {
     id: string,
-    title: string,
+    content: any,
 }
 
+type PropListItemType = string | ExtendedPropListItemType
 
 interface ChoiceBoxProps {
-
     style: StyleType,
     highlight?: HighlightType,
     bg?: string,
 
     title: string,
-    items: string[],
+    items: PropListItemType[],
 
-    multiselect?: boolean,
-    autoWidth?: boolean
+    label?: string,
+
+    autoWidth?: boolean,
+    listHeight?: number
+
+    onSelect?: (value: string) => void
 }
 
+interface StateListItemType {
+    id: string,
+    content: any,
+    usesPropId: boolean
+}
 
 interface ChoiceBoxState {
     title: string,
     isListOpen: boolean
-    items: ListItemType[],
-    itemSelected: ListItemType | undefined
+    items: StateListItemType[],
+    itemSelectedId: string | undefined
 }
 
 
@@ -53,23 +59,38 @@ export class ChoiceBox extends Component<ChoiceBoxProps, ChoiceBoxState> {
         this.state = {
             title: this.props.title,
             isListOpen: false,
-            items: this.props.items.map((item, index) => {
-                return {
-                    id: String(index),
-                    title: item,
-                }
-            }),
-            itemSelected: undefined
+            items: this.toStateItems(this.props.items),
+            itemSelectedId: undefined
         };
+        this.toStateItems = this.toStateItems.bind(this)
+        this.getItemById = this.getItemById.bind(this)
         this.closeList = this.closeList.bind(this)
         this.toggleList = this.toggleList.bind(this)
         this.onItemClicked = this.onItemClicked.bind(this)
         this.renderTitleDummies = this.renderTitleDummies.bind(this)
         this.renderButton = this.renderButton.bind(this)
         this.renderItem = this.renderItem.bind(this)
+        this.renderSeparator = this.renderSeparator.bind(this)
         this.renderItemList = this.renderItemList.bind(this)
     }
 
+    toStateItems(items: PropListItemType[]): StateListItemType[] {
+        return items.map((item, index) => {
+            if (typeof item === 'string') {
+                return {
+                    id: index.toString(),
+                    content: item.toString(),
+                    usesPropId: false
+                } as StateListItemType
+            } else {
+                return {
+                    id: item.id,
+                    content: item.content,
+                    usesPropId: true
+                } as StateListItemType
+            }
+        })
+    }
 
     componentDidUpdate() {
         const {isListOpen} = this.state;
@@ -82,6 +103,13 @@ export class ChoiceBox extends Component<ChoiceBoxProps, ChoiceBoxState> {
         }, 0)
     }
 
+    getItemById(itemId: string | undefined): StateListItemType | undefined {
+        if (itemId) {
+            return this.state.items.find(item => item.id === itemId)
+        } else {
+            return undefined
+        }
+    }
 
     closeList() {
         this.setState({
@@ -97,11 +125,16 @@ export class ChoiceBox extends Component<ChoiceBoxProps, ChoiceBoxState> {
     }
 
 
-    onItemClicked(item: ListItemType) {
-        this.setState({
-            itemSelected: item,
-            isListOpen: false
-        })
+    onItemClicked(item: StateListItemType) {
+        if (item.id !== this.state.itemSelectedId) {
+            this.setState({
+                itemSelectedId: item.id,
+                isListOpen: false
+            })
+            if (this.props.onSelect) {
+                this.props.onSelect(item.usesPropId ? item.id : item.content)
+            }
+        }
     }
 
 
@@ -112,15 +145,16 @@ export class ChoiceBox extends Component<ChoiceBoxProps, ChoiceBoxState> {
         return (
             <>
                 <div className={"choice-box-title-dummy"}>{this.props.title}</div>
-                {items.map(item => <div className={"choice-box-title-dummy"}>{item.title}</div>)}
+                {items.map(item => <div className={"choice-box-title-dummy"}>{item.content}</div>)}
             </>
         )
     }
 
 
     renderButton() {
-        const {isListOpen, title, itemSelected} = this.state
-        const currentTitle = itemSelected ? itemSelected.title : title
+        const {isListOpen, title, itemSelectedId} = this.state
+        const currentItem = this.getItemById(itemSelectedId)
+        const currentTitle = currentItem ? currentItem.content : title
         return (
             <Button style={this.props.style} highlight={this.props.highlight} bg={this.props.bg} onClick={this.toggleList}>
                 <div className={"choice-box-title"}>
@@ -137,14 +171,14 @@ export class ChoiceBox extends Component<ChoiceBoxProps, ChoiceBoxState> {
     }
 
 
-    renderItem(item: ListItemType): ReactElement {
+    renderItem(item: StateListItemType): ReactElement {
         return (
             <div className={"choice-box-item"} onClick={() => this.onItemClicked(item)}>
                 <div className={"choice-box-item-content"}>
-                    {item.title}
+                    {item.content}
                 </div>
                 {
-                    this.state.itemSelected === item
+                    this.state.itemSelectedId === item.id
                         ? <IoCheckmark className={"choice-box-item-selected-icon"}/>
                         : null
                 }
@@ -153,10 +187,17 @@ export class ChoiceBox extends Component<ChoiceBoxProps, ChoiceBoxState> {
     }
 
 
+    renderSeparator(): ReactElement {
+        return <div className={"choice-box-separator"}/>
+    }
+
+
     renderItemList(): ReactElement {
         const {items} = this.state
         return (
-            <div className={"choice-box-list with-shadow-0"}>
+            <div className={"choice-box-list with-shadow-1"}
+                 style={this.props.listHeight ? {maxHeight: this.props.listHeight + 'em'} : {}}
+            >
                 {items.map(item => this.renderItem(item))}
             </div>
         )
@@ -167,6 +208,7 @@ export class ChoiceBox extends Component<ChoiceBoxProps, ChoiceBoxState> {
         const {isListOpen} = this.state
         return (
             <div className={"choice-box-wrapper"}>
+                {this.props.label ? this.props.label : null}
                 {this.renderButton()}
                 {isListOpen && this.renderItemList()}
             </div>

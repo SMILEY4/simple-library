@@ -12,7 +12,7 @@
 	--base-color-light-3:       hsl(228, 6%, 80%);
 
 	--text-color-light-0:       hsl(0, 0%, 65%);
-	--text-color-light-1:       hsl(0, 1%, 25%);
+	--text-color-light-1:       hsl(0, 0%, 25%);
 	--text-color-light-2:       hsl(0, 0%, 12%);
 	--text-color-light-3:       hsl(0, 0%, 45%);
 
@@ -33,7 +33,7 @@
 	--overlay-color-light:      hsla(0, 0%, 0%, 0.3);
 	--overlay-color-dark:       hsla(0, 0%, 60%, 0.3);
 
-	--gradient-none-0:            linear-gradient(155deg, var(--base-color-3), var(--base-color-3));
+	--gradient-none-0:          linear-gradient(155deg, var(--base-color-3), var(--base-color-3));
 	--gradient-info-0:          linear-gradient(155deg, hsl(196, 100%, 74%), hsl(236, 100%, 64%));
 	--gradient-success-0:       linear-gradient(155deg, hsl(87, 67%, 63%), hsl(101, 57%, 43%));
 	--gradient-error-0:         linear-gradient(155deg, hsl(10, 100%, 56%), hsl(333, 80%, 50%));
