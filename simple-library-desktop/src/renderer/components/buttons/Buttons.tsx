@@ -9,7 +9,6 @@ interface ButtonProps {
     style: StyleType,
     children: any
     highlight?: HighlightType,
-    bg?: string,
     small?: boolean,
     disabled?: boolean,
     onClick?: () => void,
@@ -18,6 +17,10 @@ interface ButtonProps {
 }
 
 interface GenericButtonProps extends Omit<ButtonProps, 'style'> {
+}
+
+interface GhostButtonProps extends Omit<ButtonProps, 'style'> {
+    bg: string
 }
 
 export function Button(props: React.PropsWithChildren<ButtonProps>): ReactElement {
@@ -40,7 +43,6 @@ export function Button(props: React.PropsWithChildren<ButtonProps>): ReactElemen
         return "button"
             + " button-" + props.style
             + (props.small ? " button-small" : "")
-            + " button-force-bg-" + (props.bg ? props.bg : "0")
             + (props.disabled ? " button-disabled" : "")
             + classNameOrEmpty(props.innerClassName)
     }
@@ -65,9 +67,9 @@ export function ButtonFilled(props: React.PropsWithChildren<GenericButtonProps>)
 }
 
 
-export function ButtonGhost(props: React.PropsWithChildren<GenericButtonProps>): ReactElement {
+export function ButtonGhost(props: React.PropsWithChildren<GhostButtonProps>): ReactElement {
     const baseProps: ButtonProps = {
-        style: StyleType.GHOST,
+        style: props.bg === "0" ? StyleType.GHOST_BG0 : StyleType.GHOST_BG1,
         ...props
     }
     return <Button {...baseProps}/>

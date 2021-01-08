@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {useState} from 'react';
 import "./showcase.css"
-import {ButtonFilled, ButtonGhost, ButtonText} from "_renderer/components/buttons/Buttons";
 import {HighlightType, StyleType} from "_renderer/components/Common";
 import {
     AiFillCaretRight,
@@ -15,9 +14,10 @@ import {
     WiFog,
     WiRain
 } from "react-icons/all";
-import {InputField} from "_renderer/components/inputfield/InputField";
-import {Dialog} from "_renderer/components/modal/Dialog";
 import {ChoiceBox} from "_renderer/components/choicebox/ChoiceBox";
+import {ButtonFilled, ButtonGhost, ButtonText} from "_renderer/components/buttons/Buttons";
+import {Dialog} from "_renderer/components/modal/Dialog";
+import {InputField} from "_renderer/components/inputfield/InputField";
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0")
@@ -55,19 +55,73 @@ export function ComponentShowcaseView(): any {
                     onSelect={(value) => console.log("Selected " + value)}
                 />
 
-                <ChoiceBox
-                    style={StyleType.FILLED}
-                    title={"Select Item"}
-                    items={[
-                        {id: "lightning", content: <div><WiDayLightning/>Lightning</div>},
-                        {id: "cloudy", content: <div><WiCloudy/>Cloudy</div>},
-                        {id: "overcast", content: <div><WiDaySunnyOvercast/>Overcast</div>},
-                        {id: "sunny", content: <div><WiDaySunny/>Sunny</div>},
-                        {id: "fog", content: <div><WiFog/>Fog</div>},
-                        {id: "rain", content: <div><WiRain/>Rain</div>}
-                    ]}
-                    onSelect={(value) => console.log("Selected " + value)}
+                <StatefulComponent
+                    title="Next"
+                    initialState={1}
+                    onAction={(prevData: any) => (prevData + 1) % 6}
+                    renderContent={(data: any) => {
+                        console.log(data)
+                        return (
+                            <ChoiceBox
+                                style={StyleType.FILLED}
+                                title={"Select Item"}
+                                initiallySelected={"" + data}
+                                items={[
+                                    {id: "1", content: <div><WiDayLightning/>Lightning</div>},
+                                    {id: "2", content: <div><WiCloudy/>Cloudy</div>},
+                                    {id: "3", content: <div><WiDaySunnyOvercast/>Overcast</div>},
+                                    {id: "4", content: <div><WiDaySunny/>Sunny</div>},
+                                    {id: "5", content: <div><WiFog/>Fog</div>},
+                                    {id: "6", content: <div><WiRain/>Rain</div>}
+                                ]}
+                                onSelect={(value) => console.log("Selected " + value)}
+                            />
+                        )
+                    }}
                 />
+
+                <ShowcaseRow>
+                    <ChoiceBox
+                        style={StyleType.FILLED}
+                        title={"Select Item"}
+                        items={[
+                            {id: "lightning", content: <div><WiDayLightning/>Lightning</div>},
+                            {id: "cloudy", content: <div><WiCloudy/>Cloudy</div>},
+                            {id: "overcast", content: <div><WiDaySunnyOvercast/>Overcast</div>},
+                            {id: "sunny", content: <div><WiDaySunny/>Sunny</div>},
+                            {id: "fog", content: <div><WiFog/>Fog</div>},
+                            {id: "rain", content: <div><WiRain/>Rain</div>}
+                        ]}
+                        onSelect={(value) => console.log("Selected " + value)}
+                    />
+                    <ChoiceBox
+                        style={(bgNr === "0" ? StyleType.GHOST_BG0 : StyleType.GHOST_BG1)}
+                        title={"Select Item"}
+                        items={[
+                            {id: "lightning", content: <div><WiDayLightning/>Lightning</div>},
+                            {id: "cloudy", content: <div><WiCloudy/>Cloudy</div>},
+                            {id: "overcast", content: <div><WiDaySunnyOvercast/>Overcast</div>},
+                            {id: "sunny", content: <div><WiDaySunny/>Sunny</div>},
+                            {id: "fog", content: <div><WiFog/>Fog</div>},
+                            {id: "rain", content: <div><WiRain/>Rain</div>}
+                        ]}
+                        onSelect={(value) => console.log("Selected " + value)}
+                    />
+                    <ChoiceBox
+                        style={StyleType.TEXT}
+                        title={"Select Item"}
+                        items={[
+                            {id: "lightning", content: <div><WiDayLightning/>Lightning</div>},
+                            {id: "cloudy", content: <div><WiCloudy/>Cloudy</div>},
+                            {id: "overcast", content: <div><WiDaySunnyOvercast/>Overcast</div>},
+                            {id: "sunny", content: <div><WiDaySunny/>Sunny</div>},
+                            {id: "fog", content: <div><WiFog/>Fog</div>},
+                            {id: "rain", content: <div><WiRain/>Rain</div>}
+                        ]}
+                        onSelect={(value) => console.log("Selected " + value)}
+                    />
+                </ShowcaseRow>
+
 
                 <h3>Modals</h3>
 
@@ -87,7 +141,6 @@ export function ComponentShowcaseView(): any {
                         Modal Content
                     </Dialog>
                 </ToggleableShowcase>
-
 
                 <h3>Input Fields</h3>
 
@@ -120,14 +173,10 @@ export function ComponentShowcaseView(): any {
 
                 <InputField style={StyleType.FILLED}
                             type={HighlightType.DEFAULT}
-                            icon="$" contentTrailing={
-                    <ChoiceBox
-                        style={StyleType.TEXT}
-                        title={"?"}
-                        items={["USD", "EUR", "CAD"]}
-                    />
-                }
-                            placeholder={"0.00"}/>
+                            icon="$" contentTrailing={(
+                    <ChoiceBox style={StyleType.GHOST_BG0} title={"?"} items={["USD", "EUR", "CAD"]}/>)}
+                            placeholder={"0.00"}
+                />
 
 
                 <InputField style={StyleType.FILLED} type={HighlightType.DEFAULT} icon="http://" placeholder={"website.com"}/>
@@ -144,7 +193,7 @@ export function ComponentShowcaseView(): any {
                 <InputField style={StyleType.FILLED} type={HighlightType.DEFAULT} contentTrailing={
                     <ButtonFilled><AiFillHome/>Browse</ButtonFilled>}/>
                 <InputField style={StyleType.FILLED} type={HighlightType.DEFAULT} contentTrailing={
-                    <ButtonGhost>Browse</ButtonGhost>}/>
+                    <ButtonGhost bg={bgNr}>Browse</ButtonGhost>}/>
                 <InputField style={StyleType.FILLED} type={HighlightType.DEFAULT} contentTrailing={
                     <ButtonText>Browse</ButtonText>}/>
 
@@ -236,6 +285,7 @@ export function ComponentShowcaseView(): any {
     }
 }
 
+
 function ShowcaseRow(props: React.PropsWithChildren<any>): any {
     return (
         <div className="showcase-row">
@@ -255,6 +305,17 @@ function ToggleableShowcase(props: React.PropsWithChildren<any>): any {
                     ? props.children
                     : null
             }
+        </div>
+    )
+}
+
+
+function StatefulComponent(props: React.PropsWithChildren<any>): any {
+    const [data, setData] = useState(props.initialState)
+    return (
+        <div>
+            <button onClick={() => setData(props.onAction(data))}>{props.title}</button>
+            {props.renderContent(data)}
         </div>
     )
 }

@@ -11,8 +11,6 @@ import "./choiceBox.css"
 /*
 TODO:
 - control initially selected item
-- styles (filled, ghost, text)
-- dividers in list
  */
 
 interface ExtendedPropListItemType {
@@ -25,10 +23,10 @@ type PropListItemType = string | ExtendedPropListItemType
 interface ChoiceBoxProps {
     style: StyleType,
     highlight?: HighlightType,
-    bg?: string,
 
     title: string,
     items: PropListItemType[],
+    initiallySelected?: string,
 
     label?: string,
 
@@ -60,7 +58,7 @@ export class ChoiceBox extends Component<ChoiceBoxProps, ChoiceBoxState> {
             title: this.props.title,
             isListOpen: false,
             items: this.toStateItems(this.props.items),
-            itemSelectedId: undefined
+            itemSelectedId: this.props.initiallySelected ? props.initiallySelected : undefined
         };
         this.toStateItems = this.toStateItems.bind(this)
         this.getItemById = this.getItemById.bind(this)
@@ -90,6 +88,14 @@ export class ChoiceBox extends Component<ChoiceBoxProps, ChoiceBoxState> {
                 } as StateListItemType
             }
         })
+    }
+
+    componentWillReceiveProps(newProps: ChoiceBoxProps) {
+        if (newProps.initiallySelected && newProps.initiallySelected !== this.props.initiallySelected) {
+            this.setState({
+                itemSelectedId: newProps.initiallySelected
+            })
+        }
     }
 
     componentDidUpdate() {
@@ -156,7 +162,7 @@ export class ChoiceBox extends Component<ChoiceBoxProps, ChoiceBoxState> {
         const currentItem = this.getItemById(itemSelectedId)
         const currentTitle = currentItem ? currentItem.content : title
         return (
-            <Button style={this.props.style} highlight={this.props.highlight} bg={this.props.bg} onClick={this.toggleList}>
+            <Button style={this.props.style} highlight={this.props.highlight} onClick={this.toggleList}>
                 <div className={"choice-box-title"}>
                     {currentTitle}
                     {this.props.autoWidth !== false && this.renderTitleDummies()}

@@ -86,12 +86,12 @@
 }
 
 
-.button-force-bg-0 {
+.button-ghost-bg0 {
 	background-color: var(--background-color-0);
 }
 
 
-.button-force-bg-1 {
+.button-ghost-bg1 {
 	background-color: var(--background-color-1);
 }
 
