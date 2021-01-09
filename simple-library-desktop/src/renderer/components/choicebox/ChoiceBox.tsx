@@ -5,14 +5,6 @@ import {HighlightType, StyleType} from "_renderer/components/Common";
 import {BsChevronDown, BsChevronUp, IoCheckmark} from "react-icons/all";
 import "./choiceBox.css"
 
-// https://blog.logrocket.com/building-a-custom-dropdown-menu-component-for-react-e94f02ced4a1/
-// https://tailwindui.com/components/application-ui/forms/select-menus
-
-/*
-TODO:
-- control initially selected item
- */
-
 interface ExtendedPropListItemType {
     id: string,
     content: any,

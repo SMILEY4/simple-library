@@ -1,7 +1,7 @@
 import * as React from "react";
 import {ReactElement} from "react";
-import "./gradientBorderBox.css"
 import {classNameOrEmpty, HighlightType} from "_renderer/components/Common";
+import "./gradientBorderBox.css"
 
 
 interface GradientBorderBoxProps {

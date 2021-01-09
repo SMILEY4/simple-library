@@ -4,6 +4,7 @@ import "./showcase.css"
 import {HighlightType, StyleType} from "_renderer/components/Common";
 import {
     AiFillCaretRight,
+    AiFillCloseCircle,
     AiFillHome,
     AiOutlineSearch,
     GoFileDirectory,
@@ -18,6 +19,8 @@ import {ChoiceBox} from "_renderer/components/choicebox/ChoiceBox";
 import {ButtonFilled, ButtonGhost, ButtonText} from "_renderer/components/buttons/Buttons";
 import {Dialog} from "_renderer/components/modal/Dialog";
 import {InputField} from "_renderer/components/inputfield/InputField";
+import {Notification} from "_renderer/components/modal/Notification"
+import {NotificationStack} from "_renderer/components/modal/NotificationStack";
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0")
@@ -45,9 +48,59 @@ export function ComponentShowcaseView(): any {
         return (
             <>
 
+                <h3>Notifications</h3>
+
+                <Notification gradient={HighlightType.ERROR}
+                              icon={<AiFillCloseCircle/>}
+                              title={"There were 2 errors with your submission"}
+                              caption={"14:25"}
+                              withCloseButton={true}>
+                    <li>Your password must be at least 8 characters</li>
+                    <li>Your password must include at least one number</li>
+                </Notification>
+
+                <ShowcaseRow>
+
+                    <Notification gradient={HighlightType.DEFAULT} title={"Default Notification"}>
+                        This is a notification.
+                    </Notification>
+
+                    <Notification gradient={HighlightType.INFO} title={"Info Notification"}>
+                        This is a notification.
+                    </Notification>
+
+                    <Notification gradient={HighlightType.SUCCESS} title={"Success Notification"}>
+                        This is a notification.
+                    </Notification>
+
+                    <Notification gradient={HighlightType.ERROR} title={"Error Notification"}>
+                        This is a notification.
+                    </Notification>
+
+                    <Notification gradient={HighlightType.WARN} title={"Warn Notification"}>
+                        This is a notification.
+                    </Notification>
+
+                </ShowcaseRow>
+
+                <ToggleableShowcase text={"Toggle Notification Stack"}>
+                    <NotificationStack modalRootId="showcase-content" notifications={[
+                        {
+                            gradient: HighlightType.INFO,
+                            title: "Info Notification on stack"
+                        },
+                        {
+                            gradient: HighlightType.ERROR,
+                            title: "Error Notification on stack with longer title"
+                        }
+                    ]}/>
+                </ToggleableShowcase>
+
+
                 <h3>Choice Box</h3>
 
                 <ChoiceBox
+                    label="With Label"
                     listHeight={8}
                     style={StyleType.FILLED}
                     title={"Select Item"}
@@ -60,7 +113,6 @@ export function ComponentShowcaseView(): any {
                     initialState={1}
                     onAction={(prevData: any) => (prevData + 1) % 6}
                     renderContent={(data: any) => {
-                        console.log(data)
                         return (
                             <ChoiceBox
                                 style={StyleType.FILLED}

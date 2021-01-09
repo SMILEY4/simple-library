@@ -39,11 +39,13 @@
 	--gradient-error-0:         linear-gradient(155deg, hsl(10, 100%, 56%), hsl(333, 80%, 50%));
 	--gradient-warn-0:          linear-gradient(155deg, hsl(46, 89%, 64%), hsl(13, 96%, 71%));
 
+	--gradient-none-light-1:    linear-gradient(155deg, var(--background-color-1), var(--background-color-1));
 	--gradient-info-light-1:    linear-gradient(155deg, hsl(196, 100%, 90%), hsl(236, 100%, 90%));
 	--gradient-success-light-1: linear-gradient(155deg, hsl(87, 67%, 90%), hsl(101, 57%, 90%));
 	--gradient-error-light-1:   linear-gradient(155deg, hsl(10, 100%, 90%), hsl(333, 73%, 90%));
 	--gradient-warn-light-1:    linear-gradient(155deg, hsl(46, 89%, 90%), hsl(13, 97%, 90%));
 
+	--gradient-none-dark-1:     linear-gradient(155deg, var(--background-color-1), var(--background-color-1));
 	--gradient-info-dark-1:     linear-gradient(155deg, hsl(196, 30%, 20%), hsl(236, 30%, 20%));
 	--gradient-success-dark-1:  linear-gradient(155deg, hsl(87, 17%, 20%), hsl(101, 17%, 20%));
 	--gradient-error-dark-1:    linear-gradient(155deg, hsl(10, 30%, 20%), hsl(333, 23%, 20%));
@@ -74,6 +76,7 @@
 	--gradient-success-1: var(--gradient-success-dark-1);
 	--gradient-error-1:   var(--gradient-error-dark-1);
 	--gradient-warn-1:    var(--gradient-warn-dark-1);
+	--gradient-none-1:    var(--gradient-none-dark-1);
 }
 
 
@@ -93,6 +96,7 @@
 	--gradient-success-1: var(--gradient-success-light-1);
 	--gradient-error-1:   var(--gradient-error-light-1);
 	--gradient-warn-1:    var(--gradient-warn-light-1);
+	--gradient-none-1:    var(--gradient-none-light-1);
 }
 
 

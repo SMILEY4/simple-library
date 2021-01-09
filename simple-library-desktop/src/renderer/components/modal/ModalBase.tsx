@@ -1,29 +1,45 @@
 import * as React from "react";
 import * as ReactDOM from 'react-dom';
 import "./modalbase.css"
+import {classNameOrEmpty} from "_renderer/components/Common";
+
+export enum ModalPosition {
+    CENTER = "center",
+    BOTTOM = "bottom"
+}
 
 interface ModalBaseProps {
     show: boolean,
+    position?: ModalPosition,
     withOverlay?: boolean,
     withShadow?: boolean,
-    modalRootId?: string
+    modalRootId?: string,
+    className?: string
 }
 
-export function ModalBase(props: React.PropsWithChildren<ModalBaseProps>): React.ReactElement | null {
-    if (!props.show) {
-        return null;
-    } else {
-        const modal = (
-            <div className={props.withOverlay === true ? "modal-overlay" : "modal-hidden-overlay"}>
-                <div className={"modal" + (props.withShadow === true ? " with-shadow-2" : "")}>
-                    {props.children}
+export class ModalBase extends React.Component<React.PropsWithChildren<ModalBaseProps>> {
+    render() {
+        if (!this.props.show) {
+            return null;
+        } else {
+            const modal = (
+                <div className={(this.props.withOverlay === true ? "modal-overlay" : "modal-hidden-overlay") + (this.props.position ? " modal-overlay-" + this.props.position : " modal-overlay-" + ModalPosition.CENTER)}>
+                    <div className={"modal" + (this.props.withShadow === true ? " with-shadow-2" : "") + classNameOrEmpty(this.props.className)}>
+                        {this.props.children}
+                    </div>
                 </div>
-            </div>
-        )
-        if (props.modalRootId) {
-            const modalRootElement = document.getElementById(props.modalRootId)
-            return modalRootElement ? ReactDOM.createPortal(modal, modalRootElement) : null;
+            )
+            if (this.props.modalRootId) {
+                if (!document.getElementById(this.props.modalRootId)) {
+                    setTimeout(() => {
+                        // if the id is not yet available, we need to wait for react to finish rendering and try again
+                        this.forceUpdate()
+                    }, 0)
+                }
+                const modalRootElement = document.getElementById(this.props.modalRootId)
+                return modalRootElement ? ReactDOM.createPortal(modal, modalRootElement) : null;
+            }
+            return modal
         }
-        return modal
     }
 }
