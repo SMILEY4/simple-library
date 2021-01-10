@@ -21,6 +21,7 @@ import {Dialog} from "_renderer/components/modal/Dialog";
 import {InputField} from "_renderer/components/inputfield/InputField";
 import {Notification} from "_renderer/components/modal/Notification"
 import {NotificationStack} from "_renderer/components/modal/NotificationStack";
+import {BackgroundImage} from "_renderer/components/image/BackgroundImage";
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0")
@@ -47,6 +48,16 @@ export function ComponentShowcaseView(): any {
     function renderContent() {
         return (
             <>
+
+
+                <h3>Image (Background)</h3>
+
+                <div style={{display: 'grid', width: '50%', height: '300px',}}>
+                    <BackgroundImage url={"./forest.jpg"}>
+                        Overlay Content
+                    </BackgroundImage>
+                </div>
+
 
                 <h3>Notifications</h3>
 
@@ -194,6 +205,7 @@ export function ComponentShowcaseView(): any {
                     </Dialog>
                 </ToggleableShowcase>
 
+
                 <h3>Input Fields</h3>
 
                 <ShowcaseRow>
@@ -258,7 +270,6 @@ export function ComponentShowcaseView(): any {
                     <ButtonGhost bg={bgNr}>Ghost</ButtonGhost>
                     <ButtonText>Text</ButtonText>
                 </ShowcaseRow>
-
 
                 <h5>Filled</h5>
                 <ShowcaseRow>
