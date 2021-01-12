@@ -24,6 +24,7 @@ import {NotificationStack} from "_renderer/components/modal/NotificationStack";
 import {BackgroundImage} from "_renderer/components/image/BackgroundImage";
 import forest from "_public/forest.jpg"
 import {Container} from "_renderer/components/layout/Container"; // must be imported like this to work / to be included in build
+import {Text, TextVariant} from "_renderer/components/text/Text"
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0")
@@ -47,6 +48,20 @@ export function ComponentShowcaseView(): any {
         </div>
     )
 
+    function renderText() {
+        return (
+            <>
+                <h3>Text</h3>
+                <Text variant={TextVariant.H1}>Heading 1</Text>
+                <Text variant={TextVariant.H2}>Heading 2</Text>
+                <Text variant={TextVariant.H3}>Heading 3</Text>
+                <Text variant={TextVariant.H4}>Heading 4</Text>
+                <Text variant={TextVariant.H5}>Heading 5</Text>
+                <Text variant={TextVariant.BODY}>Body</Text>
+                <Text variant={TextVariant.CAPTION}>Caption</Text>
+            </>
+        )
+    }
 
     function renderContainer() {
         const boxStyle = {
@@ -562,6 +577,7 @@ export function ComponentShowcaseView(): any {
     function renderContent() {
         return (
             <>
+                {renderText()}
                 {renderContainer()}
                 {renderImageBackground()}
                 {renderNotifications()}
