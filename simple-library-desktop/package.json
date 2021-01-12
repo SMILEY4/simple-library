@@ -9,7 +9,9 @@
     "prod": "rimraf dist && cross-env NODE_ENV=production webpack --progress --color",
     "test": "mocha -r ts-node/register -r tsconfig-paths/register \"test/**/*.ts\"",
     "build:win": "electron-builder build --win --x64",
-    "build:mac": "electron-builder build --mac --x64"
+    "build:mac": "electron-builder build --mac --x64",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "build": {
     "appId": "de.ruegnerlukas.simple_library",
@@ -19,25 +21,25 @@
       "output": "./out/"
     },
     "mac": {
-      "target": "dmg",
-      "publish": null
+      "target": "dmg"
     },
     "win": {
       "target": "nsis",
-      "asar": true,
-      "publish": null
+      "asar": true
     },
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true
     },
-    "buildVersion": "1"
+    "buildVersion": "1",
+    "publish": null
   },
   "author": "Lukas Ruegner",
   "license": "MIT",
   "dependencies": {
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-icons": "^4.1.0",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0"
   },

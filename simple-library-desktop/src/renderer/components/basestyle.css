@@ -1,0 +1,189 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+
+
+* {
+
+	--background-color-light-0: hsl(228, 23%, 94%);
+	--background-color-light-1: hsl(228, 0%, 100%);
+
+	--base-color-light-0:       hsl(228, 23%, 98%);
+	--base-color-light-1:       hsl(231, 14%, 90%);
+	--base-color-light-2:       hsl(228, 9%, 86%);
+	--base-color-light-3:       hsl(228, 6%, 80%);
+
+	--text-color-light-0:       hsl(0, 0%, 65%);
+	--text-color-light-1:       hsl(0, 0%, 25%);
+	--text-color-light-2:       hsl(0, 0%, 12%);
+	--text-color-light-3:       hsl(0, 0%, 45%);
+
+
+	--background-color-dark-0:  hsl(195, 3%, 25%);
+	--background-color-dark-1:  hsl(195, 3%, 20%);
+
+	--base-color-dark-0:        hsl(195, 3%, 23%);
+	--base-color-dark-1:        hsl(195, 2%, 30%);
+	--base-color-dark-2:        hsl(195, 2%, 33%);
+	--base-color-dark-3:        hsl(195, 2%, 40%);
+
+	--text-color-dark-0:        hsl(0, 0%, 55%);
+	--text-color-dark-1:        hsl(0, 0%, 80%);
+	--text-color-dark-2:        hsl(0, 0%, 90%);
+	--text-color-dark-3:        hsl(0, 0%, 60%);
+
+	--overlay-color-light:      hsla(0, 0%, 0%, 0.3);
+	--overlay-color-dark:       hsla(0, 0%, 60%, 0.3);
+
+	--gradient-none-0:          linear-gradient(155deg, var(--base-color-3), var(--base-color-3));
+	--gradient-info-0:          linear-gradient(155deg, hsl(196, 100%, 74%), hsl(236, 100%, 64%));
+	--gradient-success-0:       linear-gradient(155deg, hsl(87, 67%, 63%), hsl(101, 57%, 43%));
+	--gradient-error-0:         linear-gradient(155deg, hsl(10, 100%, 56%), hsl(333, 80%, 50%));
+	--gradient-warn-0:          linear-gradient(155deg, hsl(46, 89%, 64%), hsl(13, 96%, 71%));
+
+	--gradient-none-light-1:    linear-gradient(155deg, var(--background-color-1), var(--background-color-1));
+	--gradient-info-light-1:    linear-gradient(155deg, hsl(196, 100%, 90%), hsl(236, 100%, 90%));
+	--gradient-success-light-1: linear-gradient(155deg, hsl(87, 67%, 90%), hsl(101, 57%, 90%));
+	--gradient-error-light-1:   linear-gradient(155deg, hsl(10, 100%, 90%), hsl(333, 73%, 90%));
+	--gradient-warn-light-1:    linear-gradient(155deg, hsl(46, 89%, 90%), hsl(13, 97%, 90%));
+
+	--gradient-none-dark-1:     linear-gradient(155deg, var(--background-color-1), var(--background-color-1));
+	--gradient-info-dark-1:     linear-gradient(155deg, hsl(196, 30%, 20%), hsl(236, 30%, 20%));
+	--gradient-success-dark-1:  linear-gradient(155deg, hsl(87, 17%, 20%), hsl(101, 17%, 20%));
+	--gradient-error-dark-1:    linear-gradient(155deg, hsl(10, 30%, 20%), hsl(333, 23%, 20%));
+	--gradient-warn-dark-1:     linear-gradient(155deg, hsl(46, 29%, 20%), hsl(13, 30%, 20%));
+
+	--default-duration:         0.2s;
+
+	--font--size-default:       13px;
+	--font-size-small:          11px;
+	--font-size-tiny:           9px;
+
+}
+
+
+.theme-dark {
+	--background-color-0: var(--background-color-dark-0);
+	--background-color-1: var(--background-color-dark-1);
+	--base-color-0:       var(--base-color-dark-0);
+	--base-color-1:       var(--base-color-dark-1);
+	--base-color-2:       var(--base-color-dark-2);
+	--base-color-3:       var(--base-color-dark-3);
+	--text-color-0:       var(--text-color-dark-0);
+	--text-color-1:       var(--text-color-dark-1);
+	--text-color-2:       var(--text-color-dark-2);
+	--text-color-3:       var(--text-color-dark-3);
+	--overlay-color:      var(--overlay-color-dark);
+	--gradient-info-1:    var(--gradient-info-dark-1);
+	--gradient-success-1: var(--gradient-success-dark-1);
+	--gradient-error-1:   var(--gradient-error-dark-1);
+	--gradient-warn-1:    var(--gradient-warn-dark-1);
+	--gradient-none-1:    var(--gradient-none-dark-1);
+}
+
+
+.theme-light {
+	--background-color-0: var(--background-color-light-0);
+	--background-color-1: var(--background-color-light-1);
+	--base-color-0:       var(--base-color-light-0);
+	--base-color-1:       var(--base-color-light-1);
+	--base-color-2:       var(--base-color-light-2);
+	--base-color-3:       var(--base-color-light-3);
+	--text-color-0:       var(--text-color-light-0);
+	--text-color-1:       var(--text-color-light-1);
+	--text-color-2:       var(--text-color-light-2);
+	--text-color-3:       var(--text-color-light-3);
+	--overlay-color:      var(--overlay-color-light);
+	--gradient-info-1:    var(--gradient-info-light-1);
+	--gradient-success-1: var(--gradient-success-light-1);
+	--gradient-error-1:   var(--gradient-error-light-1);
+	--gradient-warn-1:    var(--gradient-warn-light-1);
+	--gradient-none-1:    var(--gradient-none-light-1);
+}
+
+
+.with-shadow-0 {
+	box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.20);
+}
+
+
+.with-shadow-1 {
+	box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12), 0 3px 5px -1px rgba(0, 0, 0, 0.20);
+}
+
+
+.with-shadow-2 {
+	box-shadow: 0 12px 17px 2px rgba(0, 0, 0, 0.14), 0 5px 22px 4px rgba(0, 0, 0, 0.12), 0 7px 8px -4px rgba(0, 0, 0, 0.20);
+}
+
+
+* {
+	font-family: "Roboto", sans-serif;
+	font-size:   var(--font--size-default);
+	font-weight: 400;
+	color:       var(--text-color-1)
+}
+
+
+h1 {
+	font-size:   24px;
+	font-weight: normal;
+	padding:     0;
+	margin:      0;
+	color:       var(--text-color-2);
+}
+
+
+h2 {
+	font-size:   20px;
+	font-weight: normal;
+	padding:     0;
+	margin:      0;
+	color:       var(--text-color-2);
+}
+
+
+h3 {
+	font-size:   16px;
+	font-weight: bold;
+	padding:     0;
+	margin:      0;
+	color:       var(--text-color-2);
+}
+
+
+h4 {
+	font-size:   var(--font--size-default);
+	font-weight: 700;
+	padding:     0;
+	margin:      0;
+}
+
+
+h5 {
+	font-size:      var(--font--size-default);
+	font-weight:    500;
+	text-transform: uppercase;
+	color:          var(--text-color-0);
+	letter-spacing: 0.1em;
+	padding:        0;
+	margin:         0;
+}
+
+
+.caption {
+	font-size:   var(--font-size-small);
+	font-weight: 400;
+}
+
+
+.body,
+body {
+	margin:                  0;
+	-webkit-font-smoothing:  antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+
+#app {
+	width:  100vw;
+	height: 100vh;
+}

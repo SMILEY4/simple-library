@@ -1,0 +1,114 @@
+.button {
+	cursor:              pointer;
+	-webkit-user-select: none;
+	-moz-user-select:    none;
+	-ms-user-select:     none;
+	user-select:         none;
+
+	display:             flex;
+	align-content:       center;
+	align-items:         center;
+	justify-content:     center;
+
+	padding:             0.5em;
+	gap:                 0.5em;
+	color:               var(--text-color-1);
+}
+
+
+.button-wrapper-default {
+	background: var(--gradient-none-0);
+}
+
+
+.button-wrapper-info {
+	background: var(--gradient-info-0);
+}
+
+
+.button-wrapper-success {
+	background: var(--gradient-success-0);
+}
+
+
+.button-wrapper-error {
+	background: var(--gradient-error-0);
+}
+
+
+.button-wrapper-warn {
+	background: var(--gradient-warn-0);
+}
+
+
+.button > svg {
+	fill:   var(--text-color-1);
+	stroke: var(--text-color-1);
+}
+
+
+.button:hover:not(.button-disabled),
+.button:hover:not(.button-disabled) > svg {
+	color:  var(--text-color-2);
+	fill:   var(--text-color-2);
+	stroke: var(--text-color-2);
+}
+
+
+.button:active:not(.button-disabled),
+.button:active:not(.button-disabled) > svg {
+	color:  var(--text-color-2);
+	fill:   var(--text-color-2);
+	stroke: var(--text-color-2);
+}
+
+
+.button-disabled,
+.button-disabled > svg {
+	color:  var(--text-color-0);
+	fill:   var(--text-color-0);
+	stroke: var(--text-color-0);
+}
+
+
+.button-wrapper > .button:hover:not(.button-disabled) {
+	background-color: var(--base-color-1);
+}
+
+
+.button-wrapper > .button:active:not(.button-disabled) {
+	background-color: var(--base-color-2);
+}
+
+
+.button-wrapper-filled > .button {
+	background-color: var(--base-color-0);
+}
+
+
+.button-ghost-bg0 {
+	background-color: var(--background-color-0);
+}
+
+
+.button-ghost-bg1 {
+	background-color: var(--background-color-1);
+}
+
+
+.button-wrapper-text {
+	background: transparent none;
+}
+
+
+.button-wrapper-text > .button {
+	background-color: transparent;
+}
+
+
+.button-small {
+	padding:    0.2em 0.3em;
+	font-size:  var(--font-size-small);
+	gap:        0.3em;
+	box-sizing: border-box;
+}
