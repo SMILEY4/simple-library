@@ -1,3 +1,25 @@
+export enum AlignmentMain {
+    START = "start",
+    END = "end",
+    CENTER = "center",
+    SPACE_BETWEEN = "space-between",
+    SPACED = "spaced"
+}
+
+export enum AlignmentCross {
+    START = "start",
+    END = "end",
+    CENTER = "center",
+    STRETCH = "stretch",
+}
+
+export enum Direction {
+    UP = "up",
+    DOWN = "down",
+    LEFT = "left",
+    RIGHT = "right"
+}
+
 export enum HighlightType {
     NONE = "none",
     DEFAULT = "default",
