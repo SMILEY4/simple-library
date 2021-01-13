@@ -18,6 +18,9 @@ interface TextProps {
     className?: string
 }
 
+interface GenericTextProps extends Omit<TextProps, 'variant'> {
+}
+
 
 export function Text(props: React.PropsWithChildren<TextProps>): ReactElement | null {
     const className = props.variant + classNameOrEmpty(props.className)
@@ -40,4 +43,32 @@ export function Text(props: React.PropsWithChildren<TextProps>): ReactElement | 
             return null
         }
     }
+}
+
+export function H1Text(props: React.PropsWithChildren<GenericTextProps>): ReactElement | null {
+    return <Text {...{variant: TextVariant.H1, ...props}}/>
+}
+
+export function H2Text(props: React.PropsWithChildren<GenericTextProps>): ReactElement | null {
+    return <Text {...{variant: TextVariant.H2, ...props}}/>
+}
+
+export function H3Text(props: React.PropsWithChildren<GenericTextProps>): ReactElement | null {
+    return <Text {...{variant: TextVariant.H3, ...props}}/>
+}
+
+export function H4Text(props: React.PropsWithChildren<GenericTextProps>): ReactElement | null {
+    return <Text {...{variant: TextVariant.H4, ...props}}/>
+}
+
+export function H5Text(props: React.PropsWithChildren<GenericTextProps>): ReactElement | null {
+    return <Text {...{variant: TextVariant.H5, ...props}}/>
+}
+
+export function BodyText(props: React.PropsWithChildren<GenericTextProps>): ReactElement | null {
+    return <Text {...{variant: TextVariant.BODY, ...props}}/>
+}
+
+export function CaptionText(props: React.PropsWithChildren<GenericTextProps>): ReactElement | null {
+    return <Text {...{variant: TextVariant.CAPTION, ...props}}/>
 }
