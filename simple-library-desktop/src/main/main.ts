@@ -58,6 +58,7 @@ function createWindow(): void {
         resizable: false,
         webPreferences: {
             nodeIntegration: true,
+            enableRemoteModule: true,
             webSecurity: false,
             devTools: process.env.NODE_ENV !== 'production',
         },

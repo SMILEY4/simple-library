@@ -6,8 +6,10 @@ import "./inputField.css"
 
 interface InputFieldProps {
     type: HighlightType,
-    style: StyleType
+    style: StyleType,
+    invalid?: boolean,
 
+    text?: string,
     initialText?: string,
     placeholder?: string,
 
@@ -21,8 +23,8 @@ interface InputFieldProps {
     contentLeading?: any,
     contentTrailing?: any
 
-    onChange?: (value: string) => {}
-    onAccept?: (value: string) => {}
+    onChange?: (value: string) => void
+    onAccept?: (value: string) => void
 }
 
 
@@ -77,7 +79,7 @@ export class InputField extends Component<InputFieldProps, InputFieldState> {
                         : null
                 }
                 <GradientBorderBox
-                    gradient={this.props.type}
+                    gradient={this.props.invalid === true ? HighlightType.ERROR : this.props.type}
                     className={"input-field-wrapper"}
                     innerClassName={"input-field-wrapper-content input-field-wrapper-content-" + this.props.style}
                 >
@@ -92,7 +94,7 @@ export class InputField extends Component<InputFieldProps, InputFieldState> {
                             : null
                     }
                     <input
-                        value={this.state.text}
+                        value={this.props.text ? this.props.text : this.state.text}
                         type="text"
                         placeholder={this.props.placeholder}
                         disabled={this.props.disabled || this.props.editable === false}

@@ -51,14 +51,17 @@ export class RootView extends Component<any, RootState> {
     render(): any {
         if (this.state.displayComponentShowcase) {
             return (
-                <div className="root-view" style={{width: '100%', height: '100%'}}>
+                <div className="root-view" style={{width: '100%', height: '100%'}} id="root">
                     <ComponentShowcaseView/>
                 </div>
             )
         } else {
             if (this.state.currentView === View.WELCOME) {
                 return (
-                    <div className={"root-view theme-" + this.state.theme} style={{width: '100%', height: '100%',}}>
+                    <div className={"root-view theme-" + this.state.theme} style={{
+                        width: '100%',
+                        height: '100%',
+                    }} id="root">
                         <WelcomeView
                             theme={this.state.theme}
                             onChangeTheme={() => {
@@ -70,7 +73,10 @@ export class RootView extends Component<any, RootState> {
             }
             if (this.state.currentView === View.MAIN) {
                 return (
-                    <div className={"root-view theme-" + this.state.theme} style={{width: '100%', height: '100%',}}>
+                    <div className={"root-view theme-" + this.state.theme} style={{
+                        width: '100%',
+                        height: '100%',
+                    }} id="root">
                         <MainView
                             theme={this.state.theme}
                             onChangeTheme={() => {

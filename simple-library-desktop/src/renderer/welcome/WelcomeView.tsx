@@ -11,7 +11,8 @@ import "./welcome.css"
 import {Box} from "_renderer/components/layout/Box";
 import {AlignmentCross, AlignmentMain, Direction} from "_renderer/components/Common";
 import {Theme} from "_renderer/RootView";
-import {requestSwitchToMainScreen, requestSwitchToWelcomeScreen} from "_main/Messages";
+import {CreateLibraryDialog} from "_renderer/welcome/CreateLibraryDialog";
+import {requestSwitchToMainScreen} from "_main/Messages";
 
 const {ipcRenderer} = window.require('electron');
 
@@ -22,6 +23,7 @@ interface WelcomeViewProps {
 
 interface WelcomeViewState {
     recentlyUsed: LibraryEntry[]
+    showCreateLibraryDialog: boolean
 }
 
 type LibraryEntry = {
@@ -44,9 +46,32 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
                     name: "My Images",
                     url: "path/to/my/library"
                 }
-            ]
+            ],
+            showCreateLibraryDialog: false
         };
+        this.actionCreateNew = this.actionCreateNew.bind(this)
+        this.actionCancelCreateNew = this.actionCancelCreateNew.bind(this)
+        this.createNewLibrary = this.createNewLibrary.bind(this)
     }
+
+
+    actionCreateNew(): void {
+        this.setState({showCreateLibraryDialog: true})
+    }
+
+
+    createNewLibrary(name: string, targetDir: string): void {
+        // TODO
+        console.log("CREATE NEW LIBRARY: " + name + " at " + targetDir)
+        this.setState({showCreateLibraryDialog: false})
+        requestSwitchToMainScreen(ipcRenderer)
+    }
+
+
+    actionCancelCreateNew(): void {
+        this.setState({showCreateLibraryDialog: false})
+    }
+
 
     render(): ReactElement {
         const recentlyUsed: LibraryEntry[] = this.state.recentlyUsed
@@ -62,10 +87,8 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
                         </ContainerCenterAlign>
 
                         <ContainerCenterAlign dir={Direction.DOWN} spacing="0.5em">
-                            <ButtonFilled onClick={() => requestSwitchToMainScreen(ipcRenderer)}>Create New
-                                Library</ButtonFilled>
-                            <ButtonFilled onClick={() => requestSwitchToWelcomeScreen(ipcRenderer)}>Open
-                                Library</ButtonFilled>
+                            <ButtonFilled onClick={this.actionCreateNew}>Create New Library</ButtonFilled>
+                            <ButtonFilled>Open Library</ButtonFilled>
                         </ContainerCenterAlign>
 
 
@@ -83,6 +106,12 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
                                 {this.props.theme === Theme.LIGHT ? <FiMoon/> : <FiSun/>} Switch Theme
                             </ButtonText>
                         </Container>
+
+                        <CreateLibraryDialog
+                            show={this.state.showCreateLibraryDialog}
+                            onClose={this.actionCancelCreateNew}
+                            onCreate={this.createNewLibrary}
+                        />
 
                     </Grid>
                 </Grid>

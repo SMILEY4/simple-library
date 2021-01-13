@@ -15,7 +15,7 @@ interface DialogProps {
     footerActions?: any,
 
     withCloseButton?: boolean,
-    onClose?: () => {},
+    onClose?: () => void,
 
     highlight?: HighlightType
 
