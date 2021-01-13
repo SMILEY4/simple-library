@@ -4,6 +4,7 @@ import "./container.css"
 import {AlignmentCross, AlignmentMain, classNameOrEmpty, Direction} from "_renderer/components/Common";
 
 interface ContainerProps {
+    padded?: boolean,
     spacing?: string,
     dir?: Direction,
     alignMain?: AlignmentMain,
@@ -11,11 +12,15 @@ interface ContainerProps {
     className?: string
 }
 
+interface ContainerCenterAlignProps extends Omit<ContainerProps, 'alignMain' | 'alignCross'> {
+}
+
 
 export function Container(props: React.PropsWithChildren<ContainerProps>): ReactElement {
 
     function getClassNames(): string {
         return "container"
+            + (props.padded === true ? " container-padded" : "")
             + (props.dir ? " container-dir-" + props.dir : "")
             + (props.alignMain ? " container-align-main-" + props.alignMain : "")
             + (props.alignCross ? " container-align-cross-" + props.alignCross : "")
@@ -32,5 +37,17 @@ export function Container(props: React.PropsWithChildren<ContainerProps>): React
         <div className={getClassNames()} style={getStyle()}>
             {props.children}
         </div>
+    )
+}
+
+
+export function ContainerCenterAlign(props: React.PropsWithChildren<ContainerCenterAlignProps>): ReactElement {
+    const baseProps: ContainerProps = {
+        alignMain: AlignmentMain.CENTER,
+        alignCross: AlignmentCross.CENTER,
+        ...props
+    }
+    return (
+        <Container {...baseProps} />
     )
 }
