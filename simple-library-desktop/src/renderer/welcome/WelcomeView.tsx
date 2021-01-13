@@ -11,6 +11,9 @@ import "./welcome.css"
 import {Box} from "_renderer/components/layout/Box";
 import {AlignmentCross, AlignmentMain, Direction} from "_renderer/components/Common";
 import {Theme} from "_renderer/RootView";
+import {requestSwitchToMainScreen, requestSwitchToWelcomeScreen} from "_main/Messages";
+
+const {ipcRenderer} = window.require('electron');
 
 interface WelcomeViewProps {
     theme: Theme,
@@ -49,26 +52,31 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
         const recentlyUsed: LibraryEntry[] = this.state.recentlyUsed
         return (
             <Box expandFully expandChildrenFully className="welcome-view">
-                <Grid columns={["1fr", "2fr"]}>
+                <Grid columns={["1fr", "1.5fr"]}>
                     <BackgroundImage url={imgWelcome}/>
                     <Grid rows={["1fr", "1fr", "1fr", "auto"]}>
 
                         <ContainerCenterAlign dir={Direction.DOWN}>
                             <H1Text>Welcome</H1Text>
-                            <CaptionText>v0.1.0</CaptionText>
+                            <CaptionText>Simple Library - v0.1.0</CaptionText>
                         </ContainerCenterAlign>
 
                         <ContainerCenterAlign dir={Direction.DOWN} spacing="0.5em">
-                            <ButtonFilled>Create New Library</ButtonFilled>
-                            <ButtonFilled>Open Library</ButtonFilled>
+                            <ButtonFilled onClick={() => requestSwitchToMainScreen(ipcRenderer)}>Create New
+                                Library</ButtonFilled>
+                            <ButtonFilled onClick={() => requestSwitchToWelcomeScreen(ipcRenderer)}>Open
+                                Library</ButtonFilled>
                         </ContainerCenterAlign>
 
-                        <ContainerCenterAlign dir={Direction.DOWN} spacing="0.5em">
-                            <H3Text>Recently used:</H3Text>
-                            <Container dir={Direction.DOWN} alignMain={AlignmentMain.START} alignCross={AlignmentCross.START} spacing="2px">
-                                {recentlyUsed.map(libraryEntry => <ButtonText>{libraryEntry.name}</ButtonText>)}
-                            </Container>
-                        </ContainerCenterAlign>
+
+                        {recentlyUsed.length > 0 && (
+                            <ContainerCenterAlign dir={Direction.DOWN} spacing="0.5em">
+                                <H3Text>Recently used:</H3Text>
+                                <Container dir={Direction.DOWN} alignMain={AlignmentMain.START} alignCross={AlignmentCross.START} spacing="2px">
+                                    {recentlyUsed.map(libraryEntry => <ButtonText>{libraryEntry.name}</ButtonText>)}
+                                </Container>
+                            </ContainerCenterAlign>
+                        )}
 
                         <Container padded dir={Direction.RIGHT} alignMain={AlignmentMain.END} alignCross={AlignmentCross.CENTER}>
                             <ButtonText onClick={this.props.onChangeTheme}>
