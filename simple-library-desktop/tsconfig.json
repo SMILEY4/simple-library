@@ -1,21 +1,16 @@
 {
-  "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "jsx": "react",
-    "baseUrl": ".",
-    "paths": {
-      "_/*": ["src/*"],
-      "_public/*": ["public/*"],
-      "_main/*": ["src/main/*"],
-      "_renderer/*": ["src/renderer/*"]
-    },
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "noImplicitAny": true,
-    "noImplicitThis": true,
-    "strictNullChecks": true,
-    "sourceMap": true,
-    "target": "esnext"
-  },
-  "exclude": ["node_modules"]
+    "compilerOptions": {
+        "outDir": "./dist/",
+        "sourceMap": true,
+        "noImplicitAny": true,
+        "module": "es6",
+        "moduleResolution": "node",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "target": "es5",
+        "jsx": "react",
+        "allowJs": true,
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true
+    }
 }

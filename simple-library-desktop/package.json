@@ -1,81 +1,55 @@
 {
-  "name": "simple-library",
-  "version": "0.1.0",
-  "description": "A simple digital asset library",
-  "main": "./dist/main.bundle.js",
-  "scripts": {
-    "start": "electron ./dist/main.bundle.js",
-    "dev": "rimraf dist && cross-env NODE_ENV=development webpack --watch --progress --color",
-    "prod": "rimraf dist && cross-env NODE_ENV=production webpack --progress --color",
-    "test": "mocha -r ts-node/register -r tsconfig-paths/register \"test/**/*.ts\"",
-    "build:win": "electron-builder build --win --x64",
-    "build:mac": "electron-builder build --mac --x64",
-    "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
-  },
-  "build": {
-    "appId": "de.ruegnerlukas.simple_library",
-    "productName": "Simple Library",
-    "directories": {
-      "app": "./dist/",
-      "output": "./out/"
+    "name": "electron-typescript-typeorm-sqlite-boiletplate",
+    "main": "./.webpack/main/bundle.js",
+    "version": "0.1.0",
+    "description": "A boilerplate for creating projects that want to use typeorm with sqlite3 inside electron.",
+    "private": true,
+    "scripts": {
+        "postinstall": "electron-builder install-app-deps",
+        "build": "webpack --config webpack.config.prod.js",
+        "build:dev": "webpack --config webpack.config.dev.js",
+        "package": "npm run build && electron-builder --dir .",
+        "start": "concurrently \"npm run start:dev\" \"npm run start:electron\"",
+        "start:dev": "webpack-dev-server --config webpack.config.dev.js",
+        "start:electron": "npm run build:dev && electron ./.webpack/main/bundle.js"
     },
-    "mac": {
-      "target": "dmg"
+    "author": "Abbl (Patryk Rzucidło)",
+    "license": "ISC",
+    "dependencies": {
+        "react": "^16.13.1",
+        "react-dom": "^16.13.1",
+        "react-hot-loader": "^4.12.20",
+        "reflect-metadata": "^0.1.13",
+        "sqlite3": "^4.1.1",
+        "typeorm": "^0.2.24",
+        "@hot-loader/react-dom": "^16.13.0"
     },
-    "win": {
-      "target": "nsis",
-      "asar": true
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true
-    },
-    "buildVersion": "1",
-    "publish": null
-  },
-  "author": "Lukas Ruegner",
-  "license": "MIT",
-  "dependencies": {
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
-    "react-icons": "^4.1.0",
-    "react-router": "^5.2.0",
-    "react-router-dom": "^5.2.0"
-  },
-  "devDependencies": {
-    "@types/mocha": "^8.2.0",
-    "@types/react": "^17.0.0",
-    "@types/react-dom": "^17.0.0",
-    "@types/react-router": "^5.1.8",
-    "@types/react-router-dom": "^5.1.6",
-    "@typescript-eslint/eslint-plugin": "^4.11.0",
-    "@typescript-eslint/parser": "^4.11.0",
-    "copy-webpack-plugin": "^7.0.0",
-    "cross-env": "^7.0.3",
-    "css-loader": "^5.0.1",
-    "electron": "^11.1.1",
-    "electron-builder": "^22.9.1",
-    "eslint": "^7.16.0",
-    "eslint-config-airbnb": "^18.2.1",
-    "eslint-import-resolver-webpack": "^0.13.0",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-jsx-a11y": "^6.4.1",
-    "eslint-plugin-react": "^7.21.5",
-    "eslint-plugin-react-hooks": "^4.2.0",
-    "file-loader": "^6.2.0",
-    "html-webpack-plugin": "^4.5.0",
-    "lodash": "^4.17.20",
-    "mocha": "^8.2.1",
-    "rimraf": "^3.0.2",
-    "source-map-loader": "^2.0.0",
-    "spectron": "^13.0.0",
-    "style-loader": "^2.0.0",
-    "ts-loader": "^8.0.12",
-    "ts-node": "^9.1.1",
-    "tsconfig-paths": "^3.9.0",
-    "typescript": "^4.1.3",
-    "webpack": "^5.11.0",
-    "webpack-cli": "^4.3.0"
-  }
+    "devDependencies": {
+        "@babel/core": "^7.9.0",
+        "@babel/plugin-proposal-class-properties": "^7.8.3",
+        "@babel/plugin-proposal-decorators": "^7.8.3",
+        "@babel/preset-react": "^7.9.4",
+        "@babel/preset-typescript": "^7.9.0",
+        "@types/html-webpack-plugin": "^3.2.2",
+        "@types/node": "^13.9.8",
+        "@types/react": "^16.9.31",
+        "@types/react-dom": "^16.9.6",
+        "babel-loader": "^8.1.0",
+        "concurrently": "^5.1.0",
+        "css-loader": "^3.4.2",
+        "electron": "^8.2.0",
+        "electron-builder": "^22.4.1",
+        "file-loader": "^6.0.0",
+        "html-webpack-plugin": "^4.0.4",
+        "prettier": "^2.0.2",
+        "sass-loader": "^8.0.2",
+        "source-map-loader": "^0.2.4",
+        "style-loader": "^1.1.3",
+        "ts-loader": "^6.2.2",
+        "typescript": "^3.8.3",
+        "url-loader": "^4.0.0",
+        "webpack": "^4.42.1",
+        "webpack-cli": "^3.3.11",
+        "webpack-dev-server": "^3.10.3"
+    }
 }
