@@ -1,0 +1,10 @@
+.notification-stack {
+	display:        flex;
+	flex-direction: column;
+	gap:            20px;
+}
+
+
+.notification-stack-modal {
+	overflow: visible;
+}

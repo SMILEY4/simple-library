@@ -1,0 +1,71 @@
+.input-field-wrapper {
+
+}
+
+
+.input-field-wrapper-content {
+	display:        flex;
+	flex-direction: row;
+}
+
+
+.input-field-wrapper-content-filled {
+	background-color: var(--base-color-1);
+}
+
+
+.input-field-wrapper-content-ghost,
+.input-field-wrapper-content-ghost-bg0 {
+	background-color: var(--background-color-0);
+}
+
+
+.input-field-wrapper-content-ghost-bg1 {
+	background-color: var(--background-color-1);
+}
+
+
+.input-field-wrapper-content:focus-within {
+	background-color: var(--base-color-0);
+}
+
+
+.input-field-wrapper-content > input {
+	border:     none;
+	background: none;
+	padding:    0.5em 0.5em;
+	color:      var(--text-color-1);
+	font-size:  1em;
+	width:      100%;
+}
+
+
+input:required,
+input:focus,
+input:invalid {
+	box-shadow: none;
+	outline:    none;
+}
+
+
+.input-field-icon {
+	margin-left: 0.5em;
+	display:     flex;
+	align-items: center;
+}
+
+
+.input-field-content-leading * {
+	border-radius: 4px 0 0 4px;
+	border-left:   none;
+	border-top:    none;
+	border-bottom: none;
+}
+
+
+.input-field-content-trailing * {
+	border-radius: 0 4px 4px 0;
+	border-right:  none;
+	border-top:    none;
+	border-bottom: none;
+}

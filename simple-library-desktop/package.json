@@ -1,8 +1,8 @@
 {
-    "name": "electron-typescript-typeorm-sqlite-boiletplate",
+    "name": "simple-library",
     "main": "./.webpack/main/bundle.js",
     "version": "0.1.0",
-    "description": "A boilerplate for creating projects that want to use typeorm with sqlite3 inside electron.",
+    "description": "A simple digital asset library.",
     "private": true,
     "scripts": {
         "postinstall": "electron-builder install-app-deps",
@@ -13,16 +13,16 @@
         "start:dev": "webpack-dev-server --config webpack.config.dev.js",
         "start:electron": "npm run build:dev && electron ./.webpack/main/bundle.js"
     },
-    "author": "Abbl (Patryk Rzucidło)",
-    "license": "ISC",
+    "author": "Lukas Ruegner",
     "dependencies": {
+        "@hot-loader/react-dom": "^16.13.0",
         "react": "^16.13.1",
         "react-dom": "^16.13.1",
         "react-hot-loader": "^4.12.20",
+        "react-icons": "^4.1.0",
         "reflect-metadata": "^0.1.13",
         "sqlite3": "^4.1.1",
-        "typeorm": "^0.2.24",
-        "@hot-loader/react-dom": "^16.13.0"
+        "typeorm": "^0.2.24"
     },
     "devDependencies": {
         "@babel/core": "^7.9.0",
@@ -50,6 +50,6 @@
         "url-loader": "^4.0.0",
         "webpack": "^4.42.1",
         "webpack-cli": "^3.3.11",
-        "webpack-dev-server": "^3.10.3"
+        "webpack-dev-server": "^3.11.2"
     }
 }
