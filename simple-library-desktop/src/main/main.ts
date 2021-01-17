@@ -8,6 +8,7 @@ import {
     switchedToMainScreen,
     switchedToWelcomeScreen
 } from "_main/Messages";
+import {loadLibrary} from "_main/persistence/DataAccess";
 
 const ipcMain = require('electron').ipcMain
 
@@ -52,6 +53,7 @@ onRequestSwitchToMainScreen(ipcMain, () => {
 
 
 function createWindow(): void {
+    loadLibrary("C:\\Users\\LukasRuegner\\Desktop\\mydatabase")
     browserWindow = new BrowserWindow({
         width: 680,
         height: 420,
