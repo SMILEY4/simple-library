@@ -1,0 +1,4 @@
+{
+    "appId": "de.ruegnerlukas.simplelibrary",
+    "files": [".webpack/main/bundle.js", ".webpack/renderer/**/*"]
+}

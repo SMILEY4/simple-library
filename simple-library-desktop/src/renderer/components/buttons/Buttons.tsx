@@ -1,8 +1,8 @@
 import * as React from "react";
 import {ReactElement} from "react";
-import {GradientBorderWrapper} from "_renderer/components/gradientborder/GradientBorderWrapper";
-import {classNameOrEmpty, HighlightType, StyleType, toStringOrDefault} from "_renderer/components/Common";
 import "./buttons.css"
+import { classNameOrEmpty, HighlightType, StyleType, toStringOrDefault } from '../common';
+import { GradientBorderWrapper } from '../gradientborder/GradientBorderWrapper';
 
 
 interface ButtonProps {

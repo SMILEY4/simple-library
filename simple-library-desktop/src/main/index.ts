@@ -1,31 +1,29 @@
-import * as path from 'path';
-import * as url from 'url';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import {app, BrowserWindow, screen} from 'electron';
+import {app, screen, BrowserWindow} from 'electron';
 import {
     onRequestSwitchToMainScreen,
     onRequestSwitchToWelcomeScreen,
     switchedToMainScreen,
     switchedToWelcomeScreen
-} from "_main/Messages";
+} from "./messages";
 
 const ipcMain = require('electron').ipcMain
+const isDev: boolean = !app.isPackaged;
+let browserWindow: Electron.BrowserWindow | null = null
 
-let browserWindow: Electron.BrowserWindow | null;
 
-app.on('ready', createWindow);
+app.whenReady().then(createWindow)
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
         app.quit()
     }
-});
+})
 
 app.on('activate', () => {
-    if (browserWindow === null) {
+    if (BrowserWindow.getAllWindows().length === 0) {
         createWindow()
     }
-});
+})
 
 onRequestSwitchToWelcomeScreen(ipcMain, () => {
     if (browserWindow) {
@@ -51,24 +49,23 @@ onRequestSwitchToMainScreen(ipcMain, () => {
 })
 
 
-function createWindow(): void {
+function createWindow() {
     browserWindow = new BrowserWindow({
         width: 680,
         height: 420,
         resizable: false,
         webPreferences: {
             nodeIntegration: true,
+            enableRemoteModule: true,
             webSecurity: false,
             devTools: process.env.NODE_ENV !== 'production',
         },
     })
-    browserWindow.loadURL(
-        url.format({
-            pathname: path.join(__dirname, './index.html'),
-            protocol: 'file:',
-            slashes: true,
-        }),
-    ).finally(() => { /* no action */
-    });
-    browserWindow.on('closed', () => browserWindow = null)
+    browserWindow.setAlwaysOnTop(true)
+    if (isDev) {
+        browserWindow.loadURL('http://localhost:8080')
+        browserWindow.webContents.openDevTools()
+    } else {
+        browserWindow.loadFile('./.webpack/renderer/index.html')
+    }
 }

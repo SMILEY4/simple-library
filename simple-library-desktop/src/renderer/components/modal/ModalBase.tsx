@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from 'react-dom';
 import "./modalbase.css"
-import {classNameOrEmpty} from "_renderer/components/Common";
+import { classNameOrEmpty } from '../common';
 
 export enum ModalPosition {
     CENTER = "center",

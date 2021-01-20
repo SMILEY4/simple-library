@@ -1,9 +1,9 @@
 import * as React from "react";
 import {Component, ReactElement} from "react";
-import {Button} from "_renderer/components/buttons/Buttons";
-import {HighlightType, StyleType} from "_renderer/components/Common";
 import {BsChevronDown, BsChevronUp, IoCheckmark} from "react-icons/all";
 import "./choiceBox.css"
+import { HighlightType, StyleType } from '../common';
+import { Button } from '../buttons/Buttons';
 
 interface ExtendedPropListItemType {
     id: string,

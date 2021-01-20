@@ -1,8 +1,8 @@
 import * as React from "react";
-import {GradientBorderBox} from "_renderer/components/gradientborder/GradientBorderBox";
-import {HighlightType} from "_renderer/components/Common";
 import {CgClose} from "react-icons/all";
 import "./notification.css"
+import { HighlightType } from '../common';
+import { GradientBorderBox } from '../gradientborder/GradientBorderBox';
 
 export interface NotificationProps {
     gradient: HighlightType,

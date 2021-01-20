@@ -1,10 +1,10 @@
 import * as React from "react";
-import {ModalBase} from "_renderer/components/modal/ModalBase";
-import {GradientBorderBox} from "_renderer/components/gradientborder/GradientBorderBox";
-import {callSafe, HighlightType} from "_renderer/components/Common";
 import "./dialog.css"
 import {CgClose} from "react-icons/all";
-import {ButtonText} from "_renderer/components/buttons/Buttons";
+import { callSafe, HighlightType } from '../common';
+import { ButtonText } from '../buttons/Buttons';
+import { ModalBase } from './ModalBase';
+import { GradientBorderBox } from '../gradientborder/GradientBorderBox';
 
 interface DialogProps {
     show: boolean,
@@ -15,7 +15,7 @@ interface DialogProps {
     footerActions?: any,
 
     withCloseButton?: boolean,
-    onClose?: () => {},
+    onClose?: () => void,
 
     highlight?: HighlightType
 
