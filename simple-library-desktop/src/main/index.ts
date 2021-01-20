@@ -61,6 +61,7 @@ function createWindow() {
             devTools: process.env.NODE_ENV !== 'production',
         },
     })
+    browserWindow.setAlwaysOnTop(true)
     if (isDev) {
         browserWindow.loadURL('http://localhost:8080')
         browserWindow.webContents.openDevTools()

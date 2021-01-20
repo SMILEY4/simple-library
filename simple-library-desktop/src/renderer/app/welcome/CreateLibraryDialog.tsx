@@ -2,11 +2,10 @@ import * as React from 'react';
 import { Component, ReactElement } from 'react';
 import { Dialog } from '../../components/modal/Dialog';
 import { ButtonFilled } from '../../components/buttons/Buttons';
-import { AlignmentCross, AlignmentMain, Direction, HighlightType } from '../../components/common';
-import { Container, ContainerCenterAlign } from '../../components/layout/Container';
+import { AlignCross, AlignMain, Dir, Fill, HighlightType, Size } from '../../components/common';
 import { InputFieldGhostBg1 } from '../../components/inputfield/InputField';
-import { Box } from '../../components/layout/Box';
 import { GoFileDirectory } from 'react-icons/all';
+import { Box, CBox } from '../../components/layout/Box';
 
 const electron = window.require('electron');
 
@@ -106,7 +105,7 @@ export class CreateLibraryDialog extends Component<CreateLibraryDialogProps, Cre
                         </>
                     }
             >
-                <Container dir={Direction.DOWN} alignMain={AlignmentMain.CENTER} alignCross={AlignmentCross.STRETCH} spacing='1em'>
+                <Box dir={Dir.DOWN} alignMain={AlignMain.CENTER} alignCross={AlignCross.STRETCH} spacing={Size.S_0_75}>
                     <InputFieldGhostBg1
                         type={HighlightType.DEFAULT}
                         invalid={!this.state.libraryNameValid}
@@ -120,10 +119,10 @@ export class CreateLibraryDialog extends Component<CreateLibraryDialogProps, Cre
                         placeholder={'Select Directory'}
                         editable={false}
                         contentLeading={
-                            <Box expandFully expandChildrenFully>
-                                <ContainerCenterAlign>
+                            <Box fill={Fill.TRUE}>
+                                <CBox dir={Dir.DOWN}>
                                     <GoFileDirectory />
-                                </ContainerCenterAlign>
+                                </CBox>
                             </Box>
                         }
                         contentTrailing={
@@ -132,7 +131,7 @@ export class CreateLibraryDialog extends Component<CreateLibraryDialogProps, Cre
                             </ButtonFilled>
                         }
                     />
-                </Container>
+                </Box>
             </Dialog>
         );
     }

@@ -3,6 +3,8 @@ import React, {Component} from 'react';
 import {onSwitchedToMainScreen, onSwitchedToWelcomeScreen} from "../../main/messages";
 import {MainView} from "./main/mainView";
 import {WelcomeView} from "./welcome/welcomeView";
+import { ComponentShowcaseView } from '../components/showcase/ComponentShowcaseView';
+import { TestView } from './test/testView';
 
 const {ipcRenderer} = window.require('electron');
 
@@ -53,8 +55,7 @@ export class Application extends Component<any, AppState> {
     renderComponentShowcase() {
         return (
             <div className="root-view" style={{width: '100%', height: '100%'}} id="root">
-                {/*<ComponentShowcaseView/>*/}
-                TODO: NOT IMPLEMENTED
+                <ComponentShowcaseView/>
             </div>
         )
     }
@@ -92,6 +93,7 @@ export class Application extends Component<any, AppState> {
     }
 
     render(): any {
+        // return <TestView/>
         if (this.state.displayComponentShowcase) {
             return this.renderComponentShowcase();
         } else {

@@ -16,8 +16,7 @@ import {
 } from "react-icons/all";
 import forest from "./forest.jpg"
 import { TextVariant } from '../text/Text';
-import { Container } from '../layout/Container';
-import { AlignmentCross, AlignmentMain, Direction, HighlightType, StyleType } from '../common';
+import { AlignCross, AlignMain, Dir, HighlightType, StyleType } from '../common';
 import { BackgroundImage } from '../image/BackgroundImage';
 import { NotificationStack } from '../modal/NotificationStack';
 import { ChoiceBox } from '../choicebox/ChoiceBox';
@@ -60,189 +59,6 @@ export function ComponentShowcaseView(): any {
                 <Text variant={TextVariant.H5}>Heading 5</Text>
                 <Text variant={TextVariant.BODY}>Body</Text>
                 <Text variant={TextVariant.CAPTION}>Caption</Text>
-            </>
-        )
-    }
-
-    function renderContainer() {
-        const boxStyle = {
-            width: '100px',
-            height: '100px',
-            border: '1px solid black',
-            display: 'grid'
-        }
-        const styleA = {
-            backgroundColor: 'cyan'
-        }
-        const styleB = {
-            backgroundColor: 'yellow'
-        }
-        return (
-            <>
-
-                <h3>Container</h3>
-
-                <h5>Direction</h5>
-                <ShowcaseRow>
-                    <div>
-                        down
-                        <div style={boxStyle}>
-                            <Container dir={Direction.DOWN}>
-                                <div style={styleA}>A</div>
-                                <div style={styleB}>B</div>
-                            </Container>
-                        </div>
-                    </div>
-                    <div>
-                        up
-                        <div style={boxStyle}>
-                            <Container dir={Direction.UP}>
-                                <div style={styleA}>A</div>
-                                <div style={styleB}>B</div>
-                            </Container>
-                        </div>
-                    </div>
-                    <div>
-                        left
-                        <div style={boxStyle}>
-                            <Container dir={Direction.LEFT}>
-                                <div style={styleA}>A</div>
-                                <div style={styleB}>B</div>
-                            </Container>
-                        </div>
-                    </div>
-                    <div>
-                        right
-                        <div style={boxStyle}>
-                            <Container dir={Direction.RIGHT}>
-                                <div style={styleA}>A</div>
-                                <div style={styleB}>B</div>
-                            </Container>
-                        </div>
-                    </div>
-                </ShowcaseRow>
-
-                <h5>Alignment Main axis (primary)</h5>
-                <ShowcaseRow>
-                    <div>
-                        start
-                        <div style={boxStyle}>
-                            <Container alignMain={AlignmentMain.START}>
-                                <div style={styleA}>A</div>
-                                <div style={styleB}>B</div>
-                            </Container>
-                        </div>
-                    </div>
-                    <div>
-                        center
-                        <div style={boxStyle}>
-                            <Container alignMain={AlignmentMain.CENTER}>
-                                <div style={styleA}>A</div>
-                                <div style={styleB}>B</div>
-                            </Container>
-                        </div>
-                    </div>
-                    <div>
-                        end
-                        <div style={boxStyle}>
-                            <Container alignMain={AlignmentMain.END}>
-                                <div style={styleA}>A</div>
-                                <div style={styleB}>B</div>
-                            </Container>
-                        </div>
-                    </div>
-                    <div>
-                        spaced
-                        <div style={boxStyle}>
-                            <Container alignMain={AlignmentMain.SPACED}>
-                                <div style={styleA}>A</div>
-                                <div style={styleB}>B</div>
-                            </Container>
-                        </div>
-                    </div>
-                    <div>
-                        space between
-                        <div style={boxStyle}>
-                            <Container alignMain={AlignmentMain.SPACE_BETWEEN}>
-                                <div style={styleA}>A</div>
-                                <div style={styleB}>B</div>
-                            </Container>
-                        </div>
-                    </div>
-                </ShowcaseRow>
-
-                <h5>Alignment Cross Axis (secondary)</h5>
-                <ShowcaseRow>
-                    <div>
-                        start
-                        <div style={boxStyle}>
-                            <Container dir={Direction.RIGHT} alignMain={AlignmentMain.START} alignCross={AlignmentCross.START}>
-                                <div style={styleA}>A</div>
-                                <div style={styleB}>B</div>
-                            </Container>
-                        </div>
-                    </div>
-                    <div>
-                        center
-                        <div style={boxStyle}>
-                            <Container dir={Direction.RIGHT} alignMain={AlignmentMain.START} alignCross={AlignmentCross.CENTER}>
-                                <div style={styleA}>A</div>
-                                <div style={styleB}>B</div>
-                            </Container>
-                        </div>
-                    </div>
-                    <div>
-                        end
-                        <div style={boxStyle}>
-                            <Container dir={Direction.RIGHT} alignMain={AlignmentMain.START} alignCross={AlignmentCross.END}>
-                                <div style={styleA}>A</div>
-                                <div style={styleB}>B</div>
-                            </Container>
-                        </div>
-                    </div>
-                    <div>
-                        stretch
-                        <div style={boxStyle}>
-                            <Container dir={Direction.RIGHT} alignMain={AlignmentMain.START} alignCross={AlignmentCross.STRETCH}>
-                                <div style={styleA}>A</div>
-                                <div style={styleB}>B</div>
-                            </Container>
-                        </div>
-                    </div>
-                </ShowcaseRow>
-
-
-                <h5>Spacing</h5>
-                <ShowcaseRow>
-                    <div>
-                        none
-                        <div style={boxStyle}>
-                            <Container dir={Direction.DOWN}>
-                                <div style={styleA}>A</div>
-                                <div style={styleB}>B</div>
-                            </Container>
-                        </div>
-                    </div>
-                    <div>
-                        10px
-                        <div style={boxStyle}>
-                            <Container dir={Direction.DOWN} spacing={"10px"}>
-                                <div style={styleA}>A</div>
-                                <div style={styleB}>B</div>
-                            </Container>
-                        </div>
-                    </div>
-                    <div>
-                        20%
-                        <div style={boxStyle}>
-                            <Container dir={Direction.DOWN} spacing={"20%"}>
-                                <div style={styleA}>A</div>
-                                <div style={styleB}>B</div>
-                            </Container>
-                        </div>
-                    </div>
-                </ShowcaseRow>
-
             </>
         )
     }
@@ -579,7 +395,6 @@ export function ComponentShowcaseView(): any {
         return (
             <>
                 {renderText()}
-                {renderContainer()}
                 {renderImageBackground()}
                 {renderNotifications()}
                 {renderChoiceBox()}

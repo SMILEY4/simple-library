@@ -1,0 +1,38 @@
+.theme-dark {
+	--background-color-0: var(--background-color-dark-0);
+	--background-color-1: var(--background-color-dark-1);
+	--base-color-0:       var(--base-color-dark-0);
+	--base-color-1:       var(--base-color-dark-1);
+	--base-color-2:       var(--base-color-dark-2);
+	--base-color-3:       var(--base-color-dark-3);
+	--text-color-0:       var(--text-color-dark-0);
+	--text-color-1:       var(--text-color-dark-1);
+	--text-color-2:       var(--text-color-dark-2);
+	--text-color-3:       var(--text-color-dark-3);
+	--overlay-color:      var(--overlay-color-dark);
+	--gradient-info-1:    var(--gradient-info-dark-1);
+	--gradient-success-1: var(--gradient-success-dark-1);
+	--gradient-error-1:   var(--gradient-error-dark-1);
+	--gradient-warn-1:    var(--gradient-warn-dark-1);
+	--gradient-none-1:    var(--gradient-none-dark-1);
+}
+
+
+.theme-light {
+	--background-color-0: var(--background-color-light-0);
+	--background-color-1: var(--background-color-light-1);
+	--base-color-0:       var(--base-color-light-0);
+	--base-color-1:       var(--base-color-light-1);
+	--base-color-2:       var(--base-color-light-2);
+	--base-color-3:       var(--base-color-light-3);
+	--text-color-0:       var(--text-color-light-0);
+	--text-color-1:       var(--text-color-light-1);
+	--text-color-2:       var(--text-color-light-2);
+	--text-color-3:       var(--text-color-light-3);
+	--overlay-color:      var(--overlay-color-light);
+	--gradient-info-1:    var(--gradient-info-light-1);
+	--gradient-success-1: var(--gradient-success-light-1);
+	--gradient-error-1:   var(--gradient-error-light-1);
+	--gradient-warn-1:    var(--gradient-warn-light-1);
+	--gradient-none-1:    var(--gradient-none-light-1);
+}

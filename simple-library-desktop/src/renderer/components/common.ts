@@ -1,41 +1,78 @@
-export enum AlignmentMain {
-    START = "start",
-    END = "end",
-    CENTER = "center",
-    SPACE_BETWEEN = "space-between",
-    SPACED = "spaced"
+export enum AlignMain {
+    START = 'start',
+    END = 'end',
+    CENTER = 'center',
+    SPACE_BETWEEN = 'space-between',
+    SPACED = 'spaced'
 }
 
-export enum AlignmentCross {
-    START = "start",
-    END = "end",
-    CENTER = "center",
-    STRETCH = "stretch",
+export enum AlignCross {
+    START = 'start',
+    END = 'end',
+    CENTER = 'center',
+    STRETCH = 'stretch',
 }
 
-export enum Direction {
-    UP = "up",
-    DOWN = "down",
-    LEFT = "left",
-    RIGHT = "right"
+export enum Dir {
+    UP = 'up',
+    DOWN = 'down',
+    LEFT = 'left',
+    RIGHT = 'right'
+}
+
+export enum Fill {
+    HORZ = 'horz',
+    VERT = 'vert',
+    TRUE = 'both'
 }
 
 export enum HighlightType {
-    NONE = "none",
-    DEFAULT = "default",
-    INFO = "info",
-    SUCCESS = "success",
-    ERROR = "error",
-    WARN = "warn"
+    NONE = 'none',
+    DEFAULT = 'default',
+    INFO = 'info',
+    SUCCESS = 'success',
+    ERROR = 'error',
+    WARN = 'warn'
 }
 
 
 export enum StyleType {
-    FILLED = "filled",
-    GHOST = "ghost",
-    GHOST_BG0 = "ghost-bg0",
-    GHOST_BG1 = "ghost-bg1",
-    TEXT = "text",
+    FILLED = 'filled',
+    GHOST = 'ghost',
+    GHOST_BG0 = 'ghost-bg0',
+    GHOST_BG1 = 'ghost-bg1',
+    TEXT = 'text',
+}
+
+
+export enum Size {
+    S_0_25 = 's-0-25',
+    S_0_5 = 's-0-5',
+    S_0_75 = 's-0-75',
+    S_1 = 's-1',
+    S_1_5 = 's-1-5',
+    S_2 = 's-2',
+    S_3 = 's-3',
+    S_4 = 's-4',
+    S_6 = 's-6',
+    S_8 = 's-8',
+    S_12 = 's-12',
+    S_16 = 's-16',
+    S_24 = 's-24',
+    S_32 = 's-32',
+    S_40 = 's-40',
+    S_48 = 's-48',
+}
+
+
+/**
+ * Safely combines the given class names into a single one. Ignores undefined.
+ * @param classNames the array of class name strings or undefined
+ */
+export function concatClasses(...classNames: string[]) {
+    let result: string = '';
+    classNames.forEach(className => result += classNameOrEmpty(className));
+    return result.trim();
 }
 
 /**
@@ -43,7 +80,7 @@ export enum StyleType {
  * @returns the given className with an empty space before it (e.g. "my-class" -> " my-class") or an empty string.
  */
 export function classNameOrEmpty(className?: string): string {
-    return (className ? " " + className : "")
+    return (className ? ' ' + className : '');
 }
 
 /**
@@ -52,7 +89,7 @@ export function classNameOrEmpty(className?: string): string {
  * @returns the value as a string or an empty string in case of null/undefined
  */
 export function toStringOrDefault(value: any, defaultValue: string): string {
-    return value === undefined || value === null ? defaultValue : value
+    return value === undefined || value === null ? defaultValue : value;
 }
 
 /**
@@ -64,7 +101,36 @@ export function toStringOrDefault(value: any, defaultValue: string): string {
 export function orDefault<T>(value: T | null | undefined, defaultValue: T): T {
     return value
         ? value
-        : defaultValue
+        : defaultValue;
+}
+
+
+/**
+ * If the given value is not undefined or null the given result will be returned. Otherwise undefined
+ * @param value the value
+ * @param result the value to return
+ * @return the given result or undefined
+ */
+export function mapTo<T, R>(value: T | undefined | null, result: R): R | undefined {
+    if (value === undefined || value === null) {
+        return undefined;
+    } else {
+        return result;
+    }
+}
+
+/**
+ * If the given value is not undefined or null the result of the given function will be returned. Otherwise undefined
+ * @param value the value
+ * @param mapping the mapping function
+ * @return the result of the mapping or undefined
+ */
+export function map<T, R>(value: T | undefined | null, mapping: (v: T) => R): R | undefined {
+    if (value === undefined || value === null) {
+        return undefined;
+    } else {
+        return mapping(value);
+    }
 }
 
 /**
@@ -73,6 +139,6 @@ export function orDefault<T>(value: T | null | undefined, defaultValue: T): T {
  */
 export function callSafe(func: any) {
     if (func) {
-        func()
+        func();
     }
 }

@@ -1,11 +1,11 @@
 import * as React from "react";
 import {Component, ReactElement} from "react";
 import { Theme } from '../application';
-import { ContainerCenterAlign } from '../../components/layout/Container';
 import { H3Text } from '../../components/text/Text';
 import { ButtonFilled } from '../../components/buttons/Buttons';
-import { Direction } from '../../components/common';
+import { Dir } from '../../components/common';
 import { requestSwitchToWelcomeScreen } from '../../../main/messages';
+import { Box } from '../../components/layout/Box';
 
 const {ipcRenderer} = window.require('electron');
 
@@ -27,10 +27,10 @@ export class MainView extends Component<MainViewProps, MainViewState> {
 
     render(): ReactElement {
         return (
-            <ContainerCenterAlign dir={Direction.DOWN}>
+            <Box dir={Dir.DOWN}>
                 <H3Text>Main Screen</H3Text>
                 <ButtonFilled onClick={() => requestSwitchToWelcomeScreen(ipcRenderer)}>Back</ButtonFilled>
-            </ContainerCenterAlign>
+            </Box>
         )
     }
 }

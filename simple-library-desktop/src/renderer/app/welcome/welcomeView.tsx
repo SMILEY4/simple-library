@@ -1,18 +1,16 @@
 import * as React from 'react';
 import { Component, ReactElement } from 'react';
-import { FiMoon, FiSun } from 'react-icons/all';
 import './welcome.css';
 import { Theme } from '../application';
 import { requestSwitchToMainScreen } from '../../../main/messages';
-import { Box } from '../../components/layout/Box';
-import { Grid } from '../../components/layout/Grid';
-import { BackgroundImage } from '../../components/image/BackgroundImage';
-import { Container, ContainerCenterAlign } from '../../components/layout/Container';
 import { CaptionText, H1Text, H3Text } from '../../components/text/Text';
 import { ButtonFilled, ButtonText } from '../../components/buttons/Buttons';
-import { AlignmentCross, AlignmentMain, Direction } from '../../components/common';
-import { CreateLibraryDialog } from './CreateLibraryDialog';
+import { AlignCross, AlignMain, Fill, Size } from '../../components/common';
 import imgWelcome from './imgWelcome.jpg';
+import { Image } from '../../components/image/Image';
+import { Box, VBox } from '../../components/layout/Box';
+import { Grid } from '../../components/layout/Grid';
+import { CreateLibraryDialog } from './CreateLibraryDialog';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -49,72 +47,71 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
             ],
             showCreateLibraryDialog: false,
         };
-        this.actionCreateNew = this.actionCreateNew.bind(this);
-        this.actionCancelCreateNew = this.actionCancelCreateNew.bind(this);
+        this.onCreateNewLibrary = this.onCreateNewLibrary.bind(this);
+        this.onCancelCreateNewLibrary = this.onCancelCreateNewLibrary.bind(this);
+        this.onOpenLibrary = this.onOpenLibrary.bind(this);
+        this.onOpenRecentlyUsed = this.onOpenRecentlyUsed.bind(this);
         this.createNewLibrary = this.createNewLibrary.bind(this);
     }
 
 
-    actionCreateNew(): void {
+    onCreateNewLibrary(): void {
         this.setState({ showCreateLibraryDialog: true });
+    }
+
+
+    onCancelCreateNewLibrary(): void {
+        this.setState({ showCreateLibraryDialog: false });
+    }
+
+
+    onOpenLibrary(): void {
+        // todo
+    }
+
+
+    onOpenRecentlyUsed(entry: LibraryEntry): void {
+        // todo
     }
 
 
     createNewLibrary(name: string, targetDir: string): void {
         // TODO
-        console.log('CREATE NEW LIBRARY: ' + name + ' at ' + targetDir);
+        console.log('WIP: CREATE NEW LIBRARY: ' + name + ' at ' + targetDir);
         this.setState({ showCreateLibraryDialog: false });
         requestSwitchToMainScreen(ipcRenderer);
-    }
-
-
-    actionCancelCreateNew(): void {
-        this.setState({ showCreateLibraryDialog: false });
     }
 
 
     render(): ReactElement {
         const recentlyUsed: LibraryEntry[] = this.state.recentlyUsed;
         return (
-            <Box expandFully expandChildrenFully className='welcome-view'>
-                <Grid columns={['1fr', '1.5fr']}>
-                    <BackgroundImage url={imgWelcome} />
-                    <Grid rows={['1fr', '1fr', '1fr', 'auto']}>
-
-                        <ContainerCenterAlign dir={Direction.DOWN}>
+            <Box fill={Fill.TRUE}>
+                <Grid columns={['1fr', '2fr']} rows={['1fr']} fill={Fill.TRUE}>
+                    <Image url={imgWelcome} />
+                    <VBox alignMain={AlignMain.CENTER} alignCross={AlignCross.CENTER} spacing={Size.S_1_5}>
+                        <VBox alignCross={AlignCross.CENTER}>
                             <H1Text>Welcome</H1Text>
                             <CaptionText>Simple Library - v0.1.0</CaptionText>
-                        </ContainerCenterAlign>
-
-                        <ContainerCenterAlign dir={Direction.DOWN} spacing='0.5em'>
-                            <ButtonFilled onClick={this.actionCreateNew}>Create New Library</ButtonFilled>
-                            <ButtonFilled>Open Library</ButtonFilled>
-                        </ContainerCenterAlign>
-
-
+                        </VBox>
+                        <VBox alignCross={AlignCross.CENTER} spacing={Size.S_0_5}>
+                            <ButtonFilled onClick={this.onCreateNewLibrary}>Create New Library</ButtonFilled>
+                            <ButtonFilled onClick={this.onOpenLibrary}>Open Library</ButtonFilled>
+                        </VBox>
                         {recentlyUsed.length > 0 && (
-                            <ContainerCenterAlign dir={Direction.DOWN} spacing='0.5em'>
+                            <VBox alignCross={AlignCross.CENTER}>
                                 <H3Text>Recently used:</H3Text>
-                                <Container dir={Direction.DOWN} alignMain={AlignmentMain.START} alignCross={AlignmentCross.START} spacing='2px'>
-                                    {recentlyUsed.map(libraryEntry => <ButtonText>{libraryEntry.name}</ButtonText>)}
-                                </Container>
-                            </ContainerCenterAlign>
+                                {recentlyUsed.map(entry =>
+                                    <ButtonText key={entry.url} onClick={() => this.onOpenRecentlyUsed(entry)}>{entry.name}</ButtonText>)}
+                            </VBox>
                         )}
-
-                        <Container padded dir={Direction.RIGHT} alignMain={AlignmentMain.END} alignCross={AlignmentCross.CENTER}>
-                            <ButtonText onClick={this.props.onChangeTheme}>
-                                {this.props.theme === Theme.LIGHT ? <FiMoon /> : <FiSun />} Switch Theme
-                            </ButtonText>
-                        </Container>
-
-                        <CreateLibraryDialog
-                            show={this.state.showCreateLibraryDialog}
-                            onClose={this.actionCancelCreateNew}
-                            onCreate={this.createNewLibrary}
-                        />
-
-                    </Grid>
+                    </VBox>
                 </Grid>
+                <CreateLibraryDialog
+                    show={this.state.showCreateLibraryDialog}
+                    onClose={this.onCancelCreateNewLibrary}
+                    onCreate={this.createNewLibrary}
+                />
             </Box>
         );
     }
