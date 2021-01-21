@@ -1,0 +1,36 @@
+name: build desktop windows
+
+on: [ workflow_dispatch ]
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v2-beta
+        with:
+            node-version: '12'
+            check-latest: true
+
+      - name: NPM Install
+        working-directory: ./simple-library-desktop
+        run:
+            npm install
+
+      - name: Build native executable
+        working-directory: ./simple-library-desktop
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run:
+            npm build
+
+
+      - uses: actions/upload-artifact@v2
+        with:
+            name: simple-library-desktop-win
+            path: simple-library-desktop/out/*.exe
+            retention-days: 2

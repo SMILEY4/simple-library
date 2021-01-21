@@ -1,0 +1,35 @@
+name: build electron macos
+
+on: [ workflow_dispatch ]
+
+jobs:
+  build:
+
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v2-beta
+        with:
+            node-version: '12'
+            check-latest: true
+
+      - name: NPM Install
+        working-directory: ./photo-library-ui/photo-library-electron
+        run:
+            npm install
+
+      - name: Build native executable
+        working-directory: ./photo-library-ui/photo-library-electron
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run:
+            npm run dist
+
+      - uses: actions/upload-artifact@v2
+        with:
+            name: photo-library-electron-macos
+            path: photo-library-ui/photo-library-electron/dist/*.dmg
+            retention-days: 2
