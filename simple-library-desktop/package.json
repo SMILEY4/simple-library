@@ -9,6 +9,7 @@
         "build": "webpack --config webpack.config.prod.js",
         "build:dev": "webpack --config webpack.config.dev.js",
         "package": "npm run build && electron-builder --dir .",
+        "dist": "npm run build && electron-builder .",
         "start": "concurrently \"npm run start:dev\" \"npm run start:electron\"",
         "start:dev": "webpack-dev-server --config webpack.config.dev.js",
         "start:electron": "npm run build:dev && electron ./.webpack/main/bundle.js"

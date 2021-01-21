@@ -1,4 +1,22 @@
 {
-    "appId": "de.ruegnerlukas.simplelibrary",
-    "files": [".webpack/main/bundle.js", ".webpack/renderer/**/*"]
+  "appId": "de.ruegnerlukas.simplelibrary",
+  "publish": null,
+  "files": [
+    ".webpack/main/bundle.js",
+    ".webpack/renderer/**/*"
+  ],
+  "mac": {
+    "target": "dmg"
+  },
+  "dmg": {
+    "title": "${productName} ${version}"
+  },
+  "win": {
+    "target": "nsis"
+  },
+  "nsis": {
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true,
+    "artifactName": "${productName} Setup ${version} ${os}.${ext}"
+  }
 }

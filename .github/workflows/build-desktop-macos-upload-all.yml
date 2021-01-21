@@ -1,11 +1,11 @@
-name: build desktop windows
+name: build electron macos (upload all)
 
 on: [ workflow_dispatch ]
 
 jobs:
   build:
 
-    runs-on: windows-latest
+    runs-on: macos-latest
 
     steps:
       - uses: actions/checkout@v2
@@ -34,6 +34,6 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-            name: simple-library-desktop-win
-            path: simple-library-desktop/dist/*.exe
+            name: simple-library-desktop-macos
+            path: simple-library-desktop/dist
             retention-days: 2

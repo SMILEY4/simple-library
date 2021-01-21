@@ -1,4 +1,4 @@
-name: build desktop windows
+name: build desktop windows (upload all)
 
 on: [ workflow_dispatch ]
 
@@ -35,5 +35,5 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
             name: simple-library-desktop-win
-            path: simple-library-desktop/dist/*.exe
+            path: simple-library-desktop/dist
             retention-days: 2
