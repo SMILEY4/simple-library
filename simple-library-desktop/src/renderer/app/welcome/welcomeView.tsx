@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Component, ReactElement } from 'react';
 import './welcome.css';
 import { Theme } from '../application';
-import { requestSwitchToMainScreen } from '../../../main/messages';
+import { requestCreateLibrary } from '../../../main/messages';
 import { CaptionText, H1Text, H3Text } from '../../components/text/Text';
 import { ButtonFilled, ButtonText } from '../../components/buttons/Buttons';
 import { AlignCross, AlignMain, Fill, Size } from '../../components/common';
@@ -16,7 +16,8 @@ const { ipcRenderer } = window.require('electron');
 
 interface WelcomeViewProps {
     theme: Theme,
-    onChangeTheme: () => void
+    onChangeTheme: () => void,
+    onLoadProject: () => void
 }
 
 interface WelcomeViewState {
@@ -76,10 +77,11 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
 
 
     createNewLibrary(name: string, targetDir: string): void {
-        // TODO
-        console.log('WIP: CREATE NEW LIBRARY: ' + name + ' at ' + targetDir);
         this.setState({ showCreateLibraryDialog: false });
-        requestSwitchToMainScreen(ipcRenderer);
+        requestCreateLibrary(ipcRenderer, targetDir, name).then(
+            data => this.props.onLoadProject(),
+            error => console.log('Failed to create library: ' + error.reason),
+        );
     }
 
 

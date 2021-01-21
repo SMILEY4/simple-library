@@ -16,6 +16,7 @@
     "author": "Lukas Ruegner",
     "dependencies": {
         "@hot-loader/react-dom": "^16.13.0",
+        "@types/sqlite3": "^3.1.6",
         "react": "^16.13.1",
         "react-dom": "^16.13.1",
         "react-hot-loader": "^4.12.20",

@@ -25,9 +25,8 @@ jobs:
         working-directory: ./simple-library-desktop
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-            npm run prod
-            npm run build:win
+        run:
+            npm build
 
 
       - uses: actions/upload-artifact@v2

@@ -1,4 +1,4 @@
-name: build desktop macos
+name: build electron macos
 
 on: [ workflow_dispatch ]
 
@@ -17,20 +17,19 @@ jobs:
             check-latest: true
 
       - name: NPM Install
-        working-directory: ./simple-library-desktop
+        working-directory: ./photo-library-ui/photo-library-electron
         run:
             npm install
 
       - name: Build native executable
-        working-directory: ./simple-library-desktop
+        working-directory: ./photo-library-ui/photo-library-electron
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-            npm run prod
-            npm run build:mac
+        run:
+            npm run dist
 
       - uses: actions/upload-artifact@v2
         with:
-            name: simple-library-desktop-macos
-            path: simple-library-desktop/out/*.dmg
+            name: photo-library-electron-macos
+            path: photo-library-ui/photo-library-electron/dist/*.dmg
             retention-days: 2
