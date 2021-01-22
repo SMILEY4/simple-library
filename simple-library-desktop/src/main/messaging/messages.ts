@@ -10,7 +10,7 @@ export function requestCreateLibrary(ipc: Electron.IpcRenderer, path: string, na
         rendererSendRequest(ipc, request)
             .then((response => {
                 if (isErrorResponse(response)) {
-                    const failedResponse = <FailedResponse>response;
+                    const failedResponse = <ErrorResponse>response;
                     reject(failedResponse);
                 } else {
                     const successResponse = <SuccessResponse>response;
@@ -92,12 +92,12 @@ export interface SuccessResponse {
     payload?: any,
 }
 
-export interface FailedResponse {
+export interface ErrorResponse {
     reason: string
     payload?: any,
 }
 
-export type Response = SuccessResponse | FailedResponse
+export type Response = SuccessResponse | ErrorResponse
 
 function isErrorResponse(response: Response): boolean {
     const obj: any = response;

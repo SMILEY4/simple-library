@@ -1,6 +1,6 @@
 import { hot } from 'react-hot-loader/root';
 import React, { Component } from 'react';
-import { onSwitchedToWelcomeScreen } from '../../main/messages';
+import { onSwitchedToWelcomeScreen } from '../../main/messaging/messages';
 import { MainView } from './main/mainView';
 import { WelcomeView } from './welcome/welcomeView';
 import { ComponentShowcaseView } from '../components/showcase/ComponentShowcaseView';

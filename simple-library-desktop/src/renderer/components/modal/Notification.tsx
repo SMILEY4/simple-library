@@ -1,6 +1,6 @@
-import * as React from "react";
-import {CgClose} from "react-icons/all";
-import "./notification.css"
+import * as React from 'react';
+import { CgClose } from 'react-icons/all';
+import './notification.css';
 import { HighlightType } from '../common';
 import { GradientBorderBox } from '../gradientborder/GradientBorderBox';
 
@@ -10,51 +10,51 @@ export interface NotificationProps {
     title?: string,
     caption?: string
     withCloseButton?: boolean,
-    onClose?: () => {}
+    onClose?: () => void
 }
 
 export function Notification(props: React.PropsWithChildren<NotificationProps>): React.ReactElement {
 
     function renderIcon(): React.ReactElement | null {
         return props.icon
-            ? <div className="notification-icon">{props.icon}</div>
-            : null
+            ? <div className='notification-icon'>{props.icon}</div>
+            : null;
     }
 
 
     function renderTitle(): React.ReactElement | null {
         return props.title
-            ? <h4 className="notification-title">{props.title}</h4>
-            : null
+            ? <h4 className='notification-title'>{props.title}</h4>
+            : null;
     }
 
 
     function renderContent(): React.ReactElement | null {
-        return <div className={"notification-content"}>{props.children}</div>
+        return <div className={'notification-content'}>{props.children}</div>;
     }
 
 
     function renderCaption(): React.ReactElement | null {
         return props.caption
-            ? <div className="notification-caption">{props.caption}</div>
-            : null
+            ? <div className='notification-caption'>{props.caption}</div>
+            : null;
     }
 
     function renderCloseButton() {
         if (props.withCloseButton) { // TODO: make real/generic icon-button
-            return <CgClose className="notification-close" onClick={() => props.onClose ? props.onClose() : null}/>
+            return <CgClose className='notification-close' onClick={() => props.onClose ? props.onClose() : null} />;
         } else {
-            return null
+            return null;
         }
     }
 
     return (
         <GradientBorderBox gradient={props.gradient}
-                           className={"notification-wrapper with-shadow-1"}
-                           innerClassName={"notification-wrapper-content"}>
-            <div className={"notification"}>
+                           className={'notification-wrapper with-shadow-1'}
+                           innerClassName={'notification-wrapper-content'}>
+            <div className={'notification'}>
                 {renderIcon()}
-                <div className={"notification-body"}>
+                <div className={'notification-body'}>
                     {renderTitle()}
                     {renderContent()}
                     {renderCaption()}
@@ -63,5 +63,5 @@ export function Notification(props: React.PropsWithChildren<NotificationProps>):
             </div>
 
         </GradientBorderBox>
-    )
+    );
 }

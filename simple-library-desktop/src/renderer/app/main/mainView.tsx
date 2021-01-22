@@ -4,7 +4,7 @@ import { Theme } from '../application';
 import { H3Text } from '../../components/text/Text';
 import { ButtonFilled } from '../../components/buttons/Buttons';
 import { Dir } from '../../components/common';
-import { requestSwitchToWelcomeScreen } from '../../../main/messages';
+import { requestSwitchToWelcomeScreen } from '../../../main/messaging/messages';
 import { Box } from '../../components/layout/Box';
 
 const {ipcRenderer} = window.require('electron');
