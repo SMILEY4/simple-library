@@ -92,7 +92,7 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
         this.setState({ showCreateLibraryDialog: false });
         requestCreateLibrary(ipcRenderer, targetDir, name).then(
             data => this.props.onLoadProject(),
-            error => this.addErrorNotification('Error while creating new Library', error.reason),
+            error => this.addErrorNotification('Error while creating new library "' + name + '"', error.reason),
         );
     }
 
@@ -115,7 +115,6 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
     }
 
     render(): ReactElement {
-        const recentlyUsed: LibraryEntry[] = this.state.recentlyUsed;
         return (
             <Box fill={Fill.TRUE}>
                 <Grid columns={['1fr', '2fr']} rows={['1fr']} fill={Fill.TRUE}>
@@ -129,10 +128,10 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
                             <ButtonFilled onClick={this.onCreateNewLibrary}>Create New Library</ButtonFilled>
                             <ButtonFilled onClick={this.onOpenLibrary}>Open Library</ButtonFilled>
                         </VBox>
-                        {recentlyUsed.length > 0 && (
+                        {this.state.recentlyUsed.length > 0 && (
                             <VBox alignCross={AlignCross.CENTER}>
                                 <H3Text>Recently used:</H3Text>
-                                {recentlyUsed.map(entry =>
+                                {this.state.recentlyUsed.map(entry =>
                                     <ButtonText key={entry.url} onClick={() => this.onOpenRecentlyUsed(entry)}>{entry.name}</ButtonText>)}
                             </VBox>
                         )}
@@ -149,7 +148,7 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
                         title: notification.title,
                         content: notification.text,
                         withCloseButton: true,
-                        onClose: () => this.removeNotification(notification.uid)
+                        onClose: () => this.removeNotification(notification.uid),
                     }))
                 } />
             </Box>

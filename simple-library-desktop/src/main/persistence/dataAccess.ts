@@ -1,32 +1,42 @@
 import { Database, OPEN_CREATE, OPEN_READWRITE } from 'sqlite3';
+import { errorResult, Result, successResult } from '../utils/result';
 
 export default class DataAccess {
 
-    public static createLibrary(path: string, name: string): string {
-        const fullPath = path + '\\' + this.toDbName(name) + '.db';
-        const db = this.openDatabase(fullPath);
-        DataAccess.initializeLibrary(db, name);
-        return fullPath
+    dbUrl: string;
+
+
+    public createLibrary(url: string, libraryName: string): Result {
+        const result: Result = this.connectToDatabase(url, true);
+        if (result.successful) {
+            return this.initializeLibrary(result.payload, libraryName);
+        } else {
+            return result;
+        }
     }
 
 
-    private static toDbName(name: string) {
-        // remove whitespaces and everything that is not a character or number
-        return name.replace(/\s/g, '').replace(/[^a-zA-Z0-9]/g, '');
-    }
-
-
-    private static openDatabase(url: string): Database {
-        return new Database(url, OPEN_CREATE | OPEN_READWRITE, (err: any) => {
+    private connectToDatabase(url: string, create: boolean): Result {
+        const mode: number = create ? OPEN_CREATE | OPEN_READWRITE : OPEN_READWRITE;
+        let error: string | undefined = undefined;
+        const db = new Database(url, mode, (err: any) => {
             if (err) {
-                console.error('Error while creating/connecting to db (' + url + '): ' + err.message);
+                error = err.message;
             }
-            console.log('Created and connected to database: ' + url);
         });
+        if (error) {
+            console.log('Error connecting to db "' + url + '": ' + error);
+            return errorResult([error]);
+        } else {
+            this.dbUrl = url;
+            console.log('Connected to db: ' + url);
+            return successResult(db);
+        }
     }
 
 
-    private static initializeLibrary(db: Database, libraryName: string) {
+    private initializeLibrary(db: Database, libraryName: string): Result {
+        let error: string | undefined = undefined;
         this.run(db, 'CREATE TABLE metadata (' +
             '  key TEXT NOT NULL,' +
             '  value TEXT,' +
@@ -34,11 +44,18 @@ export default class DataAccess {
             ')')
             .then(() => this.run(db, 'INSERT INTO metadata VALUES ("library_name", "' + libraryName + '");'))
             .then(() => this.run(db, 'INSERT INTO metadata VALUES ("created_timestamp", "' + Date.now() + '");'))
-            .catch(err => console.log('Error while initializing library: ' + err));
+            .catch(err => error = err);
+        if (error) {
+            console.log('Error while initializing db: ' + error);
+            return errorResult([error]);
+        } else {
+            console.log('Initialized db.');
+            return successResult();
+        }
     }
 
 
-    private static run(db: Database, sql: string): Promise<any> {
+    private run(db: Database, sql: string): Promise<any> {
         return new Promise(function(resolve, reject) {
             db.run(sql, err => err ? reject() : resolve());
         });

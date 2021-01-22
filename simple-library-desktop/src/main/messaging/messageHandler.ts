@@ -1,58 +1,50 @@
-import {
-    ErrorResponse,
-    onRequestCreateLibrary,
-    onRequestSwitchToWelcomeScreen,
-    Response,
-    SuccessResponse,
-    switchedToWelcomeScreen,
-} from './messages';
-import DataAccess from '../persistence/dataAccess';
-import { BrowserWindow, ipcMain, screen } from 'electron';
+import { onRequestCreateLibrary, onRequestSwitchToWelcomeScreen, Response, switchedToWelcomeScreen } from './messages';
+import { BrowserWindow, ipcMain } from 'electron';
+import { AppService } from '../service/appService';
+import { WindowService } from '../windows/windowService';
+import { Result } from '../utils/result';
 
 export class MessageHandler {
 
-    browserWindow: BrowserWindow;
+    windowService: WindowService;
+    appService: AppService;
 
-    constructor(browserWindow: BrowserWindow) {
-        console.log("INIT MSG HANDLER: "+ browserWindow)
-        this.browserWindow = browserWindow;
-        onRequestSwitchToWelcomeScreen(ipcMain, this.handleRequestSwitchToWelcomeScreen);
-        onRequestCreateLibrary(ipcMain, this.handleRequestCreateLibrary);
+
+    constructor(appService: AppService, windowService: WindowService) {
+        this.appService = appService;
+        this.windowService = windowService;
     }
 
-    handleRequestSwitchToWelcomeScreen(): void {
-        console.log("handleRequestSwitchToWelcomeScreen: "+ this.browserWindow)
-        this.browserWindow.setSize(680, 420);
-        this.browserWindow.setResizable(false);
-        this.browserWindow.center();
-        switchedToWelcomeScreen(this.browserWindow);
+
+    public initialize(): void {
+        onRequestSwitchToWelcomeScreen(ipcMain, () => this.handleRequestSwitchToWelcomeScreen());
+        onRequestCreateLibrary(ipcMain, (path, name) => this.handleRequestCreateLibrary(path, name));
     }
 
-    handleRequestCreateLibrary(path: string, name: string): Response {
-        console.log("handleRequestCreateLibrary: "+ this.browserWindow)
-        const filePath: string = DataAccess.createLibrary(path, name);
-        // const windowBounds = browserWindow.getBounds()
-        // const currentScreen = screen.getDisplayNearestPoint({x: windowBounds.x, y: windowBounds.y})
-        const cursor = screen.getCursorScreenPoint();
-        const currentScreen = screen.getDisplayNearestPoint({ x: cursor.x, y: cursor.y });
-        const { width, height } = currentScreen.workAreaSize;
-        this.browserWindow.setResizable(true);
-        this.browserWindow.setSize(width, height);
-        this.browserWindow.setPosition(0, 0);
 
-        const successResponse: SuccessResponse = {
-            payload: {
-                filePath: filePath,
-            },
-        };
+    private handleRequestSwitchToWelcomeScreen(): void {
+        const window: BrowserWindow = this.windowService.switchToSmallWindow();
+        if (window) {
+            this.appService.disposeLibrary();
+            switchedToWelcomeScreen(window);
+        }
+    }
 
-        const errorResponse: ErrorResponse = {
-            payload: undefined,
-            reason: 'Some stupid error',
-        };
 
-        return successResponse;
-
+    private handleRequestCreateLibrary(path: string, name: string): Response {
+        const result: Result = this.appService.createLibrary(path, name);
+        if (result.successful) {
+            this.windowService.switchToLargeWindow();
+            // todo: maybe make difference "error <-> success" more clear ?
+            return {
+                payload: undefined,
+            };
+        } else {
+            return {
+                payload: undefined,
+                reason: result.errors.join('. '),
+            };
+        }
     }
 
 }

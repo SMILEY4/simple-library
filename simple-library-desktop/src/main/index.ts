@@ -1,45 +1,18 @@
-import { app, BrowserWindow } from 'electron';
+import { app } from 'electron';
 import { MessageHandler } from './messaging/messageHandler';
-
-const isDev: boolean = !app.isPackaged;
-let browserWindow: Electron.BrowserWindow | null = null;
+import { AppService } from './service/appService';
+import DataAccess from './persistence/dataAccess';
+import { WindowService } from './windows/windowService';
 
 const log = require('electron-log');
 Object.assign(console, log.functions);
 
-app.whenReady().then(createWindow);
+const dataAccess: DataAccess = new DataAccess();
+const appService: AppService = new AppService(dataAccess);
+const windowService: WindowService = new WindowService();
+const messageHandler: MessageHandler = new MessageHandler(appService, windowService);
 
-app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
-        app.quit();
-    }
-});
-
-app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-        createWindow();
-    }
-});
-
-
-function createWindow() {
-    browserWindow = new BrowserWindow({
-        width: 680,
-        height: 420,
-        resizable: false,
-        webPreferences: {
-            nodeIntegration: true,
-            enableRemoteModule: true,
-            webSecurity: false,
-            devTools: process.env.NODE_ENV !== 'production',
-        },
-    });
-    new MessageHandler(browserWindow);
-    browserWindow.setAlwaysOnTop(true);
-    if (isDev) {
-        browserWindow.loadURL('http://localhost:8080');
-        browserWindow.webContents.openDevTools();
-    } else {
-        browserWindow.loadFile('./.webpack/renderer/index.html');
-    }
-}
+messageHandler.initialize();
+app.whenReady().then(() => windowService.whenReady());
+app.on('window-all-closed', () => windowService.allWindowsClosed());
+app.on('activate', () => windowService.activate());
