@@ -11,6 +11,8 @@ const ipcMain = require('electron').ipcMain;
 const isDev: boolean = !app.isPackaged;
 let browserWindow: Electron.BrowserWindow | null = null;
 
+const log = require('electron-log');
+Object.assign(console, log.functions);
 
 app.whenReady().then(createWindow);
 
