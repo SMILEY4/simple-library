@@ -3,21 +3,34 @@ import { errorResult, Result, successResult } from '../utils/result';
 
 export default class DataAccess {
 
-    dbUrl: string;
+    /**
+     * The currently open database or undefined
+     */
+    database: Database | undefined;
 
-
+    /**
+     * Creates a new db at the given location, opens the database-connection and initializes (create table, metadata, ...)
+     * @param url the url to the db-file
+     * @param libraryName the name of the library
+     */
     public createLibrary(url: string, libraryName: string): Result {
-        const result: Result = this.connectToDatabase(url, true);
+        const result: Result = this.openDatabase(url, true);
         if (result.successful) {
-            return this.initializeLibrary(result.payload, libraryName);
+            this.database = result.payload;
+            return this.initializeLibrary(libraryName);
         } else {
             return result;
         }
     }
 
-
-    private connectToDatabase(url: string, create: boolean): Result {
-        const mode: number = create ? OPEN_CREATE | OPEN_READWRITE : OPEN_READWRITE;
+    /**
+     * Opens the connection to the database at the given location. If a db is already open, it will be closed first.
+     * @param url the url to the db-file
+     * @param create whether to create a new file or just open the existing one
+     */
+    private openDatabase(url: string, create: boolean): Result {
+        this.closeDatabase();
+        const mode: number = create ? (OPEN_CREATE | OPEN_READWRITE) : OPEN_READWRITE;
         let error: string | undefined = undefined;
         const db = new Database(url, mode, (err: any) => {
             if (err) {
@@ -25,40 +38,61 @@ export default class DataAccess {
             }
         });
         if (error) {
-            console.log('Error connecting to db "' + url + '": ' + error);
+            console.log('Error opening db "' + url + '": ' + error);
             return errorResult([error]);
         } else {
-            this.dbUrl = url;
-            console.log('Connected to db: ' + url);
+            console.log('Opened db: ' + url);
             return successResult(db);
         }
     }
 
-
-    private initializeLibrary(db: Database, libraryName: string): Result {
-        let error: string | undefined = undefined;
-        this.run(db, 'CREATE TABLE metadata (' +
-            '  key TEXT NOT NULL,' +
-            '  value TEXT,' +
-            '  PRIMARY KEY (key, value)' +
-            ')')
-            .then(() => this.run(db, 'INSERT INTO metadata VALUES ("library_name", "' + libraryName + '");'))
-            .then(() => this.run(db, 'INSERT INTO metadata VALUES ("created_timestamp", "' + Date.now() + '");'))
-            .catch(err => error = err);
-        if (error) {
-            console.log('Error while initializing db: ' + error);
-            return errorResult([error]);
-        } else {
-            console.log('Initialized db.');
-            return successResult();
+    /**
+     * Closes the current database connection (only if it is open)
+     */
+    public closeDatabase() {
+        if (this.database) {
+            this.database.close();
         }
     }
 
+    /**
+     * Initializes a newly created database (creates table, insert metadata)
+     * @param libraryName the name of the library
+     */
+    private initializeLibrary(libraryName: string): Result {
+        let errors: string[] = [];
 
-    private run(db: Database, sql: string): Promise<any> {
-        return new Promise(function(resolve, reject) {
-            db.run(sql, err => err ? reject() : resolve());
+        function handlePossibleError(error: any) {
+            if (error) {
+                errors.push(error);
+            }
+        }
+
+        const timestamp = Date.now();
+        const sqlTableMetadata = 'CREATE TABLE metadata (' +
+            '  key TEXT NOT NULL,' +
+            '  value TEXT,' +
+            '  PRIMARY KEY (key, value)' +
+            ')';
+        const sqlInsertMetaName = 'INSERT INTO metadata VALUES ("library_name", "' + libraryName + '");';
+        const sqlInsertMetaTsCreated = 'INSERT INTO metadata VALUES ("created_timestamp", "' + timestamp + '");';
+        const sqlInsertMetaTsOpened = 'INSERT INTO metadata VALUES ("last_opened_timestamp", "' + timestamp + '");';
+
+        this.database.serialize(() => {
+            this.database.run(sqlTableMetadata, err => handlePossibleError(err));
+            this.database.parallelize(() => {
+                this.database.run(sqlInsertMetaName, err => handlePossibleError(err));
+                this.database.run(sqlInsertMetaTsCreated, err => handlePossibleError(err));
+                this.database.run(sqlInsertMetaTsOpened, err => handlePossibleError(err));
+            });
         });
+        if (errors.length == 0) {
+            console.log('Initialized db.');
+            return successResult();
+        } else {
+            console.log('Error while initializing db: ' + errors.join(';\n'));
+            return errorResult(errors);
+        }
     }
 
 
