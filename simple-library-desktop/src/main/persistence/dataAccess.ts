@@ -95,5 +95,42 @@ export default class DataAccess {
         }
     }
 
+    public async getMetadata() {
+        const db: Database = this.database;
+        return new Promise(function(resolve, reject) {
+            db.all('SELECT * FROM metadata;', (err, rows) => {
+                const resultData: any = {
+                    name: undefined,
+                    timestampCreated: undefined,
+                    timestampLastOpened: undefined,
+                };
+                console.log('rows: ' + JSON.stringify(rows));
+                rows.forEach((row: any) => {
+                    const key: string = row.key;
+                    const value: string = row.value;
+                    if (key === 'library_name') {
+                        resultData.name = value;
+                    }
+                    if (key === 'created_timestamp') {
+                        resultData.timestampCreated = value;
+                    }
+                    if (key === 'last_opened_timestamp') {
+                        resultData.timestampLastOpened = value;
+                    }
+                });
+                console.log(JSON.stringify(resultData));
+                resolve(resultData);
+            });
+        });
+    }
+
+
+    private fetchWithPromise(db: Database, sql: string): Promise<any> {
+        return new Promise(function(resolve, reject) {
+            return new Promise(function(resolve, reject) {
+                db.all(sql, (err, rows) => err ? reject(err) : resolve(rows));
+            });
+        });
+    }
 
 }

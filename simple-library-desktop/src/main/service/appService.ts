@@ -30,11 +30,15 @@ export class AppService {
     }
 
 
+    public async getLibraryMetadata() {
+        return await this.dataAccess.getMetadata();
+    }
+
+
     private static toFilename(name: string): string {
         return name
                 .replace(/\s/g, '') // remove whitespaces
                 .replace(/[^a-zA-Z0-9]/g, '') // remove everything except characters or numbers
             + '.db';
     }
-
 }

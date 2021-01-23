@@ -29,6 +29,34 @@ export function onRequestCreateLibrary(ipc: Electron.IpcMain, action: (path: str
 }
 
 
+export function requestLibraryMetadata(ipc: Electron.IpcRenderer): Promise<Response> {
+    const request: Request = {
+        channel: 'library.metadata',
+    };
+    return new Promise(function(resolve, reject) {
+        rendererSendRequest(ipc, request)
+            .then((response => {
+                if (isErrorResponse(response)) {
+                    const failedResponse = <ErrorResponse>response;
+                    reject(failedResponse);
+                } else {
+                    const successResponse = <SuccessResponse>response;
+                    resolve(successResponse);
+                }
+            }));
+    });
+}
+
+export function onRequestLibraryMetadata(ipc: Electron.IpcMain, action: () => Promise<Response>) {
+    ipc.handle('request.' + 'library.metadata', () => action());
+    // const handler: RequestHandler = {
+    //     channel: 'library.metadata',
+    //     action: () => action(),
+    // };
+    // mainOnRequest(ipc, handler);
+}
+
+
 export function requestSwitchToWelcomeScreen(ipc: Electron.IpcRenderer) {
     ipc.send('screens.switch.request.welcome'); // todo: remove / replace
 }

@@ -1,4 +1,10 @@
-import { onRequestCreateLibrary, onRequestSwitchToWelcomeScreen, Response, switchedToWelcomeScreen } from './messages';
+import {
+    onRequestCreateLibrary,
+    onRequestLibraryMetadata,
+    onRequestSwitchToWelcomeScreen,
+    Response,
+    switchedToWelcomeScreen,
+} from './messages';
 import { BrowserWindow, ipcMain } from 'electron';
 import { AppService } from '../service/appService';
 import { WindowService } from '../windows/windowService';
@@ -19,6 +25,7 @@ export class MessageHandler {
     public initialize(): void {
         onRequestSwitchToWelcomeScreen(ipcMain, () => this.handleRequestSwitchToWelcomeScreen());
         onRequestCreateLibrary(ipcMain, (path, name) => this.handleRequestCreateLibrary(path, name));
+        onRequestLibraryMetadata(ipcMain, () => this.handleRequestLibraryMetadata());
     }
 
 
@@ -45,6 +52,13 @@ export class MessageHandler {
                 reason: result.errors.join('. '),
             };
         }
+    }
+
+    private async handleRequestLibraryMetadata(): Promise<Response> {
+        const result: any = await this.appService.getLibraryMetadata();
+        return {
+            payload: result,
+        };
     }
 
 }
