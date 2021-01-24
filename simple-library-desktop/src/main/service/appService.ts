@@ -1,39 +1,38 @@
 import DataAccess from '../persistence/dataAccess';
 import path from 'path';
-import { errorResult, Result } from '../utils/result';
+import { LibraryDataAccess, LibraryMetadata } from '../persistence/libraryDataAccess';
 
 const fs = require('fs');
 
 export class AppService {
 
     dataAccess: DataAccess;
+    libraryDataAccess: LibraryDataAccess;
 
-
-    constructor(dataAccess: DataAccess) {
+    constructor(dataAccess: DataAccess, libraryDataAccess: LibraryDataAccess) {
         this.dataAccess = dataAccess;
+        this.libraryDataAccess = libraryDataAccess;
     }
 
-
-    public createLibrary(targetDir: string, name: string): Result {
+    public createLibrary(targetDir: string, name: string): Promise<void> {
         const filename: string = AppService.toFilename(name);
         const fullPath = path.join(targetDir, filename);
         if (fs.existsSync(fullPath)) {
-            return errorResult(['File with the same name already exists (' + fullPath + ').']);
+            console.log("Could not create library. File already exists: " + fullPath)
+            return Promise.reject('File with the same name already exists (' + fullPath + ').');
         } else {
-            return this.dataAccess.createLibrary(fullPath, name);
+            console.log("Creating new library: " + fullPath)
+            return this.libraryDataAccess.createLibrary(fullPath, name);
         }
     }
-
 
     public disposeLibrary(): void {
         this.dataAccess.closeDatabase();
     }
 
-
-    public async getLibraryMetadata() {
-        return await this.dataAccess.getMetadata();
+    public getLibraryMetadata(): Promise<LibraryMetadata> {
+        return this.libraryDataAccess.getLibraryMetadata();
     }
-
 
     private static toFilename(name: string): string {
         return name

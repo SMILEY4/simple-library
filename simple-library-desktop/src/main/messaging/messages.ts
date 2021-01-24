@@ -6,26 +6,15 @@ export function requestCreateLibrary(ipc: Electron.IpcRenderer, path: string, na
             name: name,
         },
     };
-    return new Promise(function(resolve, reject) {
-        rendererSendRequest(ipc, request)
-            .then((response => {
-                if (isErrorResponse(response)) {
-                    const failedResponse = <ErrorResponse>response;
-                    reject(failedResponse);
-                } else {
-                    const successResponse = <SuccessResponse>response;
-                    resolve(successResponse.payload);
-                }
-            }));
-    });
+    return sendRequest(ipc, request);
 }
 
-export function onRequestCreateLibrary(ipc: Electron.IpcMain, action: (path: string, name: string) => Response) {
+export function onRequestCreateLibrary(ipc: Electron.IpcMain, action: (path: string, name: string) => Promise<Response>) {
     const handler: RequestHandler = {
         channel: 'library.create',
         action: (payload) => action(payload.path, payload.name),
     };
-    mainOnRequest(ipc, handler);
+    handleRequest(ipc, handler);
 }
 
 
@@ -33,49 +22,21 @@ export function requestLibraryMetadata(ipc: Electron.IpcRenderer): Promise<Respo
     const request: Request = {
         channel: 'library.metadata',
     };
-    return new Promise(function(resolve, reject) {
-        rendererSendRequest(ipc, request)
-            .then((response => {
-                if (isErrorResponse(response)) {
-                    const failedResponse = <ErrorResponse>response;
-                    reject(failedResponse);
-                } else {
-                    const successResponse = <SuccessResponse>response;
-                    resolve(successResponse);
-                }
-            }));
-    });
+    return sendRequest(ipc, request);
 }
 
 export function onRequestLibraryMetadata(ipc: Electron.IpcMain, action: () => Promise<Response>) {
-    ipc.handle('request.' + 'library.metadata', () => action());
-    // const handler: RequestHandler = {
-    //     channel: 'library.metadata',
-    //     action: () => action(),
-    // };
-    // mainOnRequest(ipc, handler);
+    const handler: RequestHandler = {
+        channel: 'library.metadata',
+        action: () => action(),
+    };
+    handleRequest(ipc, handler);
 }
 
-
-export function requestSwitchToWelcomeScreen(ipc: Electron.IpcRenderer) {
-    ipc.send('screens.switch.request.welcome'); // todo: remove / replace
-}
-
-export function onRequestSwitchToWelcomeScreen(ipc: Electron.IpcMain, action: () => void) {
-    ipc.on('screens.switch.request.welcome', action);// todo: remove / replace
-}
-
-export function switchedToWelcomeScreen(window: Electron.BrowserWindow) {
-    window.webContents.send('screens.switch.done.welcome');// todo: remove / replace
-}
-
-export function onSwitchedToWelcomeScreen(ipc: Electron.IpcRenderer, action: () => void) {
-    ipc.on('screens.switch.done.welcome', action);// todo: remove / replace
-}
 
 // COMMON
 
-// commands: "send-and-forget", renderer-to-main or main-to-renderer
+// COMMANDS: "send-and-forget", renderer-to-main or main-to-renderer
 
 export interface Command {
     channel: string,
@@ -104,7 +65,7 @@ function rendererOnCommand(ipc: Electron.IpcRenderer, handler: CommandHandler) {
     ipc.on('command' + handler.channel, handler.action);
 }
 
-// requests: send and wait for returned data, renderer-to-main (and back)
+// REQUESTS: send and wait for returned data, renderer-to-main (and back)
 
 export interface Request {
     channel: string,
@@ -113,34 +74,56 @@ export interface Request {
 
 export interface RequestHandler {
     channel: string,
-    action: (payload?: any) => Response
+    action: (payload?: any) => Promise<Response>
 }
 
-export interface SuccessResponse {
-    payload?: any,
+export enum ResponseStatus {
+    SUCCESS = 'success',
+    FAILED = 'failed'
 }
 
-export interface ErrorResponse {
-    reason: string
-    payload?: any,
-}
-
-export type Response = SuccessResponse | ErrorResponse
-
-function isErrorResponse(response: Response): boolean {
-    const obj: any = response;
-    return obj.reason !== undefined;
+export interface Response {
+    status: ResponseStatus,
+    body?: any,
 }
 
 
-function rendererSendRequest(ipc: Electron.IpcRenderer, request: Request): Promise<Response> {
-    return ipc.invoke('request.' + request.channel, request.payload);
+function sendRequest(ipc: Electron.IpcRenderer, request: Request): Promise<Response> {
+    console.debug('[' + request.channel + '] sending request: ' + JSON.stringify(request));
+    return ipc.invoke('request.' + request.channel, request.payload)
+        .then(response => {
+            console.log('[' + request.channel + '] send response: ' + JSON.stringify(response));
+            if (response && response.status === ResponseStatus.SUCCESS) {
+                return response;
+            } else {
+                return Promise.reject((response && response.body) ? response.body : JSON.stringify(response));
+            }
+        });
 }
 
-function mainOnRequest(ipc: Electron.IpcMain, handler: RequestHandler) {
-    ipc.handle('request.' + handler.channel, async (event, arg) => {
+function handleRequest(ipc: Electron.IpcMain, handler: RequestHandler) {
+    ipc.handle('request.' + handler.channel, (event, arg) => {
+        console.debug('[' + handler.channel + '] handling request: ' + JSON.stringify(arg));
         return handler.action(arg);
     });
 }
 
 
+// TODO SWITCH TO WELCOME (rework)
+
+
+export function requestSwitchToWelcomeScreen(ipc: Electron.IpcRenderer) {
+    ipc.send('screens.switch.request.welcome'); // todo: remove / replace
+}
+
+export function onRequestSwitchToWelcomeScreen(ipc: Electron.IpcMain, action: () => void) {
+    ipc.on('screens.switch.request.welcome', action);// todo: remove / replace
+}
+
+export function switchedToWelcomeScreen(window: Electron.BrowserWindow) {
+    window.webContents.send('screens.switch.done.welcome');// todo: remove / replace
+}
+
+export function onSwitchedToWelcomeScreen(ipc: Electron.IpcRenderer, action: () => void) {
+    ipc.on('screens.switch.done.welcome', action);// todo: remove / replace
+}

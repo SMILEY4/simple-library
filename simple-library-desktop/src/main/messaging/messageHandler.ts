@@ -3,12 +3,13 @@ import {
     onRequestLibraryMetadata,
     onRequestSwitchToWelcomeScreen,
     Response,
+    ResponseStatus,
     switchedToWelcomeScreen,
 } from './messages';
 import { BrowserWindow, ipcMain } from 'electron';
 import { AppService } from '../service/appService';
 import { WindowService } from '../windows/windowService';
-import { Result } from '../utils/result';
+import { LibraryMetadata } from '../persistence/libraryDataAccess';
 
 export class MessageHandler {
 
@@ -23,11 +24,43 @@ export class MessageHandler {
 
 
     public initialize(): void {
-        onRequestSwitchToWelcomeScreen(ipcMain, () => this.handleRequestSwitchToWelcomeScreen());
         onRequestCreateLibrary(ipcMain, (path, name) => this.handleRequestCreateLibrary(path, name));
         onRequestLibraryMetadata(ipcMain, () => this.handleRequestLibraryMetadata());
+        onRequestSwitchToWelcomeScreen(ipcMain, () => this.handleRequestSwitchToWelcomeScreen());
     }
 
+
+    private async handleRequestCreateLibrary(path: string, name: string): Promise<Response> {
+        return this.appService.createLibrary(path, name)
+            .then(() => {
+                this.windowService.switchToLargeWindow();
+                return {
+                    status: ResponseStatus.SUCCESS,
+                };
+            })
+            .catch(err => {
+                return {
+                    status: ResponseStatus.FAILED,
+                    body: err,
+                };
+            });
+    }
+
+    private async handleRequestLibraryMetadata(): Promise<Response> {
+        return this.appService.getLibraryMetadata()
+            .then((data: LibraryMetadata) => {
+                return {
+                    status: ResponseStatus.SUCCESS,
+                    body: data,
+                };
+            })
+            .catch(err => {
+                return {
+                    status: ResponseStatus.FAILED,
+                    body: err,
+                };
+            });
+    }
 
     private handleRequestSwitchToWelcomeScreen(): void {
         const window: BrowserWindow = this.windowService.switchToSmallWindow();
@@ -35,30 +68,6 @@ export class MessageHandler {
             this.appService.disposeLibrary();
             switchedToWelcomeScreen(window);
         }
-    }
-
-
-    private handleRequestCreateLibrary(path: string, name: string): Response {
-        const result: Result = this.appService.createLibrary(path, name);
-        if (result.successful) {
-            this.windowService.switchToLargeWindow();
-            // todo: maybe make difference "error <-> success" more clear ?
-            return {
-                payload: undefined,
-            };
-        } else {
-            return {
-                payload: undefined,
-                reason: result.errors.join('. '),
-            };
-        }
-    }
-
-    private async handleRequestLibraryMetadata(): Promise<Response> {
-        const result: any = await this.appService.getLibraryMetadata();
-        return {
-            payload: result,
-        };
     }
 
 }

@@ -33,18 +33,21 @@ export class MainView extends Component<MainViewProps, MainViewState> {
     }
 
     componentDidMount() {
-        requestLibraryMetadata(ipcRenderer).then(
-            response => {
-                console.log("SET META: " + JSON.stringify(response))
+        requestLibraryMetadata(ipcRenderer)
+            .then(response => {
                 this.setState({
-                    name: response.payload.name,
-                    timestampCreated: response.payload.timestampCreated,
-                    timestampLastOpened: response.payload.timestampLastOpened,
+                    name: response.body.name,
+                    timestampCreated: response.body.timestampCreated,
+                    timestampLastOpened: response.body.timestampLastOpened,
                 });
-            },
-            error => {
-            },
-        );
+            })
+        .catch(error => {
+            this.setState({
+                name: "ERROR: " + error,
+                timestampCreated: "ERROR: " + error,
+                timestampLastOpened: "ERROR: " + error,
+            });
+        })
     }
 
     render(): ReactElement {

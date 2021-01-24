@@ -90,10 +90,11 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
 
     createNewLibrary(name: string, targetDir: string): void {
         this.setState({ showCreateLibraryDialog: false });
-        requestCreateLibrary(ipcRenderer, targetDir, name).then(
-            data => this.props.onLoadProject(),
-            error => this.addErrorNotification('Error while creating new library "' + name + '"', error.reason),
-        );
+        requestCreateLibrary(ipcRenderer, targetDir, name)
+            .then(() => this.props.onLoadProject())
+            .catch(error => {
+                this.addErrorNotification('Error while creating new library "' + name + '"', (error && error.body) ? error.body : JSON.stringify(error));
+            });
     }
 
     addErrorNotification(title: string, text: string) {
