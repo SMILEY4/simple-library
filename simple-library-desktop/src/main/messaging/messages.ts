@@ -1,6 +1,8 @@
+const CHANNEL_CREATE_LIBRARY: string = 'library.create';
+
 export function requestCreateLibrary(ipc: Electron.IpcRenderer, path: string, name: string): Promise<Response> {
     const request: Request = {
-        channel: 'library.create',
+        channel: CHANNEL_CREATE_LIBRARY,
         payload: {
             path: path,
             name: name,
@@ -11,23 +13,47 @@ export function requestCreateLibrary(ipc: Electron.IpcRenderer, path: string, na
 
 export function onRequestCreateLibrary(ipc: Electron.IpcMain, action: (path: string, name: string) => Promise<Response>) {
     const handler: RequestHandler = {
-        channel: 'library.create',
+        channel: CHANNEL_CREATE_LIBRARY,
         action: (payload) => action(payload.path, payload.name),
     };
     handleRequest(ipc, handler);
 }
 
 
+const CHANNEL_OPEN_LIBRARY: string = 'library.load';
+
+export function requestOpenLibrary(ipc: Electron.IpcRenderer, path: string): Promise<Response> {
+    const request: Request = {
+        channel: CHANNEL_OPEN_LIBRARY,
+        payload: {
+            path: path,
+            name: name,
+        },
+    };
+    return sendRequest(ipc, request);
+}
+
+export function onRequestOpenLibrary(ipc: Electron.IpcMain, action: (path: string) => Promise<Response>) {
+    const handler: RequestHandler = {
+        channel: CHANNEL_OPEN_LIBRARY,
+        action: (payload) => action(payload.path),
+    };
+    handleRequest(ipc, handler);
+}
+
+
+const CHANNEL_GET_LIBRARY_METADATA: string = 'library.metadata';
+
 export function requestLibraryMetadata(ipc: Electron.IpcRenderer): Promise<Response> {
     const request: Request = {
-        channel: 'library.metadata',
+        channel: CHANNEL_GET_LIBRARY_METADATA,
     };
     return sendRequest(ipc, request);
 }
 
 export function onRequestLibraryMetadata(ipc: Electron.IpcMain, action: () => Promise<Response>) {
     const handler: RequestHandler = {
-        channel: 'library.metadata',
+        channel: CHANNEL_GET_LIBRARY_METADATA,
         action: () => action(),
     };
     handleRequest(ipc, handler);

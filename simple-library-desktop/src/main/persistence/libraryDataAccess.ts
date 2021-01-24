@@ -35,6 +35,11 @@ export class LibraryDataAccess {
         }
     }
 
+    public async openLibrary(url: string): Promise<void> {
+        await this.dataAccess.openDatabase(url, false);
+        await this.dataAccess.executeRun('UPDATE metadata SET value = "' + Date.now() + '" WHERE key = "timestamp_last_opened";');
+    }
+
     public async getLibraryMetadata(): Promise<LibraryMetadata> {
         const result: any = await this.dataAccess.queryAll('SELECT * FROM metadata;');
         return {

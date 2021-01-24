@@ -1,6 +1,7 @@
 import {
     onRequestCreateLibrary,
     onRequestLibraryMetadata,
+    onRequestOpenLibrary,
     onRequestSwitchToWelcomeScreen,
     Response,
     ResponseStatus,
@@ -25,6 +26,7 @@ export class MessageHandler {
 
     public initialize(): void {
         onRequestCreateLibrary(ipcMain, (path, name) => this.handleRequestCreateLibrary(path, name));
+        onRequestOpenLibrary(ipcMain, (path) => this.handleRequestOpenLibrary(path));
         onRequestLibraryMetadata(ipcMain, () => this.handleRequestLibraryMetadata());
         onRequestSwitchToWelcomeScreen(ipcMain, () => this.handleRequestSwitchToWelcomeScreen());
     }
@@ -32,6 +34,22 @@ export class MessageHandler {
 
     private async handleRequestCreateLibrary(path: string, name: string): Promise<Response> {
         return this.appService.createLibrary(path, name)
+            .then(() => {
+                this.windowService.switchToLargeWindow();
+                return {
+                    status: ResponseStatus.SUCCESS,
+                };
+            })
+            .catch(err => {
+                return {
+                    status: ResponseStatus.FAILED,
+                    body: err,
+                };
+            });
+    }
+
+    private async handleRequestOpenLibrary(path: string) {
+        return this.appService.openLibrary(path)
             .then(() => {
                 this.windowService.switchToLargeWindow();
                 return {

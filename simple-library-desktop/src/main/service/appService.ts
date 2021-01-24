@@ -18,12 +18,16 @@ export class AppService {
         const filename: string = AppService.toFilename(name);
         const fullPath = path.join(targetDir, filename);
         if (fs.existsSync(fullPath)) {
-            console.log("Could not create library. File already exists: " + fullPath)
+            console.log('Could not create library. File already exists: ' + fullPath);
             return Promise.reject('File with the same name already exists (' + fullPath + ').');
         } else {
-            console.log("Creating new library: " + fullPath)
+            console.log('Creating new library: ' + fullPath);
             return this.libraryDataAccess.createLibrary(fullPath, name);
         }
+    }
+
+    public openLibrary(path: string): Promise<void> {
+        return this.libraryDataAccess.openLibrary(path);
     }
 
     public disposeLibrary(): void {
