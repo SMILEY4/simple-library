@@ -14,8 +14,6 @@ interface NotificationStackProps {
 }
 
 export function NotificationStack(props: React.PropsWithChildren<NotificationStackProps>): React.ReactElement {
-    console.log('RENDER STACK: ' + props.notifications.length + '  ' + JSON.stringify(props.notifications));
-    console.log('  MODAL ROOT: ' + document.getElementById(props.modalRootId ? props.modalRootId : ''));
     return (
         <ModalBase show={true}
                    position={ModalPosition.BOTTOM}

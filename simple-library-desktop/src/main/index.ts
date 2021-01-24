@@ -1,79 +1,23 @@
-import { app, BrowserWindow, screen } from 'electron';
-import {
-    onRequestCreateLibrary,
-    onRequestSwitchToWelcomeScreen,
-    SuccessResponse,
-    switchedToWelcomeScreen,
-} from './messages';
+import { app } from 'electron';
+import { MessageHandler } from './messaging/messageHandler';
+import { AppService } from './service/appService';
 import DataAccess from './persistence/dataAccess';
-
-const ipcMain = require('electron').ipcMain;
-const isDev: boolean = !app.isPackaged;
-let browserWindow: Electron.BrowserWindow | null = null;
+import { WindowService } from './windows/windowService';
+import { LibraryDataAccess } from './persistence/libraryDataAccess';
 
 const log = require('electron-log');
 Object.assign(console, log.functions);
 
-app.whenReady().then(createWindow);
+// data access
+const dataAccess: DataAccess = new DataAccess();
+const libraryDataAccess: LibraryDataAccess = new LibraryDataAccess(dataAccess);
+// service
+const appService: AppService = new AppService(dataAccess, libraryDataAccess);
+const windowService: WindowService = new WindowService();
+// messaging
+const messageHandler: MessageHandler = new MessageHandler(appService, windowService);
 
-app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
-        app.quit();
-    }
-});
-
-app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-        createWindow();
-    }
-});
-
-onRequestSwitchToWelcomeScreen(ipcMain, () => {
-    if (browserWindow) {
-        browserWindow.setSize(680, 420);
-        browserWindow.setResizable(false);
-        browserWindow.center();
-        switchedToWelcomeScreen(browserWindow);
-    }
-});
-
-onRequestCreateLibrary(ipcMain, (path: string, name: string) => {
-    const filePath: string = DataAccess.createLibrary(path, name);
-    if (browserWindow) {
-        // const windowBounds = browserWindow.getBounds()
-        // const currentScreen = screen.getDisplayNearestPoint({x: windowBounds.x, y: windowBounds.y})
-        const cursor = screen.getCursorScreenPoint();
-        const currentScreen = screen.getDisplayNearestPoint({ x: cursor.x, y: cursor.y });
-        const { width, height } = currentScreen.workAreaSize;
-        browserWindow.setResizable(true);
-        browserWindow.setSize(width, height);
-        browserWindow.setPosition(0, 0);
-    }
-    const response: SuccessResponse = {
-        payload: {
-            filePath: filePath,
-        },
-    };
-    return response;
-});
-
-function createWindow() {
-    browserWindow = new BrowserWindow({
-        width: 680,
-        height: 420,
-        resizable: false,
-        webPreferences: {
-            nodeIntegration: true,
-            enableRemoteModule: true,
-            webSecurity: false,
-            devTools: process.env.NODE_ENV !== 'production',
-        },
-    });
-    // browserWindow.setAlwaysOnTop(true);
-    if (isDev) {
-        browserWindow.loadURL('http://localhost:8080');
-        browserWindow.webContents.openDevTools();
-    } else {
-        browserWindow.loadFile('./.webpack/renderer/index.html');
-    }
-}
+messageHandler.initialize();
+app.whenReady().then(() => windowService.whenReady());
+app.on('window-all-closed', () => windowService.allWindowsClosed());
+app.on('activate', () => windowService.activate());

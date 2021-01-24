@@ -6,6 +6,7 @@
 	width:    100%;
 	height:   100%;
 	display:  flex;
+	z-index:  1;
 }
 
 
@@ -23,7 +24,6 @@
 .modal-overlay-bottom > .modal {
 	padding-bottom: 20px;
 }
-
 
 
 

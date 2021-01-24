@@ -2,47 +2,78 @@ import { Database, OPEN_CREATE, OPEN_READWRITE } from 'sqlite3';
 
 export default class DataAccess {
 
-    public static createLibrary(path: string, name: string): string {
-        const fullPath = path + '\\' + this.toDbName(name) + '.db';
-        const db = this.openDatabase(fullPath);
-        DataAccess.initializeLibrary(db, name);
-        return fullPath
+    /**
+     * The currently open database or undefined
+     */
+    database: Database | undefined;
+
+
+    /**
+     * Opens the connection to the database at the given location. If a db is already open, it will be closed first.
+     * @param url the url to the db-file
+     * @param create whether to create a new file or just open the existing one
+     * @return an error message or nothing
+     */
+    public openDatabase(url: string, create: boolean): string | undefined {
+        this.closeDatabase();
+        const mode: number = create ? (OPEN_CREATE | OPEN_READWRITE) : OPEN_READWRITE;
+        let error: string | undefined = undefined;
+        const db = new Database(url, mode, (err: any) => {
+            error = err?.message;
+        });
+        if (error) {
+            console.log('Error opening db "' + url + '": ' + error);
+            return error;
+        } else {
+            this.database = db;
+            console.log('Opened db: ' + url);
+            return undefined;
+        }
     }
 
-
-    private static toDbName(name: string) {
-        // remove whitespaces and everything that is not a character or number
-        return name.replace(/\s/g, '').replace(/[^a-zA-Z0-9]/g, '');
+    /**
+     * Closes the current database connection (only if it is open)
+     */
+    public closeDatabase() {
+        if (this.database) {
+            this.database.close();
+            this.database = null;
+            console.log("Closed current database")
+        }
     }
 
+    /**
+     * Execute the given sql command without any result values (e.g. insert, create table)
+     * @param sql the command to execute
+     */
+    public executeRun(sql: string): Promise<void> {
+        return this.executeSqlInPromise((resolve, reject) => {
+            this.database.run(sql, (err) => err ? reject(err) : resolve());
+        });
+    }
 
-    private static openDatabase(url: string): Database {
-        return new Database(url, OPEN_CREATE | OPEN_READWRITE, (err: any) => {
-            if (err) {
-                console.error('Error while creating/connecting to db (' + url + '): ' + err.message);
+    /**
+     * Execute the given sql query
+     * @param sql the query to execute
+     */
+    public queryAll(sql: string): Promise<any> {
+        return this.executeSqlInPromise((resolve, reject) => {
+            this.database.all(sql, (err, rows) => err ? reject(err) : resolve(rows));
+        });
+    }
+
+    /**
+     * Executes a given action. Wrapped inside a promise that is automatically rejected when the database is not open.
+     * @param action the action to run
+     */
+    private executeSqlInPromise(action: (resolve: any, reject: any) => void): Promise<any> {
+        return new Promise((resolve, reject) => {
+            if (this.database) {
+                action(resolve, reject);
+            } else {
+                reject('No database open');
             }
-            console.log('Created and connected to database: ' + url);
         });
     }
-
-
-    private static initializeLibrary(db: Database, libraryName: string) {
-        this.run(db, 'CREATE TABLE metadata (' +
-            '  key TEXT NOT NULL,' +
-            '  value TEXT,' +
-            '  PRIMARY KEY (key, value)' +
-            ')')
-            .then(() => this.run(db, 'INSERT INTO metadata VALUES ("library_name", "' + libraryName + '");'))
-            .then(() => this.run(db, 'INSERT INTO metadata VALUES ("created_timestamp", "' + Date.now() + '");'))
-            .catch(err => console.log('Error while initializing library: ' + err));
-    }
-
-
-    private static run(db: Database, sql: string): Promise<any> {
-        return new Promise(function(resolve, reject) {
-            db.run(sql, err => err ? reject() : resolve());
-        });
-    }
-
 
 }
