@@ -1,97 +1,3 @@
-const CHANNEL_CREATE_LIBRARY: string = 'library.create';
-
-export function requestCreateLibrary(ipc: Electron.IpcRenderer, path: string, name: string): Promise<Response> {
-    const request: Request = {
-        channel: CHANNEL_CREATE_LIBRARY,
-        payload: {
-            path: path,
-            name: name,
-        },
-    };
-    return sendRequest(ipc, request);
-}
-
-export function onRequestCreateLibrary(ipc: Electron.IpcMain, action: (path: string, name: string) => Promise<Response>) {
-    const handler: RequestHandler = {
-        channel: CHANNEL_CREATE_LIBRARY,
-        action: (payload) => action(payload.path, payload.name),
-    };
-    handleRequest(ipc, handler);
-}
-
-
-const CHANNEL_OPEN_LIBRARY: string = 'library.load';
-
-export function requestOpenLibrary(ipc: Electron.IpcRenderer, path: string): Promise<Response> {
-    const request: Request = {
-        channel: CHANNEL_OPEN_LIBRARY,
-        payload: {
-            path: path,
-            name: name,
-        },
-    };
-    return sendRequest(ipc, request);
-}
-
-export function onRequestOpenLibrary(ipc: Electron.IpcMain, action: (path: string) => Promise<Response>) {
-    const handler: RequestHandler = {
-        channel: CHANNEL_OPEN_LIBRARY,
-        action: (payload) => action(payload.path),
-    };
-    handleRequest(ipc, handler);
-}
-
-
-const CHANNEL_GET_LIBRARY_METADATA: string = 'library.metadata';
-
-export function requestLibraryMetadata(ipc: Electron.IpcRenderer): Promise<Response> {
-    const request: Request = {
-        channel: CHANNEL_GET_LIBRARY_METADATA,
-    };
-    return sendRequest(ipc, request);
-}
-
-export function onRequestLibraryMetadata(ipc: Electron.IpcMain, action: () => Promise<Response>) {
-    const handler: RequestHandler = {
-        channel: CHANNEL_GET_LIBRARY_METADATA,
-        action: () => action(),
-    };
-    handleRequest(ipc, handler);
-}
-
-const CHANNEL_GET_LAST_OPENED: string = 'last_opened';
-
-export function requestLastOpened(ipc: Electron.IpcRenderer): Promise<Response> {
-    const request: Request = {
-        channel: CHANNEL_GET_LAST_OPENED,
-    };
-    return sendRequest(ipc, request);
-}
-
-export function onRequestLastOpened(ipc: Electron.IpcMain, action: () => Promise<Response>) {
-    const handler: RequestHandler = {
-        channel: CHANNEL_GET_LAST_OPENED,
-        action: () => action(),
-    };
-    handleRequest(ipc, handler);
-}
-
-const CHANNEL_CLOSE_LIBRARY: string = 'library.close';
-
-export function requestCloseCurrentLibrary(ipc: Electron.IpcRenderer): Promise<Response> {
-    const request: Request = {
-        channel: CHANNEL_CLOSE_LIBRARY,
-    };
-    return sendRequest(ipc, request);
-}
-
-export function onRequestCloseCurrentLibrary(ipc: Electron.IpcMain, action: () => Promise<Response>) {
-    const handler: RequestHandler = {
-        channel: CHANNEL_CLOSE_LIBRARY,
-        action: () => action(),
-    };
-    handleRequest(ipc, handler);
-}
 
 
 // COMMON
@@ -108,20 +14,20 @@ export interface CommandHandler {
     action: (payload?: any) => void
 }
 
-function rendererSendCommand(ipc: Electron.IpcRenderer, command: Command) {
+export function rendererSendCommand(ipc: Electron.IpcRenderer, command: Command) {
     ipc.send('command.' + command.channel, command.payload);
 }
 
-function mainOnCommand(ipc: Electron.IpcMain, handler: CommandHandler) {
+export function mainOnCommand(ipc: Electron.IpcMain, handler: CommandHandler) {
     ipc.on('command.' + handler.channel, handler.action);
 
 }
 
-function mainSendCommand(window: Electron.BrowserWindow, command: Command) {
+export function mainSendCommand(window: Electron.BrowserWindow, command: Command) {
     window.webContents.send('command.' + command.channel, command.payload);
 }
 
-function rendererOnCommand(ipc: Electron.IpcRenderer, handler: CommandHandler) {
+export function rendererOnCommand(ipc: Electron.IpcRenderer, handler: CommandHandler) {
     ipc.on('command' + handler.channel, handler.action);
 }
 
@@ -162,7 +68,7 @@ export function failedResponse(body?: any): Response {
 }
 
 
-function sendRequest(ipc: Electron.IpcRenderer, request: Request): Promise<Response> {
+export function sendRequest(ipc: Electron.IpcRenderer, request: Request): Promise<Response> {
     console.debug('[' + request.channel + '] sending request: ' + JSON.stringify(request));
     return ipc.invoke('request.' + request.channel, request.payload)
         .then(response => {
@@ -175,7 +81,7 @@ function sendRequest(ipc: Electron.IpcRenderer, request: Request): Promise<Respo
         });
 }
 
-function handleRequest(ipc: Electron.IpcMain, handler: RequestHandler) {
+export function handleRequest(ipc: Electron.IpcMain, handler: RequestHandler) {
     ipc.handle('request.' + handler.channel, (event, arg) => {
         console.debug('[' + handler.channel + '] handling request: ' + JSON.stringify(arg));
         return handler.action(arg);

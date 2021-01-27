@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Component, ReactElement } from 'react';
 import './welcome.css';
 import { Theme } from '../application';
-import { requestCreateLibrary, requestLastOpened, requestOpenLibrary } from '../../../main/messaging/messages';
 import { CaptionText, H1Text, H3Text } from '../../components/text/Text';
 import { ButtonFilled, ButtonText } from '../../components/buttons/Buttons';
 import { AlignCross, AlignMain, Fill, HighlightType, Size } from '../../components/common';
@@ -12,6 +11,11 @@ import { Box, VBox } from '../../components/layout/Box';
 import { Grid } from '../../components/layout/Grid';
 import { CreateLibraryDialog } from './CreateLibraryDialog';
 import { NotificationStack } from '../../components/modal/NotificationStack';
+import {
+    CreateLibraryMessage,
+    GetLastOpenedLibrariesMessage,
+    OpenLibraryMessage,
+} from '../../../main/messaging/messagesLibrary';
 
 const electron = window.require('electron');
 const { ipcRenderer } = window.require('electron');
@@ -61,7 +65,7 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
     }
 
     componentDidMount() {
-        requestLastOpened(ipcRenderer)
+        GetLastOpenedLibrariesMessage.request(ipcRenderer)
             .then(response => {
                 this.setState({
                     recentlyUsed: response.body.map((entry: any) => ({
@@ -116,7 +120,7 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
 
 
     openLibrary(path: string) {
-        requestOpenLibrary(ipcRenderer, path)
+        OpenLibraryMessage.request(ipcRenderer, path)
             .then(() => this.props.onLoadProject())
             .catch(error => {
                 this.addErrorNotification('Error while opening library "' + name + '"', (error && error.body) ? error.body : JSON.stringify(error));
@@ -126,7 +130,7 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
 
     createNewLibrary(name: string, targetDir: string): void {
         this.setState({ showCreateLibraryDialog: false });
-        requestCreateLibrary(ipcRenderer, targetDir, name)
+        CreateLibraryMessage.request(ipcRenderer, targetDir, name)
             .then(() => this.props.onLoadProject())
             .catch(error => {
                 this.addErrorNotification('Error while creating new library "' + name + '"', (error && error.body) ? error.body : JSON.stringify(error));
