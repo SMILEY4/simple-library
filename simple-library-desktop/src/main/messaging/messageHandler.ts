@@ -1,15 +1,14 @@
 import {
     failedResponse,
+    onRequestCloseCurrentLibrary,
     onRequestCreateLibrary,
     onRequestLastOpened,
     onRequestLibraryMetadata,
     onRequestOpenLibrary,
-    onRequestSwitchToWelcomeScreen,
     Response,
     successResponse,
-    switchedToWelcomeScreen,
 } from './messages';
-import { BrowserWindow, ipcMain } from 'electron';
+import { ipcMain } from 'electron';
 import { AppService } from '../service/appService';
 import { WindowService } from '../windows/windowService';
 import { LastOpenedLibraryEntry, LibraryMetadata } from '../models/commonModels';
@@ -31,7 +30,7 @@ export class MessageHandler {
         onRequestOpenLibrary(ipcMain, (path) => this.handleRequestOpenLibrary(path));
         onRequestLibraryMetadata(ipcMain, () => this.handleRequestLibraryMetadata());
         onRequestLastOpened(ipcMain, () => this.handleRequestLastOpened());
-        onRequestSwitchToWelcomeScreen(ipcMain, () => this.handleRequestSwitchToWelcomeScreen());
+        onRequestCloseCurrentLibrary(ipcMain, () => this.handleRequestCloseCurrentProject());
     }
 
 
@@ -65,12 +64,10 @@ export class MessageHandler {
             .catch(err => failedResponse(err));
     }
 
-    private handleRequestSwitchToWelcomeScreen(): void {
-        const window: BrowserWindow = this.windowService.switchToSmallWindow();
-        if (window) {
-            this.appService.disposeLibrary();
-            switchedToWelcomeScreen(window);
-        }
+    private async handleRequestCloseCurrentProject(): Promise<Response> {
+        this.windowService.switchToSmallWindow();
+        this.appService.disposeLibrary();
+        return successResponse();
     }
 
 }

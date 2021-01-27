@@ -1,6 +1,5 @@
 import { hot } from 'react-hot-loader/root';
 import React, { Component } from 'react';
-import { onSwitchedToWelcomeScreen } from '../../main/messaging/messages';
 import { MainView } from './main/mainView';
 import { WelcomeView } from './welcome/welcomeView';
 import { ComponentShowcaseView } from '../components/showcase/ComponentShowcaseView';
@@ -41,10 +40,6 @@ export class Application extends Component<any, AppState> {
                 this.setState({ displayComponentShowcase: !this.state.displayComponentShowcase });
             }
         }, true);
-
-        onSwitchedToWelcomeScreen(ipcRenderer, () => {
-            this.setState({ currentView: View.WELCOME });
-        });
     }
 
     renderComponentShowcase() {
@@ -84,7 +79,11 @@ export class Application extends Component<any, AppState> {
                     onChangeTheme={() => {
                         const nextTheme: Theme = this.state.theme === Theme.LIGHT ? Theme.DARK : Theme.LIGHT;
                         this.setState({ theme: nextTheme });
-                    }} />
+                    }}
+                    onCloseProject={() => {
+                        this.setState({ currentView: View.WELCOME });
+                    }}
+                />
             </div>
         );
     }
