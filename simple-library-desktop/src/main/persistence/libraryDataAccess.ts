@@ -1,10 +1,5 @@
 import DataAccess from './dataAccess';
-
-export interface LibraryMetadata {
-    name: string,
-    timestampCreated: number,
-    timestampLastOpened: number
-}
+import { LibraryMetadata } from '../models/commonModels';
 
 export class LibraryDataAccess {
 
@@ -33,6 +28,12 @@ export class LibraryDataAccess {
                 this.dataAccess.executeRun('INSERT INTO metadata VALUES ("timestamp_last_opened", "' + timestamp + '");'),
             ]);
         }
+    }
+
+    public async openLibrary(url: string): Promise<string> {
+        await this.dataAccess.openDatabase(url, false);
+        await this.dataAccess.executeRun('UPDATE metadata SET value = "' + Date.now() + '" WHERE key = "timestamp_last_opened";');
+        return this.dataAccess.queryAll('SELECT value FROM metadata WHERE key = "library_name";').then((row: any) => row[0].value);
     }
 
     public async getLibraryMetadata(): Promise<LibraryMetadata> {

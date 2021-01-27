@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Component, ReactElement } from 'react';
 import './welcome.css';
 import { Theme } from '../application';
-import { requestCreateLibrary } from '../../../main/messaging/messages';
+import { requestCreateLibrary, requestLastOpened, requestOpenLibrary } from '../../../main/messaging/messages';
 import { CaptionText, H1Text, H3Text } from '../../components/text/Text';
 import { ButtonFilled, ButtonText } from '../../components/buttons/Buttons';
 import { AlignCross, AlignMain, Fill, HighlightType, Size } from '../../components/common';
@@ -13,6 +13,7 @@ import { Grid } from '../../components/layout/Grid';
 import { CreateLibraryDialog } from './CreateLibraryDialog';
 import { NotificationStack } from '../../components/modal/NotificationStack';
 
+const electron = window.require('electron');
 const { ipcRenderer } = window.require('electron');
 
 interface WelcomeViewProps {
@@ -45,16 +46,7 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
     constructor(props: WelcomeViewProps) {
         super(props);
         this.state = {
-            recentlyUsed: [
-                {
-                    name: 'Family Photos',
-                    url: 'path/to/family/photo/library',
-                },
-                {
-                    name: 'My Images',
-                    url: 'path/to/my/library',
-                },
-            ],
+            recentlyUsed: [],
             showCreateLibraryDialog: false,
             notifications: [],
         };
@@ -65,6 +57,18 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
         this.createNewLibrary = this.createNewLibrary.bind(this);
         this.addErrorNotification = this.addErrorNotification.bind(this);
         this.removeNotification = this.removeNotification.bind(this);
+    }
+
+    componentDidMount() {
+        requestLastOpened(ipcRenderer)
+            .then(response => {
+                this.setState({
+                    recentlyUsed: response.body.map((entry: any) => ({
+                        name: entry.name,
+                        url: entry.path,
+                    })),
+                });
+            });
     }
 
 
@@ -79,7 +83,33 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
 
 
     onOpenLibrary(): void {
-        // todo
+        electron.remote.dialog
+            .showOpenDialog({
+                title: 'Select Library',
+                buttonLabel: 'Open',
+                properties: [
+                    'openFile',
+                ],
+                filters: [
+                    {
+                        name: 'All',
+                        extensions: ['*'],
+                    },
+                    {
+                        name: 'Libraries',
+                        extensions: ['db'],
+                    },
+                ],
+            })
+            .then((result: any) => {
+                if (!result.canceled) {
+                    requestOpenLibrary(ipcRenderer, result.filePaths[0])
+                        .then(() => this.props.onLoadProject())
+                        .catch(error => {
+                            this.addErrorNotification('Error while opening library "' + name + '"', (error && error.body) ? error.body : JSON.stringify(error));
+                        });
+                }
+            });
     }
 
 
