@@ -1,5 +1,14 @@
 import DataAccess from './dataAccess';
 import { LibraryMetadata } from '../models/commonModels';
+import {
+    sqlCreateTableMetadata,
+    sqlGetGetAllMetadata,
+    sqlGetMetadataLibraryName,
+    sqlInsertMetadataLibraryName,
+    sqlInsertMetadataTimestampCreated,
+    sqlInsertMetadataTimestampLastOpened,
+    sqlUpdateMetadataTimestampLastOpened,
+} from './sql';
 
 export class LibraryDataAccess {
 
@@ -19,15 +28,11 @@ export class LibraryDataAccess {
         } else {
             console.log('Created library: ' + url);
             const timestamp = Date.now();
-            await this.dataAccess.executeRun('CREATE TABLE metadata (' +
-                '  key TEXT NOT NULL,' +
-                '  value TEXT,' +
-                '  PRIMARY KEY (key, value)' +
-                ')');
+            await this.dataAccess.executeRun(sqlCreateTableMetadata());
             await Promise.all([
-                this.dataAccess.executeRun('INSERT INTO metadata VALUES ("library_name", "' + libraryName + '");'),
-                this.dataAccess.executeRun('INSERT INTO metadata VALUES ("timestamp_created", "' + timestamp + '");'),
-                this.dataAccess.executeRun('INSERT INTO metadata VALUES ("timestamp_last_opened", "' + timestamp + '");'),
+                this.dataAccess.executeRun(sqlInsertMetadataLibraryName(libraryName)),
+                this.dataAccess.executeRun(sqlInsertMetadataTimestampCreated(timestamp)),
+                this.dataAccess.executeRun(sqlInsertMetadataTimestampLastOpened(timestamp)),
             ]);
         }
     }
@@ -35,8 +40,8 @@ export class LibraryDataAccess {
 
     public async openLibrary(url: string): Promise<string> {
         await this.dataAccess.openDatabase(url, false);
-        await this.dataAccess.executeRun('UPDATE metadata SET value = "' + Date.now() + '" WHERE key = "timestamp_last_opened";');
-        return this.dataAccess.queryAll('SELECT value FROM metadata WHERE key = "library_name";').then((row: any) => row[0].value);
+        await this.dataAccess.executeRun(sqlUpdateMetadataTimestampLastOpened(Date.now()));
+        return this.dataAccess.queryAll(sqlGetMetadataLibraryName()).then((row: any) => row[0].value);
     }
 
 
@@ -44,9 +49,9 @@ export class LibraryDataAccess {
         this.dataAccess.closeDatabase();
     }
 
-    
+
     public async getLibraryMetadata(): Promise<LibraryMetadata> {
-        const result: any = await this.dataAccess.queryAll('SELECT * FROM metadata;');
+        const result: any = await this.dataAccess.queryAll(sqlGetGetAllMetadata());
         return {
             name: result.find((row: any) => row.key === 'library_name').value,
             timestampCreated: parseInt(result.find((row: any) => row.key === 'timestamp_created').value),
