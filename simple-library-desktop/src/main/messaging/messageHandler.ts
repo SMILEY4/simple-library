@@ -1,17 +1,15 @@
-import {
-    failedResponse,
-    onRequestCloseCurrentLibrary,
-    onRequestCreateLibrary,
-    onRequestLastOpened,
-    onRequestLibraryMetadata,
-    onRequestOpenLibrary,
-    Response,
-    successResponse,
-} from './messages';
+import { failedResponse, Response, successResponse } from './messages';
 import { ipcMain } from 'electron';
 import { AppService } from '../service/appService';
 import { WindowService } from '../windows/windowService';
 import { LastOpenedLibraryEntry, LibraryMetadata } from '../models/commonModels';
+import {
+    CloseCurrentLibraryMessage,
+    CreateLibraryMessage,
+    GetLastOpenedLibrariesMessage,
+    GetLibraryMetadataMessage,
+    OpenLibraryMessage,
+} from './messagesLibrary';
 
 export class MessageHandler {
 
@@ -26,11 +24,11 @@ export class MessageHandler {
 
 
     public initialize(): void {
-        onRequestCreateLibrary(ipcMain, (path, name) => this.handleRequestCreateLibrary(path, name));
-        onRequestOpenLibrary(ipcMain, (path) => this.handleRequestOpenLibrary(path));
-        onRequestLibraryMetadata(ipcMain, () => this.handleRequestLibraryMetadata());
-        onRequestLastOpened(ipcMain, () => this.handleRequestLastOpened());
-        onRequestCloseCurrentLibrary(ipcMain, () => this.handleRequestCloseCurrentProject());
+        CreateLibraryMessage.handle(ipcMain, (path, name) => this.handleRequestCreateLibrary(path, name));
+        OpenLibraryMessage.handle(ipcMain, (path) => this.handleRequestOpenLibrary(path));
+        GetLibraryMetadataMessage.handle(ipcMain, () => this.handleRequestLibraryMetadata());
+        GetLastOpenedLibrariesMessage.handle(ipcMain, () => this.handleRequestLastOpened());
+        CloseCurrentLibraryMessage.handle(ipcMain, () => this.handleRequestCloseCurrentProject());
     }
 
 
@@ -66,7 +64,7 @@ export class MessageHandler {
 
     private async handleRequestCloseCurrentProject(): Promise<Response> {
         this.windowService.switchToSmallWindow();
-        this.appService.disposeLibrary();
+        this.appService.closeCurrentLibrary();
         return successResponse();
     }
 

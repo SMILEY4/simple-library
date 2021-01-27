@@ -1,4 +1,16 @@
 {
-    "presets": ["@babel/preset-react", "@babel/preset-typescript"],
-    "plugins": ["react-hot-loader/babel", "@babel/plugin-proposal-class-properties"]
+  "presets": [
+    "@babel/preset-react",
+    "@babel/preset-typescript"
+  ],
+  "plugins": [
+    "react-hot-loader/babel",
+    "@babel/plugin-proposal-class-properties",
+    [
+      "@babel/plugin-transform-typescript",
+      {
+        "allowNamespaces": true
+      }
+    ]
+  ]
 }

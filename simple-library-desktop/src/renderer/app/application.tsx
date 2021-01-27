@@ -34,13 +34,27 @@ export class Application extends Component<any, AppState> {
         this.renderComponentShowcase = this.renderComponentShowcase.bind(this);
         this.renderWelcomeView = this.renderWelcomeView.bind(this);
         this.renderMainView = this.renderMainView.bind(this);
-
         window.addEventListener('keyup', e => { // shift + alt + D => toggle component showcase
             if (e.key === 'D' && e.shiftKey && e.altKey) {
                 this.setState({ displayComponentShowcase: !this.state.displayComponentShowcase });
             }
         }, true);
     }
+
+
+    render(): any {
+        if (this.state.displayComponentShowcase) {
+            return this.renderComponentShowcase();
+        } else {
+            if (this.state.currentView === View.WELCOME) {
+                return this.renderWelcomeView();
+            }
+            if (this.state.currentView === View.MAIN) {
+                return this.renderMainView();
+            }
+        }
+    }
+
 
     renderComponentShowcase() {
         return (
@@ -49,6 +63,7 @@ export class Application extends Component<any, AppState> {
             </div>
         );
     }
+
 
     renderWelcomeView() {
         return (
@@ -69,6 +84,7 @@ export class Application extends Component<any, AppState> {
         );
     }
 
+
     renderMainView() {
         return (
             <div className={'root-view theme-' + this.state.theme}
@@ -86,20 +102,6 @@ export class Application extends Component<any, AppState> {
                 />
             </div>
         );
-    }
-
-    render(): any {
-        // return <TestView/>
-        if (this.state.displayComponentShowcase) {
-            return this.renderComponentShowcase();
-        } else {
-            if (this.state.currentView === View.WELCOME) {
-                return this.renderWelcomeView();
-            }
-            if (this.state.currentView === View.MAIN) {
-                return this.renderMainView();
-            }
-        }
     }
 
 }

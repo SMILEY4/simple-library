@@ -4,8 +4,8 @@ import { Theme } from '../application';
 import { BodyText, H3Text } from '../../components/text/Text';
 import { ButtonFilled } from '../../components/buttons/Buttons';
 import { Dir } from '../../components/common';
-import { requestCloseCurrentLibrary, requestLibraryMetadata } from '../../../main/messaging/messages';
 import { Box } from '../../components/layout/Box';
+import { CloseCurrentLibraryMessage, GetLibraryMetadataMessage } from '../../../main/messaging/messagesLibrary';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -35,7 +35,7 @@ export class MainView extends Component<MainViewProps, MainViewState> {
     }
 
     componentDidMount() {
-        requestLibraryMetadata(ipcRenderer)
+        GetLibraryMetadataMessage.request(ipcRenderer)
             .then(response => {
                 this.setState({
                     name: response.body.name,
@@ -53,7 +53,7 @@ export class MainView extends Component<MainViewProps, MainViewState> {
     }
 
     closeLibrary() {
-        requestCloseCurrentLibrary(ipcRenderer)
+        CloseCurrentLibraryMessage.request(ipcRenderer)
             .then(() => this.props.onCloseProject());
     }
 

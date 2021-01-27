@@ -9,13 +9,13 @@ import { Box, CBox } from '../../components/layout/Box';
 
 const electron = window.require('electron');
 
-interface CreateLibraryDialogProps {
+interface DialogCreateLibraryProps {
     show: boolean,
     onClose: () => void
     onCreate: (name: string, targetDir: string) => void
 }
 
-interface CreateLibraryDialogState {
+interface DialogCreateLibraryState {
     libraryName: string,
     libraryNameValid: boolean,
     targetDir: string
@@ -23,10 +23,10 @@ interface CreateLibraryDialogState {
 }
 
 
-export class CreateLibraryDialog extends Component<CreateLibraryDialogProps, CreateLibraryDialogState> {
+export class DialogCreateLibrary extends Component<DialogCreateLibraryProps, DialogCreateLibraryState> {
 
 
-    constructor(props: CreateLibraryDialogProps) {
+    constructor(props: DialogCreateLibraryProps) {
         super(props);
         this.state = {
             libraryName: '',
@@ -38,7 +38,7 @@ export class CreateLibraryDialog extends Component<CreateLibraryDialogProps, Cre
         this.actionRequestCreateLibrary = this.actionRequestCreateLibrary.bind(this);
     }
 
-    componentWillReceiveProps(newProps: CreateLibraryDialogProps) {
+    componentWillReceiveProps(newProps: DialogCreateLibraryProps) {
         if (newProps.show && newProps.show !== this.props.show) {
             this.setState({
                 libraryName: '',
