@@ -1,25 +1,22 @@
-import DataAccess from '../persistence/dataAccess';
 import path from 'path';
 import { LibraryDataAccess } from '../persistence/libraryDataAccess';
 import { LastOpenedLibraryEntry, LibraryMetadata } from '../models/commonModels';
-import ElectronStore from 'electron-store';
+import { ConfigDataAccess } from '../persistence/configDataAccess';
 
 const fs = require('fs');
-const Store = require('electron-store');
 
 
 export class AppService {
 
-    dataAccess: DataAccess;
     libraryDataAccess: LibraryDataAccess;
-    store: ElectronStore;
+    configDataAccess: ConfigDataAccess;
 
-    constructor(dataAccess: DataAccess, libraryDataAccess: LibraryDataAccess) {
-        this.dataAccess = dataAccess;
+
+    constructor(libraryDataAccess: LibraryDataAccess, configDataAccess: ConfigDataAccess) {
         this.libraryDataAccess = libraryDataAccess;
-        this.store = new Store();
-        console.log('Creating config store at ' + this.store.path);
+        this.configDataAccess = configDataAccess;
     }
+
 
     public createLibrary(targetDir: string, name: string): Promise<void> {
         const filename: string = AppService.toFilename(name);
@@ -30,28 +27,32 @@ export class AppService {
         } else {
             console.log('Creating new library: ' + fullPath);
             return this.libraryDataAccess.createLibrary(fullPath, name)
-                .then(() => this.pushLibraryLastOpened(name, fullPath));
+                .then(() => this.addLibraryLastOpened(name, fullPath));
         }
     }
+
 
     public openLibrary(path: string): Promise<void> {
         return this.libraryDataAccess.openLibrary(path)
             .then((name: string) => {
-                this.pushLibraryLastOpened(name, path);
+                this.addLibraryLastOpened(name, path);
             });
     }
 
-    public disposeLibrary(): void {
-        this.dataAccess.closeDatabase();
+
+    public closeCurrentLibrary(): void {
+        this.libraryDataAccess.closeCurrentLibrary();
     }
+
 
     public getLibraryMetadata(): Promise<LibraryMetadata> {
         return this.libraryDataAccess.getLibraryMetadata();
     }
 
-    public pushLibraryLastOpened(name: string, path: string) {
+
+    public addLibraryLastOpened(name: string, path: string) {
         try {
-            let lastOpened: any = this.store.get('lastOpened');
+            let lastOpened: any = this.configDataAccess.getLastOpenedLibraries();
             if (lastOpened) {
                 lastOpened = lastOpened.filter((e: any) => e.path != path);
                 lastOpened = [{ name: name, path: path }, ...lastOpened];
@@ -59,17 +60,19 @@ export class AppService {
             } else {
                 lastOpened = [{ name: name, path: path }];
             }
-            this.store.set('lastOpened', lastOpened);
+            this.configDataAccess.setLastOpenedLibraries(lastOpened);
         } catch (err) {
         }
     }
 
+
     public getLibrariesLastOpened(): Promise<LastOpenedLibraryEntry[]> {
         return new Promise((resolve, reject) => {
-            const data: any = this.store.get('lastOpened');
+            const data: any = this.configDataAccess.getLastOpenedLibraries();
             resolve(data ? data.map((entry: any) => ({ name: entry.name, path: entry.path })) : []);
         });
     }
+
 
     private static toFilename(name: string): string {
         return name
@@ -77,4 +80,5 @@ export class AppService {
                 .replace(/[^a-zA-Z0-9]/g, '') // remove everything except characters or numbers
             + '.db';
     }
+
 }

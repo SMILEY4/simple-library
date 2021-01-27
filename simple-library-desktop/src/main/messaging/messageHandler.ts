@@ -64,7 +64,7 @@ export class MessageHandler {
 
     private async handleRequestCloseCurrentProject(): Promise<Response> {
         this.windowService.switchToSmallWindow();
-        this.appService.disposeLibrary();
+        this.appService.closeCurrentLibrary();
         return successResponse();
     }
 

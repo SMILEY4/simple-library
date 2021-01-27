@@ -6,12 +6,11 @@ export class WindowService {
 
     window: BrowserWindow;
 
-    constructor() {
-    }
 
     public whenReady() {
         this.createWindow();
     }
+
 
     public allWindowsClosed() {
         if (process.platform !== 'darwin') {
@@ -19,11 +18,13 @@ export class WindowService {
         }
     }
 
+
     public activate() {
         if (BrowserWindow.getAllWindows().length === 0) {
             this.createWindow();
         }
     }
+
 
     public switchToSmallWindow(): BrowserWindow {
         this.window.setSize(680, 420);
@@ -31,6 +32,7 @@ export class WindowService {
         this.window.center();
         return this.window;
     }
+
 
     public switchToLargeWindow(): BrowserWindow {
         const cursor = screen.getCursorScreenPoint();
@@ -64,6 +66,5 @@ export class WindowService {
             this.window.loadFile('./.webpack/renderer/index.html');
         }
     }
-
 
 }

@@ -5,9 +5,11 @@ export class LibraryDataAccess {
 
     dataAccess: DataAccess;
 
+
     constructor(dataAccess: DataAccess) {
         this.dataAccess = dataAccess;
     }
+
 
     public async createLibrary(url: string, libraryName: string): Promise<void> {
         const error: string | undefined = this.dataAccess.openDatabase(url, true);
@@ -30,12 +32,19 @@ export class LibraryDataAccess {
         }
     }
 
+
     public async openLibrary(url: string): Promise<string> {
         await this.dataAccess.openDatabase(url, false);
         await this.dataAccess.executeRun('UPDATE metadata SET value = "' + Date.now() + '" WHERE key = "timestamp_last_opened";');
         return this.dataAccess.queryAll('SELECT value FROM metadata WHERE key = "library_name";').then((row: any) => row[0].value);
     }
 
+
+    public closeCurrentLibrary(): void {
+        this.dataAccess.closeDatabase();
+    }
+
+    
     public async getLibraryMetadata(): Promise<LibraryMetadata> {
         const result: any = await this.dataAccess.queryAll('SELECT * FROM metadata;');
         return {
