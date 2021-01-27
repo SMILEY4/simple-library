@@ -53,6 +53,7 @@ export class AppService {
         try {
             let lastOpened: any = this.store.get('lastOpened');
             if (lastOpened) {
+                lastOpened = lastOpened.filter((e: any) => e.path != path);
                 lastOpened = [{ name: name, path: path }, ...lastOpened];
                 lastOpened = lastOpened.slice(0, Math.min(lastOpened.length, 3));
             } else {

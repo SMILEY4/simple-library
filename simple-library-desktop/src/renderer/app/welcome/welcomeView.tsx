@@ -54,6 +54,7 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
         this.onCancelCreateNewLibrary = this.onCancelCreateNewLibrary.bind(this);
         this.onOpenLibrary = this.onOpenLibrary.bind(this);
         this.onOpenRecentlyUsed = this.onOpenRecentlyUsed.bind(this);
+        this.openLibrary = this.openLibrary.bind(this);
         this.createNewLibrary = this.createNewLibrary.bind(this);
         this.addErrorNotification = this.addErrorNotification.bind(this);
         this.removeNotification = this.removeNotification.bind(this);
@@ -103,18 +104,23 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
             })
             .then((result: any) => {
                 if (!result.canceled) {
-                    requestOpenLibrary(ipcRenderer, result.filePaths[0])
-                        .then(() => this.props.onLoadProject())
-                        .catch(error => {
-                            this.addErrorNotification('Error while opening library "' + name + '"', (error && error.body) ? error.body : JSON.stringify(error));
-                        });
+                    this.openLibrary(result.filePaths[0]);
                 }
             });
     }
 
 
     onOpenRecentlyUsed(entry: LibraryEntry): void {
-        // todo
+        this.openLibrary(entry.url);
+    }
+
+
+    openLibrary(path: string) {
+        requestOpenLibrary(ipcRenderer, path)
+            .then(() => this.props.onLoadProject())
+            .catch(error => {
+                this.addErrorNotification('Error while opening library "' + name + '"', (error && error.body) ? error.body : JSON.stringify(error));
+            });
     }
 
 
