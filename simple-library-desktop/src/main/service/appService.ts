@@ -52,7 +52,7 @@ export class AppService {
 
     public addLibraryLastOpened(name: string, path: string) {
         try {
-            let lastOpened: any = this.configDataAccess.getLastOpenedLibraries();
+            let lastOpened: LastOpenedLibraryEntry[] = this.configDataAccess.getLastOpenedLibraries();
             if (lastOpened) {
                 lastOpened = lastOpened.filter((e: any) => e.path != path);
                 lastOpened = [{ name: name, path: path }, ...lastOpened];
@@ -68,8 +68,7 @@ export class AppService {
 
     public getLibrariesLastOpened(): Promise<LastOpenedLibraryEntry[]> {
         return new Promise((resolve, reject) => {
-            const data: any = this.configDataAccess.getLastOpenedLibraries();
-            resolve(data ? data.map((entry: any) => ({ name: entry.name, path: entry.path })) : []);
+            resolve(this.configDataAccess.getLastOpenedLibraries());
         });
     }
 

@@ -1,4 +1,5 @@
 import ElectronStore from 'electron-store';
+import { LastOpenedLibraryEntry } from '../models/commonModels';
 
 const Store = require('electron-store');
 
@@ -13,8 +14,10 @@ export class ConfigDataAccess {
     }
 
 
-    public getLastOpenedLibraries(): any {
-        return this.store.get('lastOpened');
+    public getLastOpenedLibraries(): LastOpenedLibraryEntry[] {
+        const data: any = this.store.get('lastOpened');
+        return (data ? data : [])
+            .map((entry: any) => ({ name: entry.name, path: entry.path }));
     }
 
 
