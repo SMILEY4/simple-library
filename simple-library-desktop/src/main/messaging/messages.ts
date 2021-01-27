@@ -76,6 +76,23 @@ export function onRequestLastOpened(ipc: Electron.IpcMain, action: () => Promise
     handleRequest(ipc, handler);
 }
 
+const CHANNEL_CLOSE_LIBRARY: string = 'library.close';
+
+export function requestCloseCurrentLibrary(ipc: Electron.IpcRenderer): Promise<Response> {
+    const request: Request = {
+        channel: CHANNEL_CLOSE_LIBRARY,
+    };
+    return sendRequest(ipc, request);
+}
+
+export function onRequestCloseCurrentLibrary(ipc: Electron.IpcMain, action: () => Promise<Response>) {
+    const handler: RequestHandler = {
+        channel: CHANNEL_CLOSE_LIBRARY,
+        action: () => action(),
+    };
+    handleRequest(ipc, handler);
+}
+
 
 // COMMON
 
@@ -163,24 +180,4 @@ function handleRequest(ipc: Electron.IpcMain, handler: RequestHandler) {
         console.debug('[' + handler.channel + '] handling request: ' + JSON.stringify(arg));
         return handler.action(arg);
     });
-}
-
-
-// TODO SWITCH TO WELCOME (rework)
-
-
-export function requestSwitchToWelcomeScreen(ipc: Electron.IpcRenderer) {
-    ipc.send('screens.switch.request.welcome'); // todo: remove / replace
-}
-
-export function onRequestSwitchToWelcomeScreen(ipc: Electron.IpcMain, action: () => void) {
-    ipc.on('screens.switch.request.welcome', action);// todo: remove / replace
-}
-
-export function switchedToWelcomeScreen(window: Electron.BrowserWindow) {
-    window.webContents.send('screens.switch.done.welcome');// todo: remove / replace
-}
-
-export function onSwitchedToWelcomeScreen(ipc: Electron.IpcRenderer, action: () => void) {
-    ipc.on('screens.switch.done.welcome', action);// todo: remove / replace
 }

@@ -4,14 +4,15 @@ import { Theme } from '../application';
 import { BodyText, H3Text } from '../../components/text/Text';
 import { ButtonFilled } from '../../components/buttons/Buttons';
 import { Dir } from '../../components/common';
-import { requestLibraryMetadata, requestSwitchToWelcomeScreen } from '../../../main/messaging/messages';
+import { requestCloseCurrentLibrary, requestLibraryMetadata } from '../../../main/messaging/messages';
 import { Box } from '../../components/layout/Box';
 
 const { ipcRenderer } = window.require('electron');
 
 interface MainViewProps {
     theme: Theme,
-    onChangeTheme: () => void
+    onChangeTheme: () => void,
+    onCloseProject: () => void
 }
 
 interface MainViewState {
@@ -30,6 +31,7 @@ export class MainView extends Component<MainViewProps, MainViewState> {
             timestampCreated: '?',
             timestampLastOpened: '?',
         };
+        this.closeLibrary = this.closeLibrary.bind(this);
     }
 
     componentDidMount() {
@@ -41,13 +43,18 @@ export class MainView extends Component<MainViewProps, MainViewState> {
                     timestampLastOpened: response.body.timestampLastOpened,
                 });
             })
-        .catch(error => {
-            this.setState({
-                name: "ERROR: " + error,
-                timestampCreated: "ERROR: " + error,
-                timestampLastOpened: "ERROR: " + error,
+            .catch(error => {
+                this.setState({
+                    name: 'ERROR: ' + error,
+                    timestampCreated: 'ERROR: ' + error,
+                    timestampLastOpened: 'ERROR: ' + error,
+                });
             });
-        })
+    }
+
+    closeLibrary() {
+        requestCloseCurrentLibrary(ipcRenderer)
+            .then(() => this.props.onCloseProject());
     }
 
     render(): ReactElement {
@@ -57,7 +64,7 @@ export class MainView extends Component<MainViewProps, MainViewState> {
                 <BodyText>{'Name: ' + this.state.name}</BodyText>
                 <BodyText>{'Created: ' + this.state.timestampCreated}</BodyText>
                 <BodyText>{'Last Opened: ' + this.state.timestampLastOpened}</BodyText>
-                <ButtonFilled onClick={() => requestSwitchToWelcomeScreen(ipcRenderer)}>Back</ButtonFilled>
+                <ButtonFilled onClick={this.closeLibrary}>Back</ButtonFilled>
             </Box>
         );
     }
