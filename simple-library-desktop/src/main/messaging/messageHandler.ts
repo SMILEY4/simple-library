@@ -1,16 +1,18 @@
 import {
+    failedResponse,
     onRequestCreateLibrary,
+    onRequestLastOpened,
     onRequestLibraryMetadata,
     onRequestOpenLibrary,
     onRequestSwitchToWelcomeScreen,
     Response,
-    ResponseStatus,
+    successResponse,
     switchedToWelcomeScreen,
 } from './messages';
 import { BrowserWindow, ipcMain } from 'electron';
 import { AppService } from '../service/appService';
 import { WindowService } from '../windows/windowService';
-import { LibraryMetadata } from '../persistence/libraryDataAccess';
+import { LastOpenedLibraryEntry, LibraryMetadata } from '../models/commonModels';
 
 export class MessageHandler {
 
@@ -28,6 +30,7 @@ export class MessageHandler {
         onRequestCreateLibrary(ipcMain, (path, name) => this.handleRequestCreateLibrary(path, name));
         onRequestOpenLibrary(ipcMain, (path) => this.handleRequestOpenLibrary(path));
         onRequestLibraryMetadata(ipcMain, () => this.handleRequestLibraryMetadata());
+        onRequestLastOpened(ipcMain, () => this.handleRequestLastOpened());
         onRequestSwitchToWelcomeScreen(ipcMain, () => this.handleRequestSwitchToWelcomeScreen());
     }
 
@@ -36,48 +39,30 @@ export class MessageHandler {
         return this.appService.createLibrary(path, name)
             .then(() => {
                 this.windowService.switchToLargeWindow();
-                return {
-                    status: ResponseStatus.SUCCESS,
-                };
+                return successResponse();
             })
-            .catch(err => {
-                return {
-                    status: ResponseStatus.FAILED,
-                    body: err,
-                };
-            });
+            .catch(err => failedResponse(err));
     }
 
     private async handleRequestOpenLibrary(path: string) {
         return this.appService.openLibrary(path)
             .then(() => {
                 this.windowService.switchToLargeWindow();
-                return {
-                    status: ResponseStatus.SUCCESS,
-                };
+                return successResponse();
             })
-            .catch(err => {
-                return {
-                    status: ResponseStatus.FAILED,
-                    body: err,
-                };
-            });
+            .catch(err => failedResponse(err));
     }
 
     private async handleRequestLibraryMetadata(): Promise<Response> {
         return this.appService.getLibraryMetadata()
-            .then((data: LibraryMetadata) => {
-                return {
-                    status: ResponseStatus.SUCCESS,
-                    body: data,
-                };
-            })
-            .catch(err => {
-                return {
-                    status: ResponseStatus.FAILED,
-                    body: err,
-                };
-            });
+            .then((data: LibraryMetadata) => successResponse(data))
+            .catch(err => failedResponse(err));
+    }
+
+    private async handleRequestLastOpened(): Promise<Response> {
+        return this.appService.getLibrariesLastOpened()
+            .then((data: LastOpenedLibraryEntry[]) => successResponse(data))
+            .catch(err => failedResponse(err));
     }
 
     private handleRequestSwitchToWelcomeScreen(): void {

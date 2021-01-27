@@ -59,6 +59,23 @@ export function onRequestLibraryMetadata(ipc: Electron.IpcMain, action: () => Pr
     handleRequest(ipc, handler);
 }
 
+const CHANNEL_GET_LAST_OPENED: string = 'last_opened';
+
+export function requestLastOpened(ipc: Electron.IpcRenderer): Promise<Response> {
+    const request: Request = {
+        channel: CHANNEL_GET_LAST_OPENED,
+    };
+    return sendRequest(ipc, request);
+}
+
+export function onRequestLastOpened(ipc: Electron.IpcMain, action: () => Promise<Response>) {
+    const handler: RequestHandler = {
+        channel: CHANNEL_GET_LAST_OPENED,
+        action: () => action(),
+    };
+    handleRequest(ipc, handler);
+}
+
 
 // COMMON
 
@@ -111,6 +128,20 @@ export enum ResponseStatus {
 export interface Response {
     status: ResponseStatus,
     body?: any,
+}
+
+export function successResponse(body?: any): Response {
+    return {
+        status: ResponseStatus.SUCCESS,
+        body: body,
+    };
+}
+
+export function failedResponse(body?: any): Response {
+    return {
+        status: ResponseStatus.FAILED,
+        body: body,
+    };
 }
 
 
