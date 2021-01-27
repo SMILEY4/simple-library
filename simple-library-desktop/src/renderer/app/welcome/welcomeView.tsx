@@ -9,7 +9,7 @@ import imgWelcome from './imgWelcome.jpg';
 import { Image } from '../../components/image/Image';
 import { Box, VBox } from '../../components/layout/Box';
 import { Grid } from '../../components/layout/Grid';
-import { CreateLibraryDialog } from './CreateLibraryDialog';
+import { DialogCreateLibrary } from './dialogCreateLibrary';
 import { NotificationStack } from '../../components/modal/NotificationStack';
 import {
     CreateLibraryMessage,
@@ -178,7 +178,7 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
                         )}
                     </VBox>
                 </Grid>
-                <CreateLibraryDialog
+                <DialogCreateLibrary
                     show={this.state.showCreateLibraryDialog}
                     onClose={this.onCancelCreateNewLibrary}
                     onCreate={this.createNewLibrary}
