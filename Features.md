@@ -176,3 +176,65 @@ Project == "Library" ?
 3. Original
    - original file
    - might not always be available (saved on external drive)
+
+
+
+
+# Documentation
+
+
+
+## Library Database
+
+```mermaid
+classDiagram
+	class ITEM
+	ITEM: string id
+	ITEM: long timestampAdded
+	ITEM: blob thumbnail
+	ITEM: string previewPath
+	ITEM: string filePath
+	ITEM: string fileName
+	ITEM: string fileType
+	ITEM: int fileSize
+	
+	class ATTRIBUTE
+	ATTRIBUTE: string itemId
+	ATTRIBUTE: string key
+	ATTRIBUTE: string value
+	
+	class KEYWORD
+	KEYWORD: string itemId
+	KEYWORD: string value
+	
+	ITEM "0..n" o-- "1" ATTRIBUTE
+	ITEM "0..n" o-- "1" KEYWORD
+```
+
+##  Import Process
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant UI
+    participant Service
+    participant DataAccess
+    
+    User->>UI: start import
+    UI-->>User: show import dialog
+    User->>UI: input required data in dialog
+    UI->>Service: start import
+    loop each file
+    	opt move/copy file
+    		Service->>DataAccess: move/copy/rename file
+    	end
+    	Service->>Service: generate thumbnail, preview
+    	Service->>DataAccess: write item to db
+    end
+    
+```
+
+https://github.com/blueimp/JavaScript-Load-Image  -> does image handling
+
+https://www.npmjs.com/package/exifr -> reads exif/xmp data from jpeg,tiff,heic,png
+
