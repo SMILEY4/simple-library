@@ -16,9 +16,15 @@
 .showcase-controls {
 	display:        flex;
 	padding-bottom: 10px;
-	border-bottom:  1px solid var(--text-color-1);
 }
 
+.background-0 > .showcase-controls {
+	background-color: var(--background-color-1);
+}
+
+.background-1 > .showcase-controls {
+	background-color: var(--background-color-0);
+}
 
 .showcase-controls > * {
 	cursor:              pointer;
