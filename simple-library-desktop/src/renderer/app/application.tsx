@@ -34,9 +34,14 @@ export class Application extends Component<any, AppState> {
         this.renderComponentShowcase = this.renderComponentShowcase.bind(this);
         this.renderWelcomeView = this.renderWelcomeView.bind(this);
         this.renderMainView = this.renderMainView.bind(this);
-        window.addEventListener('keyup', e => { // shift + alt + D => toggle component showcase
-            if (e.key === 'D' && e.shiftKey && e.altKey) {
+        window.addEventListener('keyup', e => { // ctrl + D => toggle component showcase
+            if (e.key === 'D' && e.ctrlKey && e.altKey) {
                 this.setState({ displayComponentShowcase: !this.state.displayComponentShowcase });
+            }
+        }, true);
+        window.addEventListener('keyup', e => { // ctrl + T => toggle theme
+            if (e.key === 'T' && e.shiftKey && e.altKey) {
+                this.setState({ theme: this.state.theme === Theme.LIGHT ? Theme.DARK : Theme.LIGHT });
             }
         }, true);
     }

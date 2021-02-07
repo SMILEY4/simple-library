@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { H5Text } from '../text/Text';
 
-export interface SidebarMenuSectionTitleEntryProps {
+export interface SidebarMenuSectionTitleProps {
 }
 
-export function SidebarMenuSectionTitleEntry(props: React.PropsWithChildren<SidebarMenuSectionTitleEntryProps>): React.ReactElement {
+export function SidebarMenuSectionTitle(props: React.PropsWithChildren<SidebarMenuSectionTitleProps>): React.ReactElement {
     return (
         <div className={"sidebar-menu-entry-section-title"}>
             <H5Text>

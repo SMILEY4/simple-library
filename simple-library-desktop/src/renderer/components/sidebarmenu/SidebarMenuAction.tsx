@@ -1,12 +1,22 @@
 import * as React from 'react';
+import { AlignMain, concatClasses, map } from '../common';
 
-export interface SidebarMenuActionEntryProps {
+export interface SidebarMenuActionProps {
+    align?: AlignMain
     onClick?: () => void
 }
 
-export function SidebarMenuActionEntry(props: React.PropsWithChildren<SidebarMenuActionEntryProps>): React.ReactElement {
+export function SidebarMenuAction(props: React.PropsWithChildren<SidebarMenuActionProps>): React.ReactElement {
+
+    function getClassNames(): string {
+        return concatClasses(
+            "sidebar-menu-entry-action",
+            map(props.align, (align) => 'sidebar-menu-entry-align-' + align),
+        );
+    }
+
     return (
-        <div className={"sidebar-menu-entry-action"} onClick={props.onClick}>
+        <div className={getClassNames()} onClick={props.onClick}>
             {props.children}
         </div>
     );

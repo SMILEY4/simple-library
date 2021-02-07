@@ -1,9 +1,9 @@
 import * as React from 'react';
 
-export interface SidebarMenuSpacerEntryProps {
+export interface SidebarMenuSpacerProps {
 }
 
-export function SidebarMenuSpacerEntry(props: React.PropsWithChildren<SidebarMenuSpacerEntryProps>): React.ReactElement {
+export function SidebarMenuSpacer(props: React.PropsWithChildren<SidebarMenuSpacerProps>): React.ReactElement {
     return (
         <div className={"sidebar-menu-entry-spacer"}>
         </div>

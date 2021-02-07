@@ -2,20 +2,23 @@ import * as React from 'react';
 import { Component, ReactElement } from 'react';
 import './welcome.css';
 import { Theme } from '../application';
-import { CaptionText, H1Text, H3Text } from '../../components/text/Text';
-import { ButtonFilled, ButtonText } from '../../components/buttons/Buttons';
-import { AlignCross, AlignMain, Fill, HighlightType, Size } from '../../components/common';
+import { AlignMain, Fill, HighlightType } from '../../components/common';
 import imgWelcome from './imgWelcome.jpg';
 import { Image } from '../../components/image/Image';
-import { Box, VBox } from '../../components/layout/Box';
+import { Box } from '../../components/layout/Box';
 import { Grid } from '../../components/layout/Grid';
-import { DialogCreateLibrary } from './dialogCreateLibrary';
-import { NotificationStack } from '../../components/modal/NotificationStack';
 import {
     CreateLibraryMessage,
     GetLastOpenedLibrariesMessage,
     OpenLibraryMessage,
 } from '../../../main/messaging/messagesLibrary';
+import { SidebarMenu } from '../../components/sidebarmenu/SidebarMenu';
+import { SidebarMenuAction } from '../../components/sidebarmenu/SidebarMenuAction';
+import { DialogCreateLibrary } from './dialogCreateLibrary';
+import { NotificationStack } from '../../components/modal/NotificationStack';
+import { SidebarMenuSectionTitle } from '../../components/sidebarmenu/SidebarMenuSectionTitle';
+import { SidebarMenuSpacer } from '../../components/sidebarmenu/SidebarMenuSpacer';
+import { H2Text } from '../../components/text/Text';
 
 const electron = window.require('electron');
 const { ipcRenderer } = window.require('electron');
@@ -158,31 +161,33 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
     render(): ReactElement {
         return (
             <Box fill={Fill.TRUE}>
-                <Grid columns={['1fr', '2fr']} rows={['1fr']} fill={Fill.TRUE}>
+
+                <Grid columns={['var(--s-12)', '1fr']} rows={['1fr']} fill={Fill.TRUE}>
+                    <SidebarMenu align={AlignMain.CENTER}>
+                        <H2Text className={"padding-s-1"}>SimpleLibrary</H2Text>
+                        <SidebarMenuAction onClick={this.onCreateNewLibrary}>Create New Library</SidebarMenuAction>
+                        <SidebarMenuAction onClick={this.onOpenLibrary}>Open Library</SidebarMenuAction>
+                        <SidebarMenuSectionTitle>Recently Used</SidebarMenuSectionTitle>
+                        {this.state.recentlyUsed.map(entry => {
+                            return (
+                                <SidebarMenuAction onClick={() => this.onOpenRecentlyUsed(entry)}
+                                                   key={entry.url}>
+                                    {entry.name}
+                                </SidebarMenuAction>
+                            );
+                        })}
+                        <SidebarMenuSpacer />
+                        <SidebarMenuAction onClick={this.props.onChangeTheme} align={AlignMain.END}>Toggle Theme</SidebarMenuAction>
+                    </SidebarMenu>
                     <Image url={imgWelcome} />
-                    <VBox alignMain={AlignMain.CENTER} alignCross={AlignCross.CENTER} spacing={Size.S_1_5}>
-                        <VBox alignCross={AlignCross.CENTER}>
-                            <H1Text>Welcome</H1Text>
-                            <CaptionText>Simple Library - v0.1.0</CaptionText>
-                        </VBox>
-                        <VBox alignCross={AlignCross.CENTER} spacing={Size.S_0_5}>
-                            <ButtonFilled onClick={this.onCreateNewLibrary}>Create New Library</ButtonFilled>
-                            <ButtonFilled onClick={this.onOpenLibrary}>Open Library</ButtonFilled>
-                        </VBox>
-                        {this.state.recentlyUsed.length > 0 && (
-                            <VBox alignCross={AlignCross.CENTER}>
-                                <H3Text>Recently used:</H3Text>
-                                {this.state.recentlyUsed.map(entry =>
-                                    <ButtonText key={entry.url} onClick={() => this.onOpenRecentlyUsed(entry)}>{entry.name}</ButtonText>)}
-                            </VBox>
-                        )}
-                    </VBox>
                 </Grid>
+
                 <DialogCreateLibrary
                     show={this.state.showCreateLibraryDialog}
                     onClose={this.onCancelCreateNewLibrary}
                     onCreate={this.createNewLibrary}
                 />
+
                 <NotificationStack modalRootId='root' notifications={
                     this.state.notifications.map(notification => ({
                         gradient: notification.type,
@@ -192,6 +197,7 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
                         onClose: () => this.removeNotification(notification.uid),
                     }))
                 } />
+
             </Box>
         );
     }
