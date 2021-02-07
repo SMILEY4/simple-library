@@ -1,6 +1,19 @@
 import * as React from 'react';
 import { useState } from 'react';
 import "./showcase.css";
+import {
+    AiFillCaretRight,
+    AiFillFolder,
+    AiFillHome,
+    AiOutlineAlignCenter,
+    AiOutlineAlignLeft,
+    AiOutlineAlignRight,
+    AiOutlineSearch,
+} from 'react-icons/all';
+import { InputField } from '../inputfield/InputField';
+import { GroupPosition, Type, Variant } from '../common';
+import { LabelBox } from '../text/LabelBox';
+import { Button } from '../button/Button';
 import { Text, TextVariant } from '../text/Text';
 
 export function ComponentShowcaseView(): any {
@@ -9,7 +22,7 @@ export function ComponentShowcaseView(): any {
     const bgNr = (theme === "light-0" || theme === "dark-0") ? "0" : "1";
     return (
         <div className={
-            "showcase-view"
+            "_showcase-view"
             + " theme-" + themeName
             + " background-" + bgNr
         }>
@@ -24,6 +37,122 @@ export function ComponentShowcaseView(): any {
             </div>
         </div>
     );
+
+
+    function renderInputField() {
+        return (
+            <>
+                <h3>Input Field</h3>
+                <ShowcaseRow>
+                    <InputField placeholder={"Input"}
+                                initialValue={"Initial"}
+                                onChange={value => console.log("changed:" + value)}
+                                onAccept={value => console.log("accept:" + value)} />
+                    <InputField disabled={true} initialValue={"Disabled"} />
+                    <InputField locked={true} initialValue={"Locked"} />
+                </ShowcaseRow>
+                <ShowcaseRow>
+                    <InputField icon={<AiOutlineSearch />} placeholder={"Icon Left"} />
+                    <InputField iconRight={<AiOutlineSearch />} placeholder={"Icon Right"} />
+                    <InputField icon={<AiFillFolder />} iconRight={<AiOutlineSearch />} placeholder={"Two Icons"} />
+                </ShowcaseRow>
+
+                <InputField placeholder={"example.com"}
+                            contentLeading={
+                                <LabelBox variant={Variant.OUTLINE} groupPos={GroupPosition.START}>https://</LabelBox>
+                            }
+                />
+                <InputField placeholder={"info.example"}
+                            contentTrailing={
+                                <LabelBox variant={Variant.OUTLINE} groupPos={GroupPosition.END}>@email.me</LabelBox>
+                            }
+                />
+                <InputField placeholder={"example"}
+                            contentLeading={
+                                <LabelBox variant={Variant.OUTLINE} groupPos={GroupPosition.START}>https://</LabelBox>
+                            }
+                            contentTrailing={
+                                <LabelBox variant={Variant.OUTLINE} groupPos={GroupPosition.END}>.com</LabelBox>
+                            }
+                />
+
+                <InputField placeholder={"Input"}
+                            icon={<AiOutlineSearch />}
+                            contentTrailing={
+                                <Button variant={Variant.SOLID} groupPos={GroupPosition.END}>Search</Button>
+                            }
+                />
+
+            </>
+        );
+    }
+
+
+    function renderButtonRow(type?: Type) {
+        return (
+            <ShowcaseRow>
+                <Button type={type} variant={Variant.SOLID}>Solid</Button>
+                <Button type={type} variant={Variant.OUTLINE}>Outline</Button>
+                <Button type={type} variant={Variant.GHOST}>Ghost</Button>
+                <Button type={type} variant={Variant.LINK}>Link</Button>
+                <Button type={type} disabled={true} variant={Variant.SOLID}>Solid</Button>
+                <Button type={type} disabled={true} variant={Variant.OUTLINE}>Outline</Button>
+                <Button type={type} disabled={true} variant={Variant.GHOST}>Ghost</Button>
+                <Button type={type} disabled={true} variant={Variant.LINK}>Link</Button>
+            </ShowcaseRow>
+        );
+    }
+
+    function renderButtons() {
+        return (
+            <>
+                <h3>Buttons</h3>
+                {renderButtonRow()}
+                {renderButtonRow(Type.PRIMARY)}
+                {renderButtonRow(Type.SUCCESS)}
+                {renderButtonRow(Type.ERROR)}
+                {renderButtonRow(Type.WARN)}
+                <ShowcaseRow>
+                    <Button type={Type.PRIMARY} variant={Variant.SOLID} icon={<AiFillHome />}>With
+                        Icon</Button>
+                    <Button variant={Variant.SOLID} icon={<AiFillHome />}>With Icon</Button>
+                    <Button variant={Variant.OUTLINE} icon={<AiFillHome />}>With Icon</Button>
+                    <Button variant={Variant.GHOST} icon={<AiFillHome />}>With Icon</Button>
+                    <Button variant={Variant.LINK} icon={<AiFillHome />}>With Icon</Button>
+                </ShowcaseRow>
+                <Button variant={Variant.SOLID} icon={<AiFillHome />} iconRight={<AiFillCaretRight />}>Two
+                    Icons</Button>
+                <ShowcaseRow>
+                    <Button type={Type.PRIMARY} variant={Variant.SOLID} icon={<AiFillHome />} />
+                    <Button variant={Variant.SOLID} icon={<AiFillHome />} />
+                    <Button variant={Variant.OUTLINE} icon={<AiFillHome />} />
+                    <Button variant={Variant.GHOST} icon={<AiFillHome />} />
+                    <Button variant={Variant.LINK} icon={<AiFillHome />} />
+                </ShowcaseRow>
+                <ShowcaseRow>
+                    <div style={{ display: 'flex' }}>
+                        <Button variant={Variant.SOLID} groupPos={GroupPosition.START}>Start</Button>
+                        <Button variant={Variant.SOLID} groupPos={GroupPosition.MIDDLE}>Middle</Button>
+                        <Button variant={Variant.SOLID} groupPos={GroupPosition.MIDDLE}>Middle</Button>
+                        <Button variant={Variant.SOLID} groupPos={GroupPosition.END}>End</Button>
+                    </div>
+                    <div style={{ display: 'flex' }}>
+                        <Button variant={Variant.OUTLINE} groupPos={GroupPosition.START}>Start</Button>
+                        <Button variant={Variant.OUTLINE} groupPos={GroupPosition.MIDDLE}>Middle</Button>
+                        <Button variant={Variant.OUTLINE} groupPos={GroupPosition.MIDDLE}>Middle</Button>
+                        <Button variant={Variant.OUTLINE} groupPos={GroupPosition.END}>End</Button>
+                    </div>
+                    <div style={{ display: 'flex' }}>
+                        <Button variant={Variant.SOLID} groupPos={GroupPosition.START} icon={<AiOutlineAlignRight />} />
+                        <Button variant={Variant.SOLID} groupPos={GroupPosition.MIDDLE} icon={
+                            <AiOutlineAlignCenter />} />
+                        <Button variant={Variant.SOLID} groupPos={GroupPosition.END} icon={<AiOutlineAlignLeft />} />
+                    </div>
+                </ShowcaseRow>
+
+            </>
+        );
+    }
 
     function renderText() {
         return (
@@ -44,6 +173,8 @@ export function ComponentShowcaseView(): any {
     function renderContent() {
         return (
             <>
+                {renderInputField()}
+                {renderButtons()}
                 {renderText()}
             </>
         );

@@ -1,3 +1,23 @@
+export enum GroupPosition {
+    START = "start",
+    MIDDLE = "middle",
+    END = "end",
+}
+
+export enum Variant {
+    SOLID = "solid",
+    OUTLINE = "outline",
+    GHOST = "ghost",
+    LINK = "link"
+}
+
+export enum Type {
+    PRIMARY = "primary",
+    SUCCESS = "success",
+    ERROR = "error",
+    WARN = "warn"
+}
+
 export enum AlignMain {
     START = 'start',
     END = 'end',
@@ -25,25 +45,6 @@ export enum Fill {
     VERT = 'vert',
     TRUE = 'both'
 }
-
-export enum HighlightType {
-    NONE = 'none',
-    DEFAULT = 'default',
-    INFO = 'info',
-    SUCCESS = 'success',
-    ERROR = 'error',
-    WARN = 'warn'
-}
-
-
-export enum StyleType {
-    FILLED = 'filled',
-    GHOST = 'ghost',
-    GHOST_BG0 = 'ghost-bg0',
-    GHOST_BG1 = 'ghost-bg1',
-    TEXT = 'text',
-}
-
 
 export enum Size {
     S_0_25 = 's-0-25',

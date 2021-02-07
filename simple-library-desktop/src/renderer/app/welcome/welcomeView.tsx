@@ -2,9 +2,8 @@ import * as React from 'react';
 import { Component, ReactElement } from 'react';
 import './welcome.css';
 import { Theme } from '../application';
-import { AlignMain, Fill, HighlightType } from '../../components/common';
+import { AlignMain, Fill } from '../../components/common';
 import imgWelcome from './imgWelcome.jpg';
-import { Image } from '../../components/image/Image';
 import { Box } from '../../components/layout/Box';
 import { Grid } from '../../components/layout/Grid';
 import {
@@ -15,7 +14,6 @@ import {
 import { SidebarMenu } from '../../components/sidebarmenu/SidebarMenu';
 import { SidebarMenuAction } from '../../components/sidebarmenu/SidebarMenuAction';
 import { DialogCreateLibrary } from './dialogCreateLibrary';
-import { NotificationStack } from '../../components/modal/NotificationStack';
 import { SidebarMenuSectionTitle } from '../../components/sidebarmenu/SidebarMenuSectionTitle';
 import { SidebarMenuSpacer } from '../../components/sidebarmenu/SidebarMenuSpacer';
 import { H2Text } from '../../components/text/Text';
@@ -43,7 +41,7 @@ type LibraryEntry = {
 interface NotificationEntry {
     title: string,
     text: string,
-    type: HighlightType,
+    // type: HighlightType,
     uid: string,
 }
 
@@ -144,7 +142,7 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
         const notification: NotificationEntry = {
             title: title,
             text: text,
-            type: HighlightType.ERROR,
+            // type: HighlightType.ERROR,
             uid: '' + Date.now(),
         };
         this.setState(prevState => ({
@@ -179,7 +177,7 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
                         <SidebarMenuSpacer />
                         <SidebarMenuAction onClick={this.props.onChangeTheme} align={AlignMain.END}>Toggle Theme</SidebarMenuAction>
                     </SidebarMenu>
-                    <Image url={imgWelcome} />
+                    {/*<Image url={imgWelcome} />*/}
                 </Grid>
 
                 <DialogCreateLibrary
@@ -188,15 +186,15 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
                     onCreate={this.createNewLibrary}
                 />
 
-                <NotificationStack modalRootId='root' notifications={
-                    this.state.notifications.map(notification => ({
-                        gradient: notification.type,
-                        title: notification.title,
-                        content: notification.text,
-                        withCloseButton: true,
-                        onClose: () => this.removeNotification(notification.uid),
-                    }))
-                } />
+                {/*<NotificationStack modalRootId='root' notifications={*/}
+                {/*    this.state.notifications.map(notification => ({*/}
+                {/*        gradient: notification.type,*/}
+                {/*        title: notification.title,*/}
+                {/*        content: notification.text,*/}
+                {/*        withCloseButton: true,*/}
+                {/*        onClose: () => this.removeNotification(notification.uid),*/}
+                {/*    }))*/}
+                {/*} />*/}
 
             </Box>
         );

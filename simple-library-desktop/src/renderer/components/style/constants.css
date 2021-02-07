@@ -1,25 +1,28 @@
 * {
 
-	--background-color-light-0: hsl(223, 23%, 94%);
-	--background-color-light-1: hsl(228, 0%, 100%);
+	--background-color-light-0: hsl(223, 54%, 97%);
+	--background-color-light-1: hsl(0, 0%, 100%);
 
-	--base-color-light-0:       hsl(228, 23%, 98%);
-	--base-color-light-1:       hsl(231, 14%, 90%);
-	--base-color-light-2:       hsl(228, 9%, 86%);
-	--base-color-light-3:       hsl(228, 6%, 80%);
+	--base-color-light-0:       hsl(231, 14%, 90%);
+	--base-color-light-1:       hsl(228, 9%, 86%);
+	--base-color-light-2:       hsl(228, 6%, 83%);
+	--base-color-light-3:       hsl(228, 3%, 80%);
+	--base-color-light-4:       hsl(228, 3%, 73%);
 
-	--text-color-light-0:       hsl(0, 0%, 65%);
-	--text-color-light-1:       hsl(0, 0%, 25%);
+	--text-color-light-0:       hsl(0, 0%, 63%);
+	--text-color-light-1:       hsl(0, 0%, 27%);
 	--text-color-light-2:       hsl(0, 0%, 12%);
 	--text-color-light-3:       hsl(0, 0%, 45%);
+
 
 	--background-color-dark-0:  hsl(195, 3%, 25%);
 	--background-color-dark-1:  hsl(195, 3%, 20%);
 
-	--base-color-dark-0:        hsl(195, 3%, 23%);
+	--base-color-dark-0:        hsl(195, 3%, 28%);
 	--base-color-dark-1:        hsl(195, 2%, 30%);
 	--base-color-dark-2:        hsl(195, 2%, 33%);
-	--base-color-dark-3:        hsl(195, 2%, 40%);
+	--base-color-dark-3:        hsl(195, 2%, 36%);
+	--base-color-dark-4:        hsl(195, 2%, 40%);
 
 	--text-color-dark-0:        hsl(0, 0%, 55%);
 	--text-color-dark-1:        hsl(0, 0%, 80%);
@@ -29,29 +32,55 @@
 	--overlay-color-light:      hsla(0, 0%, 0%, 0.3);
 	--overlay-color-dark:       hsla(0, 0%, 60%, 0.3);
 
-	--gradient-none-0:          linear-gradient(155deg, var(--base-color-3), var(--base-color-3));
-	--gradient-info-0:          linear-gradient(155deg, hsl(196, 100%, 74%), hsl(236, 100%, 64%));
-	--gradient-success-0:       linear-gradient(155deg, hsl(87, 67%, 63%), hsl(101, 57%, 43%));
-	--gradient-error-0:         linear-gradient(155deg, hsl(10, 100%, 56%), hsl(333, 80%, 50%));
-	--gradient-warn-0:          linear-gradient(155deg, hsl(46, 89%, 64%), hsl(13, 96%, 71%));
+	--color-primary-light-0:    hsl(204, 55%, 90%);
+	--color-primary-light-1:    hsl(204, 50%, 85%);
+	--color-primary-light-2:    hsl(204, 70%, 50%);
+	--color-primary-light-3:    hsl(204, 70%, 48%);
+	--color-primary-light-4:    hsl(204, 70%, 46%);
 
-	--gradient-none-light-1:    linear-gradient(155deg, var(--background-color-1), var(--background-color-1));
-	--gradient-info-light-1:    linear-gradient(155deg, hsl(196, 100%, 90%), hsl(236, 100%, 90%));
-	--gradient-success-light-1: linear-gradient(155deg, hsl(87, 67%, 90%), hsl(101, 57%, 90%));
-	--gradient-error-light-1:   linear-gradient(155deg, hsl(10, 100%, 90%), hsl(333, 73%, 90%));
-	--gradient-warn-light-1:    linear-gradient(155deg, hsl(46, 89%, 90%), hsl(13, 97%, 90%));
+	--color-primary-dark-0:     hsl(204, 20%, 28%);
+	--color-primary-dark-1:     hsl(204, 25%, 32%);
+	--color-primary-dark-2:     hsl(204, 70%, 50%);
+	--color-primary-dark-3:     hsl(204, 70%, 48%);
+	--color-primary-dark-4:     hsl(204, 70%, 46%);
 
-	--gradient-none-dark-1:     linear-gradient(155deg, var(--background-color-1), var(--background-color-1));
-	--gradient-info-dark-1:     linear-gradient(155deg, hsl(196, 30%, 20%), hsl(236, 30%, 20%));
-	--gradient-success-dark-1:  linear-gradient(155deg, hsl(87, 17%, 20%), hsl(101, 17%, 20%));
-	--gradient-error-dark-1:    linear-gradient(155deg, hsl(10, 30%, 20%), hsl(333, 23%, 20%));
-	--gradient-warn-dark-1:     linear-gradient(155deg, hsl(46, 29%, 20%), hsl(13, 30%, 20%));
+	--color-success-light-0:    hsl(145, 55%, 90%);
+	--color-success-light-1:    hsl(145, 50%, 85%);
+	--color-success-light-2:    hsl(145, 63%, 46%);
+	--color-success-light-3:    hsl(145, 63%, 44%);
+	--color-success-light-4:    hsl(145, 63%, 42%);
+
+	--color-success-dark-0:     hsl(145, 20%, 30%);
+	--color-success-dark-1:     hsl(145, 25%, 32%);
+	--color-success-dark-2:     hsl(145, 63%, 46%);
+	--color-success-dark-3:     hsl(145, 63%, 44%);
+	--color-success-dark-4:     hsl(145, 63%, 42%);
+
+	--color-error-light-0:      hsl(6, 55%, 90%);
+	--color-error-light-1:      hsl(6, 25%, 85%);
+	--color-error-light-2:      hsl(6, 78%, 55%);
+	--color-error-light-3:      hsl(6, 78%, 50%);
+	--color-error-light-4:      hsl(6, 78%, 46%);
+
+	--color-error-dark-0:       hsl(6, 20%, 30%);
+	--color-error-dark-1:       hsl(6, 25%, 32%);
+	--color-error-dark-2:       hsl(6, 78%, 55%);
+	--color-error-dark-3:       hsl(6, 78%, 50%);
+	--color-error-dark-4:       hsl(6, 78%, 46%);
+
+	--color-warn-light-0:       hsl(37, 55%, 90%);
+	--color-warn-light-1:       hsl(37, 50%, 85%);
+	--color-warn-light-2:       hsl(37, 90%, 48%);
+	--color-warn-light-3:       hsl(37, 90%, 46%);
+	--color-warn-light-4:       hsl(37, 90%, 44%);
+
+	--color-warn-dark-0:        hsl(37, 20%, 30%);
+	--color-warn-dark-1:        hsl(37, 25%, 32%);
+	--color-warn-dark-2:        hsl(37, 90%, 48%);
+	--color-warn-dark-3:        hsl(37, 90%, 46%);
+	--color-warn-dark-4:        hsl(37, 90%, 44%);
 
 	--default-duration:         0.2s;
-
-	--font--size-default:       13px;
-	--font-size-small:          11px;
-	--font-size-tiny:           9px;
 
 	--font-size-0:              10px;
 	--font-size-1:              12px;
@@ -82,4 +111,6 @@
 	--s-32:                     calc(16px * 32);
 	--s-40:                     calc(16px * 40);
 	--s-48:                     calc(16px * 48);
+
+	--radius-0:                 5px;
 }

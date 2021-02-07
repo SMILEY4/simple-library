@@ -1,13 +1,3 @@
-/*
-A container that lays out its children in one direction
-
-
-Sub-Components
-- VBox (dir=down)
-- HBox (dir=right)
-- CBox (align=centered)
- */
-
 import * as React from 'react';
 import { ReactElement } from 'react';
 import './box.css';
