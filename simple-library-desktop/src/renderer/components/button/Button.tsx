@@ -10,6 +10,8 @@ interface ButtonProps {
     icon?: any,
     iconRight?: any
     disabled?: boolean,
+    onAction?: () => void,
+    renderAsActive?: boolean
 }
 
 type ButtonReactProps = React.PropsWithChildren<ButtonProps>;
@@ -25,11 +27,12 @@ export function Button(props: ButtonReactProps): ReactElement {
             map(props.groupPos, (groupPos) => 'button-group-pos-' + groupPos),
             ((props.icon || props.iconRight) && props.children) ? "button-mixed" : null,
             props.disabled === true ? "button-disabled" : null,
+            props.renderAsActive === true ? "button-render-as-active" : null,
         );
     }
 
     return (
-        <div className={getClassNames(props)}>
+        <div className={getClassNames(props)} onClick={props.onAction}>
             {props.icon ? props.icon : null}
             <div className={"button-text"}>
                 {props.children}

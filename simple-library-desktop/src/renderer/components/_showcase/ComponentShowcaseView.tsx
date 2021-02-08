@@ -15,6 +15,7 @@ import { GroupPosition, Type, Variant } from '../common';
 import { LabelBox } from '../text/LabelBox';
 import { Button } from '../button/Button';
 import { Text, TextVariant } from '../text/Text';
+import { ToggleButton } from '../button/ToggleButton';
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0");
@@ -103,6 +104,45 @@ export function ComponentShowcaseView(): any {
         );
     }
 
+    function renderToggleButtons() {
+        return (
+            <>
+                <h3>Toggle Buttons</h3>
+                <ToggleButton variant={Variant.SOLID}>Toggle</ToggleButton>
+
+                <ShowcaseRow>
+
+                    <div style={{ display: 'flex' }}>
+                        <ToggleButton variant={Variant.SOLID} groupPos={GroupPosition.START} icon={<AiOutlineAlignRight />} />
+                        <ToggleButton variant={Variant.SOLID} groupPos={GroupPosition.MIDDLE} icon={<AiOutlineAlignCenter />} />
+                        <ToggleButton variant={Variant.SOLID} groupPos={GroupPosition.END} icon={<AiOutlineAlignLeft />} />
+                    </div>
+
+                    <div style={{ display: 'flex' }}>
+                        <ToggleButton variant={Variant.SOLID} type={Type.PRIMARY} groupPos={GroupPosition.START} icon={<AiOutlineAlignRight />} />
+                        <ToggleButton variant={Variant.SOLID} type={Type.PRIMARY} groupPos={GroupPosition.MIDDLE} icon={<AiOutlineAlignCenter />} />
+                        <ToggleButton variant={Variant.SOLID} type={Type.PRIMARY} groupPos={GroupPosition.END} icon={<AiOutlineAlignLeft />} />
+                    </div>
+
+                    <div style={{ display: 'flex' }}>
+                        <ToggleButton variant={Variant.OUTLINE} groupPos={GroupPosition.START} icon={<AiOutlineAlignRight />} />
+                        <ToggleButton variant={Variant.OUTLINE} groupPos={GroupPosition.MIDDLE} icon={<AiOutlineAlignCenter />} />
+                        <ToggleButton variant={Variant.OUTLINE} groupPos={GroupPosition.END} icon={<AiOutlineAlignLeft />} />
+                    </div>
+
+                    <div style={{ display: 'flex' }}>
+                        <ToggleButton variant={Variant.GHOST} groupPos={GroupPosition.START} icon={<AiOutlineAlignRight />} />
+                        <ToggleButton variant={Variant.GHOST} groupPos={GroupPosition.MIDDLE} icon={<AiOutlineAlignCenter />} />
+                        <ToggleButton variant={Variant.GHOST} groupPos={GroupPosition.END} icon={<AiOutlineAlignLeft />} />
+                    </div>
+
+                </ShowcaseRow>
+
+
+            </>
+        );
+    }
+
     function renderButtons() {
         return (
             <>
@@ -174,6 +214,7 @@ export function ComponentShowcaseView(): any {
         return (
             <>
                 {renderInputField()}
+                {renderToggleButtons()}
                 {renderButtons()}
                 {renderText()}
             </>
