@@ -16,6 +16,8 @@ import { LabelBox } from '../text/LabelBox';
 import { Button } from '../button/Button';
 import { Text, TextVariant } from '../text/Text';
 import { ToggleButton } from '../button/ToggleButton';
+import { SFInputField } from '../inputfield/SFInputField';
+import { SFToggleButton } from '../button/SFToggleButton';
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0");
@@ -45,30 +47,30 @@ export function ComponentShowcaseView(): any {
             <>
                 <h3>Input Field</h3>
                 <ShowcaseRow>
-                    <InputField placeholder={"Input"}
-                                initialValue={"Initial"}
+                    <SFInputField placeholder={"Input"}
+                                value={"Initial"}
                                 onChange={value => console.log("changed:" + value)}
                                 onAccept={value => console.log("accept:" + value)} />
-                    <InputField disabled={true} initialValue={"Disabled"} />
-                    <InputField locked={true} initialValue={"Locked"} />
+                    <SFInputField disabled={true} value={"Disabled"} />
+                    <SFInputField locked={true} value={"Locked"} />
                 </ShowcaseRow>
                 <ShowcaseRow>
-                    <InputField icon={<AiOutlineSearch />} placeholder={"Icon Left"} />
-                    <InputField iconRight={<AiOutlineSearch />} placeholder={"Icon Right"} />
-                    <InputField icon={<AiFillFolder />} iconRight={<AiOutlineSearch />} placeholder={"Two Icons"} />
+                    <SFInputField icon={<AiOutlineSearch />} placeholder={"Icon Left"} />
+                    <SFInputField iconRight={<AiOutlineSearch />} placeholder={"Icon Right"} />
+                    <SFInputField icon={<AiFillFolder />} iconRight={<AiOutlineSearch />} placeholder={"Two Icons"} />
                 </ShowcaseRow>
 
-                <InputField placeholder={"example.com"}
+                <SFInputField placeholder={"example.com"}
                             contentLeading={
                                 <LabelBox variant={Variant.OUTLINE} groupPos={GroupPosition.START}>https://</LabelBox>
                             }
                 />
-                <InputField placeholder={"info.example"}
+                <SFInputField placeholder={"info.example"}
                             contentTrailing={
                                 <LabelBox variant={Variant.OUTLINE} groupPos={GroupPosition.END}>@email.me</LabelBox>
                             }
                 />
-                <InputField placeholder={"example"}
+                <SFInputField placeholder={"example"}
                             contentLeading={
                                 <LabelBox variant={Variant.OUTLINE} groupPos={GroupPosition.START}>https://</LabelBox>
                             }
@@ -77,7 +79,7 @@ export function ComponentShowcaseView(): any {
                             }
                 />
 
-                <InputField placeholder={"Input"}
+                <SFInputField placeholder={"Input"}
                             icon={<AiOutlineSearch />}
                             contentTrailing={
                                 <Button variant={Variant.SOLID} groupPos={GroupPosition.END}>Search</Button>
@@ -108,32 +110,32 @@ export function ComponentShowcaseView(): any {
         return (
             <>
                 <h3>Toggle Buttons</h3>
-                <ToggleButton variant={Variant.SOLID}>Toggle</ToggleButton>
+                <SFToggleButton variant={Variant.SOLID} onToggle={(value) => console.log("toggle " + value)}>Toggle</SFToggleButton>
 
                 <ShowcaseRow>
 
                     <div style={{ display: 'flex' }}>
-                        <ToggleButton variant={Variant.SOLID} groupPos={GroupPosition.START} icon={<AiOutlineAlignRight />} />
-                        <ToggleButton variant={Variant.SOLID} groupPos={GroupPosition.MIDDLE} icon={<AiOutlineAlignCenter />} />
-                        <ToggleButton variant={Variant.SOLID} groupPos={GroupPosition.END} icon={<AiOutlineAlignLeft />} />
+                        <SFToggleButton variant={Variant.SOLID} groupPos={GroupPosition.START} icon={<AiOutlineAlignRight />} />
+                        <SFToggleButton variant={Variant.SOLID} groupPos={GroupPosition.MIDDLE} icon={<AiOutlineAlignCenter />} />
+                        <SFToggleButton variant={Variant.SOLID} groupPos={GroupPosition.END} icon={<AiOutlineAlignLeft />} />
                     </div>
 
                     <div style={{ display: 'flex' }}>
-                        <ToggleButton variant={Variant.SOLID} type={Type.PRIMARY} groupPos={GroupPosition.START} icon={<AiOutlineAlignRight />} />
-                        <ToggleButton variant={Variant.SOLID} type={Type.PRIMARY} groupPos={GroupPosition.MIDDLE} icon={<AiOutlineAlignCenter />} />
-                        <ToggleButton variant={Variant.SOLID} type={Type.PRIMARY} groupPos={GroupPosition.END} icon={<AiOutlineAlignLeft />} />
+                        <SFToggleButton variant={Variant.SOLID} type={Type.PRIMARY} groupPos={GroupPosition.START} icon={<AiOutlineAlignRight />} />
+                        <SFToggleButton variant={Variant.SOLID} type={Type.PRIMARY} groupPos={GroupPosition.MIDDLE} icon={<AiOutlineAlignCenter />} />
+                        <SFToggleButton variant={Variant.SOLID} type={Type.PRIMARY} groupPos={GroupPosition.END} icon={<AiOutlineAlignLeft />} />
                     </div>
 
                     <div style={{ display: 'flex' }}>
-                        <ToggleButton variant={Variant.OUTLINE} groupPos={GroupPosition.START} icon={<AiOutlineAlignRight />} />
-                        <ToggleButton variant={Variant.OUTLINE} groupPos={GroupPosition.MIDDLE} icon={<AiOutlineAlignCenter />} />
-                        <ToggleButton variant={Variant.OUTLINE} groupPos={GroupPosition.END} icon={<AiOutlineAlignLeft />} />
+                        <SFToggleButton variant={Variant.OUTLINE} groupPos={GroupPosition.START} icon={<AiOutlineAlignRight />} />
+                        <SFToggleButton variant={Variant.OUTLINE} groupPos={GroupPosition.MIDDLE} icon={<AiOutlineAlignCenter />} />
+                        <SFToggleButton variant={Variant.OUTLINE} groupPos={GroupPosition.END} icon={<AiOutlineAlignLeft />} />
                     </div>
 
                     <div style={{ display: 'flex' }}>
-                        <ToggleButton variant={Variant.GHOST} groupPos={GroupPosition.START} icon={<AiOutlineAlignRight />} />
-                        <ToggleButton variant={Variant.GHOST} groupPos={GroupPosition.MIDDLE} icon={<AiOutlineAlignCenter />} />
-                        <ToggleButton variant={Variant.GHOST} groupPos={GroupPosition.END} icon={<AiOutlineAlignLeft />} />
+                        <SFToggleButton variant={Variant.GHOST} groupPos={GroupPosition.START} icon={<AiOutlineAlignRight />} />
+                        <SFToggleButton variant={Variant.GHOST} groupPos={GroupPosition.MIDDLE} icon={<AiOutlineAlignCenter />} />
+                        <SFToggleButton variant={Variant.GHOST} groupPos={GroupPosition.END} icon={<AiOutlineAlignLeft />} />
                     </div>
 
                 </ShowcaseRow>

@@ -1,54 +1,32 @@
 import * as React from 'react';
-import { Component } from 'react';
-import { GroupPosition, Type, Variant } from '../common';
-import { Button } from './Button';
+import { ReactElement } from 'react';
+import { Button, ButtonProps } from './Button';
 
-interface ToggleButtonProps {
-    active?: boolean,
-    variant: Variant,
-    type?: Type,
-    groupPos?: GroupPosition,
-    icon?: any,
-    iconRight?: any
-    disabled?: boolean,
+
+export interface ToggleButtonProps extends Omit<ButtonProps, 'renderAsActive'> {
     onToggle?: (active: boolean) => void
+    active?: boolean,
 }
 
-interface ToggleButtonState {
-    active: boolean
-}
+export function ToggleButton(props: React.PropsWithChildren<ToggleButtonProps>): ReactElement {
 
-export class ToggleButton extends Component<ToggleButtonProps, ToggleButtonState> {
-
-    constructor(props: Readonly<ToggleButtonProps>) {
-        super(props);
-        this.state = {
-            active: props.active === true,
-        };
-        this.handleClick = this.handleClick.bind(this);
-    }
-
-    handleClick() {
-        const nextActive: boolean = !this.state.active;
-        if (this.props.onToggle) {
-            this.props.onToggle(nextActive);
+    function handleClick() {
+        if (props.onToggle && !props.disabled) {
+            props.onToggle(!props.active);
         }
-        console.log(nextActive)
-        this.setState({
-            active: nextActive,
-        });
     }
 
-    render() {
-        const buttonProps: any = {
-            renderAsActive: this.state.active,
-            onAction: this.handleClick,
-            ...this.props,
+    function getButtonProps(): ButtonProps {
+        return {
+            renderAsActive: props.active,
+            onAction: handleClick,
+            ...props,
         };
-        return (
-            <Button {...buttonProps}>
-                {this.props.children}
-            </Button>
-        );
     }
+
+    return (
+        <Button {...getButtonProps()}>
+            {props.children}
+        </Button>
+    );
 }

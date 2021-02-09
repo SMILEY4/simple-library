@@ -3,7 +3,7 @@ import { ReactElement } from 'react';
 import "./button.css";
 import { concatClasses, GroupPosition, map, Type, Variant } from '../common';
 
-interface ButtonProps {
+export interface ButtonProps {
     variant: Variant,
     type?: Type,
     groupPos?: GroupPosition,

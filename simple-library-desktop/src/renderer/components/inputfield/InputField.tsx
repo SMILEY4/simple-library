@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { Component } from 'react';
+import { ReactElement } from 'react';
 import "./inputfield.css";
 import { concatClasses, GroupPosition, map } from '../common';
 
-interface InputFieldProps {
+export interface InputFieldProps {
     placeholder?: string,
-    initialValue?: string,
+    value?: string,
 
     disabled?: boolean,
     locked?: boolean,
@@ -20,96 +20,82 @@ interface InputFieldProps {
     onAccept?: (value: string) => void
 }
 
-interface InputFieldState {
-    value: string
-}
+export function InputField(props: React.PropsWithChildren<InputFieldProps>): ReactElement {
 
-
-export class InputField extends Component<InputFieldProps, InputFieldState> {
-
-    constructor(props: InputFieldProps) {
-        super(props);
-        this.state = {
-            value: props.initialValue || "",
-        };
-        this.handleChange = this.handleChange.bind(this);
-        this.handleLooseFocus = this.handleLooseFocus.bind(this);
-        this.handleKeyDown = this.handleKeyDown.bind(this);
-        this.calcGroupPosition = this.calcGroupPosition.bind(this);
-        this.getClassNames = this.getClassNames.bind(this);
-    }
-
-    handleChange(event: any) {
-        const newValue: string = event.target.value;
-        this.setState({ value: newValue });
-        if (this.props.onChange) {
-            this.props.onChange(newValue);
+    function callOnChange(value: string) {
+        if (props.onChange && !props.disabled && !props.locked) {
+            props.onChange(value);
         }
     }
 
-    handleLooseFocus(event: any) {
-        if (this.props.onAccept) {
-            this.props.onAccept(event.target.value);
+    function callOnAccept(value: string) {
+        if (props.onAccept && !props.disabled && !props.locked) {
+            props.onAccept(value);
         }
     }
 
-    handleKeyDown(event: any) {
-        if (this.props.onAccept && event.key === 'Enter') {
-            this.props.onAccept(event.target.value);
+    function handleChange(event: any) {
+        callOnChange(event.target.value);
+    }
+
+    function handleLooseFocus(event: any) {
+        callOnAccept(event.target.value);
+    }
+
+    function handleKeyDown(event: any) {
+        if (props.onAccept && event.key === 'Enter') {
+            callOnAccept(event.target.value);
             event.target.blur();
         }
     }
 
-    calcGroupPosition(): GroupPosition | undefined {
-        if (this.props.contentLeading && this.props.contentTrailing) {
+    function calcGroupPosition(): GroupPosition | undefined {
+        if (props.contentLeading && props.contentTrailing) {
             return GroupPosition.MIDDLE;
-        } else if (!this.props.contentLeading && this.props.contentTrailing) {
+        } else if (!props.contentLeading && props.contentTrailing) {
             return GroupPosition.START;
-        } else if (this.props.contentLeading && !this.props.contentTrailing) {
+        } else if (props.contentLeading && !props.contentTrailing) {
             return GroupPosition.END;
         }
         return undefined;
     }
 
-    getClassNames() {
+    function getClassNames() {
         return concatClasses(
             "input-field",
-            map(this.props.disabled, (disabled) => 'input-field-disabled'),
-            map(this.props.locked, (locked) => 'input-field-locked'),
-            map(this.calcGroupPosition(), (groupPos) => 'input-field-group-pos-' + groupPos),
+            map(props.disabled, (disabled) => 'input-field-disabled'),
+            map(props.locked, (locked) => 'input-field-locked'),
+            map(calcGroupPosition(), (groupPos) => 'input-field-group-pos-' + groupPos),
         );
     }
 
 
-
-    render() {
-        return (
-            <div className={"input-field-wrapper"}>
-                {
-                    this.props.contentLeading
-                        ? this.props.contentLeading
-                        : null
-                }
-                <div className={this.getClassNames()}>
-                    {this.props.icon ? this.props.icon : null}
-                    <input className='input'
-                           type='text'
-                           disabled={this.props.disabled || this.props.locked}
-                           value={this.state.value}
-                           placeholder={this.props.placeholder}
-                           onChange={this.handleChange}
-                           onBlur={this.handleLooseFocus}
-                           onKeyDown={this.handleKeyDown}
-                    />
-                    {this.props.iconRight ? this.props.iconRight : null}
-                </div>
-                {
-                    this.props.contentTrailing
-                        ? this.props.contentTrailing
-                        : null
-                }
+    return (
+        <div className={"input-field-wrapper"}>
+            {
+                props.contentLeading
+                    ? props.contentLeading
+                    : null
+            }
+            <div className={getClassNames()}>
+                {props.icon ? props.icon : null}
+                <input className='input'
+                       type='text'
+                       disabled={props.disabled || props.locked}
+                       value={props.value}
+                       placeholder={props.placeholder}
+                       onChange={handleChange}
+                       onBlur={handleLooseFocus}
+                       onKeyDown={handleKeyDown}
+                />
+                {props.iconRight ? props.iconRight : null}
             </div>
+            {
+                props.contentTrailing
+                    ? props.contentTrailing
+                    : null
+            }
+        </div>
 
-        );
-    }
+    );
 }
