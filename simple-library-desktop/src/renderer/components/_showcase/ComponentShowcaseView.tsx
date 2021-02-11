@@ -10,14 +10,13 @@ import {
     AiOutlineAlignRight,
     AiOutlineSearch,
 } from 'react-icons/all';
-import { InputField } from '../inputfield/InputField';
 import { GroupPosition, Type, Variant } from '../common';
 import { LabelBox } from '../text/LabelBox';
 import { Button } from '../button/Button';
 import { Text, TextVariant } from '../text/Text';
-import { ToggleButton } from '../button/ToggleButton';
 import { SFInputField } from '../inputfield/SFInputField';
 import { SFToggleButton } from '../button/SFToggleButton';
+import { Dialog } from '../modal/Dialog';
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0");
@@ -41,6 +40,35 @@ export function ComponentShowcaseView(): any {
         </div>
     );
 
+    function renderDialogs() {
+        return (
+            <>
+                <h3>Dialogs</h3>
+                <ToggleableShowcase text='Open'>
+                    <Dialog show={true}
+                            title={"Some rather or lets say very long title"}
+                            closeButton={true}
+                            onClose={() => console.log("DialogAction: Close")}
+                            actions={[
+                                {
+                                    variant: Variant.OUTLINE,
+                                    content: "Cancel",
+                                    onAction: () => console.log("DialogAction: Cancel"),
+                                },
+                                {
+                                    variant: Variant.SOLID,
+                                    type: Type.PRIMARY,
+                                    content: "Accept",
+                                    onAction: () => console.log("DialogAction: Accept"),
+                                },
+                            ]}
+                    >
+                        Test Data
+                    </Dialog>
+                </ToggleableShowcase>
+            </>
+        );
+    }
 
     function renderInputField() {
         return (
@@ -48,9 +76,9 @@ export function ComponentShowcaseView(): any {
                 <h3>Input Field</h3>
                 <ShowcaseRow>
                     <SFInputField placeholder={"Input"}
-                                value={"Initial"}
-                                onChange={value => console.log("changed:" + value)}
-                                onAccept={value => console.log("accept:" + value)} />
+                                  value={"Initial"}
+                                  onChange={value => console.log("changed:" + value)}
+                                  onAccept={value => console.log("accept:" + value)} />
                     <SFInputField disabled={true} value={"Disabled"} />
                     <SFInputField locked={true} value={"Locked"} />
                 </ShowcaseRow>
@@ -61,35 +89,34 @@ export function ComponentShowcaseView(): any {
                 </ShowcaseRow>
 
                 <SFInputField placeholder={"example.com"}
-                            contentLeading={
-                                <LabelBox variant={Variant.OUTLINE} groupPos={GroupPosition.START}>https://</LabelBox>
-                            }
+                              contentLeading={
+                                  <LabelBox variant={Variant.OUTLINE} groupPos={GroupPosition.START}>https://</LabelBox>
+                              }
                 />
                 <SFInputField placeholder={"info.example"}
-                            contentTrailing={
-                                <LabelBox variant={Variant.OUTLINE} groupPos={GroupPosition.END}>@email.me</LabelBox>
-                            }
+                              contentTrailing={
+                                  <LabelBox variant={Variant.OUTLINE} groupPos={GroupPosition.END}>@email.me</LabelBox>
+                              }
                 />
                 <SFInputField placeholder={"example"}
-                            contentLeading={
-                                <LabelBox variant={Variant.OUTLINE} groupPos={GroupPosition.START}>https://</LabelBox>
-                            }
-                            contentTrailing={
-                                <LabelBox variant={Variant.OUTLINE} groupPos={GroupPosition.END}>.com</LabelBox>
-                            }
+                              contentLeading={
+                                  <LabelBox variant={Variant.OUTLINE} groupPos={GroupPosition.START}>https://</LabelBox>
+                              }
+                              contentTrailing={
+                                  <LabelBox variant={Variant.OUTLINE} groupPos={GroupPosition.END}>.com</LabelBox>
+                              }
                 />
 
                 <SFInputField placeholder={"Input"}
-                            icon={<AiOutlineSearch />}
-                            contentTrailing={
-                                <Button variant={Variant.SOLID} groupPos={GroupPosition.END}>Search</Button>
-                            }
+                              icon={<AiOutlineSearch />}
+                              contentTrailing={
+                                  <Button variant={Variant.SOLID} groupPos={GroupPosition.END}>Search</Button>
+                              }
                 />
 
             </>
         );
     }
-
 
     function renderButtonRow(type?: Type) {
         return (
@@ -115,27 +142,39 @@ export function ComponentShowcaseView(): any {
                 <ShowcaseRow>
 
                     <div style={{ display: 'flex' }}>
-                        <SFToggleButton variant={Variant.SOLID} groupPos={GroupPosition.START} icon={<AiOutlineAlignRight />} />
-                        <SFToggleButton variant={Variant.SOLID} groupPos={GroupPosition.MIDDLE} icon={<AiOutlineAlignCenter />} />
-                        <SFToggleButton variant={Variant.SOLID} groupPos={GroupPosition.END} icon={<AiOutlineAlignLeft />} />
+                        <SFToggleButton variant={Variant.SOLID} groupPos={GroupPosition.START} icon={
+                            <AiOutlineAlignRight />} />
+                        <SFToggleButton variant={Variant.SOLID} groupPos={GroupPosition.MIDDLE} icon={
+                            <AiOutlineAlignCenter />} />
+                        <SFToggleButton variant={Variant.SOLID} groupPos={GroupPosition.END} icon={
+                            <AiOutlineAlignLeft />} />
                     </div>
 
                     <div style={{ display: 'flex' }}>
-                        <SFToggleButton variant={Variant.SOLID} type={Type.PRIMARY} groupPos={GroupPosition.START} icon={<AiOutlineAlignRight />} />
-                        <SFToggleButton variant={Variant.SOLID} type={Type.PRIMARY} groupPos={GroupPosition.MIDDLE} icon={<AiOutlineAlignCenter />} />
-                        <SFToggleButton variant={Variant.SOLID} type={Type.PRIMARY} groupPos={GroupPosition.END} icon={<AiOutlineAlignLeft />} />
+                        <SFToggleButton variant={Variant.SOLID} type={Type.PRIMARY} groupPos={GroupPosition.START} icon={
+                            <AiOutlineAlignRight />} />
+                        <SFToggleButton variant={Variant.SOLID} type={Type.PRIMARY} groupPos={GroupPosition.MIDDLE} icon={
+                            <AiOutlineAlignCenter />} />
+                        <SFToggleButton variant={Variant.SOLID} type={Type.PRIMARY} groupPos={GroupPosition.END} icon={
+                            <AiOutlineAlignLeft />} />
                     </div>
 
                     <div style={{ display: 'flex' }}>
-                        <SFToggleButton variant={Variant.OUTLINE} groupPos={GroupPosition.START} icon={<AiOutlineAlignRight />} />
-                        <SFToggleButton variant={Variant.OUTLINE} groupPos={GroupPosition.MIDDLE} icon={<AiOutlineAlignCenter />} />
-                        <SFToggleButton variant={Variant.OUTLINE} groupPos={GroupPosition.END} icon={<AiOutlineAlignLeft />} />
+                        <SFToggleButton variant={Variant.OUTLINE} groupPos={GroupPosition.START} icon={
+                            <AiOutlineAlignRight />} />
+                        <SFToggleButton variant={Variant.OUTLINE} groupPos={GroupPosition.MIDDLE} icon={
+                            <AiOutlineAlignCenter />} />
+                        <SFToggleButton variant={Variant.OUTLINE} groupPos={GroupPosition.END} icon={
+                            <AiOutlineAlignLeft />} />
                     </div>
 
                     <div style={{ display: 'flex' }}>
-                        <SFToggleButton variant={Variant.GHOST} groupPos={GroupPosition.START} icon={<AiOutlineAlignRight />} />
-                        <SFToggleButton variant={Variant.GHOST} groupPos={GroupPosition.MIDDLE} icon={<AiOutlineAlignCenter />} />
-                        <SFToggleButton variant={Variant.GHOST} groupPos={GroupPosition.END} icon={<AiOutlineAlignLeft />} />
+                        <SFToggleButton variant={Variant.GHOST} groupPos={GroupPosition.START} icon={
+                            <AiOutlineAlignRight />} />
+                        <SFToggleButton variant={Variant.GHOST} groupPos={GroupPosition.MIDDLE} icon={
+                            <AiOutlineAlignCenter />} />
+                        <SFToggleButton variant={Variant.GHOST} groupPos={GroupPosition.END} icon={
+                            <AiOutlineAlignLeft />} />
                     </div>
 
                 </ShowcaseRow>
@@ -170,6 +209,13 @@ export function ComponentShowcaseView(): any {
                     <Button variant={Variant.OUTLINE} icon={<AiFillHome />} />
                     <Button variant={Variant.GHOST} icon={<AiFillHome />} />
                     <Button variant={Variant.LINK} icon={<AiFillHome />} />
+                </ShowcaseRow>
+                <ShowcaseRow>
+                    <Button square={true} type={Type.PRIMARY} variant={Variant.SOLID} icon={<AiFillHome />} />
+                    <Button square={true} variant={Variant.SOLID} icon={<AiFillHome />} />
+                    <Button square={true} variant={Variant.OUTLINE} icon={<AiFillHome />} />
+                    <Button square={true} variant={Variant.GHOST} icon={<AiFillHome />} />
+                    <Button square={true} variant={Variant.LINK} icon={<AiFillHome />} />
                 </ShowcaseRow>
                 <ShowcaseRow>
                     <div style={{ display: 'flex' }}>
@@ -215,6 +261,7 @@ export function ComponentShowcaseView(): any {
     function renderContent() {
         return (
             <>
+                {renderDialogs()}
                 {renderInputField()}
                 {renderToggleButtons()}
                 {renderButtons()}

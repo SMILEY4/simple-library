@@ -1,0 +1,16 @@
+.dialog {
+	background-color: var(--background-color-0);
+	border-radius:    var(--radius-0);
+}
+
+.dialog-header,
+.dialog-body,
+.dialog-footer {
+	background-color: var(--background-color-1);
+	padding:          var(--s-1)
+}
+
+.dialog-body,
+.dialog-footer {
+	margin-top: 2px;
+}

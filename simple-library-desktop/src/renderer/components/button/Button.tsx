@@ -8,7 +8,8 @@ export interface ButtonProps {
     type?: Type,
     groupPos?: GroupPosition,
     icon?: any,
-    iconRight?: any
+    iconRight?: any,
+    square?: boolean,
     disabled?: boolean,
     onAction?: () => void,
     renderAsActive?: boolean
@@ -25,6 +26,7 @@ export function Button(props: ButtonReactProps): ReactElement {
             map(props.variant, (variant) => 'button-variant-' + variant),
             map(props.type, (type) => 'button-type-' + type),
             map(props.groupPos, (groupPos) => 'button-group-pos-' + groupPos),
+            map(props.square, (square) => 'button-square'),
             ((props.icon || props.iconRight) && props.children) ? "button-mixed" : null,
             props.disabled === true ? "button-disabled" : null,
             props.renderAsActive === true ? "button-render-as-active" : null,
