@@ -1,0 +1,25 @@
+.image {
+	position: relative;
+}
+
+.image-main,
+.image-overlay {
+	position:          absolute;
+	top:               0;
+	bottom:            0;
+	left:              0;
+	right:             0;
+	background-repeat: no-repeat;
+}
+
+.image-mode-auto > .image-main {
+	background-size: auto;
+}
+
+.image-mode-cover > .image-main {
+	background-size: cover;
+}
+
+.image-mode-contain > .image-main {
+	background-size: contain;
+}

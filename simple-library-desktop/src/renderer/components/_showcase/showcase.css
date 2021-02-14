@@ -1,5 +1,5 @@
 .showcase-view {
-	width:      100%;
+	width: 100%;
 }
 
 
@@ -53,4 +53,9 @@
 	flex-direction: row;
 	align-items:    flex-start;
 	gap:            20px;
+	position:       relative;
+}
+
+.showcase-row-full-width {
+	width: 100%;
 }

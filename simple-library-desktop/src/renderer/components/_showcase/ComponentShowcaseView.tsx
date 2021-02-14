@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import {useState} from 'react';
 import "./showcase.css";
 import {
     AiFillCaretRight,
@@ -10,13 +10,15 @@ import {
     AiOutlineAlignRight,
     AiOutlineSearch,
 } from 'react-icons/all';
-import { GroupPosition, Type, Variant } from '../common';
-import { LabelBox } from '../text/LabelBox';
-import { Button } from '../button/Button';
-import { Text, TextVariant } from '../text/Text';
-import { SFInputField } from '../inputfield/SFInputField';
-import { SFToggleButton } from '../button/SFToggleButton';
-import { Dialog } from '../modal/Dialog';
+import {GroupPosition, Type, Variant} from '../common';
+import {LabelBox} from '../text/LabelBox';
+import {Button} from '../button/Button';
+import {Text, TextVariant} from '../text/Text';
+import {SFInputField} from '../inputfield/SFInputField';
+import {SFToggleButton} from '../button/SFToggleButton';
+import {Dialog} from '../modal/Dialog';
+import {Image, ImageMode} from "../image/Image"
+import forest from "./forest.jpg"
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0");
@@ -39,6 +41,33 @@ export function ComponentShowcaseView(): any {
             </div>
         </div>
     );
+
+    function renderImage() {
+        return (
+            <>
+                <h3>Image</h3>
+
+                <ShowcaseRow fullWidth>
+                    <div style={{display: 'grid', width: '50%', height: '150px',}}>
+                        <Image url={forest} mode={ImageMode.AUTO} color="red">
+                            Image Auto
+                        </Image>
+                    </div>
+                    <div style={{display: 'grid', width: '50%', height: '150px',}}>
+                        <Image url={forest} mode={ImageMode.CONTAIN} color="red">
+                            Image Contain
+                        </Image>
+                    </div>
+                    <div style={{display: 'grid', width: '50%', height: '150px',}}>
+                        <Image url={forest} mode={ImageMode.COVER} color="red">
+                            Image Cover
+                        </Image>
+                    </div>
+                </ShowcaseRow>
+
+            </>
+        );
+    }
 
     function renderDialogs() {
         return (
@@ -78,14 +107,14 @@ export function ComponentShowcaseView(): any {
                     <SFInputField placeholder={"Input"}
                                   value={"Initial"}
                                   onChange={value => console.log("changed:" + value)}
-                                  onAccept={value => console.log("accept:" + value)} />
-                    <SFInputField disabled={true} value={"Disabled"} />
-                    <SFInputField locked={true} value={"Locked"} />
+                                  onAccept={value => console.log("accept:" + value)}/>
+                    <SFInputField disabled={true} value={"Disabled"}/>
+                    <SFInputField locked={true} value={"Locked"}/>
                 </ShowcaseRow>
                 <ShowcaseRow>
-                    <SFInputField icon={<AiOutlineSearch />} placeholder={"Icon Left"} />
-                    <SFInputField iconRight={<AiOutlineSearch />} placeholder={"Icon Right"} />
-                    <SFInputField icon={<AiFillFolder />} iconRight={<AiOutlineSearch />} placeholder={"Two Icons"} />
+                    <SFInputField icon={<AiOutlineSearch/>} placeholder={"Icon Left"}/>
+                    <SFInputField iconRight={<AiOutlineSearch/>} placeholder={"Icon Right"}/>
+                    <SFInputField icon={<AiFillFolder/>} iconRight={<AiOutlineSearch/>} placeholder={"Two Icons"}/>
                 </ShowcaseRow>
 
                 <SFInputField placeholder={"example.com"}
@@ -108,7 +137,7 @@ export function ComponentShowcaseView(): any {
                 />
 
                 <SFInputField placeholder={"Input"}
-                              icon={<AiOutlineSearch />}
+                              icon={<AiOutlineSearch/>}
                               contentTrailing={
                                   <Button variant={Variant.SOLID} groupPos={GroupPosition.END}>Search</Button>
                               }
@@ -137,44 +166,47 @@ export function ComponentShowcaseView(): any {
         return (
             <>
                 <h3>Toggle Buttons</h3>
-                <SFToggleButton variant={Variant.SOLID} onToggle={(value) => console.log("toggle " + value)}>Toggle</SFToggleButton>
+                <SFToggleButton variant={Variant.SOLID}
+                                onToggle={(value) => console.log("toggle " + value)}>Toggle</SFToggleButton>
 
                 <ShowcaseRow>
 
-                    <div style={{ display: 'flex' }}>
+                    <div style={{display: 'flex'}}>
                         <SFToggleButton variant={Variant.SOLID} groupPos={GroupPosition.START} icon={
-                            <AiOutlineAlignRight />} />
+                            <AiOutlineAlignRight/>}/>
                         <SFToggleButton variant={Variant.SOLID} groupPos={GroupPosition.MIDDLE} icon={
-                            <AiOutlineAlignCenter />} />
+                            <AiOutlineAlignCenter/>}/>
                         <SFToggleButton variant={Variant.SOLID} groupPos={GroupPosition.END} icon={
-                            <AiOutlineAlignLeft />} />
+                            <AiOutlineAlignLeft/>}/>
                     </div>
 
-                    <div style={{ display: 'flex' }}>
-                        <SFToggleButton variant={Variant.SOLID} type={Type.PRIMARY} groupPos={GroupPosition.START} icon={
-                            <AiOutlineAlignRight />} />
-                        <SFToggleButton variant={Variant.SOLID} type={Type.PRIMARY} groupPos={GroupPosition.MIDDLE} icon={
-                            <AiOutlineAlignCenter />} />
+                    <div style={{display: 'flex'}}>
+                        <SFToggleButton variant={Variant.SOLID} type={Type.PRIMARY} groupPos={GroupPosition.START}
+                                        icon={
+                                            <AiOutlineAlignRight/>}/>
+                        <SFToggleButton variant={Variant.SOLID} type={Type.PRIMARY} groupPos={GroupPosition.MIDDLE}
+                                        icon={
+                                            <AiOutlineAlignCenter/>}/>
                         <SFToggleButton variant={Variant.SOLID} type={Type.PRIMARY} groupPos={GroupPosition.END} icon={
-                            <AiOutlineAlignLeft />} />
+                            <AiOutlineAlignLeft/>}/>
                     </div>
 
-                    <div style={{ display: 'flex' }}>
+                    <div style={{display: 'flex'}}>
                         <SFToggleButton variant={Variant.OUTLINE} groupPos={GroupPosition.START} icon={
-                            <AiOutlineAlignRight />} />
+                            <AiOutlineAlignRight/>}/>
                         <SFToggleButton variant={Variant.OUTLINE} groupPos={GroupPosition.MIDDLE} icon={
-                            <AiOutlineAlignCenter />} />
+                            <AiOutlineAlignCenter/>}/>
                         <SFToggleButton variant={Variant.OUTLINE} groupPos={GroupPosition.END} icon={
-                            <AiOutlineAlignLeft />} />
+                            <AiOutlineAlignLeft/>}/>
                     </div>
 
-                    <div style={{ display: 'flex' }}>
+                    <div style={{display: 'flex'}}>
                         <SFToggleButton variant={Variant.GHOST} groupPos={GroupPosition.START} icon={
-                            <AiOutlineAlignRight />} />
+                            <AiOutlineAlignRight/>}/>
                         <SFToggleButton variant={Variant.GHOST} groupPos={GroupPosition.MIDDLE} icon={
-                            <AiOutlineAlignCenter />} />
+                            <AiOutlineAlignCenter/>}/>
                         <SFToggleButton variant={Variant.GHOST} groupPos={GroupPosition.END} icon={
-                            <AiOutlineAlignLeft />} />
+                            <AiOutlineAlignLeft/>}/>
                     </div>
 
                 </ShowcaseRow>
@@ -194,47 +226,47 @@ export function ComponentShowcaseView(): any {
                 {renderButtonRow(Type.ERROR)}
                 {renderButtonRow(Type.WARN)}
                 <ShowcaseRow>
-                    <Button type={Type.PRIMARY} variant={Variant.SOLID} icon={<AiFillHome />}>With
+                    <Button type={Type.PRIMARY} variant={Variant.SOLID} icon={<AiFillHome/>}>With
                         Icon</Button>
-                    <Button variant={Variant.SOLID} icon={<AiFillHome />}>With Icon</Button>
-                    <Button variant={Variant.OUTLINE} icon={<AiFillHome />}>With Icon</Button>
-                    <Button variant={Variant.GHOST} icon={<AiFillHome />}>With Icon</Button>
-                    <Button variant={Variant.LINK} icon={<AiFillHome />}>With Icon</Button>
+                    <Button variant={Variant.SOLID} icon={<AiFillHome/>}>With Icon</Button>
+                    <Button variant={Variant.OUTLINE} icon={<AiFillHome/>}>With Icon</Button>
+                    <Button variant={Variant.GHOST} icon={<AiFillHome/>}>With Icon</Button>
+                    <Button variant={Variant.LINK} icon={<AiFillHome/>}>With Icon</Button>
                 </ShowcaseRow>
-                <Button variant={Variant.SOLID} icon={<AiFillHome />} iconRight={<AiFillCaretRight />}>Two
+                <Button variant={Variant.SOLID} icon={<AiFillHome/>} iconRight={<AiFillCaretRight/>}>Two
                     Icons</Button>
                 <ShowcaseRow>
-                    <Button type={Type.PRIMARY} variant={Variant.SOLID} icon={<AiFillHome />} />
-                    <Button variant={Variant.SOLID} icon={<AiFillHome />} />
-                    <Button variant={Variant.OUTLINE} icon={<AiFillHome />} />
-                    <Button variant={Variant.GHOST} icon={<AiFillHome />} />
-                    <Button variant={Variant.LINK} icon={<AiFillHome />} />
+                    <Button type={Type.PRIMARY} variant={Variant.SOLID} icon={<AiFillHome/>}/>
+                    <Button variant={Variant.SOLID} icon={<AiFillHome/>}/>
+                    <Button variant={Variant.OUTLINE} icon={<AiFillHome/>}/>
+                    <Button variant={Variant.GHOST} icon={<AiFillHome/>}/>
+                    <Button variant={Variant.LINK} icon={<AiFillHome/>}/>
                 </ShowcaseRow>
                 <ShowcaseRow>
-                    <Button square={true} type={Type.PRIMARY} variant={Variant.SOLID} icon={<AiFillHome />} />
-                    <Button square={true} variant={Variant.SOLID} icon={<AiFillHome />} />
-                    <Button square={true} variant={Variant.OUTLINE} icon={<AiFillHome />} />
-                    <Button square={true} variant={Variant.GHOST} icon={<AiFillHome />} />
-                    <Button square={true} variant={Variant.LINK} icon={<AiFillHome />} />
+                    <Button square={true} type={Type.PRIMARY} variant={Variant.SOLID} icon={<AiFillHome/>}/>
+                    <Button square={true} variant={Variant.SOLID} icon={<AiFillHome/>}/>
+                    <Button square={true} variant={Variant.OUTLINE} icon={<AiFillHome/>}/>
+                    <Button square={true} variant={Variant.GHOST} icon={<AiFillHome/>}/>
+                    <Button square={true} variant={Variant.LINK} icon={<AiFillHome/>}/>
                 </ShowcaseRow>
                 <ShowcaseRow>
-                    <div style={{ display: 'flex' }}>
+                    <div style={{display: 'flex'}}>
                         <Button variant={Variant.SOLID} groupPos={GroupPosition.START}>Start</Button>
                         <Button variant={Variant.SOLID} groupPos={GroupPosition.MIDDLE}>Middle</Button>
                         <Button variant={Variant.SOLID} groupPos={GroupPosition.MIDDLE}>Middle</Button>
                         <Button variant={Variant.SOLID} groupPos={GroupPosition.END}>End</Button>
                     </div>
-                    <div style={{ display: 'flex' }}>
+                    <div style={{display: 'flex'}}>
                         <Button variant={Variant.OUTLINE} groupPos={GroupPosition.START}>Start</Button>
                         <Button variant={Variant.OUTLINE} groupPos={GroupPosition.MIDDLE}>Middle</Button>
                         <Button variant={Variant.OUTLINE} groupPos={GroupPosition.MIDDLE}>Middle</Button>
                         <Button variant={Variant.OUTLINE} groupPos={GroupPosition.END}>End</Button>
                     </div>
-                    <div style={{ display: 'flex' }}>
-                        <Button variant={Variant.SOLID} groupPos={GroupPosition.START} icon={<AiOutlineAlignRight />} />
+                    <div style={{display: 'flex'}}>
+                        <Button variant={Variant.SOLID} groupPos={GroupPosition.START} icon={<AiOutlineAlignRight/>}/>
                         <Button variant={Variant.SOLID} groupPos={GroupPosition.MIDDLE} icon={
-                            <AiOutlineAlignCenter />} />
-                        <Button variant={Variant.SOLID} groupPos={GroupPosition.END} icon={<AiOutlineAlignLeft />} />
+                            <AiOutlineAlignCenter/>}/>
+                        <Button variant={Variant.SOLID} groupPos={GroupPosition.END} icon={<AiOutlineAlignLeft/>}/>
                     </div>
                 </ShowcaseRow>
 
@@ -261,6 +293,8 @@ export function ComponentShowcaseView(): any {
     function renderContent() {
         return (
             <>
+
+                {renderImage()}
                 {renderDialogs()}
                 {renderInputField()}
                 {renderToggleButtons()}
@@ -274,7 +308,7 @@ export function ComponentShowcaseView(): any {
 
 function ShowcaseRow(props: React.PropsWithChildren<any>): any {
     return (
-        <div className='showcase-row'>
+        <div className={'showcase-row' + (props.fullWidth ? ' showcase-row-full-width' : '')}>
             {props.children}
         </div>
     );
