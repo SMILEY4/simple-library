@@ -15,10 +15,12 @@ import {LabelBox} from '../text/LabelBox';
 import {Button} from '../button/Button';
 import {Text, TextVariant} from '../text/Text';
 import {SFInputField} from '../inputfield/SFInputField';
-import {SFToggleButton} from '../button/SFToggleButton';
+import {SFToggleButton} from '../togglebutton/SFToggleButton';
 import {Dialog} from '../modal/Dialog';
 import {Image, ImageMode} from "../image/Image"
 import forest from "./forest.jpg"
+import {Checkbox} from "../checkbox/Checkbox";
+import {SFCheckbox} from "../checkbox/SFCheckbox";
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0");
@@ -42,6 +44,22 @@ export function ComponentShowcaseView(): any {
         </div>
     );
 
+    function renderCheckbox() {
+        return (
+            <>
+                <h3>Checkbox</h3>
+                <ShowcaseRow>
+                    <SFCheckbox variant={Variant.OUTLINE} selected={true}/>
+                    <SFCheckbox variant={Variant.OUTLINE} selected={false}/>
+                </ShowcaseRow>
+                <ShowcaseRow>
+                    <SFCheckbox disabled={true} variant={Variant.OUTLINE} selected={true}/>
+                    <SFCheckbox disabled={true} variant={Variant.OUTLINE} selected={false}/>
+                </ShowcaseRow>
+            </>
+        );
+    }
+
     function renderImage() {
         return (
             <>
@@ -50,17 +68,17 @@ export function ComponentShowcaseView(): any {
                 <ShowcaseRow fullWidth>
                     <div style={{display: 'grid', width: '50%', height: '150px',}}>
                         <Image url={forest} mode={ImageMode.AUTO} color="red">
-                            Image Auto
+                            Mode Auto
                         </Image>
                     </div>
                     <div style={{display: 'grid', width: '50%', height: '150px',}}>
                         <Image url={forest} mode={ImageMode.CONTAIN} color="red">
-                            Image Contain
+                            Mode Contain
                         </Image>
                     </div>
                     <div style={{display: 'grid', width: '50%', height: '150px',}}>
                         <Image url={forest} mode={ImageMode.COVER} color="red">
-                            Image Cover
+                            Mode Cover
                         </Image>
                     </div>
                 </ShowcaseRow>
@@ -166,8 +184,8 @@ export function ComponentShowcaseView(): any {
         return (
             <>
                 <h3>Toggle Buttons</h3>
-                <SFToggleButton variant={Variant.SOLID}
-                                onToggle={(value) => console.log("toggle " + value)}>Toggle</SFToggleButton>
+                <SFToggleButton variant={Variant.SOLID}>Toggle</SFToggleButton>
+                <SFToggleButton disabled={true} variant={Variant.SOLID}>Disabled</SFToggleButton>
 
                 <ShowcaseRow>
 
@@ -226,12 +244,19 @@ export function ComponentShowcaseView(): any {
                 {renderButtonRow(Type.ERROR)}
                 {renderButtonRow(Type.WARN)}
                 <ShowcaseRow>
-                    <Button type={Type.PRIMARY} variant={Variant.SOLID} icon={<AiFillHome/>}>With
-                        Icon</Button>
+                    <Button type={Type.PRIMARY} variant={Variant.SOLID} icon={<AiFillHome/>}>With Icon</Button>
                     <Button variant={Variant.SOLID} icon={<AiFillHome/>}>With Icon</Button>
                     <Button variant={Variant.OUTLINE} icon={<AiFillHome/>}>With Icon</Button>
                     <Button variant={Variant.GHOST} icon={<AiFillHome/>}>With Icon</Button>
                     <Button variant={Variant.LINK} icon={<AiFillHome/>}>With Icon</Button>
+                </ShowcaseRow>
+                <ShowcaseRow>
+                    <Button disabled={true} type={Type.PRIMARY} variant={Variant.SOLID} icon={<AiFillHome/>}>With
+                        Icon</Button>
+                    <Button disabled={true} variant={Variant.SOLID} icon={<AiFillHome/>}>With Icon</Button>
+                    <Button disabled={true} variant={Variant.OUTLINE} icon={<AiFillHome/>}>With Icon</Button>
+                    <Button disabled={true} variant={Variant.GHOST} icon={<AiFillHome/>}>With Icon</Button>
+                    <Button disabled={true} variant={Variant.LINK} icon={<AiFillHome/>}>With Icon</Button>
                 </ShowcaseRow>
                 <Button variant={Variant.SOLID} icon={<AiFillHome/>} iconRight={<AiFillCaretRight/>}>Two
                     Icons</Button>
@@ -293,7 +318,7 @@ export function ComponentShowcaseView(): any {
     function renderContent() {
         return (
             <>
-
+                {renderCheckbox()}
                 {renderImage()}
                 {renderDialogs()}
                 {renderInputField()}

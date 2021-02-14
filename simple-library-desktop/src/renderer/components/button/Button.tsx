@@ -12,7 +12,8 @@ export interface ButtonProps {
     square?: boolean,
     disabled?: boolean,
     onAction?: () => void,
-    renderAsActive?: boolean
+    renderAsActive?: boolean,
+    className?: string
 }
 
 type ButtonReactProps = React.PropsWithChildren<ButtonProps>;
@@ -30,6 +31,7 @@ export function Button(props: ButtonReactProps): ReactElement {
             ((props.icon || props.iconRight) && props.children) ? "button-mixed" : null,
             props.disabled === true ? "button-disabled" : null,
             props.renderAsActive === true ? "button-render-as-active" : null,
+            props.className
         );
     }
 
