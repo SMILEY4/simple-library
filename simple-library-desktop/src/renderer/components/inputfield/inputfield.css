@@ -1,27 +1,27 @@
 .input-field-wrapper {
-	display:             flex;
-	justify-content:     center;
-	align-items:         center;
-	height:        var(--s-1-5);
+	display:         flex;
+	justify-content: center;
+	align-items:     center;
+	height:          var(--s-1-5);
 }
 
 .input-field {
-	display:             flex;
-	justify-content:     center;
-	align-items:         center;
+	display:         flex;
+	justify-content: center;
+	align-items:     center;
 
-	box-sizing:          border-box;
-	height:        var(--s-1-5);
-	border-radius: var(--radius-0);
-	color:         var(--text-color-1);
-	border:        1px solid var(--base-color-4);
+	box-sizing:      border-box;
+	height:          var(--s-1-5);
+	border-radius:   var(--radius-0);
+	color:           var(--text-color-1);
+	border:          1px solid var(--base-color-4);
 }
 
 .input-field > svg {
-	padding-left: var(--s-0-25);
+	padding-left:  var(--s-0-25);
 	padding-right: var(--s-0-25);
-	width: var(--s-1);
-	height: var(--s-1);
+	width:         var(--s-1);
+	height:        var(--s-1);
 }
 
 /*INPUT*/
@@ -36,7 +36,7 @@
 }
 
 .input-field-disabled > input {
-	color:         var(--text-color-0);
+	color: var(--text-color-0);
 }
 
 .input-field > input::placeholder {
@@ -57,11 +57,25 @@ input:invalid {
 	border-bottom-right-radius: 0;
 	border-right:               unset;
 }
+
 .input-field-group-pos-middle {
 	border-radius: 0;
 	border-right:  unset;
 }
+
+.input-field-group-pos-middle-seamless {
+	border-radius: 0;
+	border-right:  unset;
+	border-left:   unset;
+}
+
 .input-field-group-pos-end {
 	border-top-left-radius:    0;
 	border-bottom-left-radius: 0;
+}
+
+.input-field-group-pos-end-seamless {
+	border-top-left-radius:    0;
+	border-bottom-left-radius: 0;
+	border-left:               unset;
 }

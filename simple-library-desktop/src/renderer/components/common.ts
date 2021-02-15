@@ -1,7 +1,9 @@
 export enum GroupPosition {
     START = "start",
     MIDDLE = "middle",
+    MIDDLE_SEAMLESS = "middle-seamless",
     END = "end",
+    END_SEAMLESS = "end-seamless"
 }
 
 export enum Variant {
@@ -47,6 +49,8 @@ export enum Fill {
 }
 
 export enum Size {
+    S_0 = 's-0',
+    S_0_15 = 's-0-15',
     S_0_25 = 's-0-25',
     S_0_5 = 's-0-5',
     S_0_75 = 's-0-75',

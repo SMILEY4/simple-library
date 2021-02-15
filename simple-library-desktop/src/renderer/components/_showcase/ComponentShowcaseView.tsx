@@ -19,8 +19,8 @@ import {SFToggleButton} from '../togglebutton/SFToggleButton';
 import {Dialog} from '../modal/Dialog';
 import {Image, ImageMode} from "../image/Image"
 import forest from "./forest.jpg"
-import {Checkbox} from "../checkbox/Checkbox";
 import {SFCheckbox} from "../checkbox/SFCheckbox";
+import {ChoiceBox} from "../choicebox/ChoiceBox";
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0");
@@ -43,6 +43,51 @@ export function ComponentShowcaseView(): any {
             </div>
         </div>
     );
+
+
+    function renderChoiceBox() {
+        return (
+            <>
+                <h3>ChoiceBox</h3>
+                <ChoiceBox
+                    variant={Variant.OUTLINE}
+                    items={[
+                        "Austria",
+                        "Belgium",
+                        "Bulgaria",
+                        "Croatia",
+                        "Cyprus",
+                        "Czechia",
+                        "Denmark",
+                        "Estonia",
+                        "Finland",
+                        "France",
+                        "Germany",
+                        "Greece",
+                        "Hungary",
+                        "Ireland",
+                        "Italy",
+                        "Latvia",
+                        "Lithuania",
+                        "Luxemburg",
+                        "Malta",
+                        "Netherlands",
+                        "Poland",
+                        "Portugal",
+                        "Romania",
+                        "Slovakia",
+                        "Slovenia",
+                        "Spain",
+                        "Sweden",
+                    ]}
+                    selected="Germany"
+                    // itemFilter={(item) => item.startsWith("S")}
+                    maxVisibleItems={6}
+                    autoWidth={true}
+                />
+            </>
+        );
+    }
 
     function renderCheckbox() {
         return (
@@ -318,6 +363,7 @@ export function ComponentShowcaseView(): any {
     function renderContent() {
         return (
             <>
+                {renderChoiceBox()}
                 {renderCheckbox()}
                 {renderImage()}
                 {renderDialogs()}

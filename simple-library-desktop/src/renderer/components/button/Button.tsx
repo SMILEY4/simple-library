@@ -24,6 +24,7 @@ export function Button(props: ButtonReactProps): ReactElement {
     function getClassNames(props: ButtonReactProps) {
         return concatClasses(
             "button",
+            "behaviour-button",
             map(props.variant, (variant) => 'button-variant-' + variant),
             map(props.type, (type) => 'button-type-' + type),
             map(props.groupPos, (groupPos) => 'button-group-pos-' + groupPos),

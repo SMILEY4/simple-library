@@ -1,11 +1,4 @@
 .button {
-	-webkit-user-select: none;
-	-moz-user-select:    none;
-	-ms-user-select:     none;
-	user-select:         none;
-
-	cursor:              pointer;
-
 	display:             flex;
 	justify-content:     center;
 	align-items:         center;
@@ -298,7 +291,19 @@
 	border-right:  unset;
 }
 
+.button-group-pos-middle-seamless {
+	border-radius: 0;
+	border-right:  unset;
+	border-left:   unset;
+}
+
 .button-group-pos-end {
 	border-top-left-radius:    0;
 	border-bottom-left-radius: 0;
+}
+
+.button-group-pos-end-seamless {
+	border-top-left-radius:    0;
+	border-bottom-left-radius: 0;
+	border-left:               unset;
 }

@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { ReactElement } from 'react';
+import {ReactElement} from 'react';
 import "./labelBox.css";
-import { concatClasses, GroupPosition, map, Type, Variant } from '../common';
+import {concatClasses, GroupPosition, map, Type, Variant} from '../common';
 
 
 interface LabelBoxProps {
@@ -9,7 +9,8 @@ interface LabelBoxProps {
     type?: Type,
     groupPos?: GroupPosition,
     icon?: any,
-    iconRight?: any
+    iconRight?: any,
+    className?: string
 }
 
 type LabelBoxReactProps = React.PropsWithChildren<LabelBoxProps>;
@@ -20,10 +21,12 @@ export function LabelBox(props: LabelBoxReactProps): ReactElement {
     function getClassNames(props: LabelBoxReactProps) {
         return concatClasses(
             "labelbox",
+            "behaviour-no-select",
             map(props.variant, (variant) => 'labelbox-variant-' + variant),
             map(props.type, (type) => 'labelbox-type-' + type),
             map(props.groupPos, (groupPos) => 'labelbox-group-pos-' + groupPos),
             ((props.icon || props.iconRight) && props.children) ? "labelbox-mixed" : null,
+            props.className
         );
     }
 
