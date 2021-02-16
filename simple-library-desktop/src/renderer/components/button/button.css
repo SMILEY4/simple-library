@@ -1,15 +1,15 @@
 .button {
-	display:             flex;
-	justify-content:     center;
-	align-items:         center;
+	display:         flex;
+	justify-content: center;
+	align-items:     center;
 
-	box-sizing:          border-box;
-	height:              var(--s-1-5);
-	padding-left:        var(--s-0-75);
-	padding-right:       var(--s-0-75);
+	box-sizing:      border-box;
+	height:          var(--s-1-5);
+	padding-left:    var(--s-0-75);
+	padding-right:   var(--s-0-75);
 
-	border-radius:       var(--radius-0);
-	color:               var(--text-color-1)
+	border-radius:   var(--radius-0);
+	color:           var(--text-color-1)
 }
 
 
@@ -23,8 +23,13 @@
 }
 
 .button-square {
-	width:   var(--s-1-5);
-	padding: 0;
+	padding:    0;
+	width:      var(--s-1-5);
+	height:     var(--s-1-5);
+	max-width:  var(--s-1-5);
+	max-height: var(--s-1-5);
+	min-width:  var(--s-1-5);
+	min-height: var(--s-1-5);
 }
 
 .button-disabled > svg {
