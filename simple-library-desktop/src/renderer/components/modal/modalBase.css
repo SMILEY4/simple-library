@@ -9,12 +9,10 @@
 	z-index:  1;
 }
 
-
 .modal-overlay-center {
 	justify-content: center;
 	align-items:     center;
 }
-
 
 .modal-overlay-bottom {
 	justify-content: center;
@@ -22,10 +20,8 @@
 }
 
 .modal-overlay-bottom > .modal {
-	padding-bottom: 20px;
+	padding-bottom: var(--s-1-5);
 }
-
-
 
 .modal-hidden-overlay {
 	pointer-events: none;
@@ -36,15 +32,13 @@
 	pointer-events: auto;
 }
 
-
 .modal-overlay {
 	background: var(--overlay-color);
 }
-
 
 .modal {
 	position:      relative;
 	box-sizing:    border-box;
 	overflow:      hidden;
-	border-radius: 5px;
+	border-radius: var(--radius-0);
 }

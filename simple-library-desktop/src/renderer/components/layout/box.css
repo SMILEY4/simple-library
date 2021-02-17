@@ -20,10 +20,10 @@
 
 /*ALIGNMENT MAIN AXIS*/
 
-.box-align-main-start { justify-content: start; }
+.box-align-main-start { justify-content: flex-start; }
 
 
-.box-align-main-end { justify-content: end; }
+.box-align-main-end { justify-content: flex-end; }
 
 
 .box-align-main-center { justify-content: center; }
@@ -37,10 +37,10 @@
 
 /*ALIGNMENT CROSS AXIS*/
 
-.box-align-cross-start { align-items: start; }
+.box-align-cross-start { align-items: flex-start; }
 
 
-.box-align-cross-end { align-items: end; }
+.box-align-cross-end { align-items: flex-end; }
 
 
 .box-align-cross-center { align-items: center; }

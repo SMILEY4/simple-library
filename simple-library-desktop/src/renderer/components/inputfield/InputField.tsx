@@ -1,144 +1,101 @@
-import * as React from "react";
-import {Component, ReactElement} from "react";
-import "./inputField.css"
-import { HighlightType, StyleType, toStringOrDefault } from '../common';
-import { GradientBorderBox } from '../gradientborder/GradientBorderBox';
+import * as React from 'react';
+import { ReactElement } from 'react';
+import "./inputfield.css";
+import { concatClasses, GroupPosition, map } from '../common';
 
-interface InputFieldProps {
-    type: HighlightType,
-    style: StyleType,
-    invalid?: boolean,
-
-    text?: string,
-    initialText?: string,
+export interface InputFieldProps {
     placeholder?: string,
+    value?: string,
 
     disabled?: boolean,
-    editable?: boolean,
+    locked?: boolean,
 
-    maxLength?: number,
-
-    label?: string,
     icon?: any,
-    contentLeading?: any,
-    contentTrailing?: any
+    iconRight?: any,
 
-    onChange?: (value: string) => void
+    contentLeading?: any,
+    contentTrailing?: any,
+
+    onChange?: (value: string) => void,
     onAccept?: (value: string) => void
 }
 
+export function InputField(props: React.PropsWithChildren<InputFieldProps>): ReactElement {
 
-interface GenericInputFieldProps extends Omit<InputFieldProps, 'style'> {
-}
-
-
-interface InputFieldState {
-    text: string
-}
-
-
-export class InputField extends Component<InputFieldProps, InputFieldState> {
-
-    constructor(props: InputFieldProps) {
-        super(props);
-        this.state = {
-            text: toStringOrDefault(this.props.initialText, "")
-        };
-        this.onValueChange = this.onValueChange.bind(this)
-        this.onLeaveField = this.onLeaveField.bind(this)
-        this.handleKeyDown = this.handleKeyDown.bind(this)
-    }
-
-    onValueChange(event: any) {
-        const nextValue = event.target.value;
-        this.setState({text: nextValue})
-        if (this.props.onChange) {
-            this.props.onChange(nextValue)
+    function callOnChange(value: string) {
+        if (props.onChange && !props.disabled && !props.locked) {
+            props.onChange(value);
         }
     }
 
-    onLeaveField() {
-        if (this.props.onAccept) {
-            this.props.onAccept(this.state.text)
+    function callOnAccept(value: string) {
+        if (props.onAccept && !props.disabled && !props.locked) {
+            props.onAccept(value);
         }
     }
 
-    handleKeyDown(event: any) {
-        if (this.props.onAccept && event.key === 'Enter') {
-            this.props.onAccept(this.state.text)
-            event.target.blur()
+    function handleChange(event: any) {
+        callOnChange(event.target.value);
+    }
+
+    function handleLooseFocus(event: any) {
+        callOnAccept(event.target.value);
+    }
+
+    function handleKeyDown(event: any) {
+        if (props.onAccept && event.key === 'Enter') {
+            callOnAccept(event.target.value);
+            event.target.blur();
         }
     }
 
-    render() {
-        return (
-            <div className={"input-field-root"}>
-                {
-                    this.props.label
-                        ? <div className={"input-field-label"}>{this.props.label}</div>
-                        : null
-                }
-                <GradientBorderBox
-                    gradient={this.props.invalid === true ? HighlightType.ERROR : this.props.type}
-                    className={"input-field-wrapper"}
-                    innerClassName={"input-field-wrapper-content input-field-wrapper-content-" + this.props.style}
-                >
-                    {
-                        this.props.contentLeading
-                            ? <div className={"input-field-content-leading"}>{this.props.contentLeading}</div>
-                            : null
-                    }
-                    {
-                        this.props.icon
-                            ? <div className={"input-field-icon"}>{this.props.icon}</div>
-                            : null
-                    }
-                    <input
-                        value={this.props.text ? this.props.text : this.state.text}
-                        type="text"
-                        placeholder={this.props.placeholder}
-                        disabled={this.props.disabled || this.props.editable === false}
-                        maxLength={this.props.maxLength}
-                        onChange={this.onValueChange}
-                        onBlur={this.onLeaveField}
-                        onKeyDown={this.handleKeyDown}
-                    />
-                    {
-                        this.props.contentTrailing
-                            ? <div className={"input-field-content-trailing"}>{this.props.contentTrailing}</div>
-                            : null
-                    }
-                </GradientBorderBox>
+    function calcGroupPosition(): GroupPosition | undefined {
+        if (props.contentLeading && props.contentTrailing) {
+            return GroupPosition.MIDDLE;
+        } else if (!props.contentLeading && props.contentTrailing) {
+            return GroupPosition.START;
+        } else if (props.contentLeading && !props.contentTrailing) {
+            return GroupPosition.END;
+        }
+        return undefined;
+    }
+
+    function getClassNames() {
+        return concatClasses(
+            "input-field",
+            map(props.disabled, (disabled) => 'input-field-disabled'),
+            map(props.locked, (locked) => 'input-field-locked'),
+            map(calcGroupPosition(), (groupPos) => 'input-field-group-pos-' + groupPos),
+        );
+    }
+
+
+    return (
+        <div className={"input-field-wrapper"}>
+            {
+                props.contentLeading
+                    ? props.contentLeading
+                    : null
+            }
+            <div className={getClassNames()}>
+                {props.icon ? props.icon : null}
+                <input className='input'
+                       type='text'
+                       disabled={props.disabled || props.locked}
+                       value={props.value}
+                       placeholder={props.placeholder}
+                       onChange={handleChange}
+                       onBlur={handleLooseFocus}
+                       onKeyDown={handleKeyDown}
+                />
+                {props.iconRight ? props.iconRight : null}
             </div>
-        )
-    }
+            {
+                props.contentTrailing
+                    ? props.contentTrailing
+                    : null
+            }
+        </div>
 
+    );
 }
-
-
-export function InputFieldFilled(props: React.PropsWithChildren<GenericInputFieldProps>): ReactElement {
-    const baseProps: InputFieldProps = {
-        style: StyleType.FILLED,
-        ...props
-    }
-    return <InputField {...baseProps}/>
-}
-
-
-export function InputFieldGhostBg0(props: React.PropsWithChildren<GenericInputFieldProps>): ReactElement {
-    const baseProps: InputFieldProps = {
-        style: StyleType.GHOST_BG0,
-        ...props
-    }
-    return <InputField {...baseProps}/>
-}
-
-
-export function InputFieldGhostBg1(props: React.PropsWithChildren<GenericInputFieldProps>): ReactElement {
-    const baseProps: InputFieldProps = {
-        style: StyleType.GHOST_BG1,
-        ...props
-    }
-    return <InputField {...baseProps}/>
-}
-

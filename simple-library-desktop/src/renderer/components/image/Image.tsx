@@ -1,39 +1,40 @@
-import * as React from 'react';
-import { ReactElement } from 'react';
-import './image.css';
-import '../layout/layout.css';
-import { concatClasses, Fill, map, orDefault } from '../common';
+import React from "react";
+import {concatClasses, Fill, map, orDefault} from "../common";
+import "./image.css"
 
-export enum Size {
-    AUTO = 'auto',
-    COVER = 'cover',
-    CONTAIN = 'contain',
+export enum ImageMode {
+    AUTO = "auto",
+    COVER = "cover",
+    CONTAIN = "contain",
 }
 
-interface ImageProps {
+export interface ImageProps {
     url: string,
-    size?: Size,
+    mode?: ImageMode
+    fill?: Fill,
     posX?: string, // in %
     posY?: string, // in %
     offX?: number, // in px
     offY?: number, // in px
-    fill?: Fill,
-    className?: string
+    color?: string,
+    className?: string,
 }
 
+type ImageReactProps = React.PropsWithChildren<ImageProps>;
 
-export function Image(props: React.PropsWithChildren<ImageProps>): ReactElement {
+export function Image(props: ImageReactProps): React.ReactElement {
 
-    function getClassNames(): string {
+    function getClassNames(props: ImageProps): string {
         return concatClasses(
-            'image',
-            orDefault(map(props.size, (size) => 'image-size-' + size), 'image-size-cover'),
-            map(props.fill, (fill) => 'fill-' + fill),
+            "image",
+            orDefault(map(props.mode, (mode) => 'image-mode-' + mode), 'image-mode-cover'),
+            map(props.fill, (fill) => "fill" + fill),
             props.className,
-        );
+        )
     }
 
-    function getStyle(): any {
+
+    function getStyle(props: ImageProps): any {
         return {
             backgroundImage: 'url(' + props.url + ')',
             backgroundPositionX: 'calc(' + (props.posX ? props.posX : '50%') + ' + ' + (props.offX ? props.offX : '0px') + ')',
@@ -42,9 +43,9 @@ export function Image(props: React.PropsWithChildren<ImageProps>): ReactElement 
     }
 
     return (
-        <div className={getClassNames()}>
-            <div className='image-main' style={getStyle()} />
-            <div className='image-overlay'>
+        <div className={getClassNames(props)} style={{backgroundColor: props.color}}>
+            <div className="image-main" style={getStyle(props)}/>
+            <div className="image-overlay">
                 {props.children}
             </div>
         </div>

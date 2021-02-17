@@ -1,18 +1,8 @@
-/*
-A container that lays out its children in one direction
-
-
-Sub-Components
-- VBox (dir=down)
-- HBox (dir=right)
-- CBox (align=centered)
- */
-
 import * as React from 'react';
-import { ReactElement } from 'react';
+import {ReactElement} from 'react';
 import './box.css';
 import './layout.css';
-import { AlignCross, AlignMain, concatClasses, Dir, Fill, map, Size } from '../common';
+import {AlignCross, AlignMain, concatClasses, Dir, Fill, map, Size} from '../common';
 
 
 interface BoxProps {
@@ -22,6 +12,7 @@ interface BoxProps {
     fill?: Fill,
     spacing?: Size,
     padding?: Size,
+    style?: React.CSSProperties,
     className?: string
 }
 
@@ -53,7 +44,7 @@ export function Box(props: React.PropsWithChildren<BoxProps>): ReactElement {
     }
 
     return (
-        <div className={getClassNames()}>
+        <div className={getClassNames()} style={props.style}>
             {props.children}
         </div>
     );

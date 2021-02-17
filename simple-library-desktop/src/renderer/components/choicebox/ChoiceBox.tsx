@@ -1,216 +1,96 @@
-import * as React from "react";
-import {Component, ReactElement} from "react";
-import {BsChevronDown, BsChevronUp, IoCheckmark} from "react-icons/all";
-import "./choiceBox.css"
-import { HighlightType, StyleType } from '../common';
-import { Button } from '../buttons/Buttons';
+import * as React from 'react';
+import {Component, ReactElement} from 'react';
+import {AlignCross, AlignMain, concatClasses, Size, Variant} from "../common";
+import {Button} from "../button/Button";
+import {AiOutlineCheck, BsChevronDown} from "react-icons/all";
+import "./choicebox.css"
+import {VBox} from "../layout/Box";
+import {Dropdown} from "./Dropdown";
 
-interface ExtendedPropListItemType {
-    id: string,
-    content: any,
-}
-
-type PropListItemType = string | ExtendedPropListItemType
-
-interface ChoiceBoxProps {
-    style: StyleType,
-    highlight?: HighlightType,
-
-    title: string,
-    items: PropListItemType[],
-    initiallySelected?: string,
-
-    label?: string,
-
+export interface ChoiceBoxProps {
+    variant: Variant,
+    items: string[],
+    itemFilter?: (item: string) => boolean,
+    selected: string,
+    onSelect?: (item: string) => void
+    maxVisibleItems?: number,
     autoWidth?: boolean,
-    listHeight?: number
-
-    onSelect?: (value: string) => void
+    className?: string,
 }
 
-interface StateListItemType {
-    id: string,
-    content: any,
-    usesPropId: boolean
-}
 
 interface ChoiceBoxState {
-    title: string,
-    isListOpen: boolean
-    items: StateListItemType[],
-    itemSelectedId: string | undefined
+    open: boolean
 }
 
 
 export class ChoiceBox extends Component<ChoiceBoxProps, ChoiceBoxState> {
 
-    constructor(props: ChoiceBoxProps) {
+    constructor(props: Readonly<ChoiceBoxProps>) {
         super(props);
         this.state = {
-            title: this.props.title,
-            isListOpen: false,
-            items: this.toStateItems(this.props.items),
-            itemSelectedId: this.props.initiallySelected ? props.initiallySelected : undefined
+            open: false,
         };
-        this.toStateItems = this.toStateItems.bind(this)
-        this.getItemById = this.getItemById.bind(this)
-        this.closeList = this.closeList.bind(this)
-        this.toggleList = this.toggleList.bind(this)
-        this.onItemClicked = this.onItemClicked.bind(this)
-        this.renderTitleDummies = this.renderTitleDummies.bind(this)
-        this.renderButton = this.renderButton.bind(this)
-        this.renderItem = this.renderItem.bind(this)
-        this.renderSeparator = this.renderSeparator.bind(this)
-        this.renderItemList = this.renderItemList.bind(this)
-    }
-
-    toStateItems(items: PropListItemType[]): StateListItemType[] {
-        return items.map((item, index) => {
-            if (typeof item === 'string') {
-                return {
-                    id: index.toString(),
-                    content: item.toString(),
-                    usesPropId: false
-                } as StateListItemType
-            } else {
-                return {
-                    id: item.id,
-                    content: item.content,
-                    usesPropId: true
-                } as StateListItemType
-            }
-        })
-    }
-
-    componentWillReceiveProps(newProps: ChoiceBoxProps) {
-        if (newProps.initiallySelected && newProps.initiallySelected !== this.props.initiallySelected) {
-            this.setState({
-                itemSelectedId: newProps.initiallySelected
-            })
-        }
+        this.getClassNames = this.getClassNames.bind(this);
+        this.close = this.close.bind(this);
+        this.toggle = this.toggle.bind(this);
     }
 
     componentDidUpdate() {
-        const {isListOpen} = this.state;
+        const {open} = this.state;
         setTimeout(() => {
-            if (isListOpen) {
-                window.addEventListener('click', this.closeList)
+            if (open) {
+                window.addEventListener('click', this.close)
             } else {
-                window.removeEventListener('click', this.closeList)
+                window.removeEventListener('click', this.close)
             }
         }, 0)
     }
 
-    getItemById(itemId: string | undefined): StateListItemType | undefined {
-        if (itemId) {
-            return this.state.items.find(item => item.id === itemId)
-        } else {
-            return undefined
-        }
-    }
-
-    closeList() {
+    close() {
         this.setState({
-            isListOpen: false
+            open: false
         })
     }
 
-
-    toggleList() {
+    toggle() {
         this.setState({
-            isListOpen: !this.state.isListOpen
+            open: !this.state.open
         })
     }
 
-
-    onItemClicked(item: StateListItemType) {
-        if (item.id !== this.state.itemSelectedId) {
-            this.setState({
-                itemSelectedId: item.id,
-                isListOpen: false
-            })
-            if (this.props.onSelect) {
-                this.props.onSelect(item.usesPropId ? item.id : item.content)
-            }
-        }
+    getClassNames() {
+        return concatClasses(
+            "choicebox",
+            (this.state.open ? "choicebox-open" : "choicebox-closed"),
+            this.props.className
+        );
     }
 
-
-    renderTitleDummies() {
-        // add all possible values to the button text width height=0 (so they are invisible)
-        // -> button is wide enough for every possible value
-        const {items} = this.state
+    render(): ReactElement {
         return (
-            <>
-                <div className={"choice-box-title-dummy"}>{this.props.title}</div>
-                {items.map(item => <div className={"choice-box-title-dummy"}>{item.content}</div>)}
-            </>
-        )
-    }
-
-
-    renderButton() {
-        const {isListOpen, title, itemSelectedId} = this.state
-        const currentItem = this.getItemById(itemSelectedId)
-        const currentTitle = currentItem ? currentItem.content : title
-        return (
-            <Button style={this.props.style} highlight={this.props.highlight} onClick={this.toggleList}>
-                <div className={"choice-box-title"}>
-                    {currentTitle}
-                    {this.props.autoWidth !== false && this.renderTitleDummies()}
-                </div>
+            <div className={this.getClassNames()}>
+                <Button className={"choicebox-button"}
+                        variant={this.props.variant}
+                        iconRight={<BsChevronDown/>}
+                        onAction={this.toggle}
+                >
+                    {this.props.selected}
+                    {this.props.autoWidth && this.props.items
+                        .map(item => <div className={"choicebox-button-dummy-content"}>{item}</div>)
+                    }
+                </Button>
                 {
-                    isListOpen
-                        ? <BsChevronUp/>
-                        : <BsChevronDown/>
-                }
-            </Button>
-        )
-    }
-
-
-    renderItem(item: StateListItemType): ReactElement {
-        return (
-            <div className={"choice-box-item"} onClick={() => this.onItemClicked(item)}>
-                <div className={"choice-box-item-content"}>
-                    {item.content}
-                </div>
-                {
-                    this.state.itemSelectedId === item.id
-                        ? <IoCheckmark className={"choice-box-item-selected-icon"}/>
-                        : null
+                    this.state.open && (
+                        <Dropdown className={"choicebox-dropdown"}
+                                  items={this.props.items}
+                                  itemFilter={this.props.itemFilter}
+                                  selectedItem={this.props.selected}
+                                  onSelect={this.props.onSelect}
+                                  maxVisibleItems={this.props.maxVisibleItems}/>
+                    )
                 }
             </div>
-        )
+        );
     }
-
-
-    renderSeparator(): ReactElement {
-        return <div className={"choice-box-separator"}/>
-    }
-
-
-    renderItemList(): ReactElement {
-        const {items} = this.state
-        return (
-            <div className={"choice-box-list with-shadow-1"}
-                 style={this.props.listHeight ? {maxHeight: this.props.listHeight + 'em'} : {}}
-            >
-                {items.map(item => this.renderItem(item))}
-            </div>
-        )
-    }
-
-
-    render() {
-        const {isListOpen} = this.state
-        return (
-            <div className={"choice-box-wrapper"}>
-                {this.props.label ? this.props.label : null}
-                {this.renderButton()}
-                {isListOpen && this.renderItemList()}
-            </div>
-        )
-    }
-
 }

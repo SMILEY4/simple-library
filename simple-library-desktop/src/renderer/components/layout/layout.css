@@ -3,7 +3,8 @@
 .fill-vert { height: 100%; }
 .fill-both { width: 100%; height: 100%; }
 
-
+.gap-s-0 { gap: var(--s-0); }
+.gap-s-0-15 { gap: var(--s-0-15); }
 .gap-s-0-25 { gap: var(--s-0-25); }
 .gap-s-0-5 { gap: var(--s-0-5); }
 .gap-s-0-75 { gap: var(--s-0-75); }
@@ -21,7 +22,8 @@
 .gap-s-40 { gap: var(--s-40); }
 .gap-s-48 { gap: var(--s-48); }
 
-
+.padding-s-0 { padding: var(--s-0); }
+.padding-s-0-15 { padding: var(--s-0-15); }
 .padding-s-0-25 { padding: var(--s-0-25); }
 .padding-s-0-5  { padding: var(--s-0-5); }
 .padding-s-0-75 { padding: var(--s-0-75); }

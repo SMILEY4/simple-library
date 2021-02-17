@@ -1,0 +1,125 @@
+.labelbox {
+	display:             flex;
+	justify-content:     center;
+	align-items:         center;
+
+	box-sizing:          border-box;
+	height:              var(--s-1-5);
+	padding-left:        var(--s-0-75);
+	padding-right:       var(--s-0-75);
+
+	border-radius:       var(--radius-0);
+	color:               var(--text-color-1)
+}
+
+.labelbox > svg {
+	width:  var(--s-1);
+	height: var(--s-1);
+}
+
+.labelbox-mixed {
+	gap: var(--s-0-5)
+}
+
+/*  SOLID  */
+.labelbox-variant-solid {
+	background-color: var(--base-color-0);
+	border:           1px solid var(--base-color-4);
+}
+
+.labelbox-variant-solid.labelbox-type-primary {
+	background-color: var(--color-primary-1);
+	border:           1px solid var(--color-primary-1);
+}
+
+.labelbox-variant-solid.labelbox-type-success {
+	background-color: var(--color-success-1);
+	border:           1px solid var(--color-success-1);
+}
+
+.labelbox-variant-solid.labelbox-type-error {
+	background-color: var(--color-error-1);
+	border:           1px solid var(--color-error-1);
+}
+
+.labelbox-variant-solid.labelbox-type-warn {
+	background-color: var(--color-warn-1);
+	border:           1px solid var(--color-warn-1);
+}
+
+/*  OUTLINE  */
+.labelbox-variant-outline {
+	border: 1px solid var(--base-color-4);
+}
+
+.labelbox-variant-outline.labelbox-type-primary {
+	border: 1px solid var(--color-primary-2);
+}
+
+.labelbox-variant-outline.labelbox-type-success {
+	border: 1px solid var(--color-success-2);
+}
+
+.labelbox-variant-outline.labelbox-type-error {
+	border: 1px solid var(--color-error-2);
+}
+
+.labelbox-variant-outline.labelbox-type-warn {
+	border: 1px solid var(--color-warn-2);
+}
+
+/*  GHOST  */
+.labelbox-variant-ghost {
+	background-color: var(--base-color-0);
+}
+
+.labelbox-variant-ghost.labelbox-type-primary {
+	background-color: var(--color-primary-1);
+}
+
+.labelbox-variant-ghost.labelbox-type-success {
+	background-color: var(--color-success-1);
+}
+
+.labelbox-variant-ghost.labelbox-type-error {
+	background-color: var(--color-error-1);
+}
+
+.labelbox-variant-ghost.labelbox-type-warn {
+	background-color: var(--color-warn-1);
+}
+
+
+/*  LINK  */
+.labelbox-variant-link {
+}
+
+
+/*GROUP*/
+.labelbox-group-pos-start {
+	border-top-right-radius:    0;
+	border-bottom-right-radius: 0;
+	border-right:               unset;
+}
+
+.labelbox-group-pos-middle {
+	border-radius: 0;
+	border-right:  unset;
+}
+
+.labelbox-group-pos-middle-seamless {
+	border-radius: 0;
+	border-right:  unset;
+	border-left:   unset;
+}
+
+.labelbox-group-pos-end {
+	border-top-left-radius:    0;
+	border-bottom-left-radius: 0;
+}
+
+.labelbox-group-pos-end-seamless {
+	border-top-left-radius:    0;
+	border-bottom-left-radius: 0;
+	border-left:               unset;
+}

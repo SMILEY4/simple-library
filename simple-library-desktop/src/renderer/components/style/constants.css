@@ -1,0 +1,118 @@
+* {
+
+	--background-color-light-0: hsl(223, 54%, 97%);
+	--background-color-light-1: hsl(0, 0%, 100%);
+
+	--base-color-light-0:       hsl(231, 14%, 90%);
+	--base-color-light-1:       hsl(228, 9%, 86%);
+	--base-color-light-2:       hsl(228, 6%, 83%);
+	--base-color-light-3:       hsl(228, 3%, 80%);
+	--base-color-light-4:       hsl(228, 3%, 73%);
+
+	--text-color-light-0:       hsl(0, 0%, 63%);
+	--text-color-light-1:       hsl(0, 0%, 27%);
+	--text-color-light-2:       hsl(0, 0%, 12%);
+	--text-color-light-3:       hsl(0, 0%, 45%);
+
+
+	--background-color-dark-0:  hsl(195, 3%, 25%);
+	--background-color-dark-1:  hsl(195, 3%, 20%);
+
+	--base-color-dark-0:        hsl(195, 3%, 28%);
+	--base-color-dark-1:        hsl(195, 2%, 30%);
+	--base-color-dark-2:        hsl(195, 2%, 33%);
+	--base-color-dark-3:        hsl(195, 2%, 36%);
+	--base-color-dark-4:        hsl(195, 2%, 40%);
+
+	--text-color-dark-0:        hsl(0, 0%, 55%);
+	--text-color-dark-1:        hsl(0, 0%, 80%);
+	--text-color-dark-2:        hsl(0, 0%, 90%);
+	--text-color-dark-3:        hsl(0, 0%, 60%);
+
+	--overlay-color-light:      hsla(0, 0%, 0%, 0.3);
+	--overlay-color-dark:       hsla(0, 0%, 60%, 0.3);
+
+	--color-primary-light-0:    hsl(204, 55%, 90%);
+	--color-primary-light-1:    hsl(204, 50%, 85%);
+	--color-primary-light-2:    hsl(204, 70%, 50%);
+	--color-primary-light-3:    hsl(204, 70%, 48%);
+	--color-primary-light-4:    hsl(204, 70%, 46%);
+
+	--color-primary-dark-0:     hsl(204, 20%, 28%);
+	--color-primary-dark-1:     hsl(204, 25%, 32%);
+	--color-primary-dark-2:     hsl(204, 70%, 50%);
+	--color-primary-dark-3:     hsl(204, 70%, 48%);
+	--color-primary-dark-4:     hsl(204, 70%, 46%);
+
+	--color-success-light-0:    hsl(145, 55%, 90%);
+	--color-success-light-1:    hsl(145, 50%, 85%);
+	--color-success-light-2:    hsl(145, 63%, 46%);
+	--color-success-light-3:    hsl(145, 63%, 44%);
+	--color-success-light-4:    hsl(145, 63%, 42%);
+
+	--color-success-dark-0:     hsl(145, 20%, 30%);
+	--color-success-dark-1:     hsl(145, 25%, 32%);
+	--color-success-dark-2:     hsl(145, 63%, 46%);
+	--color-success-dark-3:     hsl(145, 63%, 44%);
+	--color-success-dark-4:     hsl(145, 63%, 42%);
+
+	--color-error-light-0:      hsl(6, 55%, 90%);
+	--color-error-light-1:      hsl(6, 25%, 85%);
+	--color-error-light-2:      hsl(6, 78%, 55%);
+	--color-error-light-3:      hsl(6, 78%, 50%);
+	--color-error-light-4:      hsl(6, 78%, 46%);
+
+	--color-error-dark-0:       hsl(6, 20%, 30%);
+	--color-error-dark-1:       hsl(6, 25%, 32%);
+	--color-error-dark-2:       hsl(6, 78%, 55%);
+	--color-error-dark-3:       hsl(6, 78%, 50%);
+	--color-error-dark-4:       hsl(6, 78%, 46%);
+
+	--color-warn-light-0:       hsl(37, 55%, 90%);
+	--color-warn-light-1:       hsl(37, 50%, 85%);
+	--color-warn-light-2:       hsl(37, 90%, 48%);
+	--color-warn-light-3:       hsl(37, 90%, 46%);
+	--color-warn-light-4:       hsl(37, 90%, 44%);
+
+	--color-warn-dark-0:        hsl(37, 20%, 30%);
+	--color-warn-dark-1:        hsl(37, 25%, 32%);
+	--color-warn-dark-2:        hsl(37, 90%, 48%);
+	--color-warn-dark-3:        hsl(37, 90%, 46%);
+	--color-warn-dark-4:        hsl(37, 90%, 44%);
+
+	--default-duration:         0.2s;
+
+	--font-size-0:              10px;
+	--font-size-1:              12px;
+	--font-size-2:              14px;
+	--font-size-3:              16px;
+	--font-size-4:              18px;
+	--font-size-5:              20px;
+	--font-size-6:              24px;
+	--font-size-7:              30px;
+	--font-size-8:              36px;
+	--font-size-9:              48px;
+	--font-size-10:             60px;
+	--font-size-11:             72px;
+
+	--s-0:                      0;
+	--s-0-15:                   calc(16px * 0.15);
+	--s-0-25:                   calc(16px * 0.25);
+	--s-0-5:                    calc(16px * 0.50);
+	--s-0-75:                   calc(16px * 0.75);
+	--s-1:                      calc(16px * 1);
+	--s-1-5:                    calc(16px * 1.5);
+	--s-2:                      calc(16px * 2);
+	--s-3:                      calc(16px * 3);
+	--s-4:                      calc(16px * 4);
+	--s-6:                      calc(16px * 6);
+	--s-8:                      calc(16px * 8);
+	--s-12:                     calc(16px * 12);
+	--s-16:                     calc(16px * 16);
+	--s-24:                     calc(16px * 24);
+	--s-32:                     calc(16px * 32);
+	--s-40:                     calc(16px * 40);
+	--s-48:                     calc(16px * 48);
+
+	--radius-0:                 5px;
+}

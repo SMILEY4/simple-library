@@ -1,0 +1,16 @@
+.choicebox {
+	position: relative;
+}
+
+.choicebox > .choicebox-button > svg {
+	transition: var(--default-duration);
+}
+
+.choicebox-open > .choicebox-button > svg {
+	transform: rotate(-180deg);
+}
+
+.choicebox > .choicebox-button > .button-text > .choicebox-button-dummy-content {
+	max-height: 0;
+	overflow:   hidden;
+}

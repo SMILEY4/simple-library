@@ -1,6 +1,6 @@
-
-.image { position: relative; }
-
+.image {
+	position: relative;
+}
 
 .image-main,
 .image-overlay {
@@ -12,11 +12,14 @@
 	background-repeat: no-repeat;
 }
 
+.image-mode-auto > .image-main {
+	background-size: auto;
+}
 
-.image-size-auto { background-size: auto; }
+.image-mode-cover > .image-main {
+	background-size: cover;
+}
 
-
-.image-size-cover { background-size: cover; }
-
-
-.image-size-contain { background-size: contain; }
+.image-mode-contain > .image-main {
+	background-size: contain;
+}

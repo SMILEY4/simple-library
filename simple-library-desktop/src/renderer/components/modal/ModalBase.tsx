@@ -1,14 +1,15 @@
 import * as React from "react";
+import { ReactElement } from "react";
 import * as ReactDOM from 'react-dom';
-import "./modalbase.css"
-import { classNameOrEmpty } from '../common';
+import "./modalbase.css";
+import { classNameOrEmpty, concatClasses } from '../common';
 
 export enum ModalPosition {
     CENTER = "center",
     BOTTOM = "bottom"
 }
 
-interface ModalBaseProps {
+export interface ModalBaseProps {
     show: boolean,
     position?: ModalPosition,
     withOverlay?: boolean,
@@ -17,29 +18,51 @@ interface ModalBaseProps {
     className?: string
 }
 
-export class ModalBase extends React.Component<React.PropsWithChildren<ModalBaseProps>> {
-    render() {
-        if (!this.props.show) {
-            return null;
-        } else {
-            const modal = (
-                <div className={(this.props.withOverlay === true ? "modal-overlay" : "modal-hidden-overlay") + (this.props.position ? " modal-overlay-" + this.props.position : " modal-overlay-" + ModalPosition.CENTER)}>
-                    <div className={"modal" + (this.props.withShadow === true ? " with-shadow-2" : "") + classNameOrEmpty(this.props.className)}>
-                        {this.props.children}
-                    </div>
+type ModalBaseReactProps = React.PropsWithChildren<ModalBaseProps>;
+
+
+export function ModalBase(props: ModalBaseReactProps) {
+
+    function getClassNamesOverlay(props: ModalBaseReactProps): string {
+        return concatClasses(
+            (props.withOverlay === true ? "modal-overlay" : "modal-hidden-overlay"),
+            (props.position ? " modal-overlay-" + props.position : " modal-overlay-" + ModalPosition.CENTER),
+        );
+    }
+
+    function getClassNames(props: ModalBaseReactProps): string {
+        return concatClasses(
+            "modal",
+            (props.withShadow === true ? " with-shadow-2" : ""),
+            props.className,
+        );
+    }
+
+    function renderElement(props: ModalBaseReactProps): ReactElement {
+        return (
+            <div className={getClassNamesOverlay(props)}>
+                <div className={getClassNames(props)}>
+                    {props.children}
                 </div>
-            )
-            if (this.props.modalRootId) {
-                if (!document.getElementById(this.props.modalRootId)) {
-                    setTimeout(() => {
-                        // if the id is not yet available, we need to wait for react to finish rendering and try again
-                        this.forceUpdate()
-                    }, 0)
-                }
-                const modalRootElement = document.getElementById(this.props.modalRootId)
-                return modalRootElement ? ReactDOM.createPortal(modal, modalRootElement) : null;
+            </div>
+        );
+    }
+
+    if (!props.show) {
+        return null;
+    } else {
+        if (props.modalRootId) {
+            if (!document.getElementById(props.modalRootId)) {
+                setTimeout(() => {
+                    // if the id is not yet available, we need to wait for react to finish rendering and try again
+                    this.forceUpdate();
+                }, 0);
             }
-            return modal
+            const modalRootElement = document.getElementById(props.modalRootId);
+            return modalRootElement ? ReactDOM.createPortal(renderElement(props), modalRootElement) : null;
+        } else {
+            return renderElement(props);
         }
     }
+
 }
