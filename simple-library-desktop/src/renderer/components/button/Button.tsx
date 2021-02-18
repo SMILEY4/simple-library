@@ -36,8 +36,14 @@ export function Button(props: ButtonReactProps): ReactElement {
         );
     }
 
+    function handleOnClick(props: ButtonReactProps): void {
+        if(!props.disabled && props.onAction) {
+            props.onAction()
+        }
+    }
+
     return (
-        <div className={getClassNames(props)} onClick={props.onAction}>
+        <div className={getClassNames(props)} onClick={() => handleOnClick(props)}>
             {props.icon ? props.icon : null}
             <div className={"button-text"}>
                 {props.children}

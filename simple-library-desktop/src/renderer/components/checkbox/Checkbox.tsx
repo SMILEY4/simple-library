@@ -1,9 +1,9 @@
 import * as React from 'react';
-import {ReactElement} from 'react';
-import {concatClasses, Variant} from '../common';
+import { ReactElement } from 'react';
+import { concatClasses, Variant } from '../common';
 import "./checkbox.css";
-import {FaCheck} from "react-icons/all";
-import {Button} from "../button/Button";
+import { FaCheck } from "react-icons/all";
+import { Button } from "../button/Button";
 
 export interface CheckboxProps {
     variant: Variant,
@@ -26,15 +26,15 @@ export function Checkbox(props: CheckboxReactProps): ReactElement {
 
     function getIcon(props: CheckboxReactProps) {
         if (props.selected) {
-            return <FaCheck/>;
+            return <FaCheck />;
         } else {
             return undefined;
         }
     }
 
-    function handleToggle():void {
+    function handleToggle(): void {
         if (props.onToggle && !props.disabled) {
-            props.onToggle(!props.selected)
+            props.onToggle(!props.selected);
         }
     }
 
@@ -43,13 +43,12 @@ export function Checkbox(props: CheckboxReactProps): ReactElement {
             <Button
                 variant={props.variant}
                 icon={getIcon(props)}
-                square={true}
                 disabled={props.disabled}
                 onAction={handleToggle}
                 className={"checkbox-button"}
             />
             <div className={"checkbox-label"}>
-                Checkbox Label
+                {props.children}
             </div>
         </div>
     );

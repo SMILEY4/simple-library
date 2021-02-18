@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { ReactElement } from 'react';
 import "./inputfield.css";
-import { AlignCross, AlignMain, concatClasses, GroupPosition, map } from '../common';
-import { HBox } from '../layout/Box';
+import { concatClasses, GroupPosition, map } from '../common';
 
 export interface InputFieldProps {
     placeholder?: string,
