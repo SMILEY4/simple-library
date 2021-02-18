@@ -1,6 +1,8 @@
 import { hot } from 'react-hot-loader/root';
 import React, { Component } from 'react';
 import { ComponentShowcaseView } from '../components/_showcase/ComponentShowcaseView';
+import { WelcomeView } from './welcome/welcomeView';
+import { MainView } from './main/mainView';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -27,11 +29,11 @@ export class Application extends Component<any, AppState> {
         this.state = {
             theme: Theme.LIGHT,
             currentView: View.WELCOME,
-            displayComponentShowcase: true,
+            displayComponentShowcase: false,
         };
         this.renderComponentShowcase = this.renderComponentShowcase.bind(this);
-        // this.renderWelcomeView = this.renderWelcomeView.bind(this);
-        // this.renderMainView = this.renderMainView.bind(this);
+        this.renderWelcomeView = this.renderWelcomeView.bind(this);
+        this.renderMainView = this.renderMainView.bind(this);
         window.addEventListener('keyup', e => { // shift + alt + D => toggle component _showcase
             if (e.key === 'D' && e.ctrlKey && e.altKey) {
                 this.setState({ displayComponentShowcase: !this.state.displayComponentShowcase });
@@ -50,10 +52,10 @@ export class Application extends Component<any, AppState> {
             return this.renderComponentShowcase();
         } else {
             if (this.state.currentView === View.WELCOME) {
-                // return this.renderWelcomeView();
+                return this.renderWelcomeView();
             }
             if (this.state.currentView === View.MAIN) {
-                // return this.renderMainView();
+                return this.renderMainView();
             }
         }
     }
@@ -68,44 +70,44 @@ export class Application extends Component<any, AppState> {
     }
 
 
-    // renderWelcomeView() {
-    //     return (
-    //         <div className={'root-view theme-' + this.state.theme}
-    //              style={{ width: '100%', height: '100%' }}
-    //              id='root'>
-    //             <WelcomeView
-    //                 theme={this.state.theme}
-    //                 onChangeTheme={() => {
-    //                     const nextTheme: Theme = this.state.theme === Theme.LIGHT ? Theme.DARK : Theme.LIGHT;
-    //                     this.setState({ theme: nextTheme });
-    //                 }}
-    //                 onLoadProject={() => {
-    //                     this.setState({ currentView: View.MAIN });
-    //                 }}
-    //             />
-    //         </div>
-    //     );
-    // }
-    //
-    //
-    // renderMainView() {
-    //     return (
-    //         <div className={'root-view theme-' + this.state.theme}
-    //              style={{ width: '100%', height: '100%' }}
-    //              id='root'>
-    //             <MainView
-    //                 theme={this.state.theme}
-    //                 onChangeTheme={() => {
-    //                     const nextTheme: Theme = this.state.theme === Theme.LIGHT ? Theme.DARK : Theme.LIGHT;
-    //                     this.setState({ theme: nextTheme });
-    //                 }}
-    //                 onCloseProject={() => {
-    //                     this.setState({ currentView: View.WELCOME });
-    //                 }}
-    //             />
-    //         </div>
-    //     );
-    // }
+    renderWelcomeView() {
+        return (
+            <div className={'root-view theme-' + this.state.theme}
+                 style={{ width: '100%', height: '100%' }}
+                 id='root'>
+                <WelcomeView
+                    theme={this.state.theme}
+                    onChangeTheme={() => {
+                        const nextTheme: Theme = this.state.theme === Theme.LIGHT ? Theme.DARK : Theme.LIGHT;
+                        this.setState({ theme: nextTheme });
+                    }}
+                    onLoadProject={() => {
+                        this.setState({ currentView: View.MAIN });
+                    }}
+                />
+            </div>
+        );
+    }
+
+
+    renderMainView() {
+        return (
+            <div className={'root-view theme-' + this.state.theme}
+                 style={{ width: '100%', height: '100%' }}
+                 id='root'>
+                <MainView
+                    theme={this.state.theme}
+                    onChangeTheme={() => {
+                        const nextTheme: Theme = this.state.theme === Theme.LIGHT ? Theme.DARK : Theme.LIGHT;
+                        this.setState({ theme: nextTheme });
+                    }}
+                    onCloseProject={() => {
+                        this.setState({ currentView: View.WELCOME });
+                    }}
+                />
+            </div>
+        );
+    }
 
 }
 

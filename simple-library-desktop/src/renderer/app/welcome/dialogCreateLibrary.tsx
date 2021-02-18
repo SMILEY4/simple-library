@@ -1,5 +1,11 @@
 import * as React from 'react';
 import { Component, ReactElement } from 'react';
+import { Dialog } from '../../components/modal/Dialog';
+import { AlignCross, AlignMain, Dir, GroupPosition, Size, Type, Variant } from '../../components/common';
+import { Box } from '../../components/layout/Box';
+import { InputField } from '../../components/inputfield/InputField';
+import { GoFileDirectory } from 'react-icons/all';
+import { Button } from '../../components/button/Button';
 
 const electron = window.require('electron');
 
@@ -86,47 +92,40 @@ export class DialogCreateLibrary extends Component<DialogCreateLibraryProps, Dia
 
 
     render(): ReactElement {
-        return (<></>);
-            // <Dialog show={this.props.show}
-            //         modalRootId='root'
-            //         title={'Create New Library'}
-            //         withCloseButton={true}
-            //         onClose={this.props.onClose}
-            //         footerActions={
-            //             <>
-            //                 <ButtonFilled onClick={this.props.onClose}>Cancel</ButtonFilled>
-            //                 <ButtonFilled onClick={this.actionRequestCreateLibrary} highlight={HighlightType.INFO}>Create</ButtonFilled>
-            //             </>
-            //         }
-            // >
-            //     <Box dir={Dir.DOWN} alignMain={AlignMain.CENTER} alignCross={AlignCross.STRETCH} spacing={Size.S_0_75}>
-            //         <InputFieldGhostBg1
-            //             type={HighlightType.DEFAULT}
-            //             invalid={!this.state.libraryNameValid}
-            //             placeholder={'Library Name'}
-            //             onAccept={(value) => this.setState({ libraryName: value })}
-            //         />
-            //         <InputFieldGhostBg1
-            //             text={this.state.targetDir}
-            //             type={HighlightType.DEFAULT}
-            //             invalid={!this.state.targetDirValid}
-            //             placeholder={'Select Directory'}
-            //             editable={false}
-            //             contentLeading={
-            //                 <Box fill={Fill.TRUE}>
-            //                     <CBox dir={Dir.DOWN}>
-            //                         <GoFileDirectory />
-            //                     </CBox>
-            //                 </Box>
-            //             }
-            //             contentTrailing={
-            //                 <ButtonFilled onClick={this.actionBrowseTargetDir}>
-            //                     Browse
-            //                 </ButtonFilled>
-            //             }
-            //         />
-            //     </Box>
-            // </Dialog>
-        // );
+        return (
+            <Dialog title={"Create new Library"}
+                    show={this.props.show}
+                    closeButton={true}
+                    onClose={this.props.onClose}
+                    actions={[
+                        {
+                            content: "Cancel",
+                            variant: Variant.OUTLINE,
+                            onAction: this.props.onClose,
+                        },
+                        {
+                            content: "Create",
+                            variant: Variant.SOLID,
+                            type: Type.PRIMARY,
+                            onAction: this.actionRequestCreateLibrary,
+                        },
+                    ]}>
+                <Box dir={Dir.DOWN} alignMain={AlignMain.CENTER} alignCross={AlignCross.STRETCH} spacing={Size.S_0_75}>
+                    <InputField
+                        placeholder='Library Name'
+                        value={this.state.libraryName}
+                        onChange={(value) => this.setState({ libraryName: value })}
+                    />
+                    <InputField
+                        placeholder='Library Directory'
+                        locked={true}
+                        icon={<GoFileDirectory />}
+                        contentTrailing={<Button variant={Variant.SOLID} groupPos={GroupPosition.END} onAction={this.actionBrowseTargetDir}>Browse</Button>}
+                        value={this.state.targetDir}
+                    />
+                </Box>
+            </Dialog>
+        );
     }
+
 }

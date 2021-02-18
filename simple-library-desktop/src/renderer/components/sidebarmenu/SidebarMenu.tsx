@@ -5,15 +5,24 @@ import "./sidebarMenu.css";
 import { VBox } from '../layout/Box';
 import { Button } from '../button/Button';
 import { BiChevronsLeft, BiChevronsRight } from 'react-icons/all';
+import { H4Text } from '../text/Text';
 
-export interface Action {
+export interface SidebarAction {
+    typeID?: "ACTION"
     text: string,
     icon?: any,
     onAction?: () => void
 }
 
+export interface SidebarSectionTitle {
+    typeID?: "SECTION-TITLE"
+    text: string,
+}
+
+export type SidebarElement = SidebarAction | SidebarSectionTitle;
+
 export interface SidebarMenuProps {
-    actions: Action[]
+    elements: SidebarElement[]
     align: AlignMain,
     fillHeight?: boolean,
     minimizable?: boolean,
@@ -29,7 +38,7 @@ export function SidebarMenu(props: React.PropsWithChildren<SidebarMenuProps>): R
             "sidebar-menu",
             (props.minimized ? "sidebar-menu-minimized" : "sidebar-menu-maximized"),
             (props.fillHeight === false ? undefined : "fill-vert"),
-            props.className
+            props.className,
         );
     }
 
@@ -41,27 +50,43 @@ export function SidebarMenu(props: React.PropsWithChildren<SidebarMenuProps>): R
         }
     }
 
-    function getActions(minimized: boolean, actions: Action[]): ReactElement[] {
+
+    function renderAction(minimized: boolean, action: SidebarAction): ReactElement {
         if (minimized) {
-            return actions.map(action => {
-                if (action.icon) {
-                    return <Button variant={Variant.GHOST}
-                                   icon={action.icon}
-                                   onAction={action.onAction}
-                                   square={true} />;
-                } else {
-                    return null;
-                }
-            });
+            if (action.icon) {
+                return <Button variant={Variant.GHOST}
+                               icon={action.icon}
+                               onAction={action.onAction}
+                               square={true} />;
+            } else {
+                return null;
+            }
         } else {
-            return actions.map(action => {
-                return (
-                    <Button variant={Variant.GHOST} icon={action.icon} onAction={action.onAction}>
-                        {action.text}
-                    </Button>
-                );
-            });
+            return (
+                <Button variant={Variant.GHOST} icon={action.icon} onAction={action.onAction}>
+                    {action.text}
+                </Button>
+            );
         }
+    }
+
+    function renderSectionTitle(minimized: boolean, sectionTitle: SidebarSectionTitle): ReactElement {
+        if (minimized) {
+            return null;
+        } else {
+            return <H4Text className={"sidebar-section-title"}>{sectionTitle.text}</H4Text>;
+        }
+    }
+
+    function renderElements(minimized: boolean, elements: SidebarElement[]): ReactElement[] {
+        return elements.map(element => {
+            if (element.typeID === "ACTION") {
+                return renderAction(minimized, element);
+            }
+            if (element.typeID === "SECTION-TITLE") {
+                return renderSectionTitle(minimized, element);
+            }
+        });
     }
 
     return (
@@ -71,7 +96,7 @@ export function SidebarMenu(props: React.PropsWithChildren<SidebarMenuProps>): R
                   alignCross={props.minimized ? AlignCross.CENTER : AlignCross.STRETCH}
                   spacing={Size.S_0}
             >
-                {getActions(props.minimized, props.actions)}
+                {renderElements(props.minimized, props.elements)}
             </VBox>
             {props.minimizable && (
                 <Button className={"sidebar-btn-minimize"}

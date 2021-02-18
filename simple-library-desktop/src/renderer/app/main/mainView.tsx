@@ -2,9 +2,10 @@ import * as React from 'react';
 import { Component, ReactElement } from 'react';
 import { Theme } from '../application';
 import { BodyText, H3Text } from '../../components/text/Text';
-import { Dir } from '../../components/common';
+import { Dir, Variant } from '../../components/common';
 import { Box } from '../../components/layout/Box';
 import { CloseCurrentLibraryMessage, GetLibraryMetadataMessage } from '../../../main/messaging/messagesLibrary';
+import { Button } from '../../components/button/Button';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -63,7 +64,7 @@ export class MainView extends Component<MainViewProps, MainViewState> {
                 <BodyText>{'Name: ' + this.state.name}</BodyText>
                 <BodyText>{'Created: ' + this.state.timestampCreated}</BodyText>
                 <BodyText>{'Last Opened: ' + this.state.timestampLastOpened}</BodyText>
-                {/*<ButtonFilled onClick={this.closeLibrary}>Back</ButtonFilled>*/}
+                <Button variant={Variant.SOLID} onAction={this.closeLibrary}>Close Library</Button>
             </Box>
         );
     }

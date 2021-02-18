@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { ReactElement } from 'react';
 import "./inputfield.css";
-import { concatClasses, GroupPosition, map } from '../common';
+import { AlignCross, AlignMain, concatClasses, GroupPosition, map } from '../common';
+import { HBox } from '../layout/Box';
 
 export interface InputFieldProps {
     placeholder?: string,
@@ -17,7 +18,9 @@ export interface InputFieldProps {
     contentTrailing?: any,
 
     onChange?: (value: string) => void,
-    onAccept?: (value: string) => void
+    onAccept?: (value: string) => void,
+
+    className?: string
 }
 
 export function InputField(props: React.PropsWithChildren<InputFieldProps>): ReactElement {
