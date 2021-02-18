@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { ReactElement } from 'react';
 import './grid.css';
-import "./layout.css"
 import { concatClasses, Fill, map } from '../common';
 
 

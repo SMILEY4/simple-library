@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {ReactElement} from 'react';
 import './box.css';
-import './layout.css';
 import {AlignCross, AlignMain, concatClasses, Dir, Fill, map, Size} from '../common';
 
 

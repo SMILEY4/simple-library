@@ -119,7 +119,7 @@ export class DialogCreateLibrary extends Component<DialogCreateLibraryProps, Dia
                     <InputField
                         placeholder='Library Directory'
                         locked={true}
-                        iconRight={<GoFileDirectory />}
+                        icon={<GoFileDirectory />}
                         contentTrailing={<Button variant={Variant.SOLID} groupPos={GroupPosition.END} onAction={this.actionBrowseTargetDir}>Browse</Button>}
                         value={this.state.targetDir}
                     />
