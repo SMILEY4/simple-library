@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Component, ReactElement } from 'react';
 import './welcome.css';
 import { Theme } from '../application';
-import { AlignMain, Fill } from '../../components/common';
+import { AlignMain, Fill, Type } from '../../components/common';
 import imgWelcome from './imgWelcome.jpg';
 import { Box } from '../../components/layout/Box';
 import { Grid } from '../../components/layout/Grid';
@@ -14,6 +14,7 @@ import {
 import { SidebarElement, SidebarMenu } from '../../components/sidebarmenu/SidebarMenu';
 import { DialogCreateLibrary } from './dialogCreateLibrary';
 import { Image } from '../../components/image/Image';
+import { NotificationStack } from '../../components/notification/NotificationStack';
 
 const electron = window.require('electron');
 const { ipcRenderer } = window.require('electron');
@@ -38,7 +39,7 @@ type LibraryEntry = {
 interface NotificationEntry {
     title: string,
     text: string,
-    // type: HighlightType,
+    type: Type,
     uid: string,
 }
 
@@ -140,7 +141,7 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
         const notification: NotificationEntry = {
             title: title,
             text: text,
-            // type: HighlightType.ERROR,
+            type: Type.ERROR,
             uid: '' + Date.now(),
         };
         this.setState(prevState => ({
@@ -202,15 +203,15 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
                     onCreate={this.createNewLibrary}
                 />
 
-                {/*<NotificationStack modalRootId='root' notifications={*/}
-                {/*    this.state.notifications.map(notification => ({*/}
-                {/*        gradient: notification.type,*/}
-                {/*        title: notification.title,*/}
-                {/*        content: notification.text,*/}
-                {/*        withCloseButton: true,*/}
-                {/*        onClose: () => this.removeNotification(notification.uid),*/}
-                {/*    }))*/}
-                {/*} />*/}
+                <NotificationStack modalRootId='root' notifications={
+                    this.state.notifications.map(notification => ({
+                        type: notification.type,
+                        title: notification.title,
+                        content: notification.text,
+                        withCloseButton: true,
+                        onClose: () => this.removeNotification(notification.uid),
+                    }))
+                } />
 
             </Box>
         );

@@ -25,6 +25,8 @@ import forest from "./forest.jpg";
 import { SFCheckbox } from "../checkbox/SFCheckbox";
 import { ChoiceBox } from "../choicebox/ChoiceBox";
 import { SFSidebarMenu } from '../sidebarmenu/SFSidebarMenu';
+import { Notification } from '../notification/Notification';
+import { NotificationStack } from '../notification/NotificationStack';
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0");
@@ -48,6 +50,62 @@ export function ComponentShowcaseView(): any {
         </div>
     );
 
+    function renderNotification() {
+        return (
+            <>
+                <h3>Notification</h3>
+
+                <Notification type={Type.PRIMARY}
+                              icon={<AiFillHome />}
+                              title={"Notification Title"}
+                              caption={"18.02.2021"}
+                              withCloseButton={true}>
+                    This is an example info/primary notification.
+                </Notification>
+
+                <Notification type={Type.SUCCESS}
+                              icon={<AiFillHome />}
+                              title={"Notification Title"}
+                              caption={"18.02.2021"}
+                              withCloseButton={true}>
+                    This is an example success notification.
+                </Notification>
+
+                <Notification type={Type.ERROR}
+                              icon={<AiFillHome />}
+                              title={"Notification Title"}
+                              caption={"18.02.2021"}
+                              withCloseButton={true}>
+                    This is an example error notification.
+                </Notification>
+
+                <Notification type={Type.WARN}
+                              icon={<AiFillHome />}
+                              title={"Notification Title"}
+                              caption={"18.02.2021"}
+                              withCloseButton={true}>
+                    This is an example warn notification.
+                </Notification>
+
+                {/*<NotificationStack notifications={[*/}
+                {/*    {*/}
+                {/*        type: Type.PRIMARY,*/}
+                {/*        content: "Primary notification on the stack.",*/}
+                {/*    },*/}
+                {/*    {*/}
+                {/*        type: Type.ERROR,*/}
+                {/*        content: "Error notification on the stack.",*/}
+                {/*    },*/}
+                {/*    {*/}
+                {/*        type: Type.WARN,*/}
+                {/*        content: "Warn notification on the stack.",*/}
+                {/*    },*/}
+                {/*]} />*/}
+
+            </>
+        );
+    }
+
 
     function renderSidebarMenu() {
         return (
@@ -58,7 +116,7 @@ export function ComponentShowcaseView(): any {
 
                     <div style={{ height: "200px", border: "1px solid blue" }}>
                         <SFSidebarMenu
-                            actions={[
+                            elements={[
                                 {
                                     text: "Home",
                                     icon: <AiOutlineHome />,
@@ -79,7 +137,7 @@ export function ComponentShowcaseView(): any {
 
                     <div style={{ height: "200px", border: "1px solid blue" }}>
                         <SFSidebarMenu
-                            actions={[
+                            elements={[
                                 {
                                     text: "Home",
                                     icon: <AiOutlineHome />,
@@ -101,7 +159,7 @@ export function ComponentShowcaseView(): any {
 
                     <div style={{ height: "200px", border: "1px solid blue" }}>
                         <SFSidebarMenu
-                            actions={[
+                            elements={[
                                 {
                                     text: "Home",
                                     icon: <AiOutlineHome />,
@@ -166,7 +224,6 @@ export function ComponentShowcaseView(): any {
             </>
         );
     }
-
 
     function renderChoiceBox() {
         return (
@@ -486,6 +543,7 @@ export function ComponentShowcaseView(): any {
     function renderContent() {
         return (
             <>
+                {renderNotification()}
                 {renderSidebarMenu()}
                 {renderChoiceBox()}
                 {renderCheckbox()}
