@@ -11,12 +11,9 @@ import {
     GetLastOpenedLibrariesMessage,
     OpenLibraryMessage,
 } from '../../../main/messaging/messagesLibrary';
-import { SidebarMenu } from '../../components/sidebarmenu/SidebarMenu';
-import { SidebarMenuAction } from '../../components/sidebarmenu/SidebarMenuAction';
+import { SidebarElement, SidebarMenu } from '../../components/sidebarmenu/SidebarMenu';
 import { DialogCreateLibrary } from './dialogCreateLibrary';
-import { SidebarMenuSectionTitle } from '../../components/sidebarmenu/SidebarMenuSectionTitle';
-import { SidebarMenuSpacer } from '../../components/sidebarmenu/SidebarMenuSpacer';
-import { H2Text } from '../../components/text/Text';
+import { Image } from '../../components/image/Image';
 
 const electron = window.require('electron');
 const { ipcRenderer } = window.require('electron');
@@ -105,6 +102,7 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
                         name: 'Libraries',
                         extensions: ['db'],
                     },
+                    {},
                 ],
             })
             .then((result: any) => {
@@ -156,28 +154,46 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
         }));
     }
 
+    buildSidebarActions(recentlyUsed: any): SidebarElement[] {
+        const elements: SidebarElement[] = [
+            {
+                typeID: "SECTION-TITLE",
+                text: "Libraries",
+            },
+            {
+                typeID: "ACTION",
+                text: "Create New Library",
+                onAction: this.onCreateNewLibrary,
+            },
+            {
+                typeID: "ACTION",
+                text: "Open Library",
+                onAction: this.onOpenLibrary,
+            },
+        ];
+        if(recentlyUsed.length > 0) {
+            elements.push({
+                typeID: "SECTION-TITLE",
+                text: "Recently Used",
+            })
+        }
+        recentlyUsed.forEach((entry: LibraryEntry) => {
+            elements.push({
+                typeID: "ACTION",
+                text: entry.name,
+                onAction: () => this.onOpenRecentlyUsed(entry),
+            });
+        });
+        return elements;
+    }
+
     render(): ReactElement {
         return (
             <Box fill={Fill.TRUE}>
 
                 <Grid columns={['var(--s-12)', '1fr']} rows={['1fr']} fill={Fill.TRUE}>
-                    <SidebarMenu align={AlignMain.CENTER}>
-                        <H2Text className={"padding-s-1"}>SimpleLibrary</H2Text>
-                        <SidebarMenuAction onClick={this.onCreateNewLibrary}>Create New Library</SidebarMenuAction>
-                        <SidebarMenuAction onClick={this.onOpenLibrary}>Open Library</SidebarMenuAction>
-                        <SidebarMenuSectionTitle>Recently Used</SidebarMenuSectionTitle>
-                        {this.state.recentlyUsed.map(entry => {
-                            return (
-                                <SidebarMenuAction onClick={() => this.onOpenRecentlyUsed(entry)}
-                                                   key={entry.url}>
-                                    {entry.name}
-                                </SidebarMenuAction>
-                            );
-                        })}
-                        <SidebarMenuSpacer />
-                        <SidebarMenuAction onClick={this.props.onChangeTheme} align={AlignMain.END}>Toggle Theme</SidebarMenuAction>
-                    </SidebarMenu>
-                    {/*<Image url={imgWelcome} />*/}
+                    <SidebarMenu align={AlignMain.CENTER} fillHeight elements={this.buildSidebarActions(this.state.recentlyUsed)} />
+                    <Image url={imgWelcome} />
                 </Grid>
 
                 <DialogCreateLibrary
