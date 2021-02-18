@@ -3,11 +3,18 @@
 .separator-dir-vertical {
 	width:       0;
 	height:      100%;
+}
+
+.separator-dir-vertical:not(.separator-no-border) {
 	border-left: 1px solid var(--base-color-4);
 }
+
 
 .separator-dir-horizontal {
 	width:      100%;
 	height:     0;
+}
+
+.separator-dir-horizontal:not(.separator-no-border) {
 	border-top: 1px solid var(--base-color-4);
 }

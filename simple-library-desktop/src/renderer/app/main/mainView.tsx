@@ -6,6 +6,7 @@ import { Dir, Variant } from '../../components/common';
 import { Box } from '../../components/layout/Box';
 import { CloseCurrentLibraryMessage, GetLibraryMetadataMessage } from '../../../main/messaging/messagesLibrary';
 import { Button } from '../../components/button/Button';
+import { DialogImportFiles } from './DialogImportFiles';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -65,6 +66,10 @@ export class MainView extends Component<MainViewProps, MainViewState> {
                 <BodyText>{'Created: ' + this.state.timestampCreated}</BodyText>
                 <BodyText>{'Last Opened: ' + this.state.timestampLastOpened}</BodyText>
                 <Button variant={Variant.SOLID} onAction={this.closeLibrary}>Close Library</Button>
+                <DialogImportFiles
+                    show={true}
+                    onClose={undefined}
+                    onImport={undefined} />
             </Box>
         );
     }

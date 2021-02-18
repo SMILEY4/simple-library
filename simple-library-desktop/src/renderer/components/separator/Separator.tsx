@@ -12,6 +12,7 @@ export enum SeparatorDirection {
 interface SeparatorProps {
     dir: SeparatorDirection,
     spacing: Size,
+    noBorder?: boolean
     className?: string
 }
 
@@ -22,6 +23,7 @@ export function Separator(props: React.PropsWithChildren<SeparatorProps>): React
         return concatClasses(
             'separator',
             map(props.dir, (dir) => 'separator-dir-' + dir),
+            (props.noBorder ? "separator-no-border" : ""),
             props.className,
         );
     }

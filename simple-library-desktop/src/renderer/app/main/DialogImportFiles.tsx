@@ -1,14 +1,16 @@
 import * as React from 'react';
 import { Component, ReactElement } from 'react';
 import { Dialog } from '../../components/modal/Dialog';
-import { AlignCross, AlignMain, Dir, GroupPosition, Size, Type, Variant } from '../../components/common';
-import { Box } from '../../components/layout/Box';
+import { AlignCross, AlignMain, Fill, GroupPosition, Size, Type, Variant } from '../../components/common';
+import { HBox, VBox } from '../../components/layout/Box';
 import { InputField } from '../../components/inputfield/InputField';
 import { AiFillFile, GoFileDirectory } from 'react-icons/all';
 import { Button } from '../../components/button/Button';
 import { BodyText } from '../../components/text/Text';
 import { Checkbox } from '../../components/checkbox/Checkbox';
 import { Separator, SeparatorDirection } from '../../components/separator/Separator';
+import { Grid } from '../../components/layout/Grid';
+import { ChoiceBox } from '../../components/choicebox/ChoiceBox';
 
 const electron = window.require('electron');
 
@@ -62,8 +64,9 @@ export class DialogImportFiles extends Component<DialogImportFilesProps, DialogI
         };
         this.actionSelectFiles = this.actionSelectFiles.bind(this);
         this.actionImportFiles = this.actionImportFiles.bind(this);
-        this.filesToDisplayString = this.filesToDisplayString.bind(this);
         this.actionToggleCopyOrMove = this.actionToggleCopyOrMove.bind(this);
+        this.filesToDisplayString = this.filesToDisplayString.bind(this);
+        this.getRenamePartTypes = this.getRenamePartTypes.bind(this);
     }
 
     componentWillReceiveProps(newProps: DialogImportFilesProps) {
@@ -128,6 +131,20 @@ export class DialogImportFiles extends Component<DialogImportFilesProps, DialogI
         }
     }
 
+    getRenamePartTypes(): string[] {
+        return [
+            "nothing",
+            "Text",
+            "Filename", // original filename
+            "filename", // original filename all lower case
+            "FILENAME", // original filename all upper case
+            "Date (YYMM)", // date YYMM, e.g. 18.02.2021 = "2102"
+            "Date (YYYYMM)", // date YYMM, e.g. 18.02.2021 = "202102"
+            "Date (YYYYMMDD)",// date YYMM, e.g. 18.02.2021 = "20210218"
+            "Number From", // count from given number up (only for selected files)
+            "Consecutive Number" // count up, first number = "amount of files in target dir + 1"   todo: clarify
+        ]
+    }
 
     render(): ReactElement {
         return (
@@ -148,7 +165,7 @@ export class DialogImportFiles extends Component<DialogImportFilesProps, DialogI
                             onAction: this.actionImportFiles,
                         },
                     ]}>
-                <Box dir={Dir.DOWN} alignMain={AlignMain.CENTER} alignCross={AlignCross.STRETCH} spacing={Size.S_0_75}>
+                <VBox alignMain={AlignMain.CENTER} alignCross={AlignCross.STRETCH} spacing={Size.S_0_75}>
 
                     <BodyText>Select files to import</BodyText>
                     <InputField
@@ -160,36 +177,63 @@ export class DialogImportFiles extends Component<DialogImportFilesProps, DialogI
                         value={this.filesToDisplayString(this.state.selectionData.files)}
                     />
 
-                    <Separator dir={SeparatorDirection.HORIZONTAL} spacing={Size.S_0_5} />
+                    <Separator noBorder dir={SeparatorDirection.HORIZONTAL} spacing={Size.S_0_5} />
 
                     <Checkbox variant={Variant.OUTLINE} selected={this.state.copyOrMoveData.enabled} onToggle={this.actionToggleCopyOrMove}>
                         Copy or move files
                     </Checkbox>
-                    <Checkbox variant={Variant.OUTLINE} selected={this.state.copyOrMoveData.copy} disabled={!this.state.copyOrMoveData.enabled}>
-                        Copy files
-                    </Checkbox>
-                    <Checkbox variant={Variant.OUTLINE} selected={this.state.copyOrMoveData.move} disabled={!this.state.copyOrMoveData.enabled}>
-                        Move files
-                    </Checkbox>
-                    <InputField
-                        placeholder='Target Directory'
-                        locked={true}
-                        disabled={!this.state.copyOrMoveData.enabled}
-                        icon={<GoFileDirectory />}
-                        contentTrailing={
-                            <Button variant={Variant.SOLID} groupPos={GroupPosition.END} onAction={this.actionSelectFiles} disabled={!this.state.copyOrMoveData.enabled}>Browse</Button>}
-                        value={this.state.copyOrMoveData.targetDirectory}
-                    />
+                    <VBox alignMain={AlignMain.CENTER} alignCross={AlignCross.STRETCH} spacing={Size.S_0_75} padding={Size.S_1} withBorder>
+                        <Checkbox variant={Variant.OUTLINE} selected={this.state.copyOrMoveData.move} disabled={!this.state.copyOrMoveData.enabled}>
+                            Move files
+                        </Checkbox>
+                        <Checkbox variant={Variant.OUTLINE} selected={this.state.copyOrMoveData.copy} disabled={!this.state.copyOrMoveData.enabled}>
+                            Copy files
+                        </Checkbox>
+                        <InputField
+                            placeholder='Target Directory'
+                            locked={true}
+                            disabled={!this.state.copyOrMoveData.enabled}
+                            icon={<GoFileDirectory />}
+                            contentTrailing={
+                                <Button variant={Variant.SOLID} groupPos={GroupPosition.END} onAction={this.actionSelectFiles} disabled={!this.state.copyOrMoveData.enabled}>Browse</Button>}
+                            value={this.state.copyOrMoveData.targetDirectory}
+                        />
+                    </VBox>
 
-                    <Separator dir={SeparatorDirection.HORIZONTAL} spacing={Size.S_0_5} />
+
+                    <Separator noBorder dir={SeparatorDirection.HORIZONTAL} spacing={Size.S_0_5} />
 
                     <Checkbox variant={Variant.OUTLINE}
                               selected={this.state.renameData.rename}
                               onToggle={(selected: boolean) => this.setState({ renameData: { rename: selected } })}>
                         Rename files
                     </Checkbox>
+                    <VBox alignMain={AlignMain.CENTER} alignCross={AlignCross.STRETCH} spacing={Size.S_0_75} padding={Size.S_1} withBorder>
+                        <Grid columns={['1fr', '1fr', '1fr']} rows={['1fr']} fill={Fill.TRUE} gap={Size.S_0_5}>
+                            <VBox spacing={Size.S_0_25}>
+                                <BodyText>Front</BodyText>
+                                <ChoiceBox variant={Variant.OUTLINE} selected={"nothing"} items={this.getRenamePartTypes()} maxVisibleItems={5} autoWidth/>
+                                <InputField value={""} />
+                            </VBox>
+                            <VBox spacing={Size.S_0_25}>
+                                <BodyText>Middle</BodyText>
+                                <ChoiceBox variant={Variant.OUTLINE} selected={"nothing"} items={this.getRenamePartTypes()} maxVisibleItems={5} autoWidth/>
+                                <InputField value={""} />
+                            </VBox>
+                            <VBox spacing={Size.S_0_25}>
+                                <BodyText>End</BodyText>
+                                <ChoiceBox variant={Variant.OUTLINE} selected={"nothing"} items={this.getRenamePartTypes()} maxVisibleItems={5} autoWidth/>
+                                <InputField value={""} />
+                            </VBox>
+                        </Grid>
+                        <HBox spacing={Size.S_0_15}>
+                            <BodyText>Example: </BodyText>
+                            <BodyText italic>1803d0001.jpg</BodyText>
+                        </HBox>
+                    </VBox>
 
-                </Box>
+
+                </VBox>
             </Dialog>
         );
     }
