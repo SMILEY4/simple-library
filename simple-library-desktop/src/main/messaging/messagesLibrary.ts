@@ -118,3 +118,28 @@ export module GetLibraryMetadataMessage {
     }
 
 }
+
+export module ImportFilesMessage {
+
+    const CHANNEL_IMPORT_FILES: string = 'library.import_files';
+
+    export function request(ipc: Electron.IpcRenderer, files: string[]): Promise<Response> {
+        const request: Request = {
+            channel: CHANNEL_IMPORT_FILES,
+            payload: {
+                files: files,
+            },
+        };
+        return sendRequest(ipc, request);
+    }
+
+    export function handle(ipc: Electron.IpcMain, action: (files: string[]) => Promise<Response>) {
+        const handler: RequestHandler = {
+            channel: CHANNEL_IMPORT_FILES,
+            action: (payload) => action(payload.files),
+        };
+        handleRequest(ipc, handler);
+    }
+
+}
+

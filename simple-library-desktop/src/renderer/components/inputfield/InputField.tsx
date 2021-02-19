@@ -65,8 +65,8 @@ export function InputField(props: React.PropsWithChildren<InputFieldProps>): Rea
     function getClassNames() {
         return concatClasses(
             "input-field",
-            map(props.disabled, (disabled) => 'input-field-disabled'),
-            map(props.locked, (locked) => 'input-field-locked'),
+            (props.disabled === true ? 'input-field-disabled' : null),
+            (props.locked === true ? 'input-field-locked' : null),
             map(calcGroupPosition(), (groupPos) => 'input-field-group-pos-' + groupPos),
         );
     }

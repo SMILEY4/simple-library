@@ -15,7 +15,7 @@ import { SidebarElement, SidebarMenu } from '../../components/sidebarmenu/Sideba
 import { DialogCreateLibrary } from './DialogCreateLibrary';
 import { Image } from '../../components/image/Image';
 import { NotificationStack } from '../../components/notification/NotificationStack';
-import { DialogImportFiles } from '../main/DialogImportFiles';
+import { DialogImportFiles } from '../main/import/DialogImportFiles';
 
 const electron = window.require('electron');
 const { ipcRenderer } = window.require('electron');
@@ -203,11 +203,6 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
                     onClose={this.onCancelCreateNewLibrary}
                     onCreate={this.createNewLibrary}
                 />
-
-                <DialogImportFiles
-                    show={true}
-                    onClose={undefined}
-                    onImport={undefined} />
 
                 <NotificationStack
                     modalRootId='root'

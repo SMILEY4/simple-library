@@ -24,6 +24,8 @@
 	padding-right: var(--s-0-25);
 	width:         var(--s-1);
 	height:        var(--s-1);
+	fill:          var(--text-color-1);
+	stroke:        var(--text-color-1);
 }
 
 /*INPUT*/
@@ -38,10 +40,6 @@
 	width:         100%;
 }
 
-.input-field-disabled > input {
-	color: var(--text-color-0);
-}
-
 .input-field > input::placeholder {
 	color: var(--text-color-0);
 }
@@ -51,6 +49,19 @@ input:focus,
 input:invalid {
 	box-shadow: none;
 	outline:    none;
+}
+
+.input-field-disabled {
+	border: 1px solid var(--base-color-1);
+}
+
+.input-field-disabled > input {
+	color: var(--text-color-0);
+}
+
+.input-field-disabled > svg {
+	fill:   var(--text-color-0);
+	stroke: var(--text-color-0);
 }
 
 

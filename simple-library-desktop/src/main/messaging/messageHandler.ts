@@ -8,17 +8,23 @@ import {
     CreateLibraryMessage,
     GetLastOpenedLibrariesMessage,
     GetLibraryMetadataMessage,
+    ImportFilesMessage,
     OpenLibraryMessage,
 } from './messagesLibrary';
+import { ImportService } from '../service/importService';
 
 export class MessageHandler {
 
     windowService: WindowService;
     appService: AppService;
+    importService: ImportService;
 
 
-    constructor(appService: AppService, windowService: WindowService) {
+    constructor(appService: AppService,
+                importService: ImportService,
+                windowService: WindowService) {
         this.appService = appService;
+        this.importService = importService;
         this.windowService = windowService;
     }
 
@@ -29,6 +35,7 @@ export class MessageHandler {
         GetLibraryMetadataMessage.handle(ipcMain, () => this.handleRequestLibraryMetadata());
         GetLastOpenedLibrariesMessage.handle(ipcMain, () => this.handleRequestLastOpened());
         CloseCurrentLibraryMessage.handle(ipcMain, () => this.handleRequestCloseCurrentProject());
+        ImportFilesMessage.handle(ipcMain, (files) => this.handleRequestImportFiles(files));
     }
 
 
@@ -66,6 +73,12 @@ export class MessageHandler {
         this.windowService.switchToSmallWindow();
         this.appService.closeCurrentLibrary();
         return successResponse();
+    }
+
+    private async handleRequestImportFiles(files: string[]): Promise<Response> {
+        return this.importService.importFiles(files)
+            .then(() => successResponse())
+            .catch(err => failedResponse(err));
     }
 
 }

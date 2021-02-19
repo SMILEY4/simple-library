@@ -13,6 +13,7 @@ export interface ChoiceBoxProps {
     selected: string,
     onSelect?: (item: string) => void
     maxVisibleItems?: number,
+    disabled?: boolean,
     autoWidth?: boolean,
     onTopSide?: boolean,
     className?: string,
@@ -74,6 +75,7 @@ export class ChoiceBox extends Component<ChoiceBoxProps, ChoiceBoxState> {
                         variant={this.props.variant}
                         iconRight={<BsChevronDown />}
                         onAction={this.toggle}
+                        disabled={this.props.disabled}
                 >
                     {this.props.selected}
                     {this.props.autoWidth && this.props.items
