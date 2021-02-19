@@ -49,7 +49,7 @@ export class WindowService {
         this.window = new BrowserWindow({
             width: 680,
             height: 420,
-            resizable: false,
+            resizable: true, // todo wip: only for testing (normally = false)
             webPreferences: {
                 nodeIntegration: true,
                 enableRemoteModule: true,

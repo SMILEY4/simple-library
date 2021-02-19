@@ -1,11 +1,10 @@
 import * as React from 'react';
-import {Component, ReactElement} from 'react';
-import {AlignCross, AlignMain, concatClasses, Size, Variant} from "../common";
-import {Button} from "../button/Button";
-import {AiOutlineCheck, BsChevronDown} from "react-icons/all";
-import "./choicebox.css"
-import {VBox} from "../layout/Box";
-import {Dropdown} from "./Dropdown";
+import { Component, ReactElement } from 'react';
+import { concatClasses, Variant } from "../common";
+import { Button } from "../button/Button";
+import { BsChevronDown } from "react-icons/all";
+import "./choicebox.css";
+import { Dropdown } from "./Dropdown";
 
 export interface ChoiceBoxProps {
     variant: Variant,
@@ -15,6 +14,7 @@ export interface ChoiceBoxProps {
     onSelect?: (item: string) => void
     maxVisibleItems?: number,
     autoWidth?: boolean,
+    onTopSide?: boolean,
     className?: string,
 }
 
@@ -37,33 +37,33 @@ export class ChoiceBox extends Component<ChoiceBoxProps, ChoiceBoxState> {
     }
 
     componentDidUpdate() {
-        const {open} = this.state;
+        const { open } = this.state;
         setTimeout(() => {
             if (open) {
-                window.addEventListener('click', this.close)
+                window.addEventListener('click', this.close);
             } else {
-                window.removeEventListener('click', this.close)
+                window.removeEventListener('click', this.close);
             }
-        }, 0)
+        }, 0);
     }
 
     close() {
         this.setState({
-            open: false
-        })
+            open: false,
+        });
     }
 
     toggle() {
         this.setState({
-            open: !this.state.open
-        })
+            open: !this.state.open,
+        });
     }
 
     getClassNames() {
         return concatClasses(
             "choicebox",
             (this.state.open ? "choicebox-open" : "choicebox-closed"),
-            this.props.className
+            this.props.className,
         );
     }
 
@@ -72,7 +72,7 @@ export class ChoiceBox extends Component<ChoiceBoxProps, ChoiceBoxState> {
             <div className={this.getClassNames()}>
                 <Button className={"choicebox-button"}
                         variant={this.props.variant}
-                        iconRight={<BsChevronDown/>}
+                        iconRight={<BsChevronDown />}
                         onAction={this.toggle}
                 >
                     {this.props.selected}
@@ -87,7 +87,8 @@ export class ChoiceBox extends Component<ChoiceBoxProps, ChoiceBoxState> {
                                   itemFilter={this.props.itemFilter}
                                   selectedItem={this.props.selected}
                                   onSelect={this.props.onSelect}
-                                  maxVisibleItems={this.props.maxVisibleItems}/>
+                                  maxVisibleItems={this.props.maxVisibleItems}
+                                  onTopSide={this.props.onTopSide} />
                     )
                 }
             </div>

@@ -133,16 +133,10 @@ export class DialogImportFiles extends Component<DialogImportFilesProps, DialogI
 
     getRenamePartTypes(): string[] {
         return [
-            "nothing",
-            "Text",
+            "Nothing", // nothing
+            "Text", // any text
             "Filename", // original filename
-            "filename", // original filename all lower case
-            "FILENAME", // original filename all upper case
-            "Date (YYMM)", // date YYMM, e.g. 18.02.2021 = "2102"
-            "Date (YYYYMM)", // date YYMM, e.g. 18.02.2021 = "202102"
-            "Date (YYYYMMDD)",// date YYMM, e.g. 18.02.2021 = "20210218"
             "Number From", // count from given number up (only for selected files)
-            "Consecutive Number" // count up, first number = "amount of files in target dir + 1"   todo: clarify
         ]
     }
 
@@ -212,17 +206,17 @@ export class DialogImportFiles extends Component<DialogImportFilesProps, DialogI
                         <Grid columns={['1fr', '1fr', '1fr']} rows={['1fr']} fill={Fill.TRUE} gap={Size.S_0_5}>
                             <VBox spacing={Size.S_0_25}>
                                 <BodyText>Front</BodyText>
-                                <ChoiceBox variant={Variant.OUTLINE} selected={"nothing"} items={this.getRenamePartTypes()} maxVisibleItems={5} autoWidth/>
+                                <ChoiceBox variant={Variant.OUTLINE} selected={"nothing"} items={this.getRenamePartTypes()} maxVisibleItems={5} autoWidth onTopSide/>
                                 <InputField value={""} />
                             </VBox>
                             <VBox spacing={Size.S_0_25}>
                                 <BodyText>Middle</BodyText>
-                                <ChoiceBox variant={Variant.OUTLINE} selected={"nothing"} items={this.getRenamePartTypes()} maxVisibleItems={5} autoWidth/>
+                                <ChoiceBox variant={Variant.OUTLINE} selected={"nothing"} items={this.getRenamePartTypes()} maxVisibleItems={5} autoWidth onTopSide/>
                                 <InputField value={""} />
                             </VBox>
                             <VBox spacing={Size.S_0_25}>
                                 <BodyText>End</BodyText>
-                                <ChoiceBox variant={Variant.OUTLINE} selected={"nothing"} items={this.getRenamePartTypes()} maxVisibleItems={5} autoWidth/>
+                                <ChoiceBox variant={Variant.OUTLINE} selected={"nothing"} items={this.getRenamePartTypes()} maxVisibleItems={5} autoWidth onTopSide/>
                                 <InputField value={""} />
                             </VBox>
                         </Grid>
@@ -231,7 +225,6 @@ export class DialogImportFiles extends Component<DialogImportFilesProps, DialogI
                             <BodyText italic>1803d0001.jpg</BodyText>
                         </HBox>
                     </VBox>
-
 
                 </VBox>
             </Dialog>
