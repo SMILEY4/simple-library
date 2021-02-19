@@ -12,9 +12,10 @@ import {
     OpenLibraryMessage,
 } from '../../../main/messaging/messagesLibrary';
 import { SidebarElement, SidebarMenu } from '../../components/sidebarmenu/SidebarMenu';
-import { DialogCreateLibrary } from './dialogCreateLibrary';
+import { DialogCreateLibrary } from './DialogCreateLibrary';
 import { Image } from '../../components/image/Image';
 import { NotificationStack } from '../../components/notification/NotificationStack';
+import { DialogImportFiles } from '../main/import/DialogImportFiles';
 
 const electron = window.require('electron');
 const { ipcRenderer } = window.require('electron');
@@ -172,11 +173,11 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
                 onAction: this.onOpenLibrary,
             },
         ];
-        if(recentlyUsed.length > 0) {
+        if (recentlyUsed.length > 0) {
             elements.push({
                 typeID: "SECTION-TITLE",
                 text: "Recently Used",
-            })
+            });
         }
         recentlyUsed.forEach((entry: LibraryEntry) => {
             elements.push({
@@ -203,15 +204,17 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
                     onCreate={this.createNewLibrary}
                 />
 
-                <NotificationStack modalRootId='root' notifications={
-                    this.state.notifications.map(notification => ({
-                        type: notification.type,
-                        title: notification.title,
-                        content: notification.text,
-                        withCloseButton: true,
-                        onClose: () => this.removeNotification(notification.uid),
-                    }))
-                } />
+                <NotificationStack
+                    modalRootId='root'
+                    notifications={
+                        this.state.notifications.map(notification => ({
+                            type: notification.type,
+                            title: notification.title,
+                            content: notification.text,
+                            withCloseButton: true,
+                            onClose: () => this.removeNotification(notification.uid),
+                        }))
+                    } />
 
             </Box>
         );

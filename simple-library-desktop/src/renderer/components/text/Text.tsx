@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ReactElement } from 'react';
-import { classNameOrEmpty } from '../common';
+import { concatClasses } from '../common';
 import './text.css';
 
 export enum TextVariant {
@@ -16,6 +16,8 @@ export enum TextVariant {
 
 interface TextProps {
     variant: TextVariant,
+    bold?: boolean,
+    italic?: boolean,
     className?: string
 }
 
@@ -24,7 +26,12 @@ interface GenericTextProps extends Omit<TextProps, 'variant'> {
 
 
 export function Text(props: React.PropsWithChildren<TextProps>): ReactElement | null {
-    const className = props.variant + classNameOrEmpty(props.className);
+    const className = concatClasses(
+        props.variant,
+        props.className,
+        (props.bold ? "text-bold" : null),
+        (props.italic ? "text-italic" : null),
+    );
     switch (props.variant) {
         case TextVariant.H1:
             return <h1 className={className}>{props.children}</h1>;
