@@ -1,6 +1,7 @@
 import DataAccess from './dataAccess';
 import { LibraryMetadata } from '../models/commonModels';
 import {
+    sqlCreateTableItems,
     sqlCreateTableMetadata,
     sqlGetGetAllMetadata,
     sqlGetMetadataLibraryName,
@@ -29,6 +30,7 @@ export class LibraryDataAccess {
             console.log('Created library: ' + url);
             const timestamp = Date.now();
             await this.dataAccess.executeRun(sqlCreateTableMetadata());
+            await this.dataAccess.executeRun(sqlCreateTableItems());
             await Promise.all([
                 this.dataAccess.executeRun(sqlInsertMetadataLibraryName(libraryName)),
                 this.dataAccess.executeRun(sqlInsertMetadataTimestampCreated(timestamp)),

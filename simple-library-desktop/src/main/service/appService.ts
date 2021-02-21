@@ -5,7 +5,6 @@ import { ConfigDataAccess } from '../persistence/configDataAccess';
 
 const fs = require('fs');
 
-
 export class AppService {
 
     libraryDataAccess: LibraryDataAccess;

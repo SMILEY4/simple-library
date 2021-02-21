@@ -2,29 +2,30 @@ import { failedResponse, Response, successResponse } from './messages';
 import { ipcMain } from 'electron';
 import { AppService } from '../service/appService';
 import { WindowService } from '../windows/windowService';
-import { LastOpenedLibraryEntry, LibraryMetadata } from '../models/commonModels';
+import { ItemData, LastOpenedLibraryEntry, LibraryMetadata } from '../models/commonModels';
 import {
     CloseCurrentLibraryMessage,
     CreateLibraryMessage,
+    GetItemsMessage,
     GetLastOpenedLibrariesMessage,
     GetLibraryMetadataMessage,
     ImportFilesMessage,
     OpenLibraryMessage,
 } from './messagesLibrary';
-import { ImportService } from '../service/importService';
+import { ItemService } from '../service/item/ItemService';
 
 export class MessageHandler {
 
     windowService: WindowService;
     appService: AppService;
-    importService: ImportService;
+    itemService: ItemService;
 
 
     constructor(appService: AppService,
-                importService: ImportService,
+                itemService: ItemService,
                 windowService: WindowService) {
         this.appService = appService;
-        this.importService = importService;
+        this.itemService = itemService;
         this.windowService = windowService;
     }
 
@@ -36,6 +37,7 @@ export class MessageHandler {
         GetLastOpenedLibrariesMessage.handle(ipcMain, () => this.handleRequestLastOpened());
         CloseCurrentLibraryMessage.handle(ipcMain, () => this.handleRequestCloseCurrentProject());
         ImportFilesMessage.handle(ipcMain, (files) => this.handleRequestImportFiles(files));
+        GetItemsMessage.handle(ipcMain, () => this.handleRequestGetItems());
     }
 
 
@@ -76,8 +78,14 @@ export class MessageHandler {
     }
 
     private async handleRequestImportFiles(files: string[]): Promise<Response> {
-        return this.importService.importFiles(files)
+        return this.itemService.importFiles(files)
             .then(() => successResponse())
+            .catch(err => failedResponse(err));
+    }
+
+    private async handleRequestGetItems(): Promise<Response> {
+        return this.itemService.getAllItems()
+            .then((items: ItemData[]) => successResponse(items))
             .catch(err => failedResponse(err));
     }
 

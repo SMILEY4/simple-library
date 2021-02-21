@@ -1,3 +1,32 @@
+export function sqlCreateTableItems(): string {
+    return 'CREATE TABLE items (' +
+        '  id INTEGER PRIMARY KEY AUTOINCREMENT,' +
+        '  filepath TEXT NOT NULL,' +
+        '  timestamp_imported INTEGER NOT NULL,' +
+        '  hash TEXT NOT NULL,' +
+        '  thumbnail TEXT NOT NULL' +
+        ');';
+}
+
+export function sqlInsertItem(filepath: string, timestamp: number, hash: string, thumbnail: string) {
+    return 'INSERT INTO items ' +
+        '(' +
+        '    filepath,' +
+        '    timestamp_imported,' +
+        '    hash,' +
+        '    thumbnail' +
+        ') VALUES (' +
+        '    "' + filepath + '",' +
+        '    ' + timestamp + ',' +
+        '    "' + hash + '",' +
+        '    "' + thumbnail + '"' +
+        ');';
+}
+
+export function sqlAllItems() {
+    return "SELECT * FROM items;";
+}
+
 export function sqlCreateTableMetadata(): string {
     return 'CREATE TABLE metadata (' +
         '  key TEXT NOT NULL,' +
