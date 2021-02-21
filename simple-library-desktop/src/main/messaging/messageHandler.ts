@@ -2,7 +2,7 @@ import { failedResponse, Response, successResponse } from './messages';
 import { ipcMain } from 'electron';
 import { AppService } from '../service/appService';
 import { WindowService } from '../windows/windowService';
-import { ItemData, LastOpenedLibraryEntry, LibraryMetadata } from '../models/commonModels';
+import { FileAction, ItemData, LastOpenedLibraryEntry, LibraryMetadata } from '../models/commonModels';
 import {
     CloseCurrentLibraryMessage,
     CreateLibraryMessage,
@@ -36,7 +36,7 @@ export class MessageHandler {
         GetLibraryMetadataMessage.handle(ipcMain, () => this.handleRequestLibraryMetadata());
         GetLastOpenedLibrariesMessage.handle(ipcMain, () => this.handleRequestLastOpened());
         CloseCurrentLibraryMessage.handle(ipcMain, () => this.handleRequestCloseCurrentProject());
-        ImportFilesMessage.handle(ipcMain, (files) => this.handleRequestImportFiles(files));
+        ImportFilesMessage.handle(ipcMain, (files, fileAction, targetDir) => this.handleRequestImportFiles(files, fileAction, targetDir));
         GetItemsMessage.handle(ipcMain, () => this.handleRequestGetItems());
     }
 
@@ -77,8 +77,13 @@ export class MessageHandler {
         return successResponse();
     }
 
-    private async handleRequestImportFiles(files: string[]): Promise<Response> {
-        return this.itemService.importFiles(files)
+    private async handleRequestImportFiles(files: string[], action: string, targetDir: string | undefined): Promise<Response> {
+        const fileAction: FileAction = action === "move"
+            ? FileAction.MOVE
+            : action === "copy"
+                ? FileAction.COPY
+                : FileAction.KEEP;
+        return this.itemService.importFiles(files, fileAction, targetDir)
             .then(() => successResponse())
             .catch(err => failedResponse(err));
     }

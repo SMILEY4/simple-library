@@ -16,3 +16,9 @@ export interface ItemData {
     hash: string,
     thumbnail: string,
 }
+
+export enum FileAction {
+    KEEP = "keep",
+    MOVE = "move",
+    COPY = "copy"
+}
