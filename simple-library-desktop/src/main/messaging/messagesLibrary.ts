@@ -140,6 +140,27 @@ export module ImportFilesMessage {
         };
         handleRequest(ipc, handler);
     }
+}
+
+export module GetItemsMessage {
+
+    const CHANNEL_GET_ITEMS: string = 'library.items.get';
+
+    export function request(ipc: Electron.IpcRenderer): Promise<Response> {
+        const request: Request = {
+            channel: CHANNEL_GET_ITEMS,
+            payload: {},
+        };
+        return sendRequest(ipc, request);
+    }
+
+    export function handle(ipc: Electron.IpcMain, action: () => Promise<Response>) {
+        const handler: RequestHandler = {
+            channel: CHANNEL_GET_ITEMS,
+            action: () => action(),
+        };
+        handleRequest(ipc, handler);
+    }
 
 }
 

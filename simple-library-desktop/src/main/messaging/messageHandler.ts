@@ -6,26 +6,31 @@ import { LastOpenedLibraryEntry, LibraryMetadata } from '../models/commonModels'
 import {
     CloseCurrentLibraryMessage,
     CreateLibraryMessage,
+    GetItemsMessage,
     GetLastOpenedLibrariesMessage,
     GetLibraryMetadataMessage,
     ImportFilesMessage,
     OpenLibraryMessage,
 } from './messagesLibrary';
 import { ImportService } from '../service/import/importService';
+import { ItemData, ItemService } from '../service/ItemService';
 
 export class MessageHandler {
 
     windowService: WindowService;
     appService: AppService;
     importService: ImportService;
+    itemService: ItemService;
 
 
     constructor(appService: AppService,
                 importService: ImportService,
-                windowService: WindowService) {
+                windowService: WindowService,
+                itemService: ItemService) {
         this.appService = appService;
         this.importService = importService;
         this.windowService = windowService;
+        this.itemService = itemService;
     }
 
 
@@ -36,6 +41,7 @@ export class MessageHandler {
         GetLastOpenedLibrariesMessage.handle(ipcMain, () => this.handleRequestLastOpened());
         CloseCurrentLibraryMessage.handle(ipcMain, () => this.handleRequestCloseCurrentProject());
         ImportFilesMessage.handle(ipcMain, (files) => this.handleRequestImportFiles(files));
+        GetItemsMessage.handle(ipcMain, () => this.handleRequestGetItems());
     }
 
 
@@ -78,6 +84,12 @@ export class MessageHandler {
     private async handleRequestImportFiles(files: string[]): Promise<Response> {
         return this.importService.importFiles(files)
             .then(() => successResponse())
+            .catch(err => failedResponse(err));
+    }
+
+    private async handleRequestGetItems(): Promise<Response> {
+        return this.itemService.getAllItems()
+            .then((items: ItemData[]) => successResponse(items))
             .catch(err => failedResponse(err));
     }
 
