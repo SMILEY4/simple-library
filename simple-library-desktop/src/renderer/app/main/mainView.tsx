@@ -11,7 +11,7 @@ import {
     ImportFilesMessage,
 } from '../../../main/messaging/messagesLibrary';
 import { Button } from '../../components/button/Button';
-import { DialogImportFiles, ImportFilesData } from './import/DialogImportFiles';
+import { DialogImportFiles, FileAction, ImportFilesData } from './import/DialogImportFiles';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -106,7 +106,11 @@ export class MainView extends Component<MainViewProps, MainViewState> {
         this.setState({ showImportFilesDialog: false });
         console.log("IMPORT");
         console.log(JSON.stringify(data));
-        ImportFilesMessage.request(ipcRenderer, data.selectionData.files)
+        ImportFilesMessage.request(
+            ipcRenderer,
+            data.selectionData.files,
+            (data.copyOrMoveData.action === FileAction.MOVE ? "move" : (data.copyOrMoveData.action === FileAction.COPY ? "copy" : "move")),
+            data.copyOrMoveData.targetDirectory)
             .then(() => {
                 console.log("FILES IMPORTED");
                 GetItemsMessage.request(ipcRenderer)
@@ -134,7 +138,8 @@ export class MainView extends Component<MainViewProps, MainViewState> {
                 <BodyText>{'Name: ' + this.state.name}</BodyText>
                 <BodyText>{'Created: ' + this.state.timestampCreated}</BodyText>
                 <BodyText>{'Last Opened: ' + this.state.timestampLastOpened}</BodyText>
-                <Button variant={Variant.SOLID} onAction={() => this.setState({ showImportFilesDialog: true })}>Import Files</Button>
+                <Button variant={Variant.SOLID} onAction={() => this.setState({ showImportFilesDialog: true })}>Import
+                    Files</Button>
                 <Button variant={Variant.SOLID} onAction={this.closeLibrary}>Close Library</Button>
                 <Button variant={Variant.SOLID} onAction={() => {
                     GetItemsMessage.request(ipcRenderer)
