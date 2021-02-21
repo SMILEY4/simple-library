@@ -17,7 +17,7 @@ const configDataAccess: ConfigDataAccess = new ConfigDataAccess();
 
 // service
 const appService: AppService = new AppService(libraryDataAccess, configDataAccess);
-const importService: ImportService = new ImportService(libraryDataAccess, configDataAccess)
+const importService: ImportService = new ImportService(dataAccess)
 const windowService: WindowService = new WindowService();
 
 // messaging

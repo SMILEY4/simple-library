@@ -1,3 +1,25 @@
+export function sqlCreateTableItems(): string {
+    return 'CREATE TABLE items (' +
+        '  id INTEGER PRIMARY KEY AUTOINCREMENT,' +
+        '  full_path TEXT NOT NULL,' +
+        '  hash TEXT NOT NULL,' +
+        '  timestamp_imported INTEGER NOT NULL' +
+        ');';
+}
+
+export function sqlInsertItem(fullPath: string, timestampImported: number, hash: string) {
+    return 'INSERT INTO items ' +
+        '(' +
+        '    full_path,' +
+        '    hash,' +
+        '    timestamp_imported' +
+        ') VALUES (' +
+        '    "' + fullPath + '",' +
+        '    "' + hash + '",' +
+        '    ' + timestampImported + '' +
+        ');';
+}
+
 export function sqlCreateTableMetadata(): string {
     return 'CREATE TABLE metadata (' +
         '  key TEXT NOT NULL,' +
