@@ -11,7 +11,7 @@ import {
     ImportFilesMessage,
     OpenLibraryMessage,
 } from './messagesLibrary';
-import { ImportService } from '../service/importService';
+import { ImportService } from '../service/import/importService';
 
 export class MessageHandler {
 

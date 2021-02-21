@@ -72,8 +72,11 @@ const mainConfig = {
     resolve: {
         extensions: ['.tsx', '.ts', '.js'],
     },
-    //Sqlite3 won't work without this line.
-    externals: { sqlite3: 'commonjs sqlite3', mssql: '', mysql: '' },
+
+    externals: {
+        sharp: 'commonjs sharp',
+        sqlite3: 'commonjs sqlite3', mssql: '', mysql: '',  //Sqlite3 won't work without this line.
+    },
     output: {
         filename: 'bundle.js',
         path: path.resolve(__dirname, '.webpack', 'main'),
