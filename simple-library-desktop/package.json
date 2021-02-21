@@ -18,10 +18,10 @@
   "dependencies": {
     "@hot-loader/react-dom": "^16.13.0",
     "@types/sqlite3": "^3.1.6",
+    "dist-exiftool": "^10.53.0",
     "electron-log": "^4.3.1",
     "electron-store": "^7.0.0",
-    "exifr": "^6.0.0",
-    "piexifjs": "^1.0.4",
+    "node-exiftool": "^2.3.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-hot-loader": "^4.12.20",
