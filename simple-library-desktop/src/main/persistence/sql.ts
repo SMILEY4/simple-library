@@ -23,6 +23,10 @@ export function sqlInsertItem(filepath: string, timestamp: number, hash: string,
         ');';
 }
 
+export function sqlAllItems() {
+    return "SELECT * FROM items;";
+}
+
 export function sqlCreateTableMetadata(): string {
     return 'CREATE TABLE metadata (' +
         '  key TEXT NOT NULL,' +

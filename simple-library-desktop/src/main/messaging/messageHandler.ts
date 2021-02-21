@@ -2,7 +2,7 @@ import { failedResponse, Response, successResponse } from './messages';
 import { ipcMain } from 'electron';
 import { AppService } from '../service/appService';
 import { WindowService } from '../windows/windowService';
-import { LastOpenedLibraryEntry, LibraryMetadata } from '../models/commonModels';
+import { ItemData, LastOpenedLibraryEntry, LibraryMetadata } from '../models/commonModels';
 import {
     CloseCurrentLibraryMessage,
     CreateLibraryMessage,
@@ -12,25 +12,21 @@ import {
     ImportFilesMessage,
     OpenLibraryMessage,
 } from './messagesLibrary';
-import { ImportService } from '../service/import/importService';
-import { ItemData, ItemService } from '../service/ItemService';
+import { ItemService } from '../service/item/ItemService';
 
 export class MessageHandler {
 
     windowService: WindowService;
     appService: AppService;
-    importService: ImportService;
     itemService: ItemService;
 
 
     constructor(appService: AppService,
-                importService: ImportService,
-                windowService: WindowService,
-                itemService: ItemService) {
+                itemService: ItemService,
+                windowService: WindowService) {
         this.appService = appService;
-        this.importService = importService;
-        this.windowService = windowService;
         this.itemService = itemService;
+        this.windowService = windowService;
     }
 
 
@@ -82,7 +78,7 @@ export class MessageHandler {
     }
 
     private async handleRequestImportFiles(files: string[]): Promise<Response> {
-        return this.importService.importFiles(files)
+        return this.itemService.importFiles(files)
             .then(() => successResponse())
             .catch(err => failedResponse(err));
     }

@@ -107,7 +107,23 @@ export class MainView extends Component<MainViewProps, MainViewState> {
         console.log("IMPORT");
         console.log(JSON.stringify(data));
         ImportFilesMessage.request(ipcRenderer, data.selectionData.files)
-            .then(() => console.log("FILES IMPORTED"))
+            .then(() => {
+                console.log("FILES IMPORTED");
+                GetItemsMessage.request(ipcRenderer)
+                    .then(response => response.body)
+                    .then(items => {
+                        this.setState({
+                            items: items.map((item: any) => {
+                                return {
+                                    filepath: item.filepath,
+                                    timestamp: item.timestamp,
+                                    hash: item.hash,
+                                    thumbnail: item.thumbnail,
+                                };
+                            }),
+                        });
+                    });
+            })
             .catch(error => console.log("IMPORT FILES FAILED: " + (error && error.body) ? error.body : JSON.stringify(error)));
     }
 

@@ -1,10 +1,10 @@
-import { ImportData } from './importService';
+import { ItemData } from '../../models/commonModels';
 
 const sharp = require('sharp');
 
 export class ThumbnailGenerator {
 
-    public appendBase64Thumbnail(importData: ImportData): Promise<ImportData> {
+    public appendBase64Thumbnail(importData: ItemData): Promise<ItemData> {
         return ThumbnailGenerator.createBase64Thumbnail(importData.filepath)
             .then(imgBase64 => {
                 importData.thumbnail = imgBase64;
@@ -18,6 +18,13 @@ export class ThumbnailGenerator {
             .jpeg({ quality: 85 })
             .toBuffer()
             .then((data: Buffer) => data.toString("base64"))
+            .then((imgBase64: string) => {
+                if (!imgBase64 || imgBase64.length === 0) {
+                    throw "Could not create thumbnail";
+                } else {
+                    return imgBase64;
+                }
+            })
             .then((imgBase64: string) => "data:image/jpg;base64," + imgBase64);
     }
 

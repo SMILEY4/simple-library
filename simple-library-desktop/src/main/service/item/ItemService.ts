@@ -1,29 +1,19 @@
 import { startAsync } from '../../../common/AsyncCommon';
-import { FileHasher } from './FileHasher';
+import { FileHashCalculator } from './FileHashCalculator';
 import { ThumbnailGenerator } from './ThumbnailGenerator';
 import { ItemDataAccess } from '../../persistence/itemDataAccess';
+import { ItemData } from '../../models/commonModels';
 
-const fs = require('fs');
-const crypto = require('crypto');
-const sharp = require('sharp');
-
-export interface ImportData {
-    timestamp: number,
-    filepath: string,
-    hash: string,
-    thumbnail: string,
-}
-
-export class ImportService {
+export class ItemService {
 
     itemDataAccess: ItemDataAccess;
-    fileHasher: FileHasher;
+    fileHashCalculator: FileHashCalculator;
     thumbnailGenerator: ThumbnailGenerator;
 
 
     constructor(itemDataAccess: ItemDataAccess) {
         this.itemDataAccess = itemDataAccess;
-        this.fileHasher = new FileHasher();
+        this.fileHashCalculator = new FileHashCalculator();
         this.thumbnailGenerator = new ThumbnailGenerator();
     }
 
@@ -32,21 +22,26 @@ export class ImportService {
         for (let i = 0; i < files.length; i++) {
             await startAsync()
                 .then(() => console.log("importing file: " + files[i]))
-                .then(() => ImportService.baseImportData(files[i]))
-                .then((data: ImportData) => this.fileHasher.appendHash(data))
-                .then((data: ImportData) => this.thumbnailGenerator.appendBase64Thumbnail(data))
-                .then((data: ImportData) => this.itemDataAccess.insertItem(data))
+                .then(() => ItemService.baseItemData(files[i]))
+                .then((data: ItemData) => this.fileHashCalculator.appendHash(data))
+                .then((data: ItemData) => this.thumbnailGenerator.appendBase64Thumbnail(data))
+                .then((data: ItemData) => this.itemDataAccess.insertItem(data))
                 .then(() => console.log("done importing file: " + files[i]))
                 .catch((error) => console.error("Error while importing file " + files[i] + ": " + error));
         }
         console.log("import of " + files.length + " complete.");
     }
 
-    private static baseImportData(filepath: string) {
+    private static baseItemData(filepath: string) {
         return {
             timestamp: Date.now(),
             filepath: filepath,
         };
     }
+
+    public getAllItems(): Promise<ItemData[]> {
+        return this.itemDataAccess.getAllItems();
+    }
+
 
 }

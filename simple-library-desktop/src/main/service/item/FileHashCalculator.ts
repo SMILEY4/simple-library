@@ -1,13 +1,13 @@
 import { doAsync, startAsync } from '../../../common/AsyncCommon';
 import { Hash } from 'crypto';
-import { ImportData } from './importService';
+import { ItemData } from '../../models/commonModels';
 
 const fs = require('fs');
 const crypto = require('crypto');
 
-export class FileHasher {
+export class FileHashCalculator {
 
-    public appendHash(importData: ImportData): Promise<ImportData> {
+    public appendHash(importData: ItemData): Promise<ItemData> {
         return this.computeHash(importData.filepath)
             .then(hash => {
                 importData.hash = hash;
@@ -19,7 +19,14 @@ export class FileHasher {
         return startAsync()
             .then(() => console.log('start computing hash for file "' + filepath + '"'))
             .then(() => crypto.createHash("md5"))
-            .then((hash: Hash) => this.computeHashWithAlgorithm(filepath, hash));
+            .then((hash: Hash) => this.computeHashWithAlgorithm(filepath, hash))
+            .then((hash: string) => {
+                if (!hash || hash.length === 0) {
+                    throw "Could not calculate hash";
+                } else {
+                    return hash;
+                }
+            });
     }
 
     private computeHashWithAlgorithm(filepath: string, hash: Hash): Promise<string> {

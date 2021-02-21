@@ -5,9 +5,8 @@ import DataAccess from './persistence/dataAccess';
 import { WindowService } from './windows/windowService';
 import { LibraryDataAccess } from './persistence/libraryDataAccess';
 import { ConfigDataAccess } from './persistence/configDataAccess';
-import { ImportService } from './service/import/importService';
+import { ItemService } from './service/item/ItemService';
 import { ItemDataAccess } from './persistence/itemDataAccess';
-import { ItemService } from './service/ItemService';
 
 const log = require('electron-log');
 Object.assign(console, log.functions);
@@ -20,12 +19,11 @@ const configDataAccess: ConfigDataAccess = new ConfigDataAccess();
 
 // service
 const appService: AppService = new AppService(libraryDataAccess, configDataAccess);
-const importService: ImportService = new ImportService(itemDataAccess);
 const itemService: ItemService = new ItemService(itemDataAccess);
 const windowService: WindowService = new WindowService();
 
 // messaging
-const messageHandler: MessageHandler = new MessageHandler(appService, importService, windowService, itemService);
+const messageHandler: MessageHandler = new MessageHandler(appService, itemService, windowService);
 
 messageHandler.initialize();
 app.whenReady().then(() => windowService.whenReady());
