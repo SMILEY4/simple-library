@@ -83,7 +83,7 @@ export class MessageHandler {
             : action === "copy"
                 ? FileAction.COPY
                 : FileAction.KEEP;
-        return this.itemService.importFiles(files, fileAction, targetDir)
+        return this.itemService.importFiles(undefined) // TODO
             .then(() => successResponse())
             .catch(err => failedResponse(err));
     }
