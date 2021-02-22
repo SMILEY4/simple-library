@@ -2,36 +2,40 @@ import { startAsync } from '../../../common/AsyncCommon';
 import { FileHashCalculator } from './import/FileHashCalculator';
 import { ThumbnailGenerator } from './import/ThumbnailGenerator';
 import { ItemDataAccess } from '../../persistence/itemDataAccess';
-import { FileAction, ItemData } from '../../models/commonModels';
-import { FileMover } from './import/FileMover';
+import { ImportProcessData, ItemData } from '../../models/commonModels';
+import { ImportFileHandler } from './import/ImportFileHandler';
+import { BulkRenameHandler } from './import/BulkRenameHandler';
 
 export class ItemService {
 
     itemDataAccess: ItemDataAccess;
     fileHashCalculator: FileHashCalculator;
     thumbnailGenerator: ThumbnailGenerator;
-    fileMover: FileMover;
+    bulkRenameHandler: BulkRenameHandler;
+    fileMover: ImportFileHandler;
 
 
     constructor(itemDataAccess: ItemDataAccess) {
         this.itemDataAccess = itemDataAccess;
         this.fileHashCalculator = new FileHashCalculator();
         this.thumbnailGenerator = new ThumbnailGenerator();
-        this.fileMover = new FileMover();
+        this.bulkRenameHandler = new BulkRenameHandler();
+        this.fileMover = new ImportFileHandler();
     }
 
-    public async importFiles(files: string[], action: FileAction, targetDir: string | undefined): Promise<void> {
-        console.log("starting import of " + files.length + " files: action=" + action + ", targetDir=" + targetDir);
-        for (let i = 0; i < files.length; i++) {
+    public async importFiles(data: ImportProcessData): Promise<void> {
+        console.log("starting import of " + data.files.length + " files: action=" + data.fileHandleData.action + ", targetDir=" + data.fileHandleData.targetDir);
+        for (let i = 0; i < data.files.length; i++) {
             await startAsync()
-                .then(() => console.log("importing file: " + files[i]))
-                .then(() => ItemService.baseItemData(files[i]))
-                .then((data: ItemData) => this.fileMover.handleFile(data, action, targetDir))
-                .then((data: ItemData) => this.fileHashCalculator.appendHash(data))
-                .then((data: ItemData) => this.thumbnailGenerator.appendBase64Thumbnail(data))
-                .then((data: ItemData) => this.itemDataAccess.insertItem(data))
-                .then(() => console.log("done importing file: " + files[i]))
-                .catch((error) => console.error("Error while importing file " + files[i] + ": " + error));
+                .then(() => console.log("importing file: " + data.files[i]))
+                .then(() => ItemService.baseItemData(data.files[i]))
+                .then((item: ItemData) => this.bulkRenameHandler.handleImportData(item, data.fileHandleData, data.renameData, i))
+                .then((item: ItemData) => this.fileMover.handleFile(item, data.fileHandleData.action))
+                .then((item: ItemData) => this.fileHashCalculator.appendHash(item))
+                .then((item: ItemData) => this.thumbnailGenerator.appendBase64Thumbnail(item))
+                .then((item: ItemData) => this.itemDataAccess.insertItem(item))
+                .then(() => console.log("done importing file: " + data.files[i]))
+                .catch((error) => console.error("Error while importing file " + data.files[i] + ": " + error));
         }
         console.log("import complete.");
     }
@@ -39,6 +43,7 @@ export class ItemService {
     private static baseItemData(filepath: string) {
         return {
             timestamp: Date.now(),
+            orgFilepath: filepath,
             filepath: filepath,
         };
     }
@@ -46,6 +51,5 @@ export class ItemService {
     public getAllItems(): Promise<ItemData[]> {
         return this.itemDataAccess.getAllItems();
     }
-
 
 }
