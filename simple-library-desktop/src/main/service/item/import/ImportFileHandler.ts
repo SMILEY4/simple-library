@@ -1,9 +1,17 @@
 import { FileAction, ItemData } from '../../../models/commonModels';
 import { startAsync, startAsyncWithValue } from '../../../../common/AsyncCommon';
+import { FileSystemWrapper } from '../../utils/fileSystemWrapper';
 
 const fs = require('fs').promises;
 
 export class ImportFileHandler {
+
+    fsWrapper: FileSystemWrapper;
+
+    constructor(fsWrapper: FileSystemWrapper) {
+        this.fsWrapper = fsWrapper;
+    }
+
 
     public handleFile(itemData: ItemData, action: FileAction): Promise<ItemData> {
         return startAsync()
@@ -33,7 +41,7 @@ export class ImportFileHandler {
             .then(() => {
                 console.log("moving file: " + orgFilepath + " => " + filepath);
                 fs.rename(orgFilepath, filepath);
-                return filepath;
+                return this.fsWrapper.move(orgFilepath, filepath);
             });
     }
 
@@ -41,8 +49,7 @@ export class ImportFileHandler {
         return startAsync()
             .then(() => {
                 console.log("copy file: " + orgFilepath + " => " + filepath);
-                fs.copyFile(orgFilepath, filepath);
-                return filepath;
+                return this.fsWrapper.copy(orgFilepath, filepath, false);
             });
     }
 
