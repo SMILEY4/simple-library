@@ -1,4 +1,5 @@
 import { handleRequest, Request, RequestHandler, Response, sendRequest } from './messages';
+import { ImportProcessData } from '../../common/commonModels';
 
 
 export module GetLastOpenedLibrariesMessage {
@@ -123,22 +124,20 @@ export module ImportFilesMessage {
 
     const CHANNEL_IMPORT_FILES: string = 'library.import_files';
 
-    export function request(ipc: Electron.IpcRenderer, files: string[], fileAction: string, targetDir: string | undefined): Promise<Response> {
+    export function request(ipc: Electron.IpcRenderer, data: ImportProcessData): Promise<Response> {
         const request: Request = {
             channel: CHANNEL_IMPORT_FILES,
             payload: {
-                files: files,
-                fileAction: fileAction,
-                targetDir: targetDir
+                data: data,
             },
         };
         return sendRequest(ipc, request);
     }
 
-    export function handle(ipc: Electron.IpcMain, action: (files: string[], fileAction: string, targetDir: string | undefined) => Promise<Response>) {
+    export function handle(ipc: Electron.IpcMain, action: (data: ImportProcessData) => Promise<Response>) {
         const handler: RequestHandler = {
             channel: CHANNEL_IMPORT_FILES,
-            action: (payload) => action(payload.files, payload.fileAction, payload.targetDir),
+            action: (payload) => action(payload.data),
         };
         handleRequest(ipc, handler);
     }

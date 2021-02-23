@@ -3,7 +3,7 @@ export class Test {
     public static async runTest(name: string, test: () => Promise<boolean>) {
         console.log("===============================");
         console.log("RUNNING TEST: " + name);
-        let result: boolean = false;
+        let result: boolean;
         try {
             result = await test();
         } catch (e) {

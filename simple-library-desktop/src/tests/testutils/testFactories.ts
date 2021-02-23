@@ -1,4 +1,4 @@
-import { ItemData } from '../../main/models/commonModels';
+import { ItemData } from '../../common/commonModels';
 
 export function buildItemData(orgFilepath: string, targetFilepath: string): ItemData {
     return {

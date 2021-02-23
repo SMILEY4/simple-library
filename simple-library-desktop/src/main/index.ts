@@ -12,7 +12,7 @@ import { SimpleLibraryTests } from '../tests/simpleLibraryTests';
 const log = require('electron-log');
 Object.assign(console, log.functions);
 
-const RUN_TESTS = true;
+const RUN_TESTS = false;
 
 if (RUN_TESTS) {
     SimpleLibraryTests.runAll();

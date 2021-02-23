@@ -1,4 +1,4 @@
-import { FileAction, ItemData } from '../../../models/commonModels';
+import { FileAction, ItemData } from '../../../../common/commonModels';
 import { startAsync, startAsyncWithValue } from '../../../../common/AsyncCommon';
 import { FileSystemWrapper } from '../../utils/fileSystemWrapper';
 

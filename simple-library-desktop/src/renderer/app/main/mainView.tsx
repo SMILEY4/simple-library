@@ -12,6 +12,7 @@ import {
 } from '../../../main/messaging/messagesLibrary';
 import { Button } from '../../components/button/Button';
 import { DialogImportFiles, FileAction, ImportFilesData } from './import/DialogImportFiles';
+import { FileAction as CommonFileAction, RenamePartType } from '../../../common/commonModels';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -108,9 +109,33 @@ export class MainView extends Component<MainViewProps, MainViewState> {
         console.log(JSON.stringify(data));
         ImportFilesMessage.request(
             ipcRenderer,
-            data.selectionData.files,
-            (data.copyOrMoveData.action === FileAction.MOVE ? "move" : (data.copyOrMoveData.action === FileAction.COPY ? "copy" : "move")),
-            data.copyOrMoveData.targetDirectory)
+            {
+                files: data.selectionData.files,
+                fileHandleData: {
+                    action: FileAction.MOVE
+                        ? CommonFileAction.MOVE
+                        : (data.copyOrMoveData.action === FileAction.COPY
+                            ? CommonFileAction.COPY
+                            : CommonFileAction.KEEP),
+                    targetDir: data.copyOrMoveData.targetDirectory,
+                },
+                renameData: {
+                    doRename: data.renameData.enabled,
+                    parts: data.renameData.parts.map(part => {
+                        return {
+                            type: part.type == "Nothing"
+                                ? RenamePartType.NOTHING
+                                : (part.type === "Filename"
+                                    ? RenamePartType.ORIGINAL_FILENAME
+                                    : (part.type === "Text"
+                                        ? RenamePartType.TEXT
+                                        : RenamePartType.NUMBER_FROM)),
+                            value: part.value ? part.value : "",
+                        };
+                    }),
+                },
+            },
+        )
             .then(() => {
                 console.log("FILES IMPORTED");
                 GetItemsMessage.request(ipcRenderer)

@@ -1,6 +1,6 @@
 import DataAccess from './dataAccess';
 import { sqlAllItems, sqlInsertItem } from './sql';
-import { ItemData } from '../models/commonModels';
+import { ItemData } from '../../common/commonModels';
 
 export class ItemDataAccess {
 

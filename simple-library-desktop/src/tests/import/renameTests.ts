@@ -1,7 +1,7 @@
 import { BulkRenameHandler } from '../../main/service/item/import/BulkRenameHandler';
-import { BulkRenameData, FileAction, ImportFileHandleData, RenamePartType } from '../../main/models/commonModels';
+import { BulkRenameData, FileAction, ImportFileHandleData, RenamePartType } from '../../common/commonModels';
 import { startAsyncWithValue } from '../../common/AsyncCommon';
-import { Test } from '../testframework/test';
+import { Test } from '../testutils/test';
 import { buildItemData } from '../testutils/testFactories';
 import { assertEqual, assertItemData } from '../testutils/testAssertions';
 
