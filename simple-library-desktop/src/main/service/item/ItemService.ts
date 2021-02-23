@@ -2,7 +2,7 @@ import { startAsync } from '../../../common/AsyncCommon';
 import { FileHashCalculator } from './import/FileHashCalculator';
 import { ThumbnailGenerator } from './import/ThumbnailGenerator';
 import { ItemDataAccess } from '../../persistence/itemDataAccess';
-import { ImportProcessData, ItemData } from '../../models/commonModels';
+import { ImportProcessData, ItemData } from '../../../common/commonModels';
 import { ImportFileHandler } from './import/ImportFileHandler';
 import { BulkRenameHandler } from './import/BulkRenameHandler';
 import { FileSystemWrapper } from '../utils/fileSystemWrapper';

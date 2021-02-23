@@ -1,5 +1,5 @@
 import DataAccess from './dataAccess';
-import { LibraryMetadata } from '../models/commonModels';
+import { LibraryMetadata } from '../../common/commonModels';
 import {
     sqlCreateTableItems,
     sqlCreateTableMetadata,

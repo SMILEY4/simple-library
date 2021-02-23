@@ -1,6 +1,6 @@
 import { doAsync, startAsync } from '../../../../common/AsyncCommon';
 import { Hash } from 'crypto';
-import { ItemData } from '../../../models/commonModels';
+import { ItemData } from '../../../../common/commonModels';
 
 const fs = require('fs');
 const crypto = require('crypto');

@@ -1,5 +1,5 @@
 import { FileSystemWrapperMock } from './testMocks';
-import { ItemData } from '../../main/models/commonModels';
+import { ItemData } from '../../common/commonModels';
 
 export function assertEqual(expected: any, actual: any): boolean {
     if (expected === actual) {

@@ -1,6 +1,6 @@
 import { ImportFileHandler } from '../../main/service/item/import/ImportFileHandler';
-import { FileAction, ItemData } from '../../main/models/commonModels';
-import { Test } from '../testframework/test';
+import { FileAction, ItemData } from '../../common/commonModels';
+import { Test } from '../testutils/test';
 import { FileSystemWrapperMock } from '../testutils/testMocks';
 import { buildItemData } from '../testutils/testFactories';
 import { allTrue, assertFileSystemWrapperInvocations, assertItemData } from '../testutils/testAssertions';

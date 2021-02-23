@@ -1,5 +1,5 @@
 import ElectronStore from 'electron-store';
-import { LastOpenedLibraryEntry } from '../models/commonModels';
+import { LastOpenedLibraryEntry } from '../../common/commonModels';
 
 const Store = require('electron-store');
 

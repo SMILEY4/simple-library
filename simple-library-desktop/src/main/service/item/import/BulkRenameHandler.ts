@@ -5,7 +5,7 @@ import {
     ItemData,
     RenamePart,
     RenamePartType,
-} from '../../../models/commonModels';
+} from '../../../../common/commonModels';
 import path from 'path';
 import { startAsyncWithValue } from '../../../../common/AsyncCommon';
 
