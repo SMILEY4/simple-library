@@ -1,11 +1,11 @@
 import path from 'path';
-import { LibraryDataAccess } from '../persistence/libraryDataAccess';
-import { LastOpenedLibraryEntry, LibraryMetadata } from '../models/commonModels';
-import { ConfigDataAccess } from '../persistence/configDataAccess';
+import { LibraryDataAccess } from '../../persistence/libraryDataAccess';
+import { LastOpenedLibraryEntry, LibraryMetadata } from '../../models/commonModels';
+import { ConfigDataAccess } from '../../persistence/configDataAccess';
 
 const fs = require('fs');
 
-export class AppService {
+export class LibraryService {
 
     libraryDataAccess: LibraryDataAccess;
     configDataAccess: ConfigDataAccess;
@@ -18,7 +18,7 @@ export class AppService {
 
 
     public createLibrary(targetDir: string, name: string): Promise<void> {
-        const filename: string = AppService.toFilename(name);
+        const filename: string = LibraryService.toFilename(name);
         const fullPath = path.join(targetDir, filename);
         if (fs.existsSync(fullPath)) {
             console.log('Could not create library. File already exists: ' + fullPath);

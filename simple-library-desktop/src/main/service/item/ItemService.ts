@@ -5,6 +5,7 @@ import { ItemDataAccess } from '../../persistence/itemDataAccess';
 import { ImportProcessData, ItemData } from '../../models/commonModels';
 import { ImportFileHandler } from './import/ImportFileHandler';
 import { BulkRenameHandler } from './import/BulkRenameHandler';
+import { FileSystemWrapper } from '../utils/fileSystemWrapper';
 
 export class ItemService {
 
@@ -20,7 +21,7 @@ export class ItemService {
         this.fileHashCalculator = new FileHashCalculator();
         this.thumbnailGenerator = new ThumbnailGenerator();
         this.bulkRenameHandler = new BulkRenameHandler();
-        this.fileMover = new ImportFileHandler();
+        this.fileMover = new ImportFileHandler(new FileSystemWrapper());
     }
 
     public async importFiles(data: ImportProcessData): Promise<void> {

@@ -1,6 +1,6 @@
 import { failedResponse, Response, successResponse } from './messages';
 import { ipcMain } from 'electron';
-import { AppService } from '../service/appService';
+import { LibraryService } from '../service/library/libraryService';
 import { WindowService } from '../windows/windowService';
 import { FileAction, ItemData, LastOpenedLibraryEntry, LibraryMetadata } from '../models/commonModels';
 import {
@@ -17,11 +17,11 @@ import { ItemService } from '../service/item/ItemService';
 export class MessageHandler {
 
     windowService: WindowService;
-    appService: AppService;
+    appService: LibraryService;
     itemService: ItemService;
 
 
-    constructor(appService: AppService,
+    constructor(appService: LibraryService,
                 itemService: ItemService,
                 windowService: WindowService) {
         this.appService = appService;

@@ -24,19 +24,19 @@ export class BulkRenameHandler {
             });
     }
 
-    private getNewFilepath(filepath: string, targetDir: undefined | string, index: number, renameData: BulkRenameData): string {
+    public getNewFilepath(filepath: string, targetDir: undefined | string, index: number, renameData: BulkRenameData): string {
         const dirname = targetDir ? targetDir : path.dirname(filepath);
         const filename = path.basename(filepath);
         return path.join(dirname, this.getNewFilename(filename, index, renameData));
     }
 
-    private getNewFilename(filename: string, index: number, renameData: BulkRenameData): string {
+    public getNewFilename(filename: string, index: number, renameData: BulkRenameData): string {
         if (renameData.doRename) {
             const extension = path.extname(filename);
             const pureFilename = path.basename(filename, extension);
             const nextFilename = renameData.parts
                 .map(part => BulkRenameHandler.getFilenamePart(part, pureFilename, index))
-                .join();
+                .join("");
             return nextFilename + extension;
         } else {
             return filename;
