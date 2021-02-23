@@ -21,6 +21,7 @@ export class ItemDataAccess {
                 return {
                     id: row.id,
                     timestamp: row.timestamp_imported,
+                    sourceFilepath: row.filepath,
                     filepath: row.filepath,
                     hash: row.hash,
                     thumbnail: row.thumbnail,

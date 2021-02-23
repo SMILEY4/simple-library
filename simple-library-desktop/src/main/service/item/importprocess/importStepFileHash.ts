@@ -1,17 +1,23 @@
 import { doAsync, startAsync } from '../../../../common/AsyncCommon';
 import { Hash } from 'crypto';
 import { ItemData } from '../../../../common/commonModels';
+import { FileSystemWrapper } from '../../utils/fileSystemWrapper';
 
-const fs = require('fs');
 const crypto = require('crypto');
 
-export class FileHashCalculator {
+export class ImportStepFileHash {
 
-    public appendHash(importData: ItemData): Promise<ItemData> {
-        return this.computeHash(importData.filepath)
+    fsWrapper: FileSystemWrapper;
+
+    constructor(fsWrapper: FileSystemWrapper) {
+        this.fsWrapper = fsWrapper;
+    }
+
+    public handle(itemData: ItemData): Promise<ItemData> {
+        return this.computeHash(itemData.filepath)
             .then(hash => {
-                importData.hash = hash;
-                return importData;
+                itemData.hash = hash;
+                return itemData;
             });
     }
 
@@ -31,7 +37,7 @@ export class FileHashCalculator {
 
     private computeHashWithAlgorithm(filepath: string, hash: Hash): Promise<string> {
         return doAsync((resolve, reject) => {
-            const rs = fs.createReadStream(filepath);
+            const rs = this.fsWrapper.createReadStream(filepath);
             rs.on('error', (err: Error) => {
                 console.log("error while computing hash for file " + filepath + ": " + err);
                 reject(err);

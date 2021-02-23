@@ -1,5 +1,5 @@
-import { BulkRenameHandler } from '../../main/service/item/import/BulkRenameHandler';
-import { BulkRenameData, FileAction, ImportFileHandleData, RenamePartType } from '../../common/commonModels';
+import { ImportStepRename } from '../../main/service/item/importprocess/importStepRename';
+import { BulkRenameInstruction, FileTargetAction, ImportFileTarget, RenamePartType } from '../../common/commonModels';
 import { startAsyncWithValue } from '../../common/AsyncCommon';
 import { Test } from '../testutils/test';
 import { buildItemData } from '../testutils/testFactories';
@@ -9,16 +9,16 @@ export class RenameTests {
 
     public static async testRenameSimple() {
         await Test.runTest("rename simple", async () => {
-            const renameData: BulkRenameData = RenameTests.genericBulkRenameData();
+            const renameData: BulkRenameInstruction = RenameTests.genericBulkRenameData();
             const orgFilepath = "path/to/my/file.txt";
-            const newFilepath = new BulkRenameHandler().getNewFilepath(orgFilepath, "path/to/my", 5, renameData);
+            const newFilepath = new ImportStepRename().getNewFilepath(orgFilepath, "path/to/my", 5, renameData);
             return startAsyncWithValue(assertEqual("path\\to\\my\\file_00015.txt", newFilepath));
         });
     }
 
     public static async testRenameNumberFromLargeIndex() {
         await Test.runTest("rename number_from with large index", () => {
-            const renameData: BulkRenameData = {
+            const renameData: BulkRenameInstruction = {
                 doRename: true,
                 parts: [
                     {
@@ -28,16 +28,16 @@ export class RenameTests {
                 ],
             };
             const orgFilepath = "path/to/my/file.txt";
-            const newFilepath = new BulkRenameHandler().getNewFilepath(orgFilepath, "path/to/my", 123, renameData);
+            const newFilepath = new ImportStepRename().getNewFilepath(orgFilepath, "path/to/my", 123, renameData);
             return startAsyncWithValue(assertEqual("path\\to\\my\\124.txt", newFilepath));
         });
     }
 
     public static async testRenameHandleImportKeep() {
-        await Test.runTest("rename and handle import (action=keep)", async () => {
-            const resultingItemData = await new BulkRenameHandler().handleImportData(
+        await Test.runTest("rename and handle importprocess (action=keep)", async () => {
+            const resultingItemData = await new ImportStepRename().handle(
                 buildItemData("path/to/my/file.txt", ""),
-                RenameTests.importFileHandleData(FileAction.KEEP, ''),
+                RenameTests.importFileHandleData(FileTargetAction.KEEP, ''),
                 RenameTests.genericBulkRenameData(),
                 5);
             return assertItemData(
@@ -48,10 +48,10 @@ export class RenameTests {
     }
 
     public static async testRenameHandleImportMove() {
-        await Test.runTest("rename and handle import (action=move)", async () => {
-            const resultingItemData = await new BulkRenameHandler().handleImportData(
+        await Test.runTest("rename and handle importprocess (action=move)", async () => {
+            const resultingItemData = await new ImportStepRename().handle(
                 buildItemData("path\\to\\my\\file.txt", ""),
-                RenameTests.importFileHandleData(FileAction.MOVE, 'path/to/new'),
+                RenameTests.importFileHandleData(FileTargetAction.MOVE, 'path/to/new'),
                 RenameTests.genericBulkRenameData(),
                 5);
             return assertItemData(
@@ -62,10 +62,10 @@ export class RenameTests {
     }
 
     public static async testNoRenameHandleImportKeep() {
-        await Test.runTest("no rename and handle import (action=keep)", async () => {
-            const resultingItemData = await new BulkRenameHandler().handleImportData(
+        await Test.runTest("no rename and handle importprocess (action=keep)", async () => {
+            const resultingItemData = await new ImportStepRename().handle(
                 buildItemData("path\\to\\my\\file.txt", ""),
-                RenameTests.importFileHandleData(FileAction.KEEP, ''),
+                RenameTests.importFileHandleData(FileTargetAction.KEEP, ''),
                 RenameTests.noRenameData(),
                 5);
             return assertItemData(
@@ -76,10 +76,10 @@ export class RenameTests {
     }
 
     public static async testNoRenameHandleImportMove() {
-        await Test.runTest("no rename and handle import (action=move)", async () => {
-            const resultingItemData = await new BulkRenameHandler().handleImportData(
+        await Test.runTest("no rename and handle importprocess (action=move)", async () => {
+            const resultingItemData = await new ImportStepRename().handle(
                 buildItemData("path\\to\\my\\file.txt", ""),
-                RenameTests.importFileHandleData(FileAction.MOVE, 'path/to/new'),
+                RenameTests.importFileHandleData(FileTargetAction.MOVE, 'path/to/new'),
                 RenameTests.noRenameData(),
                 5);
             return assertItemData(
@@ -90,14 +90,14 @@ export class RenameTests {
     }
 
 
-    private static importFileHandleData(fileAction: FileAction, targetDir: string): ImportFileHandleData {
+    private static importFileHandleData(fileAction: FileTargetAction, targetDir: string): ImportFileTarget {
         return {
             action: fileAction,
             targetDir: targetDir,
         };
     }
 
-    private static genericBulkRenameData(): BulkRenameData {
+    private static genericBulkRenameData(): BulkRenameInstruction {
         return {
             doRename: true,
             parts: [
@@ -121,7 +121,7 @@ export class RenameTests {
         };
     }
 
-    private static noRenameData(): BulkRenameData {
+    private static noRenameData(): BulkRenameInstruction {
         return {
             doRename: false,
             parts: [],

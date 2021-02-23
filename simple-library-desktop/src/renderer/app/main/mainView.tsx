@@ -12,7 +12,7 @@ import {
 } from '../../../main/messaging/messagesLibrary';
 import { Button } from '../../components/button/Button';
 import { DialogImportFiles, FileAction, ImportFilesData } from './import/DialogImportFiles';
-import { FileAction as CommonFileAction, RenamePartType } from '../../../common/commonModels';
+import { FileTargetAction as CommonFileAction, RenamePartType } from '../../../common/commonModels';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -111,7 +111,7 @@ export class MainView extends Component<MainViewProps, MainViewState> {
             ipcRenderer,
             {
                 files: data.selectionData.files,
-                fileHandleData: {
+                fileTarget: {
                     action: FileAction.MOVE
                         ? CommonFileAction.MOVE
                         : (data.copyOrMoveData.action === FileAction.COPY
@@ -119,7 +119,7 @@ export class MainView extends Component<MainViewProps, MainViewState> {
                             : CommonFileAction.KEEP),
                     targetDir: data.copyOrMoveData.targetDirectory,
                 },
-                renameData: {
+                renameInstructions: {
                     doRename: data.renameData.enabled,
                     parts: data.renameData.parts.map(part => {
                         return {

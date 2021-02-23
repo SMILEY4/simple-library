@@ -8,16 +8,22 @@ import { ConfigDataAccess } from './persistence/configDataAccess';
 import { ItemService } from './service/item/ItemService';
 import { ItemDataAccess } from './persistence/itemDataAccess';
 import { SimpleLibraryTests } from '../tests/simpleLibraryTests';
-
-const log = require('electron-log');
-Object.assign(console, log.functions);
+import { FileSystemWrapper } from './service/utils/fileSystemWrapper';
+import { ImportStepThumbnail } from './service/item/importprocess/importStepThumbnail';
+import { ImportStepRename } from './service/item/importprocess/importStepRename';
+import { ImportStepFileHandling } from './service/item/importprocess/importStepFileHandling';
+import { ImportStepFileHash } from './service/item/importprocess/importStepFileHash';
 
 const RUN_TESTS = false;
 
 if (RUN_TESTS) {
-    SimpleLibraryTests.runAll();
+    SimpleLibraryTests.runAll().then(() => {
+    });
 
 } else {
+
+    const log = require('electron-log');
+    Object.assign(console, log.functions);
 
     // data access
     const dataAccess: DataAccess = new DataAccess();
@@ -27,8 +33,14 @@ if (RUN_TESTS) {
 
     // service
     const appService: LibraryService = new LibraryService(libraryDataAccess, configDataAccess);
-    const itemService: ItemService = new ItemService(itemDataAccess);
     const windowService: WindowService = new WindowService();
+    const itemService: ItemService = new ItemService(
+        itemDataAccess,
+        new ImportStepRename(),
+        new ImportStepFileHandling(new FileSystemWrapper()),
+        new ImportStepFileHash(new FileSystemWrapper()),
+        new ImportStepThumbnail(),
+    );
 
     // messaging
     const messageHandler: MessageHandler = new MessageHandler(appService, itemService, windowService);

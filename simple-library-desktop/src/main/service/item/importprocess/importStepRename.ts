@@ -1,7 +1,7 @@
 import {
-    BulkRenameData,
-    FileAction,
-    ImportFileHandleData,
+    BulkRenameInstruction,
+    FileTargetAction,
+    ImportFileTarget,
     ItemData,
     RenamePart,
     RenamePartType,
@@ -9,33 +9,37 @@ import {
 import path from 'path';
 import { startAsyncWithValue } from '../../../../common/AsyncCommon';
 
-export class BulkRenameHandler {
+export class ImportStepRename {
 
-    public handleImportData(itemData: ItemData, handleData: ImportFileHandleData, renameData: BulkRenameData, index: number): Promise<ItemData> {
+    public handle(itemData: ItemData,
+                  handleData: ImportFileTarget,
+                  renameInstruction: BulkRenameInstruction,
+                  counter: number): Promise<ItemData> {
         return startAsyncWithValue(itemData)
             .then(data => {
-                data.filepath = this.getNewFilepath(
-                    data.orgFilepath,
-                    handleData.action === FileAction.KEEP ? undefined : handleData.targetDir,
-                    index,
-                    renameData
-                );
+                const targetDir: string = (handleData.action === FileTargetAction.KEEP) ? undefined : handleData.targetDir;
+                data.filepath = this.getNewFilepath(data.sourceFilepath, targetDir, renameInstruction, counter);
                 return data;
             });
     }
 
-    public getNewFilepath(filepath: string, targetDir: undefined | string, index: number, renameData: BulkRenameData): string {
+    public getNewFilepath(filepath: string,
+                          targetDir: undefined | string,
+                          renameInstruction: BulkRenameInstruction,
+                          counter: number): string {
         const dirname = targetDir ? targetDir : path.dirname(filepath);
         const filename = path.basename(filepath);
-        return path.join(dirname, this.getNewFilename(filename, index, renameData));
+        return path.join(dirname, this.getNewFilename(filename, renameInstruction, counter));
     }
 
-    public getNewFilename(filename: string, index: number, renameData: BulkRenameData): string {
-        if (renameData.doRename) {
+    public getNewFilename(filename: string,
+                          renameInstruction: BulkRenameInstruction,
+                          counter: number): string {
+        if (renameInstruction.doRename) {
             const extension = path.extname(filename);
             const pureFilename = path.basename(filename, extension);
-            const nextFilename = renameData.parts
-                .map(part => BulkRenameHandler.getFilenamePart(part, pureFilename, index))
+            const nextFilename = renameInstruction.parts
+                .map(part => ImportStepRename.getFilenamePart(part, pureFilename, counter))
                 .join("");
             return nextFilename + extension;
         } else {
@@ -43,19 +47,35 @@ export class BulkRenameHandler {
         }
     }
 
-    private static getFilenamePart(renamePart: RenamePart, orgFilename: string, index: number): string {
+    private static getFilenamePart(renamePart: RenamePart, filename: string, counter: number): string {
         switch (renamePart.type) {
             case RenamePartType.NOTHING:
-                return "";
+                return this.getFilenamePartNothing();
             case RenamePartType.TEXT:
-                return renamePart.value;
+                return this.getFilenamePartText(renamePart);
             case RenamePartType.NUMBER_FROM:
-                const partNumber = parseInt(renamePart.value);
-                const strValue = ((isNaN(partNumber) ? 0 : partNumber) + index).toString();
-                return strValue.padStart(renamePart.value.length, "0");
+                return this.getFilenamePartNumberFrom(renamePart, counter);
             case RenamePartType.ORIGINAL_FILENAME:
-                return orgFilename;
+                return this.getFilenamePartOriginalFilename(filename);
         }
+    }
+
+    private static getFilenamePartNothing() {
+        return "";
+    }
+
+    private static getFilenamePartText(part: RenamePart) {
+        return part.value;
+    }
+
+    private static getFilenamePartNumberFrom(part: RenamePart, counter: number) {
+        const partNumber = parseInt(part.value);
+        const strValue = ((isNaN(partNumber) ? 0 : partNumber) + counter).toString();
+        return strValue.padStart(part.value.length, "0");
+    }
+
+    private static getFilenamePartOriginalFilename(filename: string) {
+        return filename;
     }
 
 }

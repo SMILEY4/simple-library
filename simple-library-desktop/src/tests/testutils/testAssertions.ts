@@ -51,7 +51,7 @@ export function assertFileSystemWrapperInvocations(fswMock: FileSystemWrapperMoc
 export function assertItemData(expected: ItemData, actual: ItemData) {
     return expected.id === actual.id
         && expected.timestamp === actual.timestamp
-        && expected.orgFilepath === actual.orgFilepath
+        && expected.sourceFilepath === actual.sourceFilepath
         && expected.filepath === actual.filepath
         && expected.hash === actual.hash
         && expected.thumbnail === actual.thumbnail;

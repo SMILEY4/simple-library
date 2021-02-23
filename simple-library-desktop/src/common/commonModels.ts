@@ -12,8 +12,8 @@ export interface LastOpenedLibraryEntry {
 export interface ItemData {
     id: number,
     timestamp: number,
-    orgFilepath: string,
     filepath: string,
+    sourceFilepath: string,
     hash: string,
     thumbnail: string,
 }
@@ -21,22 +21,22 @@ export interface ItemData {
 
 export interface ImportProcessData {
     files: string[],
-    fileHandleData: ImportFileHandleData,
-    renameData: BulkRenameData,
+    fileTarget: ImportFileTarget,
+    renameInstructions: BulkRenameInstruction,
 }
 
-export interface ImportFileHandleData {
-    action: FileAction,
+export interface ImportFileTarget {
+    action: FileTargetAction,
     targetDir: string
 }
 
-export enum FileAction {
+export enum FileTargetAction {
     KEEP = "keep",
     MOVE = "move",
     COPY = "copy"
 }
 
-export interface BulkRenameData {
+export interface BulkRenameInstruction {
     doRename: boolean,
     parts: RenamePart[]
 }

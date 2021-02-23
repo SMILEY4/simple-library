@@ -2,7 +2,7 @@ import { ItemData } from '../../common/commonModels';
 
 export function buildItemData(orgFilepath: string, targetFilepath: string): ItemData {
     return {
-        orgFilepath: orgFilepath,
+        sourceFilepath: orgFilepath,
         filepath: targetFilepath,
         hash: '',
         id: 0,

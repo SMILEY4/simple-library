@@ -1,10 +1,8 @@
-import { FileAction, ItemData } from '../../../../common/commonModels';
+import { FileTargetAction, ItemData } from '../../../../common/commonModels';
 import { startAsync, startAsyncWithValue } from '../../../../common/AsyncCommon';
 import { FileSystemWrapper } from '../../utils/fileSystemWrapper';
 
-const fs = require('fs').promises;
-
-export class ImportFileHandler {
+export class ImportStepFileHandling {
 
     fsWrapper: FileSystemWrapper;
 
@@ -12,45 +10,35 @@ export class ImportFileHandler {
         this.fsWrapper = fsWrapper;
     }
 
-
-    public handleFile(itemData: ItemData, action: FileAction): Promise<ItemData> {
+    public handle(itemData: ItemData, action: FileTargetAction): Promise<ItemData> {
         return startAsync()
             .then(() => {
                 switch (action) {
-                    case FileAction.KEEP:
-                        return this.handleKeepFile(itemData.orgFilepath, itemData.filepath);
-                    case FileAction.MOVE:
-                        return this.handleMoveFile(itemData.orgFilepath, itemData.filepath);
-                    case FileAction.COPY:
-                        return this.handleCopyFile(itemData.orgFilepath, itemData.filepath);
+                    case FileTargetAction.KEEP:
+                        return this.keepFile(itemData.sourceFilepath, itemData.filepath);
+                    case FileTargetAction.MOVE:
+                        return this.moveFile(itemData.sourceFilepath, itemData.filepath);
+                    case FileTargetAction.COPY:
+                        return this.copyFile(itemData.sourceFilepath, itemData.filepath);
                 }
             })
             .then(() => itemData);
     }
 
-    private handleKeepFile(orgFilepath: string, filepath: string): Promise<string> {
-        if (orgFilepath === filepath) {
-            return startAsyncWithValue(filepath);
+    private keepFile(sourceFilepath: string, targetFilepath: string): Promise<string> {
+        if (sourceFilepath === targetFilepath) {
+            return startAsyncWithValue(targetFilepath);
         } else {
-            return this.handleMoveFile(orgFilepath, filepath);
+            return this.moveFile(sourceFilepath, targetFilepath);
         }
     }
 
-    private handleMoveFile(orgFilepath: string, filepath: string): Promise<string> {
-        return startAsync()
-            .then(() => {
-                console.log("moving file: " + orgFilepath + " => " + filepath);
-                fs.rename(orgFilepath, filepath);
-                return this.fsWrapper.move(orgFilepath, filepath);
-            });
+    private moveFile(sourceFilepath: string, targetFilepath: string): Promise<string> {
+        return this.fsWrapper.move(sourceFilepath, targetFilepath);
     }
 
-    private handleCopyFile(orgFilepath: string, filepath: string): Promise<string> {
-        return startAsync()
-            .then(() => {
-                console.log("copy file: " + orgFilepath + " => " + filepath);
-                return this.fsWrapper.copy(orgFilepath, filepath, false);
-            });
+    private copyFile(sourceFilepath: string, targetFilepath: string): Promise<string> {
+        return this.fsWrapper.copy(sourceFilepath, targetFilepath, false);
     }
 
 }
