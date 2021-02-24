@@ -11,8 +11,8 @@ import {
     ImportFilesMessage,
 } from '../../../main/messaging/messagesLibrary';
 import { Button } from '../../components/button/Button';
-import { DialogImportFiles, FileAction, ImportFilesData } from './import/DialogImportFiles';
-import { FileTargetAction as CommonFileAction, RenamePartType } from '../../../common/commonModels';
+import { DialogImportFiles } from './import/DialogImportFiles';
+import { ImportProcessData } from '../../../common/commonModels';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -103,39 +103,11 @@ export class MainView extends Component<MainViewProps, MainViewState> {
             .then(() => this.props.onCloseProject());
     }
 
-    importFiles(data: ImportFilesData) {
+    importFiles(data: ImportProcessData) {
         this.setState({ showImportFilesDialog: false });
         console.log("IMPORT");
         console.log(JSON.stringify(data));
-        ImportFilesMessage.request(
-            ipcRenderer,
-            {
-                files: data.selectionData.files,
-                fileTarget: {
-                    action: FileAction.MOVE
-                        ? CommonFileAction.MOVE
-                        : (data.copyOrMoveData.action === FileAction.COPY
-                            ? CommonFileAction.COPY
-                            : CommonFileAction.KEEP),
-                    targetDir: data.copyOrMoveData.targetDirectory,
-                },
-                renameInstructions: {
-                    doRename: data.renameData.enabled,
-                    parts: data.renameData.parts.map(part => {
-                        return {
-                            type: part.type == "Nothing"
-                                ? RenamePartType.NOTHING
-                                : (part.type === "Filename"
-                                    ? RenamePartType.ORIGINAL_FILENAME
-                                    : (part.type === "Text"
-                                        ? RenamePartType.TEXT
-                                        : RenamePartType.NUMBER_FROM)),
-                            value: part.value ? part.value : "",
-                        };
-                    }),
-                },
-            },
-        )
+        ImportFilesMessage.request(ipcRenderer, data)
             .then(() => {
                 console.log("FILES IMPORTED");
                 GetItemsMessage.request(ipcRenderer)

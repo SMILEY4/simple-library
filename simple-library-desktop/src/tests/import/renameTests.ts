@@ -11,7 +11,7 @@ export class RenameTests {
         await Test.runTest("rename simple", async () => {
             const renameData: BulkRenameInstruction = RenameTests.genericBulkRenameData();
             const orgFilepath = "path/to/my/file.txt";
-            const newFilepath = new ImportStepRename().getNewFilepath(orgFilepath, "path/to/my", 5, renameData);
+            const newFilepath = new ImportStepRename().getNewFilepath(orgFilepath, "path/to/my", renameData, 5);
             return startAsyncWithValue(assertEqual("path\\to\\my\\file_00015.txt", newFilepath));
         });
     }
@@ -28,7 +28,7 @@ export class RenameTests {
                 ],
             };
             const orgFilepath = "path/to/my/file.txt";
-            const newFilepath = new ImportStepRename().getNewFilepath(orgFilepath, "path/to/my", 123, renameData);
+            const newFilepath = new ImportStepRename().getNewFilepath(orgFilepath, "path/to/my", renameData, 123);
             return startAsyncWithValue(assertEqual("path\\to\\my\\124.txt", newFilepath));
         });
     }

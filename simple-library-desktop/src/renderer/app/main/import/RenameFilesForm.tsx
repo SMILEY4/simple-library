@@ -1,0 +1,83 @@
+import * as React from 'react';
+import { ReactElement } from 'react';
+import { BodyText } from '../../../components/text/Text';
+import {
+    displayStringToRenamePartType,
+    RENAME_PART_TYPES,
+    RenamePart,
+    RenamePartType,
+    renamePartTypeToDisplayString,
+} from '../../../../common/commonModels';
+import { HBox, VBox } from '../../../components/layout/Box';
+import { AlignCross, AlignMain, Fill, Size, Variant } from '../../../components/common';
+import { ChoiceBox } from '../../../components/choicebox/ChoiceBox';
+import { InputField } from '../../../components/inputfield/InputField';
+import { Checkbox } from '../../../components/checkbox/Checkbox';
+import { Grid } from '../../../components/layout/Grid';
+
+export interface RenameFilesFormProps {
+    enabled: boolean,
+    onToggleEnable: (enabled: boolean) => void,
+    renameParts: RenamePart[],
+    onSetRenamePartType: (index: number, type: RenamePartType) => void,
+    onSetRenamePartValue: (index: number, value: string) => void
+
+}
+
+export function RenameFilesForm(props: React.PropsWithChildren<RenameFilesFormProps>): ReactElement {
+
+    return (
+        <>
+            <Checkbox variant={Variant.OUTLINE}
+                      selected={props.enabled}
+                      onToggle={props.onToggleEnable}>
+                Rename files
+            </Checkbox>
+
+            <VBox alignMain={AlignMain.CENTER} alignCross={AlignCross.STRETCH} spacing={Size.S_0_75} padding={Size.S_1} withBorder>
+
+                <Grid columns={['1fr', '1fr', '1fr']} rows={['1fr']} fill={Fill.TRUE} gap={Size.S_0_5}>
+                    {
+                        props.renameParts.map((renamePart: RenamePart, index: number) => {
+                            return renderNamePart(index, renamePart);
+                        })
+                    }
+                </Grid>
+
+                <HBox spacing={Size.S_0_15}>
+                    <BodyText>Preview: </BodyText>
+                    <BodyText italic>{filenamePreview()}</BodyText>
+                </HBox>
+
+            </VBox>
+
+        </>
+    );
+
+    function renderNamePart(index: number, part: RenamePart) {
+        return (
+            <VBox spacing={Size.S_0_25}>
+                <ChoiceBox
+                    variant={Variant.OUTLINE}
+                    items={RENAME_PART_TYPES.map((e: RenamePartType) => renamePartTypeToDisplayString(e))}
+                    selected={renamePartTypeToDisplayString(part.type)}
+                    onSelect={selected => props.onSetRenamePartType(index, displayStringToRenamePartType(selected))}
+                    maxVisibleItems={5}
+                    disabled={!props.enabled}
+                    autoWidth
+                    onTopSide
+                />
+                <InputField
+                    value={part.value}
+                    onChange={value => props.onSetRenamePartValue(index, value)}
+                    disabled={!props.enabled}
+                />
+            </VBox>
+        );
+    }
+
+    function filenamePreview(): string {
+        return "1803d0001.jpg";
+    }
+
+}

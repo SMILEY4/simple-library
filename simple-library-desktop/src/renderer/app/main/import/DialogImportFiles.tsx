@@ -3,85 +3,50 @@ import { Component, ReactElement } from 'react';
 import { Dialog } from '../../../components/modal/Dialog';
 import { Type, Variant } from '../../../components/common';
 import { ImportFilesForm } from './ImportFilesForm';
+import { FileTargetAction, ImportProcessData, RenamePartType } from '../../../../common/commonModels';
 
 const electron = window.require('electron');
 
 interface DialogImportFilesProps {
     show: boolean,
     onClose: () => void
-    onImport: (data: ImportFilesData) => void
+    onImport: (data: ImportProcessData) => void
 }
 
-export interface ImportFilesData {
-    selectionData: FileSelectionData
-    copyOrMoveData: CopyOrMoveData,
-    renameData: RenameData;
-}
-
-
-interface FileSelectionData {
-    files: string[]
-}
-
-export enum FileAction {
-    NONE = "none",
-    MOVE = "move",
-    COPY = "copy",
-}
-
-interface CopyOrMoveData {
-    enabled: boolean,
-    action: FileAction,
-    targetDirectory: string | undefined
-}
-
-export const FILENAME_PART_TYPES: string[] = ["Nothing", "Filename", "Text", "Number From"];
-
-interface FilenamePart {
-    name: string,
-    type: string,
-    value: string | undefined
-}
-
-interface RenameData {
-    enabled: boolean,
-    parts: FilenamePart[]
+export interface DialogImportFilesState {
+    data: ImportProcessData
 }
 
 
-export class DialogImportFiles extends Component<DialogImportFilesProps, ImportFilesData> {
+export class DialogImportFiles extends Component<DialogImportFilesProps, DialogImportFilesState> {
 
 
     constructor(props: DialogImportFilesProps) {
         super(props);
         this.state = {
-            selectionData: {
+            data: {
                 files: [],
-            },
-            copyOrMoveData: {
-                enabled: false,
-                action: FileAction.NONE,
-                targetDirectory: undefined,
-            },
-            renameData: {
-                enabled: false,
-                parts: [
-                    {
-                        name: "Front",
-                        type: "Nothing",
-                        value: undefined,
-                    },
-                    {
-                        name: "Middle",
-                        type: "Filename",
-                        value: undefined,
-                    },
-                    {
-                        name: "End",
-                        type: "Nothing",
-                        value: undefined,
-                    },
-                ],
+                fileTarget: {
+                    action: FileTargetAction.KEEP,
+                    targetDir: "",
+                },
+                renameInstructions: {
+                    doRename: false,
+                    parts: [
+                        {
+                            type: RenamePartType.NOTHING,
+                            value: "",
+                        },
+                        {
+                            type: RenamePartType.ORIGINAL_FILENAME,
+                            value: "",
+                        },
+                        {
+                            type: RenamePartType.NOTHING,
+                            value: "",
+                        },
+                    ],
+                },
             },
         };
         this.actionSelectFiles = this.actionSelectFiles.bind(this);
@@ -99,33 +64,29 @@ export class DialogImportFiles extends Component<DialogImportFilesProps, ImportF
     componentWillReceiveProps(newProps: DialogImportFilesProps) {
         if (newProps.show && newProps.show !== this.props.show) {
             this.setState({
-                selectionData: {
+                data: {
                     files: [],
-                },
-                copyOrMoveData: {
-                    enabled: false,
-                    action: FileAction.NONE,
-                    targetDirectory: undefined,
-                },
-                renameData: {
-                    enabled: false,
-                    parts: [
-                        {
-                            name: "Front",
-                            type: "Nothing",
-                            value: undefined,
-                        },
-                        {
-                            name: "Middle",
-                            type: "Filename",
-                            value: undefined,
-                        },
-                        {
-                            name: "End",
-                            type: "Nothing",
-                            value: undefined,
-                        },
-                    ],
+                    fileTarget: {
+                        action: FileTargetAction.KEEP,
+                        targetDir: "",
+                    },
+                    renameInstructions: {
+                        doRename: false,
+                        parts: [
+                            {
+                                type: RenamePartType.NOTHING,
+                                value: "",
+                            },
+                            {
+                                type: RenamePartType.ORIGINAL_FILENAME,
+                                value: "",
+                            },
+                            {
+                                type: RenamePartType.NOTHING,
+                                value: "",
+                            },
+                        ],
+                    },
                 },
             });
         }
@@ -153,7 +114,7 @@ export class DialogImportFiles extends Component<DialogImportFilesProps, ImportF
                     ]}>
 
                 <ImportFilesForm
-                    data={this.state}
+                    data={this.state.data}
                     onSelectFiles={this.actionSelectFiles}
                     onEnableCopyOrMove={this.actionToggleCopyOrMove}
                     onSelectCopyOrMoveAction={this.actionSelectCopyOrMoveAction}
@@ -181,29 +142,27 @@ export class DialogImportFiles extends Component<DialogImportFilesProps, ImportF
             })
             .then((result: any) => {
                 if (!result.canceled) {
-                    this.setState({ selectionData: { files: result.filePaths } });
+                    const newState = Object.assign({}, this.state);
+                    newState.data.files = result.filePaths;
+                    this.setState(newState);
                 }
             });
     }
 
     actionToggleCopyOrMove(enable: boolean): void {
-        this.setState({
-            copyOrMoveData: {
-                enabled: enable === true,
-                action: this.state.copyOrMoveData.action,
-                targetDirectory: this.state.copyOrMoveData.targetDirectory,
-            },
-        });
+        const newState = Object.assign({}, this.state);
+        if (enable) {
+            newState.data.fileTarget.action = FileTargetAction.MOVE;
+        } else {
+            newState.data.fileTarget.action = FileTargetAction.KEEP;
+        }
+        this.setState(newState);
     }
 
-    actionSelectCopyOrMoveAction(action: FileAction) {
-        this.setState({
-            copyOrMoveData: {
-                enabled: this.state.copyOrMoveData.enabled,
-                action: action,
-                targetDirectory: this.state.copyOrMoveData.targetDirectory,
-            },
-        });
+    actionSelectCopyOrMoveAction(action: FileTargetAction) {
+        const newState = Object.assign({}, this.state);
+        newState.data.fileTarget.action = action;
+        this.setState(newState);
     }
 
     actionSelectTargetDirectory(): void {
@@ -218,42 +177,29 @@ export class DialogImportFiles extends Component<DialogImportFilesProps, ImportF
             })
             .then((result: any) => {
                 if (!result.canceled) {
-                    this.setState({
-                        copyOrMoveData: {
-                            enabled: this.state.copyOrMoveData.enabled,
-                            action: this.state.copyOrMoveData.action,
-                            targetDirectory: result.filePaths[0],
-                        },
-                    });
+                    const newState = Object.assign({}, this.state);
+                    newState.data.fileTarget.targetDir = result.filePaths[0];
+                    this.setState(newState);
                 }
             });
     }
 
     actionToggleRenameFiles(enabled: boolean) {
-        this.setState({
-            renameData: {
-                enabled: enabled,
-                parts: this.state.renameData.parts,
-            },
-        });
+        const newState = Object.assign({}, this.state);
+        newState.data.renameInstructions.doRename = enabled;
+        this.setState(newState);
     }
 
-    actionSetFilenamePartType(partName: string, partType: string) {
-        const nextRenameData = JSON.parse(JSON.stringify(this.state.renameData));
-        const filenamePart = nextRenameData.parts.find((part: FilenamePart) => part.name === partName);
-        filenamePart.type = partType;
-        this.setState({
-            renameData: nextRenameData,
-        });
+    actionSetFilenamePartType(partIndex: number, partType: RenamePartType) {
+        const newState = Object.assign({}, this.state);
+        newState.data.renameInstructions.parts[partIndex].type = partType;
+        this.setState(newState);
     }
 
-    actionSetFilenamePartValue(partName: string, partValue: string) {
-        const nextRenameData = JSON.parse(JSON.stringify(this.state.renameData));
-        const filenamePart = nextRenameData.parts.find((part: FilenamePart) => part.name === partName);
-        filenamePart.value = partValue;
-        this.setState({
-            renameData: nextRenameData,
-        });
+    actionSetFilenamePartValue(partIndex: number, partValue: string) {
+        const newState = Object.assign({}, this.state);
+        newState.data.renameInstructions.parts[partIndex].value = partValue;
+        this.setState(newState);
     }
 
 
@@ -264,7 +210,7 @@ export class DialogImportFiles extends Component<DialogImportFilesProps, ImportF
 
     actionImportFiles(): void {
         if (this.validate()) {
-            this.props.onImport(this.state);
+            this.props.onImport(this.state.data);
         }
     }
 
