@@ -55,7 +55,7 @@ export class RenameTests {
                 RenameTests.genericBulkRenameData(),
                 5);
             return assertItemData(
-                buildItemData("path\\to\\new\\file_00015.txt", "path\\to\\my\\file.txt"),
+                buildItemData("path\\to\\my\\file.txt", "path\\to\\new\\file_00015.txt"),
                 resultingItemData,
             );
         });

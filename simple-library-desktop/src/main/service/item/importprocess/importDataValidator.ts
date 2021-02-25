@@ -27,13 +27,13 @@ export class ImportDataValidator {
             case ImportTargetAction.KEEP:
                 break;
             case ImportTargetAction.MOVE: {
-                if (!this.fsWrapper.existsDir(data.targetDir)) {
+                if (!data.targetDir || data.targetDir.length === 0 || !this.fsWrapper.existsDir(data.targetDir)) {
                     throw "Target directory does not exist.";
                 }
                 break;
             }
             case ImportTargetAction.COPY: {
-                if (!this.fsWrapper.existsDir(data.targetDir)) {
+                if (!data.targetDir || data.targetDir.length === 0 || !this.fsWrapper.existsDir(data.targetDir)) {
                     throw "Target directory does not exist.";
                 }
                 break;

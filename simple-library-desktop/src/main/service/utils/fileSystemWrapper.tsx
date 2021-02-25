@@ -10,7 +10,7 @@ export class FileSystemWrapper {
             .then(() => target);
     }
 
-    public copy(source: string, target: string, allowOverwrite: boolean): Promise<string> {
+    public async copy(source: string, target: string, allowOverwrite: boolean): Promise<string> {
         const mode: number = allowOverwrite ? 0 : fs.constants.COPYFILE_EXCL;
         return fsp.copyFile(source, target, mode)
             .then(() => target);

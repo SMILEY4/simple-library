@@ -14,6 +14,7 @@ import { ImportStepRename } from './service/item/importprocess/importStepRename'
 import { ImportStepImportTarget } from './service/item/importprocess/importStepImportTarget';
 import { ImportStepFileHash } from './service/item/importprocess/importStepFileHash';
 import { ImportDataValidator } from './service/item/importprocess/importDataValidator';
+import { ImportService } from './service/item/importprocess/importService';
 
 const RUN_TESTS = false;
 
@@ -40,11 +41,14 @@ if (RUN_TESTS) {
     const windowService: WindowService = new WindowService();
     const itemService: ItemService = new ItemService(
         itemDataAccess,
-        new ImportDataValidator(fsWrapper),
-        new ImportStepRename(),
-        new ImportStepImportTarget(fsWrapper),
-        new ImportStepFileHash(fsWrapper),
-        new ImportStepThumbnail(),
+        new ImportService(
+            itemDataAccess,
+            new ImportDataValidator(fsWrapper),
+            new ImportStepRename(),
+            new ImportStepImportTarget(fsWrapper),
+            new ImportStepFileHash(fsWrapper),
+            new ImportStepThumbnail(),
+        ),
     );
 
     // messaging
