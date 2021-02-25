@@ -3,7 +3,7 @@ import { ipcMain } from 'electron';
 import { LibraryService } from '../service/library/libraryService';
 import { WindowService } from '../windows/windowService';
 import {
-    FileTargetAction,
+    ImportTargetAction,
     ImportProcessData,
     ItemData,
     LastOpenedLibraryEntry,

@@ -11,7 +11,7 @@ import { SimpleLibraryTests } from '../tests/simpleLibraryTests';
 import { FileSystemWrapper } from './service/utils/fileSystemWrapper';
 import { ImportStepThumbnail } from './service/item/importprocess/importStepThumbnail';
 import { ImportStepRename } from './service/item/importprocess/importStepRename';
-import { ImportStepFileHandling } from './service/item/importprocess/importStepFileHandling';
+import { ImportStepImportTarget } from './service/item/importprocess/importStepImportTarget';
 import { ImportStepFileHash } from './service/item/importprocess/importStepFileHash';
 
 const RUN_TESTS = false;
@@ -37,7 +37,7 @@ if (RUN_TESTS) {
     const itemService: ItemService = new ItemService(
         itemDataAccess,
         new ImportStepRename(),
-        new ImportStepFileHandling(new FileSystemWrapper()),
+        new ImportStepImportTarget(new FileSystemWrapper()),
         new ImportStepFileHash(new FileSystemWrapper()),
         new ImportStepThumbnail(),
     );

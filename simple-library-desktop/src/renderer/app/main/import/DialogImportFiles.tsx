@@ -3,7 +3,7 @@ import { Component, ReactElement } from 'react';
 import { Dialog } from '../../../components/modal/Dialog';
 import { Type, Variant } from '../../../components/common';
 import { ImportFilesForm } from './ImportFilesForm';
-import { FileTargetAction, ImportProcessData, RenamePartType } from '../../../../common/commonModels';
+import { ImportTargetAction, ImportProcessData, RenamePartType } from '../../../../common/commonModels';
 
 const electron = window.require('electron');
 
@@ -26,8 +26,8 @@ export class DialogImportFiles extends Component<DialogImportFilesProps, DialogI
         this.state = {
             data: {
                 files: [],
-                fileTarget: {
-                    action: FileTargetAction.KEEP,
+                importTarget: {
+                    action: ImportTargetAction.KEEP,
                     targetDir: "",
                 },
                 renameInstructions: {
@@ -50,7 +50,6 @@ export class DialogImportFiles extends Component<DialogImportFilesProps, DialogI
             },
         };
         this.actionSelectFiles = this.actionSelectFiles.bind(this);
-        this.actionToggleCopyOrMove = this.actionToggleCopyOrMove.bind(this);
         this.actionSelectCopyOrMoveAction = this.actionSelectCopyOrMoveAction.bind(this);
         this.actionSelectTargetDirectory = this.actionSelectTargetDirectory.bind(this);
         this.actionToggleRenameFiles = this.actionToggleRenameFiles.bind(this);
@@ -66,8 +65,8 @@ export class DialogImportFiles extends Component<DialogImportFilesProps, DialogI
             this.setState({
                 data: {
                     files: [],
-                    fileTarget: {
-                        action: FileTargetAction.KEEP,
+                    importTarget: {
+                        action: ImportTargetAction.KEEP,
                         targetDir: "",
                     },
                     renameInstructions: {
@@ -116,8 +115,7 @@ export class DialogImportFiles extends Component<DialogImportFilesProps, DialogI
                 <ImportFilesForm
                     data={this.state.data}
                     onSelectFiles={this.actionSelectFiles}
-                    onEnableCopyOrMove={this.actionToggleCopyOrMove}
-                    onSelectCopyOrMoveAction={this.actionSelectCopyOrMoveAction}
+                    onSelectImportTargetAction={this.actionSelectCopyOrMoveAction}
                     onSelectTargetDirectory={this.actionSelectTargetDirectory}
                     onToggleRenameFiles={this.actionToggleRenameFiles}
                     onSetFilenamePartType={this.actionSetFilenamePartType}
@@ -149,19 +147,9 @@ export class DialogImportFiles extends Component<DialogImportFilesProps, DialogI
             });
     }
 
-    actionToggleCopyOrMove(enable: boolean): void {
+    actionSelectCopyOrMoveAction(action: ImportTargetAction) {
         const newState = Object.assign({}, this.state);
-        if (enable) {
-            newState.data.fileTarget.action = FileTargetAction.MOVE;
-        } else {
-            newState.data.fileTarget.action = FileTargetAction.KEEP;
-        }
-        this.setState(newState);
-    }
-
-    actionSelectCopyOrMoveAction(action: FileTargetAction) {
-        const newState = Object.assign({}, this.state);
-        newState.data.fileTarget.action = action;
+        newState.data.importTarget.action = action;
         this.setState(newState);
     }
 
@@ -178,7 +166,7 @@ export class DialogImportFiles extends Component<DialogImportFilesProps, DialogI
             .then((result: any) => {
                 if (!result.canceled) {
                     const newState = Object.assign({}, this.state);
-                    newState.data.fileTarget.targetDir = result.filePaths[0];
+                    newState.data.importTarget.targetDir = result.filePaths[0];
                     this.setState(newState);
                 }
             });

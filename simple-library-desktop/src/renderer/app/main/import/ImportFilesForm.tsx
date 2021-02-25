@@ -3,7 +3,7 @@ import { ReactElement } from 'react';
 import { VBox } from '../../../components/layout/Box';
 import { AlignCross, AlignMain, Size } from '../../../components/common';
 import { Separator, SeparatorDirection } from '../../../components/separator/Separator';
-import { FileTargetAction, ImportProcessData, RenamePartType } from '../../../../common/commonModels';
+import { ImportTargetAction, ImportProcessData, RenamePartType } from '../../../../common/commonModels';
 import { SelectFilesForm } from './SelectFilesForm';
 import { ImportTargetForm } from './ImportTargetForm';
 import { RenameFilesForm } from './RenameFilesForm';
@@ -11,8 +11,7 @@ import { RenameFilesForm } from './RenameFilesForm';
 export interface ImportFilesFormProps {
     data: ImportProcessData,
     onSelectFiles?: () => void,
-    onEnableCopyOrMove: (enabled: boolean) => void,
-    onSelectCopyOrMoveAction: (action: FileTargetAction) => void,
+    onSelectImportTargetAction: (action: ImportTargetAction) => void,
     onSelectTargetDirectory: () => void,
     onToggleRenameFiles: (enabled: boolean) => void,
     onSetFilenamePartType: (index: number, type: RenamePartType) => void
@@ -34,9 +33,9 @@ export function ImportFilesForm(props: ImportFilesFormReactProps): ReactElement 
 
             <Separator noBorder dir={SeparatorDirection.HORIZONTAL} spacing={Size.S_0_5} />
 
-            <ImportTargetForm action={props.data.fileTarget.action}
-                              onSelectAction={props.onSelectCopyOrMoveAction}
-                              targetDir={props.data.fileTarget.targetDir}
+            <ImportTargetForm action={props.data.importTarget.action}
+                              onSelectAction={props.onSelectImportTargetAction}
+                              targetDir={props.data.importTarget.targetDir}
                               onSelectTargetDir={props.onSelectTargetDirectory} />
 
             <Separator noBorder dir={SeparatorDirection.HORIZONTAL} spacing={Size.S_0_5} />

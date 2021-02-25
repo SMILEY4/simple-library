@@ -1,8 +1,8 @@
-import { FileTargetAction, ItemData } from '../../../../common/commonModels';
+import { ImportTargetAction, ItemData } from '../../../../common/commonModels';
 import { startAsync, startAsyncWithValue } from '../../../../common/AsyncCommon';
 import { FileSystemWrapper } from '../../utils/fileSystemWrapper';
 
-export class ImportStepFileHandling {
+export class ImportStepImportTarget {
 
     fsWrapper: FileSystemWrapper;
 
@@ -10,15 +10,15 @@ export class ImportStepFileHandling {
         this.fsWrapper = fsWrapper;
     }
 
-    public handle(itemData: ItemData, action: FileTargetAction): Promise<ItemData> {
+    public handle(itemData: ItemData, action: ImportTargetAction): Promise<ItemData> {
         return startAsync()
             .then(() => {
                 switch (action) {
-                    case FileTargetAction.KEEP:
+                    case ImportTargetAction.KEEP:
                         return this.keepFile(itemData.sourceFilepath, itemData.filepath);
-                    case FileTargetAction.MOVE:
+                    case ImportTargetAction.MOVE:
                         return this.moveFile(itemData.sourceFilepath, itemData.filepath);
-                    case FileTargetAction.COPY:
+                    case ImportTargetAction.COPY:
                         return this.copyFile(itemData.sourceFilepath, itemData.filepath);
                 }
             })

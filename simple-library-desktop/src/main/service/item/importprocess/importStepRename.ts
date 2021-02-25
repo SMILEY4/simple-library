@@ -1,6 +1,6 @@
 import {
     BulkRenameInstruction,
-    FileTargetAction,
+    ImportTargetAction,
     ImportFileTarget,
     ItemData,
     RenamePart,
@@ -17,7 +17,7 @@ export class ImportStepRename {
                   counter: number): Promise<ItemData> {
         return startAsyncWithValue(itemData)
             .then(data => {
-                const targetDir: string = (handleData.action === FileTargetAction.KEEP) ? undefined : handleData.targetDir;
+                const targetDir: string = (handleData.action === ImportTargetAction.KEEP) ? undefined : handleData.targetDir;
                 data.filepath = this.getNewFilepath(data.sourceFilepath, targetDir, renameInstruction, counter);
                 return data;
             });

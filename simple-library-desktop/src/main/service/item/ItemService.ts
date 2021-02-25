@@ -3,7 +3,7 @@ import { ImportStepFileHash } from './importprocess/importStepFileHash';
 import { ImportStepThumbnail } from './importprocess/importStepThumbnail';
 import { ItemDataAccess } from '../../persistence/itemDataAccess';
 import { ImportProcessData, ItemData } from '../../../common/commonModels';
-import { ImportStepFileHandling } from './importprocess/importStepFileHandling';
+import { ImportStepImportTarget } from './importprocess/importStepImportTarget';
 import { ImportStepRename } from './importprocess/importStepRename';
 
 export class ItemService {
@@ -12,19 +12,19 @@ export class ItemService {
     importStepFileHash: ImportStepFileHash;
     importStepThumbnail: ImportStepThumbnail;
     importStepRename: ImportStepRename;
-    importStepFileHandling: ImportStepFileHandling;
+    importStepImportTarget: ImportStepImportTarget;
 
 
     constructor(itemDataAccess: ItemDataAccess,
                 importStepRename: ImportStepRename,
-                importStepFileHandling: ImportStepFileHandling,
+                importStepImportTarget: ImportStepImportTarget,
                 importStepFileHash: ImportStepFileHash,
                 importStepThumbnail: ImportStepThumbnail) {
         this.itemDataAccess = itemDataAccess;
         this.importStepFileHash = importStepFileHash;
         this.importStepThumbnail = importStepThumbnail;
         this.importStepRename = importStepRename;
-        this.importStepFileHandling = importStepFileHandling;
+        this.importStepImportTarget = importStepImportTarget;
     }
 
     public getAllItems(): Promise<ItemData[]> {
@@ -37,8 +37,8 @@ export class ItemService {
             await startAsync()
                 .then(() => console.log("importing file: " + data.files[i]))
                 .then(() => ItemService.buildBaseItemData(data.files[i]))
-                .then((item: ItemData) => this.importStepRename.handle(item, data.fileTarget, data.renameInstructions, i))
-                .then((item: ItemData) => this.importStepFileHandling.handle(item, data.fileTarget.action))
+                .then((item: ItemData) => this.importStepRename.handle(item, data.importTarget, data.renameInstructions, i))
+                .then((item: ItemData) => this.importStepImportTarget.handle(item, data.importTarget.action))
                 .then((item: ItemData) => this.importStepFileHash.handle(item))
                 .then((item: ItemData) => this.importStepThumbnail.handle(item))
                 .then((item: ItemData) => this.itemDataAccess.insertItem(item))

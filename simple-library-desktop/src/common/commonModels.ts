@@ -21,16 +21,16 @@ export interface ItemData {
 
 export interface ImportProcessData {
     files: string[],
-    fileTarget: ImportFileTarget,
+    importTarget: ImportFileTarget,
     renameInstructions: BulkRenameInstruction,
 }
 
 export interface ImportFileTarget {
-    action: FileTargetAction,
+    action: ImportTargetAction,
     targetDir: string
 }
 
-export enum FileTargetAction {
+export enum ImportTargetAction {
     KEEP = "keep",
     MOVE = "move",
     COPY = "copy"
