@@ -1,4 +1,4 @@
-import { ReadStream } from 'fs';
+import { ReadStream, Stats } from 'fs';
 
 const fs = require('fs');
 const fsp = fs.promises;
@@ -18,6 +18,24 @@ export class FileSystemWrapper {
 
     public createReadStream(filepath: string): ReadStream {
         return fs.createReadStream(filepath);
+    }
+
+    public existsFile(path: string): boolean {
+        try {
+            const stats: Stats = fs.statSync(path);
+            return stats.isFile();
+        } catch (e) {
+            return false;
+        }
+    }
+
+    public existsDir(path: string): boolean {
+        try {
+            const stats: Stats = fs.statSync(path);
+            return stats.isDirectory();
+        } catch (e) {
+            return false;
+        }
     }
 
 }

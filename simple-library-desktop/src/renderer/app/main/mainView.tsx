@@ -175,10 +175,12 @@ export class MainView extends Component<MainViewProps, MainViewState> {
                     </table>
                 </div>
 
-                <DialogImportFiles
-                    show={this.state.showImportFilesDialog}
-                    onClose={() => this.setState({ showImportFilesDialog: false })}
-                    onImport={this.importFiles} />
+                {this.state.showImportFilesDialog && (
+                    <DialogImportFiles
+                        onClose={() => this.setState({ showImportFilesDialog: false })}
+                        onImport={this.importFiles} />
+                )}
+
 
             </Box>
         );

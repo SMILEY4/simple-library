@@ -8,7 +8,6 @@ import { ImportTargetAction, ImportProcessData, RenamePartType } from '../../../
 const electron = window.require('electron');
 
 interface DialogImportFilesProps {
-    show: boolean,
     onClose: () => void
     onImport: (data: ImportProcessData) => void
 }
@@ -50,7 +49,7 @@ export class DialogImportFiles extends Component<DialogImportFilesProps, DialogI
             },
         };
         this.actionSelectFiles = this.actionSelectFiles.bind(this);
-        this.actionSelectCopyOrMoveAction = this.actionSelectCopyOrMoveAction.bind(this);
+        this.actionSelectImportTargetAction = this.actionSelectImportTargetAction.bind(this);
         this.actionSelectTargetDirectory = this.actionSelectTargetDirectory.bind(this);
         this.actionToggleRenameFiles = this.actionToggleRenameFiles.bind(this);
         this.actionSetFilenamePartType = this.actionSetFilenamePartType.bind(this);
@@ -59,43 +58,10 @@ export class DialogImportFiles extends Component<DialogImportFilesProps, DialogI
         this.actionImportFiles = this.actionImportFiles.bind(this);
     }
 
-
-    componentWillReceiveProps(newProps: DialogImportFilesProps) {
-        if (newProps.show && newProps.show !== this.props.show) {
-            this.setState({
-                data: {
-                    files: [],
-                    importTarget: {
-                        action: ImportTargetAction.KEEP,
-                        targetDir: "",
-                    },
-                    renameInstructions: {
-                        doRename: false,
-                        parts: [
-                            {
-                                type: RenamePartType.NOTHING,
-                                value: "",
-                            },
-                            {
-                                type: RenamePartType.ORIGINAL_FILENAME,
-                                value: "",
-                            },
-                            {
-                                type: RenamePartType.NOTHING,
-                                value: "",
-                            },
-                        ],
-                    },
-                },
-            });
-        }
-    }
-
-
     render(): ReactElement {
         return (
             <Dialog title={"Import Files"}
-                    show={this.props.show}
+                    show={true}
                     closeButton={true}
                     onClose={this.props.onClose}
                     actions={[
@@ -115,7 +81,7 @@ export class DialogImportFiles extends Component<DialogImportFilesProps, DialogI
                 <ImportFilesForm
                     data={this.state.data}
                     onSelectFiles={this.actionSelectFiles}
-                    onSelectImportTargetAction={this.actionSelectCopyOrMoveAction}
+                    onSelectImportTargetAction={this.actionSelectImportTargetAction}
                     onSelectTargetDirectory={this.actionSelectTargetDirectory}
                     onToggleRenameFiles={this.actionToggleRenameFiles}
                     onSetFilenamePartType={this.actionSetFilenamePartType}
@@ -147,7 +113,7 @@ export class DialogImportFiles extends Component<DialogImportFilesProps, DialogI
             });
     }
 
-    actionSelectCopyOrMoveAction(action: ImportTargetAction) {
+    actionSelectImportTargetAction(action: ImportTargetAction) {
         const newState = Object.assign({}, this.state);
         newState.data.importTarget.action = action;
         this.setState(newState);

@@ -13,6 +13,7 @@ import { ImportStepThumbnail } from './service/item/importprocess/importStepThum
 import { ImportStepRename } from './service/item/importprocess/importStepRename';
 import { ImportStepImportTarget } from './service/item/importprocess/importStepImportTarget';
 import { ImportStepFileHash } from './service/item/importprocess/importStepFileHash';
+import { ImportDataValidator } from './service/item/importprocess/importDataValidator';
 
 const RUN_TESTS = false;
 
@@ -25,6 +26,9 @@ if (RUN_TESTS) {
     const log = require('electron-log');
     Object.assign(console, log.functions);
 
+    // utils
+    const fsWrapper: FileSystemWrapper = new FileSystemWrapper();
+
     // data access
     const dataAccess: DataAccess = new DataAccess();
     const libraryDataAccess: LibraryDataAccess = new LibraryDataAccess(dataAccess);
@@ -36,9 +40,10 @@ if (RUN_TESTS) {
     const windowService: WindowService = new WindowService();
     const itemService: ItemService = new ItemService(
         itemDataAccess,
+        new ImportDataValidator(fsWrapper),
         new ImportStepRename(),
-        new ImportStepImportTarget(new FileSystemWrapper()),
-        new ImportStepFileHash(new FileSystemWrapper()),
+        new ImportStepImportTarget(fsWrapper),
+        new ImportStepFileHash(fsWrapper),
         new ImportStepThumbnail(),
     );
 

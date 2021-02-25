@@ -5,10 +5,12 @@ import { ItemDataAccess } from '../../persistence/itemDataAccess';
 import { ImportProcessData, ItemData } from '../../../common/commonModels';
 import { ImportStepImportTarget } from './importprocess/importStepImportTarget';
 import { ImportStepRename } from './importprocess/importStepRename';
+import { ImportDataValidator } from './importprocess/importDataValidator';
 
 export class ItemService {
 
     itemDataAccess: ItemDataAccess;
+    importDataValidator: ImportDataValidator;
     importStepFileHash: ImportStepFileHash;
     importStepThumbnail: ImportStepThumbnail;
     importStepRename: ImportStepRename;
@@ -16,6 +18,7 @@ export class ItemService {
 
 
     constructor(itemDataAccess: ItemDataAccess,
+                importDataValidator: ImportDataValidator,
                 importStepRename: ImportStepRename,
                 importStepImportTarget: ImportStepImportTarget,
                 importStepFileHash: ImportStepFileHash,
@@ -33,6 +36,7 @@ export class ItemService {
 
     public async importFiles(data: ImportProcessData): Promise<void> {
         console.log("starting import-process of " + data.files.length + " files.");
+        this.importDataValidator.validate(data);
         for (let i = 0; i < data.files.length; i++) {
             await startAsync()
                 .then(() => console.log("importing file: " + data.files[i]))
