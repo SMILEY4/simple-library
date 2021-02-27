@@ -1,4 +1,4 @@
-name: build desktop windows (upload all)
+name: build electron windows (upload all)
 
 on: [ workflow_dispatch ]
 

@@ -1,4 +1,4 @@
-name: build desktop windows
+name: build electron windows
 
 on: [ workflow_dispatch ]
 
