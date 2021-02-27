@@ -198,11 +198,12 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
                     <Image url={imgWelcome} />
                 </Grid>
 
-                <DialogCreateLibrary
-                    show={this.state.showCreateLibraryDialog}
-                    onClose={this.onCancelCreateNewLibrary}
-                    onCreate={this.createNewLibrary}
-                />
+                {this.state.showCreateLibraryDialog && (
+                    <DialogCreateLibrary
+                        onClose={this.onCancelCreateNewLibrary}
+                        onCreate={this.createNewLibrary}
+                    />
+                )}
 
                 <NotificationStack
                     modalRootId='root'

@@ -8,16 +8,27 @@ import { ConfigDataAccess } from './persistence/configDataAccess';
 import { ItemService } from './service/item/ItemService';
 import { ItemDataAccess } from './persistence/itemDataAccess';
 import { SimpleLibraryTests } from '../tests/simpleLibraryTests';
-
-const log = require('electron-log');
-Object.assign(console, log.functions);
+import { FileSystemWrapper } from './service/utils/fileSystemWrapper';
+import { ImportStepThumbnail } from './service/item/importprocess/importStepThumbnail';
+import { ImportStepRename } from './service/item/importprocess/importStepRename';
+import { ImportStepImportTarget } from './service/item/importprocess/importStepImportTarget';
+import { ImportStepFileHash } from './service/item/importprocess/importStepFileHash';
+import { ImportDataValidator } from './service/item/importprocess/importDataValidator';
+import { ImportService } from './service/item/importprocess/importService';
 
 const RUN_TESTS = false;
 
 if (RUN_TESTS) {
-    SimpleLibraryTests.runAll();
+    SimpleLibraryTests.runAll().then(() => {
+    });
 
 } else {
+
+    const log = require('electron-log');
+    Object.assign(console, log.functions);
+
+    // utils
+    const fsWrapper: FileSystemWrapper = new FileSystemWrapper();
 
     // data access
     const dataAccess: DataAccess = new DataAccess();
@@ -27,8 +38,18 @@ if (RUN_TESTS) {
 
     // service
     const appService: LibraryService = new LibraryService(libraryDataAccess, configDataAccess);
-    const itemService: ItemService = new ItemService(itemDataAccess);
     const windowService: WindowService = new WindowService();
+    const itemService: ItemService = new ItemService(
+        itemDataAccess,
+        new ImportService(
+            itemDataAccess,
+            new ImportDataValidator(fsWrapper),
+            new ImportStepRename(),
+            new ImportStepImportTarget(fsWrapper),
+            new ImportStepFileHash(fsWrapper),
+            new ImportStepThumbnail(),
+        ),
+    );
 
     // messaging
     const messageHandler: MessageHandler = new MessageHandler(appService, itemService, windowService);

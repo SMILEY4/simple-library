@@ -8,6 +8,10 @@
 	border-radius: var(--radius-0);
 }
 
+.box-invalid {
+	border-color: var(--color-error-3);
+}
+
 /*DIRECTION*/
 
 .box-dir-up {flex-direction: column-reverse; }

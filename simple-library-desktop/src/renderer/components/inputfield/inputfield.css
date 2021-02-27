@@ -14,9 +14,13 @@
 
 	box-sizing:      border-box;
 	height:          var(--s-1-5);
-	border-radius:   var(--radius-0);
 	color:           var(--text-color-1);
+	border-radius:   var(--radius-0);
 	border:          1px solid var(--base-color-4);
+}
+
+.input-field-invalid {
+	border-color: var(--color-error-3);
 }
 
 .input-field > svg {

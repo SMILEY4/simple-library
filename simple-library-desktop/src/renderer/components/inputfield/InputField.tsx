@@ -9,6 +9,8 @@ export interface InputFieldProps {
 
     disabled?: boolean,
     locked?: boolean,
+    autoFocus?: boolean
+    invalid?: boolean,
 
     icon?: any,
     iconRight?: any,
@@ -67,6 +69,7 @@ export function InputField(props: React.PropsWithChildren<InputFieldProps>): Rea
             "input-field",
             (props.disabled === true ? 'input-field-disabled' : null),
             (props.locked === true ? 'input-field-locked' : null),
+            (props.invalid === true ? 'input-field-invalid' : null),
             map(calcGroupPosition(), (groupPos) => 'input-field-group-pos-' + groupPos),
         );
     }
@@ -83,6 +86,7 @@ export function InputField(props: React.PropsWithChildren<InputFieldProps>): Rea
                 {props.icon ? props.icon : null}
                 <input className='input'
                        type='text'
+                       autoFocus={props.autoFocus}
                        disabled={props.disabled || props.locked}
                        value={props.value}
                        placeholder={props.placeholder}

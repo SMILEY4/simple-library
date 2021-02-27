@@ -79,7 +79,7 @@ export class ChoiceBox extends Component<ChoiceBoxProps, ChoiceBoxState> {
                 >
                     {this.props.selected}
                     {this.props.autoWidth && this.props.items
-                        .map(item => <div className={"choicebox-button-dummy-content"}>{item}</div>)
+                        .map(item => <div className={"choicebox-button-dummy-content"} key={item}>{item}</div>)
                     }
                 </Button>
                 {

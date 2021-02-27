@@ -12,6 +12,7 @@ interface BoxProps {
     spacing?: Size,
     padding?: Size,
     withBorder?: boolean,
+    invalid?: boolean,
     style?: React.CSSProperties,
     className?: string
 }
@@ -40,6 +41,7 @@ export function Box(props: React.PropsWithChildren<BoxProps>): ReactElement {
             map(props.spacing, (spacing) => 'gap-' + spacing),
             map(props.padding, (padding) => 'padding-' + padding),
             (props.withBorder ? "box-with-border" : null),
+            (props.invalid ? "box-invalid" : null),
             props.className,
         );
     }

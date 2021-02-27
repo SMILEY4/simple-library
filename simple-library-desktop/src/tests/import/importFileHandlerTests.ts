@@ -1,5 +1,5 @@
-import { ImportFileHandler } from '../../main/service/item/import/ImportFileHandler';
-import { FileAction, ItemData } from '../../common/commonModels';
+import { ImportStepImportTarget } from '../../main/service/item/importprocess/importStepImportTarget';
+import { ImportTargetAction, ItemData } from '../../common/commonModels';
 import { Test } from '../testutils/test';
 import { FileSystemWrapperMock } from '../testutils/testMocks';
 import { buildItemData } from '../testutils/testFactories';
@@ -13,7 +13,7 @@ export class ImportFileHandlerTests {
             const fswMock: FileSystemWrapperMock = new FileSystemWrapperMock();
             const itemData: ItemData = buildItemData("path\\to\\my\\file.txt", "path\\to\\my\\file.txt");
 
-            const resultItemData = await new ImportFileHandler(fswMock).handleFile(itemData, FileAction.KEEP);
+            const resultItemData = await new ImportStepImportTarget(fswMock).handle(itemData, ImportTargetAction.KEEP);
 
             return allTrue([
                 assertFileSystemWrapperInvocations(fswMock, [], []),
@@ -28,7 +28,7 @@ export class ImportFileHandlerTests {
             const fswMock: FileSystemWrapperMock = new FileSystemWrapperMock();
             const itemData: ItemData = buildItemData("path\\to\\my\\oldFile.txt", "path\\to\\my\\newFile.txt");
 
-            const resultItemData: ItemData = await new ImportFileHandler(fswMock).handleFile(itemData, FileAction.KEEP);
+            const resultItemData: ItemData = await new ImportStepImportTarget(fswMock).handle(itemData, ImportTargetAction.KEEP);
 
             return allTrue([
                 assertFileSystemWrapperInvocations(fswMock, [{
@@ -46,7 +46,7 @@ export class ImportFileHandlerTests {
             const fswMock: FileSystemWrapperMock = new FileSystemWrapperMock();
             const itemData: ItemData = buildItemData("path\\to\\my\\oldFile.txt", "path\\to\\new\\newFile.txt");
 
-            const resultItemData: ItemData = await new ImportFileHandler(fswMock).handleFile(itemData, FileAction.MOVE);
+            const resultItemData: ItemData = await new ImportStepImportTarget(fswMock).handle(itemData, ImportTargetAction.MOVE);
 
             return allTrue([
                 assertFileSystemWrapperInvocations(fswMock, [{
@@ -65,7 +65,7 @@ export class ImportFileHandlerTests {
             const fswMock: FileSystemWrapperMock = new FileSystemWrapperMock();
             const itemData: ItemData = buildItemData("path\\to\\my\\oldFile.txt", "path\\to\\new\\newFile.txt");
 
-            const resultItemData: ItemData = await new ImportFileHandler(fswMock).handleFile(itemData, FileAction.COPY);
+            const resultItemData: ItemData = await new ImportStepImportTarget(fswMock).handle(itemData, ImportTargetAction.COPY);
 
             return allTrue([
                 assertFileSystemWrapperInvocations(fswMock, [], [{

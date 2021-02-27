@@ -1,5 +1,3 @@
-
-
 // COMMON
 
 // COMMANDS: "send-and-forget", renderer-to-main or main-to-renderer
@@ -70,15 +68,14 @@ export function failedResponse(body?: any): Response {
 
 export function sendRequest(ipc: Electron.IpcRenderer, request: Request): Promise<Response> {
     console.debug('[' + request.channel + '] sending request: ' + JSON.stringify(request));
-    return ipc.invoke('request.' + request.channel, request.payload)
-        .then(response => {
-            console.log('[' + request.channel + '] send response: ' + JSON.stringify(response));
-            if (response && response.status === ResponseStatus.SUCCESS) {
-                return response;
-            } else {
-                return Promise.reject((response && response.body) ? response.body : JSON.stringify(response));
-            }
-        });
+    return ipc.invoke('request.' + request.channel, request.payload).then(response => {
+        console.log('[' + request.channel + '] send response: ' + JSON.stringify(response));
+        if (response && response.status === ResponseStatus.SUCCESS) {
+            return response;
+        } else {
+            return Promise.reject((response && response.body) ? response.body : JSON.stringify(response));
+        }
+    });
 }
 
 export function handleRequest(ipc: Electron.IpcMain, handler: RequestHandler) {

@@ -9,6 +9,7 @@ export interface DirectorySelectionFieldProps {
     value: string,
     onAction?: () => void,
     disabled?: boolean,
+    invalid?: boolean
     className?: string
 }
 
@@ -31,6 +32,7 @@ export function DirectorySelectionField(props: DirectorySelectionFieldReactProps
             placeholder='Browse Directory'
             locked={true}
             disabled={props.disabled}
+            invalid={props.invalid}
             icon={<GoFileDirectory />}
             contentTrailing={renderButton(props)}
             className={props.className}

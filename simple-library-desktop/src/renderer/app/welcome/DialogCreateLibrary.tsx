@@ -10,7 +10,6 @@ import { Button } from '../../components/button/Button';
 const electron = window.require('electron');
 
 interface DialogCreateLibraryProps {
-    show: boolean,
     onClose: () => void
     onCreate: (name: string, targetDir: string) => void
 }
@@ -36,17 +35,6 @@ export class DialogCreateLibrary extends Component<DialogCreateLibraryProps, Dia
         };
         this.actionBrowseTargetDir = this.actionBrowseTargetDir.bind(this);
         this.actionRequestCreateLibrary = this.actionRequestCreateLibrary.bind(this);
-    }
-
-    componentWillReceiveProps(newProps: DialogCreateLibraryProps) {
-        if (newProps.show && newProps.show !== this.props.show) {
-            this.setState({
-                libraryName: '',
-                libraryNameValid: true,
-                targetDir: '',
-                targetDirValid: true,
-            });
-        }
     }
 
     actionBrowseTargetDir(): void {
@@ -94,7 +82,7 @@ export class DialogCreateLibrary extends Component<DialogCreateLibraryProps, Dia
     render(): ReactElement {
         return (
             <Dialog title={"Create new Library"}
-                    show={this.props.show}
+                    show={true}
                     closeButton={true}
                     onClose={this.props.onClose}
                     actions={[
@@ -112,6 +100,7 @@ export class DialogCreateLibrary extends Component<DialogCreateLibraryProps, Dia
                     ]}>
                 <Box dir={Dir.DOWN} alignMain={AlignMain.CENTER} alignCross={AlignCross.STRETCH} spacing={Size.S_0_75}>
                     <InputField
+                        autoFocus
                         placeholder='Library Name'
                         value={this.state.libraryName}
                         onChange={(value) => this.setState({ libraryName: value })}

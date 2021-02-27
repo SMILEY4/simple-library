@@ -1,8 +1,8 @@
-import React, {ReactElement} from "react";
-import {VBox} from "../layout/Box";
-import {AlignCross, AlignMain, concatClasses, Size} from "../common";
-import {AiOutlineCheck} from "react-icons/all";
-import "./dropdown.css"
+import React, { ReactElement } from "react";
+import { VBox } from "../layout/Box";
+import { AlignCross, AlignMain, concatClasses, Size } from "../common";
+import { AiOutlineCheck } from "react-icons/all";
+import "./dropdown.css";
 
 export interface DropdownProps {
     items: string[],
@@ -23,18 +23,19 @@ export function Dropdown(props: DropdownReactProps): React.ReactElement {
             "dropdown",
             "with-shadow-1",
             (props.onTopSide === true ? "dropdown-top" : "dropdown-bottom"),
-            props.className
-        )
+            props.className,
+        );
     }
 
     function renderItem(item: string, selectedItem: string): ReactElement {
         const isSelected = selectedItem === item;
         return (
             <div className={"dropdown-item behaviour-no-select" + (isSelected ? " dropdown-item-selected" : "")}
-                 onClick={() => props.onSelect && props.onSelect(item)}>
+                 onClick={() => props.onSelect && props.onSelect(item)}
+                 key={item}>
                 {isSelected && (
                     <div className={"dropdown-item-icon"}>
-                        <AiOutlineCheck/>
+                        <AiOutlineCheck />
                     </div>
                 )}
                 <div className={"dropdown-item-content"}>{item}</div>
@@ -44,7 +45,7 @@ export function Dropdown(props: DropdownReactProps): React.ReactElement {
 
     return (
         <VBox className={getClassName(props)}
-              style={props.maxVisibleItems && {maxHeight: (props.maxVisibleItems * 16 * 1.5) + "px"}}
+              style={props.maxVisibleItems && { maxHeight: (props.maxVisibleItems * 16 * 1.5) + "px" }}
               alignMain={AlignMain.START}
               alignCross={AlignCross.STRETCH}
               spacing={Size.S_0}

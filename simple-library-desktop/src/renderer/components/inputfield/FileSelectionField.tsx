@@ -9,7 +9,8 @@ export interface FileSelectionFieldProps {
     value: string,
     onAction?: () => void,
     disabled?: boolean,
-    className?: string
+    className?: string,
+    invalid?: boolean
 }
 
 type FileSelectionFieldReactProps = React.PropsWithChildren<FileSelectionFieldProps>;
@@ -31,6 +32,7 @@ export function FileSelectionField(props: FileSelectionFieldReactProps): ReactEl
             placeholder='Select Files'
             locked={true}
             disabled={props.disabled}
+            invalid={props.invalid}
             icon={<AiFillFile />}
             contentTrailing={renderButton(props)}
             className={props.className}

@@ -12,8 +12,8 @@ export interface LastOpenedLibraryEntry {
 export interface ItemData {
     id: number,
     timestamp: number,
-    orgFilepath: string,
     filepath: string,
+    sourceFilepath: string,
     hash: string,
     thumbnail: string,
 }
@@ -21,22 +21,22 @@ export interface ItemData {
 
 export interface ImportProcessData {
     files: string[],
-    fileHandleData: ImportFileHandleData,
-    renameData: BulkRenameData,
+    importTarget: ImportFileTarget,
+    renameInstructions: BulkRenameInstruction,
 }
 
-export interface ImportFileHandleData {
-    action: FileAction,
+export interface ImportFileTarget {
+    action: ImportTargetAction,
     targetDir: string
 }
 
-export enum FileAction {
+export enum ImportTargetAction {
     KEEP = "keep",
     MOVE = "move",
     COPY = "copy"
 }
 
-export interface BulkRenameData {
+export interface BulkRenameInstruction {
     doRename: boolean,
     parts: RenamePart[]
 }
@@ -51,4 +51,37 @@ export enum RenamePartType {
     TEXT = "text",
     NUMBER_FROM = "number_from",
     ORIGINAL_FILENAME = "original_filename"
+}
+
+export const RENAME_PART_TYPES: RenamePartType[] = [
+    RenamePartType.NOTHING,
+    RenamePartType.TEXT,
+    RenamePartType.NUMBER_FROM,
+    RenamePartType.ORIGINAL_FILENAME,
+];
+
+export function renamePartTypeToDisplayString(type: RenamePartType): string {
+    switch (type) {
+        case RenamePartType.NOTHING:
+            return "Nothing";
+        case RenamePartType.TEXT:
+            return "Text";
+        case RenamePartType.NUMBER_FROM:
+            return "Number From";
+        case RenamePartType.ORIGINAL_FILENAME:
+            return "Filename";
+    }
+}
+
+export function displayStringToRenamePartType(str: string): RenamePartType {
+    switch (str) {
+        case "Nothing":
+            return RenamePartType.NOTHING;
+        case "Text":
+            return RenamePartType.TEXT;
+        case "Number From":
+            return RenamePartType.NUMBER_FROM;
+        case "Filename":
+            return RenamePartType.ORIGINAL_FILENAME;
+    }
 }
