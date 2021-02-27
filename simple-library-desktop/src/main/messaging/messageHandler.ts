@@ -2,7 +2,13 @@ import { failedResponse, Response, successResponse } from './messages';
 import { ipcMain } from 'electron';
 import { LibraryService } from '../service/library/libraryService';
 import { WindowService } from '../windows/windowService';
-import { ImportProcessData, ItemData, LastOpenedLibraryEntry, LibraryMetadata } from '../../common/commonModels';
+import {
+    ImportProcessData,
+    ImportResult,
+    ItemData,
+    LastOpenedLibraryEntry,
+    LibraryMetadata,
+} from '../../common/commonModels';
 import {
     CloseCurrentLibraryMessage,
     CreateLibraryMessage,
@@ -79,7 +85,7 @@ export class MessageHandler {
 
     private async handleRequestImportFiles(data: ImportProcessData): Promise<Response> {
         return this.itemService.importFiles(data)
-            .then(() => successResponse())
+            .then((result:ImportResult) => successResponse(result))
             .catch(err => failedResponse(err));
     }
 
