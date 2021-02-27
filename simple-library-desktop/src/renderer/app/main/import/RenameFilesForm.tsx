@@ -52,8 +52,8 @@ export function RenameFilesForm(props: React.PropsWithChildren<RenameFilesFormPr
                 </Grid>
 
                 <HBox spacing={Size.S_0_15}>
-                    <BodyText>Preview: </BodyText>
-                    <BodyText italic>{filenamePreview()}</BodyText>
+                    <BodyText disabled={!props.enabled}>Preview: </BodyText>
+                    <BodyText disabled={!props.enabled} italic>{filenamePreview(props.renameParts)}</BodyText>
                 </HBox>
 
             </VBox>
@@ -84,8 +84,25 @@ export function RenameFilesForm(props: React.PropsWithChildren<RenameFilesFormPr
         );
     }
 
-    function filenamePreview(): string {
-        return "1803d0001.jpg";
+    function filenamePreview(renameParts: RenamePart[]): string {
+        let previewFilename: string = "";
+        renameParts.forEach(part => {
+           switch (part.type) {
+               case RenamePartType.NOTHING:
+                   break;
+               case RenamePartType.TEXT:
+                   previewFilename += part.value;
+                   break;
+               case RenamePartType.NUMBER_FROM:
+                   previewFilename += part.value;
+                   break;
+               case RenamePartType.ORIGINAL_FILENAME:
+                   previewFilename += "filename";
+                   break;
+
+           }
+        });
+        return previewFilename + ".jpg";
     }
 
 }
