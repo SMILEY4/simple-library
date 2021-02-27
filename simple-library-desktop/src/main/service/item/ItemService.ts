@@ -1,5 +1,5 @@
 import { ItemDataAccess } from '../../persistence/itemDataAccess';
-import { ImportProcessData, ItemData } from '../../../common/commonModels';
+import { ImportProcessData, ImportResult, ItemData } from '../../../common/commonModels';
 import { ImportService } from './importprocess/importService';
 
 export class ItemService {
@@ -17,7 +17,7 @@ export class ItemService {
         return this.itemDataAccess.getAllItems();
     }
 
-    public async importFiles(data: ImportProcessData): Promise<void> {
+    public async importFiles(data: ImportProcessData): Promise<ImportResult> {
         return this.importService.importFiles(data);
     }
 

@@ -85,3 +85,12 @@ export function displayStringToRenamePartType(str: string): RenamePartType {
             return RenamePartType.ORIGINAL_FILENAME;
     }
 }
+
+export interface ImportResult {
+    timestamp: number,
+    amountFiles: number,
+    failed: boolean,
+    failureReason: string,
+    encounteredErrors: boolean,
+    filesWithErrors: ([string,string])[]
+}
