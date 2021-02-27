@@ -57,3 +57,7 @@ h5 {
 .text-italic {
 	font-style: italic;
 }
+
+.text-disabled {
+	color: var(--text-color-0);
+}

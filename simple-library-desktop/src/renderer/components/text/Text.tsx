@@ -18,6 +18,7 @@ interface TextProps {
     variant: TextVariant,
     bold?: boolean,
     italic?: boolean,
+    disabled?: boolean,
     className?: string
 }
 
@@ -31,6 +32,7 @@ export function Text(props: React.PropsWithChildren<TextProps>): ReactElement | 
         props.className,
         (props.bold ? "text-bold" : null),
         (props.italic ? "text-italic" : null),
+        (props.disabled ? "text-disabled" : null),
     );
     switch (props.variant) {
         case TextVariant.H1:
