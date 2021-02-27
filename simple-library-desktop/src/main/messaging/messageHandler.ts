@@ -2,13 +2,7 @@ import { failedResponse, Response, successResponse } from './messages';
 import { ipcMain } from 'electron';
 import { LibraryService } from '../service/library/libraryService';
 import { WindowService } from '../windows/windowService';
-import {
-    ImportTargetAction,
-    ImportProcessData,
-    ItemData,
-    LastOpenedLibraryEntry,
-    LibraryMetadata,
-} from '../../common/commonModels';
+import { ImportProcessData, ItemData, LastOpenedLibraryEntry, LibraryMetadata } from '../../common/commonModels';
 import {
     CloseCurrentLibraryMessage,
     CreateLibraryMessage,

@@ -24,6 +24,7 @@ export class ImportService {
                 importStepFileHash: ImportStepFileHash,
                 importStepThumbnail: ImportStepThumbnail) {
         this.itemDataAccess = itemDataAccess;
+        this.importDataValidator = importDataValidator;
         this.importStepFileHash = importStepFileHash;
         this.importStepThumbnail = importStepThumbnail;
         this.importStepRename = importStepRename;
