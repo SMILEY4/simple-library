@@ -10,7 +10,8 @@ export interface ImportTargetFormProps {
     action: ImportTargetAction,
     onSelectAction: (action: ImportTargetAction) => void,
     targetDir: string,
-    onSelectTargetDir: () => void
+    onSelectTargetDir: () => void,
+    targetDirInvalid: boolean
 }
 
 export function ImportTargetForm(props: React.PropsWithChildren<ImportTargetFormProps>): ReactElement {
@@ -42,6 +43,7 @@ export function ImportTargetForm(props: React.PropsWithChildren<ImportTargetForm
                     value={props.targetDir}
                     onAction={props.onSelectTargetDir}
                     disabled={props.action === ImportTargetAction.KEEP}
+                    invalid={props.targetDirInvalid}
                 />
 
             </VBox>

@@ -5,7 +5,8 @@ import { FileSelectionField } from '../../../components/inputfield/FileSelection
 
 export interface SelectFilesFormProps {
     files: string[],
-    onSelectFiles: () => void
+    onSelectFiles: () => void,
+    invalid: boolean
 }
 
 export function SelectFilesForm(props: React.PropsWithChildren<SelectFilesFormProps>): ReactElement {
@@ -26,6 +27,7 @@ export function SelectFilesForm(props: React.PropsWithChildren<SelectFilesFormPr
             <FileSelectionField
                 value={getFilesSelectionString(props.files)}
                 onAction={props.onSelectFiles}
+                invalid={props.invalid}
             />
         </>
     );

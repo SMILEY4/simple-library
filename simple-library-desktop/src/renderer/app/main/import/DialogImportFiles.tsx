@@ -3,7 +3,7 @@ import { Component, ReactElement } from 'react';
 import { Dialog } from '../../../components/modal/Dialog';
 import { Type, Variant } from '../../../components/common';
 import { ImportFilesForm } from './ImportFilesForm';
-import { ImportTargetAction, ImportProcessData, RenamePartType } from '../../../../common/commonModels';
+import { ImportProcessData, ImportTargetAction, RenamePartType } from '../../../../common/commonModels';
 
 const electron = window.require('electron');
 
@@ -12,8 +12,16 @@ interface DialogImportFilesProps {
     onImport: (data: ImportProcessData) => void
 }
 
+export interface ImportValidationData {
+    selectedFilesInvalid: boolean,
+    targetDirInvalid: boolean,
+    invalidRenamePartValues: number[],
+    renameDataInvalid: boolean,
+}
+
 export interface DialogImportFilesState {
-    data: ImportProcessData
+    data: ImportProcessData,
+    validationData: ImportValidationData
 }
 
 
@@ -46,6 +54,12 @@ export class DialogImportFiles extends Component<DialogImportFilesProps, DialogI
                         },
                     ],
                 },
+            },
+            validationData: {
+                selectedFilesInvalid: false,
+                targetDirInvalid: false,
+                invalidRenamePartValues: [],
+                renameDataInvalid: false,
             },
         };
         this.actionSelectFiles = this.actionSelectFiles.bind(this);
@@ -80,6 +94,7 @@ export class DialogImportFiles extends Component<DialogImportFilesProps, DialogI
 
                 <ImportFilesForm
                     data={this.state.data}
+                    validationData={this.state.validationData}
                     onSelectFiles={this.actionSelectFiles}
                     onSelectImportTargetAction={this.actionSelectImportTargetAction}
                     onSelectTargetDirectory={this.actionSelectTargetDirectory}
@@ -156,9 +171,55 @@ export class DialogImportFiles extends Component<DialogImportFilesProps, DialogI
         this.setState(newState);
     }
 
-
     validate(): boolean {
-        return true; // todo
+        let dataValid: boolean = true;
+        const importProcessData: ImportProcessData = this.state.data;
+
+        const validationData: ImportValidationData = {
+            selectedFilesInvalid: false,
+            targetDirInvalid: false,
+            invalidRenamePartValues: [],
+            renameDataInvalid: false,
+        };
+
+        if (!importProcessData.files || importProcessData.files.length == 0) {
+            dataValid = false;
+            validationData.selectedFilesInvalid = true;
+        }
+
+        if (importProcessData.importTarget.action !== ImportTargetAction.KEEP) {
+            if (!importProcessData.importTarget.targetDir || importProcessData.importTarget.targetDir.length == 0) {
+                dataValid = false;
+                validationData.targetDirInvalid = true;
+            }
+        }
+
+        if (importProcessData.renameInstructions.parts.map(part => part.type).every(type => type === RenamePartType.NOTHING)) {
+            dataValid = false;
+            validationData.renameDataInvalid = true;
+        }
+        for (let i = 0; i < importProcessData.renameInstructions.parts.length; i++) {
+            const part = importProcessData.renameInstructions.parts[i];
+            if (part.type === RenamePartType.TEXT) {
+                if (!part.value || part.value.trim().length == 0) {
+                    validationData.invalidRenamePartValues.push(i);
+                    dataValid = false;
+                }
+            }
+            if (part.type === RenamePartType.NUMBER_FROM) {
+                if (!part.value || part.value.trim().length == 0 || isNaN(parseInt(part.value, 10))) {
+                    validationData.invalidRenamePartValues.push(i);
+                    dataValid = false;
+                }
+            }
+        }
+
+        this.setState({
+            data: this.state.data,
+            validationData: validationData,
+        });
+
+        return dataValid;
     }
 
 

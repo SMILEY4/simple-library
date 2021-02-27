@@ -20,8 +20,9 @@ export interface RenameFilesFormProps {
     onToggleEnable: (enabled: boolean) => void,
     renameParts: RenamePart[],
     onSetRenamePartType: (index: number, type: RenamePartType) => void,
-    onSetRenamePartValue: (index: number, value: string) => void
-
+    onSetRenamePartValue: (index: number, value: string) => void,
+    renameDataInvalid: boolean,
+    invalidRenamePartValues: number[]
 }
 
 export function RenameFilesForm(props: React.PropsWithChildren<RenameFilesFormProps>): ReactElement {
@@ -34,7 +35,13 @@ export function RenameFilesForm(props: React.PropsWithChildren<RenameFilesFormPr
                 Rename files
             </Checkbox>
 
-            <VBox alignMain={AlignMain.CENTER} alignCross={AlignCross.STRETCH} spacing={Size.S_0_75} padding={Size.S_1} withBorder>
+            <VBox alignMain={AlignMain.CENTER}
+                  alignCross={AlignCross.STRETCH}
+                  spacing={Size.S_0_75}
+                  padding={Size.S_1}
+                  withBorder
+                  invalid={props.renameDataInvalid}
+            >
 
                 <Grid columns={['1fr', '1fr', '1fr']} rows={['1fr']} fill={Fill.TRUE} gap={Size.S_0_5}>
                     {
@@ -56,7 +63,7 @@ export function RenameFilesForm(props: React.PropsWithChildren<RenameFilesFormPr
 
     function renderNamePart(index: number, part: RenamePart) {
         return (
-            <VBox spacing={Size.S_0_25}>
+            <VBox spacing={Size.S_0_25} key={index}>
                 <ChoiceBox
                     variant={Variant.OUTLINE}
                     items={RENAME_PART_TYPES.map((e: RenamePartType) => renamePartTypeToDisplayString(e))}
@@ -68,9 +75,10 @@ export function RenameFilesForm(props: React.PropsWithChildren<RenameFilesFormPr
                     onTopSide
                 />
                 <InputField
-                    value={part.value}
+                    value={(part.type === RenamePartType.NOTHING || part.type === RenamePartType.ORIGINAL_FILENAME) ? "" : part.value}
                     onChange={value => props.onSetRenamePartValue(index, value)}
-                    disabled={!props.enabled}
+                    disabled={!props.enabled || part.type === RenamePartType.ORIGINAL_FILENAME || part.type === RenamePartType.NOTHING}
+                    invalid={props.invalidRenamePartValues.indexOf(index) !== -1}
                 />
             </VBox>
         );
