@@ -5,11 +5,11 @@ import { ModalBase, ModalPosition } from '../modal/ModalBase';
 import { VBox } from '../layout/Box';
 import { Size } from '../common';
 
-interface NotificationEntry extends NotificationProps {
+export interface NotificationEntry extends NotificationProps {
     content?: any,
 }
 
-interface NotificationStackProps {
+export interface NotificationStackProps {
     notifications: NotificationEntry[]
     modalRootId?: string
 }

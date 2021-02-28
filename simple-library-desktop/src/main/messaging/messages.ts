@@ -13,6 +13,7 @@ export interface CommandHandler {
 }
 
 export function rendererSendCommand(ipc: Electron.IpcRenderer, command: Command) {
+    console.debug("sending command (renderer): " + JSON.stringify(command));
     ipc.send('command.' + command.channel, command.payload);
 }
 
@@ -22,14 +23,17 @@ export function mainOnCommand(ipc: Electron.IpcMain, handler: CommandHandler) {
 }
 
 export function mainSendCommand(window: Electron.BrowserWindow, command: Command) {
+    console.debug("sending command (main): " + JSON.stringify(command));
     window.webContents.send('command.' + command.channel, command.payload);
 }
 
 export function rendererOnCommand(ipc: Electron.IpcRenderer, handler: CommandHandler) {
-    ipc.on('command' + handler.channel, handler.action);
+    ipc.on('command.' + handler.channel, (event, payload) => {
+        handler.action(payload);
+    });
 }
 
-// REQUESTS: send and wait for returned data, renderer-to-main (and back)
+// REQUESTS: send and "wait" for returned data, renderer-to-main (and back)
 
 export interface Request {
     channel: string,

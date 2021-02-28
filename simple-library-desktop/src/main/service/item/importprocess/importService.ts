@@ -6,6 +6,8 @@ import { ImportStepRename } from './importStepRename';
 import { ImportStepImportTarget } from './importStepImportTarget';
 import { ImportProcessData, ImportResult, ItemData } from '../../../../common/commonModels';
 import { startAsync } from '../../../../common/AsyncCommon';
+import { WindowService } from '../../../windows/windowService';
+import { ImportStatusUpdateCommand } from '../../../messaging/messagesLibrary';
 
 export class ImportService {
 
@@ -15,6 +17,7 @@ export class ImportService {
     importStepThumbnail: ImportStepThumbnail;
     importStepRename: ImportStepRename;
     importStepImportTarget: ImportStepImportTarget;
+    windowService: WindowService;
 
 
     constructor(itemDataAccess: ItemDataAccess,
@@ -22,42 +25,50 @@ export class ImportService {
                 importStepRename: ImportStepRename,
                 importStepImportTarget: ImportStepImportTarget,
                 importStepFileHash: ImportStepFileHash,
-                importStepThumbnail: ImportStepThumbnail) {
+                importStepThumbnail: ImportStepThumbnail,
+                windowService: WindowService) {
         this.itemDataAccess = itemDataAccess;
         this.importDataValidator = importDataValidator;
         this.importStepFileHash = importStepFileHash;
         this.importStepThumbnail = importStepThumbnail;
         this.importStepRename = importStepRename;
         this.importStepImportTarget = importStepImportTarget;
+        this.windowService = windowService;
     }
 
     public async importFiles(data: ImportProcessData): Promise<ImportResult> {
+        const totalAmountFiles: number = data.files.length;
         const importResult: ImportResult = {
             timestamp: Date.now(),
-            amountFiles: data.files.length,
+            amountFiles: totalAmountFiles,
             failed: false,
             failureReason: '',
             encounteredErrors: false,
             filesWithErrors: [],
         };
         try {
-            console.log("starting import-process of " + data.files.length + " files.");
+            console.log("starting import-process of " + totalAmountFiles + " files.");
             this.importDataValidator.validate(data);
-            for (let i = 0; i < data.files.length; i++) {
+            for (let i = 0; i < totalAmountFiles; i++) {
+                const currentFile: string = data.files[i];
                 await startAsync()
-                    .then(() => console.log("importing file: " + data.files[i]))
-                    .then(() => ImportService.buildBaseItemData(data.files[i]))
+                    .then(() => console.log("importing file: " + currentFile))
+                    .then(() => ImportService.buildBaseItemData(currentFile))
                     .then((item: ItemData) => this.importStepRename.handle(item, data.importTarget, data.renameInstructions, i))
                     .then((item: ItemData) => this.importStepImportTarget.handle(item, data.importTarget.action))
                     .then((item: ItemData) => this.importStepFileHash.handle(item))
                     .then((item: ItemData) => this.importStepThumbnail.handle(item))
                     .then((item: ItemData) => this.itemDataAccess.insertItem(item))
-                    .then(() => console.log("done importing file: " + data.files[i]))
+                    .then(() => console.log("done importing file: " + currentFile))
                     .catch((error: any) => {
-                        console.error("Error while importing file " + data.files[i] + ": " + error);
+                        console.error("Error while importing file " + currentFile + ": " + error);
                         importResult.encounteredErrors = true;
-                        importResult.filesWithErrors.push([data.files[i], error]);
+                        importResult.filesWithErrors.push([currentFile, error]);
                     });
+                ImportStatusUpdateCommand.send(this.windowService.window, {
+                    totalAmountFiles: totalAmountFiles,
+                    completedFiles: i + 1,
+                });
             }
             console.log("import-process complete.");
         } catch (err) {

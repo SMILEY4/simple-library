@@ -48,6 +48,7 @@ if (RUN_TESTS) {
             new ImportStepImportTarget(fsWrapper),
             new ImportStepFileHash(fsWrapper),
             new ImportStepThumbnail(),
+            windowService,
         ),
     );
 

@@ -14,8 +14,7 @@ import {
 import { SidebarElement, SidebarMenu } from '../../components/sidebarmenu/SidebarMenu';
 import { DialogCreateLibrary } from './DialogCreateLibrary';
 import { Image } from '../../components/image/Image';
-import { NotificationStack } from '../../components/notification/NotificationStack';
-import { DialogImportFiles } from '../main/import/DialogImportFiles';
+import { SFNotificationStack } from '../../components/notification/SFNotificationStack';
 
 const electron = window.require('electron');
 const { ipcRenderer } = window.require('electron');
@@ -29,7 +28,6 @@ interface WelcomeViewProps {
 interface WelcomeViewState {
     recentlyUsed: LibraryEntry[],
     showCreateLibraryDialog: boolean,
-    notifications: NotificationEntry[]
 }
 
 type LibraryEntry = {
@@ -37,22 +35,19 @@ type LibraryEntry = {
     url: string
 }
 
-interface NotificationEntry {
-    title: string,
-    text: string,
-    type: Type,
-    uid: string,
-}
-
 
 export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
+
+    addNotification: (type: Type,
+                      closable: boolean,
+                      title: string,
+                      content: any) => string;
 
     constructor(props: WelcomeViewProps) {
         super(props);
         this.state = {
             recentlyUsed: [],
             showCreateLibraryDialog: false,
-            notifications: [],
         };
         this.onCreateNewLibrary = this.onCreateNewLibrary.bind(this);
         this.onCancelCreateNewLibrary = this.onCancelCreateNewLibrary.bind(this);
@@ -60,8 +55,6 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
         this.onOpenRecentlyUsed = this.onOpenRecentlyUsed.bind(this);
         this.openLibrary = this.openLibrary.bind(this);
         this.createNewLibrary = this.createNewLibrary.bind(this);
-        this.addErrorNotification = this.addErrorNotification.bind(this);
-        this.removeNotification = this.removeNotification.bind(this);
     }
 
     componentDidMount() {
@@ -124,7 +117,12 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
         OpenLibraryMessage.request(ipcRenderer, path)
             .then(() => this.props.onLoadProject())
             .catch(error => {
-                this.addErrorNotification('Error while opening library "' + name + '"', (error && error.body) ? error.body : JSON.stringify(error));
+                this.addNotification(
+                    Type.ERROR,
+                    true,
+                    'Error while opening library "' + name + '"',
+                    (error && error.body) ? error.body : JSON.stringify(error),
+                );
             });
     }
 
@@ -134,26 +132,13 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
         CreateLibraryMessage.request(ipcRenderer, targetDir, name)
             .then(() => this.props.onLoadProject())
             .catch(error => {
-                this.addErrorNotification('Error while creating new library "' + name + '"', (error && error.body) ? error.body : JSON.stringify(error));
+                this.addNotification(
+                    Type.ERROR,
+                    true,
+                    'Error while creating new library "' + name + '"',
+                    (error && error.body) ? error.body : JSON.stringify(error),
+                );
             });
-    }
-
-    addErrorNotification(title: string, text: string) {
-        const notification: NotificationEntry = {
-            title: title,
-            text: text,
-            type: Type.ERROR,
-            uid: '' + Date.now(),
-        };
-        this.setState(prevState => ({
-            notifications: [...prevState.notifications, notification],
-        }));
-    }
-
-    removeNotification(uid: string) {
-        this.setState(prevState => ({
-            notifications: prevState.notifications.filter(e => e.uid !== uid),
-        }));
     }
 
     buildSidebarActions(recentlyUsed: any): SidebarElement[] {
@@ -205,17 +190,9 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
                     />
                 )}
 
-                <NotificationStack
-                    modalRootId='root'
-                    notifications={
-                        this.state.notifications.map(notification => ({
-                            type: notification.type,
-                            title: notification.title,
-                            content: notification.text,
-                            withCloseButton: true,
-                            onClose: () => this.removeNotification(notification.uid),
-                        }))
-                    } />
+                <SFNotificationStack modalRootId='root'
+                                     setAddSimpleFunction={(fun) => this.addNotification = fun}
+                />
 
             </Box>
         );
