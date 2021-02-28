@@ -1,5 +1,15 @@
-import { handleRequest, Request, RequestHandler, Response, sendRequest } from './messages';
-import { ImportProcessData } from '../../common/commonModels';
+import {
+    Command,
+    CommandHandler,
+    handleRequest,
+    mainSendCommand,
+    rendererOnCommand,
+    Request,
+    RequestHandler,
+    Response,
+    sendRequest,
+} from './messages';
+import { ImportProcessData, ImportStatus } from '../../common/commonModels';
 
 
 export module GetLastOpenedLibrariesMessage {
@@ -141,6 +151,28 @@ export module ImportFilesMessage {
         };
         handleRequest(ipc, handler);
     }
+}
+
+export module ImportStatusUpdateCommand {
+
+    const CHANNEL_IMPORT_STATUS_UPDATE: string = 'library.import_status_update';
+
+    export function on(ipc: Electron.IpcRenderer, action: (status: ImportStatus) => void): void {
+        const handler: CommandHandler = {
+            channel: CHANNEL_IMPORT_STATUS_UPDATE,
+            action: (payload) => action(payload),
+        };
+        rendererOnCommand(ipc, handler);
+    }
+
+    export function send(window: Electron.BrowserWindow, status: ImportStatus) {
+        const command: Command = {
+            channel: CHANNEL_IMPORT_STATUS_UPDATE,
+            payload: status,
+        };
+        mainSendCommand(window, command);
+    }
+
 }
 
 export module GetItemsMessage {

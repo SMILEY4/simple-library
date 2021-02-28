@@ -94,3 +94,8 @@ export interface ImportResult {
     encounteredErrors: boolean,
     filesWithErrors: ([string,string])[]
 }
+
+export interface ImportStatus {
+    totalAmountFiles: number,
+    completedFiles: number,
+}

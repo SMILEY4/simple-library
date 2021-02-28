@@ -9,12 +9,14 @@ import {
     GetItemsMessage,
     GetLibraryMetadataMessage,
     ImportFilesMessage,
+    ImportStatusUpdateCommand,
 } from '../../../main/messaging/messagesLibrary';
 import { Response } from '../../../main/messaging/messages';
 import { Button } from '../../components/button/Button';
 import { DialogImportFiles } from './import/DialogImportFiles';
-import { ImportProcessData, ImportResult } from '../../../common/commonModels';
-import { NotificationStack } from '../../components/notification/NotificationStack';
+import { ImportProcessData, ImportResult, ImportStatus } from '../../../common/commonModels';
+import { NotificationEntry } from '../../components/notification/NotificationStack';
+import { SFNotificationStack } from '../../components/notification/SFNotificationStack';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -37,17 +39,16 @@ interface MainViewState {
     timestampLastOpened: string
     showImportFilesDialog: boolean
     items: Item[],
-    notifications: NotificationEntry[]
-}
-
-interface NotificationEntry {
-    title: string,
-    text: string | ReactElement,
-    type: Type,
-    uid: string,
 }
 
 export class MainView extends Component<MainViewProps, MainViewState> {
+
+    addNotification: (type: Type,
+                      closable: boolean,
+                      title: string,
+                      content: any) => string;
+    removeNotification: (uid: string) => void;
+    updateNotification: (uid: string, action: (entry: NotificationEntry) => NotificationEntry) => void;
 
     constructor(props: MainViewProps) {
         super(props);
@@ -57,7 +58,6 @@ export class MainView extends Component<MainViewProps, MainViewState> {
             timestampLastOpened: '?',
             showImportFilesDialog: false,
             items: [],
-            notifications: [],
         };
         this.closeLibrary = this.closeLibrary.bind(this);
         this.importFiles = this.importFiles.bind(this);
@@ -103,47 +103,35 @@ export class MainView extends Component<MainViewProps, MainViewState> {
 
     importFiles(data: ImportProcessData) {
         this.setState({ showImportFilesDialog: false });
-        console.log("IMPORT");
-        console.log(JSON.stringify(data));
+        const uidStatusNotification: string = this.addNotification(Type.PRIMARY, false, "Importing", "");
+        ImportStatusUpdateCommand.on(ipcRenderer, (status: ImportStatus) => {
+            this.updateNotification(uidStatusNotification, (entry: NotificationEntry) => {
+                entry.content = status.completedFiles + "/" + status.totalAmountFiles + " files imported.";
+                return entry;
+            });
+        });
         ImportFilesMessage.request(ipcRenderer, data)
             .then((resp: Response) => {
                 const importResult: ImportResult = resp.body;
                 if (importResult.failed) {
-                    this.addNotification(Type.ERROR, "Import failed", importResult.failureReason);
+                    this.addNotification(Type.ERROR, true, "Import failed", importResult.failureReason);
                 } else if (importResult.encounteredErrors) {
                     const message: ReactElement = (
                         <ul>
-                            {importResult.filesWithErrors.map((entry: ([string,string])) => <li>{entry[0] + ": " + entry[1]}</li>)}
+                            {importResult.filesWithErrors.map((entry: ([string, string])) =>
+                                <li>{entry[0] + ": " + entry[1]}</li>)}
                         </ul>
                     );
-                    this.addNotification(Type.WARN, "Import encountered errors", message);
+                    this.addNotification(Type.WARN, true, "Import encountered errors", message);
                 } else {
-                    this.addNotification(Type.SUCCESS, "Import successful", "Imported " + importResult.amountFiles + " files.");
+                    this.addNotification(Type.SUCCESS, true, "Import successful", "Imported " + importResult.amountFiles + " files.");
                 }
+                this.removeNotification(uidStatusNotification);
                 this.updateItemList();
             })
             .catch(error => {
-                this.addNotification(Type.ERROR, "Import failed unexpectedly", (error && error.body) ? error.body : JSON.stringify(error));
+                this.addNotification(Type.ERROR, true, "Import failed unexpectedly", (error && error.body) ? error.body : JSON.stringify(error));
             });
-
-    }
-
-    addNotification(type: Type, title: string, text: string | ReactElement) {
-        const notification: NotificationEntry = {
-            title: title,
-            text: text,
-            type: type,
-            uid: '' + Date.now(),
-        };
-        this.setState(prevState => ({
-            notifications: [...prevState.notifications, notification],
-        }));
-    }
-
-    removeNotification(uid: string) {
-        this.setState(prevState => ({
-            notifications: prevState.notifications.filter(e => e.uid !== uid),
-        }));
     }
 
     updateItemList() {
@@ -210,17 +198,12 @@ export class MainView extends Component<MainViewProps, MainViewState> {
                     </table>
                 </div>
 
-                <NotificationStack
-                    modalRootId='root'
-                    notifications={
-                        this.state.notifications.map(notification => ({
-                            type: notification.type,
-                            title: notification.title,
-                            content: notification.text,
-                            withCloseButton: true,
-                            onClose: () => this.removeNotification(notification.uid),
-                        }))
-                    } />
+
+                <SFNotificationStack modalRootId='root'
+                                     setAddSimpleFunction={(fun) => this.addNotification = fun}
+                                     setRemoveFunction={(fun) => this.removeNotification = fun}
+                                     setUpdateNotification={(fun) => this.updateNotification = fun}
+                />
 
                 {this.state.showImportFilesDialog && (
                     <DialogImportFiles

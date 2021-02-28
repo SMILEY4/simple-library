@@ -20,6 +20,10 @@ interface SFNotificationStackProps {
                             title: string,
                             caption: string | undefined,
                             content: any) => string) => void,
+    setAddSimpleFunction?: (fun: (type: Type,
+                                  closable: boolean,
+                                  title: string,
+                                  content: any) => string) => void,
     setRemoveFunction?: (fun: (uid: string) => void) => void,
     setUpdateNotification?: (fun: (uid: string, action: (entry: NotificationEntry) => NotificationEntry) => void) => void
 
@@ -32,12 +36,28 @@ export class SFNotificationStack extends Component<SFNotificationStackProps, SFN
         this.state = {
             notifications: [],
         };
+        this.addSimpleNotification = this.addSimpleNotification.bind(this);
         this.addNotification = this.addNotification.bind(this);
         this.removeNotification = this.removeNotification.bind(this);
         this.updateNotification = this.updateNotification.bind(this);
+        this.props.setAddSimpleFunction && this.props.setAddSimpleFunction(this.addSimpleNotification);
         this.props.setAddFunction && this.props.setAddFunction(this.addNotification);
         this.props.setRemoveFunction && this.props.setRemoveFunction(this.removeNotification);
         this.props.setUpdateNotification && this.props.setUpdateNotification(this.updateNotification);
+    }
+
+    addSimpleNotification(type: Type,
+                          closable: boolean,
+                          title: string,
+                          content: any): string {
+        return this.addNotification(
+            type,
+            closable,
+            undefined,
+            title,
+            undefined,
+            content,
+        );
     }
 
     addNotification(type: Type,
@@ -49,7 +69,7 @@ export class SFNotificationStack extends Component<SFNotificationStackProps, SFN
         const uid: string = "" + (Date.now() + Math.random());
         const entry: SFNotificationStackEntry = {
             uid: uid,
-            type: Type.PRIMARY,
+            type: type,
             icon: icon,
             title: title,
             content: content,

@@ -15,7 +15,6 @@ import { SidebarElement, SidebarMenu } from '../../components/sidebarmenu/Sideba
 import { DialogCreateLibrary } from './DialogCreateLibrary';
 import { Image } from '../../components/image/Image';
 import { SFNotificationStack } from '../../components/notification/SFNotificationStack';
-import { NotificationEntry } from '../../components/notification/NotificationStack';
 
 const electron = window.require('electron');
 const { ipcRenderer } = window.require('electron');
@@ -41,12 +40,8 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
 
     addNotification: (type: Type,
                       closable: boolean,
-                      icon: any,
                       title: string,
-                      caption: string | undefined,
                       content: any) => string;
-    removeNotification: (uid: string) => void;
-    updateNotification: (uid: string, action: (entry: NotificationEntry) => NotificationEntry) => void;
 
     constructor(props: WelcomeViewProps) {
         super(props);
@@ -72,22 +67,6 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
                     })),
                 });
             });
-
-        // const uid: string = this.addNotification(
-        //     Type.PRIMARY,
-        //     false,
-        //     undefined,
-        //     "Test Update Notification",
-        //     "Created @" + Date.now(),
-        //     "Test",
-        // );
-        //
-        // setInterval(() => {
-        //     this.updateNotification(uid, entry => {
-        //         entry.content = entry.content + ".";
-        //         return entry;
-        //     });
-        // }, 300);
     }
 
 
@@ -141,9 +120,7 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
                 this.addNotification(
                     Type.ERROR,
                     true,
-                    undefined,
                     'Error while opening library "' + name + '"',
-                    undefined,
                     (error && error.body) ? error.body : JSON.stringify(error),
                 );
             });
@@ -158,9 +135,7 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
                 this.addNotification(
                     Type.ERROR,
                     true,
-                    undefined,
                     'Error while creating new library "' + name + '"',
-                    undefined,
                     (error && error.body) ? error.body : JSON.stringify(error),
                 );
             });
@@ -216,9 +191,7 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
                 )}
 
                 <SFNotificationStack modalRootId='root'
-                                     setAddFunction={(fun) => this.addNotification = fun}
-                                     setRemoveFunction={(fun) => this.removeNotification = fun}
-                                     setUpdateNotification={(fun) => this.updateNotification = fun}
+                                     setAddSimpleFunction={(fun) => this.addNotification = fun}
                 />
 
             </Box>
