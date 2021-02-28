@@ -19,7 +19,8 @@
 }
 
 .button-mixed {
-	gap: var(--s-0-5)
+	gap: var(--s-0-5);
+	justify-content: space-between;
 }
 
 .button-square {
