@@ -19,6 +19,8 @@ export class ImportService {
     importStepImportTarget: ImportStepImportTarget;
     windowService: WindowService;
 
+    importRunning: boolean = false;
+
 
     constructor(itemDataAccess: ItemDataAccess,
                 importDataValidator: ImportDataValidator,
@@ -37,6 +39,17 @@ export class ImportService {
     }
 
     public async importFiles(data: ImportProcessData): Promise<ImportResult> {
+        if (this.importRunning) {
+            return {
+                timestamp: Date.now(),
+                amountFiles: 0,
+                failed: true,
+                failureReason: 'Can not start import while another import is already running.',
+                encounteredErrors: false,
+                filesWithErrors: [],
+            };
+        }
+        this.importRunning = true;
         const totalAmountFiles: number = data.files.length;
         const importResult: ImportResult = {
             timestamp: Date.now(),
@@ -74,6 +87,8 @@ export class ImportService {
         } catch (err) {
             importResult.failed = true;
             importResult.failureReason = JSON.stringify(err);
+        } finally {
+            this.importRunning = false;
         }
         return importResult;
     }
