@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { ReactElement } from 'react';
-import { Checkbox } from '../../../components/checkbox/Checkbox';
 import { AlignCross, AlignMain, Size, Variant } from '../../../components/common';
 import { ImportTargetAction } from '../../../../common/commonModels';
 import { VBox } from '../../../components/layout/Box';
 import { DirectorySelectionField } from '../../../components/inputfield/DirectorySelectionField';
+import { ChoiceBox } from '../../../components/choicebox/ChoiceBox';
 
 export interface ImportTargetFormProps {
     action: ImportTargetAction,
@@ -15,29 +15,50 @@ export interface ImportTargetFormProps {
 }
 
 export function ImportTargetForm(props: React.PropsWithChildren<ImportTargetFormProps>): ReactElement {
+
+    function targetActionToDisplayString(action: ImportTargetAction): string {
+        switch (action) {
+            case ImportTargetAction.KEEP:
+                return "Keep in directory";
+            case ImportTargetAction.MOVE:
+                return "Move to target directory";
+            case ImportTargetAction.COPY:
+                return "Copy to target directory";
+        }
+    }
+
+    function displayStringToTargetAction(displayString: string): ImportTargetAction {
+        switch (displayString) {
+            case "Keep in directory":
+                return ImportTargetAction.KEEP;
+            case "Move to target directory":
+                return ImportTargetAction.MOVE;
+            case "Copy to target directory":
+                return ImportTargetAction.COPY;
+        }
+
+    }
+
     return (
         <>
-            <Checkbox variant={Variant.OUTLINE}
-                      selected={props.action !== ImportTargetAction.KEEP}
-                      onToggle={selected => props.onSelectAction(selected ? ImportTargetAction.MOVE : ImportTargetAction.KEEP)}>
-                Copy or move files
-            </Checkbox>
 
             <VBox alignMain={AlignMain.CENTER} alignCross={AlignCross.STRETCH} spacing={Size.S_0_75} padding={Size.S_1} withBorder>
 
-                <Checkbox variant={Variant.OUTLINE}
-                          selected={props.action === ImportTargetAction.MOVE}
-                          onToggle={selected => props.onSelectAction(selected ? ImportTargetAction.MOVE : ImportTargetAction.COPY)}
-                          disabled={props.action === ImportTargetAction.KEEP}>
-                    Move files
-                </Checkbox>
-
-                <Checkbox variant={Variant.OUTLINE}
-                          selected={props.action === ImportTargetAction.COPY}
-                          onToggle={selected => props.onSelectAction(selected ? ImportTargetAction.COPY : ImportTargetAction.MOVE)}
-                          disabled={props.action === ImportTargetAction.KEEP}>
-                    Copy files
-                </Checkbox>
+                <div style={{
+                    display: "flex",
+                    justifyContent: "flex-start",
+                }}>
+                    <ChoiceBox variant={Variant.OUTLINE}
+                               autoWidth={true}
+                               items={[
+                                   targetActionToDisplayString(ImportTargetAction.KEEP),
+                                   targetActionToDisplayString(ImportTargetAction.MOVE),
+                                   targetActionToDisplayString(ImportTargetAction.COPY),
+                               ]}
+                               selected={targetActionToDisplayString(props.action)}
+                               onSelect={(item: string) => props.onSelectAction(displayStringToTargetAction(item))}
+                    />
+                </div>
 
                 <DirectorySelectionField
                     value={props.targetDir}
