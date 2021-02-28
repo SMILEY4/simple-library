@@ -58,7 +58,7 @@ export class WindowService {
             },
         });
 
-        this.window.setAlwaysOnTop(true);
+        // this.window.setAlwaysOnTop(true);
         if (isDev) {
             this.window.loadURL('http://localhost:8080');
             this.window.webContents.openDevTools();
