@@ -27,14 +27,20 @@ export default class DataAccess {
         if (this.database) {
             this.database.close();
             this.database = null;
-            console.log("Closed current database")
+            console.log("Closed current database");
         }
     }
 
 
-    public executeRun(sql: string): Promise<void> {
+    public executeRun(sql: string): Promise<number> {
         return this.executeSqlInPromise((resolve, reject) => {
-            this.database.run(sql, (err) => err ? reject(err) : resolve());
+            this.database.run(sql, function(error: Error | null, result: any) {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(this.lastID);
+                }
+            });
         });
     }
 

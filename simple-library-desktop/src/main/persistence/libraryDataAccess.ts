@@ -1,10 +1,13 @@
 import DataAccess from './dataAccess';
 import { LibraryMetadata } from '../../common/commonModels';
 import {
+    sqlCreateTableCollectionItems,
+    sqlCreateTableCollections,
     sqlCreateTableItems,
     sqlCreateTableMetadata,
-    sqlGetGetAllMetadata,
+    sqlAllMetadata,
     sqlGetMetadataLibraryName,
+    sqlInsertCollection,
     sqlInsertMetadataLibraryName,
     sqlInsertMetadataTimestampCreated,
     sqlInsertMetadataTimestampLastOpened,
@@ -31,10 +34,16 @@ export class LibraryDataAccess {
             const timestamp = Date.now();
             await this.dataAccess.executeRun(sqlCreateTableMetadata());
             await this.dataAccess.executeRun(sqlCreateTableItems());
+            await this.dataAccess.executeRun(sqlCreateTableCollections());
+            await this.dataAccess.executeRun(sqlCreateTableCollectionItems());
             await Promise.all([
                 this.dataAccess.executeRun(sqlInsertMetadataLibraryName(libraryName)),
                 this.dataAccess.executeRun(sqlInsertMetadataTimestampCreated(timestamp)),
                 this.dataAccess.executeRun(sqlInsertMetadataTimestampLastOpened(timestamp)),
+                // todo: collections only temp, for testing
+                this.dataAccess.executeRun(sqlInsertCollection("Collection Alpha")),
+                this.dataAccess.executeRun(sqlInsertCollection("Collection Bravo")),
+                this.dataAccess.executeRun(sqlInsertCollection("Collection Charlie")),
             ]);
         }
     }
@@ -53,7 +62,7 @@ export class LibraryDataAccess {
 
 
     public async getLibraryMetadata(): Promise<LibraryMetadata> {
-        const result: any = await this.dataAccess.queryAll(sqlGetGetAllMetadata());
+        const result: any = await this.dataAccess.queryAll(sqlAllMetadata());
         return {
             name: result.find((row: any) => row.key === 'library_name').value,
             timestampCreated: parseInt(result.find((row: any) => row.key === 'timestamp_created').value),

@@ -92,10 +92,15 @@ export interface ImportResult {
     failed: boolean,
     failureReason: string,
     encounteredErrors: boolean,
-    filesWithErrors: ([string,string])[]
+    filesWithErrors: ([string, string])[]
 }
 
 export interface ImportStatus {
     totalAmountFiles: number,
     completedFiles: number,
+}
+
+export interface Collection {
+    id: number,
+    name: string
 }
