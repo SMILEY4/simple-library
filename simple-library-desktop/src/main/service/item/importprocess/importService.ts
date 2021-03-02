@@ -78,8 +78,18 @@ export class ImportService {
                     .then((item: ItemData) => this.itemDataAccess.insertItem(item))
                     .then((item: ItemData) => { // todo: temp, for testing purposes
                         this.collectionDataAccess.getCollections()
-                            .then((collections: Collection[]) => collections[Math.floor((Math.random() * collections.length))])
-                            .then((collection: Collection) => this.collectionDataAccess.addItemToCollection(collection.id, item.id));
+                            .then((collections: Collection[]) => {
+                                const indices: number[] = [];
+                                const nCollections: number = Math.floor((Math.random() * collections.length));
+                                for (let i = 0; i < nCollections; i++) {
+                                    const index: number = Math.floor((Math.random() * collections.length));
+                                    if (!indices.some(i => i === index)) {
+                                        indices.push(index);
+                                    }
+                                }
+                                return indices.map(i => collections[i]);
+                            })
+                            .then((collections: Collection[]) => collections.forEach(c => this.collectionDataAccess.addItemToCollection(c.id, item.id)));
                     })
                     .then(() => console.log("done importing file: " + currentFile))
                     .catch((error: any) => {

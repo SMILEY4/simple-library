@@ -179,9 +179,34 @@ export module GetItemsMessage {
 
     const CHANNEL_GET_ITEMS: string = 'library.items.get';
 
-    export function request(ipc: Electron.IpcRenderer): Promise<Response> {
+    export function request(ipc: Electron.IpcRenderer, collectionId: number | undefined): Promise<Response> {
         const request: Request = {
             channel: CHANNEL_GET_ITEMS,
+            payload: {
+                collectionId: collectionId,
+            },
+        };
+        return sendRequest(ipc, request);
+    }
+
+    export function handle(ipc: Electron.IpcMain, action: (collectionId: number | undefined) => Promise<Response>) {
+        const handler: RequestHandler = {
+            channel: CHANNEL_GET_ITEMS,
+            action: (payload) => action(payload.collectionId),
+        };
+        handleRequest(ipc, handler);
+    }
+
+}
+
+
+export module GetCollectionsMessage {
+
+    const CHANNEL_GET_COLLECTIONS: string = 'library.collections.get';
+
+    export function request(ipc: Electron.IpcRenderer): Promise<Response> {
+        const request: Request = {
+            channel: CHANNEL_GET_COLLECTIONS,
             payload: {},
         };
         return sendRequest(ipc, request);
@@ -189,11 +214,10 @@ export module GetItemsMessage {
 
     export function handle(ipc: Electron.IpcMain, action: () => Promise<Response>) {
         const handler: RequestHandler = {
-            channel: CHANNEL_GET_ITEMS,
+            channel: CHANNEL_GET_COLLECTIONS,
             action: () => action(),
         };
         handleRequest(ipc, handler);
     }
 
 }
-

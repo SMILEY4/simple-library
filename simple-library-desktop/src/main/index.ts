@@ -16,6 +16,7 @@ import { ImportStepFileHash } from './service/item/importprocess/importStepFileH
 import { ImportDataValidator } from './service/item/importprocess/importDataValidator';
 import { ImportService } from './service/item/importprocess/importService';
 import { CollectionDataAccess } from './persistence/collectionDataAccess';
+import { CollectionService } from './service/collection/collectionService';
 
 const RUN_TESTS = false;
 
@@ -54,9 +55,10 @@ if (RUN_TESTS) {
             collectionDataAccess
         ),
     );
+    const collectionService: CollectionService = new CollectionService(collectionDataAccess);
 
     // messaging
-    const messageHandler: MessageHandler = new MessageHandler(appService, itemService, windowService);
+    const messageHandler: MessageHandler = new MessageHandler(appService, itemService, collectionService, windowService);
 
     messageHandler.initialize();
     app.whenReady().then(() => windowService.whenReady());
