@@ -20,7 +20,7 @@ export function SidebarMenu(props: React.PropsWithChildren<SidebarMenuProps>): R
     function getClassNames(): string {
         return concatClasses(
             "sidebar-menu",
-            (props.minimized === false ? undefined : "sidebar-menu-minimized"),
+            (props.minimized === true ? "sidebar-menu-minimized" : undefined),
             (props.fillHeight === false ? undefined : "fill-vert"),
             props.className,
         );

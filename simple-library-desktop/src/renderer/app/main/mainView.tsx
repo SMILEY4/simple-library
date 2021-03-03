@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { Component, ReactElement } from 'react';
 import { Theme } from '../application';
-import { BodyText, H3Text } from '../../components/text/Text';
-import { Dir, Type, Variant } from '../../components/common';
+import { Dir, Fill, Type } from '../../components/common';
 import { Box } from '../../components/layout/Box';
 import {
     CloseCurrentLibraryMessage,
@@ -13,12 +12,15 @@ import {
     ImportStatusUpdateCommand,
 } from '../../../main/messaging/messagesLibrary';
 import { Response } from '../../../main/messaging/messages';
-import { Button } from '../../components/button/Button';
 import { DialogImportFiles } from './import/DialogImportFiles';
 import { Collection, ImportProcessData, ImportResult, ImportStatus } from '../../../common/commonModels';
 import { NotificationEntry } from '../../components/notification/NotificationStack';
 import { SFNotificationStack } from '../../components/notification/SFNotificationStack';
-import { ChoiceBox } from '../../components/choicebox/ChoiceBox';
+import { Grid } from '../../components/layout/Grid';
+import { SidebarMenu } from '../../components/sidebarmenu/SidebarMenu';
+import { SidebarMenuSection } from '../../components/sidebarmenu/SidebarMenuSection';
+import { SidebarMenuItem } from '../../components/sidebarmenu/SidebarMenuItem';
+import { AiOutlineCloseCircle, BiImages, BiImport, HiOutlineRefresh } from 'react-icons/all';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -43,7 +45,8 @@ interface MainViewState {
     showImportFilesDialog: boolean
     collections: Collection[]
     items: Item[],
-    currentCollectionId: number | undefined
+    currentCollectionId: number | undefined,
+    sidebarMinimized: boolean
 }
 
 export class MainView extends Component<MainViewProps, MainViewState> {
@@ -65,6 +68,7 @@ export class MainView extends Component<MainViewProps, MainViewState> {
             collections: [],
             items: [],
             currentCollectionId: undefined,
+            sidebarMinimized: false,
         };
         this.closeLibrary = this.closeLibrary.bind(this);
         this.importFiles = this.importFiles.bind(this);
@@ -164,52 +168,73 @@ export class MainView extends Component<MainViewProps, MainViewState> {
     render(): ReactElement {
         return (
             <Box dir={Dir.DOWN}>
-                <H3Text>Main Screen</H3Text>
-                <BodyText>{'Name: ' + this.state.name}</BodyText>
-                <BodyText>{'Created: ' + this.state.timestampCreated}</BodyText>
-                <BodyText>{'Last Opened: ' + this.state.timestampLastOpened}</BodyText>
-                <Button variant={Variant.SOLID} onAction={() => this.setState({ showImportFilesDialog: true })}>Import
-                    Files</Button>
-                <Button variant={Variant.SOLID} onAction={this.closeLibrary}>Close Library</Button>
-                <Button variant={Variant.SOLID} onAction={() => this.updateItemList(this.state.currentCollectionId)}>Refresh</Button>
 
-                <ChoiceBox
-                    variant={Variant.OUTLINE}
-                    items={this.state.collections.map((c: Collection) => c.name).concat("All Items")}
-                    selected={
-                        this.state.currentCollectionId
-                            ? this.state.collections.find((c: Collection) => c.id === this.state.currentCollectionId).name
-                            : "All Items"
-                    }
-                    onSelect={(selected: string) => {
-                        const selectedId: number | undefined = selected === "All Items"
-                            ? undefined
-                            : this.state.collections.find((c: Collection) => c.name === selected).id;
-                        this.setState({ currentCollectionId: selectedId });
-                        this.updateItemList(selectedId);
-                    }}
-                />
+                <Grid columns={[(this.state.sidebarMinimized ? "var(--s-3)" : 'var(--s-12)'), '1fr']}
+                      rows={['100vh']}
+                      fill={Fill.TRUE}
+                      style={{
+                          maxHeight: "100vh",
+                      }}>
 
-                <div style={{ overflow: 'scroll' }}>
-                    <table>
-                        <tbody>
-                        {
-                            this.state.items.map(item => {
-                                return (
-                                    <tr>
-                                        <td style={{ border: "1px solid black" }}><img src={item.thumbnail} alt='img' />
-                                        </td>
-                                        <td style={{ border: "1px solid black" }}>{item.filepath}</td>
-                                        <td style={{ border: "1px solid black" }}>{item.collection}</td>
-                                        <td style={{ border: "1px solid black" }}>{item.timestamp}</td>
-                                        <td style={{ border: "1px solid black" }}>{item.hash}</td>
-                                    </tr>
-                                );
-                            })
-                        }
-                        </tbody>
-                    </table>
-                </div>
+                    <SidebarMenu fillHeight
+                                 minimizable={true}
+                                 minimized={this.state.sidebarMinimized}
+                                 onToggleMinimized={(mini: boolean) => this.setState({ sidebarMinimized: mini })}>
+
+                        <SidebarMenuSection title='Actions'>
+                            <SidebarMenuItem title={"Import"} icon={
+                                <BiImport />} onClick={() => this.setState({ showImportFilesDialog: true })} />
+                            <SidebarMenuItem title={"Refresh"} icon={
+                                <HiOutlineRefresh />} onClick={() => this.updateItemList(this.state.currentCollectionId)} />
+                            <SidebarMenuItem title={"Close"} icon={
+                                <AiOutlineCloseCircle />} onClick={this.closeLibrary} />
+                        </SidebarMenuSection>
+
+                        <SidebarMenuSection title='Collections'>
+                            <SidebarMenuItem title={"All Items"} icon={<BiImages />} onClick={() => {
+                                this.setState({ currentCollectionId: undefined });
+                                this.updateItemList(undefined);
+                            }} />
+                            {
+                                this.state.collections.map((c: Collection) => {
+                                    return (
+                                        <SidebarMenuItem title={c.name} icon={<BiImages />} onClick={() => {
+                                            this.setState({ currentCollectionId: c.id });
+                                            this.updateItemList(c.id);
+                                        }} />
+                                    );
+                                })
+                            }
+                        </SidebarMenuSection>
+
+                    </SidebarMenu>
+
+                    <div style={{
+                        maxHeight: "100vh",
+                        overflow: "auto",
+                    }}>
+                        <table>
+                            <tbody>
+                            {
+                                this.state.items.map(item => {
+                                    return (
+                                        <tr>
+                                            <td style={{ border: "1px solid black" }}>
+                                                <img src={item.thumbnail} alt='img' />
+                                            </td>
+                                            <td style={{ border: "1px solid black" }}>{item.filepath}</td>
+                                            <td style={{ border: "1px solid black" }}>{item.collection}</td>
+                                            <td style={{ border: "1px solid black" }}>{item.timestamp}</td>
+                                            <td style={{ border: "1px solid black" }}>{item.hash}</td>
+                                        </tr>
+                                    );
+                                })
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+
+                </Grid>
 
 
                 <SFNotificationStack modalRootId='root'

@@ -49,23 +49,23 @@ export class Application extends Component<any, AppState> {
 
 
     render(): any {
-        return (
-            <div className={'root-view theme-' + this.state.theme}
-                 style={{ width: '100%', height: '100%' }}
-                 id='root'>
-                <SidebarTestView/>
-            </div>
-        );
-        // if (this.state.displayComponentShowcase) {
-        //     return this.renderComponentShowcase();
-        // } else {
-        //     if (this.state.currentView === View.WELCOME) {
-        //         return this.renderWelcomeView();
-        //     }
-        //     if (this.state.currentView === View.MAIN) {
-        //         return this.renderMainView();
-        //     }
-        // }
+        // return (
+        //     <div className={'root-view theme-' + this.state.theme}
+        //          style={{ width: '100%', height: '100%' }}
+        //          id='root'>
+        //         <SidebarTestView/>
+        //     </div>
+        // );
+        if (this.state.displayComponentShowcase) {
+            return this.renderComponentShowcase();
+        } else {
+            if (this.state.currentView === View.WELCOME) {
+                return this.renderWelcomeView();
+            }
+            if (this.state.currentView === View.MAIN) {
+                return this.renderMainView();
+            }
+        }
     }
 
 
