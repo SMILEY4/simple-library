@@ -1,12 +1,12 @@
 .sidebar-menu-item {
-
 	display:         flex;
 	flex-direction:  row;
 	justify-content: space-between;
 	align-items:     stretch;
-
-	padding:         var(--s-0-5);
+	padding-left:    var(--s-0-5);
+	padding-right:   var(--s-0-5);
 	border-radius:   var(--radius-0);
+	height:          var(--s-2)
 }
 
 .sidebar-menu-item > .sidebar-menu-item-title {
@@ -15,6 +15,14 @@
 	justify-content: flex-start;
 	align-items:     stretch;
 	gap:             var(--s-0-15);
+}
+
+.sidebar-menu-item > .sidebar-menu-item-label,
+.sidebar-menu-item > .sidebar-menu-item-title > .sidebar-menu-item-title-text {
+	display:         flex;
+	flex-direction:  row;
+	justify-content: flex-start;
+	align-items:     center;
 }
 
 .sidebar-menu-item > .sidebar-menu-item-title > svg {
@@ -43,3 +51,14 @@
 	color: var(--text-color-2);
 }
 
+.sidebar-menu-minimized * .sidebar-menu-item {
+	padding:         unset;
+	justify-content: center;
+}
+
+
+.sidebar-menu-minimized * .sidebar-menu-item > .sidebar-menu-item-title > .sidebar-menu-item-title-text,
+.sidebar-menu-minimized * .sidebar-menu-item > .sidebar-menu-item-label {
+	visibility: hidden;
+	display:    none;
+}

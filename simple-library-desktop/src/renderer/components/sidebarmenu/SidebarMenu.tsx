@@ -1,12 +1,17 @@
 import * as React from 'react';
-import { AlignCross, AlignMain, concatClasses, Fill, Size } from '../common';
+import { AlignCross, AlignMain, concatClasses, Fill, Size, Variant } from '../common';
 import "./sidebarMenu.css";
 import { VBox } from '../layout/Box';
+import { Button } from '../button/Button';
+import { HiOutlineChevronDoubleLeft, HiOutlineChevronDoubleRight } from 'react-icons/all';
 
 
 export interface SidebarMenuProps {
     fillHeight?: boolean,
     className?: string,
+    minimizable?: boolean,
+    minimized?: boolean,
+    onToggleMinimized?: (minimized:boolean) => void,
     style?: React.CSSProperties,
 }
 
@@ -15,6 +20,7 @@ export function SidebarMenu(props: React.PropsWithChildren<SidebarMenuProps>): R
     function getClassNames(): string {
         return concatClasses(
             "sidebar-menu",
+            (props.minimized === false ? undefined : "sidebar-menu-minimized"),
             (props.fillHeight === false ? undefined : "fill-vert"),
             props.className,
         );
@@ -28,10 +34,18 @@ export function SidebarMenu(props: React.PropsWithChildren<SidebarMenuProps>): R
                   alignCross={AlignCross.STRETCH}
                   spacing={Size.S_1_5}
                   padding={Size.S_0_5}
-                  className="sidebar-menu-content-area"
+                  className='sidebar-menu-content-area'
             >
                 {props.children}
             </VBox>
+            {props.minimizable && (
+                <Button className={"sidebar-menu-minimize-button"}
+                        variant={Variant.GHOST}
+                        icon={props.minimized ? <HiOutlineChevronDoubleRight /> : <HiOutlineChevronDoubleLeft />}
+                        onAction={() => props.onToggleMinimized && props.onToggleMinimized(!props.minimized)}
+                        square
+                />
+            )}
         </div>
     );
 }

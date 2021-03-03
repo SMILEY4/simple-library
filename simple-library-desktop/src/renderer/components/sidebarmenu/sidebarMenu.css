@@ -4,6 +4,22 @@
 	align-items:    stretch;
 	transform:      var(--default-duration);
 	box-sizing:     border-box;
+}
+
+.sidebar-menu-minimized {
+	max-width: var(--s-3);
+}
+
+.sidebar-menu-content-area {
 	overflow-y: auto;
 	overflow-x: hidden;
+}
+
+.sidebar-menu-minimize-button {
+	align-self: flex-end;
+	margin:     var(--s-0-5);
+}
+
+.sidebar-menu-minimized > .sidebar-menu-minimize-button {
+	align-self: center;
 }

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ReactElement } from 'react';
+import { Component, ReactElement } from 'react';
 import { Grid } from '../../components/layout/Grid';
 import { Fill } from '../../components/common';
 import { SidebarMenu } from '../../components/sidebarmenu/SidebarMenu';
@@ -16,22 +16,38 @@ import {
     HiSearch,
     IoFlashOutline,
 } from 'react-icons/all';
-import { SidebarMenuGroup } from '../../components/sidebarmenu/SidebarMenuGroup';
+import {
+    SidebarMenuGroup,
+    SidebarMenuGroupProps,
+    SidebarMenuGroupState,
+} from '../../components/sidebarmenu/SidebarMenuGroup';
 
 export interface SidebarTestViewProps {
 
 }
 
-type SidebarTestViewReactProps = React.PropsWithChildren<SidebarTestViewProps>;
+export interface SidebarTestViewState {
+    minimized: boolean
+}
 
 
-export function SidebarTestView(props: SidebarTestViewReactProps): ReactElement {
-    return (
-        <Grid columns={['var(--s-12)', '1fr']} rows={['1fr']} fill={Fill.TRUE} style={{
-            maxHeight: "100vh"
-        }}>
 
-                <SidebarMenu fillHeight>
+export class SidebarTestView extends Component<SidebarTestViewProps, SidebarTestViewState> {
+
+    constructor(props: SidebarTestViewProps) {
+        super(props);
+        this.state = {
+            minimized: false
+        }
+    }
+
+    render(): ReactElement {
+        return (
+            <Grid columns={[(this.state.minimized ? "var(--s-3)" : 'var(--s-12)'), '1fr']} rows={['100vh']} fill={Fill.TRUE} style={{
+                maxHeight: "100vh",
+            }}>
+
+                <SidebarMenu fillHeight minimizable={true} minimized={this.state.minimized} onToggleMinimized={(mini:boolean) => this.setState({minimized: !this.state.minimized})}>
 
                     <SidebarMenuSection title='Actions'>
                         <SidebarMenuItem title={"Search"} icon={<HiSearch />} label={undefined} />
@@ -53,7 +69,7 @@ export function SidebarTestView(props: SidebarTestViewReactProps): ReactElement 
 
                         <SidebarMenuGroup title={"Public"} icon={<HiOutlineFolder />}>
                             <SidebarMenuItem title={"Features"} icon={<HiOutlineDocumentText />} />
-                            <SidebarMenuItem title={"Bugs"} icon={<HiOutlineDocumentText />} selected/>
+                            <SidebarMenuItem title={"Bugs"} icon={<HiOutlineDocumentText />} selected />
                             <SidebarMenuItem title={"Features"} icon={<HiOutlineDocumentText />} />
 
                             <SidebarMenuGroup title={"Documentation"} icon={<HiOutlineFolder />}>
@@ -73,12 +89,13 @@ export function SidebarTestView(props: SidebarTestViewReactProps): ReactElement 
 
                 </SidebarMenu>
 
-            <div style={{
-                backgroundColor: "var(--background-color-1)",
-                borderRadius: "10px",
-                margin: "var(--s-0-5)",
-            }} />
+                <div style={{
+                    backgroundColor: "var(--background-color-1)",
+                    borderRadius: "10px",
+                    margin: "var(--s-0-5)",
+                }} />
 
-        </Grid>
-    );
+            </Grid>
+        );
+    }
 }

@@ -26,7 +26,7 @@ export function SidebarMenuItem(props: React.PropsWithChildren<SidebarMenuItemPr
         <div className={getClassNames()} onClick={props.onClick}>
             <div className={"sidebar-menu-item-title"}>
                 {props.icon ? props.icon : null}
-                {props.title}
+                <div className={"sidebar-menu-item-title-text"}>{props.title}</div>
             </div>
             <CaptionText className={"sidebar-menu-item-label"}>{props.label}</CaptionText>
         </div>

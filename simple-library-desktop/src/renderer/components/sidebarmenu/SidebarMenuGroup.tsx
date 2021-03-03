@@ -38,10 +38,10 @@ export class SidebarMenuGroup extends Component<SidebarMenuGroupProps, SidebarMe
             <div className={concatClasses("sidebar-menu-group", this.props.className)}>
                 <SidebarMenuItem title={this.props.title} icon={this.renderIcons(this.props.icon)} onClick={this.actionToggle} />
                 {this.state.expanded && (
-                        <div className={"sidebar-menu-group-content"}>
+                    <div className={"sidebar-menu-group-content"}>
                         {this.props.children}
                     </div>
-                    )}
+                )}
             </div>
         );
     }

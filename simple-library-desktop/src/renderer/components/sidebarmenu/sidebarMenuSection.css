@@ -1,0 +1,3 @@
+.sidebar-menu-minimized * .sidebar-menu-section > .sidebar-menu-section-title {
+	visibility: hidden;
+}
