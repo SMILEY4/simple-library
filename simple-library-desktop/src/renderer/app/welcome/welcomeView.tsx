@@ -11,7 +11,6 @@ import {
     GetLastOpenedLibrariesMessage,
     OpenLibraryMessage,
 } from '../../../main/messaging/messagesLibrary';
-import { SidebarElement, SidebarMenu } from '../../components/sidebarmenu/SidebarMenu';
 import { DialogCreateLibrary } from './DialogCreateLibrary';
 import { Image } from '../../components/image/Image';
 import { SFNotificationStack } from '../../components/notification/SFNotificationStack';
@@ -141,45 +140,46 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
             });
     }
 
-    buildSidebarActions(recentlyUsed: any): SidebarElement[] {
-        const elements: SidebarElement[] = [
-            {
-                typeID: "SECTION-TITLE",
-                text: "Libraries",
-            },
-            {
-                typeID: "ACTION",
-                text: "Create New Library",
-                onAction: this.onCreateNewLibrary,
-            },
-            {
-                typeID: "ACTION",
-                text: "Open Library",
-                onAction: this.onOpenLibrary,
-            },
-        ];
-        if (recentlyUsed.length > 0) {
-            elements.push({
-                typeID: "SECTION-TITLE",
-                text: "Recently Used",
-            });
-        }
-        recentlyUsed.forEach((entry: LibraryEntry) => {
-            elements.push({
-                typeID: "ACTION",
-                text: entry.name,
-                onAction: () => this.onOpenRecentlyUsed(entry),
-            });
-        });
-        return elements;
-    }
+    // buildSidebarActions(recentlyUsed: any): SidebarElement[] {
+    //     const elements: SidebarElement[] = [
+    //         {
+    //             typeID: "SECTION-TITLE",
+    //             text: "Libraries",
+    //         },
+    //         {
+    //             typeID: "ACTION",
+    //             text: "Create New Library",
+    //             onAction: this.onCreateNewLibrary,
+    //         },
+    //         {
+    //             typeID: "ACTION",
+    //             text: "Open Library",
+    //             onAction: this.onOpenLibrary,
+    //         },
+    //     ];
+    //     if (recentlyUsed.length > 0) {
+    //         elements.push({
+    //             typeID: "SECTION-TITLE",
+    //             text: "Recently Used",
+    //         });
+    //     }
+    //     recentlyUsed.forEach((entry: LibraryEntry) => {
+    //         elements.push({
+    //             typeID: "ACTION",
+    //             text: entry.name,
+    //             onAction: () => this.onOpenRecentlyUsed(entry),
+    //         });
+    //     });
+    //     return elements;
+    // }
 
     render(): ReactElement {
         return (
             <Box fill={Fill.TRUE}>
 
                 <Grid columns={['var(--s-12)', '1fr']} rows={['1fr']} fill={Fill.TRUE}>
-                    <SidebarMenu align={AlignMain.CENTER} fillHeight elements={this.buildSidebarActions(this.state.recentlyUsed)} />
+                    {/*TODO*/}
+                    {/*<SidebarMenu align={AlignMain.CENTER} fillHeight elements={this.buildSidebarActions(this.state.recentlyUsed)} />*/}
                     <Image url={imgWelcome} />
                 </Grid>
 

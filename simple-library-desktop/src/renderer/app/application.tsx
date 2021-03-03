@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { ComponentShowcaseView } from '../components/_showcase/ComponentShowcaseView';
 import { WelcomeView } from './welcome/welcomeView';
 import { MainView } from './main/mainView';
+import { SidebarTestView } from './sidebartest/sidebarTestView';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -48,16 +49,23 @@ export class Application extends Component<any, AppState> {
 
 
     render(): any {
-        if (this.state.displayComponentShowcase) {
-            return this.renderComponentShowcase();
-        } else {
-            if (this.state.currentView === View.WELCOME) {
-                return this.renderWelcomeView();
-            }
-            if (this.state.currentView === View.MAIN) {
-                return this.renderMainView();
-            }
-        }
+        return (
+            <div className={'root-view theme-' + this.state.theme}
+                 style={{ width: '100%', height: '100%' }}
+                 id='root'>
+                <SidebarTestView/>
+            </div>
+        );
+        // if (this.state.displayComponentShowcase) {
+        //     return this.renderComponentShowcase();
+        // } else {
+        //     if (this.state.currentView === View.WELCOME) {
+        //         return this.renderWelcomeView();
+        //     }
+        //     if (this.state.currentView === View.MAIN) {
+        //         return this.renderMainView();
+        //     }
+        // }
     }
 
 
