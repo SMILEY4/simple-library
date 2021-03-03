@@ -3,6 +3,7 @@ import { ipcMain } from 'electron';
 import { LibraryService } from '../service/library/libraryService';
 import { WindowService } from '../windows/windowService';
 import {
+    Collection,
     ImportProcessData,
     ImportResult,
     ItemData,
@@ -11,7 +12,7 @@ import {
 } from '../../common/commonModels';
 import {
     CloseCurrentLibraryMessage,
-    CreateLibraryMessage,
+    CreateLibraryMessage, GetCollectionsMessage,
     GetItemsMessage,
     GetLastOpenedLibrariesMessage,
     GetLibraryMetadataMessage,
@@ -19,19 +20,22 @@ import {
     OpenLibraryMessage,
 } from './messagesLibrary';
 import { ItemService } from '../service/item/ItemService';
+import { CollectionService } from '../service/collection/collectionService';
 
 export class MessageHandler {
 
-    windowService: WindowService;
     appService: LibraryService;
     itemService: ItemService;
-
+    collectionService: CollectionService;
+    windowService: WindowService;
 
     constructor(appService: LibraryService,
                 itemService: ItemService,
+                collectionService: CollectionService,
                 windowService: WindowService) {
         this.appService = appService;
         this.itemService = itemService;
+        this.collectionService = collectionService;
         this.windowService = windowService;
     }
 
@@ -43,7 +47,8 @@ export class MessageHandler {
         GetLastOpenedLibrariesMessage.handle(ipcMain, () => this.handleRequestLastOpened());
         CloseCurrentLibraryMessage.handle(ipcMain, () => this.handleRequestCloseCurrentProject());
         ImportFilesMessage.handle(ipcMain, (data) => this.handleRequestImportFiles(data));
-        GetItemsMessage.handle(ipcMain, () => this.handleRequestGetItems());
+        GetItemsMessage.handle(ipcMain, (collectionId: number | undefined) => this.handleRequestGetItems(collectionId));
+        GetCollectionsMessage.handle(ipcMain, () => this.handleRequestGetCollections());
     }
 
 
@@ -89,9 +94,15 @@ export class MessageHandler {
             .catch(err => failedResponse(err));
     }
 
-    private async handleRequestGetItems(): Promise<Response> {
-        return this.itemService.getAllItems()
+    private async handleRequestGetItems(collectionId: number | undefined): Promise<Response> {
+        return this.itemService.getAllItems(collectionId, collectionId === undefined)
             .then((items: ItemData[]) => successResponse(items))
+            .catch(err => failedResponse(err));
+    }
+
+    private async handleRequestGetCollections(): Promise<Response> {
+        return this.collectionService.getAllCollections()
+            .then((collections: Collection[]) => successResponse(collections))
             .catch(err => failedResponse(err));
     }
 

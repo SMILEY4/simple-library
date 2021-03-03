@@ -8,5 +8,6 @@ export function buildItemData(orgFilepath: string, targetFilepath: string): Item
         id: 0,
         thumbnail: '',
         timestamp: 0,
+        collectionIds: undefined
     };
 }

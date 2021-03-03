@@ -4,10 +4,11 @@ import { ImportStepFileHash } from './importStepFileHash';
 import { ImportStepThumbnail } from './importStepThumbnail';
 import { ImportStepRename } from './importStepRename';
 import { ImportStepImportTarget } from './importStepImportTarget';
-import { ImportProcessData, ImportResult, ItemData } from '../../../../common/commonModels';
+import { Collection, ImportProcessData, ImportResult, ItemData } from '../../../../common/commonModels';
 import { startAsync } from '../../../../common/AsyncCommon';
 import { WindowService } from '../../../windows/windowService';
 import { ImportStatusUpdateCommand } from '../../../messaging/messagesLibrary';
+import { CollectionDataAccess } from '../../../persistence/collectionDataAccess';
 
 export class ImportService {
 
@@ -18,6 +19,7 @@ export class ImportService {
     importStepRename: ImportStepRename;
     importStepImportTarget: ImportStepImportTarget;
     windowService: WindowService;
+    collectionDataAccess: CollectionDataAccess;
 
     importRunning: boolean = false;
 
@@ -28,7 +30,8 @@ export class ImportService {
                 importStepImportTarget: ImportStepImportTarget,
                 importStepFileHash: ImportStepFileHash,
                 importStepThumbnail: ImportStepThumbnail,
-                windowService: WindowService) {
+                windowService: WindowService,
+                collectionDataAccess: CollectionDataAccess) {
         this.itemDataAccess = itemDataAccess;
         this.importDataValidator = importDataValidator;
         this.importStepFileHash = importStepFileHash;
@@ -36,6 +39,7 @@ export class ImportService {
         this.importStepRename = importStepRename;
         this.importStepImportTarget = importStepImportTarget;
         this.windowService = windowService;
+        this.collectionDataAccess = collectionDataAccess;
     }
 
     public async importFiles(data: ImportProcessData): Promise<ImportResult> {
@@ -72,6 +76,21 @@ export class ImportService {
                     .then((item: ItemData) => this.importStepFileHash.handle(item))
                     .then((item: ItemData) => this.importStepThumbnail.handle(item))
                     .then((item: ItemData) => this.itemDataAccess.insertItem(item))
+                    .then((item: ItemData) => { // todo: temp, for testing purposes
+                        this.collectionDataAccess.getCollections()
+                            .then((collections: Collection[]) => {
+                                const indices: number[] = [];
+                                const nCollections: number = Math.floor((Math.random() * collections.length));
+                                for (let i = 0; i < nCollections; i++) {
+                                    const index: number = Math.floor((Math.random() * collections.length));
+                                    if (!indices.some(i => i === index)) {
+                                        indices.push(index);
+                                    }
+                                }
+                                return indices.map(i => collections[i]);
+                            })
+                            .then((collections: Collection[]) => collections.forEach(c => this.collectionDataAccess.addItemToCollection(c.id, item.id)));
+                    })
                     .then(() => console.log("done importing file: " + currentFile))
                     .catch((error: any) => {
                         console.error("Error while importing file " + currentFile + ": " + error);

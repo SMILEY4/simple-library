@@ -13,8 +13,8 @@ export class ItemService {
         this.importService = importService;
     }
 
-    public getAllItems(): Promise<ItemData[]> {
-        return this.itemDataAccess.getAllItems();
+    public getAllItems(collectionId: number | undefined, includeCollections: boolean): Promise<ItemData[]> {
+        return this.itemDataAccess.getAllItems(collectionId, includeCollections);
     }
 
     public async importFiles(data: ImportProcessData): Promise<ImportResult> {

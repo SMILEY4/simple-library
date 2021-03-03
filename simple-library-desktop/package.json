@@ -1,7 +1,7 @@
 {
   "name": "simple-library",
   "main": "./.webpack/main/bundle.js",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A simple digital asset library.",
   "author": "Lukas Ruegner",
   "private": true,
