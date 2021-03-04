@@ -15,7 +15,7 @@ import {
     CreateLibraryMessage, GetCollectionsMessage,
     GetItemsMessage,
     GetLastOpenedLibrariesMessage,
-    GetLibraryMetadataMessage,
+    GetLibraryMetadataMessage, GetTotalItemCountMessage,
     ImportFilesMessage,
     OpenLibraryMessage,
 } from './messagesLibrary';
@@ -49,6 +49,7 @@ export class MessageHandler {
         ImportFilesMessage.handle(ipcMain, (data) => this.handleRequestImportFiles(data));
         GetItemsMessage.handle(ipcMain, (collectionId: number | undefined) => this.handleRequestGetItems(collectionId));
         GetCollectionsMessage.handle(ipcMain, (includeItemCount:boolean) => this.handleRequestGetCollections(includeItemCount));
+        GetTotalItemCountMessage.handle(ipcMain, () => this.handleRequestTotalItemCount())
     }
 
 
@@ -105,5 +106,12 @@ export class MessageHandler {
             .then((collections: Collection[]) => successResponse(collections))
             .catch(err => failedResponse(err));
     }
+
+    private async handleRequestTotalItemCount(): Promise<Response> {
+        return this.itemService.getTotalItemCount()
+            .then((count: number) => successResponse(count))
+            .catch(err => failedResponse(err));
+    }
+
 
 }

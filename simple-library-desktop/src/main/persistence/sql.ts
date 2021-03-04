@@ -97,6 +97,11 @@ export function sqlAllItemsWithCollectionIds(collectionId: number | undefined) {
 }
 
 
+export function sqlCountItems(): string {
+    return 'SELECT COUNT(*) AS count FROM "items"';
+}
+
+
 //==================//
 //     LIBRARY      //
 //==================//

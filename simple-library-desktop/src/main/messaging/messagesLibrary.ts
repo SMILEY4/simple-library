@@ -223,3 +223,25 @@ export module GetCollectionsMessage {
     }
 
 }
+
+
+export module GetTotalItemCountMessage {
+
+    const CHANNEL_GET_TOTAL_ITEM_COUNT: string = 'library.items.total_count';
+
+    export function request(ipc: Electron.IpcRenderer): Promise<Response> {
+        const request: Request = {
+            channel: CHANNEL_GET_TOTAL_ITEM_COUNT,
+        };
+        return sendRequest(ipc, request);
+    }
+
+    export function handle(ipc: Electron.IpcMain, action: () => Promise<Response>) {
+        const handler: RequestHandler = {
+            channel: CHANNEL_GET_TOTAL_ITEM_COUNT,
+            action: () => action(), // TODO: handle this message
+        };
+        handleRequest(ipc, handler);
+    }
+
+}
