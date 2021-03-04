@@ -48,7 +48,7 @@ export class MessageHandler {
         CloseCurrentLibraryMessage.handle(ipcMain, () => this.handleRequestCloseCurrentProject());
         ImportFilesMessage.handle(ipcMain, (data) => this.handleRequestImportFiles(data));
         GetItemsMessage.handle(ipcMain, (collectionId: number | undefined) => this.handleRequestGetItems(collectionId));
-        GetCollectionsMessage.handle(ipcMain, () => this.handleRequestGetCollections());
+        GetCollectionsMessage.handle(ipcMain, (includeItemCount:boolean) => this.handleRequestGetCollections(includeItemCount));
     }
 
 
@@ -100,8 +100,8 @@ export class MessageHandler {
             .catch(err => failedResponse(err));
     }
 
-    private async handleRequestGetCollections(): Promise<Response> {
-        return this.collectionService.getAllCollections()
+    private async handleRequestGetCollections(includeItemCount: boolean): Promise<Response> {
+        return this.collectionService.getAllCollections(includeItemCount)
             .then((collections: Collection[]) => successResponse(collections))
             .catch(err => failedResponse(err));
     }

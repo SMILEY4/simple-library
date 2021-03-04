@@ -91,18 +91,14 @@ export class MainView extends Component<MainViewProps, MainViewState> {
                     timestampLastOpened: 'ERROR: ' + error,
                 });
             });
-        GetCollectionsMessage.request(ipcRenderer)
+        GetCollectionsMessage.request(ipcRenderer, true)
             .then(response => {
                 this.setState({
                     collections: response.body,
                 });
             })
-            .catch(error => {
-                console.log("Error fetching collections.");
-            })
-            .finally(() => {
-                this.updateItemList(this.state.currentCollectionId);
-            });
+            .catch(error => console.log("Error fetching collections."))
+            .finally(() => this.updateItemList(this.state.currentCollectionId));
     }
 
     closeLibrary() {
@@ -191,17 +187,24 @@ export class MainView extends Component<MainViewProps, MainViewState> {
                         </SidebarMenuSection>
 
                         <SidebarMenuSection title='Collections'>
-                            <SidebarMenuItem title={"All Items"} icon={<BiImages />} onClick={() => {
-                                this.setState({ currentCollectionId: undefined });
-                                this.updateItemList(undefined);
-                            }} />
+                            <SidebarMenuItem title={"All Items"}
+                                             icon={<BiImages />}
+                                             selected={this.state.currentCollectionId === undefined}
+                                             onClick={() => {
+                                                 this.setState({ currentCollectionId: undefined });
+                                                 this.updateItemList(undefined);
+                                             }} />
                             {
                                 this.state.collections.map((c: Collection) => {
                                     return (
-                                        <SidebarMenuItem title={c.name} icon={<BiImages />} onClick={() => {
-                                            this.setState({ currentCollectionId: c.id });
-                                            this.updateItemList(c.id);
-                                        }} />
+                                        <SidebarMenuItem title={c.name}
+                                                         label={""+c.itemCount}
+                                                         icon={<BiImages />}
+                                                         selected={this.state.currentCollectionId === c.id}
+                                                         onClick={() => {
+                                                             this.setState({ currentCollectionId: c.id });
+                                                             this.updateItemList(c.id);
+                                                         }} />
                                     );
                                 })
                             }

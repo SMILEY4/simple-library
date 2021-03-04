@@ -17,14 +17,25 @@ export class CollectionDataAccess {
         this.dataAccess = dataAccess;
     }
 
-    public getCollections(): Promise<Collection[]> {
-        return this.dataAccess.queryAll(sqlAllCollections())
-            .then((rows: any) => rows.map((row: any) => {
-                return {
-                    id: row.collection_id,
-                    name: row.collection_name,
-                };
-            }));
+    public getCollections(includeItemCount: boolean): Promise<Collection[]> {
+        if(includeItemCount) {
+            return this.dataAccess.queryAll(sqlAllCollections(true))
+                .then((rows: any) => rows.map((row: any) => {
+                    return {
+                        id: row.collection_id,
+                        name: row.collection_name,
+                        itemCount: row.item_count
+                    };
+                }));
+        } else {
+            return this.dataAccess.queryAll(sqlAllCollections(false))
+                .then((rows: any) => rows.map((row: any) => {
+                    return {
+                        id: row.collection_id,
+                        name: row.collection_name,
+                    };
+                }));
+        }
     }
 
     public createCollection(name: string): Promise<Collection> {
@@ -33,6 +44,7 @@ export class CollectionDataAccess {
                 return {
                     id: id,
                     name: name,
+                    itemCount: undefined
                 };
             });
     }
