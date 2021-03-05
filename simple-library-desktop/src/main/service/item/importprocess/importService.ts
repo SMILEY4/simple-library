@@ -77,7 +77,7 @@ export class ImportService {
                     .then((item: ItemData) => this.importStepThumbnail.handle(item))
                     .then((item: ItemData) => this.itemDataAccess.insertItem(item))
                     .then((item: ItemData) => { // todo: temp, for testing purposes
-                        this.collectionDataAccess.getCollections()
+                        this.collectionDataAccess.getCollections(false)
                             .then((collections: Collection[]) => {
                                 const indices: number[] = [];
                                 const nCollections: number = Math.floor((Math.random() * collections.length));

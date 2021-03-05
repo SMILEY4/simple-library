@@ -103,5 +103,6 @@ export interface ImportStatus {
 
 export interface Collection {
     id: number,
-    name: string
+    name: string,
+    itemCount: number | undefined
 }

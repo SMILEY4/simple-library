@@ -10,6 +10,7 @@ interface GridProps {
     fill?: Fill,
     gap?: Size,
     className?: string,
+    style?: React.CSSProperties,
 }
 
 
@@ -27,7 +28,8 @@ export function Grid(props: React.PropsWithChildren<GridProps>): ReactElement {
         return {
             gridTemplateColumns: props.columns ? props.columns.join(' ') : undefined,
             gridTemplateRows: props.rows ? props.rows.join(' ') : undefined,
-            gridGap: props.gap ? "var(--" + props.gap+")" : undefined
+            gridGap: props.gap ? "var(--" + props.gap+")" : undefined,
+            ...props.style
         };
     }
 

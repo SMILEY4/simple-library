@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Component, ReactElement } from 'react';
 import './welcome.css';
 import { Theme } from '../application';
-import { AlignMain, Fill, Type } from '../../components/common';
+import { Fill, Type } from '../../components/common';
 import imgWelcome from './imgWelcome.jpg';
 import { Box } from '../../components/layout/Box';
 import { Grid } from '../../components/layout/Grid';
@@ -11,10 +11,12 @@ import {
     GetLastOpenedLibrariesMessage,
     OpenLibraryMessage,
 } from '../../../main/messaging/messagesLibrary';
-import { SidebarElement, SidebarMenu } from '../../components/sidebarmenu/SidebarMenu';
 import { DialogCreateLibrary } from './DialogCreateLibrary';
 import { Image } from '../../components/image/Image';
 import { SFNotificationStack } from '../../components/notification/SFNotificationStack';
+import { SidebarMenu } from '../../components/sidebarmenu/SidebarMenu';
+import { SidebarMenuSection } from '../../components/sidebarmenu/SidebarMenuSection';
+import { SidebarMenuItem } from '../../components/sidebarmenu/SidebarMenuItem';
 
 const electron = window.require('electron');
 const { ipcRenderer } = window.require('electron');
@@ -141,58 +143,37 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
             });
     }
 
-    buildSidebarActions(recentlyUsed: any): SidebarElement[] {
-        const elements: SidebarElement[] = [
-            {
-                typeID: "SECTION-TITLE",
-                text: "Libraries",
-            },
-            {
-                typeID: "ACTION",
-                text: "Create New Library",
-                onAction: this.onCreateNewLibrary,
-            },
-            {
-                typeID: "ACTION",
-                text: "Open Library",
-                onAction: this.onOpenLibrary,
-            },
-        ];
-        if (recentlyUsed.length > 0) {
-            elements.push({
-                typeID: "SECTION-TITLE",
-                text: "Recently Used",
-            });
-        }
-        recentlyUsed.forEach((entry: LibraryEntry) => {
-            elements.push({
-                typeID: "ACTION",
-                text: entry.name,
-                onAction: () => this.onOpenRecentlyUsed(entry),
-            });
-        });
-        return elements;
-    }
-
     render(): ReactElement {
         return (
             <Box fill={Fill.TRUE}>
 
                 <Grid columns={['var(--s-12)', '1fr']} rows={['1fr']} fill={Fill.TRUE}>
-                    <SidebarMenu align={AlignMain.CENTER} fillHeight elements={this.buildSidebarActions(this.state.recentlyUsed)} />
+                    <SidebarMenu fillHeight minimized={false}>
+                        <SidebarMenuSection title={"Actions"}>
+                            <SidebarMenuItem title={"Create New Library"} onClick={this.onCreateNewLibrary} />
+                            <SidebarMenuItem title={"Open Library"} onClick={this.onOpenLibrary} />
+                        </SidebarMenuSection>
+                        {this.state.recentlyUsed.length === 0 ? null : (
+                            <SidebarMenuSection title={"Recently Used"}>
+                                {
+                                    this.state.recentlyUsed.map((entry: LibraryEntry) => {
+                                        return <SidebarMenuItem title={entry.name} onClick={() => this.onOpenRecentlyUsed(entry)} />;
+                                    })
+                                }
+                            </SidebarMenuSection>
+                        )}
+                    </SidebarMenu>
                     <Image url={imgWelcome} />
                 </Grid>
 
                 {this.state.showCreateLibraryDialog && (
                     <DialogCreateLibrary
                         onClose={this.onCancelCreateNewLibrary}
-                        onCreate={this.createNewLibrary}
-                    />
+                        onCreate={this.createNewLibrary} />
                 )}
 
                 <SFNotificationStack modalRootId='root'
-                                     setAddSimpleFunction={(fun) => this.addNotification = fun}
-                />
+                                     setAddSimpleFunction={(fun) => this.addNotification = fun} />
 
             </Box>
         );

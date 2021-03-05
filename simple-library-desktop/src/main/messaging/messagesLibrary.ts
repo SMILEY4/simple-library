@@ -204,18 +204,42 @@ export module GetCollectionsMessage {
 
     const CHANNEL_GET_COLLECTIONS: string = 'library.collections.get';
 
-    export function request(ipc: Electron.IpcRenderer): Promise<Response> {
+    export function request(ipc: Electron.IpcRenderer, includeItemCount: boolean): Promise<Response> {
         const request: Request = {
             channel: CHANNEL_GET_COLLECTIONS,
-            payload: {},
+            payload: {
+                includeItemCount: includeItemCount
+            },
+        };
+        return sendRequest(ipc, request);
+    }
+
+    export function handle(ipc: Electron.IpcMain, action: (includeItemCount:boolean) => Promise<Response>) {
+        const handler: RequestHandler = {
+            channel: CHANNEL_GET_COLLECTIONS,
+            action: (payload) => action(payload.includeItemCount),
+        };
+        handleRequest(ipc, handler);
+    }
+
+}
+
+
+export module GetTotalItemCountMessage {
+
+    const CHANNEL_GET_TOTAL_ITEM_COUNT: string = 'library.items.total_count';
+
+    export function request(ipc: Electron.IpcRenderer): Promise<Response> {
+        const request: Request = {
+            channel: CHANNEL_GET_TOTAL_ITEM_COUNT,
         };
         return sendRequest(ipc, request);
     }
 
     export function handle(ipc: Electron.IpcMain, action: () => Promise<Response>) {
         const handler: RequestHandler = {
-            channel: CHANNEL_GET_COLLECTIONS,
-            action: () => action(),
+            channel: CHANNEL_GET_TOTAL_ITEM_COUNT,
+            action: () => action(), // TODO: handle this message
         };
         handleRequest(ipc, handler);
     }

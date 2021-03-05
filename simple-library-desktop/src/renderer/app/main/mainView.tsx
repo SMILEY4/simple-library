@@ -1,24 +1,24 @@
 import * as React from 'react';
 import { Component, ReactElement } from 'react';
 import { Theme } from '../application';
-import { BodyText, H3Text } from '../../components/text/Text';
-import { Dir, Type, Variant } from '../../components/common';
+import { Dir, Fill, Type } from '../../components/common';
 import { Box } from '../../components/layout/Box';
 import {
     CloseCurrentLibraryMessage,
     GetCollectionsMessage,
     GetItemsMessage,
-    GetLibraryMetadataMessage,
+    GetTotalItemCountMessage,
     ImportFilesMessage,
     ImportStatusUpdateCommand,
 } from '../../../main/messaging/messagesLibrary';
 import { Response } from '../../../main/messaging/messages';
-import { Button } from '../../components/button/Button';
 import { DialogImportFiles } from './import/DialogImportFiles';
 import { Collection, ImportProcessData, ImportResult, ImportStatus } from '../../../common/commonModels';
 import { NotificationEntry } from '../../components/notification/NotificationStack';
 import { SFNotificationStack } from '../../components/notification/SFNotificationStack';
-import { ChoiceBox } from '../../components/choicebox/ChoiceBox';
+import { Grid } from '../../components/layout/Grid';
+import { MenuSidebar } from './menuSidebar/menuSidebar';
+import { ItemPanel } from './itemPanel/itemPanel';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -28,7 +28,7 @@ interface MainViewProps {
     onCloseProject: () => void
 }
 
-interface Item {
+export interface Item {
     filepath: string,
     timestamp: number,
     hash: string,
@@ -37,13 +37,10 @@ interface Item {
 }
 
 interface MainViewState {
-    name: string,
-    timestampCreated: string,
-    timestampLastOpened: string
     showImportFilesDialog: boolean
     collections: Collection[]
     items: Item[],
-    currentCollectionId: number | undefined
+    currentCollectionId: number | undefined,
 }
 
 export class MainView extends Component<MainViewProps, MainViewState> {
@@ -58,55 +55,70 @@ export class MainView extends Component<MainViewProps, MainViewState> {
     constructor(props: MainViewProps) {
         super(props);
         this.state = {
-            name: '?',
-            timestampCreated: '?',
-            timestampLastOpened: '?',
             showImportFilesDialog: false,
             collections: [],
             items: [],
             currentCollectionId: undefined,
         };
-        this.closeLibrary = this.closeLibrary.bind(this);
-        this.importFiles = this.importFiles.bind(this);
+        this.updateCollections = this.updateCollections.bind(this);
         this.updateItemList = this.updateItemList.bind(this);
+        this.actionCloseLibrary = this.actionCloseLibrary.bind(this);
+        this.actionImportFiles = this.actionImportFiles.bind(this);
     }
 
     componentDidMount() {
-        GetLibraryMetadataMessage.request(ipcRenderer)
-            .then(response => {
-                this.setState({
-                    name: response.body.name,
-                    timestampCreated: response.body.timestampCreated,
-                    timestampLastOpened: response.body.timestampLastOpened,
-                });
-            })
-            .catch(error => {
-                this.setState({
-                    name: 'ERROR: ' + error,
-                    timestampCreated: 'ERROR: ' + error,
-                    timestampLastOpened: 'ERROR: ' + error,
-                });
-            });
-        GetCollectionsMessage.request(ipcRenderer)
-            .then(response => {
-                this.setState({
-                    collections: response.body,
-                });
-            })
-            .catch(error => {
-                console.log("Error fetching collections.");
-            })
-            .finally(() => {
-                this.updateItemList(this.state.currentCollectionId);
-            });
+        this.updateCollections();
     }
 
-    closeLibrary() {
+
+    updateCollections() {
+        GetCollectionsMessage.request(ipcRenderer, true)
+            .then(responseCollections => {
+                GetTotalItemCountMessage.request(ipcRenderer)
+                    .then(responseCount => {
+                        const collectionAllItems: Collection = {
+                            id: undefined,
+                            name: "All Items",
+                            itemCount: responseCount.body,
+                        };
+                        const collections: Collection[] = [collectionAllItems, ...responseCollections.body];
+                        this.setState({ collections: collections });
+                    })
+                    .catch(() => console.error("Error fetching total item count"));
+            })
+            .catch(() => console.error("Error fetching collections."))
+            .finally(() => this.updateItemList(this.state.currentCollectionId));
+    }
+
+    updateItemList(collectionId: number | undefined) {
+        GetItemsMessage.request(ipcRenderer, collectionId)
+            .then(response => response.body)
+            .then(items => {
+                this.setState({
+                    items: items.map((item: any) => {
+                        return {
+                            filepath: item.filepath,
+                            timestamp: item.timestamp,
+                            hash: item.hash,
+                            thumbnail: item.thumbnail,
+                            collection: (
+                                item.collectionIds
+                                    ? item.collectionIds.map((id: number) => this.state.collections.find((c: Collection) => c.id === id).name).join(", ")
+                                    : undefined
+                            ),
+                        };
+                    }),
+                });
+            })
+            .catch(() => console.error("Error updating item list"));
+    }
+
+    actionCloseLibrary() {
         CloseCurrentLibraryMessage.request(ipcRenderer)
             .then(() => this.props.onCloseProject());
     }
 
-    importFiles(data: ImportProcessData) {
+    actionImportFiles(data: ImportProcessData) {
         this.setState({ showImportFilesDialog: false });
         const uidStatusNotification: string = this.addNotification(Type.PRIMARY, false, "Importing", "");
         ImportStatusUpdateCommand.on(ipcRenderer, (status: ImportStatus) => {
@@ -139,78 +151,27 @@ export class MainView extends Component<MainViewProps, MainViewState> {
             });
     }
 
-    updateItemList(collectionId: number | undefined) {
-        GetItemsMessage.request(ipcRenderer, collectionId)
-            .then(response => response.body)
-            .then(items => {
-                this.setState({
-                    items: items.map((item: any) => {
-                        return {
-                            filepath: item.filepath,
-                            timestamp: item.timestamp,
-                            hash: item.hash,
-                            thumbnail: item.thumbnail,
-                            collection: (
-                                item.collectionIds
-                                    ? item.collectionIds.map((id: number) => this.state.collections.find((c: Collection) => c.id === id).name).join(", ")
-                                    : undefined
-                            ),
-                        };
-                    }),
-                });
-            });
-    }
-
     render(): ReactElement {
         return (
             <Box dir={Dir.DOWN}>
-                <H3Text>Main Screen</H3Text>
-                <BodyText>{'Name: ' + this.state.name}</BodyText>
-                <BodyText>{'Created: ' + this.state.timestampCreated}</BodyText>
-                <BodyText>{'Last Opened: ' + this.state.timestampLastOpened}</BodyText>
-                <Button variant={Variant.SOLID} onAction={() => this.setState({ showImportFilesDialog: true })}>Import
-                    Files</Button>
-                <Button variant={Variant.SOLID} onAction={this.closeLibrary}>Close Library</Button>
-                <Button variant={Variant.SOLID} onAction={() => this.updateItemList(this.state.currentCollectionId)}>Refresh</Button>
 
-                <ChoiceBox
-                    variant={Variant.OUTLINE}
-                    items={this.state.collections.map((c: Collection) => c.name).concat("All Items")}
-                    selected={
-                        this.state.currentCollectionId
-                            ? this.state.collections.find((c: Collection) => c.id === this.state.currentCollectionId).name
-                            : "All Items"
-                    }
-                    onSelect={(selected: string) => {
-                        const selectedId: number | undefined = selected === "All Items"
-                            ? undefined
-                            : this.state.collections.find((c: Collection) => c.name === selected).id;
-                        this.setState({ currentCollectionId: selectedId });
-                        this.updateItemList(selectedId);
-                    }}
-                />
-
-                <div style={{ overflow: 'scroll' }}>
-                    <table>
-                        <tbody>
-                        {
-                            this.state.items.map(item => {
-                                return (
-                                    <tr>
-                                        <td style={{ border: "1px solid black" }}><img src={item.thumbnail} alt='img' />
-                                        </td>
-                                        <td style={{ border: "1px solid black" }}>{item.filepath}</td>
-                                        <td style={{ border: "1px solid black" }}>{item.collection}</td>
-                                        <td style={{ border: "1px solid black" }}>{item.timestamp}</td>
-                                        <td style={{ border: "1px solid black" }}>{item.hash}</td>
-                                    </tr>
-                                );
-                            })
-                        }
-                        </tbody>
-                    </table>
-                </div>
-
+                <Grid columns={['auto', '1fr']}
+                      rows={['100vh']}
+                      fill={Fill.TRUE}
+                      style={{ maxHeight: "100vh" }}>
+                    <MenuSidebar
+                        collections={this.state.collections}
+                        currentCollectionId={this.state.currentCollectionId}
+                        onActionImport={() => this.setState({ showImportFilesDialog: true })}
+                        onActionRefresh={() => this.updateItemList(this.state.currentCollectionId)}
+                        onActionClose={this.actionCloseLibrary}
+                        onActionSelectCollection={(id: number | undefined) => {
+                            this.setState({ currentCollectionId: id });
+                            this.updateItemList(id);
+                        }}
+                    />
+                    <ItemPanel selectedCollectionId={this.state.currentCollectionId} items={this.state.items} />
+                </Grid>
 
                 <SFNotificationStack modalRootId='root'
                                      setAddSimpleFunction={(fun) => this.addNotification = fun}
@@ -221,9 +182,8 @@ export class MainView extends Component<MainViewProps, MainViewState> {
                 {this.state.showImportFilesDialog && (
                     <DialogImportFiles
                         onClose={() => this.setState({ showImportFilesDialog: false })}
-                        onImport={this.importFiles} />
+                        onImport={this.actionImportFiles} />
                 )}
-
 
             </Box>
         );

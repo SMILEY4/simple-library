@@ -17,8 +17,15 @@ export function sqlCreateTableCollectionItems(): string {
         ');';
 }
 
-export function sqlAllCollections() {
-    return 'SELECT * FROM collections;';
+export function sqlAllCollections(includeItemCount: boolean) {
+    if (includeItemCount) {
+        return 'SELECT collections.*, COUNT(collection_items.item_id) AS item_count ' +
+            'FROM "collections", "collection_items" ' +
+            'WHERE collections.collection_id = collection_items.collection_id ' +
+            'GROUP BY collections.collection_id;';
+    } else {
+        return 'SELECT * FROM collections;';
+    }
 }
 
 export function sqlInsertCollection(name: string) {
@@ -87,6 +94,11 @@ export function sqlAllItemsWithCollectionIds(collectionId: number | undefined) {
             'WHERE items.item_id = collection_items.item_id ' +
             'GROUP BY items.item_id';
     }
+}
+
+
+export function sqlCountItems(): string {
+    return 'SELECT COUNT(*) AS count FROM "items"';
 }
 
 

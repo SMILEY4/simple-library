@@ -10,8 +10,8 @@ export class CollectionService {
         this.collectionDataAccess = collectionDataAccess;
     }
 
-    public getAllCollections(): Promise<Collection[]> {
-        return this.collectionDataAccess.getCollections();
+    public getAllCollections(includeItemCount: boolean): Promise<Collection[]> {
+        return this.collectionDataAccess.getCollections(includeItemCount);
     }
 
 }

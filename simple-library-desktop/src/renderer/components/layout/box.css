@@ -1,6 +1,7 @@
 .box {
 	display:  flex;
 	position: relative;
+	box-sizing: border-box;
 }
 
 .box-with-border {

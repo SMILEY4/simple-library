@@ -24,9 +24,7 @@ import { Image, ImageMode } from "../image/Image";
 import forest from "./forest.jpg";
 import { SFCheckbox } from "../checkbox/SFCheckbox";
 import { ChoiceBox } from "../choicebox/ChoiceBox";
-import { SFSidebarMenu } from '../sidebarmenu/SFSidebarMenu';
 import { Notification } from '../notification/Notification';
-import { NotificationStack } from '../notification/NotificationStack';
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0");
@@ -110,117 +108,116 @@ export function ComponentShowcaseView(): any {
     function renderSidebarMenu() {
         return (
             <>
-                <h3>SidebarMenu</h3>
+                {/*<h3>SidebarMenu</h3>*/}
 
-                <ShowcaseRow>
+                {/*<ShowcaseRow>*/}
 
-                    <div style={{ height: "200px", border: "1px solid blue" }}>
-                        <SFSidebarMenu
-                            elements={[
-                                {
-                                    text: "Home",
-                                    icon: <AiOutlineHome />,
-                                },
-                                {
-                                    text: "Team",
-                                    icon: <AiOutlineTeam />,
-                                },
-                                {
-                                    text: "All Projects",
-                                    icon: <FiFolder />,
-                                },
-                            ]}
-                            align={AlignMain.CENTER}
-                            fillHeight
-                        />
-                    </div>
+                {/*    <div style={{ height: "200px", border: "1px solid blue" }}>*/}
+                {/*        <SFSidebarMenu*/}
+                {/*            elements={[*/}
+                {/*                {*/}
+                {/*                    text: "Home",*/}
+                {/*                    icon: <AiOutlineHome />,*/}
+                {/*                },*/}
+                {/*                {*/}
+                {/*                    text: "Team",*/}
+                {/*                    icon: <AiOutlineTeam />,*/}
+                {/*                },*/}
+                {/*                {*/}
+                {/*                    text: "All Projects",*/}
+                {/*                    icon: <FiFolder />,*/}
+                {/*                },*/}
+                {/*            ]}*/}
+                {/*            align={AlignMain.CENTER}*/}
+                {/*            fillHeight*/}
+                {/*        />*/}
+                {/*    </div>*/}
 
-                    <div style={{ height: "200px", border: "1px solid blue" }}>
-                        <SFSidebarMenu
-                            elements={[
-                                {
-                                    text: "Home",
-                                    icon: <AiOutlineHome />,
-                                },
-                                {
-                                    text: "Team",
-                                    icon: <AiOutlineTeam />,
-                                },
-                                {
-                                    text: "All Projects",
-                                    icon: <FiFolder />,
-                                },
-                            ]}
-                            align={AlignMain.CENTER}
-                            fillHeight
-                            minimizable
-                        />
-                    </div>
+                {/*    <div style={{ height: "200px", border: "1px solid blue" }}>*/}
+                {/*        <SFSidebarMenu*/}
+                {/*            elements={[*/}
+                {/*                {*/}
+                {/*                    text: "Home",*/}
+                {/*                    icon: <AiOutlineHome />,*/}
+                {/*                },*/}
+                {/*                {*/}
+                {/*                    text: "Team",*/}
+                {/*                    icon: <AiOutlineTeam />,*/}
+                {/*                },*/}
+                {/*                {*/}
+                {/*                    text: "All Projects",*/}
+                {/*                    icon: <FiFolder />,*/}
+                {/*                },*/}
+                {/*            ]}*/}
+                {/*            align={AlignMain.CENTER}*/}
+                {/*            fillHeight*/}
+                {/*            minimizable*/}
+                {/*        />*/}
+                {/*    </div>*/}
 
-                    <div style={{ height: "200px", border: "1px solid blue" }}>
-                        <SFSidebarMenu
-                            elements={[
-                                {
-                                    text: "Home",
-                                    icon: <AiOutlineHome />,
-                                },
-                                {
-                                    text: "Team",
-                                    icon: <AiOutlineTeam />,
-                                },
-                                {
-                                    text: "Projects",
-                                    icon: <FiFolder />,
-                                },
-                                {
-                                    text: "Projects",
-                                    icon: <FiFolder />,
-                                },
-                                {
-                                    text: "Projects",
-                                    icon: <FiFolder />,
-                                },
-                                {
-                                    text: "Projects",
-                                    icon: <FiFolder />,
-                                },
-                                {
-                                    text: "Projects",
-                                    icon: <FiFolder />,
-                                },
-                                {
-                                    text: "Projects",
-                                    icon: <FiFolder />,
-                                },
-                                {
-                                    text: "Projects",
-                                    icon: <FiFolder />,
-                                },
-                                {
-                                    text: "Projects",
-                                    icon: <FiFolder />,
-                                },
-                                {
-                                    text: "Projects",
-                                    icon: <FiFolder />,
-                                },
-                                {
-                                    text: "Projects",
-                                    icon: <FiFolder />,
-                                },
-                                {
-                                    text: "Projects",
-                                    icon: <FiFolder />,
-                                },
-                            ]}
-                            align={AlignMain.START}
-                            fillHeight
-                            minimizable
-                        />
-                    </div>
+                {/*    <div style={{ height: "200px", border: "1px solid blue" }}>*/}
+                {/*        <SFSidebarMenu*/}
+                {/*            elements={[*/}
+                {/*                {*/}
+                {/*                    text: "Home",*/}
+                {/*                    icon: <AiOutlineHome />,*/}
+                {/*                },*/}
+                {/*                {*/}
+                {/*                    text: "Team",*/}
+                {/*                    icon: <AiOutlineTeam />,*/}
+                {/*                },*/}
+                {/*                {*/}
+                {/*                    text: "Projects",*/}
+                {/*                    icon: <FiFolder />,*/}
+                {/*                },*/}
+                {/*                {*/}
+                {/*                    text: "Projects",*/}
+                {/*                    icon: <FiFolder />,*/}
+                {/*                },*/}
+                {/*                {*/}
+                {/*                    text: "Projects",*/}
+                {/*                    icon: <FiFolder />,*/}
+                {/*                },*/}
+                {/*                {*/}
+                {/*                    text: "Projects",*/}
+                {/*                    icon: <FiFolder />,*/}
+                {/*                },*/}
+                {/*                {*/}
+                {/*                    text: "Projects",*/}
+                {/*                    icon: <FiFolder />,*/}
+                {/*                },*/}
+                {/*                {*/}
+                {/*                    text: "Projects",*/}
+                {/*                    icon: <FiFolder />,*/}
+                {/*                },*/}
+                {/*                {*/}
+                {/*                    text: "Projects",*/}
+                {/*                    icon: <FiFolder />,*/}
+                {/*                },*/}
+                {/*                {*/}
+                {/*                    text: "Projects",*/}
+                {/*                    icon: <FiFolder />,*/}
+                {/*                },*/}
+                {/*                {*/}
+                {/*                    text: "Projects",*/}
+                {/*                    icon: <FiFolder />,*/}
+                {/*                },*/}
+                {/*                {*/}
+                {/*                    text: "Projects",*/}
+                {/*                    icon: <FiFolder />,*/}
+                {/*                },*/}
+                {/*                {*/}
+                {/*                    text: "Projects",*/}
+                {/*                    icon: <FiFolder />,*/}
+                {/*                },*/}
+                {/*            ]}*/}
+                {/*            align={AlignMain.START}*/}
+                {/*            fillHeight*/}
+                {/*            minimizable*/}
+                {/*        />*/}
+                {/*    </div>*/}
 
-                </ShowcaseRow>
-
+                {/*</ShowcaseRow>*/}
             </>
         );
     }
