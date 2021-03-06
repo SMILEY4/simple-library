@@ -51,7 +51,6 @@ if (RUN_TESTS) {
             new ImportStepFileHash(fsWrapper),
             new ImportStepThumbnail(),
             windowService,
-            collectionDataAccess
         ),
         itemDataAccess,
         collectionDataAccess,

@@ -99,7 +99,7 @@ export class MessageHandler {
     }
 
     private async handleRequestGetItems(collectionId: number | undefined): Promise<Response> {
-        return this.itemService.getAllItems(collectionId, collectionId === undefined)
+        return this.itemService.getAllItems(collectionId)
             .then((items: ItemData[]) => successResponse(items))
             .catch(err => failedResponse(err));
     }

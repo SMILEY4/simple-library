@@ -79,26 +79,13 @@ export function sqlInsertItem(filepath: string, timestamp: number, hash: string,
         ');';
 }
 
-export function sqlAllItems(collectionId: number | undefined) {
+export function sqlGetItemsInCollection(collectionId: number | undefined) {
     if (collectionId) {
         return 'SELECT items.* ' +
             'FROM items, collection_items ' +
             'WHERE items.item_id = collection_items.item_id AND collection_items.collection_id = ' + collectionId;
     } else {
         return "SELECT * FROM items;";
-    }
-}
-
-export function sqlAllItemsWithCollectionIds(collectionId: number | undefined) {
-    if (collectionId) {
-        return 'SELECT items.*, collection_items.collection_id ' +
-            'FROM items, collection_items ' +
-            'WHERE items.item_id = collection_items.item_id AND collection_items.collection_id = ' + collectionId;
-    } else {
-        return 'SELECT items.*, group_concat(collection_items.collection_id, ";") AS collections ' +
-            'FROM items, collection_items ' +
-            'WHERE items.item_id = collection_items.item_id ' +
-            'GROUP BY items.item_id';
     }
 }
 

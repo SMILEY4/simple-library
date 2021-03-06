@@ -21,8 +21,8 @@ export class ItemService {
         return this.importService.importFiles(data);
     }
 
-    public async getAllItems(collectionId: number | undefined, includeCollections: boolean): Promise<ItemData[]> {
-        return this.itemDataAccess.getAllItems(collectionId, includeCollections);
+    public async getAllItems(collectionId: number | undefined): Promise<ItemData[]> {
+        return this.itemDataAccess.getAllItems(collectionId);
     }
 
     public async getTotalItemCount(): Promise<number> {

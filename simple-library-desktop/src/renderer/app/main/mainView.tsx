@@ -165,7 +165,8 @@ export class MainView extends Component<MainViewProps, MainViewState> {
             })
             .then(() => {
                 this.removeNotification(uidStatusNotification);
-                this.updateItemList(this.state.currentCollectionId);
+                this.updateCollections()
+                    .then(() => this.updateItemList(this.state.currentCollectionId));
             })
             .catch(error => {
                 this.displayErrorNotification("Import failed unexpectedly", error);
