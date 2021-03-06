@@ -38,6 +38,7 @@ interface MenuCollectionProps {
     itemCount: number,
     selectedId: number | undefined,
     onSelect: (id: number | undefined) => void,
+    onDrop: (dataTransfer: DataTransfer, copyMode: boolean) => void
 }
 
 export function MenuCollection(props: React.PropsWithChildren<MenuCollectionProps>): React.ReactElement {
@@ -45,5 +46,8 @@ export function MenuCollection(props: React.PropsWithChildren<MenuCollectionProp
                             icon={<BiImages />}
                             label={"" + props.itemCount}
                             selected={props.selectedId === props.id}
-                            onClick={() => props.onSelect(props.id)} />;
+                            onClick={() => props.onSelect(props.id)}
+                            enableDrop={true}
+                            getDropEffect={(event) => event.ctrlKey ? "copy" : "move"}
+                            onDrop={(dt, event) => props.onDrop(dt, event.ctrlKey)} />;
 }

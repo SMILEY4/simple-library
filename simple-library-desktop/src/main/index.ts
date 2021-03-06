@@ -43,7 +43,6 @@ if (RUN_TESTS) {
     const appService: LibraryService = new LibraryService(libraryDataAccess, configDataAccess);
     const windowService: WindowService = new WindowService();
     const itemService: ItemService = new ItemService(
-        itemDataAccess,
         new ImportService(
             itemDataAccess,
             new ImportDataValidator(fsWrapper),
@@ -54,6 +53,8 @@ if (RUN_TESTS) {
             windowService,
             collectionDataAccess
         ),
+        itemDataAccess,
+        collectionDataAccess,
     );
     const collectionService: CollectionService = new CollectionService(collectionDataAccess);
 

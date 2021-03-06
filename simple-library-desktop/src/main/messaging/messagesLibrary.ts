@@ -208,13 +208,13 @@ export module GetCollectionsMessage {
         const request: Request = {
             channel: CHANNEL_GET_COLLECTIONS,
             payload: {
-                includeItemCount: includeItemCount
+                includeItemCount: includeItemCount,
             },
         };
         return sendRequest(ipc, request);
     }
 
-    export function handle(ipc: Electron.IpcMain, action: (includeItemCount:boolean) => Promise<Response>) {
+    export function handle(ipc: Electron.IpcMain, action: (includeItemCount: boolean) => Promise<Response>) {
         const handler: RequestHandler = {
             channel: CHANNEL_GET_COLLECTIONS,
             action: (payload) => action(payload.includeItemCount),
@@ -239,9 +239,36 @@ export module GetTotalItemCountMessage {
     export function handle(ipc: Electron.IpcMain, action: () => Promise<Response>) {
         const handler: RequestHandler = {
             channel: CHANNEL_GET_TOTAL_ITEM_COUNT,
-            action: () => action(), // TODO: handle this message
+            action: () => action(),
         };
         handleRequest(ipc, handler);
     }
 
+}
+
+
+export module MoveItemsToCollectionsMessage {
+
+    const CHANNEL_MOVE_ITEMS_TO_COLLECTION: string = 'library.items.move_collections';
+
+    export function request(ipc: Electron.IpcRenderer, sourceCollectionId: number, collectionId: number, itemIds: number[], copyMode: boolean): Promise<Response> {
+        const request: Request = {
+            channel: CHANNEL_MOVE_ITEMS_TO_COLLECTION,
+            payload: {
+                sourceCollectionId: sourceCollectionId,
+                collectionId: collectionId,
+                itemIds: itemIds,
+                copyMode: copyMode,
+            },
+        };
+        return sendRequest(ipc, request);
+    }
+
+    export function handle(ipc: Electron.IpcMain, action: (sourceCollectionId: number, collectionId: number, itemIds: number[], copyMode: boolean) => Promise<Response>) {
+        const handler: RequestHandler = {
+            channel: CHANNEL_MOVE_ITEMS_TO_COLLECTION,
+            action: (payload) => action(payload.sourceCollectionId, payload.collectionId, payload.itemIds, payload.copyMode),
+        };
+        handleRequest(ipc, handler);
+    }
 }

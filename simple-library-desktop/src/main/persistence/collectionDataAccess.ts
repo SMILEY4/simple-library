@@ -4,6 +4,7 @@ import {
     sqlAllCollections,
     sqlDeleteCollection,
     sqlInsertCollection,
+    sqlRemoveItemFromCollection,
     sqlUpdateCollection,
 } from './sql';
 import { Collection } from '../../common/commonModels';
@@ -18,13 +19,13 @@ export class CollectionDataAccess {
     }
 
     public getCollections(includeItemCount: boolean): Promise<Collection[]> {
-        if(includeItemCount) {
+        if (includeItemCount) {
             return this.dataAccess.queryAll(sqlAllCollections(true))
                 .then((rows: any) => rows.map((row: any) => {
                     return {
                         id: row.collection_id,
                         name: row.collection_name,
-                        itemCount: row.item_count
+                        itemCount: row.item_count,
                     };
                 }));
         } else {
@@ -44,7 +45,7 @@ export class CollectionDataAccess {
                 return {
                     id: id,
                     name: name,
-                    itemCount: undefined
+                    itemCount: undefined,
                 };
             });
     }
@@ -59,6 +60,16 @@ export class CollectionDataAccess {
 
     public addItemToCollection(collectionId: number, itemId: number): Promise<void> {
         return this.dataAccess.executeRun(sqlAddItemToCollection(collectionId, itemId)).then();
+    }
+
+    public moveItemsToCollection(sourceCollectionId: number, collectionId: number, itemId: number): Promise<void> {
+        return this.dataAccess.executeRun(sqlAddItemToCollection(collectionId, itemId))
+            .then(() => {
+                if (sourceCollectionId !== undefined) {
+                    return this.dataAccess.executeRun(sqlRemoveItemFromCollection(sourceCollectionId, itemId));
+                }
+            })
+            .then();
     }
 
 }

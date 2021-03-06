@@ -12,6 +12,7 @@ export interface MenuSidebarProps {
     onActionRefresh: () => void,
     onActionClose: () => void
     onActionSelectCollection: (id: number | undefined) => void
+    onActionMoveItems: (sourceCollectionId: number, collectionId: number, itemIds: number[], copyMode: boolean) => void
 }
 
 export interface MenuSidebarState {
@@ -26,12 +27,20 @@ export class MenuSidebar extends Component<MenuSidebarProps, MenuSidebarState> {
             minimized: false,
         };
         this.setMinimizeState = this.setMinimizeState.bind(this);
+        this.handleDrop = this.handleDrop.bind(this);
     }
 
     setMinimizeState(minimized: boolean) {
         this.setState({
             minimized: minimized,
         });
+    }
+
+    handleDrop(targetCollection: Collection, dataTransfer: DataTransfer, copyMode: boolean) {
+        if (targetCollection.id) {
+            const dropData: any = JSON.parse(dataTransfer.getData("application/json"));
+            this.props.onActionMoveItems(dropData.sourceCollectionId, targetCollection.id, dropData.itemIds, copyMode);
+        }
     }
 
     render() {
@@ -54,7 +63,9 @@ export class MenuSidebar extends Component<MenuSidebarProps, MenuSidebarState> {
                                                id={c.id}
                                                itemCount={c.itemCount}
                                                selectedId={this.props.currentCollectionId}
-                                               onSelect={this.props.onActionSelectCollection} />;
+                                               onSelect={this.props.onActionSelectCollection}
+                                               onDrop={(dt: DataTransfer, copyMode) => this.handleDrop(c, dt, copyMode)}
+                        />;
                     })}
                 </SidebarMenuSection>
 

@@ -12,11 +12,14 @@ import {
 } from '../../common/commonModels';
 import {
     CloseCurrentLibraryMessage,
-    CreateLibraryMessage, GetCollectionsMessage,
+    CreateLibraryMessage,
+    GetCollectionsMessage,
     GetItemsMessage,
     GetLastOpenedLibrariesMessage,
-    GetLibraryMetadataMessage, GetTotalItemCountMessage,
+    GetLibraryMetadataMessage,
+    GetTotalItemCountMessage,
     ImportFilesMessage,
+    MoveItemsToCollectionsMessage,
     OpenLibraryMessage,
 } from './messagesLibrary';
 import { ItemService } from '../service/item/ItemService';
@@ -50,8 +53,8 @@ export class MessageHandler {
         GetItemsMessage.handle(ipcMain, (collectionId: number | undefined) => this.handleRequestGetItems(collectionId));
         GetCollectionsMessage.handle(ipcMain, (includeItemCount:boolean) => this.handleRequestGetCollections(includeItemCount));
         GetTotalItemCountMessage.handle(ipcMain, () => this.handleRequestTotalItemCount())
+        MoveItemsToCollectionsMessage.handle(ipcMain, (sourceCollectionId: number, collectionId: number, itemIds: number[], copyMode: boolean) => this.handleMoveItemsToCollection(sourceCollectionId, collectionId, itemIds, copyMode));
     }
-
 
     private async handleRequestCreateLibrary(path: string, name: string): Promise<Response> {
         return this.appService.createLibrary(path, name)
@@ -91,7 +94,7 @@ export class MessageHandler {
 
     private async handleRequestImportFiles(data: ImportProcessData): Promise<Response> {
         return this.itemService.importFiles(data)
-            .then((result:ImportResult) => successResponse(result))
+            .then((result: ImportResult) => successResponse(result))
             .catch(err => failedResponse(err));
     }
 
@@ -113,5 +116,11 @@ export class MessageHandler {
             .catch(err => failedResponse(err));
     }
 
+
+    handleMoveItemsToCollection(sourceCollectionId: number, collectionId: number, itemIds: number[], copyMode: boolean): Promise<Response> {
+        return this.itemService.moveItemsToCollection(sourceCollectionId, collectionId, itemIds, copyMode)
+            .then(() => successResponse())
+            .catch(err => failedResponse(err));
+    }
 
 }
