@@ -1,5 +1,5 @@
 import DataAccess from './dataAccess';
-import { sqlAllItems, sqlAllItemsWithCollectionIds, sqlCountItems, sqlInsertItem } from './sql';
+import { sqlCountItems, sqlInsertItem, sqlGetItemsInCollection } from './sql';
 import { ItemData } from '../../common/commonModels';
 
 export class ItemDataAccess {
@@ -30,9 +30,8 @@ export class ItemDataAccess {
             });
     }
 
-    public async getAllItems(collectionId: number | undefined, includeCollections: boolean): Promise<ItemData[]> {
-        const sqlQuery: string = includeCollections ? sqlAllItemsWithCollectionIds(collectionId) : sqlAllItems(collectionId);
-        return this.dataAccess.queryAll(sqlQuery)
+    public async getAllItems(collectionId: number | undefined): Promise<ItemData[]> {
+        return this.dataAccess.queryAll(sqlGetItemsInCollection(collectionId))
             .then((rows: any) => rows.map((row: any) => {
                 return {
                     id: row.item_id,
@@ -41,16 +40,8 @@ export class ItemDataAccess {
                     filepath: row.filepath,
                     hash: row.hash,
                     thumbnail: row.thumbnail,
-                    collectionIds: (includeCollections ? this.toCollectionIds(row.collections) : undefined),
                 };
             }));
-    }
-
-    private toCollectionIds(strCollectionIds: string): number[] {
-        return strCollectionIds
-            .split(";")
-            .map((id: string) => parseInt(id))
-            .filter((id: number) => id && !isNaN(id));
     }
 
 }

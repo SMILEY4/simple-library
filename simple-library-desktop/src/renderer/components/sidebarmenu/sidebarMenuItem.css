@@ -56,7 +56,6 @@
 	justify-content: center;
 }
 
-
 .sidebar-menu-minimized * .sidebar-menu-item > .sidebar-menu-item-title > .sidebar-menu-item-title-text,
 .sidebar-menu-minimized * .sidebar-menu-item > .sidebar-menu-item-label {
 	visibility: hidden;

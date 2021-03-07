@@ -24,3 +24,12 @@
 .root-view {
 	background-color: var(--background-color-0);
 }
+
+.drag-ghost-label {
+	position:         absolute;
+	top:              -100000px;
+	background-color: var(--base-color-0);
+	border-radius:    var(--radius-0);
+	padding:          var(--s-0-25);
+	color:            var(--text-color-2)
+}

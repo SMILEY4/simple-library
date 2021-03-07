@@ -12,7 +12,7 @@ export function sqlCreateTableCollections(): string {
 export function sqlCreateTableCollectionItems(): string {
     return 'CREATE TABLE collection_items (' +
         '  collection_id INTEGER NOT NULL,' +
-        '  item_id NOT NULL,' +
+        '  item_id INTEGER NOT NULL,' +
         '  PRIMARY KEY (collection_id, item_id)' +
         ');';
 }
@@ -20,8 +20,8 @@ export function sqlCreateTableCollectionItems(): string {
 export function sqlAllCollections(includeItemCount: boolean) {
     if (includeItemCount) {
         return 'SELECT collections.*, COUNT(collection_items.item_id) AS item_count ' +
-            'FROM "collections", "collection_items" ' +
-            'WHERE collections.collection_id = collection_items.collection_id ' +
+            'FROM collections ' +
+            'LEFT JOIN collection_items ON collections.collection_id = collection_items.collection_id ' +
             'GROUP BY collections.collection_id;';
     } else {
         return 'SELECT * FROM collections;';
@@ -41,7 +41,13 @@ export function sqlUpdateCollection(collectionId: number, name: string) {
 }
 
 export function sqlAddItemToCollection(collectionId: number, itemId: number) {
-    return 'INSERT INTO collection_items (collection_id, item_id) VALUES (' + collectionId + ',' + itemId + ');';
+    return 'INSERT OR IGNORE INTO collection_items (collection_id, item_id) VALUES (' + collectionId + ',' + itemId + ');';
+    // return 'INSERT INTO collection_items (collection_id, item_id) VALUES (' + collectionId + ',' + itemId + ');';
+}
+
+export function sqlRemoveItemFromCollection(collectionId: number, itemId: number) {
+    return 'DELETE FROM collection_items ' +
+        'WHERE collection_id=' + collectionId + ' AND item_id=' + itemId + ';';
 }
 
 //==================//
@@ -73,26 +79,13 @@ export function sqlInsertItem(filepath: string, timestamp: number, hash: string,
         ');';
 }
 
-export function sqlAllItems(collectionId: number | undefined) {
+export function sqlGetItemsInCollection(collectionId: number | undefined) {
     if (collectionId) {
         return 'SELECT items.* ' +
             'FROM items, collection_items ' +
             'WHERE items.item_id = collection_items.item_id AND collection_items.collection_id = ' + collectionId;
     } else {
         return "SELECT * FROM items;";
-    }
-}
-
-export function sqlAllItemsWithCollectionIds(collectionId: number | undefined) {
-    if (collectionId) {
-        return 'SELECT items.*, collection_items.collection_id ' +
-            'FROM items, collection_items ' +
-            'WHERE items.item_id = collection_items.item_id AND collection_items.collection_id = ' + collectionId;
-    } else {
-        return 'SELECT items.*, group_concat(collection_items.collection_id, ";") AS collections ' +
-            'FROM items, collection_items ' +
-            'WHERE items.item_id = collection_items.item_id ' +
-            'GROUP BY items.item_id';
     }
 }
 
