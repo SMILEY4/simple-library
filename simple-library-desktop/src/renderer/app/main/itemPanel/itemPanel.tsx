@@ -5,6 +5,12 @@ import { HBox, VBox } from '../../../components/layout/Box';
 import { AlignCross, concatClasses, Size } from '../../../components/common';
 import "./itemPanel.css";
 
+
+export const ITEM_DRAG_GHOST_ID: string = "item-drag-ghost";
+export const ITEM_DRAG_GHOST_CLASS: string = "item-drag-ghost";
+export const ITEM_COPY_DRAG_GHOST_CLASS: string = "item-copy-drag-ghost";
+export const ITEM_MOVE_DRAG_GHOST_CLASS: string = "item-move-drag-ghost";
+
 export interface ItemPanelProps {
     selectedCollectionId: number | undefined
     items: Item[],
@@ -26,6 +32,7 @@ export class ItemPanel extends Component<ItemPanelProps, ItemPanelState> {
         this.renderItem = this.renderItem.bind(this);
         this.handleItemSelect = this.handleItemSelect.bind(this);
         this.handleDragStart = this.handleDragStart.bind(this);
+        this.prepareDragImage = this.prepareDragImage.bind(this);
     }
 
     componentDidMount() {
@@ -77,7 +84,7 @@ export class ItemPanel extends Component<ItemPanelProps, ItemPanelState> {
     handleDragStart(item: Item, event: React.DragEvent) {
         let itemsIdsToDrag: number[] = this.state.selectedItemIds;
         if (itemsIdsToDrag.indexOf(item.id) === -1) {
-            itemsIdsToDrag = [item.id]
+            itemsIdsToDrag = [item.id];
             this.setState({
                 selectedItemIds: itemsIdsToDrag,
                 lastSelectedItemId: item.id,
@@ -86,10 +93,28 @@ export class ItemPanel extends Component<ItemPanelProps, ItemPanelState> {
         const dropData: any = {
             sourceCollectionId: this.props.selectedCollectionId,
             itemIds: itemsIdsToDrag,
+        };
+        const data: string = JSON.stringify(dropData);
+        event.dataTransfer.setData("text/plain", data);
+        event.dataTransfer.setData("application/json", data);
+        event.dataTransfer.setDragImage(this.prepareDragImage(event.ctrlKey, itemsIdsToDrag.length), -10, -10);
+        event.dataTransfer.effectAllowed = "copyMove";
+    }
+
+    prepareDragImage(copyMode: boolean, nItems: number): Element {
+        let dragElement: any = document.getElementById(ITEM_DRAG_GHOST_ID);
+        if (!dragElement) {
+            dragElement = document.createElement("div");
+            dragElement.id = ITEM_DRAG_GHOST_ID;
+            document.getElementById("root").appendChild(dragElement);
         }
-        event.dataTransfer.setData("text/plain", JSON.stringify(dropData));
-        event.dataTransfer.setData("application/json", JSON.stringify(dropData));
-        event.dataTransfer.effectAllowed = "move";
+        dragElement.className = ITEM_DRAG_GHOST_CLASS + " " + (copyMode ? ITEM_COPY_DRAG_GHOST_CLASS : ITEM_MOVE_DRAG_GHOST_CLASS);
+        if (copyMode) {
+            dragElement.innerText = "Copy " + nItems + (nItems === 1 ? " item" : " items");
+        } else {
+            dragElement.innerText = "Move " + nItems + (nItems === 1 ? " item" : " items");
+        }
+        return dragElement;
     }
 
     render() {

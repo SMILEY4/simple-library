@@ -29,16 +29,13 @@ export class ItemService {
         return this.itemDataAccess.getTotalItemCount();
     }
 
-    public async moveItemsToCollection(sourceCollectionId: number, collectionId: number, itemIds: number[], copyMode: boolean): Promise<void> {
-        console.log("moveItemsToCollection: " + sourceCollectionId + " > " + collectionId + "  " + itemIds + " (" + copyMode + ")")
-        if (collectionId) {
-            for (let i = 0; i < itemIds.length; i++) {
-                const itemId: number = itemIds[i];
-                if (copyMode) {
-                    await this.collectionDataAccess.addItemToCollection(collectionId, itemId);
-                } else {
-                    await this.collectionDataAccess.moveItemsToCollection(sourceCollectionId, collectionId, itemId);
-                }
+    public async moveItemsToCollection(srcCollectionId: number, tgtCollectionId: number, itemIds: number[], copyMode: boolean): Promise<void> {
+        for (let i = 0; i < itemIds.length; i++) {
+            const itemId: number = itemIds[i];
+            if (copyMode) {
+                await this.collectionDataAccess.copyItemToCollection(tgtCollectionId, itemId);
+            } else {
+                await this.collectionDataAccess.moveItemsToCollection(srcCollectionId, tgtCollectionId, itemId);
             }
         }
     }

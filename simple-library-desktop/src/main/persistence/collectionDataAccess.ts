@@ -58,18 +58,26 @@ export class CollectionDataAccess {
         return this.dataAccess.executeRun(sqlUpdateCollection(collectionId, name)).then();
     }
 
-    public addItemToCollection(collectionId: number, itemId: number): Promise<void> {
-        return this.dataAccess.executeRun(sqlAddItemToCollection(collectionId, itemId)).then();
+    public copyItemToCollection(collectionId: number, itemId: number): Promise<void> {
+        if (collectionId) {
+            return this.dataAccess.executeRun(sqlAddItemToCollection(collectionId, itemId)).then();
+        } else {
+            return Promise.resolve();
+        }
     }
 
-    public moveItemsToCollection(sourceCollectionId: number, collectionId: number, itemId: number): Promise<void> {
-        return this.dataAccess.executeRun(sqlAddItemToCollection(collectionId, itemId))
-            .then(() => {
-                if (sourceCollectionId !== undefined) {
-                    return this.dataAccess.executeRun(sqlRemoveItemFromCollection(sourceCollectionId, itemId));
-                }
-            })
-            .then();
+    public moveItemsToCollection(srcCollectionId: number, tgtCollectionId: number, itemId: number): Promise<void> {
+        if(tgtCollectionId) {
+            return this.dataAccess.executeRun(sqlAddItemToCollection(tgtCollectionId, itemId))
+                .then(() => {
+                    if (srcCollectionId !== undefined) {
+                        return this.dataAccess.executeRun(sqlRemoveItemFromCollection(srcCollectionId, itemId));
+                    }
+                })
+                .then();
+        } else {
+            return this.dataAccess.executeRun(sqlRemoveItemFromCollection(srcCollectionId, itemId)).then();
+        }
     }
 
 }

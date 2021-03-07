@@ -4,6 +4,7 @@ import { SidebarMenuSection } from '../../../components/sidebarmenu/SidebarMenuS
 import { Collection } from '../../../../common/commonModels';
 import { SidebarMenu } from '../../../components/sidebarmenu/SidebarMenu';
 import { MenuActionClose, MenuActionImport, MenuActionRefresh, MenuCollection } from './menuSidebarItems';
+import { ITEM_COPY_DRAG_GHOST_CLASS, ITEM_DRAG_GHOST_ID } from '../itemPanel/itemPanel';
 
 export interface MenuSidebarProps {
     collections: Collection[]
@@ -36,10 +37,23 @@ export class MenuSidebar extends Component<MenuSidebarProps, MenuSidebarState> {
         });
     }
 
+    handleDragOver(targetCollection: Collection, event: React.DragEvent) {
+        let dragElement: any = document.getElementById(ITEM_DRAG_GHOST_ID);
+        let mode: string;
+        if (dragElement && dragElement.className.includes(ITEM_COPY_DRAG_GHOST_CLASS)) {
+            mode = "copy";
+        } else {
+            mode = "move";
+        }
+        event.dataTransfer.dropEffect = mode;
+    }
+
     handleDrop(targetCollection: Collection, dataTransfer: DataTransfer, copyMode: boolean) {
-        if (targetCollection.id) {
-            const dropData: any = JSON.parse(dataTransfer.getData("application/json"));
-            this.props.onActionMoveItems(dropData.sourceCollectionId, targetCollection.id, dropData.itemIds, copyMode);
+        const dropData: any = JSON.parse(dataTransfer.getData("application/json"));
+        const srcCollectionId: number = dropData.sourceCollectionId;
+        const tgtCollectionId: number = targetCollection.id;
+        if (srcCollectionId !== tgtCollectionId) {
+            this.props.onActionMoveItems(srcCollectionId, tgtCollectionId, dropData.itemIds, copyMode);
         }
     }
 
@@ -64,7 +78,8 @@ export class MenuSidebar extends Component<MenuSidebarProps, MenuSidebarState> {
                                                itemCount={c.itemCount}
                                                selectedId={this.props.currentCollectionId}
                                                onSelect={this.props.onActionSelectCollection}
-                                               onDrop={(dt: DataTransfer, copyMode) => this.handleDrop(c, dt, copyMode)}
+                                               onDragOver={(event: React.DragEvent) => this.handleDragOver(c, event)}
+                                               onDrop={(dt: DataTransfer, copyMode: boolean) => this.handleDrop(c, dt, copyMode)}
                         />;
                     })}
                 </SidebarMenuSection>

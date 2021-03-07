@@ -27,20 +27,22 @@ export class WindowService {
 
 
     public switchToSmallWindow(): BrowserWindow {
-        this.window.setSize(680, 420);
-        this.window.setResizable(false);
-        this.window.center();
+        // todo: temp for dev
+        // this.window.setSize(680, 420);
+        // this.window.setResizable(false);
+        // this.window.center();
         return this.window;
     }
 
 
     public switchToLargeWindow(): BrowserWindow {
-        const cursor = screen.getCursorScreenPoint();
-        const currentScreen = screen.getDisplayNearestPoint({ x: cursor.x, y: cursor.y });
-        const { width, height } = currentScreen.workAreaSize;
-        this.window.setResizable(true);
-        this.window.setSize(width, height);
-        this.window.setPosition(0, 0);
+        // todo: temp for dev
+        // const cursor = screen.getCursorScreenPoint();
+        // const currentScreen = screen.getDisplayNearestPoint({ x: cursor.x, y: cursor.y });
+        // const { width, height } = currentScreen.workAreaSize;
+        // this.window.setResizable(true);
+        // this.window.setSize(width, height);
+        // this.window.setPosition(0, 0);
         return this.window;
     }
 

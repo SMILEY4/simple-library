@@ -38,6 +38,7 @@ interface MenuCollectionProps {
     itemCount: number,
     selectedId: number | undefined,
     onSelect: (id: number | undefined) => void,
+    onDragOver: (event: React.DragEvent) => void
     onDrop: (dataTransfer: DataTransfer, copyMode: boolean) => void
 }
 
@@ -48,6 +49,6 @@ export function MenuCollection(props: React.PropsWithChildren<MenuCollectionProp
                             selected={props.selectedId === props.id}
                             onClick={() => props.onSelect(props.id)}
                             enableDrop={true}
-                            getDropEffect={(event) => event.ctrlKey ? "copy" : "move"}
+                            onDragOver={(event) => props.onDragOver(event)}
                             onDrop={(dt, event) => props.onDrop(dt, event.ctrlKey)} />;
 }

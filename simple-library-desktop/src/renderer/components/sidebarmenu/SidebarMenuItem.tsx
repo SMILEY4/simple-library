@@ -14,7 +14,8 @@ export interface SidebarMenuItemProps {
     enableDrop?: boolean,
     dropEffect?: string,
     getDropEffect?: (event: React.DragEvent) => string,
-    onDrop?: (dataTransfer: DataTransfer, event:React.DragEvent) => void
+    onDragOver?: (event: React.DragEvent) => void,
+    onDrop?: (dataTransfer: DataTransfer, event: React.DragEvent) => void
 }
 
 export function SidebarMenuItem(props: React.PropsWithChildren<SidebarMenuItemProps>): React.ReactElement {
@@ -29,12 +30,19 @@ export function SidebarMenuItem(props: React.PropsWithChildren<SidebarMenuItemPr
 
     function getHandleDragOver(): (event: React.DragEvent) => void | undefined {
         if (props.enableDrop) {
-            return (event: React.DragEvent) => {
-                event.preventDefault();
-                event.dataTransfer.dropEffect = props.getDropEffect
-                    ? props.getDropEffect(event)
-                    : (props.dropEffect ? props.dropEffect : "move");
-            };
+            if (props.onDragOver) {
+                return (event: React.DragEvent) => {
+                    event.preventDefault();
+                    props.onDragOver(event);
+                }
+            } else {
+                return (event: React.DragEvent) => {
+                    event.preventDefault();
+                    event.dataTransfer.dropEffect = props.getDropEffect
+                        ? props.getDropEffect(event)
+                        : (props.dropEffect ? props.dropEffect : "move");
+                };
+            }
         } else {
             return undefined;
         }
