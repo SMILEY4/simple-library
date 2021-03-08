@@ -29,7 +29,7 @@ interface MainViewProps {
     onCloseProject: () => void
 }
 
-export interface Item {
+export interface ItemEntryData {
     id: number,
     filepath: string,
     timestamp: number,
@@ -41,7 +41,7 @@ export interface Item {
 interface MainViewState {
     showImportFilesDialog: boolean
     collections: Collection[]
-    items: Item[],
+    items: ItemEntryData[],
     currentCollectionId: number | undefined,
 }
 
@@ -101,7 +101,7 @@ export class MainView extends Component<MainViewProps, MainViewState> {
             .then(items => this.setState({ items: items.map(this.itemDataToItem) }));
     }
 
-    itemDataToItem(item: ItemData): Item {
+    itemDataToItem(item: ItemData): ItemEntryData {
         return {
             id: item.id,
             filepath: item.filepath,

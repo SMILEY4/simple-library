@@ -1,10 +1,12 @@
 import * as React from 'react';
 import { HBox, VBox } from '../../../components/layout/Box';
 import { concatClasses, Size } from '../../../components/common';
-import { Item } from '../mainView';
+import { ItemEntryData } from '../mainView';
+import { useContextMenu } from 'react-contexify';
+import { ITEM_CONTEXT_MENU_ID } from './itemPanel';
 
 interface ItemEntryProps {
-    item: Item,
+    item: ItemEntryData,
     isSelected: boolean,
     onSelect: (addSubMode: boolean, rangeMode: boolean) => void,
     onDragStart: (event: React.DragEvent) => void
@@ -20,6 +22,10 @@ export function ItemEntry(props: React.PropsWithChildren<ItemEntryProps>): React
         );
     }
 
+    const { show } = useContextMenu({
+        id: ITEM_CONTEXT_MENU_ID,
+    });
+
     return (
         <div
             onClick={event => {
@@ -27,6 +33,7 @@ export function ItemEntry(props: React.PropsWithChildren<ItemEntryProps>): React
                 event.stopPropagation();
                 props.onSelect(event.ctrlKey, event.shiftKey);
             }}
+            onContextMenu={show}
             onDragStart={(event) => props.onDragStart(event)}
             draggable={true}
         >

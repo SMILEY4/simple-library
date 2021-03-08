@@ -1,11 +1,13 @@
 import * as React from 'react';
 import { Component } from 'react';
-import { Item } from '../mainView';
+import { ItemEntryData } from '../mainView';
 import { VBox } from '../../../components/layout/Box';
 import { AlignCross, Size } from '../../../components/common';
 import "./itemPanel.css";
 import { ItemEntry } from './ItemEntry';
-
+import { Item, Menu, Separator, Submenu } from 'react-contexify';
+import { createPortal } from 'react-dom';
+import "react-contexify/dist/ReactContexify.css";
 
 export const ITEM_DRAG_GHOST_ID: string = "item-drag-ghost";
 export const ITEM_DRAG_GHOST_CLASS: string = "item-drag-ghost";
@@ -14,13 +16,15 @@ export const ITEM_MOVE_DRAG_GHOST_CLASS: string = "item-move-drag-ghost";
 
 export interface ItemPanelProps {
     selectedCollectionId: number | undefined
-    items: Item[],
+    items: ItemEntryData[],
 }
 
 export interface ItemPanelState {
     selectedItemIds: number[]
     lastSelectedItemId: number | undefined,
 }
+
+export const ITEM_CONTEXT_MENU_ID = "item-context-menu";
 
 export class ItemPanel extends Component<ItemPanelProps, ItemPanelState> {
 
@@ -33,6 +37,7 @@ export class ItemPanel extends Component<ItemPanelProps, ItemPanelState> {
         this.handleItemSelect = this.handleItemSelect.bind(this);
         this.handleDragStart = this.handleDragStart.bind(this);
         this.prepareDragImage = this.prepareDragImage.bind(this);
+        this.handleContextMenuAction = this.handleContextMenuAction.bind(this);
     }
 
     componentDidMount() {
@@ -47,7 +52,7 @@ export class ItemPanel extends Component<ItemPanelProps, ItemPanelState> {
         });
     }
 
-    handleItemSelect(item: Item, addSubMode: boolean, rangeMode: boolean) {
+    handleItemSelect(item: ItemEntryData, addSubMode: boolean, rangeMode: boolean) {
         let newSelectedIds: number[] = [];
         if (rangeMode && this.state.lastSelectedItemId) {
             const itemIds: number[] = this.props.items.map(item => item.id);
@@ -81,7 +86,7 @@ export class ItemPanel extends Component<ItemPanelProps, ItemPanelState> {
         });
     }
 
-    handleDragStart(item: Item, event: React.DragEvent) {
+    handleDragStart(item: ItemEntryData, event: React.DragEvent) {
         let itemsIdsToDrag: number[] = this.state.selectedItemIds;
         if (itemsIdsToDrag.indexOf(item.id) === -1) {
             itemsIdsToDrag = [item.id];
@@ -117,12 +122,22 @@ export class ItemPanel extends Component<ItemPanelProps, ItemPanelState> {
         return dragElement;
     }
 
+    handleContextMenuAction() {
+        console.log("ACTION !!");
+    }
+
     render() {
+
+        function Portal(children:any){
+            return createPortal(children, document.querySelector("#root-view"));
+        }
+
         return (
             <div style={{
                 maxHeight: "100vh",
                 overflow: "auto",
             }}>
+
                 <VBox spacing={Size.S_0_5} alignCross={AlignCross.STRETCH} className={"item-container"}>
                     {this.props.items.map(item => {
                         return (
@@ -135,6 +150,21 @@ export class ItemPanel extends Component<ItemPanelProps, ItemPanelState> {
                         );
                     })}
                 </VBox>
+
+                    <Menu id={ITEM_CONTEXT_MENU_ID}>
+                        <Item onClick={this.handleContextMenuAction}>Action 1</Item>
+                        <Item onClick={this.handleContextMenuAction}>Action 2</Item>
+                        <Separator />
+                        <Submenu label={"Action 3"}>
+                            <Item onClick={this.handleContextMenuAction}>Action 3a</Item>
+                            <Item onClick={this.handleContextMenuAction}>Action 3b</Item>
+                            <Item onClick={this.handleContextMenuAction}>Action 3c</Item>
+                        </Submenu>
+                        <Separator />
+                        <Item onClick={this.handleContextMenuAction}>Action 4</Item>
+                    </Menu>
+
+
             </div>
         );
     }
