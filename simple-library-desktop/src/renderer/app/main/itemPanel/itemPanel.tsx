@@ -5,9 +5,9 @@ import { VBox } from '../../../components/layout/Box';
 import { AlignCross, Size } from '../../../components/common';
 import "./itemPanel.css";
 import { ItemEntry } from './ItemEntry';
-import { Item, Menu, Separator, Submenu } from 'react-contexify';
-import { createPortal } from 'react-dom';
 import "react-contexify/dist/ReactContexify.css";
+import { ItemContextMenu } from './ItemContextMenu';
+import { Collection } from '../../../../common/commonModels';
 
 export const ITEM_DRAG_GHOST_ID: string = "item-drag-ghost";
 export const ITEM_DRAG_GHOST_CLASS: string = "item-drag-ghost";
@@ -15,8 +15,11 @@ export const ITEM_COPY_DRAG_GHOST_CLASS: string = "item-copy-drag-ghost";
 export const ITEM_MOVE_DRAG_GHOST_CLASS: string = "item-move-drag-ghost";
 
 export interface ItemPanelProps {
+    collections: Collection[]
     selectedCollectionId: number | undefined
     items: ItemEntryData[],
+    onActionMoveItems: (targetCollectionId: number, itemIds: number[]) => void
+    onActionCopyItems: (targetCollectionId: number, itemIds: number[]) => void
 }
 
 export interface ItemPanelState {
@@ -37,7 +40,6 @@ export class ItemPanel extends Component<ItemPanelProps, ItemPanelState> {
         this.handleItemSelect = this.handleItemSelect.bind(this);
         this.handleDragStart = this.handleDragStart.bind(this);
         this.prepareDragImage = this.prepareDragImage.bind(this);
-        this.handleContextMenuAction = this.handleContextMenuAction.bind(this);
     }
 
     componentDidMount() {
@@ -122,22 +124,12 @@ export class ItemPanel extends Component<ItemPanelProps, ItemPanelState> {
         return dragElement;
     }
 
-    handleContextMenuAction() {
-        console.log("ACTION !!");
-    }
-
     render() {
-
-        function Portal(children:any){
-            return createPortal(children, document.querySelector("#root-view"));
-        }
-
         return (
             <div style={{
                 maxHeight: "100vh",
                 overflow: "auto",
             }}>
-
                 <VBox spacing={Size.S_0_5} alignCross={AlignCross.STRETCH} className={"item-container"}>
                     {this.props.items.map(item => {
                         return (
@@ -150,21 +142,15 @@ export class ItemPanel extends Component<ItemPanelProps, ItemPanelState> {
                         );
                     })}
                 </VBox>
-
-                    <Menu id={ITEM_CONTEXT_MENU_ID}>
-                        <Item onClick={this.handleContextMenuAction}>Action 1</Item>
-                        <Item onClick={this.handleContextMenuAction}>Action 2</Item>
-                        <Separator />
-                        <Submenu label={"Action 3"}>
-                            <Item onClick={this.handleContextMenuAction}>Action 3a</Item>
-                            <Item onClick={this.handleContextMenuAction}>Action 3b</Item>
-                            <Item onClick={this.handleContextMenuAction}>Action 3c</Item>
-                        </Submenu>
-                        <Separator />
-                        <Item onClick={this.handleContextMenuAction}>Action 4</Item>
-                    </Menu>
-
-
+                <ItemContextMenu
+                    collections={this.props.collections}
+                    onActionMove={(targetCollectionId: number) => {
+                        this.props.onActionMoveItems(targetCollectionId, this.state.selectedItemIds)
+                    }}
+                    onActionCopy={(targetCollectionId: number) => {
+                        this.props.onActionCopyItems(targetCollectionId, this.state.selectedItemIds)
+                    }}
+                />
             </div>
         );
     }

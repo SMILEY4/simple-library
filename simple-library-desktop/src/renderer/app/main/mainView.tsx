@@ -245,8 +245,11 @@ export class MainView extends Component<MainViewProps, MainViewState> {
                         onActionMoveItems={this.actionMoveItems}
                     />
                     <ItemPanel
+                        collections={this.state.collections}
                         selectedCollectionId={this.state.currentCollectionId}
                         items={this.state.items}
+                        onActionMoveItems={(targetCollectionId:number, itemIds:number[]) => this.actionMoveItems(this.state.currentCollectionId, targetCollectionId, itemIds, false)}
+                        onActionCopyItems={(targetCollectionId:number, itemIds:number[]) => this.actionMoveItems(this.state.currentCollectionId, targetCollectionId, itemIds, true)}
                     />
                 </Grid>
 

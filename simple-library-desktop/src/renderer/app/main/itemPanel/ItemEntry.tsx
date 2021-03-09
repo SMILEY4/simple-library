@@ -33,7 +33,10 @@ export function ItemEntry(props: React.PropsWithChildren<ItemEntryProps>): React
                 event.stopPropagation();
                 props.onSelect(event.ctrlKey, event.shiftKey);
             }}
-            onContextMenu={show}
+            onContextMenu={(event: React.MouseEvent) => {
+                props.onSelect(true, false);
+                show(event);
+            }}
             onDragStart={(event) => props.onDragStart(event)}
             draggable={true}
         >
