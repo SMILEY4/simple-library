@@ -15,7 +15,7 @@ export interface SidebarMenuItemProps {
     dropEffect?: string,
     getDropEffect?: (event: React.DragEvent) => string,
     onDragOver?: (event: React.DragEvent) => void,
-    onDrop?: (dataTransfer: DataTransfer, event: React.DragEvent) => void
+    onDrop?: (event: React.DragEvent) => void
 }
 
 export function SidebarMenuItem(props: React.PropsWithChildren<SidebarMenuItemProps>): React.ReactElement {
@@ -28,7 +28,7 @@ export function SidebarMenuItem(props: React.PropsWithChildren<SidebarMenuItemPr
         );
     }
 
-    function getHandleDragOver(): (event: React.DragEvent) => void | undefined {
+    function getDragOverHandler(): (event: React.DragEvent) => void | undefined {
         if (props.enableDrop) {
             if (props.onDragOver) {
                 return (event: React.DragEvent) => {
@@ -48,11 +48,11 @@ export function SidebarMenuItem(props: React.PropsWithChildren<SidebarMenuItemPr
         }
     }
 
-    function getHandleDrop(): (event: React.DragEvent) => void | undefined {
+    function getDropHandler(): (event: React.DragEvent) => void | undefined {
         if (props.enableDrop) {
             return (event: React.DragEvent) => {
                 event.preventDefault();
-                props.onDrop && props.onDrop(event.dataTransfer, event);
+                props.onDrop && props.onDrop(event);
             };
         } else {
             return undefined;
@@ -60,7 +60,7 @@ export function SidebarMenuItem(props: React.PropsWithChildren<SidebarMenuItemPr
     }
 
     return (
-        <div className={getClassNames()} onClick={props.onClick} onDragOver={getHandleDragOver()} onDrop={getHandleDrop()}>
+        <div className={getClassNames()} onClick={props.onClick} onDragOver={getDragOverHandler()} onDrop={getDropHandler()}>
             <div className={"sidebar-menu-item-title"}>
                 {props.icon ? props.icon : null}
                 <div className={"sidebar-menu-item-title-text"}>{props.title}</div>

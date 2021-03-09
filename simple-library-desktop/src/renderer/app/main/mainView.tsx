@@ -18,8 +18,8 @@ import { Collection, ImportProcessData, ImportResult, ImportStatus, ItemData } f
 import { NotificationEntry } from '../../components/notification/NotificationStack';
 import { SFNotificationStack } from '../../components/notification/SFNotificationStack';
 import { Grid } from '../../components/layout/Grid';
-import { MenuSidebar } from './menuSidebar/menuSidebar';
 import { ItemPanel } from './itemPanel/itemPanel';
+import { MenuSidebarController } from './menuSidebar/MenuSidebarController';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -232,18 +232,25 @@ export class MainView extends Component<MainViewProps, MainViewState> {
                       rows={['100vh']}
                       fill={Fill.TRUE}
                       style={{ maxHeight: "100vh" }}>
-                    <MenuSidebar
+
+                    <MenuSidebarController
                         collections={this.state.collections}
-                        currentCollectionId={this.state.currentCollectionId}
-                        onActionImport={() => this.setState({ showImportFilesDialog: true })}
-                        onActionRefresh={() => this.updateItemList(this.state.currentCollectionId)}
-                        onActionClose={this.actionCloseLibrary}
-                        onActionSelectCollection={(id: number | undefined) => {
+                        activeCollectionId={this.state.currentCollectionId}
+                        onSelectCollection={(id: number | undefined) => {
                             this.setState({ currentCollectionId: id });
                             this.updateItemList(id);
                         }}
-                        onActionMoveItems={this.actionMoveItems}
+                        onActionImport={() => this.setState({ showImportFilesDialog: true })}
+                        onActionRefresh={() => this.updateItemList(this.state.currentCollectionId)}
+                        onActionClose={this.actionCloseLibrary}
+                        onActionMoveItems={(srcCollectionId: number | undefined, tgtCollectionId: number | undefined, itemIds: number[]) => {
+                            this.actionMoveItems(srcCollectionId, tgtCollectionId, itemIds, false);
+                        }}
+                        onActionCopyItems={(srcCollectionId: number | undefined, tgtCollectionId: number | undefined, itemIds: number[]) => {
+                            this.actionMoveItems(srcCollectionId, tgtCollectionId, itemIds, true);
+                        }}
                     />
+
                     <ItemPanel
                         selectedCollectionId={this.state.currentCollectionId}
                         items={this.state.items}
