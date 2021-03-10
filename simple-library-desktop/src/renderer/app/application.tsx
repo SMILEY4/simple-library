@@ -2,7 +2,7 @@ import { hot } from 'react-hot-loader/root';
 import React, { Component } from 'react';
 import { ComponentShowcaseView } from '../components/_showcase/ComponentShowcaseView';
 import { WelcomeView } from './welcome/welcomeView';
-import { MainView } from './main/mainView';
+import { MainViewController } from './main/MainViewController';
 import { SidebarTestView } from './sidebartest/sidebarTestView';
 
 const { ipcRenderer } = window.require('electron');
@@ -103,7 +103,7 @@ export class Application extends Component<any, AppState> {
             <div className={'root-view theme-' + this.state.theme}
                  style={{ width: '100%', height: '100%' }}
                  id='root'>
-                <MainView
+                <MainViewController
                     theme={this.state.theme}
                     onChangeTheme={() => {
                         const nextTheme: Theme = this.state.theme === Theme.LIGHT ? Theme.DARK : Theme.LIGHT;
