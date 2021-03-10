@@ -1,14 +1,21 @@
 import * as React from 'react';
 import { HBox, VBox } from '../../../components/layout/Box';
 import { AlignCross, concatClasses, Size } from '../../../components/common';
-import { ItemData } from '../../../../common/commonModels';
+import { Collection, ItemData } from '../../../../common/commonModels';
 import { SelectMode } from './ItemPanelController';
+import { ITEM_CONTEXT_MENU_ID, ItemContextMenu } from './ItemContextMenu';
+import { useContextMenu } from 'react-contexify';
+import "react-contexify/dist/ReactContexify.css";
 
 interface ItemPanelProps {
+    collections: Collection[],
     items: ItemData[],
     selectedItemIds: number[],
     onSelectItem: (itemId: number, selectMode: SelectMode, rangeSelect: boolean) => void,
-    onDragStart: (itemId: number, event: React.DragEvent) => void
+    onDragStart: (itemId: number, event: React.DragEvent) => void,
+    onContextMenuActionMove: (targetCollectionId: number | undefined, triggerItemId: number) => void,
+    onContextMenuActionCopy: (targetCollectionId: number | undefined, triggerItemId: number) => void,
+    onContextMenuActionRemove: (triggerItemId: number) => void;
 }
 
 export function ItemPanel(props: React.PropsWithChildren<ItemPanelProps>): React.ReactElement {
@@ -29,6 +36,12 @@ export function ItemPanel(props: React.PropsWithChildren<ItemPanelProps>): React
                     })
                 }
             </VBox>
+            <ItemContextMenu
+                collections={props.collections}
+                onActionMove={props.onContextMenuActionMove}
+                onActionCopy={props.onContextMenuActionCopy}
+                onActionRemove={props.onContextMenuActionRemove}
+            />
         </div>
     );
 }
@@ -42,6 +55,13 @@ interface ItemProps {
 }
 
 function Item(props: React.PropsWithChildren<ItemProps>): React.ReactElement {
+
+    const { show } = useContextMenu({
+        id: ITEM_CONTEXT_MENU_ID,
+        props: {
+            itemId: props.item.id,
+        },
+    });
 
     function itemClassNames() {
         return concatClasses(
@@ -68,7 +88,19 @@ function Item(props: React.PropsWithChildren<ItemProps>): React.ReactElement {
                 event.stopPropagation();
                 props.onSelection(getSelectMode(event, props.isSelected), event.shiftKey);
             }}
-            onDragStart={props.onDragStart}
+            onContextMenu={(event: React.MouseEvent) => {
+                event.preventDefault();
+                if (!props.isSelected) {
+                    props.onSelection(SelectMode.DEFAULT, false);
+                }
+                show(event);
+            }}
+            onDragStart={(event: React.DragEvent) => {
+                if (!props.isSelected) {
+                    props.onSelection(SelectMode.DEFAULT, false);
+                }
+                props.onDragStart(event);
+            }}
             draggable={true}
         >
             <HBox withBorder

@@ -12,7 +12,6 @@ import {
 } from '../../../main/messaging/messagesLibrary';
 import { Response } from '../../../main/messaging/messages';
 import { Collection, ImportProcessData, ImportResult, ImportStatus, ItemData } from '../../../common/commonModels';
-import { NotificationEntry } from '../../components/notification/NotificationStack';
 import { ItemPanelController } from './itemPanel/ItemPanelController';
 import { MenuSidebarController } from './menuSidebar/MenuSidebarController';
 import { MainView, MainViewMessageType } from './MainView';
@@ -87,8 +86,11 @@ export class MainViewController extends Component<MainViewControllerProps, MainV
                     onActionCopyItems={this.handleActionCopyItems}
                 />
                 <ItemPanelController
+                    collections={this.state.collections}
                     selectedCollectionId={this.state.currentCollectionId}
                     items={this.state.items}
+                    onActionMove={(targetCollectionId: number | undefined, itemIds: number[]) => this.actionMoveItems(this.state.currentCollectionId, targetCollectionId, itemIds, false)}
+                    onActionCopy={(targetCollectionId: number | undefined, itemIds: number[]) => this.actionMoveItems(this.state.currentCollectionId, targetCollectionId, itemIds, true)}
                 />
             </MainView>
         );

@@ -1,0 +1,16 @@
+.react-contexify {
+	background-color: var(--background-color-1);
+	border-radius:    var(--radius-0);
+}
+
+.react-contexify > .react-contexify__item > .react-contexify__item__content {
+	color:      var(--text-color-2);
+	height:     var(--s-1);
+	max-height: var(--s-1);
+}
+
+/*hover state*/
+.react-contexify__item:not(.react-contexify__item--disabled):hover > .react-contexify__item__content, .react-contexify__item:not(.react-contexify__item--disabled):focus > .react-contexify__item__content {
+	background-color: var(--base-color-1);
+	color:            var(--text-color-2);
+}
