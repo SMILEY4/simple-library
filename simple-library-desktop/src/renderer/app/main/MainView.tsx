@@ -18,7 +18,7 @@ import { Collection, ImportProcessData, ImportResult, ImportStatus, ItemData } f
 import { NotificationEntry } from '../../components/notification/NotificationStack';
 import { SFNotificationStack } from '../../components/notification/SFNotificationStack';
 import { Grid } from '../../components/layout/Grid';
-import { ItemPanel } from './itemPanel/itemPanel';
+import { ItemPanelController } from './itemPanel/ItemPanelController';
 import { MenuSidebarController } from './menuSidebar/MenuSidebarController';
 
 const { ipcRenderer } = window.require('electron');
@@ -29,19 +29,10 @@ interface MainViewProps {
     onCloseProject: () => void
 }
 
-export interface Item {
-    id: number,
-    filepath: string,
-    timestamp: number,
-    hash: string,
-    thumbnail: string,
-    collection: string
-}
-
 interface MainViewState {
     showImportFilesDialog: boolean
     collections: Collection[]
-    items: Item[],
+    items: ItemData[],
     currentCollectionId: number | undefined,
 }
 
@@ -64,7 +55,6 @@ export class MainView extends Component<MainViewProps, MainViewState> {
         };
         this.updateCollections = this.updateCollections.bind(this);
         this.updateItemList = this.updateItemList.bind(this);
-        this.itemDataToItem = this.itemDataToItem.bind(this);
         this.fetchCollections = this.fetchCollections.bind(this);
         this.fetchTotalItemCount = this.fetchTotalItemCount.bind(this);
         this.fetchItems = this.fetchItems.bind(this);
@@ -103,22 +93,7 @@ export class MainView extends Component<MainViewProps, MainViewState> {
 
     updateItemList(collectionId: number | undefined) {
         this.fetchItems(collectionId)
-            .then(items => this.setState({ items: items.map(this.itemDataToItem) }));
-    }
-
-    itemDataToItem(item: ItemData): Item {
-        return {
-            id: item.id,
-            filepath: item.filepath,
-            timestamp: item.timestamp,
-            hash: item.hash,
-            thumbnail: item.thumbnail,
-            collection: (
-                item.collectionIds
-                    ? item.collectionIds.map((id: number) => this.state.collections.find((c: Collection) => c.id === id).name).join(", ")
-                    : undefined
-            ),
-        };
+            .then(items => this.setState({ items: items }));
     }
 
     fetchCollections(): Promise<Collection[]> {
@@ -268,7 +243,7 @@ export class MainView extends Component<MainViewProps, MainViewState> {
                         onActionMoveItems={this.handleActionMoveItems}
                         onActionCopyItems={this.handleActionCopyItems}
                     />
-                    <ItemPanel
+                    <ItemPanelController
                         selectedCollectionId={this.state.currentCollectionId}
                         items={this.state.items}
                     />

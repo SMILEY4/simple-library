@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Component } from 'react';
 import { MenuSidebar } from './MenuSidebar';
 import { Collection } from '../../../../common/commonModels';
-import { ITEM_COPY_DRAG_GHOST_CLASS, ITEM_DRAG_GHOST_ID } from '../itemPanel/itemPanel';
+import { ITEM_COPY_DRAG_GHOST_CLASS, ITEM_DRAG_GHOST_ID } from '../itemPanel/ItemPanelController';
 
 
 interface MenuSidebarControllerProps {
