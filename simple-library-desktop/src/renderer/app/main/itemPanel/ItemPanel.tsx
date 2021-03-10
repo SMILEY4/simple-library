@@ -88,9 +88,17 @@ function Item(props: React.PropsWithChildren<ItemProps>): React.ReactElement {
             }}
             onContextMenu={(event: React.MouseEvent) => {
                 event.preventDefault();
+                if(!props.isSelected) {
+                    props.onSelection(SelectMode.DEFAULT, false)
+                }
                 show(event);
             }}
-            onDragStart={props.onDragStart}
+            onDragStart={(event:React.DragEvent) => {
+                if(!props.isSelected) {
+                    props.onSelection(SelectMode.DEFAULT, false)
+                }
+                props.onDragStart(event);
+            }}
             draggable={true}
         >
             <HBox withBorder
