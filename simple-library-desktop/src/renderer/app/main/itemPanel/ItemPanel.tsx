@@ -14,7 +14,8 @@ interface ItemPanelProps {
     onSelectItem: (itemId: number, selectMode: SelectMode, rangeSelect: boolean) => void,
     onDragStart: (itemId: number, event: React.DragEvent) => void,
     onContextMenuActionMove: (targetCollectionId: number | undefined, triggerItemId: number) => void,
-    onContextMenuActionCopy: (targetCollectionId: number | undefined, triggerItemId: number) => void
+    onContextMenuActionCopy: (targetCollectionId: number | undefined, triggerItemId: number) => void,
+    onContextMenuActionRemove: (triggerItemId: number) => void;
 }
 
 export function ItemPanel(props: React.PropsWithChildren<ItemPanelProps>): React.ReactElement {
@@ -39,6 +40,7 @@ export function ItemPanel(props: React.PropsWithChildren<ItemPanelProps>): React
                 collections={props.collections}
                 onActionMove={props.onContextMenuActionMove}
                 onActionCopy={props.onContextMenuActionCopy}
+                onActionRemove={props.onContextMenuActionRemove}
             />
         </div>
     );
@@ -88,14 +90,14 @@ function Item(props: React.PropsWithChildren<ItemProps>): React.ReactElement {
             }}
             onContextMenu={(event: React.MouseEvent) => {
                 event.preventDefault();
-                if(!props.isSelected) {
-                    props.onSelection(SelectMode.DEFAULT, false)
+                if (!props.isSelected) {
+                    props.onSelection(SelectMode.DEFAULT, false);
                 }
                 show(event);
             }}
-            onDragStart={(event:React.DragEvent) => {
-                if(!props.isSelected) {
-                    props.onSelection(SelectMode.DEFAULT, false)
+            onDragStart={(event: React.DragEvent) => {
+                if (!props.isSelected) {
+                    props.onSelection(SelectMode.DEFAULT, false);
                 }
                 props.onDragStart(event);
             }}

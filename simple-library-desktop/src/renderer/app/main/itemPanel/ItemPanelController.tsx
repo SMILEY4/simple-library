@@ -19,8 +19,8 @@ interface ItemPanelControllerProps {
     selectedCollectionId: number | undefined,
     collections: Collection[],
     items: ItemData[],
-    onActionMove: (targetCollectionId: number | undefined, itemIds:number[]) => void,
-    onActionCopy: (targetCollectionId: number | undefined, itemIds:number[]) => void
+    onActionMove: (targetCollectionId: number | undefined, itemIds: number[]) => void,
+    onActionCopy: (targetCollectionId: number | undefined, itemIds: number[]) => void
 }
 
 interface ItemPanelControllerState {
@@ -38,8 +38,9 @@ export class ItemPanelController extends Component<ItemPanelControllerProps, Ite
         };
         this.handleOnSelectAll = this.handleOnSelectAll.bind(this);
         this.handleOnSelectItem = this.handleOnSelectItem.bind(this);
-        this.handleContextMenuActionMoveTo = this.handleContextMenuActionMoveTo.bind(this)
-        this.handleContextMenuActionCopyTo = this.handleContextMenuActionCopyTo.bind(this)
+        this.handleContextMenuActionMoveTo = this.handleContextMenuActionMoveTo.bind(this);
+        this.handleContextMenuActionCopyTo = this.handleContextMenuActionCopyTo.bind(this);
+        this.handleContextMenuActionRemove = this.handleContextMenuActionRemove.bind(this);
         this.handleOnDragStart = this.handleOnDragStart.bind(this);
         this.setDataTransfer = this.setDataTransfer.bind(this);
         this.prepareDragImage = this.prepareDragImage.bind(this);
@@ -52,6 +53,7 @@ export class ItemPanelController extends Component<ItemPanelControllerProps, Ite
                           onSelectItem={this.handleOnSelectItem}
                           onContextMenuActionMove={this.handleContextMenuActionMoveTo}
                           onContextMenuActionCopy={this.handleContextMenuActionCopyTo}
+                          onContextMenuActionRemove={this.handleContextMenuActionRemove}
                           onDragStart={this.handleOnDragStart}
         />;
     }
@@ -110,24 +112,32 @@ export class ItemPanelController extends Component<ItemPanelControllerProps, Ite
         });
     }
 
-    handleContextMenuActionMoveTo(targetCollectionId: number | undefined, triggerItemId:number) {
-        if(targetCollectionId !== this.props.selectedCollectionId) {
+    handleContextMenuActionMoveTo(targetCollectionId: number | undefined, triggerItemId: number) {
+        if (targetCollectionId !== this.props.selectedCollectionId) {
             const itemIds: number[] = [...this.state.selectedItemIds];
-            if(itemIds.indexOf(triggerItemId) === -1) {
+            if (itemIds.indexOf(triggerItemId) === -1) {
                 itemIds.push(triggerItemId);
             }
-            this.props.onActionMove(targetCollectionId, itemIds)
+            this.props.onActionMove(targetCollectionId, itemIds);
         }
     }
 
-    handleContextMenuActionCopyTo(targetCollectionId: number | undefined, triggerItemId:number) {
-        if(targetCollectionId !== this.props.selectedCollectionId) {
+    handleContextMenuActionCopyTo(targetCollectionId: number | undefined, triggerItemId: number) {
+        if (targetCollectionId !== this.props.selectedCollectionId) {
             const itemIds: number[] = [...this.state.selectedItemIds];
-            if(itemIds.indexOf(triggerItemId) === -1) {
+            if (itemIds.indexOf(triggerItemId) === -1) {
                 itemIds.push(triggerItemId);
             }
-            this.props.onActionCopy(targetCollectionId, itemIds)
+            this.props.onActionCopy(targetCollectionId, itemIds);
         }
+    }
+
+    handleContextMenuActionRemove(triggerItemId: number) {
+        const itemIds: number[] = [...this.state.selectedItemIds];
+        if (itemIds.indexOf(triggerItemId) === -1) {
+            itemIds.push(triggerItemId);
+        }
+        this.props.onActionMove(undefined, itemIds); // todo: hacky -> build proper "remove"-message
     }
 
     handleOnDragStart(triggerItemId: number, event: React.DragEvent): void {

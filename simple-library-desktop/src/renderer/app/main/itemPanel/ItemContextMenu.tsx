@@ -5,9 +5,10 @@ import { Collection } from '../../../../common/commonModels';
 export const ITEM_CONTEXT_MENU_ID: string = "contextmenu.item";
 
 interface ItemContextMenuProps {
-    collections: Collection[]
-    onActionMove: (targetCollectionId: number | undefined, triggerItemId: number) => void
-    onActionCopy: (targetCollectionId: number | undefined, triggerItemId: number) => void
+    collections: Collection[],
+    onActionMove: (targetCollectionId: number | undefined, triggerItemId: number) => void,
+    onActionCopy: (targetCollectionId: number | undefined, triggerItemId: number) => void,
+    onActionRemove: (triggerItemId: number) => void;
 }
 
 export function ItemContextMenu(props: React.PropsWithChildren<ItemContextMenuProps>): React.ReactElement {
@@ -18,14 +19,15 @@ export function ItemContextMenu(props: React.PropsWithChildren<ItemContextMenuPr
               onHidden={handleOnHidden}>
             <Submenu label={"Move selected to"}>
                 {props.collections.map((collection: Collection) => {
-                    return <Item onClick={(data: ItemParams) => handleMoveTo(collection, data)}>{collection.name}</Item>;
+                    return <Item onClick={(data: ItemParams) => handleMoveTo(collection, data)} key={"move." + collection.id}>{collection.name}</Item>;
                 })}
             </Submenu>
             <Submenu label={"Copy selected to"}>
                 {props.collections.map((collection: Collection) => {
-                    return <Item onClick={(data: ItemParams) => handleCopyTo(collection, data)}>{collection.name}</Item>;
+                    return <Item onClick={(data: ItemParams) => handleCopyTo(collection, data)} key={"copy." + collection.id}>{collection.name}</Item>;
                 })}
             </Submenu>
+            <Item onClick={handleRemove}>Remove selected</Item>
         </Menu>
     );
 
@@ -55,4 +57,9 @@ export function ItemContextMenu(props: React.PropsWithChildren<ItemContextMenuPr
     function handleCopyTo(targetCollection: Collection, data: ItemParams): void {
         props.onActionCopy(targetCollection.id, data.props.itemId);
     }
+
+    function handleRemove(data: ItemParams) {
+        props.onActionRemove(data.props.itemId);
+    }
+
 }
