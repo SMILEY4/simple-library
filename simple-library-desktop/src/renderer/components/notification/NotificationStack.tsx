@@ -3,7 +3,7 @@ import './notificationStack.css';
 import { Notification, NotificationProps } from './Notification';
 import { ModalBase, ModalPosition } from '../modal/ModalBase';
 import { VBox } from '../layout/Box';
-import { Size } from '../common';
+import { AlignCross, Size } from '../common';
 
 export interface NotificationEntry extends NotificationProps {
     content?: any,
@@ -22,7 +22,7 @@ export function NotificationStack(props: React.PropsWithChildren<NotificationSta
                    withShadow={false}
                    modalRootId={props.modalRootId}
                    className={'notification-stack-modal'}>
-            <VBox spacing={Size.S_1} className={'notification-stack'}>
+            <VBox spacing={Size.S_1} className={'notification-stack'} alignCross={AlignCross.CENTER}>
                 {
                     props.notifications.map((n, index) => {
                         return (

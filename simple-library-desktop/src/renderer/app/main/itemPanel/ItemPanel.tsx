@@ -21,6 +21,7 @@ export function ItemPanel(props: React.PropsWithChildren<ItemPanelProps>): React
                 {
                     props.items.map((item: ItemData) => {
                         return <Item item={item}
+                                     key={item.id}
                                      isSelected={props.selectedItemIds.indexOf(item.id) !== -1}
                                      onSelection={(selectMode: SelectMode, rangeSelect: boolean) => props.onSelectItem(item.id, selectMode, rangeSelect)}
                                      onDragStart={(event: React.DragEvent) => props.onDragStart(item.id, event)}

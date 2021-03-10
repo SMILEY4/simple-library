@@ -50,14 +50,7 @@ export class SFNotificationStack extends Component<SFNotificationStackProps, SFN
                           closable: boolean,
                           title: string,
                           content: any): string {
-        return this.addNotification(
-            type,
-            closable,
-            undefined,
-            title,
-            undefined,
-            content,
-        );
+        return this.addNotification(type, closable, undefined, title, undefined, content,);
     }
 
     addNotification(type: Type,

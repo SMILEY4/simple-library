@@ -1,267 +1,117 @@
 import * as React from 'react';
 import { Component, ReactElement } from 'react';
-import { Theme } from '../application';
 import { Dir, Fill, Type } from '../../components/common';
-import { Box } from '../../components/layout/Box';
-import {
-    CloseCurrentLibraryMessage,
-    GetCollectionsMessage,
-    GetItemsMessage,
-    GetTotalItemCountMessage,
-    ImportFilesMessage,
-    ImportStatusUpdateCommand,
-    MoveItemsToCollectionsMessage,
-} from '../../../main/messaging/messagesLibrary';
-import { Response } from '../../../main/messaging/messages';
-import { DialogImportFiles } from './import/DialogImportFiles';
-import { Collection, ImportProcessData, ImportResult, ImportStatus, ItemData } from '../../../common/commonModels';
-import { NotificationEntry } from '../../components/notification/NotificationStack';
-import { SFNotificationStack } from '../../components/notification/SFNotificationStack';
 import { Grid } from '../../components/layout/Grid';
-import { ItemPanelController } from './itemPanel/ItemPanelController';
-import { MenuSidebarController } from './menuSidebar/MenuSidebarController';
+import { SFNotificationStack } from '../../components/notification/SFNotificationStack';
+import { Box } from '../../components/layout/Box';
+import { NotificationEntry } from '../../components/notification/NotificationStack';
 
-const { ipcRenderer } = window.require('electron');
+export enum MainViewMessageType {
+    FETCH_COLLECTIONS_FAILED,
+    FETCH_TOTAL_ITEM_COUNT_FAILED,
+    FETCH_ITEMS_FAILED,
+    MOVE_ITEMS_IN_COLLECTION_FAILED,
+    IMPORT_FAILED_UNKNOWN,
+    IMPORT_FAILED,
+    IMPORT_WITH_ERRORS,
+    IMPORT_SUCCESSFUL,
+    IMPORT_STATUS,
+}
 
 interface MainViewProps {
-    theme: Theme,
-    onChangeTheme: () => void,
-    onCloseProject: () => void
+    setShowNotification: (fun: (type: MainViewMessageType, data: any) => string) => void,
+    setUpdateNotification: (fun: (notificationId: string, type: MainViewMessageType, data: any) => void) => void,
+    setRemoveNotification: (fun: (notificationId: string) => void) => void,
 }
 
-interface MainViewState {
-    showImportFilesDialog: boolean
-    collections: Collection[]
-    items: ItemData[],
-    currentCollectionId: number | undefined,
-}
+export class MainView extends Component<MainViewProps> {
 
-export class MainView extends Component<MainViewProps, MainViewState> {
-
-    addNotification: (type: Type,
-                      closable: boolean,
-                      title: string,
-                      content: any) => string;
-    removeNotification: (uid: string) => void;
-    updateNotification: (uid: string, action: (entry: NotificationEntry) => NotificationEntry) => void;
+    addNotificationEntry: (type: Type, closable: boolean, title: string, content: any) => string;
+    updateNotificationEntry: (uid: string, action: (entry: NotificationEntry) => NotificationEntry) => void;
 
     constructor(props: MainViewProps) {
         super(props);
-        this.state = {
-            showImportFilesDialog: false,
-            collections: [],
-            items: [],
-            currentCollectionId: undefined,
-        };
-        this.updateCollections = this.updateCollections.bind(this);
-        this.updateItemList = this.updateItemList.bind(this);
-        this.fetchCollections = this.fetchCollections.bind(this);
-        this.fetchTotalItemCount = this.fetchTotalItemCount.bind(this);
-        this.fetchItems = this.fetchItems.bind(this);
-        this.actionCloseLibrary = this.actionCloseLibrary.bind(this);
-        this.actionImport = this.actionImport.bind(this);
-        this.handleImportStatusUpdate = this.handleImportStatusUpdate.bind(this);
-        this.handleImportFailed = this.handleImportFailed.bind(this);
-        this.handleImportWithErrors = this.handleImportWithErrors.bind(this);
-        this.handleImportSuccessful = this.handleImportSuccessful.bind(this);
-        this.actionMoveItems = this.actionMoveItems.bind(this);
-        this.displayErrorNotification = this.displayErrorNotification.bind(this);
-        this.handleOnSelectCollection = this.handleOnSelectCollection.bind(this);
-        this.handleOnImport = this.handleOnImport.bind(this);
-        this.handleOnRefresh = this.handleOnRefresh.bind(this);
-        this.handleActionMoveItems = this.handleActionMoveItems.bind(this);
-        this.handleActionCopyItems = this.handleActionCopyItems.bind(this);
+        this.showNotification = this.showNotification.bind(this);
+        this.updateNotification = this.updateNotification.bind(this);
+        this.errorToString = this.errorToString.bind(this);
+        this.showNotification = this.showNotification.bind(this);
+        this.props.setShowNotification(this.showNotification);
+        this.props.setUpdateNotification(this.updateNotification);
     }
 
-    componentDidMount() {
-        this.updateCollections()
-            .then(() => this.updateItemList(this.state.currentCollectionId));
-    }
-
-    updateCollections(): Promise<void> {
-        return this.fetchCollections().then((collections: Collection[]) => {
-            this.fetchTotalItemCount().then((itemCount: number) => {
-                const collectionAllItems: Collection = {
-                    id: undefined,
-                    name: "All Items",
-                    itemCount: itemCount,
-                };
-                this.setState({ collections: [collectionAllItems, ...collections] });
-            });
-        });
-    }
-
-    updateItemList(collectionId: number | undefined) {
-        this.fetchItems(collectionId)
-            .then(items => this.setState({ items: items }));
-    }
-
-    fetchCollections(): Promise<Collection[]> {
-        return GetCollectionsMessage.request(ipcRenderer, true)
-            .then((response: Response) => {
-                return response.body;
-            })
-            .catch(error => {
-                this.displayErrorNotification("Unexpected error when fetching collections", error);
-                return Promise.reject();
-            });
-    }
-
-    fetchTotalItemCount(): Promise<number> {
-        return GetTotalItemCountMessage.request(ipcRenderer)
-            .then((response: Response) => {
-                return response.body;
-            })
-            .catch(error => {
-                this.displayErrorNotification("Unexpected error when fetching total item count", error);
-                return Promise.reject();
-            });
-    }
-
-    fetchItems(collectionId: number | undefined): Promise<ItemData[]> {
-        return GetItemsMessage.request(ipcRenderer, collectionId)
-            .then((response: Response) => {
-                return response.body;
-            })
-            .catch(error => {
-                this.displayErrorNotification("Unexpected error when fetching items", error);
-                return Promise.reject();
-            });
-    }
-
-    actionImport(data: ImportProcessData) {
-        this.setState({ showImportFilesDialog: false });
-        const uidStatusNotification: string = this.handleImportStatusUpdate();
-        ImportFilesMessage.request(ipcRenderer, data)
-            .then((resp: Response) => resp.body)
-            .then((importResult: ImportResult) => {
-                if (importResult.failed) {
-                    this.handleImportFailed(importResult);
-                } else if (importResult.encounteredErrors) {
-                    this.handleImportWithErrors(importResult);
-                } else {
-                    this.handleImportSuccessful(importResult);
-                }
-            })
-            .then(() => {
-                this.removeNotification(uidStatusNotification);
-                this.updateCollections()
-                    .then(() => this.updateItemList(this.state.currentCollectionId));
-            })
-            .catch(error => {
-                this.displayErrorNotification("Import failed unexpectedly", error);
-            });
-    }
-
-    handleImportStatusUpdate(): string {
-        const uidStatusNotification: string = this.addNotification(Type.PRIMARY, false, "Importing", "");
-        ImportStatusUpdateCommand.on(ipcRenderer, (status: ImportStatus) => {
-            this.updateNotification(uidStatusNotification, (entry: NotificationEntry) => {
-                entry.content = status.completedFiles + "/" + status.totalAmountFiles + " files imported.";
-                return entry;
-            });
-        });
-        return uidStatusNotification;
-    }
-
-    handleImportFailed(importResult: ImportResult) {
-        this.addNotification(Type.ERROR, true, "Import failed", importResult.failureReason);
-    }
-
-    handleImportWithErrors(importResult: ImportResult) {
-        const message: ReactElement = (
-            <ul>
-                {importResult.filesWithErrors.map((entry: ([string, string])) =>
-                    <li>{entry[0] + ": " + entry[1]}</li>)}
-            </ul>
-        );
-        this.addNotification(Type.WARN, true, "Import encountered errors", message);
-    }
-
-    handleImportSuccessful(importResult: ImportResult) {
-        this.addNotification(Type.SUCCESS, true, "Import successful", "Imported " + importResult.amountFiles + " files.");
-    }
-
-    actionMoveItems(sourceCollectionId: number, collectionId: number, itemIds: number[], copyMode: boolean) {
-        MoveItemsToCollectionsMessage.request(ipcRenderer, sourceCollectionId, collectionId, itemIds, copyMode)
-            .catch((error) => {
-                this.displayErrorNotification("Unexpected error while moving items to collection", error);
-                return Promise.reject();
-            })
-            .then(() => this.updateCollections().then(() => this.updateItemList(this.state.currentCollectionId)));
-    }
-
-    actionCloseLibrary() {
-        CloseCurrentLibraryMessage.request(ipcRenderer)
-            .then(() => this.props.onCloseProject());
-    }
-
-    displayErrorNotification(title: string, error: any) {
-        let errorString: string = String(error);
-        if (errorString === "[object Object]") {
-            errorString = JSON.stringify(error);
-        }
-        this.addNotification(Type.ERROR, true, title, errorString);
-    }
-
-    handleOnSelectCollection(collectionId: number): void {
-        this.setState({ currentCollectionId: collectionId });
-        this.updateItemList(collectionId);
-    }
-
-    handleOnImport(): void {
-        this.setState({ showImportFilesDialog: true });
-    }
-
-    handleOnRefresh(): void {
-        this.updateItemList(this.state.currentCollectionId);
-    }
-
-    handleActionMoveItems(srcCollectionId: number | undefined, tgtCollectionId: number | undefined, itemIds: number[]): void {
-        this.actionMoveItems(srcCollectionId, tgtCollectionId, itemIds, false);
-    }
-
-    handleActionCopyItems(srcCollectionId: number | undefined, tgtCollectionId: number | undefined, itemIds: number[]): void {
-        this.actionMoveItems(srcCollectionId, tgtCollectionId, itemIds, true);
-    }
-
-    render(): ReactElement {
+    render() {
         return (
             <Box dir={Dir.DOWN}>
-
                 <Grid columns={['auto', '1fr']}
                       rows={['100vh']}
                       fill={Fill.TRUE}
                       style={{ maxHeight: "100vh" }}>
-                    <MenuSidebarController
-                        collections={this.state.collections}
-                        activeCollectionId={this.state.currentCollectionId}
-                        onSelectCollection={this.handleOnSelectCollection}
-                        onActionImport={this.handleOnImport}
-                        onActionRefresh={this.handleOnRefresh}
-                        onActionClose={this.actionCloseLibrary}
-                        onActionMoveItems={this.handleActionMoveItems}
-                        onActionCopyItems={this.handleActionCopyItems}
-                    />
-                    <ItemPanelController
-                        selectedCollectionId={this.state.currentCollectionId}
-                        items={this.state.items}
-                    />
+                    {this.props.children}
                 </Grid>
-
                 <SFNotificationStack modalRootId='root'
-                                     setAddSimpleFunction={(fun) => this.addNotification = fun}
-                                     setRemoveFunction={(fun) => this.removeNotification = fun}
-                                     setUpdateNotification={(fun) => this.updateNotification = fun}
+                                     setAddSimpleFunction={(fun) => this.addNotificationEntry = fun}
+                                     setUpdateNotification={(fun) => this.updateNotificationEntry = fun}
+                                     setRemoveFunction={(fun) => this.props.setRemoveNotification(fun)}
                 />
-
-                {this.state.showImportFilesDialog && (
-                    <DialogImportFiles
-                        onClose={() => this.setState({ showImportFilesDialog: false })}
-                        onImport={this.actionImport} />
-                )}
-
             </Box>
         );
     }
+
+    showNotification(type: MainViewMessageType, data: any): string {
+        switch (type) {
+            case MainViewMessageType.FETCH_COLLECTIONS_FAILED: {
+                return this.addNotificationEntry(Type.ERROR, true, "Unexpected error when fetching collections", this.errorToString(data));
+            }
+            case MainViewMessageType.FETCH_TOTAL_ITEM_COUNT_FAILED: {
+                return this.addNotificationEntry(Type.ERROR, true, "Unexpected error when fetching total item count", this.errorToString(data));
+            }
+            case MainViewMessageType.FETCH_ITEMS_FAILED: {
+                return this.addNotificationEntry(Type.ERROR, true, "Unexpected error when fetching items", this.errorToString(data));
+            }
+            case MainViewMessageType.MOVE_ITEMS_IN_COLLECTION_FAILED: {
+                return this.addNotificationEntry(Type.ERROR, true, "Unexpected error while moving items to collection", this.errorToString(data));
+            }
+            case MainViewMessageType.IMPORT_FAILED_UNKNOWN: {
+                return this.addNotificationEntry(Type.ERROR, true, "Import failed unexpectedly", this.errorToString(data));
+            }
+            case MainViewMessageType.IMPORT_FAILED: {
+                return this.addNotificationEntry(Type.ERROR, true, "Import failed", data.failureReason);
+            }
+            case MainViewMessageType.IMPORT_WITH_ERRORS: {
+                const message: ReactElement = (
+                    <ul>
+                        {data.filesWithErrors.map((entry: ([string, string])) => <li>{entry[0] + ": " + entry[1]}</li>)}
+                    </ul>
+                );
+                return this.addNotificationEntry(Type.WARN, true, "Import encountered errors", message);
+            }
+            case MainViewMessageType.IMPORT_SUCCESSFUL: {
+                return this.addNotificationEntry(Type.SUCCESS, true, "Import successful", "Imported " + data.amountFiles + " files.");
+            }
+            case MainViewMessageType.IMPORT_STATUS: {
+                return this.addNotificationEntry(Type.PRIMARY, true, "Importing...", null);
+            }
+        }
+    }
+
+    updateNotification(notificationId: string, type: MainViewMessageType, data: any): void {
+        this.updateNotificationEntry(notificationId, (entry: NotificationEntry) => {
+            switch (type) {
+                case MainViewMessageType.IMPORT_STATUS: {
+                    entry.content = data.completedFiles + "/" + data.totalAmountFiles + " files imported.";
+                    break;
+                }
+            }
+            return entry;
+        });
+    }
+
+    errorToString(error: any) {
+        let errorString: string = String(error);
+        if (errorString === "[object Object]") {
+            errorString = JSON.stringify(error);
+        }
+        return errorString;
+    }
+
 }

@@ -24,16 +24,6 @@ export interface MenuSidebarProps {
 
 export function MenuSidebar(props: React.PropsWithChildren<MenuSidebarProps>): React.ReactElement {
 
-    function renderCollection(collection: Collection): React.ReactElement {
-        return <MenuCollection name={collection.name}
-                               id={collection.id}
-                               itemCount={collection.itemCount}
-                               selectedId={props.activeCollectionId}
-                               onSelect={props.onSelectCollection}
-                               onDragOver={(event: React.DragEvent) => props.onDragOverCollection(collection.id, event)}
-                               onDrop={(event: React.DragEvent) => props.onDropOnCollection(collection.id, event)} />;
-    }
-
     return (
         <SidebarMenu fillHeight
                      minimizable={true}
@@ -48,7 +38,16 @@ export function MenuSidebar(props: React.PropsWithChildren<MenuSidebarProps>): R
             </SidebarMenuSection>
 
             <SidebarMenuSection title='Collections'>
-                {props.collections.map(renderCollection)}
+                {props.collections.map(collection => {
+                    return <MenuCollection name={collection.name}
+                                           id={collection.id}
+                                           key={collection.id ? collection.id : -1}
+                                           itemCount={collection.itemCount}
+                                           selectedId={props.activeCollectionId}
+                                           onSelect={props.onSelectCollection}
+                                           onDragOver={(event: React.DragEvent) => props.onDragOverCollection(collection.id, event)}
+                                           onDrop={(event: React.DragEvent) => props.onDropOnCollection(collection.id, event)} />
+                })}
             </SidebarMenuSection>
 
         </SidebarMenu>
