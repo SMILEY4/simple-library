@@ -2,7 +2,7 @@ import { hot } from 'react-hot-loader/root';
 import React, { Component } from 'react';
 import { ComponentShowcaseView } from '../components/_showcase/ComponentShowcaseView';
 import { WelcomeView } from './welcome/welcomeView';
-import { MainView } from './main/mainView';
+import { MainView } from './main/MainView';
 import { SidebarTestView } from './sidebartest/sidebarTestView';
 
 const { ipcRenderer } = window.require('electron');

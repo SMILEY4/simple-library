@@ -76,6 +76,11 @@ export class MainView extends Component<MainViewProps, MainViewState> {
         this.handleImportSuccessful = this.handleImportSuccessful.bind(this);
         this.actionMoveItems = this.actionMoveItems.bind(this);
         this.displayErrorNotification = this.displayErrorNotification.bind(this);
+        this.handleOnSelectCollection = this.handleOnSelectCollection.bind(this);
+        this.handleOnImport = this.handleOnImport.bind(this);
+        this.handleOnRefresh = this.handleOnRefresh.bind(this);
+        this.handleActionMoveItems = this.handleActionMoveItems.bind(this);
+        this.handleActionCopyItems = this.handleActionCopyItems.bind(this);
     }
 
     componentDidMount() {
@@ -224,6 +229,27 @@ export class MainView extends Component<MainViewProps, MainViewState> {
         this.addNotification(Type.ERROR, true, title, errorString);
     }
 
+    handleOnSelectCollection(collectionId: number): void {
+        this.setState({ currentCollectionId: collectionId });
+        this.updateItemList(collectionId);
+    }
+
+    handleOnImport(): void {
+        this.setState({ showImportFilesDialog: true });
+    }
+
+    handleOnRefresh(): void {
+        this.updateItemList(this.state.currentCollectionId);
+    }
+
+    handleActionMoveItems(srcCollectionId: number | undefined, tgtCollectionId: number | undefined, itemIds: number[]): void {
+        this.actionMoveItems(srcCollectionId, tgtCollectionId, itemIds, false);
+    }
+
+    handleActionCopyItems(srcCollectionId: number | undefined, tgtCollectionId: number | undefined, itemIds: number[]): void {
+        this.actionMoveItems(srcCollectionId, tgtCollectionId, itemIds, true);
+    }
+
     render(): ReactElement {
         return (
             <Box dir={Dir.DOWN}>
@@ -232,25 +258,16 @@ export class MainView extends Component<MainViewProps, MainViewState> {
                       rows={['100vh']}
                       fill={Fill.TRUE}
                       style={{ maxHeight: "100vh" }}>
-
                     <MenuSidebarController
                         collections={this.state.collections}
                         activeCollectionId={this.state.currentCollectionId}
-                        onSelectCollection={(id: number | undefined) => {
-                            this.setState({ currentCollectionId: id });
-                            this.updateItemList(id);
-                        }}
-                        onActionImport={() => this.setState({ showImportFilesDialog: true })}
-                        onActionRefresh={() => this.updateItemList(this.state.currentCollectionId)}
+                        onSelectCollection={this.handleOnSelectCollection}
+                        onActionImport={this.handleOnImport}
+                        onActionRefresh={this.handleOnRefresh}
                         onActionClose={this.actionCloseLibrary}
-                        onActionMoveItems={(srcCollectionId: number | undefined, tgtCollectionId: number | undefined, itemIds: number[]) => {
-                            this.actionMoveItems(srcCollectionId, tgtCollectionId, itemIds, false);
-                        }}
-                        onActionCopyItems={(srcCollectionId: number | undefined, tgtCollectionId: number | undefined, itemIds: number[]) => {
-                            this.actionMoveItems(srcCollectionId, tgtCollectionId, itemIds, true);
-                        }}
+                        onActionMoveItems={this.handleActionMoveItems}
+                        onActionCopyItems={this.handleActionCopyItems}
                     />
-
                     <ItemPanel
                         selectedCollectionId={this.state.currentCollectionId}
                         items={this.state.items}

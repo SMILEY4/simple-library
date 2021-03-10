@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Component, ReactElement } from 'react';
-import { Item } from '../mainView';
+import { Item } from '../MainView';
 import { HBox, VBox } from '../../../components/layout/Box';
 import { AlignCross, concatClasses, Size } from '../../../components/common';
 import "./itemPanel.css";

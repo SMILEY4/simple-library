@@ -9,11 +9,9 @@ interface MenuSidebarControllerProps {
     collections: Collection[],
     activeCollectionId: number | undefined,
     onSelectCollection: (collectionId: number | undefined) => void
-
     onActionImport: () => void,
     onActionRefresh: () => void,
     onActionClose: () => void
-
     onActionMoveItems: (srcCollectionId: number | undefined, tgtCollectionId: number | undefined, itemIds: number[]) => void;
     onActionCopyItems: (srcCollectionId: number | undefined, tgtCollectionId: number | undefined, itemIds: number[]) => void;
 }
