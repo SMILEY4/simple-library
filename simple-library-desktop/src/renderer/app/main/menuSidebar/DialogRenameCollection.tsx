@@ -3,36 +3,37 @@ import { Component, ReactElement } from 'react';
 import { Dialog } from '../../../components/modal/Dialog';
 import { AlignCross, AlignMain, Dir, Size, Type, Variant } from '../../../components/common';
 import { Box } from '../../../components/layout/Box';
+import { BodyText } from '../../../components/text/Text';
 import { InputField } from '../../../components/inputfield/InputField';
 
 
-interface DialogCreateCollectionProps {
-    onClose: () => void
-    onCreate: (name: string) => void
+interface DialogRenameCollectionProps {
+    collectionName: string | undefined,
+    onClose: () => void,
+    onRename: (newCollectionName:string) => void,
 }
 
-interface DialogCreateCollectionState {
+interface DialogRenameCollectionState {
     collectionName: string,
     collectionNameValid: boolean,
 }
 
+export class DialogRenameCollection extends Component<DialogRenameCollectionProps, DialogRenameCollectionState> {
 
-export class DialogCreateCollection extends Component<DialogCreateCollectionProps, DialogCreateCollectionState> {
-
-    constructor(props: DialogCreateCollectionProps) {
+    constructor(props: DialogRenameCollectionProps) {
         super(props);
         this.state = {
-            collectionName: "",
+            collectionName: this.props.collectionName,
             collectionNameValid: true,
         };
-        this.actionRequestCreate = this.actionRequestCreate.bind(this);
+        this.actionRequestRename = this.actionRequestRename.bind(this);
         this.validateCollectionName = this.validateCollectionName.bind(this)
     }
 
-    actionRequestCreate(): void {
+    actionRequestRename(): void {
         const collectionName = this.state.collectionName.trim();
         if (this.validateCollectionName(collectionName)) {
-            this.props.onCreate(collectionName);
+            this.props.onRename(collectionName);
         } else {
             this.setState({
                 collectionName: collectionName,
@@ -47,7 +48,7 @@ export class DialogCreateCollection extends Component<DialogCreateCollectionProp
 
     render(): ReactElement {
         return (
-            <Dialog title={"Create new Collection"}
+            <Dialog title={"Rename Collection"}
                     show={true}
                     closeButton={true}
                     onClose={this.props.onClose}
@@ -58,10 +59,10 @@ export class DialogCreateCollection extends Component<DialogCreateCollectionProp
                             onAction: this.props.onClose,
                         },
                         {
-                            content: "Create",
+                            content: "Rename",
                             variant: Variant.SOLID,
                             type: Type.PRIMARY,
-                            onAction: this.actionRequestCreate,
+                            onAction: this.actionRequestRename
                         },
                     ]}>
                 <Box dir={Dir.DOWN} alignMain={AlignMain.CENTER} alignCross={AlignCross.STRETCH} spacing={Size.S_0_75}>

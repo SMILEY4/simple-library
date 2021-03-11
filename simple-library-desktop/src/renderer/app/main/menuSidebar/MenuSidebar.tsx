@@ -25,16 +25,7 @@ export interface MenuSidebarProps {
     minimized: boolean,
     onSetMinimize: (mini: boolean) => void,
 
-    showDialogCreateCollection: boolean,
     onCreateCollection: () => void,
-    onCreateCollectionCancel: () => void,
-    onCreateCollectionAccept: (collectionName: string) => void
-
-    showDialogDeleteCollection: boolean,
-    deleteCollectionName: string | undefined
-    onDeleteCollectionCancel: () => void,
-    onDeleteCollectionAccept: () => void,
-
     onContextMenuActionRename: (collectionId: number) => void
     onContextMenuActionDelete: (collectionId: number) => void
 }
@@ -66,21 +57,6 @@ export function MenuSidebar(props: React.PropsWithChildren<MenuSidebarProps>): R
                                            onDrop={(event: React.DragEvent) => props.onDropOnCollection(collection.id, event)} />;
                 })}
             </SidebarMenuSection>
-
-            {props.showDialogCreateCollection && (
-                <DialogCreateCollection
-                    onClose={props.onCreateCollectionCancel}
-                    onCreate={props.onCreateCollectionAccept}
-                />
-            )}
-
-            {props.showDialogDeleteCollection && (
-                <DialogDeleteCollection
-                    collectionName={props.deleteCollectionName}
-                    onClose={props.onDeleteCollectionCancel}
-                    onDelete={props.onDeleteCollectionAccept}
-                />
-            )}
 
             <CollectionContextMenu
                 onActionRename={props.onContextMenuActionRename}

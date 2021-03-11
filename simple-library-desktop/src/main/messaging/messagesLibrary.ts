@@ -320,3 +320,28 @@ export module DeleteCollectionMessage {
     }
 
 }
+
+export module RenameCollectionMessage {
+
+    const CHANNEL_RENAME_COLLECTION: string = 'collection.rename';
+
+    export function request(ipc: Electron.IpcRenderer, collectionId: number, newCollectionName: string): Promise<Response> {
+        const request: Request = {
+            channel: CHANNEL_RENAME_COLLECTION,
+            payload: {
+                collectionId: collectionId,
+                newCollectionName: newCollectionName,
+            },
+        };
+        return sendRequest(ipc, request);
+    }
+
+    export function handle(ipc: Electron.IpcMain, action: (collectionId: number, newCollectionName: string) => Promise<Response>) {
+        const handler: RequestHandler = {
+            channel: CHANNEL_RENAME_COLLECTION,
+            action: (payload) => action(payload.collectionId, payload.newCollectionName),
+        };
+        handleRequest(ipc, handler);
+    }
+
+}

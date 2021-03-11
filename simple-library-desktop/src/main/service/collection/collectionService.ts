@@ -22,4 +22,8 @@ export class CollectionService {
         return this.collectionDataAccess.deleteCollection(collectionId);
     }
 
+    public renameCollection(collectionId: number, newCollectionName: string): Promise<void> {
+        return this.collectionDataAccess.renameCollection(collectionId, newCollectionName);
+    }
+
 }

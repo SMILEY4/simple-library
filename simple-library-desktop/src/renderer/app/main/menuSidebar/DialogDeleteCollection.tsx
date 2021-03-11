@@ -21,7 +21,7 @@ export class DialogDeleteCollection extends Component<DialogDeleteCollectionProp
 
     render(): ReactElement {
         return (
-            <Dialog title={"Delete"}
+            <Dialog title={"Delete Collection"}
                     show={true}
                     closeButton={true}
                     onClose={this.props.onClose}

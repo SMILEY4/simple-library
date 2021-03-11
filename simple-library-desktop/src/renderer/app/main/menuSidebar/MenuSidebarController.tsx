@@ -4,7 +4,14 @@ import { MenuSidebar } from './MenuSidebar';
 import { Collection, ImportProcessData } from '../../../../common/commonModels';
 import { ITEM_COPY_DRAG_GHOST_CLASS, ITEM_DRAG_GHOST_ID } from '../itemPanel/ItemPanelController';
 import { DialogImportFiles } from '../import/DialogImportFiles';
-import { CreateCollectionMessage, DeleteCollectionMessage } from '../../../../main/messaging/messagesLibrary';
+import {
+    CreateCollectionMessage,
+    DeleteCollectionMessage,
+    RenameCollectionMessage,
+} from '../../../../main/messaging/messagesLibrary';
+import { DialogCreateCollection } from './DialogCreateCollection';
+import { DialogDeleteCollection } from './DialogDeleteCollection';
+import { DialogRenameCollection } from './DialogRenameCollection';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -24,9 +31,16 @@ interface MenuSidebarControllerProps {
 interface MenuSidebarControllerState {
     minimized: boolean,
     showImportDialog: boolean
+
     showCreateCollectionDialog: boolean
+
     showDialogDeleteCollection: boolean,
-    deleteCollection: Collection | undefined
+    collectionToDelete: Collection | undefined
+
+    showDialogRenameCollection: boolean,
+    collectionToRename: Collection | undefined
+
+
 }
 
 export class MenuSidebarController extends Component<MenuSidebarControllerProps, MenuSidebarControllerState> {
@@ -38,7 +52,9 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
             showImportDialog: false,
             showCreateCollectionDialog: false,
             showDialogDeleteCollection: false,
-            deleteCollection: undefined,
+            collectionToDelete: undefined,
+            showDialogRenameCollection: false,
+            collectionToRename: undefined,
         };
         this.handleOnStartImport = this.handleOnStartImport.bind(this);
         this.handleOnCloseImport = this.handleOnCloseImport.bind(this);
@@ -51,6 +67,9 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
         this.handleDeleteCollection = this.handleDeleteCollection.bind(this);
         this.handleDeleteCollectionCancel = this.handleDeleteCollectionCancel.bind(this);
         this.handleDeleteCollectionAccept = this.handleDeleteCollectionAccept.bind(this);
+        this.handleRenameCollection = this.handleRenameCollection.bind(this);
+        this.handleRenameCollectionCancel = this.handleRenameCollectionCancel.bind(this);
+        this.handleRenameCollectionAccept = this.handleRenameCollectionAccept.bind(this);
         this.setMinimized = this.setMinimized.bind(this);
     }
 
@@ -72,26 +91,35 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
                     minimized={this.state.minimized}
                     onSetMinimize={this.setMinimized}
 
-                    onContextMenuActionRename={() => {
-                        // todo
-                    }}
-
-                    showDialogCreateCollection={this.state.showCreateCollectionDialog}
                     onCreateCollection={this.handleCreateCollection}
-                    onCreateCollectionAccept={this.handleCreateCollectionAccept}
-                    onCreateCollectionCancel={this.handleCreateCollectionCancel}
-
+                    onContextMenuActionRename={this.handleRenameCollection}
                     onContextMenuActionDelete={this.handleDeleteCollection}
-                    showDialogDeleteCollection={this.state.showDialogDeleteCollection}
-                    deleteCollectionName={this.state.deleteCollection ? this.state.deleteCollection.name : undefined}
-                    onDeleteCollectionCancel={this.handleDeleteCollectionCancel}
-                    onDeleteCollectionAccept={this.handleDeleteCollectionAccept}
 
                 />
                 {this.state.showImportDialog && (
                     <DialogImportFiles
                         onClose={this.handleOnCloseImport}
                         onImport={this.handleOnDoImport} />
+                )}
+                {this.state.showCreateCollectionDialog && (
+                    <DialogCreateCollection
+                        onClose={this.handleCreateCollectionCancel}
+                        onCreate={this.handleCreateCollectionAccept}
+                    />
+                )}
+                {this.state.showDialogDeleteCollection && (
+                    <DialogDeleteCollection
+                        collectionName={this.state.collectionToDelete ? this.state.collectionToDelete.name : undefined}
+                        onClose={this.handleDeleteCollectionCancel}
+                        onDelete={this.handleDeleteCollectionAccept}
+                    />
+                )}
+                {this.state.showDialogRenameCollection && (
+                    <DialogRenameCollection
+                        collectionName={this.state.collectionToRename ? this.state.collectionToRename.name : undefined}
+                        onClose={this.handleRenameCollectionCancel}
+                        onRename={this.handleRenameCollectionAccept}
+                    />
                 )}
             </>
         );
@@ -152,27 +180,53 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
     handleDeleteCollection(collectionId: number): void {
         this.setState({
             showDialogDeleteCollection: true,
-            deleteCollection: this.props.collections.find(c => c.id === collectionId),
+            collectionToDelete: this.props.collections.find(c => c.id === collectionId),
         });
     }
 
     handleDeleteCollectionCancel(): void {
         this.setState({
             showDialogDeleteCollection: false,
-            deleteCollection: undefined,
+            collectionToDelete: undefined,
         });
     }
 
     handleDeleteCollectionAccept(): void {
-        DeleteCollectionMessage.request(ipcRenderer, this.state.deleteCollection.id)
+        DeleteCollectionMessage.request(ipcRenderer, this.state.collectionToDelete.id)
             .then(() => this.props.onCollectionsModified())
             .finally(() => {
                 this.setState({
                     showDialogDeleteCollection: false,
-                    deleteCollection: undefined,
+                    collectionToDelete: undefined,
                 });
             });
     }
+
+    handleRenameCollection(collectionId: number): void {
+        this.setState({
+            showDialogRenameCollection: true,
+            collectionToRename: this.props.collections.find(c => c.id === collectionId),
+        });
+    }
+
+    handleRenameCollectionCancel(): void {
+        this.setState({
+            showDialogRenameCollection: false,
+            collectionToRename: undefined,
+        });
+    }
+
+    handleRenameCollectionAccept(newCollectionName:string): void {
+        RenameCollectionMessage.request(ipcRenderer, this.state.collectionToRename.id, newCollectionName)
+            .then(() => this.props.onCollectionsModified())
+            .finally(() => {
+                this.setState({
+                    showDialogRenameCollection: false,
+                    collectionToRename: undefined,
+                });
+            });
+    }
+
 
     setMinimized(minimized: boolean): void {
         this.setState({

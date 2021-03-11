@@ -21,7 +21,7 @@ import {
     GetTotalItemCountMessage,
     ImportFilesMessage,
     MoveItemsToCollectionsMessage,
-    OpenLibraryMessage,
+    OpenLibraryMessage, RenameCollectionMessage,
 } from './messagesLibrary';
 import { ItemService } from '../service/item/ItemService';
 import { CollectionService } from '../service/collection/collectionService';
@@ -57,6 +57,7 @@ export class MessageHandler {
         MoveItemsToCollectionsMessage.handle(ipcMain, (sourceCollectionId: number, collectionId: number, itemIds: number[], copyMode: boolean) => this.handleMoveItemsToCollection(sourceCollectionId, collectionId, itemIds, copyMode));
         CreateCollectionMessage.handle(ipcMain, (name: string) => this.handleCreateCollection(name));
         DeleteCollectionMessage.handle(ipcMain, (collectionId: number) => this.handleDeleteCollection(collectionId));
+        RenameCollectionMessage.handle(ipcMain, (collectionId: number, newCollectionName:string) => this.handleRenameCollection(collectionId, newCollectionName));
     }
 
     private async handleRequestCreateLibrary(path: string, name: string): Promise<Response> {
@@ -135,6 +136,12 @@ export class MessageHandler {
 
     private async handleDeleteCollection(collectionId: number): Promise<Response> {
         return this.collectionService.deleteCollection(collectionId)
+            .then(() => successResponse())
+            .catch(err => failedResponse(err));
+    }
+
+    private async handleRenameCollection(collectionId: number, newCollectionName:string): Promise<Response> {
+        return this.collectionService.renameCollection(collectionId, newCollectionName)
             .then(() => successResponse())
             .catch(err => failedResponse(err));
     }

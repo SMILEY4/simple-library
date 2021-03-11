@@ -33,7 +33,7 @@
 }
 
 .sidebar-menu-item > .sidebar-menu-item-label {
-
+	color: var(--text-color-0);
 }
 
 .sidebar-menu-item-selected {
