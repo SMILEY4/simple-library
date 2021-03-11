@@ -3,6 +3,10 @@
 	border-radius:    var(--radius-0);
 }
 
+.react-contexify__will-enter--scale {
+	animation: react-contexify__scaleIn 0.1s;
+}
+
 .react-contexify > .react-contexify__item > .react-contexify__item__content {
 	color:      var(--text-color-2);
 	height:     var(--s-1);
@@ -14,3 +18,4 @@
 	background-color: var(--base-color-1);
 	color:            var(--text-color-2);
 }
+

@@ -36,6 +36,10 @@ export function sqlDeleteCollection(collectionId: number) {
     return 'DELETE FROM collections WHERE collection_id=' + collectionId + ';';
 }
 
+export function sqlDeleteCollectionItems(collectionId: number) {
+    return 'DELETE FROM collection_items WHERE collection_id=' + collectionId + ';';
+}
+
 export function sqlUpdateCollection(collectionId: number, name: string) {
     return 'UPDATE collections SET collection_name="' + name + '" WHERE collection_id=' + collectionId + ';';
 }

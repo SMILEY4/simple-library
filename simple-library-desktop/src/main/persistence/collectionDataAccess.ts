@@ -3,6 +3,7 @@ import {
     sqlAddItemToCollection,
     sqlAllCollections,
     sqlDeleteCollection,
+    sqlDeleteCollectionItems,
     sqlInsertCollection,
     sqlRemoveItemFromCollection,
     sqlUpdateCollection,
@@ -51,7 +52,9 @@ export class CollectionDataAccess {
     }
 
     public deleteCollection(collectionId: number): Promise<void> {
-        return this.dataAccess.executeRun(sqlDeleteCollection(collectionId)).then();
+        return this.dataAccess.executeRun(sqlDeleteCollection(collectionId))
+            .then(() => this.dataAccess.executeRun(sqlDeleteCollectionItems(collectionId)))
+            .then();
     }
 
     public renameCollection(collectionId: number, name: string): Promise<void> {
@@ -67,7 +70,7 @@ export class CollectionDataAccess {
     }
 
     public moveItemsToCollection(srcCollectionId: number, tgtCollectionId: number, itemId: number): Promise<void> {
-        if(tgtCollectionId) {
+        if (tgtCollectionId) {
             return this.dataAccess.executeRun(sqlAddItemToCollection(tgtCollectionId, itemId))
                 .then(() => {
                     if (srcCollectionId !== undefined) {

@@ -3,23 +3,40 @@ import { SidebarMenu } from '../../../components/sidebarmenu/SidebarMenu';
 import { SidebarMenuSection } from '../../../components/sidebarmenu/SidebarMenuSection';
 import { Collection } from '../../../../common/commonModels';
 import { SidebarMenuItem } from '../../../components/sidebarmenu/SidebarMenuItem';
-import { AiOutlineCloseCircle, BiImages, BiImport, HiOutlineRefresh } from 'react-icons/all';
+import { AiOutlineCloseCircle, BiImages, BiImport, HiOutlineRefresh, HiPlus } from 'react-icons/all';
+import { DialogCreateCollection } from './DialogCreateCollection';
+import { COLLECTION_CONTEXT_MENU_ID, CollectionContextMenu } from './CollectionContextMenu';
+import { useContextMenu } from 'react-contexify';
+import { DialogDeleteCollection } from './DialogDeleteCollection';
 
 
 export interface MenuSidebarProps {
     onActionImport: () => void,
     onActionRefresh: () => void,
-    onActionClose: () => void
+    onActionClose: () => void,
 
     collections: Collection[],
     activeCollectionId: number | undefined,
-    onSelectCollection: (collectionId: number | undefined) => void
+    onSelectCollection: (collectionId: number | undefined) => void,
 
-    onDragOverCollection: (collectionId: number | undefined, event: React.DragEvent) => void
-    onDropOnCollection: (collectionId: number | undefined, event: React.DragEvent) => void
+    onDragOverCollection: (collectionId: number | undefined, event: React.DragEvent) => void,
+    onDropOnCollection: (collectionId: number | undefined, event: React.DragEvent) => void,
 
     minimized: boolean,
-    onSetMinimize: (mini: boolean) => void
+    onSetMinimize: (mini: boolean) => void,
+
+    showDialogCreateCollection: boolean,
+    onCreateCollection: () => void,
+    onCreateCollectionCancel: () => void,
+    onCreateCollectionAccept: (collectionName: string) => void
+
+    showDialogDeleteCollection: boolean,
+    deleteCollectionName: string | undefined
+    onDeleteCollectionCancel: () => void,
+    onDeleteCollectionAccept: () => void,
+
+    onContextMenuActionRename: (collectionId: number) => void
+    onContextMenuActionDelete: (collectionId: number) => void
 }
 
 export function MenuSidebar(props: React.PropsWithChildren<MenuSidebarProps>): React.ReactElement {
@@ -37,7 +54,7 @@ export function MenuSidebar(props: React.PropsWithChildren<MenuSidebarProps>): R
                 <MenuActionClose onAction={props.onActionClose} />
             </SidebarMenuSection>
 
-            <SidebarMenuSection title='Collections'>
+            <SidebarMenuSection title='Collections' actionButtonIcon={<HiPlus />} onAction={props.onCreateCollection}>
                 {props.collections.map(collection => {
                     return <MenuCollection name={collection.name}
                                            id={collection.id}
@@ -46,9 +63,29 @@ export function MenuSidebar(props: React.PropsWithChildren<MenuSidebarProps>): R
                                            selectedId={props.activeCollectionId}
                                            onSelect={props.onSelectCollection}
                                            onDragOver={(event: React.DragEvent) => props.onDragOverCollection(collection.id, event)}
-                                           onDrop={(event: React.DragEvent) => props.onDropOnCollection(collection.id, event)} />
+                                           onDrop={(event: React.DragEvent) => props.onDropOnCollection(collection.id, event)} />;
                 })}
             </SidebarMenuSection>
+
+            {props.showDialogCreateCollection && (
+                <DialogCreateCollection
+                    onClose={props.onCreateCollectionCancel}
+                    onCreate={props.onCreateCollectionAccept}
+                />
+            )}
+
+            {props.showDialogDeleteCollection && (
+                <DialogDeleteCollection
+                    collectionName={props.deleteCollectionName}
+                    onClose={props.onDeleteCollectionCancel}
+                    onDelete={props.onDeleteCollectionAccept}
+                />
+            )}
+
+            <CollectionContextMenu
+                onActionRename={props.onContextMenuActionRename}
+                onActionDelete={props.onContextMenuActionDelete}
+            />
 
         </SidebarMenu>
     );
@@ -95,11 +132,23 @@ interface MenuCollectionProps {
 }
 
 function MenuCollection(props: React.PropsWithChildren<MenuCollectionProps>): React.ReactElement {
+
+    const { show } = useContextMenu({
+        id: COLLECTION_CONTEXT_MENU_ID,
+        props: {
+            collectionId: props.id,
+        },
+    });
+
     return <SidebarMenuItem title={props.name}
                             icon={<BiImages />}
                             label={"" + props.itemCount}
                             selected={props.selectedId === props.id}
                             onClick={() => props.onSelect(props.id)}
+                            onContextMenu={(event: React.MouseEvent) => {
+                                event.preventDefault();
+                                show(event);
+                            }}
                             enableDrop={true}
                             onDragOver={(event) => props.onDragOver(event)}
                             onDrop={(event) => props.onDrop(event)} />;

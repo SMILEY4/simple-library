@@ -14,4 +14,12 @@ export class CollectionService {
         return this.collectionDataAccess.getCollections(includeItemCount);
     }
 
+    public createCollection(name: string): Promise<Collection> {
+        return this.collectionDataAccess.createCollection(name);
+    }
+
+    public deleteCollection(collectionId: number): Promise<void> {
+        return this.collectionDataAccess.deleteCollection(collectionId);
+    }
+
 }

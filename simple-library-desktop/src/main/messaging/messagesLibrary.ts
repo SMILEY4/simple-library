@@ -272,3 +272,51 @@ export module MoveItemsToCollectionsMessage {
         handleRequest(ipc, handler);
     }
 }
+
+export module CreateCollectionMessage {
+
+    const CHANNEL_CREATE_COLLECTION: string = 'collection.create';
+
+    export function request(ipc: Electron.IpcRenderer, name: string): Promise<Response> {
+        const request: Request = {
+            channel: CHANNEL_CREATE_COLLECTION,
+            payload: {
+                name: name,
+            },
+        };
+        return sendRequest(ipc, request);
+    }
+
+    export function handle(ipc: Electron.IpcMain, action: (name: string) => Promise<Response>) {
+        const handler: RequestHandler = {
+            channel: CHANNEL_CREATE_COLLECTION,
+            action: (payload) => action(payload.name),
+        };
+        handleRequest(ipc, handler);
+    }
+
+}
+
+export module DeleteCollectionMessage {
+
+    const CHANNEL_DELETE_COLLECTION: string = 'collection.delete';
+
+    export function request(ipc: Electron.IpcRenderer, collectionId: number): Promise<Response> {
+        const request: Request = {
+            channel: CHANNEL_DELETE_COLLECTION,
+            payload: {
+                collectionId: collectionId,
+            },
+        };
+        return sendRequest(ipc, request);
+    }
+
+    export function handle(ipc: Electron.IpcMain, action: (collectionId: number) => Promise<Response>) {
+        const handler: RequestHandler = {
+            channel: CHANNEL_DELETE_COLLECTION,
+            action: (payload) => action(payload.collectionId),
+        };
+        handleRequest(ipc, handler);
+    }
+
+}

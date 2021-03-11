@@ -84,6 +84,7 @@ export class MainViewController extends Component<MainViewControllerProps, MainV
                     onActionClose={this.actionCloseLibrary}
                     onActionMoveItems={this.handleActionMoveItems}
                     onActionCopyItems={this.handleActionCopyItems}
+                    onCollectionsModified={this.updateCollections}
                 />
                 <ItemPanelController
                     collections={this.state.collections}

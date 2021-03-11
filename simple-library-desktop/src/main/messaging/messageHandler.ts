@@ -12,7 +12,8 @@ import {
 } from '../../common/commonModels';
 import {
     CloseCurrentLibraryMessage,
-    CreateLibraryMessage,
+    CreateCollectionMessage,
+    CreateLibraryMessage, DeleteCollectionMessage,
     GetCollectionsMessage,
     GetItemsMessage,
     GetLastOpenedLibrariesMessage,
@@ -51,9 +52,11 @@ export class MessageHandler {
         CloseCurrentLibraryMessage.handle(ipcMain, () => this.handleRequestCloseCurrentProject());
         ImportFilesMessage.handle(ipcMain, (data) => this.handleRequestImportFiles(data));
         GetItemsMessage.handle(ipcMain, (collectionId: number | undefined) => this.handleRequestGetItems(collectionId));
-        GetCollectionsMessage.handle(ipcMain, (includeItemCount:boolean) => this.handleRequestGetCollections(includeItemCount));
-        GetTotalItemCountMessage.handle(ipcMain, () => this.handleRequestTotalItemCount())
+        GetCollectionsMessage.handle(ipcMain, (includeItemCount: boolean) => this.handleRequestGetCollections(includeItemCount));
+        GetTotalItemCountMessage.handle(ipcMain, () => this.handleRequestTotalItemCount());
         MoveItemsToCollectionsMessage.handle(ipcMain, (sourceCollectionId: number, collectionId: number, itemIds: number[], copyMode: boolean) => this.handleMoveItemsToCollection(sourceCollectionId, collectionId, itemIds, copyMode));
+        CreateCollectionMessage.handle(ipcMain, (name: string) => this.handleCreateCollection(name));
+        DeleteCollectionMessage.handle(ipcMain, (collectionId: number) => this.handleDeleteCollection(collectionId));
     }
 
     private async handleRequestCreateLibrary(path: string, name: string): Promise<Response> {
@@ -117,8 +120,21 @@ export class MessageHandler {
     }
 
 
-    handleMoveItemsToCollection(sourceCollectionId: number, collectionId: number, itemIds: number[], copyMode: boolean): Promise<Response> {
+    private async handleMoveItemsToCollection(sourceCollectionId: number, collectionId: number, itemIds: number[], copyMode: boolean): Promise<Response> {
         return this.itemService.moveItemsToCollection(sourceCollectionId, collectionId, itemIds, copyMode)
+            .then(() => successResponse())
+            .catch(err => failedResponse(err));
+    }
+
+    private async handleCreateCollection(name: string): Promise<Response> {
+        return this.collectionService.createCollection(name)
+            .then((collection: Collection) => successResponse(collection))
+            .catch(err => failedResponse(err));
+    }
+
+
+    private async handleDeleteCollection(collectionId: number): Promise<Response> {
+        return this.collectionService.deleteCollection(collectionId)
             .then(() => successResponse())
             .catch(err => failedResponse(err));
     }
