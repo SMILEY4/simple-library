@@ -55,7 +55,7 @@ if (RUN_TESTS) {
         itemDataAccess,
         collectionDataAccess,
     );
-    const collectionService: CollectionService = new CollectionService(collectionDataAccess);
+    const collectionService: CollectionService = new CollectionService(itemService, collectionDataAccess);
 
     // messaging
     const messageHandler: MessageHandler = new MessageHandler(appService, itemService, collectionService, windowService);

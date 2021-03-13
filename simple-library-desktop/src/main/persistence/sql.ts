@@ -1,3 +1,20 @@
+
+//==================//
+//     GROUPS       //
+//==================//
+
+export function sqlCreateTableGroups(): string {
+    return 'CREATE TABLE groups (' +
+        '  group_id INTEGER PRIMARY KEY AUTOINCREMENT,' +
+        '  name TEXT NOT NULL,' +
+        '  parent_group_id INTEGER' +
+        ');';
+}
+
+export function sqlAllGroups(): string {
+    return 'SELECT * FROM groups;';
+}
+
 //==================//
 //   COLLECTIONS    //
 //==================//
@@ -5,7 +22,8 @@
 export function sqlCreateTableCollections(): string {
     return 'CREATE TABLE collections (' +
         '  collection_id INTEGER PRIMARY KEY AUTOINCREMENT,' +
-        '  collection_name TEXT NOT NULL' +
+        '  collection_name TEXT NOT NULL,' +
+        '  group_id INTEGER' +
         ');';
 }
 
@@ -29,7 +47,7 @@ export function sqlAllCollections(includeItemCount: boolean) {
 }
 
 export function sqlInsertCollection(name: string) {
-    return 'INSERT INTO collections (collection_name) VALUES ("' + name + '");';
+    return 'INSERT INTO collections (collection_name, group_id) VALUES ("' + name + '", null);';
 }
 
 export function sqlDeleteCollection(collectionId: number) {

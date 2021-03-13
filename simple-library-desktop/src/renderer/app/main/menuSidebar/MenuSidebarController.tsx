@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Component } from 'react';
 import { MenuSidebar } from './MenuSidebar';
-import { Collection, ImportProcessData } from '../../../../common/commonModels';
+import {Collection, extractCollections, Group, ImportProcessData} from '../../../../common/commonModels';
 import { ITEM_COPY_DRAG_GHOST_CLASS, ITEM_DRAG_GHOST_ID } from '../itemPanel/ItemPanelController';
 import { DialogImportFiles } from '../import/DialogImportFiles';
 import {
@@ -17,7 +17,7 @@ const { ipcRenderer } = window.require('electron');
 
 
 interface MenuSidebarControllerProps {
-    collections: Collection[],
+    rootGroup: Group,
     activeCollectionId: number | undefined,
     onSelectCollection: (collectionId: number | undefined) => void,
     onActionImport: (data: ImportProcessData) => void,
@@ -81,7 +81,7 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
                     onActionRefresh={this.props.onActionRefresh}
                     onActionClose={this.props.onActionClose}
 
-                    collections={this.props.collections}
+                    rootGroup={this.props.rootGroup}
                     activeCollectionId={this.props.activeCollectionId}
 
                     onSelectCollection={this.props.onSelectCollection}
@@ -180,7 +180,7 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
     handleDeleteCollection(collectionId: number): void {
         this.setState({
             showDialogDeleteCollection: true,
-            collectionToDelete: this.props.collections.find(c => c.id === collectionId),
+            collectionToDelete: extractCollections(this.props.rootGroup).find(c => c.id === collectionId),
         });
     }
 
@@ -205,7 +205,7 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
     handleRenameCollection(collectionId: number): void {
         this.setState({
             showDialogRenameCollection: true,
-            collectionToRename: this.props.collections.find(c => c.id === collectionId),
+            collectionToRename: extractCollections(this.props.rootGroup).find(c => c.id === collectionId),
         });
     }
 
@@ -226,7 +226,6 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
                 });
             });
     }
-
 
     setMinimized(minimized: boolean): void {
         this.setState({

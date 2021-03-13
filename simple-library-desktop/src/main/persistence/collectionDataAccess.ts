@@ -2,13 +2,14 @@ import DataAccess from './dataAccess';
 import {
     sqlAddItemToCollection,
     sqlAllCollections,
+    sqlAllGroups,
     sqlDeleteCollection,
     sqlDeleteCollectionItems,
     sqlInsertCollection,
     sqlRemoveItemFromCollection,
     sqlUpdateCollection,
 } from './sql';
-import { Collection } from '../../common/commonModels';
+import {Collection, GroupDTO} from '../../common/commonModels';
 
 export class CollectionDataAccess {
 
@@ -27,6 +28,7 @@ export class CollectionDataAccess {
                         id: row.collection_id,
                         name: row.collection_name,
                         itemCount: row.item_count,
+                        groupId: row.parent_group_id ? row.parent_group_id : undefined
                     };
                 }));
         } else {
@@ -35,9 +37,21 @@ export class CollectionDataAccess {
                     return {
                         id: row.collection_id,
                         name: row.collection_name,
+                        groupId: row.parent_group_id
                     };
                 }));
         }
+    }
+
+    public getGroups(): Promise<GroupDTO[]> {
+        return this.dataAccess.queryAll(sqlAllGroups())
+            .then((rows: any) => rows.map((row: any) => {
+                return {
+                    id: row.group_id,
+                    name: row.name,
+                    parentId: row.parent_group_id,
+                };
+            }));
     }
 
     public createCollection(name: string): Promise<Collection> {
@@ -47,6 +61,7 @@ export class CollectionDataAccess {
                     id: id,
                     name: name,
                     itemCount: undefined,
+                    groupId: undefined
                 };
             });
     }

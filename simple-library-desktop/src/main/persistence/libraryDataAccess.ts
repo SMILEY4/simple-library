@@ -11,7 +11,7 @@ import {
     sqlInsertMetadataLibraryName,
     sqlInsertMetadataTimestampCreated,
     sqlInsertMetadataTimestampLastOpened,
-    sqlUpdateMetadataTimestampLastOpened,
+    sqlUpdateMetadataTimestampLastOpened, sqlCreateTableGroups,
 } from './sql';
 
 export class LibraryDataAccess {
@@ -36,14 +36,11 @@ export class LibraryDataAccess {
             await this.dataAccess.executeRun(sqlCreateTableItems());
             await this.dataAccess.executeRun(sqlCreateTableCollections());
             await this.dataAccess.executeRun(sqlCreateTableCollectionItems());
+            await this.dataAccess.executeRun(sqlCreateTableGroups());
             await Promise.all([
                 this.dataAccess.executeRun(sqlInsertMetadataLibraryName(libraryName)),
                 this.dataAccess.executeRun(sqlInsertMetadataTimestampCreated(timestamp)),
                 this.dataAccess.executeRun(sqlInsertMetadataTimestampLastOpened(timestamp)),
-                // todo: collections only temp, for testing
-                this.dataAccess.executeRun(sqlInsertCollection("Collection Alpha")),
-                this.dataAccess.executeRun(sqlInsertCollection("Collection Bravo")),
-                this.dataAccess.executeRun(sqlInsertCollection("Collection Charlie")),
             ]);
         }
     }

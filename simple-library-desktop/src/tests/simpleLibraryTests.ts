@@ -1,6 +1,7 @@
-import { RenameTests } from './import/renameTests';
-import { ImportFileHandlerTests } from './import/importFileHandlerTests';
-import { ImportValidationTests } from './import/importValidationTests';
+import {RenameTests} from './import/renameTests';
+import {ImportFileHandlerTests} from './import/importFileHandlerTests';
+import {ImportValidationTests} from './import/importValidationTests';
+import {GroupAggregationTest} from "./groupAggregationTest";
 
 export class SimpleLibraryTests {
 
@@ -25,6 +26,9 @@ export class SimpleLibraryTests {
         await ImportValidationTests.importInvalidRenameTextEmpty();
         await ImportValidationTests.importInvalidRenameNumberFromEmpty();
         await ImportValidationTests.importInvalidRenameNumberFromNaN();
+
+        await GroupAggregationTest.testGetGroupsWithoutCollections();
+        await GroupAggregationTest.testGetGroupsWithCollections();
 
         process.exit(0);
     }
