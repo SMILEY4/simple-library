@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Component } from 'react';
 import "./itemPanel.css";
 import { ItemPanel } from './ItemPanel';
-import { Collection, ItemData } from '../../../../common/commonModels';
+import {Collection, Group, ItemData} from '../../../../common/commonModels';
 
 export const ITEM_DRAG_GHOST_ID: string = "item-drag-ghost";
 export const ITEM_DRAG_GHOST_CLASS: string = "item-drag-ghost";
@@ -17,7 +17,7 @@ export enum SelectMode {
 
 interface ItemPanelControllerProps {
     selectedCollectionId: number | undefined,
-    collections: Collection[],
+    rootGroup: Group,
     items: ItemData[],
     onActionMove: (targetCollectionId: number | undefined, itemIds: number[]) => void,
     onActionCopy: (targetCollectionId: number | undefined, itemIds: number[]) => void
@@ -47,7 +47,7 @@ export class ItemPanelController extends Component<ItemPanelControllerProps, Ite
     }
 
     render() {
-        return <ItemPanel collections={this.props.collections}
+        return <ItemPanel rootGroup={this.props.rootGroup}
                           items={this.props.items}
                           selectedItemIds={this.state.selectedItemIds}
                           onSelectItem={this.handleOnSelectItem}

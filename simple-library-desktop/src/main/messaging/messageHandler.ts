@@ -1,9 +1,10 @@
-import { failedResponse, Response, successResponse } from './messages';
-import { ipcMain } from 'electron';
-import { LibraryService } from '../service/library/libraryService';
-import { WindowService } from '../windows/windowService';
+import {failedResponse, Response, successResponse} from './messages';
+import {ipcMain} from 'electron';
+import {LibraryService} from '../service/library/libraryService';
+import {WindowService} from '../windows/windowService';
 import {
     Collection,
+    Group,
     ImportProcessData,
     ImportResult,
     ItemData,
@@ -13,18 +14,21 @@ import {
 import {
     CloseCurrentLibraryMessage,
     CreateCollectionMessage,
-    CreateLibraryMessage, DeleteCollectionMessage,
+    CreateLibraryMessage,
+    DeleteCollectionMessage,
     GetCollectionsMessage,
+    GetGroupsMessage,
     GetItemsMessage,
     GetLastOpenedLibrariesMessage,
     GetLibraryMetadataMessage,
     GetTotalItemCountMessage,
     ImportFilesMessage,
     MoveItemsToCollectionsMessage,
-    OpenLibraryMessage, RenameCollectionMessage,
+    OpenLibraryMessage,
+    RenameCollectionMessage,
 } from './messagesLibrary';
-import { ItemService } from '../service/item/ItemService';
-import { CollectionService } from '../service/collection/collectionService';
+import {ItemService} from '../service/item/ItemService';
+import {CollectionService} from '../service/collection/collectionService';
 
 export class MessageHandler {
 
@@ -57,7 +61,8 @@ export class MessageHandler {
         MoveItemsToCollectionsMessage.handle(ipcMain, (sourceCollectionId: number, collectionId: number, itemIds: number[], copyMode: boolean) => this.handleMoveItemsToCollection(sourceCollectionId, collectionId, itemIds, copyMode));
         CreateCollectionMessage.handle(ipcMain, (name: string) => this.handleCreateCollection(name));
         DeleteCollectionMessage.handle(ipcMain, (collectionId: number) => this.handleDeleteCollection(collectionId));
-        RenameCollectionMessage.handle(ipcMain, (collectionId: number, newCollectionName:string) => this.handleRenameCollection(collectionId, newCollectionName));
+        RenameCollectionMessage.handle(ipcMain, (collectionId: number, newCollectionName: string) => this.handleRenameCollection(collectionId, newCollectionName));
+        GetGroupsMessage.handle(ipcMain, (includeCollections:boolean, includeItemCount:boolean) => this.handleGetGroups(includeCollections, includeItemCount));
     }
 
     private async handleRequestCreateLibrary(path: string, name: string): Promise<Response> {
@@ -140,9 +145,15 @@ export class MessageHandler {
             .catch(err => failedResponse(err));
     }
 
-    private async handleRenameCollection(collectionId: number, newCollectionName:string): Promise<Response> {
+    private async handleRenameCollection(collectionId: number, newCollectionName: string): Promise<Response> {
         return this.collectionService.renameCollection(collectionId, newCollectionName)
             .then(() => successResponse())
+            .catch(err => failedResponse(err));
+    }
+
+    public async handleGetGroups(includeCollections:boolean, includeItemCount:boolean): Promise<Response> {
+        return this.collectionService.getGroups(includeCollections, includeItemCount)
+            .then((groups: Group[]) => successResponse(groups))
             .catch(err => failedResponse(err));
     }
 

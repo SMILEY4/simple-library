@@ -1,14 +1,14 @@
 import * as React from 'react';
 import { HBox, VBox } from '../../../components/layout/Box';
 import { AlignCross, concatClasses, Size } from '../../../components/common';
-import { Collection, ItemData } from '../../../../common/commonModels';
+import {Collection, Group, ItemData} from '../../../../common/commonModels';
 import { SelectMode } from './ItemPanelController';
 import { ITEM_CONTEXT_MENU_ID, ItemContextMenu } from './ItemContextMenu';
 import { useContextMenu } from 'react-contexify';
 import "react-contexify/dist/ReactContexify.css";
 
 interface ItemPanelProps {
-    collections: Collection[],
+    rootGroup: Group,
     items: ItemData[],
     selectedItemIds: number[],
     onSelectItem: (itemId: number, selectMode: SelectMode, rangeSelect: boolean) => void,
@@ -37,7 +37,7 @@ export function ItemPanel(props: React.PropsWithChildren<ItemPanelProps>): React
                 }
             </VBox>
             <ItemContextMenu
-                collections={props.collections}
+                rootGroup={props.rootGroup}
                 onActionMove={props.onContextMenuActionMove}
                 onActionCopy={props.onContextMenuActionCopy}
                 onActionRemove={props.onContextMenuActionRemove}

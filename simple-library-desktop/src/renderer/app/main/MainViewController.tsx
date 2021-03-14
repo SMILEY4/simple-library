@@ -1,22 +1,22 @@
 import * as React from 'react';
-import { Component, ReactElement } from 'react';
-import { Theme } from '../application';
+import {Component, ReactElement} from 'react';
+import {Theme} from '../application';
 import {
     CloseCurrentLibraryMessage,
-    GetCollectionsMessage,
+    GetCollectionsMessage, GetGroupsMessage,
     GetItemsMessage,
     GetTotalItemCountMessage,
     ImportFilesMessage,
     ImportStatusUpdateCommand,
     MoveItemsToCollectionsMessage,
 } from '../../../main/messaging/messagesLibrary';
-import { Response } from '../../../main/messaging/messages';
-import { Collection, ImportProcessData, ImportResult, ImportStatus, ItemData } from '../../../common/commonModels';
-import { ItemPanelController } from './itemPanel/ItemPanelController';
-import { MenuSidebarController } from './menuSidebar/MenuSidebarController';
-import { MainView, MainViewMessageType } from './MainView';
+import {Response} from '../../../main/messaging/messages';
+import {Collection, Group, ImportProcessData, ImportResult, ImportStatus, ItemData} from '../../../common/commonModels';
+import {ItemPanelController} from './itemPanel/ItemPanelController';
+import {MenuSidebarController} from './menuSidebar/MenuSidebarController';
+import {MainView, MainViewMessageType} from './MainView';
 
-const { ipcRenderer } = window.require('electron');
+const {ipcRenderer} = window.require('electron');
 
 interface MainViewControllerProps {
     theme: Theme,
@@ -26,7 +26,7 @@ interface MainViewControllerProps {
 
 interface MainViewControllerState {
     showImportFilesDialog: boolean
-    collections: Collection[]
+    rootGroup: Group,
     items: ItemData[],
     currentCollectionId: number | undefined,
 }
@@ -41,13 +41,13 @@ export class MainViewController extends Component<MainViewControllerProps, MainV
         super(props);
         this.state = {
             showImportFilesDialog: false,
-            collections: [],
+            rootGroup: undefined,
             items: [],
             currentCollectionId: undefined,
         };
-        this.updateCollections = this.updateCollections.bind(this);
+        this.updateGroupsAndCollections = this.updateGroupsAndCollections.bind(this);
         this.updateItemList = this.updateItemList.bind(this);
-        this.fetchCollections = this.fetchCollections.bind(this);
+        // this.fetchCollections = this.fetchCollections.bind(this);
         this.fetchTotalItemCount = this.fetchTotalItemCount.bind(this);
         this.fetchItems = this.fetchItems.bind(this);
         this.actionCloseLibrary = this.actionCloseLibrary.bind(this);
@@ -64,7 +64,7 @@ export class MainViewController extends Component<MainViewControllerProps, MainV
     }
 
     componentDidMount() {
-        this.updateCollections()
+        this.updateGroupsAndCollections()
             .then(() => this.updateItemList(this.state.currentCollectionId));
     }
 
@@ -76,7 +76,7 @@ export class MainViewController extends Component<MainViewControllerProps, MainV
                 setRemoveNotification={(fun) => this.removeNotification = fun}
             >
                 <MenuSidebarController
-                    collections={this.state.collections}
+                    rootGroup={this.state.rootGroup}
                     activeCollectionId={this.state.currentCollectionId}
                     onSelectCollection={this.handleOnSelectCollection}
                     onActionImport={this.handleImport}
@@ -84,10 +84,10 @@ export class MainViewController extends Component<MainViewControllerProps, MainV
                     onActionClose={this.actionCloseLibrary}
                     onActionMoveItems={this.handleActionMoveItems}
                     onActionCopyItems={this.handleActionCopyItems}
-                    onCollectionsModified={this.updateCollections}
+                    onCollectionsModified={this.updateGroupsAndCollections}
                 />
                 <ItemPanelController
-                    collections={this.state.collections}
+                    rootGroup={this.state.rootGroup}
                     selectedCollectionId={this.state.currentCollectionId}
                     items={this.state.items}
                     onActionMove={(targetCollectionId: number | undefined, itemIds: number[]) => this.actionMoveItems(this.state.currentCollectionId, targetCollectionId, itemIds, false)}
@@ -98,7 +98,7 @@ export class MainViewController extends Component<MainViewControllerProps, MainV
     }
 
     handleOnSelectCollection(collectionId: number): void {
-        this.setState({ currentCollectionId: collectionId });
+        this.setState({currentCollectionId: collectionId});
         this.updateItemList(collectionId);
     }
 
@@ -125,37 +125,35 @@ export class MainViewController extends Component<MainViewControllerProps, MainV
                 this.showNotification(MainViewMessageType.MOVE_ITEMS_IN_COLLECTION_FAILED, error);
                 return Promise.reject();
             })
-            .then(() => this.updateCollections().then(() => this.updateItemList(this.state.currentCollectionId)));
+            .then(() => this.updateGroupsAndCollections().then(() => this.updateItemList(this.state.currentCollectionId)));
     }
 
-    updateCollections(): Promise<void> {
-        return this.fetchCollections().then((collections: Collection[]) => {
-            this.fetchTotalItemCount().then((itemCount: number) => {
-                const collectionAllItems: Collection = {
-                    id: undefined,
-                    name: "All Items",
-                    itemCount: itemCount,
-                };
-                this.setState({ collections: [collectionAllItems, ...collections] });
+    updateGroupsAndCollections(): Promise<void> {
+        return GetGroupsMessage.request(ipcRenderer, true, true)
+            .then((response: Response) => response.body)
+            .then((groups:Group[]) => groups[0])
+            .then((rootGroup:Group) => this.setState({rootGroup: rootGroup}))
+            .catch(error => {
+                this.showNotification(MainViewMessageType.FETCH_COLLECTIONS_FAILED, error); // todo: notification
+                return Promise.reject();
             });
-        });
     }
 
     updateItemList(collectionId: number | undefined) {
         this.fetchItems(collectionId)
-            .then(items => this.setState({ items: items }));
+            .then(items => this.setState({items: items}));
     }
 
-    fetchCollections(): Promise<Collection[]> {
-        return GetCollectionsMessage.request(ipcRenderer, true)
-            .then((response: Response) => {
-                return response.body;
-            })
-            .catch(error => {
-                this.showNotification(MainViewMessageType.FETCH_COLLECTIONS_FAILED, error);
-                return Promise.reject();
-            });
-    }
+    // fetchCollections(): Promise<Collection[]> {
+    //     return GetCollectionsMessage.request(ipcRenderer, true)
+    //         .then((response: Response) => {
+    //             return response.body;
+    //         })
+    //         .catch(error => {
+    //             this.showNotification(MainViewMessageType.FETCH_COLLECTIONS_FAILED, error);
+    //             return Promise.reject();
+    //         });
+    // }
 
     fetchTotalItemCount(): Promise<number> {
         return GetTotalItemCountMessage.request(ipcRenderer)
@@ -180,7 +178,7 @@ export class MainViewController extends Component<MainViewControllerProps, MainV
     }
 
     handleImport(data: ImportProcessData) {
-        this.setState({ showImportFilesDialog: false });
+        this.setState({showImportFilesDialog: false});
         const uidStatusNotification: string = this.handleImportStatusUpdate();
         ImportFilesMessage.request(ipcRenderer, data)
             .then((resp: Response) => resp.body)
@@ -195,7 +193,7 @@ export class MainViewController extends Component<MainViewControllerProps, MainV
             })
             .then(() => {
                 this.removeNotification(uidStatusNotification);
-                this.updateCollections()
+                this.updateGroupsAndCollections()
                     .then(() => this.updateItemList(this.state.currentCollectionId));
             })
             .catch(error => {

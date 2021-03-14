@@ -1,5 +1,6 @@
 import { FileSystemWrapperMock } from './testMocks';
 import { ItemData } from '../../common/commonModels';
+import exp from "constants";
 
 export function assertEqual(expected: any, actual: any): boolean {
     if (expected === actual) {
@@ -45,6 +46,10 @@ export function assertFileSystemWrapperInvocations(fswMock: FileSystemWrapperMoc
     }
 
     return true;
+}
+
+export function assertLength(array: any[], expectedLength: number): boolean {
+    return array.length === expectedLength;
 }
 
 

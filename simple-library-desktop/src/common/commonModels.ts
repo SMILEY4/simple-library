@@ -104,5 +104,30 @@ export interface ImportStatus {
 export interface Collection {
     id: number,
     name: string,
-    itemCount: number | undefined
+    itemCount: number | undefined,
+    groupId: number | undefined
+}
+
+export interface GroupDTO {
+    id: number,
+    name: string,
+    parentId: number | undefined
+}
+
+export interface Group {
+    id: number,
+    name: string,
+    children: Group[],
+    collections: Collection[]
+}
+
+export function extractCollections(group: Group | undefined): Collection[] {
+    const collections: Collection[] = [];
+    if (group) {
+        collections.push(...group.collections)
+        group.children.forEach((child: Group) => {
+            collections.push(...extractCollections(child));
+        })
+    }
+    return collections;
 }

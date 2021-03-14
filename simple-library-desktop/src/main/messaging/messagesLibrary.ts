@@ -9,7 +9,7 @@ import {
     Response,
     sendRequest,
 } from './messages';
-import { ImportProcessData, ImportStatus } from '../../common/commonModels';
+import {ImportProcessData, ImportStatus} from '../../common/commonModels';
 
 
 export module GetLastOpenedLibrariesMessage {
@@ -340,6 +340,32 @@ export module RenameCollectionMessage {
         const handler: RequestHandler = {
             channel: CHANNEL_RENAME_COLLECTION,
             action: (payload) => action(payload.collectionId, payload.newCollectionName),
+        };
+        handleRequest(ipc, handler);
+    }
+
+}
+
+
+export module GetGroupsMessage {
+
+    const CHANNEL_GET_GROUPS: string = 'groups.get';
+
+    export function request(ipc: Electron.IpcRenderer, includeCollections:boolean, includeItemCount:boolean): Promise<Response> {
+        const request: Request = {
+            channel: CHANNEL_GET_GROUPS,
+            payload: {
+                includeCollections: includeCollections,
+                includeItemCount: includeItemCount
+            },
+        };
+        return sendRequest(ipc, request);
+    }
+
+    export function handle(ipc: Electron.IpcMain, action: (includeCollections:boolean, includeItemCount:boolean) => Promise<Response>) {
+        const handler: RequestHandler = {
+            channel: CHANNEL_GET_GROUPS,
+            action: (payload) => action(payload.includeCollections, payload.includeItemCount),
         };
         handleRequest(ipc, handler);
     }
