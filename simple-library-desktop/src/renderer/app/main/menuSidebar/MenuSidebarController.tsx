@@ -4,14 +4,14 @@ import { MenuSidebar } from './MenuSidebar';
 import {Collection, extractCollections, Group, ImportProcessData} from '../../../../common/commonModels';
 import { ITEM_COPY_DRAG_GHOST_CLASS, ITEM_DRAG_GHOST_ID } from '../itemPanel/ItemPanelController';
 import { DialogImportFiles } from '../import/DialogImportFiles';
+import { DialogCreateCollection } from './DialogCreateCollection';
+import { DialogDeleteCollection } from './DialogDeleteCollection';
+import { DialogRenameCollection } from './DialogRenameCollection';
 import {
     CreateCollectionMessage,
     DeleteCollectionMessage,
     RenameCollectionMessage,
-} from '../../../../main/messaging/messagesLibrary';
-import { DialogCreateCollection } from './DialogCreateCollection';
-import { DialogDeleteCollection } from './DialogDeleteCollection';
-import { DialogRenameCollection } from './DialogRenameCollection';
+} from '../../../../common/messaging/messagesCollections';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -170,7 +170,7 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
     }
 
     handleCreateCollectionAccept(collectionName: string): void {
-        CreateCollectionMessage.request(ipcRenderer, collectionName)
+        CreateCollectionMessage.request(ipcRenderer, { name:collectionName })
             .then(() => this.props.onCollectionsModified())
             .finally(() => {
                 this.setState({ showCreateCollectionDialog: false });
@@ -192,7 +192,7 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
     }
 
     handleDeleteCollectionAccept(): void {
-        DeleteCollectionMessage.request(ipcRenderer, this.state.collectionToDelete.id)
+        DeleteCollectionMessage.request(ipcRenderer, { collectionId: this.state.collectionToDelete.id })
             .then(() => this.props.onCollectionsModified())
             .finally(() => {
                 this.setState({
@@ -217,7 +217,7 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
     }
 
     handleRenameCollectionAccept(newCollectionName:string): void {
-        RenameCollectionMessage.request(ipcRenderer, this.state.collectionToRename.id, newCollectionName)
+        RenameCollectionMessage.request(ipcRenderer, { collectionId: this.state.collectionToRename.id, newName: newCollectionName })
             .then(() => this.props.onCollectionsModified())
             .finally(() => {
                 this.setState({

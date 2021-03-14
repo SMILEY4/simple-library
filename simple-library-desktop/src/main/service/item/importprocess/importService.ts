@@ -4,10 +4,10 @@ import { ImportStepFileHash } from './importStepFileHash';
 import { ImportStepThumbnail } from './importStepThumbnail';
 import { ImportStepRename } from './importStepRename';
 import { ImportStepImportTarget } from './importStepImportTarget';
-import { Collection, ImportProcessData, ImportResult, ItemData } from '../../../../common/commonModels';
+import { ImportProcessData, ImportResult, ItemData } from '../../../../common/commonModels';
 import { startAsync } from '../../../../common/AsyncCommon';
 import { WindowService } from '../../../windows/windowService';
-import { ImportStatusUpdateCommand } from '../../../messaging/messagesLibrary';
+import { ImportStatusUpdateCommand } from '../../../../common/messaging/messagesItems';
 
 export class ImportService {
 

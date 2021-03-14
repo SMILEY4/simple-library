@@ -1,5 +1,4 @@
 import { app } from 'electron';
-import { MessageHandler } from './messaging/messageHandler';
 import { LibraryService } from './service/library/libraryService';
 import DataAccess from './persistence/dataAccess';
 import { WindowService } from './windows/windowService';
@@ -17,6 +16,10 @@ import { ImportDataValidator } from './service/item/importprocess/importDataVali
 import { ImportService } from './service/item/importprocess/importService';
 import { CollectionDataAccess } from './persistence/collectionDataAccess';
 import { CollectionService } from './service/collection/collectionService';
+import { CollectionMessageHandler } from './messagehandler/collectionMessageHandler';
+import { ItemMessageHandler } from './messagehandler/itemMessageHandler';
+import { GroupMessageHandler } from './messagehandler/groupMessageHandler';
+import { LibraryMessageHandler } from './messagehandler/libraryMessageHandler';
 
 const RUN_TESTS = false;
 
@@ -57,10 +60,13 @@ if (RUN_TESTS) {
     );
     const collectionService: CollectionService = new CollectionService(itemService, collectionDataAccess);
 
-    // messaging
-    const messageHandler: MessageHandler = new MessageHandler(appService, itemService, collectionService, windowService);
+    // message-handler
+    new LibraryMessageHandler(appService, windowService).initialize();
+    new ItemMessageHandler(itemService).initialize();
+    new CollectionMessageHandler(itemService, collectionService).initialize();
+    new GroupMessageHandler(collectionService).initialize();
 
-    messageHandler.initialize();
+
     app.whenReady().then(() => windowService.whenReady());
     app.on('window-all-closed', () => windowService.allWindowsClosed());
     app.on('activate', () => windowService.activate());

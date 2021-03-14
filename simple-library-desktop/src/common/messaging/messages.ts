@@ -35,56 +35,36 @@ export function rendererOnCommand(ipc: Electron.IpcRenderer, handler: CommandHan
 
 // REQUESTS: send and "wait" for returned data, renderer-to-main (and back)
 
-export interface Request {
-    channel: string,
-    payload?: any
-}
+const ERROR_RESPONSE_MARKER: string = "error-response";
 
-export interface RequestHandler {
-    channel: string,
-    action: (payload?: any) => Promise<Response>
-}
-
-export enum ResponseStatus {
-    SUCCESS = 'success',
-    FAILED = 'failed'
-}
-
-export interface Response {
-    status: ResponseStatus,
+export interface ErrorResponse {
+    status: string,
     body?: any,
 }
 
-export function successResponse(body?: any): Response {
+export function errorResponse(body?: any): ErrorResponse {
     return {
-        status: ResponseStatus.SUCCESS,
-        body: body,
-    };
-}
-
-export function failedResponse(body?: any): Response {
-    return {
-        status: ResponseStatus.FAILED,
+        status: ERROR_RESPONSE_MARKER,
         body: body,
     };
 }
 
 
-export function sendRequest(ipc: Electron.IpcRenderer, request: Request): Promise<Response> {
-    console.debug('[' + request.channel + '] sending request: ' + JSON.stringify(request));
-    return ipc.invoke('request.' + request.channel, request.payload).then(response => {
-        console.log('[' + request.channel + '] send response: ' + JSON.stringify(response));
-        if (response && response.status === ResponseStatus.SUCCESS) {
-            return response;
-        } else {
+export function sendRequest<REQ, RES>(ipc: Electron.IpcRenderer, channel: string, requestPayload: REQ): Promise<RES> {
+    console.debug('[' + channel + '] sending request: ' + JSON.stringify(requestPayload));
+    return ipc.invoke(channel, requestPayload).then(response => {
+        console.log('[' + channel + '] send response: ' + JSON.stringify(response));
+        if (response && response.status && response.status === ERROR_RESPONSE_MARKER) {
             return Promise.reject((response && response.body) ? response.body : JSON.stringify(response));
+        } else {
+            return response;
         }
     });
 }
 
-export function handleRequest(ipc: Electron.IpcMain, handler: RequestHandler) {
-    ipc.handle('request.' + handler.channel, (event, arg) => {
-        console.debug('[' + handler.channel + '] handling request: ' + JSON.stringify(arg));
-        return handler.action(arg);
+export function handleRequest<REQ, RES>(ipc: Electron.IpcMain, channel: string, action: (requestPayload: REQ) => Promise<RES | ErrorResponse>) {
+    ipc.handle(channel, (event, arg) => {
+        console.debug('[' + channel + '] handling request: ' + JSON.stringify(arg));
+        return action(arg);
     });
 }
