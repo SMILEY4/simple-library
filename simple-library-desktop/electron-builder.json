@@ -2,7 +2,7 @@
   "appId": "de.ruegnerlukas.simplelibrary",
   "publish": null,
   "files": [
-    ".webpack/main/bundle.js",
+    ".webpack/main/**/*",
     ".webpack/renderer/**/*"
   ],
   "mac": {

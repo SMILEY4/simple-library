@@ -15,4 +15,8 @@ module.exports = rules = [
             },
         ],
     },
+    {
+        test: /\.sql$/,
+        use: 'raw-loader',
+    },
 ];

@@ -1,18 +1,42 @@
+import groupsCreateTable from "./sql/groups_create_table.sql";
+import groupsSelectAll from "./sql/groups_select_all.sql";
+
+import collectionItemsCreateTable from "./sql/collection_items_create_table.sql";
+import collectionItemsInsert from "./sql/collection_items_insert.sql";
+import collectionItemsDeleteCollection from "./sql/collection_items_delete_collection.sql";
+import collectionItemsDeleteItem from "./sql/collection_items_delete_item.sql";
+
+import collectionsCreateTable from "./sql/collections_create_table.sql";
+import collectionsSelectAll from "./sql/collections_select_all.sql";
+import collectionsSelectAllItemCount from "./sql/collections_select_all_include_itemcount.sql";
+import collectionsInsert from "./sql/collections_insert.sql";
+import collectionsDelete from "./sql/collections_delete.sql";
+import collectionsUpdateName from "./sql/collections_update_name.sql";
+
+import itemsCreateTable from "./sql/items_create_table.sql";
+import itemsInsert from "./sql/items_insert.sql";
+import itemsGetAll from "./sql/items_get_all.sql";
+import itemsGetByCollection from "./sql/items_get_by_collection.sql";
+import itemsCount from "./sql/items_count.sql";
+
+import metadataCreateTable from "./sql/metadata_create_table.sql";
+import metadataGetAll from "./sql/metadata_get_all.sql";
+import metadataGetLibraryName from "./sql/metadata_get_library_name.sql";
+import metadataInsertLibraryName from "./sql/metadata_insert_library_name.sql";
+import metadataInsertTimestampCreated from "./sql/metadata_insert_timestamp_created.sql";
+import metadataInsertTimestampLastOpened from "./sql/metadata_insert_timestamp_last_opened.sql";
+import metadataUpdateTimestampLastOpened from "./sql/metadata_update_timestamp_last_opened.sql";
 
 //==================//
 //     GROUPS       //
 //==================//
 
 export function sqlCreateTableGroups(): string {
-    return 'CREATE TABLE groups (' +
-        '  group_id INTEGER PRIMARY KEY AUTOINCREMENT,' +
-        '  name TEXT NOT NULL,' +
-        '  parent_group_id INTEGER' +
-        ');';
+    return groupsCreateTable;
 }
 
 export function sqlAllGroups(): string {
-    return 'SELECT * FROM groups;';
+    return groupsSelectAll;
 }
 
 //==================//
@@ -20,100 +44,87 @@ export function sqlAllGroups(): string {
 //==================//
 
 export function sqlCreateTableCollections(): string {
-    return 'CREATE TABLE collections (' +
-        '  collection_id INTEGER PRIMARY KEY AUTOINCREMENT,' +
-        '  collection_name TEXT NOT NULL,' +
-        '  group_id INTEGER' +
-        ');';
-}
-
-export function sqlCreateTableCollectionItems(): string {
-    return 'CREATE TABLE collection_items (' +
-        '  collection_id INTEGER NOT NULL,' +
-        '  item_id INTEGER NOT NULL,' +
-        '  PRIMARY KEY (collection_id, item_id)' +
-        ');';
+    return collectionsCreateTable;
 }
 
 export function sqlAllCollections(includeItemCount: boolean) {
     if (includeItemCount) {
-        return 'SELECT collections.*, COUNT(collection_items.item_id) AS item_count ' +
-            'FROM collections ' +
-            'LEFT JOIN collection_items ON collections.collection_id = collection_items.collection_id ' +
-            'GROUP BY collections.collection_id;';
+        return collectionsSelectAllItemCount;
     } else {
-        return 'SELECT * FROM collections;';
+        return collectionsSelectAll;
     }
 }
 
 export function sqlInsertCollection(name: string) {
-    return 'INSERT INTO collections (collection_name, group_id) VALUES ("' + name + '", null);';
+    return collectionsInsert
+        .replace("$collectionName", "'" + name + "'");
 }
 
 export function sqlDeleteCollection(collectionId: number) {
-    return 'DELETE FROM collections WHERE collection_id=' + collectionId + ';';
+    return collectionsDelete
+        .replace("$collectionId", collectionId);
 }
 
 export function sqlDeleteCollectionItems(collectionId: number) {
-    return 'DELETE FROM collection_items WHERE collection_id=' + collectionId + ';';
+    return collectionItemsDeleteCollection
+        .replace("$collectionId", collectionId);
 }
 
 export function sqlUpdateCollection(collectionId: number, name: string) {
-    return 'UPDATE collections SET collection_name="' + name + '" WHERE collection_id=' + collectionId + ';';
+    return collectionsUpdateName
+        .replace("$collectionName", "'" + name + "'")
+        .replace("$collectionId", collectionId);
+}
+
+
+//==================//
+// COLLECTION_ITEMS //
+//==================//
+
+export function sqlCreateTableCollectionItems(): string {
+    return collectionItemsCreateTable;
 }
 
 export function sqlAddItemToCollection(collectionId: number, itemId: number) {
-    return 'INSERT OR IGNORE INTO collection_items (collection_id, item_id) VALUES (' + collectionId + ',' + itemId + ');';
-    // return 'INSERT INTO collection_items (collection_id, item_id) VALUES (' + collectionId + ',' + itemId + ');';
+    return collectionItemsInsert
+        .replace("$collectionId", collectionId)
+        .replace("$itemId", itemId);
 }
 
 export function sqlRemoveItemFromCollection(collectionId: number, itemId: number) {
-    return 'DELETE FROM collection_items ' +
-        'WHERE collection_id=' + collectionId + ' AND item_id=' + itemId + ';';
+    return collectionItemsDeleteItem
+        .replace("$collectionId", collectionId)
+        .replace("$itemId", itemId);
 }
+
 
 //==================//
 //      ITEMS       //
 //==================//
 
 export function sqlCreateTableItems(): string {
-    return 'CREATE TABLE items (' +
-        '  item_id INTEGER PRIMARY KEY AUTOINCREMENT,' +
-        '  filepath TEXT NOT NULL,' +
-        '  timestamp_imported INTEGER NOT NULL,' +
-        '  hash TEXT NOT NULL,' +
-        '  thumbnail TEXT NOT NULL' +
-        ');';
+    return itemsCreateTable;
 }
 
 export function sqlInsertItem(filepath: string, timestamp: number, hash: string, thumbnail: string) {
-    return 'INSERT INTO items ' +
-        '(' +
-        '    filepath,' +
-        '    timestamp_imported,' +
-        '    hash,' +
-        '    thumbnail' +
-        ') VALUES (' +
-        '    "' + filepath + '",' +
-        '    ' + timestamp + ',' +
-        '    "' + hash + '",' +
-        '    "' + thumbnail + '"' +
-        ');';
+    return itemsInsert
+        .replace("$filepath", "'" + filepath + "'")
+        .replace("$timestamp", timestamp)
+        .replace("$hash", "'" + hash + "'")
+        .replace("$thumbnail", "'" + thumbnail + "'");
 }
 
 export function sqlGetItemsInCollection(collectionId: number | undefined) {
     if (collectionId) {
-        return 'SELECT items.* ' +
-            'FROM items, collection_items ' +
-            'WHERE items.item_id = collection_items.item_id AND collection_items.collection_id = ' + collectionId;
+        return itemsGetByCollection
+            .replace("$collectionId", collectionId);
     } else {
-        return "SELECT * FROM items;";
+        return itemsGetAll;
     }
 }
 
-
 export function sqlCountItems(): string {
-    return 'SELECT COUNT(*) AS count FROM "items"';
+    return itemsCount;
 }
 
 
@@ -122,33 +133,34 @@ export function sqlCountItems(): string {
 //==================//
 
 export function sqlCreateTableMetadata(): string {
-    return 'CREATE TABLE metadata (' +
-        '  key TEXT NOT NULL,' +
-        '  value TEXT,' +
-        '  PRIMARY KEY (key, value)' +
-        ');';
+    return metadataCreateTable;
 }
 
 export function sqlInsertMetadataLibraryName(name: string): string {
-    return 'INSERT INTO metadata VALUES ("library_name", "' + name + '");';
+    return metadataInsertLibraryName
+        .replace("$name", "'" + name + "'");
 }
 
 export function sqlInsertMetadataTimestampCreated(timestamp: number): string {
-    return 'INSERT INTO metadata VALUES ("timestamp_created", "' + timestamp + '");';
+    return metadataInsertTimestampCreated
+        .replace("$timestamp", timestamp);
 }
 
 export function sqlInsertMetadataTimestampLastOpened(timestamp: number): string {
-    return 'INSERT INTO metadata VALUES ("timestamp_last_opened", "' + timestamp + '");';
+    return metadataInsertTimestampLastOpened
+        .replace("$timestamp", timestamp);
 }
 
 export function sqlUpdateMetadataTimestampLastOpened(newTimestamp: number): string {
-    return 'UPDATE metadata SET value = "' + newTimestamp + '" WHERE key = "timestamp_last_opened";';
+    return metadataUpdateTimestampLastOpened
+        .replace("$newTimestamp", newTimestamp);
 }
 
 export function sqlGetMetadataLibraryName(): string {
-    return 'SELECT value FROM metadata WHERE key = "library_name";';
+    return metadataGetLibraryName;
 }
 
 export function sqlAllMetadata(): string {
-    return 'SELECT * FROM metadata;';
+    return metadataGetAll;
 }
+
