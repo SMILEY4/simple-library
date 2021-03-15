@@ -1,13 +1,5 @@
 import { ImportProcessData, ImportResult, ImportStatus, ItemData } from '../commonModels';
-import {
-    Command,
-    CommandHandler,
-    ErrorResponse,
-    handleRequest,
-    mainSendCommand,
-    rendererOnCommand,
-    sendRequest,
-} from './messages';
+import { ErrorResponse, handleRequest, mainSendCommand, rendererOnCommand, sendRequest } from './messages';
 
 
 export module GetItemsMessage {
@@ -78,24 +70,21 @@ export module ImportItemsMessage {
 }
 
 
-export module ImportStatusUpdateCommand { // todo: command =/= message => refactor commands
+export module ImportStatusUpdateCommand {
+
+    export interface CommandPayload {
+        status: ImportStatus
+    }
+
 
     const CHANNEL: string = 'item.import.status_update';
 
     export function on(ipc: Electron.IpcRenderer, action: (status: ImportStatus) => void): void {
-        const handler: CommandHandler = {
-            channel: CHANNEL,
-            action: (payload) => action(payload),
-        };
-        rendererOnCommand(ipc, handler);
+        rendererOnCommand<CommandPayload>(ipc, CHANNEL, (payload: CommandPayload) => action(payload.status));
     }
 
     export function send(window: Electron.BrowserWindow, status: ImportStatus) {
-        const command: Command = {
-            channel: CHANNEL,
-            payload: status,
-        };
-        mainSendCommand(window, command);
+        mainSendCommand<CommandPayload>(window, CHANNEL, { status: status });
     }
 
 }

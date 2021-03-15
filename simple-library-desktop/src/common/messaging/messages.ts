@@ -1,35 +1,26 @@
-// COMMON
-
 // COMMANDS: "send-and-forget", renderer-to-main or main-to-renderer
 
-export interface Command {
-    channel: string,
-    payload?: any
+export function rendererSendCommand<T>(ipc: Electron.IpcRenderer, channel: string, payload: T) {
+    console.debug("[" + channel + "] sending command (r->m): " + JSON.stringify(payload));
+    ipc.send(channel, payload);
 }
 
-export interface CommandHandler {
-    channel: string,
-    action: (payload?: any) => void
+export function mainOnCommand<T>(ipc: Electron.IpcMain, channel: string, handler: (payload: T) => void) {
+    ipc.on(channel, (event, payload) => {
+        console.debug("[" + channel + "] receive command (r->m): " + JSON.stringify(payload));
+        handler(payload);
+    });
 }
 
-export function rendererSendCommand(ipc: Electron.IpcRenderer, command: Command) {
-    console.debug("sending command (renderer): " + JSON.stringify(command));
-    ipc.send('command.' + command.channel, command.payload);
+export function mainSendCommand<T>(window: Electron.BrowserWindow, channel: string, payload: T) {
+    console.debug("[" + channel + "] sending command (m->r): " + JSON.stringify(payload));
+    window.webContents.send(channel, payload);
 }
 
-export function mainOnCommand(ipc: Electron.IpcMain, handler: CommandHandler) {
-    ipc.on('command.' + handler.channel, handler.action);
-
-}
-
-export function mainSendCommand(window: Electron.BrowserWindow, command: Command) {
-    console.debug("sending command (main): " + JSON.stringify(command));
-    window.webContents.send('command.' + command.channel, command.payload);
-}
-
-export function rendererOnCommand(ipc: Electron.IpcRenderer, handler: CommandHandler) {
-    ipc.on('command.' + handler.channel, (event, payload) => {
-        handler.action(payload);
+export function rendererOnCommand<T>(ipc: Electron.IpcRenderer, channel: string, handler: (payload: T) => void) {
+    ipc.on(channel, (event, payload) => {
+        console.debug("[" + channel + "] receive command (m->r): " + JSON.stringify(payload));
+        handler(payload);
     });
 }
 
@@ -53,7 +44,7 @@ export function errorResponse(body?: any): ErrorResponse {
 export function sendRequest<REQ, RES>(ipc: Electron.IpcRenderer, channel: string, requestPayload: REQ): Promise<RES> {
     console.debug('[' + channel + '] sending request: ' + JSON.stringify(requestPayload));
     return ipc.invoke(channel, requestPayload).then(response => {
-        console.log('[' + channel + '] send response: ' + JSON.stringify(response));
+        console.debug('[' + channel + '] receive response: ' + JSON.stringify(response));
         if (response && response.status && response.status === ERROR_RESPONSE_MARKER) {
             return Promise.reject((response && response.body) ? response.body : JSON.stringify(response));
         } else {
