@@ -1,7 +1,7 @@
 import {
     BulkRenameInstruction,
-    ImportTargetAction,
     ImportFileTarget,
+    ImportTargetAction,
     ItemData,
     RenamePart,
     RenamePartType,
@@ -11,6 +11,14 @@ import { startAsyncWithValue } from '../../../../common/AsyncCommon';
 
 export class ImportStepRename {
 
+    /**
+     * Calculates the target filepath with the new filename
+     * @param itemData data of the item/file
+     * @param handleData data about how to handle the file, i.e. keep, move or copy
+     * @param renameInstruction the instructions about how to rename the file(s)
+     * @param counter the counter, starting with the first imported file (of the current process) and counting up
+     * @return a promise that resolves with the given item data, but with the new filepath
+     */
     public handle(itemData: ItemData,
                   handleData: ImportFileTarget,
                   renameInstruction: BulkRenameInstruction,

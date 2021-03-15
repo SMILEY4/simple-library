@@ -1,7 +1,7 @@
 import { app } from 'electron';
 import { LibraryService } from './service/library/libraryService';
 import DataAccess from './persistence/dataAccess';
-import { WindowService } from './windows/windowService';
+import { WindowService } from './service/windows/windowService';
 import { LibraryDataAccess } from './persistence/libraryDataAccess';
 import { ConfigDataAccess } from './persistence/configDataAccess';
 import { ItemService } from './service/item/ItemService';
@@ -20,6 +20,8 @@ import { CollectionMessageHandler } from './messagehandler/collectionMessageHand
 import { ItemMessageHandler } from './messagehandler/itemMessageHandler';
 import { GroupMessageHandler } from './messagehandler/groupMessageHandler';
 import { LibraryMessageHandler } from './messagehandler/libraryMessageHandler';
+import { GroupService } from './service/group/groupService';
+import { GroupDataAccess } from './persistence/groupDataAccess';
 
 const RUN_TESTS = false;
 
@@ -41,6 +43,7 @@ if (RUN_TESTS) {
     const libraryDataAccess: LibraryDataAccess = new LibraryDataAccess(dataAccess);
     const itemDataAccess: ItemDataAccess = new ItemDataAccess(dataAccess);
     const collectionDataAccess: CollectionDataAccess = new CollectionDataAccess(dataAccess);
+    const groupDataAccess: GroupDataAccess = new GroupDataAccess(dataAccess);
 
     // service
     const appService: LibraryService = new LibraryService(libraryDataAccess, configDataAccess);
@@ -59,12 +62,13 @@ if (RUN_TESTS) {
         collectionDataAccess,
     );
     const collectionService: CollectionService = new CollectionService(itemService, collectionDataAccess);
+    const groupService: GroupService = new GroupService(itemService, collectionService, groupDataAccess);
 
     // message-handler
     new LibraryMessageHandler(appService, windowService).initialize();
     new ItemMessageHandler(itemService).initialize();
-    new CollectionMessageHandler(itemService, collectionService).initialize();
-    new GroupMessageHandler(collectionService).initialize();
+    new CollectionMessageHandler(collectionService).initialize();
+    new GroupMessageHandler(groupService).initialize();
 
 
     app.whenReady().then(() => windowService.whenReady());

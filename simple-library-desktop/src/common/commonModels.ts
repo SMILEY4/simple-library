@@ -16,7 +16,6 @@ export interface ItemData {
     sourceFilepath: string,
     hash: string,
     thumbnail: string,
-    collectionIds: number[] | undefined
 }
 
 

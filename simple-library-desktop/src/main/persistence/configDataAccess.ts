@@ -14,6 +14,9 @@ export class ConfigDataAccess {
     }
 
 
+    /**
+     * @return the array of last opened libraries
+     */
     public getLastOpenedLibraries(): LastOpenedLibraryEntry[] {
         const data: any = this.store.get('lastOpened');
         return (data ? data : [])
@@ -21,7 +24,11 @@ export class ConfigDataAccess {
     }
 
 
-    public setLastOpenedLibraries(lastOpened: any) {
+    /**
+     * Overrides the current "last-opened" libraries with the given ones
+     * @param lastOpened the array of new "last-opened" libraries
+     */
+    public setLastOpenedLibraries(lastOpened: LastOpenedLibraryEntry[]) {
         this.store.set('lastOpened', lastOpened);
     }
 

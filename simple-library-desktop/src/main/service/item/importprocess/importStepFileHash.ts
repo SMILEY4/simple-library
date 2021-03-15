@@ -13,6 +13,12 @@ export class ImportStepFileHash {
         this.fsWrapper = fsWrapper;
     }
 
+
+    /**
+     * Calculates the hash of the given file/item and appends it to the given item data
+     * @param itemData the data of the file/item
+     * @return a promise that resolves with the given item data, but with the calculated hash
+     */
     public handle(itemData: ItemData): Promise<ItemData> {
         return this.computeHash(itemData.filepath)
             .then(hash => {
@@ -20,6 +26,7 @@ export class ImportStepFileHash {
                 return itemData;
             });
     }
+
 
     private computeHash(filepath: string): Promise<string> {
         return startAsync()
@@ -34,6 +41,7 @@ export class ImportStepFileHash {
                 }
             });
     }
+
 
     private computeHashWithAlgorithm(filepath: string, hash: Hash): Promise<string> {
         return doAsync((resolve, reject) => {

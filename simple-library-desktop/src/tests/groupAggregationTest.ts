@@ -1,17 +1,21 @@
-import {Test} from "./testutils/test";
-import {startAsyncWithValue} from "../common/AsyncCommon";
-import {CollectionService} from "../main/service/collection/collectionService";
-import {CollectionDataAccess} from "../main/persistence/collectionDataAccess";
-import {Collection, Group, GroupDTO} from "../common/commonModels";
-import {allTrue, assertEqual} from "./testutils/testAssertions";
-import {ItemService} from "../main/service/item/ItemService";
+import { Test } from "./testutils/test";
+import { startAsyncWithValue } from "../common/AsyncCommon";
+import { CollectionService } from "../main/service/collection/collectionService";
+import { CollectionDataAccess } from "../main/persistence/collectionDataAccess";
+import { Collection, Group, GroupDTO } from "../common/commonModels";
+import { allTrue, assertEqual } from "./testutils/testAssertions";
+import { ItemService } from "../main/service/item/ItemService";
+import { GroupDataAccess } from '../main/persistence/groupDataAccess';
+import { GroupService } from '../main/service/group/groupService';
 
 export class GroupAggregationTest {
 
     public static async testGetGroupsWithoutCollections() {
         await Test.runTest("get groups without collections", async () => {
             const collectionService: CollectionService = new CollectionService(new ItemServiceMock(), this.collectionDataAccessMock());
-            const groups: Group[] = await collectionService.getGroups(false, false);
+            const groupService: GroupService = new GroupService(new ItemServiceMock(), collectionService, this.groupDataAccessMock());
+
+            const groups: Group[] = await groupService.getGroups(false, false);
 
             return allTrue([
                 assertEqual(groups.length, 2),
@@ -30,7 +34,9 @@ export class GroupAggregationTest {
     public static async testGetGroupsWithCollections() {
         await Test.runTest("get groups with collections", async () => {
             const collectionService: CollectionService = new CollectionService(new ItemServiceMock(), this.collectionDataAccessMock());
-            const groups: Group[] = await collectionService.getGroups(true, true);
+            const groupService: GroupService = new GroupService(new ItemServiceMock(), collectionService, this.groupDataAccessMock());
+
+            const groups: Group[] = await groupService.getGroups(true, true);
 
             return allTrue([
                 assertEqual(groups.length, 1),
@@ -47,34 +53,35 @@ export class GroupAggregationTest {
     }
 
     private static collectionDataAccessMock(): CollectionDataAccess {
-        return new CollectionDataAccessMock(
-            [
-                this.groupDto(1, "Group A", undefined),
-                this.groupDto(2, "Group 1", 1),
-                this.groupDto(3, "Group 2", 1),
-                this.groupDto(4, "Group 2a", 3),
-                this.groupDto(5, "Group 2b", 3),
-                this.groupDto(6, "Group B", undefined),
-                this.groupDto(7, "Group 3", 6),
-            ],
-            [
-                this.collection(1, "Collection TL 1", 40, undefined),
-                this.collection(2, "Collection TL 2", 30, undefined),
-                this.collection(3, "Collection A", 10, 1),
-                this.collection(4, "Collection 1.1", 110, 2),
-                this.collection(4, "Collection 1.2", 111, 2),
-                this.collection(4, "Collection 2a", 20, 3),
-                this.collection(4, "Collection B", 30, 6),
-            ]
-        );
+        return new CollectionDataAccessMock([
+            this.collection(1, "Collection TL 1", 40, undefined),
+            this.collection(2, "Collection TL 2", 30, undefined),
+            this.collection(3, "Collection A", 10, 1),
+            this.collection(4, "Collection 1.1", 110, 2),
+            this.collection(4, "Collection 1.2", 111, 2),
+            this.collection(4, "Collection 2a", 20, 3),
+            this.collection(4, "Collection B", 30, 6),
+        ]);
+    }
+
+    private static groupDataAccessMock(): GroupDataAccess {
+        return new GroupDataAccessMock([
+            this.groupDto(1, "Group A", undefined),
+            this.groupDto(2, "Group 1", 1),
+            this.groupDto(3, "Group 2", 1),
+            this.groupDto(4, "Group 2a", 3),
+            this.groupDto(5, "Group 2b", 3),
+            this.groupDto(6, "Group B", undefined),
+            this.groupDto(7, "Group 3", 6),
+        ]);
     }
 
     private static groupDto(id: number, name: string, parentId: number | undefined): GroupDTO {
         return {
             id: id,
             name: name,
-            parentId: parentId
-        }
+            parentId: parentId,
+        };
     }
 
     private static collection(id: number, name: string, itemCount: number, groupId: number | undefined): Collection {
@@ -82,8 +89,8 @@ export class GroupAggregationTest {
             id: id,
             name: name,
             itemCount: itemCount,
-            groupId: groupId
-        }
+            groupId: groupId,
+        };
     }
 
     private static assertGroup(group: Group, expectedId: number, expectedNChildren: number, expectedNCollections: number): boolean {
@@ -109,19 +116,11 @@ class ItemServiceMock extends ItemService {
 class CollectionDataAccessMock extends CollectionDataAccess {
 
     collections: Collection[];
-    groupDTOs: GroupDTO[];
 
-    constructor(groups: GroupDTO[], collections: Collection[]) {
+    constructor(collections: Collection[]) {
         super(undefined);
         this.collections = collections;
-        this.groupDTOs = groups;
     }
-
-
-    getGroups(): Promise<GroupDTO[]> {
-        return startAsyncWithValue(this.groupDTOs);
-    }
-
 
     getCollections(includeItemCount: boolean): Promise<Collection[]> {
         return startAsyncWithValue(
@@ -132,9 +131,25 @@ class CollectionDataAccessMock extends CollectionDataAccess {
                         id: c.id,
                         name: c.name,
                         itemCount: undefined,
-                        groupId: c.groupId
-                    }
-                })
-        )
+                        groupId: c.groupId,
+                    };
+                }),
+        );
     }
 }
+
+
+class GroupDataAccessMock extends GroupDataAccess {
+
+    groupDTOs: GroupDTO[];
+
+    constructor(groups: GroupDTO[]) {
+        super(undefined);
+        this.groupDTOs = groups;
+    }
+
+    getGroups(): Promise<GroupDTO[]> {
+        return startAsyncWithValue(this.groupDTOs);
+    }
+}
+

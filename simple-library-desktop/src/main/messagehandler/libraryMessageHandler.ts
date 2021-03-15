@@ -2,7 +2,7 @@ import { ipcMain } from 'electron';
 import { errorResponse, ErrorResponse } from '../../common/messaging/messages';
 import { LastOpenedLibraryEntry, LibraryMetadata } from '../../common/commonModels';
 import { LibraryService } from '../service/library/libraryService';
-import { WindowService } from '../windows/windowService';
+import { WindowService } from '../service/windows/windowService';
 import {
     CloseLibraryMessage,
     CreateLibraryMessage,

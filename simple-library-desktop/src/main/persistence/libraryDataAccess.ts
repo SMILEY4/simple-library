@@ -1,17 +1,17 @@
 import DataAccess from './dataAccess';
 import { LibraryMetadata } from '../../common/commonModels';
 import {
+    sqlAllMetadata,
     sqlCreateTableCollectionItems,
     sqlCreateTableCollections,
+    sqlCreateTableGroups,
     sqlCreateTableItems,
     sqlCreateTableMetadata,
-    sqlAllMetadata,
     sqlGetMetadataLibraryName,
-    sqlInsertCollection,
     sqlInsertMetadataLibraryName,
     sqlInsertMetadataTimestampCreated,
     sqlInsertMetadataTimestampLastOpened,
-    sqlUpdateMetadataTimestampLastOpened, sqlCreateTableGroups,
+    sqlUpdateMetadataTimestampLastOpened,
 } from './sql';
 
 export class LibraryDataAccess {
@@ -24,6 +24,12 @@ export class LibraryDataAccess {
     }
 
 
+    /**
+     * Creates/Initializes the database
+     * @param url the url to the db-file. A new one will be created if the file does not exist
+     * @param libraryName the name of the library
+     * @return a promise that resolves when the library was created and initialized
+     */
     public async createLibrary(url: string, libraryName: string): Promise<void> {
         const error: string | undefined = this.dataAccess.openDatabase(url, true);
         if (error) {
@@ -46,20 +52,31 @@ export class LibraryDataAccess {
     }
 
 
+    /**
+     * Opens the library at the given path. Fails if the file does not exist
+     * @param url the path to the db-fil
+     * @return a promise that resolves with the name of the library
+     */
     public async openLibrary(url: string): Promise<string> {
         await this.dataAccess.openDatabase(url, false);
         await this.dataAccess.executeRun(sqlUpdateMetadataTimestampLastOpened(Date.now()));
-        return this.dataAccess.queryAll(sqlGetMetadataLibraryName()).then((row: any) => row[0].value);
+        return this.dataAccess.queryAll(sqlGetMetadataLibraryName()).then((row: any[]) => row[0].value);
     }
 
 
+    /**
+     * Closes the currently open database
+     */
     public closeCurrentLibrary(): void {
         this.dataAccess.closeDatabase();
     }
 
 
+    /**
+     * @return a promise that resolves with the metadata of the current library
+     */
     public async getLibraryMetadata(): Promise<LibraryMetadata> {
-        const result: any = await this.dataAccess.queryAll(sqlAllMetadata());
+        const result: any[] = await this.dataAccess.queryAll(sqlAllMetadata());
         return {
             name: result.find((row: any) => row.key === 'library_name').value,
             timestampCreated: parseInt(result.find((row: any) => row.key === 'timestamp_created').value),

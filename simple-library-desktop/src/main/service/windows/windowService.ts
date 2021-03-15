@@ -6,12 +6,17 @@ export class WindowService {
 
     window: BrowserWindow;
 
-
+    /**
+     * initializes the window (trigger the application is ready)
+     */
     public whenReady() {
         this.createWindow();
     }
 
 
+    /**
+     * Quits the application (trigger when all windows are closed)
+     */
     public allWindowsClosed() {
         if (process.platform !== 'darwin') {
             app.quit();
@@ -19,6 +24,9 @@ export class WindowService {
     }
 
 
+    /**
+     * Re-initializes the window (trigger on activate)
+     */
     public activate() {
         if (BrowserWindow.getAllWindows().length === 0) {
             this.createWindow();
@@ -26,6 +34,9 @@ export class WindowService {
     }
 
 
+    /**
+     * Switch to the smaller window setup e.g. of the welcome screen
+     */
     public switchToSmallWindow(): BrowserWindow {
         // todo: temp for dev
         // this.window.setSize(680, 420);
@@ -35,6 +46,9 @@ export class WindowService {
     }
 
 
+    /**
+     * Switch to the large main window setup
+     */
     public switchToLargeWindow(): BrowserWindow {
         // todo: temp for dev
         // const cursor = screen.getCursorScreenPoint();

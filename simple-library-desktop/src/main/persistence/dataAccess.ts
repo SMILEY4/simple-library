@@ -4,7 +4,12 @@ export default class DataAccess {
 
     database: Database | undefined;
 
-
+    /**
+     * "Opens" the database file at the given url (and creates if it necessary and specified)
+     * @param url the url/path to the db-file
+     * @param create whether to create a new db if the file does not exist
+     * @return an error-string or undefined if successful
+     */
     public openDatabase(url: string, create: boolean): string | undefined {
         this.closeDatabase();
         const mode: number = create ? (OPEN_CREATE | OPEN_READWRITE) : OPEN_READWRITE;
@@ -23,6 +28,9 @@ export default class DataAccess {
     }
 
 
+    /**
+     * Closes the currently open database
+     */
     public closeDatabase() {
         if (this.database) {
             this.database.close();
@@ -32,6 +40,11 @@ export default class DataAccess {
     }
 
 
+    /**
+     * Executes the given sql-command. Recommended for inserts, updates, deletes, ...
+     * @param sql the sql-command
+     * @return a promise that resolves with the "lastID" provided by the db
+     */
     public executeRun(sql: string): Promise<number> {
         return this.executeSqlInPromise((resolve, reject) => {
             this.database.run(sql, function(error: Error | null, result: any) {
@@ -45,7 +58,12 @@ export default class DataAccess {
     }
 
 
-    public queryAll(sql: string): Promise<any> {
+    /**
+     * Executes the given sql-query and returns all results. Recommended for selects with any amount of result-rows
+     * @param sql the sql-query
+     * @return a promise that resolves with an array of rows
+     */
+    public queryAll(sql: string): Promise<any[]> {
         return this.executeSqlInPromise((resolve, reject) => {
             this.database.all(sql, (err, rows) => err ? reject(err) : resolve(rows));
         });

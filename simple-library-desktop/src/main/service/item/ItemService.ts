@@ -9,6 +9,7 @@ export class ItemService {
     itemDataAccess: ItemDataAccess;
     collectionDataAccess: CollectionDataAccess;
 
+
     constructor(importService: ImportService,
                 itemDataAccess: ItemDataAccess,
                 collectionDataAccess: CollectionDataAccess) {
@@ -17,28 +18,32 @@ export class ItemService {
         this.collectionDataAccess = collectionDataAccess;
     }
 
-    public async importFiles(data: ImportProcessData): Promise<ImportResult> {
+    /**
+     * Imports file(s) as specified in the given import process data
+     * @param data the data specifying what and how to import
+     * @return a promise that resolves with the result of the import process
+     */
+    public importFiles(data: ImportProcessData): Promise<ImportResult> {
         return this.importService.importFiles(data);
     }
 
-    public async getAllItems(collectionId: number | undefined): Promise<ItemData[]> {
+
+    /**
+     * Get all items (in the given collection)
+     * @param collectionId the id of the collection. Set to undefined to get all items.
+     * @return a promise that resolves with the items
+     */
+    public getAllItems(collectionId: number | undefined): Promise<ItemData[]> {
         return this.itemDataAccess.getAllItems(collectionId);
     }
 
-    public async getTotalItemCount(): Promise<number> {
+
+    /**
+     * Get the amount of all items of the library
+     * @return a promise that resolves with the count of all items
+     */
+    public getTotalItemCount(): Promise<number> {
         return this.itemDataAccess.getTotalItemCount();
     }
-
-    public async moveItemsToCollection(srcCollectionId: number, tgtCollectionId: number, itemIds: number[], copyMode: boolean): Promise<void> {
-        for (let i = 0; i < itemIds.length; i++) {
-            const itemId: number = itemIds[i];
-            if (copyMode) {
-                await this.collectionDataAccess.copyItemToCollection(tgtCollectionId, itemId);
-            } else {
-                await this.collectionDataAccess.moveItemsToCollection(srcCollectionId, tgtCollectionId, itemId);
-            }
-        }
-    }
-
 
 }

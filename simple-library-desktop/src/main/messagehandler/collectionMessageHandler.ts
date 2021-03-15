@@ -1,4 +1,3 @@
-import { ItemService } from '../service/item/ItemService';
 import { CollectionService } from '../service/collection/collectionService';
 import { ipcMain } from 'electron';
 import {
@@ -13,12 +12,9 @@ import { errorResponse, ErrorResponse } from '../../common/messaging/messages';
 
 export class CollectionMessageHandler {
 
-    itemService: ItemService;
     collectionService: CollectionService;
 
-    constructor(itemService: ItemService,
-                collectionService: CollectionService) {
-        this.itemService = itemService;
+    constructor(collectionService: CollectionService) {
         this.collectionService = collectionService;
     }
 
@@ -55,7 +51,7 @@ export class CollectionMessageHandler {
     }
 
     private async handleMoveItems(payload: MoveItemsToCollectionsMessage.RequestPayload): Promise<MoveItemsToCollectionsMessage.ResponsePayload | ErrorResponse> {
-        return this.itemService.moveItemsToCollection(payload.sourceCollectionId, payload.targetCollectionId, payload.itemIds, payload.copy)
+        return this.collectionService.moveItemsToCollection(payload.sourceCollectionId, payload.targetCollectionId, payload.itemIds, payload.copy)
             .then(() => ({}))
             .catch(err => errorResponse(err));
     }
