@@ -6,17 +6,18 @@ import { Fill, Type } from '../../components/common';
 import imgWelcome from './imgWelcome.jpg';
 import { Box } from '../../components/layout/Box';
 import { Grid } from '../../components/layout/Grid';
-import {
-    CreateLibraryMessage,
-    GetLastOpenedLibrariesMessage,
-    OpenLibraryMessage,
-} from '../../../main/messaging/messagesLibrary';
 import { DialogCreateLibrary } from './DialogCreateLibrary';
 import { Image } from '../../components/image/Image';
 import { SFNotificationStack } from '../../components/notification/SFNotificationStack';
 import { SidebarMenu } from '../../components/sidebarmenu/SidebarMenu';
 import { SidebarMenuSection } from '../../components/sidebarmenu/SidebarMenuSection';
 import { SidebarMenuItem } from '../../components/sidebarmenu/SidebarMenuItem';
+import {
+    CreateLibraryMessage,
+    GetLastOpenedLibrariesMessage,
+    OpenLibraryMessage,
+} from '../../../common/messaging/messagesLibrary';
+import { LastOpenedLibraryEntry } from '../../../common/commonModels';
 
 const electron = window.require('electron');
 const { ipcRenderer } = window.require('electron');
@@ -61,9 +62,9 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
 
     componentDidMount() {
         GetLastOpenedLibrariesMessage.request(ipcRenderer)
-            .then(response => {
+            .then((response: GetLastOpenedLibrariesMessage.ResponsePayload) => {
                 this.setState({
-                    recentlyUsed: response.body.map((entry: any) => ({
+                    recentlyUsed: response.lastOpened.map((entry: LastOpenedLibraryEntry) => ({
                         name: entry.name,
                         url: entry.path,
                     })),
@@ -116,7 +117,7 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
 
 
     openLibrary(path: string) {
-        OpenLibraryMessage.request(ipcRenderer, path)
+        OpenLibraryMessage.request(ipcRenderer, { path: path })
             .then(() => this.props.onLoadProject())
             .catch(error => {
                 this.addNotification(
@@ -131,7 +132,7 @@ export class WelcomeView extends Component<WelcomeViewProps, WelcomeViewState> {
 
     createNewLibrary(name: string, targetDir: string): void {
         this.setState({ showCreateLibraryDialog: false });
-        CreateLibraryMessage.request(ipcRenderer, targetDir, name)
+        CreateLibraryMessage.request(ipcRenderer, { targetDir: targetDir, name: name })
             .then(() => this.props.onLoadProject())
             .catch(error => {
                 this.addNotification(

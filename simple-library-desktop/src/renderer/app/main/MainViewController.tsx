@@ -1,22 +1,21 @@
 import * as React from 'react';
-import {Component, ReactElement} from 'react';
-import {Theme} from '../application';
+import { Component, ReactElement } from 'react';
+import { Theme } from '../application';
+import { Group, ImportProcessData, ImportResult, ImportStatus, ItemData } from '../../../common/commonModels';
+import { ItemPanelController } from './itemPanel/ItemPanelController';
+import { MenuSidebarController } from './menuSidebar/MenuSidebarController';
+import { MainView, MainViewMessageType } from './MainView';
+import { CloseLibraryMessage } from '../../../common/messaging/messagesLibrary';
+import { MoveItemsToCollectionsMessage } from '../../../common/messaging/messagesCollections';
+import { GetGroupsMessage } from '../../../common/messaging/messagesGroups';
 import {
-    CloseCurrentLibraryMessage,
-    GetCollectionsMessage, GetGroupsMessage,
+    GetItemCountMessage,
     GetItemsMessage,
-    GetTotalItemCountMessage,
-    ImportFilesMessage,
+    ImportItemsMessage,
     ImportStatusUpdateCommand,
-    MoveItemsToCollectionsMessage,
-} from '../../../main/messaging/messagesLibrary';
-import {Response} from '../../../main/messaging/messages';
-import {Collection, Group, ImportProcessData, ImportResult, ImportStatus, ItemData} from '../../../common/commonModels';
-import {ItemPanelController} from './itemPanel/ItemPanelController';
-import {MenuSidebarController} from './menuSidebar/MenuSidebarController';
-import {MainView, MainViewMessageType} from './MainView';
+} from '../../../common/messaging/messagesItems';
 
-const {ipcRenderer} = window.require('electron');
+const { ipcRenderer } = window.require('electron');
 
 interface MainViewControllerProps {
     theme: Theme,
@@ -98,12 +97,12 @@ export class MainViewController extends Component<MainViewControllerProps, MainV
     }
 
     handleOnSelectCollection(collectionId: number): void {
-        this.setState({currentCollectionId: collectionId});
+        this.setState({ currentCollectionId: collectionId });
         this.updateItemList(collectionId);
     }
 
     actionCloseLibrary() {
-        CloseCurrentLibraryMessage.request(ipcRenderer)
+        CloseLibraryMessage.request(ipcRenderer)
             .then(() => this.props.onCloseProject());
     }
 
@@ -120,7 +119,12 @@ export class MainViewController extends Component<MainViewControllerProps, MainV
     }
 
     actionMoveItems(sourceCollectionId: number, collectionId: number, itemIds: number[], copyMode: boolean) {
-        MoveItemsToCollectionsMessage.request(ipcRenderer, sourceCollectionId, collectionId, itemIds, copyMode)
+        MoveItemsToCollectionsMessage.request(ipcRenderer, {
+            sourceCollectionId: sourceCollectionId,
+            targetCollectionId: collectionId,
+            itemIds: itemIds,
+            copy: copyMode,
+        })
             .catch((error) => {
                 this.showNotification(MainViewMessageType.MOVE_ITEMS_IN_COLLECTION_FAILED, error);
                 return Promise.reject();
@@ -129,10 +133,9 @@ export class MainViewController extends Component<MainViewControllerProps, MainV
     }
 
     updateGroupsAndCollections(): Promise<void> {
-        return GetGroupsMessage.request(ipcRenderer, true, true)
-            .then((response: Response) => response.body)
-            .then((groups:Group[]) => groups[0])
-            .then((rootGroup:Group) => this.setState({rootGroup: rootGroup}))
+        return GetGroupsMessage.request(ipcRenderer, { includeCollections: true, includeItemCount: true })
+            .then((response: GetGroupsMessage.ResponsePayload) => response.groups[0])
+            .then((rootGroup: Group) => this.setState({ rootGroup: rootGroup }))
             .catch(error => {
                 this.showNotification(MainViewMessageType.FETCH_COLLECTIONS_FAILED, error); // todo: notification
                 return Promise.reject();
@@ -141,7 +144,7 @@ export class MainViewController extends Component<MainViewControllerProps, MainV
 
     updateItemList(collectionId: number | undefined) {
         this.fetchItems(collectionId)
-            .then(items => this.setState({items: items}));
+            .then(items => this.setState({ items: items }));
     }
 
     // fetchCollections(): Promise<Collection[]> {
@@ -156,9 +159,9 @@ export class MainViewController extends Component<MainViewControllerProps, MainV
     // }
 
     fetchTotalItemCount(): Promise<number> {
-        return GetTotalItemCountMessage.request(ipcRenderer)
-            .then((response: Response) => {
-                return response.body;
+        return GetItemCountMessage.request(ipcRenderer)
+            .then((response: GetItemCountMessage.ResponsePayload) => {
+                return response.count;
             })
             .catch(error => {
                 this.showNotification(MainViewMessageType.FETCH_TOTAL_ITEM_COUNT_FAILED, error);
@@ -167,9 +170,9 @@ export class MainViewController extends Component<MainViewControllerProps, MainV
     }
 
     fetchItems(collectionId: number | undefined): Promise<ItemData[]> {
-        return GetItemsMessage.request(ipcRenderer, collectionId)
-            .then((response: Response) => {
-                return response.body;
+        return GetItemsMessage.request(ipcRenderer, { collectionId: collectionId })
+            .then((response: GetItemsMessage.ResponsePayload) => {
+                return response.items;
             })
             .catch(error => {
                 this.showNotification(MainViewMessageType.FETCH_ITEMS_FAILED, error);
@@ -178,10 +181,10 @@ export class MainViewController extends Component<MainViewControllerProps, MainV
     }
 
     handleImport(data: ImportProcessData) {
-        this.setState({showImportFilesDialog: false});
+        this.setState({ showImportFilesDialog: false });
         const uidStatusNotification: string = this.handleImportStatusUpdate();
-        ImportFilesMessage.request(ipcRenderer, data)
-            .then((resp: Response) => resp.body)
+        ImportItemsMessage.request(ipcRenderer, { data: data })
+            .then((resp: ImportItemsMessage.ResponsePayload) => resp.result)
             .then((importResult: ImportResult) => {
                 if (importResult.failed) {
                     this.handleImportFailed(importResult);
