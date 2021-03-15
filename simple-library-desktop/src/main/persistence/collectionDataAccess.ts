@@ -3,11 +3,10 @@ import {
     sqlAddItemToCollection,
     sqlAllCollections,
     sqlDeleteCollection,
-    sqlDeleteCollectionItems,
     sqlInsertCollection,
     sqlRemoveItemFromCollection,
     sqlUpdateCollection,
-} from './sql';
+} from './sql/sql';
 import { Collection } from '../../common/commonModels';
 
 export class CollectionDataAccess {
@@ -72,7 +71,6 @@ export class CollectionDataAccess {
      */
     public deleteCollection(collectionId: number): Promise<void> {
         return this.dataAccess.executeRun(sqlDeleteCollection(collectionId))
-            .then(() => this.dataAccess.executeRun(sqlDeleteCollectionItems(collectionId)))
             .then();
     }
 

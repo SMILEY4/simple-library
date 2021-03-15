@@ -1,3 +1,3 @@
 DELETE
 FROM collections
-WHERE collection_id =$collectionId;
+WHERE collection_id = $collectionId;

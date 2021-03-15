@@ -1,31 +1,31 @@
-import groupsCreateTable from "./sql/groups_create_table.sql";
-import groupsSelectAll from "./sql/groups_select_all.sql";
+import groupsCreateTable from "./groups_create_table.sql";
+import groupsSelectAll from "./groups_select_all.sql";
 
-import collectionItemsCreateTable from "./sql/collection_items_create_table.sql";
-import collectionItemsInsert from "./sql/collection_items_insert.sql";
-import collectionItemsDeleteCollection from "./sql/collection_items_delete_collection.sql";
-import collectionItemsDeleteItem from "./sql/collection_items_delete_item.sql";
+import collectionItemsCreateTable from "./collection_items_create_table.sql";
+import collectionItemsInsert from "./collection_items_insert.sql";
+import collectionItemsDeleteCollection from "./collection_items_delete_collection.sql";
+import collectionItemsDeleteItem from "./collection_items_delete_item.sql";
 
-import collectionsCreateTable from "./sql/collections_create_table.sql";
-import collectionsSelectAll from "./sql/collections_select_all.sql";
-import collectionsSelectAllItemCount from "./sql/collections_select_all_include_itemcount.sql";
-import collectionsInsert from "./sql/collections_insert.sql";
-import collectionsDelete from "./sql/collections_delete.sql";
-import collectionsUpdateName from "./sql/collections_update_name.sql";
+import collectionsCreateTable from "./collections_create_table.sql";
+import collectionsSelectAll from "./collections_select_all.sql";
+import collectionsSelectAllItemCount from "./collections_select_all_include_itemcount.sql";
+import collectionsInsert from "./collections_insert.sql";
+import collectionsDelete from "./collections_delete.sql";
+import collectionsUpdateName from "./collections_update_name.sql";
 
-import itemsCreateTable from "./sql/items_create_table.sql";
-import itemsInsert from "./sql/items_insert.sql";
-import itemsGetAll from "./sql/items_get_all.sql";
-import itemsGetByCollection from "./sql/items_get_by_collection.sql";
-import itemsCount from "./sql/items_count.sql";
+import itemsCreateTable from "./items_create_table.sql";
+import itemsInsert from "./items_insert.sql";
+import itemsGetAll from "./items_get_all.sql";
+import itemsGetByCollection from "./items_get_by_collection.sql";
+import itemsCount from "./items_count.sql";
 
-import metadataCreateTable from "./sql/metadata_create_table.sql";
-import metadataGetAll from "./sql/metadata_get_all.sql";
-import metadataGetLibraryName from "./sql/metadata_get_library_name.sql";
-import metadataInsertLibraryName from "./sql/metadata_insert_library_name.sql";
-import metadataInsertTimestampCreated from "./sql/metadata_insert_timestamp_created.sql";
-import metadataInsertTimestampLastOpened from "./sql/metadata_insert_timestamp_last_opened.sql";
-import metadataUpdateTimestampLastOpened from "./sql/metadata_update_timestamp_last_opened.sql";
+import metadataCreateTable from "./metadata_create_table.sql";
+import metadataGetAll from "./metadata_get_all.sql";
+import metadataGetLibraryName from "./metadata_get_library_name.sql";
+import metadataInsertLibraryName from "./metadata_insert_library_name.sql";
+import metadataInsertTimestampCreated from "./metadata_insert_timestamp_created.sql";
+import metadataInsertTimestampLastOpened from "./metadata_insert_timestamp_last_opened.sql";
+import metadataUpdateTimestampLastOpened from "./metadata_update_timestamp_last_opened.sql";
 
 //==================//
 //     GROUPS       //

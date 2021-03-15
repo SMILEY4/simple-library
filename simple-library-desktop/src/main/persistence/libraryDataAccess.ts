@@ -12,7 +12,7 @@ import {
     sqlInsertMetadataTimestampCreated,
     sqlInsertMetadataTimestampLastOpened,
     sqlUpdateMetadataTimestampLastOpened,
-} from './sql';
+} from './sql/sql';
 
 export class LibraryDataAccess {
 
