@@ -17,6 +17,12 @@ export class LibraryService {
     }
 
 
+    /**
+     * Creates a new library with the given name in the given directory
+     * @param targetDir the directory to create the library in
+     * @param name the name of the library. The filename is derived from this name.
+     * @return a promise that resolves when the library was created
+     */
     public createLibrary(targetDir: string, name: string): Promise<void> {
         const filename: string = LibraryService.toFilename(name);
         const fullPath = path.join(targetDir, filename);
@@ -26,30 +32,53 @@ export class LibraryService {
         } else {
             console.log('Creating new library: ' + fullPath);
             return this.libraryDataAccess.createLibrary(fullPath, name)
-                .then(() => this.addLibraryLastOpened(name, fullPath));
+                .then(() => this.addLibraryToLastOpened(name, fullPath));
         }
     }
 
 
+    /**
+     * Opens the library at the given path
+     * @param path the path to the library-file
+     * @return a promise that resolves when the file was opened
+     */
     public openLibrary(path: string): Promise<void> {
         return this.libraryDataAccess.openLibrary(path)
             .then((name: string) => {
-                this.addLibraryLastOpened(name, path);
+                this.addLibraryToLastOpened(name, path);
             });
     }
 
 
+    /**
+     * Closes the currently open library
+     */
     public closeCurrentLibrary(): void {
         this.libraryDataAccess.closeCurrentLibrary();
     }
 
 
+    /**
+     * Get the metadata of the currently open library
+     * @return a promise that resolves with the {@link LibraryMetadata}
+     */
     public getLibraryMetadata(): Promise<LibraryMetadata> {
         return this.libraryDataAccess.getLibraryMetadata();
     }
 
 
-    public addLibraryLastOpened(name: string, path: string) {
+    /**
+     * Get the last opened libraries
+     * @return a promise that resolves with the {@link LastOpenedLibraryEntry}s
+     */
+    public getLibrariesLastOpened(): Promise<LastOpenedLibraryEntry[]> {
+        return new Promise((resolve, reject) => {
+            resolve(this.configDataAccess.getLastOpenedLibraries());
+        });
+    }
+
+
+    private addLibraryToLastOpened(name: string, path: string) {
         try {
             let lastOpened: LastOpenedLibraryEntry[] = this.configDataAccess.getLastOpenedLibraries();
             if (lastOpened) {
@@ -62,13 +91,6 @@ export class LibraryService {
             this.configDataAccess.setLastOpenedLibraries(lastOpened);
         } catch (err) {
         }
-    }
-
-
-    public getLibrariesLastOpened(): Promise<LastOpenedLibraryEntry[]> {
-        return new Promise((resolve, reject) => {
-            resolve(this.configDataAccess.getLastOpenedLibraries());
-        });
     }
 
 

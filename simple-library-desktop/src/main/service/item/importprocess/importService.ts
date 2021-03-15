@@ -6,7 +6,7 @@ import { ImportStepRename } from './importStepRename';
 import { ImportStepImportTarget } from './importStepImportTarget';
 import { ImportProcessData, ImportResult, ItemData } from '../../../../common/commonModels';
 import { startAsync } from '../../../../common/AsyncCommon';
-import { WindowService } from '../../../windows/windowService';
+import { WindowService } from '../../windows/windowService';
 import { ImportStatusUpdateCommand } from '../../../../common/messaging/messagesItems';
 
 export class ImportService {
@@ -19,6 +19,9 @@ export class ImportService {
     importStepImportTarget: ImportStepImportTarget;
     windowService: WindowService;
 
+    /**
+     * True, when an import is currently running
+     */
     importRunning: boolean = false;
 
 
@@ -38,6 +41,12 @@ export class ImportService {
         this.windowService = windowService;
     }
 
+
+    /**
+     * Imports file(s) as specified in the given import process data
+     * @param data the data specifying what and how to import
+     * @return a promise that resolves with the result of the import process
+     */
     public async importFiles(data: ImportProcessData): Promise<ImportResult> {
         if (this.importRunning) {
             return {

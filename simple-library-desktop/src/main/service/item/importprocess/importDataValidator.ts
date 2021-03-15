@@ -12,10 +12,16 @@ export class ImportDataValidator {
 
     fsWrapper: FileSystemWrapper;
 
+
     constructor(fsWrapper: FileSystemWrapper) {
         this.fsWrapper = fsWrapper;
     }
 
+    /**
+     * Validate the given import process data. Throw error when the
+     * @param data the data to validate
+     * @throws string with the error message of the failed validation-step
+     */
     public validate(data: ImportProcessData): void {
         this.validateImportTarget(data.importTarget);
         this.validateRenameInstructions(data.renameInstructions);
@@ -56,10 +62,10 @@ export class ImportDataValidator {
                     case RenamePartType.NOTHING:
                         break;
                     case RenamePartType.TEXT:
-                        this.validateRenamePartText(part.value);
+                        ImportDataValidator.validateRenamePartText(part.value);
                         break;
                     case RenamePartType.NUMBER_FROM:
-                        this.validateRenamePartNumberFrom(part.value);
+                        ImportDataValidator.validateRenamePartNumberFrom(part.value);
                         break;
                     case RenamePartType.ORIGINAL_FILENAME:
                         break;
@@ -69,14 +75,14 @@ export class ImportDataValidator {
     }
 
 
-    private validateRenamePartText(value: string) {
+    private static validateRenamePartText(value: string) {
         if (!value || value.length === 0) {
             throw "Value of rename part 'text' must not be empty.";
         }
     }
 
 
-    private validateRenamePartNumberFrom(value: string) {
+    private static validateRenamePartNumberFrom(value: string) {
         if (!value || value.length === 0) {
             throw "Value of rename part 'number from' must not be empty.";
         }
@@ -84,6 +90,5 @@ export class ImportDataValidator {
             throw "Value of rename part 'number from' must be a valid number.";
         }
     }
-
 
 }

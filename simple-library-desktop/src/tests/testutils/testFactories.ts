@@ -7,7 +7,6 @@ export function buildItemData(orgFilepath: string, targetFilepath: string): Item
         hash: '',
         id: 0,
         thumbnail: '',
-        timestamp: 0,
-        collectionIds: undefined
+        timestamp: 0
     };
 }

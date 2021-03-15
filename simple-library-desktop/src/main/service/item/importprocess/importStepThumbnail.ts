@@ -7,6 +7,12 @@ export class ImportStepThumbnail {
     private static THUMBNAIL_WIDTH: number = 200;
     private static JPEG_QUALITY: number = 85;
 
+
+    /**
+     * Calculates the thumbnail of the given file/item and appends it to the given item data
+     * @param itemData the data of the file/item
+     * @return a promise that resolves with the given item data, but with the calculated thumbnail
+     */
     public handle(itemData: ItemData): Promise<ItemData> {
         return ImportStepThumbnail.createBase64Thumbnail(itemData.filepath)
             .then(imgBase64 => {
@@ -14,6 +20,7 @@ export class ImportStepThumbnail {
                 return itemData;
             });
     }
+
 
     private static createBase64Thumbnail(filepath: string): Promise<string> {
         return sharp(filepath)
