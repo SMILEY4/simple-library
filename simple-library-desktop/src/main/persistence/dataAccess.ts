@@ -22,6 +22,7 @@ export default class DataAccess {
             return error;
         } else {
             this.database = db;
+            this.database.get("PRAGMA foreign_keys = ON")
             console.log('Opened db: ' + url);
             return undefined;
         }

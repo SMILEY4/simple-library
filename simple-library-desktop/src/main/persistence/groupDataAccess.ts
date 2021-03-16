@@ -1,5 +1,5 @@
 import DataAccess from './dataAccess';
-import { sqlAllGroups } from './sql';
+import { sqlAllGroups } from './sql/sql';
 import { GroupDTO } from '../../common/commonModels';
 
 export class GroupDataAccess {
