@@ -2,7 +2,8 @@ import * as React from 'react';
 import { Component } from 'react';
 import "./itemPanel.css";
 import { ItemPanel } from './ItemPanel';
-import {Collection, Group, ItemData} from '../../../../common/commonModels';
+import { Group, ItemData } from '../../../../common/commonModels';
+import { DragAndDropItems } from '../../common/dragAndDrop';
 
 export const ITEM_DRAG_GHOST_ID: string = "item-drag-ghost";
 export const ITEM_DRAG_GHOST_CLASS: string = "item-drag-ghost";
@@ -42,8 +43,6 @@ export class ItemPanelController extends Component<ItemPanelControllerProps, Ite
         this.handleContextMenuActionCopyTo = this.handleContextMenuActionCopyTo.bind(this);
         this.handleContextMenuActionRemove = this.handleContextMenuActionRemove.bind(this);
         this.handleOnDragStart = this.handleOnDragStart.bind(this);
-        this.setDataTransfer = this.setDataTransfer.bind(this);
-        this.prepareDragImage = this.prepareDragImage.bind(this);
     }
 
     render() {
@@ -137,43 +136,18 @@ export class ItemPanelController extends Component<ItemPanelControllerProps, Ite
         if (itemIds.indexOf(triggerItemId) === -1) {
             itemIds.push(triggerItemId);
         }
-        this.props.onActionMove(undefined, itemIds); // todo: hacky -> build proper "remove"-message
+        // todo: hacky -> build proper "remove"-message
+        this.props.onActionMove(undefined, itemIds);
     }
 
     handleOnDragStart(triggerItemId: number, event: React.DragEvent): void {
+        const copy: boolean = event.ctrlKey;
         const itemsIdsToDrag: number[] = [...this.state.selectedItemIds];
         if (itemsIdsToDrag.indexOf(triggerItemId) === -1) {
             itemsIdsToDrag.push(triggerItemId);
         }
-        this.setDataTransfer(event, {
-            sourceCollectionId: this.props.selectedCollectionId,
-            itemIds: itemsIdsToDrag,
-        });
+        DragAndDropItems.setDragData(event.dataTransfer, this.props.selectedCollectionId, itemsIdsToDrag, copy);
+        DragAndDropItems.setDragLabel(event.dataTransfer, copy, itemsIdsToDrag.length);
     }
-
-    setDataTransfer(event: React.DragEvent, data: any): void {
-        const rawData: string = JSON.stringify(data);
-        event.dataTransfer.setData("text/plain", rawData);
-        event.dataTransfer.setData("application/json", rawData);
-        event.dataTransfer.setDragImage(this.prepareDragImage(event.ctrlKey, data.itemIds.length), -10, -10);
-        event.dataTransfer.effectAllowed = "copyMove";
-    }
-
-    prepareDragImage(copyMode: boolean, nItems: number): Element {
-        let dragElement: any = document.getElementById(ITEM_DRAG_GHOST_ID);
-        if (!dragElement) {
-            dragElement = document.createElement("div");
-            dragElement.id = ITEM_DRAG_GHOST_ID;
-            document.getElementById("root").appendChild(dragElement);
-        }
-        dragElement.className = ITEM_DRAG_GHOST_CLASS + " " + (copyMode ? ITEM_COPY_DRAG_GHOST_CLASS : ITEM_MOVE_DRAG_GHOST_CLASS);
-        if (copyMode) {
-            dragElement.innerText = "Copy " + nItems + (nItems === 1 ? " item" : " items");
-        } else {
-            dragElement.innerText = "Move " + nItems + (nItems === 1 ? " item" : " items");
-        }
-        return dragElement;
-    }
-
 
 }
