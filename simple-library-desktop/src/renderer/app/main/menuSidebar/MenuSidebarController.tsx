@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { Component } from 'react';
 import { MenuSidebar } from './MenuSidebar';
-import {Collection, extractCollections, Group, ImportProcessData} from '../../../../common/commonModels';
-import { ITEM_COPY_DRAG_GHOST_CLASS, ITEM_DRAG_GHOST_ID } from '../itemPanel/ItemPanelController';
+import { Collection, extractCollections, Group, ImportProcessData } from '../../../../common/commonModels';
 import { DialogImportFiles } from '../import/DialogImportFiles';
 import { DialogCreateCollection } from './DialogCreateCollection';
 import { DialogDeleteCollection } from './DialogDeleteCollection';
@@ -12,6 +11,7 @@ import {
     DeleteCollectionMessage,
     RenameCollectionMessage,
 } from '../../../../common/messaging/messagesCollections';
+import { DragAndDropItems } from '../../common/dragAndDrop';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -139,18 +139,11 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
     }
 
     handleDragOverCollection(collectionId: number | undefined, event: React.DragEvent): void {
-        let dragElement: any = document.getElementById(ITEM_DRAG_GHOST_ID);
-        let mode: string;
-        if (dragElement && dragElement.className.includes(ITEM_COPY_DRAG_GHOST_CLASS)) {
-            mode = "copy";
-        } else {
-            mode = "move";
-        }
-        event.dataTransfer.dropEffect = mode;
+        DragAndDropItems.setDropEffect(event.dataTransfer, collectionId);
     }
 
     handleDropOnCollection(collectionId: number | undefined, event: React.DragEvent): void {
-        const dropData: any = JSON.parse(event.dataTransfer.getData("application/json"));
+        const dropData: DragAndDropItems.Data = DragAndDropItems.getDragData(event.dataTransfer);
         const srcCollectionId: number = dropData.sourceCollectionId;
         if (srcCollectionId !== collectionId) {
             if (event.ctrlKey) {
@@ -170,7 +163,7 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
     }
 
     handleCreateCollectionAccept(collectionName: string): void {
-        CreateCollectionMessage.request(ipcRenderer, { name:collectionName })
+        CreateCollectionMessage.request(ipcRenderer, { name: collectionName })
             .then(() => this.props.onCollectionsModified())
             .finally(() => {
                 this.setState({ showCreateCollectionDialog: false });
@@ -216,8 +209,11 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
         });
     }
 
-    handleRenameCollectionAccept(newCollectionName:string): void {
-        RenameCollectionMessage.request(ipcRenderer, { collectionId: this.state.collectionToRename.id, newName: newCollectionName })
+    handleRenameCollectionAccept(newCollectionName: string): void {
+        RenameCollectionMessage.request(ipcRenderer, {
+            collectionId: this.state.collectionToRename.id,
+            newName: newCollectionName,
+        })
             .then(() => this.props.onCollectionsModified())
             .finally(() => {
                 this.setState({
