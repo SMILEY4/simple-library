@@ -8,23 +8,21 @@ import {
     AiOutlineAlignCenter,
     AiOutlineAlignLeft,
     AiOutlineAlignRight,
-    AiOutlineHome,
     AiOutlineSearch,
-    AiOutlineTeam,
-    FiFolder,
 } from 'react-icons/all';
-import { AlignMain, GroupPosition, Type, Variant } from '../common';
+import { GroupPosition, Type, Variant } from '../common';
 import { LabelBox } from '../text/LabelBox';
 import { Button } from '../button/Button';
 import { Text, TextVariant } from '../text/Text';
 import { SFInputField } from '../inputfield/SFInputField';
-import { SFToggleButton } from '../togglebutton/SFToggleButton';
+import { SFToggleButton } from '../button/togglebutton/SFToggleButton';
 import { Dialog } from '../modal/Dialog';
 import { Image, ImageMode } from "../image/Image";
 import forest from "./forest.jpg";
 import { SFCheckbox } from "../checkbox/SFCheckbox";
 import { ChoiceBox } from "../choicebox/ChoiceBox";
 import { Notification } from '../notification/Notification';
+import { SFDropdownButton } from '../button/dropdownbutton/SFDropdownButton';
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0");
@@ -47,6 +45,23 @@ export function ComponentShowcaseView(): any {
             </div>
         </div>
     );
+
+    function renderDropdownButton() {
+        return (
+            <>
+                <h3>Dropdown Button</h3>
+
+                <SFDropdownButton
+                    variant={Variant.OUTLINE}
+                    items={["Create", "Update", "Delete"]}
+                    selectedItem={"Create"}
+                >
+                    Dropdown
+                </SFDropdownButton>
+
+            </>
+        );
+    }
 
     function renderNotification() {
         return (
@@ -223,48 +238,71 @@ export function ComponentShowcaseView(): any {
     }
 
     function renderChoiceBox() {
+
+        const itemsArray = [
+            "Austria",
+            "Belgium",
+            "Bulgaria",
+            "Croatia",
+            "Cyprus",
+            "Czechia",
+            "Denmark",
+            "Estonia",
+            "Finland",
+            "France",
+            "Germany",
+            "Greece",
+            "Hungary",
+            "Ireland",
+            "Italy",
+            "Latvia",
+            "Lithuania",
+            "Luxemburg",
+            "Malta",
+            "Netherlands",
+            "Poland",
+            "Portugal",
+            "Romania",
+            "Slovakia",
+            "Slovenia",
+            "Spain",
+            "Sweden",
+        ];
+
         return (
             <>
                 <h3>ChoiceBox</h3>
-                <ChoiceBox
-                    variant={Variant.OUTLINE}
-                    items={[
-                        "Austria",
-                        "Belgium",
-                        "Bulgaria",
-                        "Croatia",
-                        "Cyprus",
-                        "Czechia",
-                        "Denmark",
-                        "Estonia",
-                        "Finland",
-                        "France",
-                        "Germany",
-                        "Greece",
-                        "Hungary",
-                        "Ireland",
-                        "Italy",
-                        "Latvia",
-                        "Lithuania",
-                        "Luxemburg",
-                        "Malta",
-                        "Netherlands",
-                        "Poland",
-                        "Portugal",
-                        "Romania",
-                        "Slovakia",
-                        "Slovenia",
-                        "Spain",
-                        "Sweden",
-                    ]}
-                    selected='Germany'
-                    // itemFilter={(item) => item.startsWith("S")}
-                    maxVisibleItems={6}
-                    autoWidth={true}
-                />
+                <ShowcaseRow>
+                    <ChoiceBox
+                        variant={Variant.SOLID}
+                        items={itemsArray}
+                        selected='Germany'
+                        // itemFilter={(item) => item.startsWith("S")}
+                        maxVisibleItems={6}
+                        autoWidth={true}
+                    />
+                    <ChoiceBox
+                        variant={Variant.OUTLINE}
+                        items={itemsArray}
+                        selected='Germany'
+                        // itemFilter={(item) => item.startsWith("S")}
+                        maxVisibleItems={6}
+                        autoWidth={true}
+                    />
+                    <ChoiceBox
+                        variant={Variant.GHOST}
+                        items={itemsArray}
+                        selected='Germany'
+                        // itemFilter={(item) => item.startsWith("S")}
+                        maxVisibleItems={6}
+                        autoWidth={true}
+                    />
+                </ShowcaseRow>
             </>
         );
+
     }
+
 
     function renderCheckbox() {
         return (
@@ -540,6 +578,7 @@ export function ComponentShowcaseView(): any {
     function renderContent() {
         return (
             <>
+                {renderDropdownButton()}
                 {renderNotification()}
                 {renderSidebarMenu()}
                 {renderChoiceBox()}

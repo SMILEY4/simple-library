@@ -4,7 +4,7 @@ import { concatClasses, Variant } from "../common";
 import { Button } from "../button/Button";
 import { BsChevronDown } from "react-icons/all";
 import "./choicebox.css";
-import { Dropdown } from "./Dropdown";
+import { Dropdown } from "../dropdown/Dropdown";
 
 export interface ChoiceBoxProps {
     variant: Variant,

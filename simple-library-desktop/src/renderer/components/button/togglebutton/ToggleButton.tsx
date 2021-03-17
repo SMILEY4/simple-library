@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ReactElement } from 'react';
-import { Button, ButtonProps } from '../button/Button';
+import { Button, ButtonProps } from '../Button';
 
 
 export interface ToggleButtonProps extends Omit<ButtonProps, 'renderAsActive'> {
