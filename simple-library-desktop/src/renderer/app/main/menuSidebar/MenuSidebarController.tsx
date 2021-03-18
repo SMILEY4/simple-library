@@ -12,6 +12,8 @@ import {
     RenameCollectionMessage,
 } from '../../../../common/messaging/messagesCollections';
 import { DragAndDropItems } from '../../common/dragAndDrop';
+import { DialogCreateGroup } from './DialogCreateGroup';
+import { CreateGroupMessage } from '../../../../common/messaging/messagesGroups';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -40,6 +42,7 @@ interface MenuSidebarControllerState {
     showDialogRenameCollection: boolean,
     collectionToRename: Collection | undefined
 
+    showCreateGroupDialog: boolean,
 
 }
 
@@ -55,6 +58,7 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
             collectionToDelete: undefined,
             showDialogRenameCollection: false,
             collectionToRename: undefined,
+            showCreateGroupDialog: false,
         };
         this.handleOnStartImport = this.handleOnStartImport.bind(this);
         this.handleOnCloseImport = this.handleOnCloseImport.bind(this);
@@ -70,6 +74,9 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
         this.handleRenameCollection = this.handleRenameCollection.bind(this);
         this.handleRenameCollectionCancel = this.handleRenameCollectionCancel.bind(this);
         this.handleRenameCollectionAccept = this.handleRenameCollectionAccept.bind(this);
+        this.handleCreateGroup = this.handleCreateGroup.bind(this);
+        this.handleCreateGroupCancel = this.handleCreateGroupCancel.bind(this);
+        this.handleCreateGroupAccept = this.handleCreateGroupAccept.bind(this);
         this.setMinimized = this.setMinimized.bind(this);
     }
 
@@ -92,6 +99,8 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
                     onSetMinimize={this.setMinimized}
 
                     onCreateCollection={this.handleCreateCollection}
+                    onCreateGroup={this.handleCreateGroup}
+
                     onContextMenuActionRename={this.handleRenameCollection}
                     onContextMenuActionDelete={this.handleDeleteCollection}
 
@@ -119,6 +128,12 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
                         collectionName={this.state.collectionToRename ? this.state.collectionToRename.name : undefined}
                         onClose={this.handleRenameCollectionCancel}
                         onRename={this.handleRenameCollectionAccept}
+                    />
+                )}
+                {this.state.showCreateGroupDialog && (
+                    <DialogCreateGroup
+                        onClose={this.handleCreateGroupCancel}
+                        onCreate={this.handleCreateGroupAccept}
                     />
                 )}
             </>
@@ -220,6 +235,23 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
                     showDialogRenameCollection: false,
                     collectionToRename: undefined,
                 });
+            });
+    }
+
+
+    handleCreateGroup(): void {
+        this.setState({ showCreateGroupDialog: true });
+    }
+
+    handleCreateGroupCancel(): void {
+        this.setState({ showCreateGroupDialog: false });
+    }
+
+    handleCreateGroupAccept(groupName: string): void {
+        CreateGroupMessage.request(ipcRenderer, { name: groupName })
+            .then(() => this.props.onCollectionsModified())
+            .finally(() => {
+                this.setState({ showCreateGroupDialog: false });
             });
     }
 

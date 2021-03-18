@@ -4,7 +4,7 @@ import { Button, ButtonProps } from '../Button';
 import { Dropdown, DropdownActionItem, DropdownProps } from '../../dropdown/Dropdown';
 
 interface DropdownButtonProps extends Omit<ButtonProps, 'renderAsActive'>, DropdownProps {
-    buttonTitle: string | ReactElement,
+    buttonTitle?: string | ReactElement,
     items?: DropdownActionItem[]
 }
 

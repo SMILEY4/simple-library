@@ -3,9 +3,6 @@ import React, { Component } from 'react';
 import { ComponentShowcaseView } from '../components/_showcase/ComponentShowcaseView';
 import { WelcomeView } from './welcome/welcomeView';
 import { MainViewController } from './main/MainViewController';
-import { SidebarTestView } from './sidebartest/sidebarTestView';
-
-const { ipcRenderer } = window.require('electron');
 
 export enum Theme {
     LIGHT = 'light',
@@ -30,7 +27,7 @@ export class Application extends Component<any, AppState> {
         this.state = {
             theme: Theme.LIGHT,
             currentView: View.WELCOME,
-            displayComponentShowcase: true,
+            displayComponentShowcase: false,
         };
         this.renderComponentShowcase = this.renderComponentShowcase.bind(this);
         this.renderWelcomeView = this.renderWelcomeView.bind(this);

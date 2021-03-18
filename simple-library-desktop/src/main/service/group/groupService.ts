@@ -1,4 +1,3 @@
-import { CollectionDataAccess } from '../../persistence/collectionDataAccess';
 import { Collection, Group, GroupDTO } from '../../../common/commonModels';
 import { ItemService } from "../item/ItemService";
 import { CollectionService } from '../collection/collectionService';
@@ -28,12 +27,28 @@ export class GroupService {
      */
     public getGroups(includeCollections: boolean, includeItemCount: boolean): Promise<Group[]> {
         return this.groupDataAccess.getGroups()
-            .then(async (data:GroupDTO[]) => {
+            .then(async (data: GroupDTO[]) => {
                 const collections: Collection[] | null = includeCollections
                     ? await this.collectionService.getAllCollections(includeItemCount)
                     : null;
                 return this.createGroupTree(data, collections);
             });
+    }
+
+
+    /**
+     * Creates a new group with the given name
+     * @param name the name of the group
+     * @return a promise that resolves with the created group
+     */
+    public createGroup(name: string): Promise<Group> {
+        return this.groupDataAccess.createGroup(name)
+            .then((groupDTO: GroupDTO) => ({
+                id: groupDTO.id,
+                name: groupDTO.name,
+                children: [],
+                collections: [],
+            }));
     }
 
 

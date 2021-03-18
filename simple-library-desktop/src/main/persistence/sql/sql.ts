@@ -1,5 +1,6 @@
 import groupsCreateTable from "./groups_create_table.sql";
 import groupsSelectAll from "./groups_select_all.sql";
+import groupsInsert from "./groups_insert.sql";
 
 import collectionItemsCreateTable from "./collection_items_create_table.sql";
 import collectionItemsInsert from "./collection_items_insert.sql";
@@ -37,6 +38,11 @@ export function sqlCreateTableGroups(): string {
 
 export function sqlAllGroups(): string {
     return groupsSelectAll;
+}
+
+export function sqlInsertGroup(name: string): string {
+    return groupsInsert
+        .replace("$groupName", "'" + name + "'");
 }
 
 //==================//

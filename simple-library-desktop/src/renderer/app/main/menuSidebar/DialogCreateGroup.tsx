@@ -6,27 +6,27 @@ import { Box } from '../../../components/layout/Box';
 import { InputField } from '../../../components/inputfield/InputField';
 
 
-interface DialogCreateCollectionProps {
+interface DialogCreateGroupProps {
     onClose: () => void
     onCreate: (name: string) => void
 }
 
-interface DialogCreateCollectionState {
+interface DialogCreateGroupState {
     name: string,
     nameValid: boolean,
 }
 
 
-export class DialogCreateCollection extends Component<DialogCreateCollectionProps, DialogCreateCollectionState> {
+export class DialogCreateGroup extends Component<DialogCreateGroupProps, DialogCreateGroupState> {
 
-    constructor(props: DialogCreateCollectionProps) {
+    constructor(props: DialogCreateGroupProps) {
         super(props);
         this.state = {
             name: "",
             nameValid: true,
         };
         this.actionRequestCreate = this.actionRequestCreate.bind(this);
-        this.validateName = this.validateName.bind(this)
+        this.validateName = this.validateName.bind(this);
     }
 
     actionRequestCreate(): void {
@@ -47,7 +47,7 @@ export class DialogCreateCollection extends Component<DialogCreateCollectionProp
 
     render(): ReactElement {
         return (
-            <Dialog title={"Create new Collection"}
+            <Dialog title={"Create new Group"}
                     show={true}
                     closeButton={true}
                     onClose={this.props.onClose}
@@ -67,7 +67,7 @@ export class DialogCreateCollection extends Component<DialogCreateCollectionProp
                 <Box dir={Dir.DOWN} alignMain={AlignMain.CENTER} alignCross={AlignCross.STRETCH} spacing={Size.S_0_75}>
                     <InputField
                         autoFocus
-                        placeholder='Collection Name'
+                        placeholder='Group Name'
                         value={this.state.name}
                         onChange={(value) => this.setState({ name: value })}
                     />

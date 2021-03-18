@@ -1,5 +1,5 @@
 import DataAccess from './dataAccess';
-import { sqlAllGroups } from './sql/sql';
+import { sqlAllGroups, sqlInsertGroup } from './sql/sql';
 import { GroupDTO } from '../../common/commonModels';
 
 export class GroupDataAccess {
@@ -24,6 +24,22 @@ export class GroupDataAccess {
                     parentId: row.parent_group_id,
                 };
             }));
+    }
+
+    /**
+     * Creates a new group with the given name
+     * @param name the name of the new group
+     * @return  a promise that resolves with the created {@link GroupDTO}
+     */
+    public createGroup(name: string): Promise<GroupDTO> {
+        return this.dataAccess.executeRun(sqlInsertGroup(name))
+            .then((id: number) => {
+                return {
+                    id: id,
+                    name: name,
+                    parentId: undefined,
+                };
+            });
     }
 
 }
