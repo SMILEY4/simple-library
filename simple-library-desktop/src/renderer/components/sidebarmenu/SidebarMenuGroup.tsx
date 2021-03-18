@@ -8,6 +8,7 @@ import { concatClasses } from '../common';
 export interface SidebarMenuGroupProps {
     icon?: ReactElement,
     title: string,
+    onContextMenu?: (event: React.MouseEvent) => void
     className?: string
 }
 
@@ -36,7 +37,7 @@ export class SidebarMenuGroup extends Component<SidebarMenuGroupProps, SidebarMe
     render(): React.ReactElement {
         return (
             <div className={concatClasses("sidebar-menu-group", this.props.className)}>
-                <SidebarMenuItem title={this.props.title} icon={this.renderIcons(this.props.icon)} onClick={this.actionToggle} />
+                <SidebarMenuItem title={this.props.title} icon={this.renderIcons(this.props.icon)} onClick={this.actionToggle} onContextMenu={this.props.onContextMenu} />
                 {this.state.expanded && (
                     <div className={"sidebar-menu-group-content"}>
                         {this.props.children}

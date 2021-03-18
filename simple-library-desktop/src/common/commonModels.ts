@@ -123,10 +123,22 @@ export interface Group {
 export function extractCollections(group: Group | undefined): Collection[] {
     const collections: Collection[] = [];
     if (group) {
-        collections.push(...group.collections)
+        collections.push(...group.collections);
         group.children.forEach((child: Group) => {
             collections.push(...extractCollections(child));
-        })
+        });
     }
     return collections;
+}
+
+
+export function extractGroups(group: Group | undefined): Group[] {
+    const groups: Group[] = [];
+    if (group) {
+        groups.push(...group.children);
+        group.children.forEach((child: Group) => {
+            groups.push(...extractGroups(child));
+        });
+    }
+    return groups;
 }

@@ -1,4 +1,4 @@
-import { Collection, Group } from '../commonModels';
+import { Group } from '../commonModels';
 import { ErrorResponse, handleRequest, sendRequest } from './messages';
 
 
@@ -36,6 +36,50 @@ export module CreateGroupMessage {
     }
 
     const CHANNEL: string = 'group.create';
+
+    export function request(ipc: Electron.IpcRenderer, payload: RequestPayload): Promise<ResponsePayload> {
+        return sendRequest<RequestPayload, ResponsePayload>(ipc, CHANNEL, payload);
+    }
+
+    export function handle(ipc: Electron.IpcMain, action: (payload: RequestPayload) => Promise<ResponsePayload | ErrorResponse>) {
+        handleRequest<RequestPayload, ResponsePayload>(ipc, CHANNEL, action);
+    }
+
+}
+
+export module DeleteGroupMessage {
+
+    export interface RequestPayload {
+        groupId: number
+    }
+
+    export interface ResponsePayload {
+    }
+
+    const CHANNEL: string = 'group.delete';
+
+    export function request(ipc: Electron.IpcRenderer, payload: RequestPayload): Promise<ResponsePayload> {
+        return sendRequest<RequestPayload, ResponsePayload>(ipc, CHANNEL, payload);
+    }
+
+    export function handle(ipc: Electron.IpcMain, action: (payload: RequestPayload) => Promise<ResponsePayload | ErrorResponse>) {
+        handleRequest<RequestPayload, ResponsePayload>(ipc, CHANNEL, action);
+    }
+
+}
+
+
+export module RenameGroupMessage {
+
+    export interface RequestPayload {
+        groupId: number,
+        newName: string
+    }
+
+    export interface ResponsePayload {
+    }
+
+    const CHANNEL: string = 'group.rename';
 
     export function request(ipc: Electron.IpcRenderer, payload: RequestPayload): Promise<ResponsePayload> {
         return sendRequest<RequestPayload, ResponsePayload>(ipc, CHANNEL, payload);

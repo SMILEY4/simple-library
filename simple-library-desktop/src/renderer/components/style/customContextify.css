@@ -1,6 +1,7 @@
 .react-contexify {
 	background-color: var(--background-color-1);
 	border-radius:    var(--radius-0);
+	min-width: var(--s-8);
 }
 
 .react-contexify__will-enter--scale {
@@ -11,6 +12,10 @@
 	color:      var(--text-color-2);
 	height:     var(--s-1);
 	max-height: var(--s-1);
+}
+
+.react-contexify__submenu-arrow {
+	padding-left: var(--s-0-5);
 }
 
 /*hover state*/

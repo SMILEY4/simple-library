@@ -1,5 +1,5 @@
 import DataAccess from './dataAccess';
-import { sqlAllGroups, sqlInsertGroup } from './sql/sql';
+import { sqlAllGroups, sqlDeleteGroup, sqlInsertGroup, sqlUpdateGroupName } from './sql/sql';
 import { GroupDTO } from '../../common/commonModels';
 
 export class GroupDataAccess {
@@ -26,6 +26,7 @@ export class GroupDataAccess {
             }));
     }
 
+
     /**
      * Creates a new group with the given name
      * @param name the name of the new group
@@ -42,4 +43,24 @@ export class GroupDataAccess {
             });
     }
 
+
+    /**
+     * Deletes the given group
+     * @param groupId the id of the group
+     * @return a promise that resolves when the group was deleted
+     */
+    public deleteGroup(groupId: number): Promise<void> {
+        return this.dataAccess.executeRun(sqlDeleteGroup(groupId)).then();
+    }
+
+
+    /**
+     * Renames the given group
+     * @param groupId the id of the group
+     * @param newName the new name of the group
+     * @return a promise that resolves when the group was renamed
+     */
+    public renameGroup(groupId: number, newName: string): Promise<void> {
+        return this.dataAccess.executeRun(sqlUpdateGroupName(groupId, newName)).then();
+    }
 }

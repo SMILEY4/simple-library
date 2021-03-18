@@ -1,6 +1,8 @@
 import groupsCreateTable from "./groups_create_table.sql";
 import groupsSelectAll from "./groups_select_all.sql";
 import groupsInsert from "./groups_insert.sql";
+import groupsDelete from "./groups_delete.sql";
+import groupsUpdateName from "./groups_update_name.sql";
 
 import collectionItemsCreateTable from "./collection_items_create_table.sql";
 import collectionItemsInsert from "./collection_items_insert.sql";
@@ -45,6 +47,18 @@ export function sqlInsertGroup(name: string): string {
         .replace("$groupName", "'" + name + "'");
 }
 
+export function sqlDeleteGroup(groupId: number): string {
+    return groupsDelete
+        .replace("$groupId", groupId);
+}
+
+export function sqlUpdateGroupName(groupId: number, name: string): string {
+    return groupsUpdateName
+        .replace("$groupId", groupId)
+        .replace("$groupName", "'" + name + "'");
+}
+
+
 //==================//
 //   COLLECTIONS    //
 //==================//
@@ -76,7 +90,7 @@ export function sqlDeleteCollectionItems(collectionId: number) {
         .replace("$collectionId", collectionId);
 }
 
-export function sqlUpdateCollection(collectionId: number, name: string) {
+export function sqlUpdateCollectionName(collectionId: number, name: string) {
     return collectionsUpdateName
         .replace("$collectionName", "'" + name + "'")
         .replace("$collectionId", collectionId);

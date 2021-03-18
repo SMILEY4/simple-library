@@ -5,7 +5,7 @@ import {
     sqlDeleteCollection,
     sqlInsertCollection,
     sqlRemoveItemFromCollection,
-    sqlUpdateCollection,
+    sqlUpdateCollectionName,
 } from './sql/sql';
 import { Collection } from '../../common/commonModels';
 
@@ -70,8 +70,7 @@ export class CollectionDataAccess {
      * @return a promise that resolves when the collection was deleted
      */
     public deleteCollection(collectionId: number): Promise<void> {
-        return this.dataAccess.executeRun(sqlDeleteCollection(collectionId))
-            .then();
+        return this.dataAccess.executeRun(sqlDeleteCollection(collectionId)).then();
     }
 
 
@@ -82,7 +81,7 @@ export class CollectionDataAccess {
      * @return a promise that resolves when the collection was renamed
      */
     public renameCollection(collectionId: number, name: string): Promise<void> {
-        return this.dataAccess.executeRun(sqlUpdateCollection(collectionId, name)).then();
+        return this.dataAccess.executeRun(sqlUpdateCollectionName(collectionId, name)).then();
     }
 
     /**

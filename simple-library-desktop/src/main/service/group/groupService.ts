@@ -52,6 +52,28 @@ export class GroupService {
     }
 
 
+    /**
+     * Deletes the given group
+     * @param groupId the id of the group
+     * @return a promise that resolves when the group was deleted
+     */
+    public deleteGroup(groupId: number): Promise<void> {
+        return this.groupDataAccess.deleteGroup(groupId);
+    }
+
+
+    /**
+     * Renames the given group
+     * @param groupId the id of the group
+     * @param newName the new name of the group
+     * @return a promise that resolves when the group was renamed
+     */
+    public renameGroup(groupId: number, newName: string): Promise<void> {
+        return this.groupDataAccess.renameGroup(groupId, newName);
+
+    }
+
+
     private createGroupTree(groupDTOs: GroupDTO[], collections: Collection[] | null): Group[] {
         const rootGroups: Group[] = [];
         const groupMap: Map<number, Group> = new Map();
