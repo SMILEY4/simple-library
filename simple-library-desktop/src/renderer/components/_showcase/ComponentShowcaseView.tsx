@@ -22,7 +22,8 @@ import forest from "./forest.jpg";
 import { SFCheckbox } from "../checkbox/SFCheckbox";
 import { ChoiceBox } from "../choicebox/ChoiceBox";
 import { Notification } from '../notification/Notification';
-import { SFDropdownButton } from '../button/dropdownbutton/SFDropdownButton';
+import { DropdownItemType } from '../dropdown/Dropdown';
+import { DropdownButton } from '../button/dropdownbutton/DropdownButton';
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0");
@@ -51,14 +52,28 @@ export function ComponentShowcaseView(): any {
             <>
                 <h3>Dropdown Button</h3>
 
-                <SFDropdownButton
-                    variant={Variant.OUTLINE}
-                    items={["Create", "Update", "Delete"]}
-                    selectedItem={"Create"}
-                >
-                    Dropdown
-                </SFDropdownButton>
-
+                <DropdownButton buttonTitle={"Button"} variant={Variant.OUTLINE} items={[
+                    {
+                        type: DropdownItemType.ACTION,
+                        title: "Create",
+                        onAction: () => console.log("on create"),
+                    },
+                    {
+                        type: DropdownItemType.ACTION,
+                        title: "Read",
+                        onAction: () => console.log("on read"),
+                    },
+                    {
+                        type: DropdownItemType.ACTION,
+                        title: "Update",
+                        onAction: () => console.log("on update"),
+                    },
+                    {
+                        type: DropdownItemType.ACTION,
+                        title: "Delete",
+                        onAction: () => console.log("on delete"),
+                    },
+                ]} />
             </>
         );
     }

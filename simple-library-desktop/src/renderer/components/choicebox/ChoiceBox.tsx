@@ -4,7 +4,7 @@ import { concatClasses, Variant } from "../common";
 import { Button } from "../button/Button";
 import { BsChevronDown } from "react-icons/all";
 import "./choicebox.css";
-import { Dropdown } from "../dropdown/Dropdown";
+import { DropdownList } from '../dropdown/DropdownList';
 
 export interface ChoiceBoxProps {
     variant: Variant,
@@ -84,13 +84,13 @@ export class ChoiceBox extends Component<ChoiceBoxProps, ChoiceBoxState> {
                 </Button>
                 {
                     this.state.open && (
-                        <Dropdown className={"choicebox-dropdown"}
-                                  items={this.props.items}
-                                  itemFilter={this.props.itemFilter}
-                                  selectedItem={this.props.selected}
-                                  onSelect={this.props.onSelect}
-                                  maxVisibleItems={this.props.maxVisibleItems}
-                                  onTopSide={this.props.onTopSide} />
+                        <DropdownList className={"choicebox-dropdown"}
+                                      items={this.props.items}
+                                      itemFilter={this.props.itemFilter}
+                                      selectedItem={this.props.selected}
+                                      onSelect={this.props.onSelect}
+                                      maxVisibleItems={this.props.maxVisibleItems}
+                                      onTopSide={this.props.onTopSide} />
                     )
                 }
             </div>

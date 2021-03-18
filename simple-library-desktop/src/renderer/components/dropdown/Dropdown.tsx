@@ -1,17 +1,24 @@
 import React, { ReactElement } from "react";
 import { VBox } from "../layout/Box";
 import { AlignCross, AlignMain, concatClasses, Size } from "../common";
-import { AiOutlineCheck } from "react-icons/all";
 import "./dropdown.css";
+import { DropdownItem } from './DropdownItem';
+
+export enum DropdownItemType {
+    ACTION = "action"
+}
+
+export interface DropdownActionItem {
+    type: DropdownItemType,
+    title: string,
+    onAction?: () => void
+}
 
 export interface DropdownProps {
-    items: string[],
-    itemFilter?: (item: string) => boolean,
-    selectedItem: string | null,
-    onSelect?: (item: string) => void,
     maxVisibleItems?: number,
     onTopSide?: boolean,
-    className?: string
+    items?: DropdownActionItem[]
+    className?: string,
 }
 
 type DropdownReactProps = React.PropsWithChildren<DropdownProps>;
@@ -27,20 +34,20 @@ export function Dropdown(props: DropdownReactProps): React.ReactElement {
         );
     }
 
-    function renderItem(item: string, selectedItem: string): ReactElement {
-        const isSelected = selectedItem === item;
-        return (
-            <div className={"dropdown-item behaviour-no-select" + (isSelected ? " dropdown-item-selected" : "")}
-                 onClick={() => props.onSelect && props.onSelect(item)}
-                 key={item}>
-                {isSelected && (
-                    <div className={"dropdown-item-icon"}>
-                        <AiOutlineCheck />
-                    </div>
-                )}
-                <div className={"dropdown-item-content"}>{item}</div>
-            </div>
-        );
+    function renderItems(items: DropdownActionItem[]): ReactElement[] {
+        return items.map((item: DropdownActionItem, index: number) => {
+            if (item.type === DropdownItemType.ACTION) {
+                return (
+                    <DropdownItem selected={false}
+                                  onAction={() => item.onAction()}
+                                  key={index}
+                    >
+                        {item.title}
+                    </DropdownItem>
+                );
+            }
+            return null;
+        });
     }
 
     return (
@@ -50,9 +57,8 @@ export function Dropdown(props: DropdownReactProps): React.ReactElement {
               alignCross={AlignCross.STRETCH}
               spacing={Size.S_0}
         >
-            {props.items
-                .filter(item => props.itemFilter ? props.itemFilter(item) : true)
-                .map(item => renderItem(item, props.selectedItem))}
+            {props.items && renderItems(props.items)}
+            {props.children}
         </VBox>
     );
 }
