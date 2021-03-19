@@ -13,7 +13,7 @@ export class GroupAggregationTest {
     public static async testGetGroupsWithoutCollections() {
         await Test.runTest("get groups without collections", async () => {
             const collectionService: CollectionService = new CollectionService(new ItemServiceMock(), this.collectionDataAccessMock());
-            const groupService: GroupService = new GroupService(new ItemServiceMock(), collectionService, this.groupDataAccessMock());
+            const groupService: GroupService = new GroupService(new ItemServiceMock(), collectionService, null, this.groupDataAccessMock());
 
             const groups: Group[] = await groupService.getGroups(false, false);
 
@@ -34,7 +34,7 @@ export class GroupAggregationTest {
     public static async testGetGroupsWithCollections() {
         await Test.runTest("get groups with collections", async () => {
             const collectionService: CollectionService = new CollectionService(new ItemServiceMock(), this.collectionDataAccessMock());
-            const groupService: GroupService = new GroupService(new ItemServiceMock(), collectionService, this.groupDataAccessMock());
+            const groupService: GroupService = new GroupService(new ItemServiceMock(), collectionService, null, this.groupDataAccessMock());
 
             const groups: Group[] = await groupService.getGroups(true, true);
 

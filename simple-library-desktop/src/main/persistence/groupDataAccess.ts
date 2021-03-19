@@ -1,5 +1,12 @@
 import DataAccess from './dataAccess';
-import { sqlAllGroups, sqlDeleteGroup, sqlInsertGroup, sqlUpdateGroupName } from './sql/sql';
+import {
+    sqlAllGroups,
+    sqlDeleteGroup,
+    sqlFindGroupById,
+    sqlInsertGroup,
+    sqlUpdateGroupName,
+    sqlUpdateGroupsParents,
+} from './sql/sql';
 import { GroupDTO } from '../../common/commonModels';
 
 export class GroupDataAccess {
@@ -24,6 +31,25 @@ export class GroupDataAccess {
                     parentId: row.parent_group_id,
                 };
             }));
+    }
+
+    /**
+     * @param groupId the id of the group to fetch
+     * @return a promise that resolves with the found group or null
+     */
+    public findGroupById(groupId: number): Promise<GroupDTO | undefined> {
+        return this.dataAccess.querySingle(sqlFindGroupById(groupId))
+            .then((row: any | undefined) => {
+                if (row) {
+                    return {
+                        id: row.group_id,
+                        name: row.name,
+                        parentId: row.parent_group_id,
+                    };
+                } else {
+                    return undefined;
+                }
+            });
     }
 
 
@@ -63,4 +89,16 @@ export class GroupDataAccess {
     public renameGroup(groupId: number, newName: string): Promise<void> {
         return this.dataAccess.executeRun(sqlUpdateGroupName(groupId, newName)).then();
     }
+
+
+    /**
+     * Moves the all child groups of the given parent group to the new group
+     * @param prevParentGroupId the id of the previous parent group
+     * @param newParentGroupId the id of the new parent group
+     * @return a promise that resolves when the groups were moved
+     */
+    public moveGroups(prevParentGroupId: number | null, newParentGroupId: number | null): Promise<void> {
+        return this.dataAccess.executeRun(sqlUpdateGroupsParents(prevParentGroupId, newParentGroupId)).then();
+    }
+
 }

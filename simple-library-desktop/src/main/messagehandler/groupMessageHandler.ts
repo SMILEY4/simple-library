@@ -38,7 +38,7 @@ export class GroupMessageHandler {
     }
 
     private async handleDelete(payload: DeleteGroupMessage.RequestPayload): Promise<DeleteGroupMessage.ResponsePayload | ErrorResponse> {
-        return this.groupService.deleteGroup(payload.groupId)
+        return this.groupService.deleteGroup(payload.groupId, payload.deleteChildren)
             .then(() => ({}))
             .catch(err => errorResponse(err));
     }

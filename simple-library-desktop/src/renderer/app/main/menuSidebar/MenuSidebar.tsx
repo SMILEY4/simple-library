@@ -66,6 +66,8 @@ export function MenuSidebar(props: React.PropsWithChildren<MenuSidebarProps>): R
     }
 
     return (
+
+
         <SidebarMenu fillHeight
                      minimizable={true}
                      minimized={props.minimized}
@@ -79,7 +81,8 @@ export function MenuSidebar(props: React.PropsWithChildren<MenuSidebarProps>): R
             </SidebarMenuSection>
 
             <SidebarMenuSection title='Collections' actionButton={
-                <CollectionSectionAction onCreateCollection={props.onCreateCollection} onCreateGroup={props.onCreateGroup} />}>
+                <CollectionSectionAction onCreateCollection={props.onCreateCollection} onCreateGroup={props.onCreateGroup} />
+            }>
                 {props.rootGroup && renderItems(props.rootGroup.collections, props.rootGroup.children)}
             </SidebarMenuSection>
 

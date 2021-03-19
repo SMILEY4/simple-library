@@ -62,7 +62,7 @@ if (RUN_TESTS) {
         collectionDataAccess,
     );
     const collectionService: CollectionService = new CollectionService(itemService, collectionDataAccess);
-    const groupService: GroupService = new GroupService(itemService, collectionService, groupDataAccess);
+    const groupService: GroupService = new GroupService(itemService, collectionService, collectionDataAccess, groupDataAccess);
 
     // message-handler
     new LibraryMessageHandler(appService, windowService).initialize();

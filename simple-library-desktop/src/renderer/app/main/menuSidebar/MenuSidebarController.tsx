@@ -316,8 +316,11 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
         });
     }
 
-    handleDeleteGroupAccept(): void {
-        DeleteGroupMessage.request(ipcRenderer, { groupId: this.state.groupToDelete.id })
+    handleDeleteGroupAccept(deleteChildren: boolean): void {
+        DeleteGroupMessage.request(ipcRenderer, {
+            groupId: this.state.groupToDelete.id,
+            deleteChildren: deleteChildren,
+        })
             .then(() => this.props.onCollectionsModified())
             .finally(() => {
                 this.setState({

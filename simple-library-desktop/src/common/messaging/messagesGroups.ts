@@ -50,7 +50,8 @@ export module CreateGroupMessage {
 export module DeleteGroupMessage {
 
     export interface RequestPayload {
-        groupId: number
+        groupId: number,
+        deleteChildren: boolean
     }
 
     export interface ResponsePayload {
