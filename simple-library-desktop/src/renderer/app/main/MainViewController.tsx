@@ -46,7 +46,6 @@ export class MainViewController extends Component<MainViewControllerProps, MainV
         };
         this.updateGroupsAndCollections = this.updateGroupsAndCollections.bind(this);
         this.updateItemList = this.updateItemList.bind(this);
-        // this.fetchCollections = this.fetchCollections.bind(this);
         this.fetchTotalItemCount = this.fetchTotalItemCount.bind(this);
         this.fetchItems = this.fetchItems.bind(this);
         this.actionCloseLibrary = this.actionCloseLibrary.bind(this);

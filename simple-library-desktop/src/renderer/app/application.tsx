@@ -3,9 +3,6 @@ import React, { Component } from 'react';
 import { ComponentShowcaseView } from '../components/_showcase/ComponentShowcaseView';
 import { WelcomeView } from './welcome/welcomeView';
 import { MainViewController } from './main/MainViewController';
-import { SidebarTestView } from './sidebartest/sidebarTestView';
-
-const { ipcRenderer } = window.require('electron');
 
 export enum Theme {
     LIGHT = 'light',

@@ -22,7 +22,7 @@ export default class DataAccess {
             return error;
         } else {
             this.database = db;
-            this.database.get("PRAGMA foreign_keys = ON")
+            this.database.get("PRAGMA foreign_keys = ON");
             console.log('Opened db: ' + url);
             return undefined;
         }
@@ -67,6 +67,18 @@ export default class DataAccess {
     public queryAll(sql: string): Promise<any[]> {
         return this.executeSqlInPromise((resolve, reject) => {
             this.database.all(sql, (err, rows) => err ? reject(err) : resolve(rows));
+        });
+    }
+
+
+    /**
+     * Executes the given sql-query and returns the first result.
+     * @param sql the sql-query
+     * @return a promise that resolves with the result row or undefined
+     */
+    public querySingle(sql: string): Promise<any | undefined> {
+        return this.executeSqlInPromise((resolve, reject) => {
+            this.database.get(sql, (err, row) => err ? reject(err) : resolve(row));
         });
     }
 

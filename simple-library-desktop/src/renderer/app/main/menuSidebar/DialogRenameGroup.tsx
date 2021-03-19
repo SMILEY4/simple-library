@@ -7,23 +7,23 @@ import { BodyText } from '../../../components/text/Text';
 import { InputField } from '../../../components/inputfield/InputField';
 
 
-interface DialogRenameCollectionProps {
-    collectionName: string | undefined,
+interface DialogRenameGroupProps {
+    groupName: string | undefined,
     onClose: () => void,
-    onRename: (newCollectionName:string) => void,
+    onRename: (newGroupName:string) => void,
 }
 
-interface DialogRenameCollectionState {
+interface DialogRenameGroupState {
     name: string,
     nameValid: boolean,
 }
 
-export class DialogRenameCollection extends Component<DialogRenameCollectionProps, DialogRenameCollectionState> {
+export class DialogRenameGroup extends Component<DialogRenameGroupProps, DialogRenameGroupState> {
 
-    constructor(props: DialogRenameCollectionProps) {
+    constructor(props: DialogRenameGroupProps) {
         super(props);
         this.state = {
-            name: this.props.collectionName,
+            name: this.props.groupName,
             nameValid: true,
         };
         this.actionRequestRename = this.actionRequestRename.bind(this);
@@ -48,7 +48,7 @@ export class DialogRenameCollection extends Component<DialogRenameCollectionProp
 
     render(): ReactElement {
         return (
-            <Dialog title={"Rename Collection"}
+            <Dialog title={"Rename Group"}
                     show={true}
                     closeButton={true}
                     onClose={this.props.onClose}
@@ -68,7 +68,7 @@ export class DialogRenameCollection extends Component<DialogRenameCollectionProp
                 <Box dir={Dir.DOWN} alignMain={AlignMain.CENTER} alignCross={AlignCross.STRETCH} spacing={Size.S_0_75}>
                     <InputField
                         autoFocus
-                        placeholder='Collection Name'
+                        placeholder='Group Name'
                         value={this.state.name}
                         onChange={(value) => this.setState({ name: value })}
                     />

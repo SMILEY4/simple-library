@@ -12,8 +12,8 @@ interface DialogCreateCollectionProps {
 }
 
 interface DialogCreateCollectionState {
-    collectionName: string,
-    collectionNameValid: boolean,
+    name: string,
+    nameValid: boolean,
 }
 
 
@@ -22,26 +22,26 @@ export class DialogCreateCollection extends Component<DialogCreateCollectionProp
     constructor(props: DialogCreateCollectionProps) {
         super(props);
         this.state = {
-            collectionName: "",
-            collectionNameValid: true,
+            name: "",
+            nameValid: true,
         };
         this.actionRequestCreate = this.actionRequestCreate.bind(this);
-        this.validateCollectionName = this.validateCollectionName.bind(this)
+        this.validateName = this.validateName.bind(this)
     }
 
     actionRequestCreate(): void {
-        const collectionName = this.state.collectionName.trim();
-        if (this.validateCollectionName(collectionName)) {
+        const collectionName = this.state.name.trim();
+        if (this.validateName(collectionName)) {
             this.props.onCreate(collectionName);
         } else {
             this.setState({
-                collectionName: collectionName,
-                collectionNameValid: false,
+                name: collectionName,
+                nameValid: false,
             });
         }
     }
 
-    validateCollectionName(name: string): boolean {
+    validateName(name: string): boolean {
         return name.length > 0;
     }
 
@@ -68,8 +68,8 @@ export class DialogCreateCollection extends Component<DialogCreateCollectionProp
                     <InputField
                         autoFocus
                         placeholder='Collection Name'
-                        value={this.state.collectionName}
-                        onChange={(value) => this.setState({ collectionName: value })}
+                        value={this.state.name}
+                        onChange={(value) => this.setState({ name: value })}
                     />
                 </Box>
             </Dialog>

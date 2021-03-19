@@ -5,7 +5,7 @@ import {
     sqlDeleteCollection,
     sqlInsertCollection,
     sqlRemoveItemFromCollection,
-    sqlUpdateCollection,
+    sqlUpdateCollectionName, sqlUpdateCollectionsParents,
 } from './sql/sql';
 import { Collection } from '../../common/commonModels';
 
@@ -31,7 +31,7 @@ export class CollectionDataAccess {
                         id: row.collection_id,
                         name: row.collection_name,
                         itemCount: row.item_count,
-                        groupId: row.parent_group_id ? row.parent_group_id : undefined,
+                        groupId: row.group_id ? row.group_id : undefined,
                     };
                 }));
         } else {
@@ -40,7 +40,7 @@ export class CollectionDataAccess {
                     return {
                         id: row.collection_id,
                         name: row.collection_name,
-                        groupId: row.parent_group_id,
+                        groupId: row.group_id,
                         itemCount: undefined,
                     };
                 }));
@@ -70,8 +70,7 @@ export class CollectionDataAccess {
      * @return a promise that resolves when the collection was deleted
      */
     public deleteCollection(collectionId: number): Promise<void> {
-        return this.dataAccess.executeRun(sqlDeleteCollection(collectionId))
-            .then();
+        return this.dataAccess.executeRun(sqlDeleteCollection(collectionId)).then();
     }
 
 
@@ -82,7 +81,17 @@ export class CollectionDataAccess {
      * @return a promise that resolves when the collection was renamed
      */
     public renameCollection(collectionId: number, name: string): Promise<void> {
-        return this.dataAccess.executeRun(sqlUpdateCollection(collectionId, name)).then();
+        return this.dataAccess.executeRun(sqlUpdateCollectionName(collectionId, name)).then();
+    }
+
+    /**
+     * Moves the all child collections of the given parent group to the new group
+     * @param prevParentGroupId the id of the previous parent group
+     * @param newParentGroupId the id of the new parent group
+     * @return a promise that resolves when the collections were moved
+     */
+    public moveCollections(prevParentGroupId: number | null, newParentGroupId: number | null): Promise<void> {
+        return this.dataAccess.executeRun(sqlUpdateCollectionsParents(prevParentGroupId, newParentGroupId)).then();
     }
 
     /**

@@ -1,21 +1,24 @@
-import { CollectionDataAccess } from '../../persistence/collectionDataAccess';
 import { Collection, Group, GroupDTO } from '../../../common/commonModels';
 import { ItemService } from "../item/ItemService";
 import { CollectionService } from '../collection/collectionService';
 import { GroupDataAccess } from '../../persistence/groupDataAccess';
+import { CollectionDataAccess } from '../../persistence/collectionDataAccess';
 
 export class GroupService {
 
     groupDataAccess: GroupDataAccess;
     itemService: ItemService;
     collectionService: CollectionService;
+    collectionDataAccess: CollectionDataAccess;
 
 
     constructor(itemService: ItemService,
                 collectionService: CollectionService,
+                collectionDataAccess: CollectionDataAccess,
                 groupDataAccess: GroupDataAccess) {
         this.itemService = itemService;
         this.collectionService = collectionService;
+        this.collectionDataAccess = collectionDataAccess;
         this.groupDataAccess = groupDataAccess;
     }
 
@@ -28,12 +31,65 @@ export class GroupService {
      */
     public getGroups(includeCollections: boolean, includeItemCount: boolean): Promise<Group[]> {
         return this.groupDataAccess.getGroups()
-            .then(async (data:GroupDTO[]) => {
+            .then(async (data: GroupDTO[]) => {
                 const collections: Collection[] | null = includeCollections
                     ? await this.collectionService.getAllCollections(includeItemCount)
                     : null;
                 return this.createGroupTree(data, collections);
             });
+    }
+
+
+    /**
+     * Creates a new group with the given name
+     * @param name the name of the group
+     * @return a promise that resolves with the created group
+     */
+    public async createGroup(name: string): Promise<Group> {
+        return this.groupDataAccess.createGroup(name)
+            .then((groupDTO: GroupDTO) => ({
+                id: groupDTO.id,
+                name: groupDTO.name,
+                children: [],
+                collections: [],
+            }));
+    }
+
+
+    /**
+     * Deletes the given group
+     * @param groupId the id of the group
+     * @param deleteChildren whether to also delete all of its children (collections,groups,...)
+     * @return a promise that resolves when the group was deleted
+     */
+    public deleteGroup(groupId: number, deleteChildren: boolean): Promise<void> {
+        if (!deleteChildren) {
+            return this.groupDataAccess.findGroupById(groupId)
+                .then((group: GroupDTO) => {
+                    if (group) {
+                        const groupId: number = group.id;
+                        const parentId: number | null = group.parentId ? group.parentId : null;
+                        return Promise.all([
+                            this.groupDataAccess.moveGroups(groupId, parentId),
+                            this.collectionDataAccess.moveCollections(groupId, parentId),
+                        ]);
+                    }
+                })
+                .then(() => this.groupDataAccess.deleteGroup(groupId));
+        } else {
+            return this.groupDataAccess.deleteGroup(groupId);
+        }
+    }
+
+
+    /**
+     * Renames the given group
+     * @param groupId the id of the group
+     * @param newName the new name of the group
+     * @return a promise that resolves when the group was renamed
+     */
+    public renameGroup(groupId: number, newName: string): Promise<void> {
+        return this.groupDataAccess.renameGroup(groupId, newName);
     }
 
 

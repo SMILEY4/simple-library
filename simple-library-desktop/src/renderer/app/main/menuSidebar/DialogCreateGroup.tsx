@@ -3,40 +3,39 @@ import { Component, ReactElement } from 'react';
 import { Dialog } from '../../../components/modal/Dialog';
 import { AlignCross, AlignMain, Dir, Size, Type, Variant } from '../../../components/common';
 import { Box } from '../../../components/layout/Box';
-import { BodyText } from '../../../components/text/Text';
 import { InputField } from '../../../components/inputfield/InputField';
 
 
-interface DialogRenameCollectionProps {
-    collectionName: string | undefined,
-    onClose: () => void,
-    onRename: (newCollectionName:string) => void,
+interface DialogCreateGroupProps {
+    onClose: () => void
+    onCreate: (name: string) => void
 }
 
-interface DialogRenameCollectionState {
+interface DialogCreateGroupState {
     name: string,
     nameValid: boolean,
 }
 
-export class DialogRenameCollection extends Component<DialogRenameCollectionProps, DialogRenameCollectionState> {
 
-    constructor(props: DialogRenameCollectionProps) {
+export class DialogCreateGroup extends Component<DialogCreateGroupProps, DialogCreateGroupState> {
+
+    constructor(props: DialogCreateGroupProps) {
         super(props);
         this.state = {
-            name: this.props.collectionName,
+            name: "",
             nameValid: true,
         };
-        this.actionRequestRename = this.actionRequestRename.bind(this);
-        this.validateName = this.validateName.bind(this)
+        this.actionRequestCreate = this.actionRequestCreate.bind(this);
+        this.validateName = this.validateName.bind(this);
     }
 
-    actionRequestRename(): void {
-        const name = this.state.name.trim();
-        if (this.validateName(name)) {
-            this.props.onRename(name);
+    actionRequestCreate(): void {
+        const collectionName = this.state.name.trim();
+        if (this.validateName(collectionName)) {
+            this.props.onCreate(collectionName);
         } else {
             this.setState({
-                name: name,
+                name: collectionName,
                 nameValid: false,
             });
         }
@@ -48,7 +47,7 @@ export class DialogRenameCollection extends Component<DialogRenameCollectionProp
 
     render(): ReactElement {
         return (
-            <Dialog title={"Rename Collection"}
+            <Dialog title={"Create new Group"}
                     show={true}
                     closeButton={true}
                     onClose={this.props.onClose}
@@ -59,16 +58,16 @@ export class DialogRenameCollection extends Component<DialogRenameCollectionProp
                             onAction: this.props.onClose,
                         },
                         {
-                            content: "Rename",
+                            content: "Create",
                             variant: Variant.SOLID,
                             type: Type.PRIMARY,
-                            onAction: this.actionRequestRename
+                            onAction: this.actionRequestCreate,
                         },
                     ]}>
                 <Box dir={Dir.DOWN} alignMain={AlignMain.CENTER} alignCross={AlignCross.STRETCH} spacing={Size.S_0_75}>
                     <InputField
                         autoFocus
-                        placeholder='Collection Name'
+                        placeholder='Group Name'
                         value={this.state.name}
                         onChange={(value) => this.setState({ name: value })}
                     />

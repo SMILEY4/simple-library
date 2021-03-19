@@ -1,15 +1,12 @@
 import * as React from 'react';
-import { AlignCross, AlignMain, Fill, Size, Variant } from '../common';
+import { AlignCross, AlignMain, Fill, Size } from '../common';
 import { VBox } from '../layout/Box';
 import "./sidebarMenuSection.css";
 import { H5Text } from '../text/Text';
-import { Button } from '../button/Button';
 
 export interface SidebarMenuSectionProps {
     title?: string
-
-    actionButtonIcon?: React.ReactElement,
-    onAction?: () => void
+    actionButton?: React.ReactElement,
 }
 
 export function SidebarMenuSection(props: React.PropsWithChildren<SidebarMenuSectionProps>): React.ReactElement {
@@ -27,12 +24,7 @@ export function SidebarMenuSection(props: React.PropsWithChildren<SidebarMenuSec
                 <div className={"sidebar-menu-section-title"}>
                     <div className={"sidebar-menu-section-title-content"}>
                         <H5Text>{props.title}</H5Text>
-                        {props.actionButtonIcon && (
-                            <Button variant={Variant.GHOST}
-                                    icon={props.actionButtonIcon}
-                                    onAction={props.onAction}
-                                    square />
-                        )}
+                        {props.actionButton}
                     </div>
                 </div>
             )}
