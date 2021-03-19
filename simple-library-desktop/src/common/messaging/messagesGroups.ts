@@ -28,7 +28,8 @@ export module GetGroupsMessage {
 export module CreateGroupMessage {
 
     export interface RequestPayload {
-        name: string
+        name: string,
+        parentGroupId: number | undefined
     }
 
     export interface ResponsePayload {

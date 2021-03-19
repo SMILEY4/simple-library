@@ -6,6 +6,8 @@ export const GROUP_CONTEXT_MENU_ID: string = "contextmenu.group";
 interface GroupContextMenuProps {
     onActionRename: (groupId: number) => void
     onActionDelete: (groupId: number) => void
+    onActionCreateCollection: (triggerGroupId: number) => void,
+    onActionCreateGroup: (triggerGroupId: number) => void
 }
 
 export function GroupContextMenu(props: React.PropsWithChildren<GroupContextMenuProps>): React.ReactElement {
@@ -16,6 +18,8 @@ export function GroupContextMenu(props: React.PropsWithChildren<GroupContextMenu
               onHidden={handleOnHidden}>
             <Item onClick={handleRename}>Rename Group</Item>
             <Item onClick={handleDelete}>Delete Group</Item>
+            <Item onClick={handleCreateCollection}>Create Collection</Item>
+            <Item onClick={handleCreateGroup}>Create Group</Item>
         </Menu>
     );
 
@@ -44,6 +48,14 @@ export function GroupContextMenu(props: React.PropsWithChildren<GroupContextMenu
 
     function handleDelete(data: ItemParams) {
         props.onActionDelete(data.props.groupId);
+    }
+
+    function handleCreateCollection(data: ItemParams) {
+        props.onActionCreateCollection(data.props.groupId);
+    }
+
+    function handleCreateGroup(data: ItemParams) {
+        props.onActionCreateGroup(data.props.groupId);
     }
 
 }

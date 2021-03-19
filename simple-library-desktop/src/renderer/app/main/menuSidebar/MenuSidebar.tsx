@@ -37,6 +37,9 @@ export interface MenuSidebarProps {
 
     onGroupContextMenuRename: (groupId: number) => void
     onGroupContextMenuDelete: (groupId: number) => void
+    onGroupContextMenuCreateCollection: (triggerGroupId: number) => void
+    onGroupContextMenuCreateGroup: (triggerGroupId: number) => void
+
 }
 
 export function MenuSidebar(props: React.PropsWithChildren<MenuSidebarProps>): React.ReactElement {
@@ -66,8 +69,6 @@ export function MenuSidebar(props: React.PropsWithChildren<MenuSidebarProps>): R
     }
 
     return (
-
-
         <SidebarMenu fillHeight
                      minimizable={true}
                      minimized={props.minimized}
@@ -94,6 +95,8 @@ export function MenuSidebar(props: React.PropsWithChildren<MenuSidebarProps>): R
             <GroupContextMenu
                 onActionRename={props.onGroupContextMenuRename}
                 onActionDelete={props.onGroupContextMenuDelete}
+                onActionCreateCollection={props.onGroupContextMenuCreateCollection}
+                onActionCreateGroup={props.onGroupContextMenuCreateGroup}
             />
 
         </SidebarMenu>

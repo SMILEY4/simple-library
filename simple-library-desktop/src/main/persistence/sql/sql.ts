@@ -51,9 +51,10 @@ export function sqlFindGroupById(groupId: number): string {
 
 }
 
-export function sqlInsertGroup(name: string): string {
+export function sqlInsertGroup(name: string, parentGroup: number | undefined): string {
     return groupsInsert
-        .replace("$groupName", "'" + name + "'");
+        .replace("$groupName", "'" + name + "'")
+        .replace("$parentGroupId", parentGroup);
 }
 
 export function sqlDeleteGroup(groupId: number): string {
@@ -90,9 +91,10 @@ export function sqlAllCollections(includeItemCount: boolean) {
     }
 }
 
-export function sqlInsertCollection(name: string) {
+export function sqlInsertCollection(name: string, groupId: number | null) {
     return collectionsInsert
-        .replace("$collectionName", "'" + name + "'");
+        .replace("$collectionName", "'" + name + "'")
+        .replace("$groupId", groupId);
 }
 
 export function sqlDeleteCollection(collectionId: number) {
@@ -116,7 +118,6 @@ export function sqlUpdateCollectionsParents(prevParentGroupId: number | null, ne
         .replace("$groupId", newParentGroupId)
         .replace("$prevGroupId", prevParentGroupId);
 }
-
 
 
 //==================//

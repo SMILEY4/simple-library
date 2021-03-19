@@ -55,9 +55,7 @@ interface MenuSidebarControllerState {
     showCreateGroupDialog: boolean,
     showDialogDeleteGroup: boolean,
     showDialogRenameGroup: boolean,
-    groupToDelete: Group | undefined
-    groupToRename: Group | undefined
-
+    triggerGroup: Group | undefined
 }
 
 export class MenuSidebarController extends Component<MenuSidebarControllerProps, MenuSidebarControllerState> {
@@ -75,8 +73,7 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
             showCreateGroupDialog: false,
             showDialogDeleteGroup: false,
             showDialogRenameGroup: false,
-            groupToDelete: undefined,
-            groupToRename: undefined,
+            triggerGroup: undefined,
         };
         this.handleOnStartImport = this.handleOnStartImport.bind(this);
         this.handleOnCloseImport = this.handleOnCloseImport.bind(this);
@@ -110,6 +107,9 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
         this.handleRenameGroupAccept = this.handleRenameGroupAccept.bind(this);
 
         this.setMinimized = this.setMinimized.bind(this);
+
+        this.findCollectionById = this.findCollectionById.bind(this);
+        this.findGroupById = this.findGroupById.bind(this);
     }
 
     render() {
@@ -130,14 +130,16 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
                     minimized={this.state.minimized}
                     onSetMinimize={this.setMinimized}
 
-                    onCreateCollection={this.handleCreateCollection}
-                    onCreateGroup={this.handleCreateGroup}
+                    onCreateCollection={() => this.handleCreateCollection(undefined)}
+                    onCreateGroup={() => this.handleCreateGroup(undefined)}
 
                     onCollectionContextMenuRename={this.handleRenameCollection}
                     onCollectionContextMenuDelete={this.handleDeleteCollection}
 
                     onGroupContextMenuRename={this.handleRenameGroup}
                     onGroupContextMenuDelete={this.handleDeleteGroup}
+                    onGroupContextMenuCreateCollection={this.handleCreateCollection}
+                    onGroupContextMenuCreateGroup={this.handleCreateGroup}
                 />
                 {this.state.showImportDialog && (
                     <DialogImportFiles
@@ -172,14 +174,14 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
                 )}
                 {this.state.showDialogDeleteGroup && (
                     <DialogDeleteGroup
-                        groupName={this.state.groupToDelete ? this.state.groupToDelete.name : undefined}
+                        groupName={this.state.triggerGroup ? this.state.triggerGroup.name : undefined}
                         onClose={this.handleDeleteGroupCancel}
                         onDelete={this.handleDeleteGroupAccept}
                     />
                 )}
                 {this.state.showDialogRenameGroup && (
                     <DialogRenameGroup
-                        groupName={this.state.groupToRename ? this.state.groupToRename.name : undefined}
+                        groupName={this.state.triggerGroup ? this.state.triggerGroup.name : undefined}
                         onClose={this.handleRenameGroupCancel}
                         onRename={this.handleRenameGroupAccept}
                     />
@@ -217,8 +219,11 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
         }
     }
 
-    handleCreateCollection(): void {
-        this.setState({ showCreateCollectionDialog: true });
+    handleCreateCollection(parentGroupId: number | undefined): void {
+        this.setState({
+            showCreateCollectionDialog: true,
+            triggerGroup: parentGroupId ? this.findGroupById(parentGroupId) : undefined,
+        });
     }
 
     handleCreateCollectionCancel(): void {
@@ -226,7 +231,10 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
     }
 
     handleCreateCollectionAccept(collectionName: string): void {
-        CreateCollectionMessage.request(ipcRenderer, { name: collectionName })
+        CreateCollectionMessage.request(ipcRenderer, {
+            name: collectionName,
+            parentGroupId: this.state.triggerGroup ? this.state.triggerGroup.id : undefined,
+        })
             .then(() => this.props.onCollectionsModified())
             .finally(() => {
                 this.setState({ showCreateCollectionDialog: false });
@@ -286,16 +294,25 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
             });
     }
 
-    handleCreateGroup(): void {
-        this.setState({ showCreateGroupDialog: true });
+    handleCreateGroup(parentGroupId: number | undefined): void {
+        this.setState({
+            showCreateGroupDialog: true,
+            triggerGroup: parentGroupId ? this.findGroupById(parentGroupId) : undefined,
+        });
     }
 
     handleCreateGroupCancel(): void {
-        this.setState({ showCreateGroupDialog: false });
+        this.setState({
+            showCreateGroupDialog: false,
+            triggerGroup: undefined,
+        });
     }
 
     handleCreateGroupAccept(groupName: string): void {
-        CreateGroupMessage.request(ipcRenderer, { name: groupName })
+        CreateGroupMessage.request(ipcRenderer, {
+            name: groupName,
+            parentGroupId: this.state.triggerGroup ? this.state.triggerGroup.id : undefined,
+        })
             .then(() => this.props.onCollectionsModified())
             .finally(() => {
                 this.setState({ showCreateGroupDialog: false });
@@ -305,27 +322,27 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
     handleDeleteGroup(groupId: number): void {
         this.setState({
             showDialogDeleteGroup: true,
-            groupToDelete: extractGroups(this.props.rootGroup).find(g => g.id === groupId),
+            triggerGroup: extractGroups(this.props.rootGroup).find(g => g.id === groupId),
         });
     }
 
     handleDeleteGroupCancel(): void {
         this.setState({
             showDialogDeleteGroup: false,
-            groupToDelete: undefined,
+            triggerGroup: undefined,
         });
     }
 
     handleDeleteGroupAccept(deleteChildren: boolean): void {
         DeleteGroupMessage.request(ipcRenderer, {
-            groupId: this.state.groupToDelete.id,
+            groupId: this.state.triggerGroup.id,
             deleteChildren: deleteChildren,
         })
             .then(() => this.props.onCollectionsModified())
             .finally(() => {
                 this.setState({
                     showDialogDeleteGroup: false,
-                    groupToDelete: undefined,
+                    triggerGroup: undefined,
                 });
             });
     }
@@ -333,27 +350,27 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
     handleRenameGroup(groupId: number): void {
         this.setState({
             showDialogRenameGroup: true,
-            groupToRename: extractGroups(this.props.rootGroup).find(g => g.id === groupId),
+            triggerGroup: extractGroups(this.props.rootGroup).find(g => g.id === groupId),
         });
     }
 
     handleRenameGroupCancel(): void {
         this.setState({
             showDialogRenameGroup: false,
-            groupToRename: undefined,
+            triggerGroup: undefined,
         });
     }
 
     handleRenameGroupAccept(newGroupName: string): void {
         RenameGroupMessage.request(ipcRenderer, {
-            groupId: this.state.groupToRename.id,
+            groupId: this.state.triggerGroup.id,
             newName: newGroupName,
         })
             .then(() => this.props.onCollectionsModified())
             .finally(() => {
                 this.setState({
                     showDialogRenameGroup: false,
-                    groupToRename: undefined,
+                    triggerGroup: undefined,
                 });
             });
     }
@@ -362,6 +379,14 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
         this.setState({
             minimized: minimized,
         });
+    }
+
+    findCollectionById(collectionId: number | undefined): Collection | undefined {
+        return extractCollections(this.props.rootGroup).find(c => c.id === collectionId);
+    }
+
+    findGroupById(groupId: number | undefined): Group | undefined {
+        return extractGroups(this.props.rootGroup).find(g => g.id === groupId);
     }
 
 }

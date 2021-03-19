@@ -43,10 +43,11 @@ export class GroupService {
     /**
      * Creates a new group with the given name
      * @param name the name of the group
+     * @param parentGroupId the id of the parent group or null
      * @return a promise that resolves with the created group
      */
-    public async createGroup(name: string): Promise<Group> {
-        return this.groupDataAccess.createGroup(name)
+    public async createGroup(name: string, parentGroupId: number | undefined): Promise<Group> {
+        return this.groupDataAccess.createGroup(name, parentGroupId)
             .then((groupDTO: GroupDTO) => ({
                 id: groupDTO.id,
                 name: groupDTO.name,

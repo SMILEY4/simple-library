@@ -29,6 +29,7 @@ export module CreateCollectionMessage {
 
     export interface RequestPayload {
         name: string
+        parentGroupId: number | undefined
     }
 
     export interface ResponsePayload {

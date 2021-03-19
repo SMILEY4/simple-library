@@ -56,15 +56,16 @@ export class GroupDataAccess {
     /**
      * Creates a new group with the given name
      * @param name the name of the new group
+     * @param parentGroupId the id of the parent group or null
      * @return  a promise that resolves with the created {@link GroupDTO}
      */
-    public createGroup(name: string): Promise<GroupDTO> {
-        return this.dataAccess.executeRun(sqlInsertGroup(name))
+    public createGroup(name: string, parentGroupId: number | undefined): Promise<GroupDTO> {
+        return this.dataAccess.executeRun(sqlInsertGroup(name, parentGroupId))
             .then((id: number) => {
                 return {
                     id: id,
                     name: name,
-                    parentId: undefined,
+                    parentId: parentGroupId,
                 };
             });
     }

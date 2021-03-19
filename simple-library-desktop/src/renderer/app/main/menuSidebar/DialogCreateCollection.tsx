@@ -4,6 +4,8 @@ import { Dialog } from '../../../components/modal/Dialog';
 import { AlignCross, AlignMain, Dir, Size, Type, Variant } from '../../../components/common';
 import { Box } from '../../../components/layout/Box';
 import { InputField } from '../../../components/inputfield/InputField';
+import { ChoiceBox } from '../../../components/choicebox/ChoiceBox';
+import { Group } from '../../../../common/commonModels';
 
 
 interface DialogCreateCollectionProps {

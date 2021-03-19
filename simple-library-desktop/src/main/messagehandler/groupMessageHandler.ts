@@ -20,7 +20,6 @@ export class GroupMessageHandler {
     public initialize(): void {
         GetGroupsMessage.handle(ipcMain, payload => this.handleGet(payload));
         CreateGroupMessage.handle(ipcMain, payload => this.handleCreate(payload));
-
         DeleteGroupMessage.handle(ipcMain, payload => this.handleDelete(payload));
         RenameGroupMessage.handle(ipcMain, payload => this.handleRename(payload));
     }
@@ -32,7 +31,7 @@ export class GroupMessageHandler {
     }
 
     private async handleCreate(payload: CreateGroupMessage.RequestPayload): Promise<CreateGroupMessage.ResponsePayload | ErrorResponse> {
-        return this.groupService.createGroup(payload.name)
+        return this.groupService.createGroup(payload.name, payload.parentGroupId)
             .then((group: Group) => ({ group: group }))
             .catch(err => errorResponse(err));
     }

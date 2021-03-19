@@ -36,10 +36,11 @@ export class CollectionService {
     /**
      * Create a new collection with the given name
      * @param name the name of the collection
+     * @param parentGroupId the id of the parent group or undefined
      * @return a promise that resolves with the created {@link Collection}
      */
-    public createCollection(name: string): Promise<Collection> {
-        return this.collectionDataAccess.createCollection(name.trim());
+    public createCollection(name: string, parentGroupId: number | undefined): Promise<Collection> {
+        return this.collectionDataAccess.createCollection(name.trim(), parentGroupId);
     }
 
 

@@ -5,7 +5,8 @@ import {
     sqlDeleteCollection,
     sqlInsertCollection,
     sqlRemoveItemFromCollection,
-    sqlUpdateCollectionName, sqlUpdateCollectionsParents,
+    sqlUpdateCollectionName,
+    sqlUpdateCollectionsParents,
 } from './sql/sql';
 import { Collection } from '../../common/commonModels';
 
@@ -50,16 +51,17 @@ export class CollectionDataAccess {
     /**
      * Creates a new collection with the given name
      * @param name the name of the collection
+     * @param parentGroupId the id of the parent group or undefined
      * @return a promise that resolves with the created collection
      */
-    public createCollection(name: string): Promise<Collection> {
-        return this.dataAccess.executeRun(sqlInsertCollection(name))
+    public createCollection(name: string, parentGroupId: number | undefined): Promise<Collection> {
+        return this.dataAccess.executeRun(sqlInsertCollection(name, parentGroupId ? parentGroupId : null))
             .then((id: number) => {
                 return {
                     id: id,
                     name: name,
                     itemCount: undefined,
-                    groupId: undefined,
+                    groupId: parentGroupId,
                 };
             });
     }

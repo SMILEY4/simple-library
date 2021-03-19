@@ -33,7 +33,7 @@ export class CollectionMessageHandler {
     }
 
     private async handleCreate(payload: CreateCollectionMessage.RequestPayload): Promise<CreateCollectionMessage.ResponsePayload | ErrorResponse> {
-        return this.collectionService.createCollection(payload.name)
+        return this.collectionService.createCollection(payload.name, payload.parentGroupId)
             .then((collection: Collection) => ({ collection: collection }))
             .catch(err => errorResponse(err));
     }
