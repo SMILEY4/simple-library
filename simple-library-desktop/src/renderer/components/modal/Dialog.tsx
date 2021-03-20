@@ -7,9 +7,12 @@ import { H3Text } from '../text/Text';
 import { Button, ButtonProps } from '../button/Button';
 import { CgClose } from 'react-icons/cg';
 import { HBox } from '../layout/Box';
+import { componentLifecycle } from '../../app/common/functionalReactLifecycle';
 
 interface DialogActionProps extends ButtonProps {
-    content?: any
+    content?: any,
+    triggeredByEnter?: boolean,
+    triggeredByEscape?: boolean,
 }
 
 interface DialogProps {
@@ -84,6 +87,29 @@ export function Dialog(props: DialogReactProps) {
             );
         } else {
             return null;
+        }
+    }
+
+    componentLifecycle(
+        () => document.addEventListener("keydown", handleKeyDown),
+        () => document.removeEventListener("keydown", handleKeyDown),
+    );
+
+    function handleKeyDown(event: KeyboardEvent) {
+        if (event.key === "Enter") {
+            const enterAction: DialogActionProps | undefined = props.actions.find(action => action.triggeredByEnter);
+            if (enterAction) {
+                event.preventDefault();
+                event.stopPropagation();
+                enterAction.onAction();
+            }
+        } else if (event.key === "Escape") {
+            const escapeAction: DialogActionProps | undefined = props.actions.find(action => action.triggeredByEscape);
+            if (escapeAction) {
+                event.preventDefault();
+                event.stopPropagation();
+                escapeAction.onAction();
+            }
         }
     }
 
