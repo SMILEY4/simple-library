@@ -94,6 +94,17 @@ export class GroupService {
     }
 
 
+    /**
+     * Renames the given group into the given parent group
+     * @param groupId the id of the group
+     * @param targetGroupId the id of the new parent group
+     * @return a promise that resolves when the group was moved
+     */
+    public moveGroup(groupId: number, targetGroupId: number | undefined): Promise<void> {
+        return this.groupDataAccess.setParentGroup(groupId, targetGroupId ? targetGroupId : null);
+    }
+
+
     private createGroupTree(groupDTOs: GroupDTO[], collections: Collection[] | null): Group[] {
         const rootGroups: Group[] = [];
         const groupMap: Map<number, Group> = new Map();

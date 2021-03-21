@@ -65,6 +65,16 @@ export class CollectionService {
     }
 
     /**
+     * Moves the collection with the given id into the group with the given id
+     * @param collectionId the id of the collection
+     * @param targetGroupId the id of the new parent group
+     * @return a promise that resolves when the collection was moved
+     */
+    public moveCollection(collectionId: number, targetGroupId: number | undefined): Promise<void> {
+        return this.collectionDataAccess.moveCollection(collectionId, targetGroupId ? targetGroupId : null);
+    }
+
+    /**
      * Move/Copy the given items to the given target collection
      * @param srcCollectionId the id of source collection
      * @param tgtCollectionId the id of the target collection

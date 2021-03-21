@@ -16,6 +16,8 @@ import { DialogCreateGroupController } from './DialogCreateGroup';
 import { DialogDeleteGroupController } from './DialogDeleteGroup';
 import { DialogRenameGroupController } from './DialogRenameGroup';
 import { DialogDeleteCollectionController } from './DialogDeleteCollection';
+import { MoveCollectionMessage } from '../../../../common/messaging/messagesCollections';
+import { MoveGroupMessage } from '../../../../common/messaging/messagesGroups';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -68,6 +70,8 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
         this.handleOnStartImport = this.handleOnStartImport.bind(this);
         this.handleOnCloseImport = this.handleOnCloseImport.bind(this);
         this.handleOnDoImport = this.handleOnDoImport.bind(this);
+        this.handleMoveCollection = this.handleMoveCollection.bind(this);
+        this.handleMoveGroup = this.handleMoveGroup.bind(this);
 
         this.handleDragOverCollection = this.handleDragOverCollection.bind(this);
         this.handleDropOnCollection = this.handleDropOnCollection.bind(this);
@@ -119,11 +123,13 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
 
                     onCollectionContextMenuRename={this.handleOpenRenameCollectionDialog}
                     onCollectionContextMenuDelete={this.handleOpenDeleteCollectionDialog}
+                    onCollectionContextMenuMove={this.handleMoveCollection}
 
                     onGroupContextMenuRename={this.handleOpenRenameGroupDialog}
                     onGroupContextMenuDelete={this.handleOpenDeleteGroupDialog}
                     onGroupContextMenuCreateCollection={this.handleOpenCreateCollectionDialog}
                     onGroupContextMenuCreateGroup={this.handleOpenCreateGroupDialog}
+                    onGroupContextMenuMove={this.handleMoveGroup}
                 />
 
                 {this.state.showImportDialog && (  // todo
@@ -200,6 +206,20 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
                 this.props.onActionMoveItems(srcCollectionId, collectionId, dropData.itemIds);
             }
         }
+    }
+
+    handleMoveCollection(collectionId: number, targetGroupId: number | undefined): void {
+        MoveCollectionMessage.request(ipcRenderer, {
+            collectionId: collectionId,
+            targetGroupId: targetGroupId,
+        }).then(() => this.props.onCollectionsModified());
+    }
+
+    handleMoveGroup(groupId: number, targetGroupId: number | undefined): void {
+        MoveGroupMessage.request(ipcRenderer, {
+            groupId: groupId,
+            targetGroupId: targetGroupId,
+        }).then(() => this.props.onCollectionsModified());
     }
 
     setMinimized(minimized: boolean): void {

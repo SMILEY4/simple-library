@@ -5,7 +5,7 @@ import {
     sqlDeleteCollection,
     sqlInsertCollection,
     sqlRemoveItemFromCollection,
-    sqlUpdateCollectionName,
+    sqlUpdateCollectionName, sqlUpdateCollectionsGroupId,
     sqlUpdateCollectionsParents,
 } from './sql/sql';
 import { Collection } from '../../common/commonModels';
@@ -94,6 +94,16 @@ export class CollectionDataAccess {
      */
     public moveCollections(prevParentGroupId: number | null, newParentGroupId: number | null): Promise<void> {
         return this.dataAccess.executeRun(sqlUpdateCollectionsParents(prevParentGroupId, newParentGroupId)).then();
+    }
+
+    /**
+     * Moves the collection with the given id into the group with the given id
+     * @param collectionId the id of the collection
+     * @param targetGroupId the id of the new parent group
+     * @return a promise that resolves when the collection was moved
+     */
+    public moveCollection(collectionId: number, targetGroupId: number | null): Promise<void> {
+        return this.dataAccess.executeRun(sqlUpdateCollectionsGroupId(collectionId, targetGroupId)).then();
     }
 
     /**

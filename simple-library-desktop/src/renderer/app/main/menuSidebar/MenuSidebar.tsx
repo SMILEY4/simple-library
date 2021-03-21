@@ -34,11 +34,13 @@ export interface MenuSidebarProps {
 
     onCollectionContextMenuRename: (collectionId: number) => void
     onCollectionContextMenuDelete: (collectionId: number) => void
+    onCollectionContextMenuMove: (collectionId: number, targetGroupId: number | undefined) => void
 
     onGroupContextMenuRename: (groupId: number) => void
     onGroupContextMenuDelete: (groupId: number) => void
     onGroupContextMenuCreateCollection: (triggerGroupId: number) => void
     onGroupContextMenuCreateGroup: (triggerGroupId: number) => void
+    onGroupContextMenuMove: (groupId: number, targetGroupId: number | undefined) => void
 
 }
 
@@ -88,15 +90,19 @@ export function MenuSidebar(props: React.PropsWithChildren<MenuSidebarProps>): R
             </SidebarMenuSection>
 
             <CollectionContextMenu
+                rootGroup={props.rootGroup}
                 onActionRename={props.onCollectionContextMenuRename}
                 onActionDelete={props.onCollectionContextMenuDelete}
+                onActionMove={props.onCollectionContextMenuMove}
             />
 
             <GroupContextMenu
+                rootGroup={props.rootGroup}
                 onActionRename={props.onGroupContextMenuRename}
                 onActionDelete={props.onGroupContextMenuDelete}
                 onActionCreateCollection={props.onGroupContextMenuCreateCollection}
                 onActionCreateGroup={props.onGroupContextMenuCreateGroup}
+                onActionMove={props.onGroupContextMenuMove}
             />
 
         </SidebarMenu>

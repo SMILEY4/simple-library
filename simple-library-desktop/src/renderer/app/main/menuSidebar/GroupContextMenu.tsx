@@ -1,13 +1,17 @@
 import * as React from 'react';
 import { Item, ItemParams, Menu, useContextMenu } from 'react-contexify';
+import { Group } from '../../../../common/commonModels';
+import { contextMenuGroupTree } from '../../common/contextMenuCollectionTree';
 
 export const GROUP_CONTEXT_MENU_ID: string = "contextmenu.group";
 
 interface GroupContextMenuProps {
+    rootGroup: Group,
     onActionRename: (groupId: number) => void
     onActionDelete: (groupId: number) => void
     onActionCreateCollection: (triggerGroupId: number) => void,
-    onActionCreateGroup: (triggerGroupId: number) => void
+    onActionCreateGroup: (triggerGroupId: number) => void,
+    onActionMove: (groupId: number, targetGroupId: number) => void
 }
 
 export function GroupContextMenu(props: React.PropsWithChildren<GroupContextMenuProps>): React.ReactElement {
@@ -20,6 +24,7 @@ export function GroupContextMenu(props: React.PropsWithChildren<GroupContextMenu
             <Item onClick={handleDelete}>Delete Group</Item>
             <Item onClick={handleCreateCollection}>Create Collection</Item>
             <Item onClick={handleCreateGroup}>Create Group</Item>
+            {contextMenuGroupTree(props.rootGroup, "Move", true, handleMoveTo)}
         </Menu>
     );
 
@@ -56,6 +61,10 @@ export function GroupContextMenu(props: React.PropsWithChildren<GroupContextMenu
 
     function handleCreateGroup(data: ItemParams) {
         props.onActionCreateGroup(data.props.groupId);
+    }
+
+    function handleMoveTo(targetGroup: Group, data: ItemParams): void {
+        props.onActionMove(data.props.groupId, targetGroup.id);
     }
 
 }

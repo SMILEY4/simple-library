@@ -94,6 +94,29 @@ export module RenameCollectionMessage {
 }
 
 
+export module MoveCollectionMessage {
+
+    export interface RequestPayload {
+        collectionId: number,
+        targetGroupId: number | undefined
+    }
+
+    export interface ResponsePayload {
+    }
+
+    const CHANNEL: string = 'collection.move';
+
+    export function request(ipc: Electron.IpcRenderer, payload: RequestPayload): Promise<ResponsePayload> {
+        return sendRequest<RequestPayload, ResponsePayload>(ipc, CHANNEL, payload);
+    }
+
+    export function handle(ipc: Electron.IpcMain, action: (payload: RequestPayload) => Promise<ResponsePayload | ErrorResponse>) {
+        handleRequest<RequestPayload, ResponsePayload>(ipc, CHANNEL, action);
+    }
+
+}
+
+
 export module MoveItemsToCollectionsMessage {
 
     export interface RequestPayload {
