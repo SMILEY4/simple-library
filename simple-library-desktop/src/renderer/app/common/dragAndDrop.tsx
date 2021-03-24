@@ -71,6 +71,66 @@ export module DragAndDropItems {
 }
 
 
+export module DragAndDropCollections {
+
+    export interface Metadata {
+        collectionid: number
+    }
+
+    export interface Data {
+        collectionId: number
+    }
+
+    const META_MIME_TYPE = "custom/collections";
+    // const DOM_ELEMENT_LABEL_ID = "drag-ghost-image";
+
+    export function setDragData(dataTransfer: DataTransfer, collectionId: number): void {
+        const data: Data = {
+            collectionId: collectionId,
+        };
+        const strData: string = JSON.stringify(data);
+        dataTransfer.setData("text/plain", strData);
+        dataTransfer.setData("application/json", strData);
+        dataTransfer.setData(DragAndDropCollections.buildMimeTypeProvidedMetadata(collectionId), strData);
+        dataTransfer.effectAllowed = "move";
+    }
+
+
+    export function getDragData(dataTransfer: DataTransfer): Data {
+        return JSON.parse(dataTransfer.getData("application/json"));
+    }
+
+    // export function setDragLabel(dataTransfer: DataTransfer, copy: boolean, nItems: number): void {
+    //     let text: string;
+    //     if (copy) {
+    //         text = "Copy " + nItems + (nItems === 1 ? " item" : " items");
+    //     } else {
+    //         text = "Move " + nItems + (nItems === 1 ? " item" : " items");
+    //     }
+    //     DragAndDropUtils.setDragImageLabel(dataTransfer, "root", DOM_ELEMENT_LABEL_ID, text);
+    // }
+
+    export function buildMimeTypeProvidedMetadata(collectionId: number): string {
+        const meta: Metadata = {
+            collectionid: collectionId,
+        };
+        return META_MIME_TYPE + ";meta=" + JSON.stringify(meta);
+    }
+
+    export function setDropEffect(dataTransfer: DataTransfer): void {
+        const meta: DragAndDropItems.Metadata | null = DragAndDropUtils.extractMimeTypeProvidedMetadata(dataTransfer, META_MIME_TYPE);
+        let mode: string;
+        if (!meta) {
+            mode = "none";
+        } else {
+            mode = "move";
+        }
+        dataTransfer.dropEffect = mode;
+    }
+
+}
+
+
 export module DragAndDropUtils {
 
     export function setDragImageLabel(dataTransfer: DataTransfer, parentElementId: string, elementId: string, text: string): Element {

@@ -26,6 +26,10 @@ export interface MenuSidebarProps {
     onDragOverCollection: (collectionId: number | undefined, event: React.DragEvent) => void,
     onDropOnCollection: (collectionId: number | undefined, event: React.DragEvent) => void,
 
+    onDragStartCollection: (collectionId: number, event: React.DragEvent) => void
+    onDragOverGroup: (groupId: number, event: React.DragEvent) => void,
+    onDropOnGroup: (groupId: number, event: React.DragEvent) => void,
+
     minimized: boolean,
     onSetMinimize: (mini: boolean) => void,
 
@@ -55,6 +59,7 @@ export function MenuSidebar(props: React.PropsWithChildren<MenuSidebarProps>): R
                                        itemCount={collection.itemCount}
                                        selectedId={props.activeCollectionId}
                                        onSelect={props.onSelectCollection}
+                                       onDragStart={(event: React.DragEvent) => props.onDragStartCollection(collection.id, event)}
                                        onDragOver={(event: React.DragEvent) => props.onDragOverCollection(collection.id, event)}
                                        onDrop={(event: React.DragEvent) => props.onDropOnCollection(collection.id, event)} />;
             }),
@@ -64,7 +69,11 @@ export function MenuSidebar(props: React.PropsWithChildren<MenuSidebarProps>): R
 
     function renderGroup(group: Group): React.ReactElement {
         return (
-            <MenuGroup name={group.name} id={group.id} key={"group-" + group.id}>
+            <MenuGroup name={group.name}
+                       id={group.id}
+                       onDragOver={(event: React.DragEvent) => props.onDragOverGroup(group.id, event)}
+                       onDrop={(event: React.DragEvent) => props.onDropOnGroup(group.id, event)}
+                       key={"group-" + group.id}>
                 {renderItems(group.collections, group.children)}
             </MenuGroup>
         );
@@ -164,6 +173,7 @@ interface MenuCollectionProps {
     itemCount: number,
     selectedId: number | undefined,
     onSelect: (id: number | undefined) => void,
+    onDragStart: (event: React.DragEvent) => void
     onDragOver: (event: React.DragEvent) => void
     onDrop: (event: React.DragEvent) => void
 }
@@ -187,13 +197,17 @@ function MenuCollection(props: React.PropsWithChildren<MenuCollectionProps>): Re
                                 show(event);
                             }}
                             enableDrop={true}
-                            onDragOver={(event) => props.onDragOver(event)}
-                            onDrop={(event) => props.onDrop(event)} />;
+                            onDragOver={(event: React.DragEvent) => props.onDragOver(event)}
+                            onDrop={(event: React.DragEvent) => props.onDrop(event)}
+                            draggable={true}
+                            onDragStart={props.onDragStart} />;
 }
 
 interface MenuGroupProps {
     name: string,
-    id: number
+    id: number,
+    onDragOver: (event: React.DragEvent) => void
+    onDrop: (event: React.DragEvent) => void
 }
 
 function MenuGroup(props: React.PropsWithChildren<MenuGroupProps>): React.ReactElement {
@@ -211,7 +225,10 @@ function MenuGroup(props: React.PropsWithChildren<MenuGroupProps>): React.ReactE
                           onContextMenu={(event: React.MouseEvent) => {
                               event.preventDefault();
                               show(event);
-                          }}>
+                          }}
+                          enableDrop={true}
+                          onDragOver={(event: React.DragEvent) => props.onDragOver(event)}
+                          onDrop={(event: React.DragEvent) => props.onDrop(event)}>
             {props.children}
         </SidebarMenuGroup>
     );

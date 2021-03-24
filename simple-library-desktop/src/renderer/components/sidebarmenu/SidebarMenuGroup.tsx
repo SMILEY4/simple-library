@@ -8,8 +8,15 @@ import { concatClasses } from '../common';
 export interface SidebarMenuGroupProps {
     icon?: ReactElement,
     title: string,
-    onContextMenu?: (event: React.MouseEvent) => void
-    className?: string
+    onContextMenu?: (event: React.MouseEvent) => void,
+
+    enableDrop?: boolean,
+    dropEffect?: string,
+    getDropEffect?: (event: React.DragEvent) => string,
+    onDragOver?: (event: React.DragEvent) => void,
+    onDrop?: (event: React.DragEvent) => void,
+
+    className?: string,
 }
 
 export interface SidebarMenuGroupState {
@@ -34,10 +41,21 @@ export class SidebarMenuGroup extends Component<SidebarMenuGroupProps, SidebarMe
         });
     }
 
+
+
     render(): React.ReactElement {
         return (
             <div className={concatClasses("sidebar-menu-group", this.props.className)}>
-                <SidebarMenuItem title={this.props.title} icon={this.renderIcons(this.props.icon)} onClick={this.actionToggle} onContextMenu={this.props.onContextMenu} />
+                <SidebarMenuItem title={this.props.title}
+                                 icon={this.renderIcons(this.props.icon)}
+                                 onClick={this.actionToggle}
+                                 onContextMenu={this.props.onContextMenu}
+                                 enableDrop={this.props.enableDrop}
+                                 dropEffect={this.props.dropEffect}
+                                 getDropEffect={this.props.getDropEffect}
+                                 onDragOver={this.props.onDragOver}
+                                 onDrop={this.props.onDrop}
+                />
                 {this.state.expanded && (
                     <div className={"sidebar-menu-group-content"}>
                         {this.props.children}
