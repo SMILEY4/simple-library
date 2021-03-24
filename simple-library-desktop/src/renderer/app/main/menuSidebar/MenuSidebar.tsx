@@ -23,10 +23,12 @@ export interface MenuSidebarProps {
     activeCollectionId: number | undefined,
     onSelectCollection: (collectionId: number | undefined) => void,
 
+    onDragStartCollection: (collectionId: number, event: React.DragEvent) => void,
+    onDragStartGroup: (groupId: number, event: React.DragEvent) => void,
+
     onDragOverCollection: (collectionId: number | undefined, event: React.DragEvent) => void,
     onDropOnCollection: (collectionId: number | undefined, event: React.DragEvent) => void,
 
-    onDragStartCollection: (collectionId: number, event: React.DragEvent) => void
     onDragOverGroup: (groupId: number, event: React.DragEvent) => void,
     onDropOnGroup: (groupId: number, event: React.DragEvent) => void,
 
@@ -71,6 +73,7 @@ export function MenuSidebar(props: React.PropsWithChildren<MenuSidebarProps>): R
         return (
             <MenuGroup name={group.name}
                        id={group.id}
+                       onDragStart={(event: React.DragEvent) => props.onDragStartGroup(group.id, event)}
                        onDragOver={(event: React.DragEvent) => props.onDragOverGroup(group.id, event)}
                        onDrop={(event: React.DragEvent) => props.onDropOnGroup(group.id, event)}
                        key={"group-" + group.id}>
@@ -206,6 +209,7 @@ function MenuCollection(props: React.PropsWithChildren<MenuCollectionProps>): Re
 interface MenuGroupProps {
     name: string,
     id: number,
+    onDragStart: (event: React.DragEvent) => void
     onDragOver: (event: React.DragEvent) => void
     onDrop: (event: React.DragEvent) => void
 }
@@ -228,7 +232,9 @@ function MenuGroup(props: React.PropsWithChildren<MenuGroupProps>): React.ReactE
                           }}
                           enableDrop={true}
                           onDragOver={(event: React.DragEvent) => props.onDragOver(event)}
-                          onDrop={(event: React.DragEvent) => props.onDrop(event)}>
+                          onDrop={(event: React.DragEvent) => props.onDrop(event)}
+                          draggable={true}
+                          onDragStart={props.onDragStart}>
             {props.children}
         </SidebarMenuGroup>
     );

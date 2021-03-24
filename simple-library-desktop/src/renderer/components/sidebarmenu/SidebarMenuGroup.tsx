@@ -16,6 +16,9 @@ export interface SidebarMenuGroupProps {
     onDragOver?: (event: React.DragEvent) => void,
     onDrop?: (event: React.DragEvent) => void,
 
+    onDragStart?: (event: React.DragEvent) => void,
+    draggable?: boolean,
+
     className?: string,
 }
 
@@ -42,7 +45,6 @@ export class SidebarMenuGroup extends Component<SidebarMenuGroupProps, SidebarMe
     }
 
 
-
     render(): React.ReactElement {
         return (
             <div className={concatClasses("sidebar-menu-group", this.props.className)}>
@@ -55,6 +57,8 @@ export class SidebarMenuGroup extends Component<SidebarMenuGroupProps, SidebarMe
                                  getDropEffect={this.props.getDropEffect}
                                  onDragOver={this.props.onDragOver}
                                  onDrop={this.props.onDrop}
+                                 draggable={this.props.draggable}
+                                 onDragStart={this.props.onDragStart}
                 />
                 {this.state.expanded && (
                     <div className={"sidebar-menu-group-content"}>

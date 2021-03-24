@@ -11,7 +11,12 @@ import {
 import { DialogImportFiles } from '../import/DialogImportFiles';
 import { DialogCreateCollectionController } from './DialogCreateCollection';
 import { DialogRenameCollectionController } from './DialogRenameCollection';
-import { DragAndDropCollections, DragAndDropItems } from '../../common/dragAndDrop';
+import {
+    DragAndDropCollections,
+    DragAndDropGroups,
+    DragAndDropItems,
+    DragAndDropUtils,
+} from '../../common/dragAndDrop';
 import { DialogCreateGroupController } from './DialogCreateGroup';
 import { DialogDeleteGroupController } from './DialogDeleteGroup';
 import { DialogRenameGroupController } from './DialogRenameGroup';
@@ -76,9 +81,11 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
         this.handleDragOverCollection = this.handleDragOverCollection.bind(this);
         this.handleDropOnCollection = this.handleDropOnCollection.bind(this);
 
-        this.handleDragStartCollection = this.handleDragStartCollection.bind(this)
         this.handleDragOverGroup = this.handleDragOverGroup.bind(this);
         this.handleDropOnGroup = this.handleDropOnGroup.bind(this);
+
+        this.handleDragStartCollection = this.handleDragStartCollection.bind(this);
+        this.handleDragStartGroup = this.handleDragStartGroup.bind(this);
 
         this.handleOpenCreateCollectionDialog = this.handleOpenCreateCollectionDialog.bind(this);
         this.handleCloseCreateCollectionDialog = this.handleCloseCreateCollectionDialog.bind(this);
@@ -119,9 +126,11 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
                     onDragOverCollection={this.handleDragOverCollection}
                     onDropOnCollection={this.handleDropOnCollection}
 
-                    onDragStartCollection={this.handleDragStartCollection}
                     onDragOverGroup={this.handleDragOverGroup}
                     onDropOnGroup={this.handleDropOnGroup}
+
+                    onDragStartCollection={this.handleDragStartCollection}
+                    onDragStartGroup={this.handleDragStartGroup}
 
                     minimized={this.state.minimized}
                     onSetMinimize={this.setMinimized}
@@ -138,7 +147,7 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
                     onGroupContextMenuCreateCollection={this.handleOpenCreateCollectionDialog}
                     onGroupContextMenuCreateGroup={this.handleOpenCreateGroupDialog}
                     onGroupContextMenuMove={this.handleMoveGroup}
-                 />
+                />
 
                 {this.state.showImportDialog && (  // todo
                     <DialogImportFiles
@@ -294,7 +303,15 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
     }
 
     //=========================//
-    //  COLLECTION DRAG-N-DROP //
+    //     DRAG COLLECTION     //
+    //=========================//
+
+    handleDragStartCollection(collectionId: number, event: React.DragEvent) {
+        DragAndDropCollections.setDragData(event.dataTransfer, collectionId);
+    }
+
+    //=========================//
+    //    DROP ON COLLECTION   //
     //=========================//
 
     handleDragOverCollection(collectionId: number | undefined, event: React.DragEvent): void {
@@ -389,20 +406,42 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
     }
 
     //=========================//
-    //    GROUP DRAG-N-DROP    //
+    //        DRAG GROUP       //
     //=========================//
 
-    handleDragStartCollection(collectionId: number, event: React.DragEvent) {
-        DragAndDropCollections.setDragData(event.dataTransfer, collectionId);
+    handleDragStartGroup(groupId: number, event: React.DragEvent): void {
+        DragAndDropGroups.setDragData(event.dataTransfer, groupId);
     }
 
+    //=========================//
+    //      DROP ON GROUP      //
+    //=========================//
+
     handleDragOverGroup(groupId: number, event: React.DragEvent): void {
-        DragAndDropCollections.setDropEffect(event.dataTransfer)
+        const dataTransfer: DataTransfer = event.dataTransfer;
+        const metaMimeType: string | undefined = DragAndDropUtils.getMetadataMimeType(dataTransfer);
+        DragAndDropUtils.setDropEffectForbidden(dataTransfer);
+        if (metaMimeType === DragAndDropGroups.META_MIME_TYPE) {
+            DragAndDropGroups.setDropEffect(dataTransfer, groupId, this.props.rootGroup);
+        }
+        if (metaMimeType === DragAndDropCollections.META_MIME_TYPE) {
+            DragAndDropCollections.setDropEffect(dataTransfer);
+        }
     }
 
     handleDropOnGroup(groupId: number, event: React.DragEvent): void {
-        const dropData: DragAndDropCollections.Data = DragAndDropCollections.getDragData(event.dataTransfer);
-        this.handleMoveCollection(dropData.collectionId, groupId);
+        const dataTransfer: DataTransfer = event.dataTransfer;
+        const metaMimeType: string | undefined = DragAndDropUtils.getMetadataMimeType(dataTransfer);
+        if (metaMimeType === DragAndDropGroups.META_MIME_TYPE) {
+            const dropData: DragAndDropGroups.Data = DragAndDropGroups.getDragData(dataTransfer);
+            if (DragAndDropGroups.allowDrop(dropData.groupId, groupId, this.props.rootGroup)) {
+                this.handleMoveGroup(dropData.groupId, groupId);
+            }
+        }
+        if (metaMimeType === DragAndDropCollections.META_MIME_TYPE) {
+            const dropData: DragAndDropCollections.Data = DragAndDropCollections.getDragData(dataTransfer);
+            this.handleMoveCollection(dropData.collectionId, groupId);
+        }
     }
 
 }

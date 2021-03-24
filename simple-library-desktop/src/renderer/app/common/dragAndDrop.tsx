@@ -3,6 +3,10 @@
  * -> ALL FIELDS/MODELS MUST BE LOWERCASE
  */
 
+import { Group } from '../../../common/commonModels';
+
+export const META_MIME_TYPE_PREFIX = "custom/";
+
 export module DragAndDropItems {
 
     export interface Metadata {
@@ -15,7 +19,7 @@ export module DragAndDropItems {
         itemIds: number[]
     }
 
-    const META_MIME_TYPE = "custom/items";
+    export const META_MIME_TYPE = META_MIME_TYPE_PREFIX + "items";
     const DOM_ELEMENT_LABEL_ID = "drag-ghost-image";
 
     export function setDragData(dataTransfer: DataTransfer, sourceCollection: number | undefined, itemIds: number[], copy: boolean): void {
@@ -81,8 +85,7 @@ export module DragAndDropCollections {
         collectionId: number
     }
 
-    const META_MIME_TYPE = "custom/collections";
-    // const DOM_ELEMENT_LABEL_ID = "drag-ghost-image";
+    export const META_MIME_TYPE = META_MIME_TYPE_PREFIX + "collections";
 
     export function setDragData(dataTransfer: DataTransfer, collectionId: number): void {
         const data: Data = {
@@ -99,16 +102,6 @@ export module DragAndDropCollections {
     export function getDragData(dataTransfer: DataTransfer): Data {
         return JSON.parse(dataTransfer.getData("application/json"));
     }
-
-    // export function setDragLabel(dataTransfer: DataTransfer, copy: boolean, nItems: number): void {
-    //     let text: string;
-    //     if (copy) {
-    //         text = "Copy " + nItems + (nItems === 1 ? " item" : " items");
-    //     } else {
-    //         text = "Move " + nItems + (nItems === 1 ? " item" : " items");
-    //     }
-    //     DragAndDropUtils.setDragImageLabel(dataTransfer, "root", DOM_ELEMENT_LABEL_ID, text);
-    // }
 
     export function buildMimeTypeProvidedMetadata(collectionId: number): string {
         const meta: Metadata = {
@@ -131,6 +124,87 @@ export module DragAndDropCollections {
 }
 
 
+export module DragAndDropGroups {
+
+    export interface Metadata {
+        groupid: number
+    }
+
+    export interface Data {
+        groupId: number
+    }
+
+    export const META_MIME_TYPE = META_MIME_TYPE_PREFIX + "groups";
+
+    export function setDragData(dataTransfer: DataTransfer, groupId: number): void {
+        const data: Data = {
+            groupId: groupId,
+        };
+        const strData: string = JSON.stringify(data);
+        dataTransfer.setData("text/plain", strData);
+        dataTransfer.setData("application/json", strData);
+        dataTransfer.setData(DragAndDropGroups.buildMimeTypeProvidedMetadata(groupId), strData);
+        dataTransfer.effectAllowed = "move";
+    }
+
+
+    export function getDragData(dataTransfer: DataTransfer): Data {
+        return JSON.parse(dataTransfer.getData("application/json"));
+    }
+
+    export function buildMimeTypeProvidedMetadata(groupId: number): string {
+        const meta: Metadata = {
+            groupid: groupId,
+        };
+        return META_MIME_TYPE + ";meta=" + JSON.stringify(meta);
+    }
+
+    export function setDropEffect(dataTransfer: DataTransfer, targetGroupId: number, rootGroup: Group): void {
+        const meta: DragAndDropGroups.Metadata | null = DragAndDropUtils.extractMimeTypeProvidedMetadata(dataTransfer, META_MIME_TYPE);
+        let mode: string;
+        if (!meta) {
+            mode = "none";
+        } else {
+            if (allowDrop(meta.groupid, targetGroupId, rootGroup)) {
+                mode = "move";
+            } else {
+                mode = "none";
+            }
+
+        }
+        dataTransfer.dropEffect = mode;
+    }
+
+    export function allowDrop(draggedGroupId: number, targetGroupId: number, rootGroup: Group): boolean {
+        if (draggedGroupId === targetGroupId) {
+            return false;
+        } else {
+            return !subtreeContainsGroup(findSubtreeRoot(rootGroup, draggedGroupId), targetGroupId);
+        }
+
+    }
+
+    function findSubtreeRoot(root: Group, groupId: number): Group | undefined {
+        if (root.id === groupId) {
+            return root;
+        } else {
+            return root.children
+                .map((subtree: Group) => findSubtreeRoot(subtree, groupId))
+                .find((group: Group) => group !== undefined);
+        }
+    }
+
+    function subtreeContainsGroup(root: Group, groupId: number): boolean {
+        if (root.id === groupId) {
+            return true;
+        } else {
+            return root.children.some((subtree: Group) => subtreeContainsGroup(subtree, groupId));
+        }
+    }
+
+}
+
+
 export module DragAndDropUtils {
 
     export function setDragImageLabel(dataTransfer: DataTransfer, parentElementId: string, elementId: string, text: string): Element {
@@ -146,6 +220,15 @@ export module DragAndDropUtils {
         return dragElement;
     }
 
+    export function getMetadataMimeType(dataTransfer: DataTransfer): string | undefined {
+        const type: string | undefined = dataTransfer.types.find(type => type.startsWith(META_MIME_TYPE_PREFIX));
+        if (type) {
+            return type.substr(0, type.indexOf(";"));
+        } else {
+            return undefined;
+        }
+    }
+
     export function extractMimeTypeProvidedMetadata<T>(dataTransfer: DataTransfer, metaMimeType: string): T | null {
         const type: string | undefined = dataTransfer.types.find(type => type.startsWith(metaMimeType));
         if (type) {
@@ -154,6 +237,10 @@ export module DragAndDropUtils {
         } else {
             return null;
         }
+    }
+
+    export function setDropEffectForbidden(dataTransfer: DataTransfer): void {
+        dataTransfer.dropEffect = "none";
     }
 
 }
