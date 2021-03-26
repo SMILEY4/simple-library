@@ -1,5 +1,5 @@
 import { Test } from "./testutils/test";
-import { startAsyncWithValue } from "../common/AsyncCommon";
+import { startAsync, startAsyncWithValue } from "../common/AsyncCommon";
 import { CollectionService } from "../main/service/collection/collectionService";
 import { CollectionDataAccess } from "../main/persistence/collectionDataAccess";
 import { Collection, Group, GroupDTO } from "../common/commonModels";
@@ -8,7 +8,7 @@ import { ItemService } from "../main/service/item/ItemService";
 import { GroupDataAccess } from '../main/persistence/groupDataAccess';
 import { GroupService } from '../main/service/group/groupService';
 
-export class GroupAggregationTest {
+export class GroupTest {
 
     public static async testGetGroupsWithoutCollections() {
         await Test.runTest("get groups without collections", async () => {
@@ -19,13 +19,13 @@ export class GroupAggregationTest {
 
             return allTrue([
                 assertEqual(groups.length, 2),
-                this.assertGroup(groups[0], 1, 2, 0),
-                this.assertGroup(groups[0].children[0], 2, 0, 0),
-                this.assertGroup(groups[0].children[1], 3, 2, 0),
-                this.assertGroup(groups[0].children[1].children[0], 4, 0, 0),
-                this.assertGroup(groups[0].children[1].children[1], 5, 0, 0),
-                this.assertGroup(groups[1], 6, 1, 0),
-                this.assertGroup(groups[1].children[0], 7, 0, 0),
+                this.assertGroup(" A", groups[0], 1, 2, 0),
+                this.assertGroup(" 1", groups[0].children[0], 2, 0, 0),
+                this.assertGroup(" 2", groups[0].children[1], 3, 2, 0),
+                this.assertGroup("2a", groups[0].children[1].children[0], 4, 0, 0),
+                this.assertGroup("2B", groups[0].children[1].children[1], 5, 0, 0),
+                this.assertGroup(" B", groups[1], 6, 1, 0),
+                this.assertGroup(" 3", groups[1].children[0], 7, 0, 0),
             ]);
         });
     }
@@ -40,15 +40,50 @@ export class GroupAggregationTest {
 
             return allTrue([
                 assertEqual(groups.length, 1),
-                this.assertGroup(groups[0], undefined, 2, 2),
-                this.assertGroup(groups[0].children[0], 1, 2, 1),
-                this.assertGroup(groups[0].children[0].children[0], 2, 0, 2),
-                this.assertGroup(groups[0].children[0].children[1], 3, 2, 1),
-                this.assertGroup(groups[0].children[0].children[1].children[0], 4, 0, 0),
-                this.assertGroup(groups[0].children[0].children[1].children[1], 5, 0, 0),
-                this.assertGroup(groups[0].children[1], 6, 1, 1),
-                this.assertGroup(groups[0].children[1].children[0], 7, 0, 0),
+                this.assertGroup(" A", groups[0].children[0], 1, 2, 1),
+                this.assertGroup(" 1", groups[0].children[0].children[0], 2, 0, 2),
+                this.assertGroup(" 2", groups[0].children[0].children[1], 3, 2, 1),
+                this.assertGroup("2a", groups[0].children[0].children[1].children[0], 4, 0, 0),
+                this.assertGroup("2B", groups[0].children[0].children[1].children[1], 5, 0, 0),
+                this.assertGroup(" B", groups[0].children[1], 6, 1, 1),
+                this.assertGroup(" 3", groups[0].children[1].children[0], 7, 0, 0),
             ]);
+        });
+    }
+
+    public static async testMoveGroupToTopLevel() {
+        await Test.runTest("move group to top level", async () => {
+            const groupService: GroupService = new GroupService(new ItemServiceMock(), null, null, this.groupDataAccessMock());
+            return groupService.moveGroup(3, undefined)
+                .then(() => true)
+                .catch(() => false);
+        });
+    }
+
+    public static async testMoveGroupIntoValid() {
+        await Test.runTest("move group into valid group", async () => {
+            const groupService: GroupService = new GroupService(new ItemServiceMock(), null, null, this.groupDataAccessMock());
+            return groupService.moveGroup(3, 2)
+                .then(() => true)
+                .catch(() => false);
+        });
+    }
+
+    public static async testMoveGroupIntoInvalid() {
+        await Test.runTest("move group into invalid group", async () => {
+            const groupService: GroupService = new GroupService(new ItemServiceMock(), null, null, this.groupDataAccessMock());
+            return groupService.moveGroup(3, 5)
+                .then(() => false)
+                .catch(() => true);
+        });
+    }
+
+    public static async testMoveGroupIntoNonExisting() {
+        await Test.runTest("move group into non-existing group", async () => {
+            const groupService: GroupService = new GroupService(new ItemServiceMock(), null, null, this.groupDataAccessMock());
+            return groupService.moveGroup(3, 99)
+                .then(() => false)
+                .catch(() => true);
         });
     }
 
@@ -65,6 +100,13 @@ export class GroupAggregationTest {
     }
 
     private static groupDataAccessMock(): GroupDataAccess {
+        /*
+              A      B
+             / \     |
+            1   2    3
+               / \
+              2a 2b
+        */
         return new GroupDataAccessMock([
             this.groupDto(1, "Group A", undefined),
             this.groupDto(2, "Group 1", 1),
@@ -93,10 +135,12 @@ export class GroupAggregationTest {
         };
     }
 
-    private static assertGroup(group: Group, expectedId: number, expectedNChildren: number, expectedNCollections: number): boolean {
-        return group.id === expectedId
+    private static assertGroup(msg: string, group: Group, expectedId: number, expectedNChildren: number, expectedNCollections: number): boolean {
+        const valid = group.id === expectedId
             && group.children.length === expectedNChildren
             && group.collections.length === expectedNCollections;
+        //console.log("  - " + msg + ": " + valid)
+        return valid;
     }
 
 }
@@ -150,6 +194,19 @@ class GroupDataAccessMock extends GroupDataAccess {
 
     getGroups(): Promise<GroupDTO[]> {
         return startAsyncWithValue(this.groupDTOs);
+    }
+
+
+    findGroupById(groupId: number): Promise<GroupDTO | undefined> {
+        if(groupId === undefined) {
+        } else {
+        return this.getGroups()
+            .then((groups: GroupDTO[]) => groups.find(group => group.id === groupId));
+        }
+    }
+
+    setParentGroup(groupId: number, parentGroupId: number | null): Promise<void> {
+        return startAsync();
     }
 }
 
