@@ -3,78 +3,131 @@ import { Component, ReactElement } from 'react';
 import { Dialog } from '../../../components/modal/Dialog';
 import { AlignCross, AlignMain, Dir, Size, Type, Variant } from '../../../components/common';
 import { Box } from '../../../components/layout/Box';
-import { BodyText } from '../../../components/text/Text';
 import { InputField } from '../../../components/inputfield/InputField';
+import { Collection } from '../../../../common/commonModels';
+import { RenameCollectionMessage } from '../../../../common/messaging/messagesCollections';
+
+const { ipcRenderer } = window.require('electron');
 
 
-interface DialogRenameCollectionProps {
-    collectionName: string | undefined,
-    onClose: () => void,
-    onRename: (newCollectionName:string) => void,
+interface DialogRenameCollectionControllerProps {
+    show: boolean,
+    collection: Collection,
+    onClose: (successful: boolean) => void,
+
 }
 
-interface DialogRenameCollectionState {
+interface DialogRenameCollectionControllerState {
     name: string,
     nameValid: boolean,
 }
 
-export class DialogRenameCollection extends Component<DialogRenameCollectionProps, DialogRenameCollectionState> {
+export class DialogRenameCollectionController extends Component<DialogRenameCollectionControllerProps, DialogRenameCollectionControllerState> {
 
-    constructor(props: DialogRenameCollectionProps) {
+    constructor(props: DialogRenameCollectionControllerProps) {
         super(props);
         this.state = {
-            name: this.props.collectionName,
+            name: "",
             nameValid: true,
         };
-        this.actionRequestRename = this.actionRequestRename.bind(this);
-        this.validateName = this.validateName.bind(this)
+        this.validate = this.validate.bind(this);
+        this.handleCancel = this.handleCancel.bind(this);
+        this.handleRename = this.handleRename.bind(this);
     }
 
-    actionRequestRename(): void {
-        const name = this.state.name.trim();
-        if (this.validateName(name)) {
-            this.props.onRename(name);
-        } else {
-            this.setState({
-                name: name,
-                nameValid: false,
-            });
+    componentDidUpdate(prevProps: Readonly<DialogRenameCollectionControllerProps>, prevState: Readonly<DialogRenameCollectionControllerState>, snapshot?: any) {
+        if (prevProps.show !== this.props.show) {
+            if (this.props.show) {
+                this.setState({
+                    name: this.props.collection.name,
+                    nameValid: true,
+                });
+            } else {
+                this.setState({
+                    name: "",
+                    nameValid: true,
+                });
+            }
         }
     }
 
-    validateName(name: string): boolean {
-        return name.length > 0;
-    }
-
     render(): ReactElement {
-        return (
-            <Dialog title={"Rename Collection"}
-                    show={true}
-                    closeButton={true}
-                    onClose={this.props.onClose}
-                    actions={[
-                        {
-                            content: "Cancel",
-                            variant: Variant.OUTLINE,
-                            onAction: this.props.onClose,
-                        },
-                        {
-                            content: "Rename",
-                            variant: Variant.SOLID,
-                            type: Type.PRIMARY,
-                            onAction: this.actionRequestRename
-                        },
-                    ]}>
-                <Box dir={Dir.DOWN} alignMain={AlignMain.CENTER} alignCross={AlignCross.STRETCH} spacing={Size.S_0_75}>
-                    <InputField
-                        autoFocus
-                        placeholder='Collection Name'
-                        value={this.state.name}
-                        onChange={(value) => this.setState({ name: value })}
-                    />
-                </Box>
-            </Dialog>
-        );
+        if (this.props.show) {
+            return <DialogRenameCollection
+                name={this.state.name}
+                onChangeName={(name: string) => this.setState({ name: name })}
+                onClose={this.handleCancel}
+                onRename={this.handleRename}
+            />;
+        } else {
+            return null;
+        }
     }
 
+    validate(): boolean {
+        const valid: boolean = this.state.name.trim().length > 0;
+        if (!valid) {
+            this.setState({
+                name: this.state.name.trim(),
+                nameValid: false,
+            });
+        }
+        return valid;
+    }
+
+    handleCancel() {
+        this.props.onClose(false);
+    }
+
+    handleRename() {
+        if (this.validate()) {
+            RenameCollectionMessage.request(ipcRenderer, {
+                collectionId: this.props.collection.id,
+                newName: this.state.name.trim(),
+            }).finally(() => this.props.onClose(true));
+        }
+    }
+
+
+}
+
+
+interface DialogRenameCollectionProps {
+    name: string,
+    onChangeName: (name: string) => void
+    onClose: () => void
+    onRename: () => void
+}
+
+function DialogRenameCollection(props: React.PropsWithChildren<DialogRenameCollectionProps>): React.ReactElement {
+    return (
+        <Dialog title={"Rename Collection"}
+                show={true}
+                closeButton={true}
+                onClose={props.onClose}
+                actions={[
+                    {
+                        content: "Cancel",
+                        variant: Variant.OUTLINE,
+                        onAction: props.onClose,
+                        triggeredByEscape: true,
+                    },
+                    {
+                        content: "Rename",
+                        variant: Variant.SOLID,
+                        type: Type.PRIMARY,
+                        onAction: props.onRename,
+                        triggeredByEnter: true,
+                    },
+                ]}>
+            <Box dir={Dir.DOWN} alignMain={AlignMain.CENTER} alignCross={AlignCross.STRETCH} spacing={Size.S_0_75}>
+                <InputField
+                    autoFocus
+                    placeholder='Collection Name'
+                    value={props.name}
+                    onChange={props.onChangeName}
+                />
+            </Box>
+        </Dialog>
+    );
 }

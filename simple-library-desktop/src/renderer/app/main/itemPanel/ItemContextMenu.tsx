@@ -1,6 +1,7 @@
 import * as React from 'react';
-import {Item, ItemParams, Menu, Submenu, useContextMenu} from 'react-contexify';
-import {Collection, extractCollections, Group} from '../../../../common/commonModels';
+import { Item, ItemParams, Menu, useContextMenu } from 'react-contexify';
+import { Collection, Group } from '../../../../common/commonModels';
+import { contextMenuCollectionTree } from '../../common/contextMenuCollectionTree';
 
 export const ITEM_CONTEXT_MENU_ID: string = "contextmenu.item";
 
@@ -17,85 +18,25 @@ export function ItemContextMenu(props: React.PropsWithChildren<ItemContextMenuPr
         <Menu id={ITEM_CONTEXT_MENU_ID}
               onShown={handleOnShow}
               onHidden={handleOnHidden}>
-            <Submenu label={"Move selected to"}>
-                {props.rootGroup && (
-                    [
-                        ...props.rootGroup.collections.map((collection: Collection) => {
-                            return (
-                                <Item onClick={(data: ItemParams) => handleMoveTo(collection, data)}
-                                      key={"move." + collection.id}>{collection.name}
-                                </Item>
-                            );
-                        }),
-                        ...props.rootGroup.children.map((child: Group) => groupToMoveMenuEntry(child))
-                    ]
-                )}
-            </Submenu>
-            <Submenu label={"Copy selected to"}>
-                {props.rootGroup && (
-                    [
-                        ...props.rootGroup.collections.map((collection: Collection) => {
-                            return (
-                                <Item onClick={(data: ItemParams) => handleCopyTo(collection, data)}
-                                      key={"copy." + collection.id}>{collection.name}
-                                </Item>
-                            );
-                        }),
-                        ...props.rootGroup.children.map((child: Group) => groupToCopyMenuEntry(child))
-                    ]
-                )}
-            </Submenu>
+            {contextMenuCollectionTree(props.rootGroup, "Move selected to", handleMoveTo)}
+            {contextMenuCollectionTree(props.rootGroup, "Copy selected to", handleCopyTo)}
             <Item onClick={handleRemove}>Remove selected</Item>
         </Menu>
     );
 
-    function groupToMoveMenuEntry(group: Group): React.ReactElement {
-        return (
-            <Submenu label={group.name}>
-                {[
-                    ...group.collections.map((collection: Collection) => {
-                        return (
-                            <Item onClick={(data: ItemParams) => handleMoveTo(collection, data)}
-                                  key={"move." + collection.id}>{collection.name}
-                            </Item>
-                        );
-                    }),
-                    ...group.children.map((child: Group) => groupToMoveMenuEntry(child))
-                ]}
-            </Submenu>
-        );
-    }
-
-    function groupToCopyMenuEntry(group: Group): React.ReactElement {
-        return (
-            <Submenu label={group.name}>
-                {[
-                    ...group.collections.map((collection: Collection) => {
-                        return (
-                            <Item onClick={(data: ItemParams) => handleCopyTo(collection, data)}
-                                  key={"copy." + collection.id}>{collection.name}
-                            </Item>
-                        );
-                    }),
-                    ...group.children.map((child: Group) => groupToCopyMenuEntry(child))
-                ]}
-            </Submenu>
-        );
-    }
-
     function handleOnShow(): void {
-        document.addEventListener('mousedown', handleOnMousedown);
+        document.addEventListener('mousedown', hideOnClickOutside);
     }
 
     function handleOnHidden(): void {
-        document.removeEventListener('mousedown', handleOnMousedown);
+        document.removeEventListener('mousedown', hideOnClickOutside);
     }
 
-    function handleOnMousedown(event: any): void {
-        const elementContextMenu = document.getElementsByClassName("react-contexify ")[0];
+    function hideOnClickOutside(event: any): void {
+        const elementContextMenu = document.getElementsByClassName("react-contexify")[0];
         const eventTarget = event.target;
         if (elementContextMenu && elementContextMenu !== eventTarget && !elementContextMenu.contains(eventTarget)) {
-            const {hideAll} = useContextMenu({
+            const { hideAll } = useContextMenu({
                 id: ITEM_CONTEXT_MENU_ID,
             });
             hideAll();

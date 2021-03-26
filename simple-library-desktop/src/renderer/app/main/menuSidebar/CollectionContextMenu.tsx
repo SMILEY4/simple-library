@@ -1,11 +1,15 @@
 import * as React from 'react';
 import { Item, ItemParams, Menu, useContextMenu } from 'react-contexify';
+import { Group } from '../../../../common/commonModels';
+import { contextMenuGroupTree } from '../../common/contextMenuCollectionTree';
 
 export const COLLECTION_CONTEXT_MENU_ID: string = "contextmenu.collection";
 
 interface CollectionContextMenuProps {
+    rootGroup: Group,
     onActionRename: (collectionId: number) => void
     onActionDelete: (collectionId: number) => void
+    onActionMove: (collectionId: number, targetGroupId: number) => void
 }
 
 export function CollectionContextMenu(props: React.PropsWithChildren<CollectionContextMenuProps>): React.ReactElement {
@@ -16,6 +20,7 @@ export function CollectionContextMenu(props: React.PropsWithChildren<CollectionC
               onHidden={handleOnHidden}>
             <Item onClick={handleRename}>Rename Collection</Item>
             <Item onClick={handleDelete}>Delete Collection</Item>
+            {contextMenuGroupTree(props.rootGroup, "Move", true, handleMoveTo)}
         </Menu>
     );
 
@@ -38,12 +43,16 @@ export function CollectionContextMenu(props: React.PropsWithChildren<CollectionC
         }
     }
 
-    function handleRename(data: ItemParams) {
+    function handleRename(data: ItemParams): void {
         props.onActionRename(data.props.collectionId);
     }
 
-    function handleDelete(data: ItemParams) {
+    function handleDelete(data: ItemParams): void {
         props.onActionDelete(data.props.collectionId);
+    }
+
+    function handleMoveTo(targetGroup: Group, data: ItemParams): void {
+        props.onActionMove(data.props.collectionId, targetGroup.id);
     }
 
 }

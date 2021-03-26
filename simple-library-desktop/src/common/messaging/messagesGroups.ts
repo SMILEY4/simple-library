@@ -28,7 +28,8 @@ export module GetGroupsMessage {
 export module CreateGroupMessage {
 
     export interface RequestPayload {
-        name: string
+        name: string,
+        parentGroupId: number | undefined
     }
 
     export interface ResponsePayload {
@@ -81,6 +82,29 @@ export module RenameGroupMessage {
     }
 
     const CHANNEL: string = 'group.rename';
+
+    export function request(ipc: Electron.IpcRenderer, payload: RequestPayload): Promise<ResponsePayload> {
+        return sendRequest<RequestPayload, ResponsePayload>(ipc, CHANNEL, payload);
+    }
+
+    export function handle(ipc: Electron.IpcMain, action: (payload: RequestPayload) => Promise<ResponsePayload | ErrorResponse>) {
+        handleRequest<RequestPayload, ResponsePayload>(ipc, CHANNEL, action);
+    }
+
+}
+
+
+export module MoveGroupMessage {
+
+    export interface RequestPayload {
+        groupId: number,
+        targetGroupId: number | undefined
+    }
+
+    export interface ResponsePayload {
+    }
+
+    const CHANNEL: string = 'group.move';
 
     export function request(ipc: Electron.IpcRenderer, payload: RequestPayload): Promise<ResponsePayload> {
         return sendRequest<RequestPayload, ResponsePayload>(ipc, CHANNEL, payload);

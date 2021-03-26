@@ -4,7 +4,8 @@ import groupsFindById from "./groups/groups_find_by_id.sql";
 import groupsInsert from "./groups/groups_insert.sql";
 import groupsDelete from "./groups/groups_delete.sql";
 import groupsUpdateName from "./groups/groups_update_name.sql";
-import groupsUpdateParents from "./groups/groups_update_parent.sql";
+import groupsUpdateParents from "./groups/groups_update_parents.sql";
+import groupsUpdateParentId from "./groups/groups_update_parent_id.sql";
 
 import collectionItemsCreateTable from "./collection_items/collection_items_create_table.sql";
 import collectionItemsInsert from "./collection_items/collection_items_insert.sql";
@@ -18,6 +19,8 @@ import collectionsInsert from "./collections/collections_insert.sql";
 import collectionsDelete from "./collections/collections_delete.sql";
 import collectionsUpdateName from "./collections/collections_update_name.sql";
 import collectionsUpdateParents from "./collections/collections_update_parent_group.sql";
+import collectionsUpdateGroupId from "./collections/collections_update_group_id.sql";
+
 
 import itemsCreateTable from "./items/items_create_table.sql";
 import itemsInsert from "./items/items_insert.sql";
@@ -51,9 +54,10 @@ export function sqlFindGroupById(groupId: number): string {
 
 }
 
-export function sqlInsertGroup(name: string): string {
+export function sqlInsertGroup(name: string, parentGroup: number | undefined): string {
     return groupsInsert
-        .replace("$groupName", "'" + name + "'");
+        .replace("$groupName", "'" + name + "'")
+        .replace("$parentGroupId", parentGroup);
 }
 
 export function sqlDeleteGroup(groupId: number): string {
@@ -73,6 +77,14 @@ export function sqlUpdateGroupsParents(prevParentGroupId: number | null, parentG
         .replace("$parentGroupId", parentGroupId);
 }
 
+export function sqlUpdateGroupsParentId(groupId: number, parentGroupId: number | null): string {
+    return groupsUpdateParentId
+        .replace("$groupId", groupId)
+        .replace("$parentGroupId", parentGroupId);
+}
+
+
+
 
 //==================//
 //   COLLECTIONS    //
@@ -90,9 +102,10 @@ export function sqlAllCollections(includeItemCount: boolean) {
     }
 }
 
-export function sqlInsertCollection(name: string) {
+export function sqlInsertCollection(name: string, groupId: number | null) {
     return collectionsInsert
-        .replace("$collectionName", "'" + name + "'");
+        .replace("$collectionName", "'" + name + "'")
+        .replace("$groupId", groupId);
 }
 
 export function sqlDeleteCollection(collectionId: number) {
@@ -115,6 +128,12 @@ export function sqlUpdateCollectionsParents(prevParentGroupId: number | null, ne
     return collectionsUpdateParents
         .replace("$groupId", newParentGroupId)
         .replace("$prevGroupId", prevParentGroupId);
+}
+
+export function sqlUpdateCollectionsGroupId(collectionId: number, groupId: number | null) {
+    return collectionsUpdateGroupId
+        .replace("$collectionId", collectionId)
+        .replace("$groupId", groupId);
 }
 
 

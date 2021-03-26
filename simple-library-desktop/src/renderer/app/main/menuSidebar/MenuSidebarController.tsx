@@ -9,23 +9,20 @@ import {
     ImportProcessData,
 } from '../../../../common/commonModels';
 import { DialogImportFiles } from '../import/DialogImportFiles';
-import { DialogCreateCollection } from './DialogCreateCollection';
-import { DialogDeleteCollection } from './DialogDeleteCollection';
-import { DialogRenameCollection } from './DialogRenameCollection';
+import { DialogCreateCollectionController } from './DialogCreateCollection';
+import { DialogRenameCollectionController } from './DialogRenameCollection';
 import {
-    CreateCollectionMessage,
-    DeleteCollectionMessage,
-    RenameCollectionMessage,
-} from '../../../../common/messaging/messagesCollections';
-import { DragAndDropItems } from '../../common/dragAndDrop';
-import { DialogCreateGroup } from './DialogCreateGroup';
-import {
-    CreateGroupMessage,
-    DeleteGroupMessage,
-    RenameGroupMessage,
-} from '../../../../common/messaging/messagesGroups';
-import { DialogDeleteGroup } from './DialogDeleteGroup';
-import { DialogRenameGroup } from './DialogRenameGroup';
+    DragAndDropCollections,
+    DragAndDropGroups,
+    DragAndDropItems,
+    DragAndDropUtils,
+} from '../../common/dragAndDrop';
+import { DialogCreateGroupController } from './DialogCreateGroup';
+import { DialogDeleteGroupController } from './DialogDeleteGroup';
+import { DialogRenameGroupController } from './DialogRenameGroup';
+import { DialogDeleteCollectionController } from './DialogDeleteCollection';
+import { MoveCollectionMessage } from '../../../../common/messaging/messagesCollections';
+import { MoveGroupMessage } from '../../../../common/messaging/messagesGroups';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -55,9 +52,7 @@ interface MenuSidebarControllerState {
     showCreateGroupDialog: boolean,
     showDialogDeleteGroup: boolean,
     showDialogRenameGroup: boolean,
-    groupToDelete: Group | undefined
-    groupToRename: Group | undefined
-
+    triggerGroupId: number | undefined
 }
 
 export class MenuSidebarController extends Component<MenuSidebarControllerProps, MenuSidebarControllerState> {
@@ -75,41 +70,45 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
             showCreateGroupDialog: false,
             showDialogDeleteGroup: false,
             showDialogRenameGroup: false,
-            groupToDelete: undefined,
-            groupToRename: undefined,
+            triggerGroupId: undefined,
         };
         this.handleOnStartImport = this.handleOnStartImport.bind(this);
         this.handleOnCloseImport = this.handleOnCloseImport.bind(this);
         this.handleOnDoImport = this.handleOnDoImport.bind(this);
+        this.handleMoveCollection = this.handleMoveCollection.bind(this);
+        this.handleMoveGroup = this.handleMoveGroup.bind(this);
 
         this.handleDragOverCollection = this.handleDragOverCollection.bind(this);
         this.handleDropOnCollection = this.handleDropOnCollection.bind(this);
 
-        this.handleCreateCollection = this.handleCreateCollection.bind(this);
-        this.handleCreateCollectionAccept = this.handleCreateCollectionAccept.bind(this);
-        this.handleCreateCollectionCancel = this.handleCreateCollectionCancel.bind(this);
+        this.handleDragOverGroup = this.handleDragOverGroup.bind(this);
+        this.handleDropOnGroup = this.handleDropOnGroup.bind(this);
 
-        this.handleDeleteCollection = this.handleDeleteCollection.bind(this);
-        this.handleDeleteCollectionCancel = this.handleDeleteCollectionCancel.bind(this);
-        this.handleDeleteCollectionAccept = this.handleDeleteCollectionAccept.bind(this);
+        this.handleDragStartCollection = this.handleDragStartCollection.bind(this);
+        this.handleDragStartGroup = this.handleDragStartGroup.bind(this);
 
-        this.handleRenameCollection = this.handleRenameCollection.bind(this);
-        this.handleRenameCollectionCancel = this.handleRenameCollectionCancel.bind(this);
-        this.handleRenameCollectionAccept = this.handleRenameCollectionAccept.bind(this);
+        this.handleOpenCreateCollectionDialog = this.handleOpenCreateCollectionDialog.bind(this);
+        this.handleCloseCreateCollectionDialog = this.handleCloseCreateCollectionDialog.bind(this);
 
-        this.handleCreateGroup = this.handleCreateGroup.bind(this);
-        this.handleCreateGroupCancel = this.handleCreateGroupCancel.bind(this);
-        this.handleCreateGroupAccept = this.handleCreateGroupAccept.bind(this);
+        this.handleOpenDeleteCollectionDialog = this.handleOpenDeleteCollectionDialog.bind(this);
+        this.handleCloseDeleteCollectionDialog = this.handleCloseDeleteCollectionDialog.bind(this);
 
-        this.handleDeleteGroup = this.handleDeleteGroup.bind(this);
-        this.handleDeleteGroupCancel = this.handleDeleteGroupCancel.bind(this);
-        this.handleDeleteGroupAccept = this.handleDeleteGroupAccept.bind(this);
+        this.handleOpenRenameCollectionDialog = this.handleOpenRenameCollectionDialog.bind(this);
+        this.handleCloseRenameCollectionDialog = this.handleCloseRenameCollectionDialog.bind(this);
 
-        this.handleRenameGroup = this.handleRenameGroup.bind(this);
-        this.handleRenameGroupCancel = this.handleRenameGroupCancel.bind(this);
-        this.handleRenameGroupAccept = this.handleRenameGroupAccept.bind(this);
+        this.handleOpenCreateGroupDialog = this.handleOpenCreateGroupDialog.bind(this);
+        this.handleCloseCreateGroupDialog = this.handleCloseCreateGroupDialog.bind(this);
+
+        this.handleOpenDeleteGroupDialog = this.handleOpenDeleteGroupDialog.bind(this);
+        this.handleCloseDeleteGroupDialog = this.handleCloseDeleteGroupDialog.bind(this);
+
+        this.handleOpenRenameGroupDialog = this.handleOpenRenameGroupDialog.bind(this);
+        this.handleCloseRenameGroupDialog = this.handleCloseRenameGroupDialog.bind(this);
 
         this.setMinimized = this.setMinimized.bind(this);
+
+        this.findCollectionById = this.findCollectionById.bind(this);
+        this.findGroupById = this.findGroupById.bind(this);
     }
 
     render() {
@@ -127,63 +126,72 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
                     onDragOverCollection={this.handleDragOverCollection}
                     onDropOnCollection={this.handleDropOnCollection}
 
+                    onDragOverGroup={this.handleDragOverGroup}
+                    onDropOnGroup={this.handleDropOnGroup}
+
+                    onDragStartCollection={this.handleDragStartCollection}
+                    onDragStartGroup={this.handleDragStartGroup}
+
                     minimized={this.state.minimized}
                     onSetMinimize={this.setMinimized}
 
-                    onCreateCollection={this.handleCreateCollection}
-                    onCreateGroup={this.handleCreateGroup}
+                    onCreateCollection={() => this.handleOpenCreateCollectionDialog(undefined)}
+                    onCreateGroup={() => this.handleOpenCreateGroupDialog(undefined)}
 
-                    onCollectionContextMenuRename={this.handleRenameCollection}
-                    onCollectionContextMenuDelete={this.handleDeleteCollection}
+                    onCollectionContextMenuRename={this.handleOpenRenameCollectionDialog}
+                    onCollectionContextMenuDelete={this.handleOpenDeleteCollectionDialog}
+                    onCollectionContextMenuMove={this.handleMoveCollection}
 
-                    onGroupContextMenuRename={this.handleRenameGroup}
-                    onGroupContextMenuDelete={this.handleDeleteGroup}
+                    onGroupContextMenuRename={this.handleOpenRenameGroupDialog}
+                    onGroupContextMenuDelete={this.handleOpenDeleteGroupDialog}
+                    onGroupContextMenuCreateCollection={this.handleOpenCreateCollectionDialog}
+                    onGroupContextMenuCreateGroup={this.handleOpenCreateGroupDialog}
+                    onGroupContextMenuMove={this.handleMoveGroup}
                 />
-                {this.state.showImportDialog && (
+
+                {this.state.showImportDialog && (  // todo
                     <DialogImportFiles
                         onClose={this.handleOnCloseImport}
                         onImport={this.handleOnDoImport} />
                 )}
-                {this.state.showCreateCollectionDialog && (
-                    <DialogCreateCollection
-                        onClose={this.handleCreateCollectionCancel}
-                        onCreate={this.handleCreateCollectionAccept}
-                    />
-                )}
-                {this.state.showDialogDeleteCollection && (
-                    <DialogDeleteCollection
-                        collectionName={this.state.collectionToDelete ? this.state.collectionToDelete.name : undefined}
-                        onClose={this.handleDeleteCollectionCancel}
-                        onDelete={this.handleDeleteCollectionAccept}
-                    />
-                )}
-                {this.state.showDialogRenameCollection && (
-                    <DialogRenameCollection
-                        collectionName={this.state.collectionToRename ? this.state.collectionToRename.name : undefined}
-                        onClose={this.handleRenameCollectionCancel}
-                        onRename={this.handleRenameCollectionAccept}
-                    />
-                )}
-                {this.state.showCreateGroupDialog && (
-                    <DialogCreateGroup
-                        onClose={this.handleCreateGroupCancel}
-                        onCreate={this.handleCreateGroupAccept}
-                    />
-                )}
-                {this.state.showDialogDeleteGroup && (
-                    <DialogDeleteGroup
-                        groupName={this.state.groupToDelete ? this.state.groupToDelete.name : undefined}
-                        onClose={this.handleDeleteGroupCancel}
-                        onDelete={this.handleDeleteGroupAccept}
-                    />
-                )}
-                {this.state.showDialogRenameGroup && (
-                    <DialogRenameGroup
-                        groupName={this.state.groupToRename ? this.state.groupToRename.name : undefined}
-                        onClose={this.handleRenameGroupCancel}
-                        onRename={this.handleRenameGroupAccept}
-                    />
-                )}
+
+                <DialogCreateCollectionController
+                    show={this.state.showCreateCollectionDialog}
+                    rootGroup={this.props.rootGroup}
+                    triggerGroupId={this.state.triggerGroupId}
+                    onClose={this.handleCloseCreateCollectionDialog}
+                />
+
+                <DialogDeleteCollectionController
+                    show={this.state.showDialogDeleteCollection}
+                    collection={this.state.collectionToDelete}
+                    onClose={this.handleCloseDeleteCollectionDialog}
+                />
+
+                <DialogRenameCollectionController
+                    show={this.state.showDialogRenameCollection}
+                    collection={this.state.collectionToRename}
+                    onClose={this.handleCloseRenameCollectionDialog}
+                />
+
+                <DialogCreateGroupController
+                    show={this.state.showCreateGroupDialog}
+                    rootGroup={this.props.rootGroup}
+                    triggerGroupId={this.state.triggerGroupId}
+                    onClose={this.handleCloseCreateGroupDialog}
+                />
+
+                <DialogDeleteGroupController
+                    show={this.state.showDialogDeleteGroup}
+                    group={this.findGroupById(this.state.triggerGroupId)}
+                    onClose={this.handleCloseDeleteGroupDialog}
+                />
+
+                <DialogRenameGroupController
+                    show={this.state.showDialogRenameGroup}
+                    group={this.findGroupById(this.state.triggerGroupId)}
+                    onClose={this.handleCloseRenameGroupDialog}
+                />
             </>
         );
     }
@@ -201,6 +209,111 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
         this.props.onActionImport(data);
     }
 
+    setMinimized(minimized: boolean): void {
+        this.setState({
+            minimized: minimized,
+        });
+    }
+
+    findCollectionById(collectionId: number | undefined): Collection | undefined {
+        return extractCollections(this.props.rootGroup).find(c => c.id === collectionId);
+    }
+
+    findGroupById(groupId: number | undefined): Group | undefined {
+        if (groupId) {
+            return extractGroups(this.props.rootGroup).find(g => g.id === groupId);
+        } else {
+            return undefined;
+        }
+    }
+
+    //=========================//
+    //    CREATE COLLECTION    //
+    //=========================//
+
+    handleOpenCreateCollectionDialog(parentGroupId: number | undefined): void {
+        this.setState({
+            showCreateCollectionDialog: true,
+            triggerGroupId: parentGroupId,
+        });
+    }
+
+    handleCloseCreateCollectionDialog(successful: boolean): void {
+        this.setState({
+            showCreateCollectionDialog: false,
+            triggerGroupId: undefined,
+        });
+        if (successful) {
+            this.props.onCollectionsModified();
+        }
+    }
+
+    //=========================//
+    //    DELETE COLLECTION    //
+    //=========================//
+
+    handleOpenDeleteCollectionDialog(collectionId: number): void {
+        this.setState({
+            showDialogDeleteCollection: true,
+            collectionToDelete: extractCollections(this.props.rootGroup).find(c => c.id === collectionId),
+        });
+    }
+
+    handleCloseDeleteCollectionDialog(successful: boolean): void {
+        this.setState({
+            showDialogDeleteCollection: false,
+            collectionToDelete: undefined,
+        });
+        if (successful) {
+            this.props.onCollectionsModified();
+        }
+    }
+
+
+    //=========================//
+    //    RENAME COLLECTION    //
+    //=========================//
+
+    handleOpenRenameCollectionDialog(collectionId: number): void {
+        this.setState({
+            showDialogRenameCollection: true,
+            collectionToRename: extractCollections(this.props.rootGroup).find(c => c.id === collectionId),
+        });
+    }
+
+    handleCloseRenameCollectionDialog(successful: boolean): void {
+        this.setState({
+            showDialogRenameCollection: false,
+            collectionToRename: undefined,
+        });
+        if (successful) {
+            this.props.onCollectionsModified();
+        }
+    }
+
+    //=========================//
+    //     MOVE COLLECTION     //
+    //=========================//
+
+    handleMoveCollection(collectionId: number, targetGroupId: number | undefined): void {
+        MoveCollectionMessage.request(ipcRenderer, {
+            collectionId: collectionId,
+            targetGroupId: targetGroupId,
+        }).then(() => this.props.onCollectionsModified());
+    }
+
+    //=========================//
+    //     DRAG COLLECTION     //
+    //=========================//
+
+    handleDragStartCollection(collectionId: number, event: React.DragEvent) {
+        DragAndDropCollections.setDragData(event.dataTransfer, collectionId);
+    }
+
+    //=========================//
+    //    DROP ON COLLECTION   //
+    //=========================//
+
     handleDragOverCollection(collectionId: number | undefined, event: React.DragEvent): void {
         DragAndDropItems.setDropEffect(event.dataTransfer, collectionId);
     }
@@ -217,151 +330,118 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
         }
     }
 
-    handleCreateCollection(): void {
-        this.setState({ showCreateCollectionDialog: true });
-    }
+    //=========================//
+    //      CREATE GROUP       //
+    //=========================//
 
-    handleCreateCollectionCancel(): void {
-        this.setState({ showCreateCollectionDialog: false });
-    }
-
-    handleCreateCollectionAccept(collectionName: string): void {
-        CreateCollectionMessage.request(ipcRenderer, { name: collectionName })
-            .then(() => this.props.onCollectionsModified())
-            .finally(() => {
-                this.setState({ showCreateCollectionDialog: false });
-            });
-    }
-
-    handleDeleteCollection(collectionId: number): void {
+    handleOpenCreateGroupDialog(parentGroupId: number | undefined): void {
         this.setState({
-            showDialogDeleteCollection: true,
-            collectionToDelete: extractCollections(this.props.rootGroup).find(c => c.id === collectionId),
+            showCreateGroupDialog: true,
+            triggerGroupId: parentGroupId,
         });
     }
 
-    handleDeleteCollectionCancel(): void {
+    handleCloseCreateGroupDialog(successful: boolean): void {
         this.setState({
-            showDialogDeleteCollection: false,
-            collectionToDelete: undefined,
+            showCreateGroupDialog: false,
+            triggerGroupId: undefined,
         });
+        if (successful) {
+            this.props.onCollectionsModified();
+        }
     }
 
-    handleDeleteCollectionAccept(): void {
-        DeleteCollectionMessage.request(ipcRenderer, { collectionId: this.state.collectionToDelete.id })
-            .then(() => this.props.onCollectionsModified())
-            .finally(() => {
-                this.setState({
-                    showDialogDeleteCollection: false,
-                    collectionToDelete: undefined,
-                });
-            });
-    }
+    //=========================//
+    //      DELETE GROUP       //
+    //=========================//
 
-    handleRenameCollection(collectionId: number): void {
-        this.setState({
-            showDialogRenameCollection: true,
-            collectionToRename: extractCollections(this.props.rootGroup).find(c => c.id === collectionId),
-        });
-    }
-
-    handleRenameCollectionCancel(): void {
-        this.setState({
-            showDialogRenameCollection: false,
-            collectionToRename: undefined,
-        });
-    }
-
-    handleRenameCollectionAccept(newCollectionName: string): void {
-        RenameCollectionMessage.request(ipcRenderer, {
-            collectionId: this.state.collectionToRename.id,
-            newName: newCollectionName,
-        })
-            .then(() => this.props.onCollectionsModified())
-            .finally(() => {
-                this.setState({
-                    showDialogRenameCollection: false,
-                    collectionToRename: undefined,
-                });
-            });
-    }
-
-    handleCreateGroup(): void {
-        this.setState({ showCreateGroupDialog: true });
-    }
-
-    handleCreateGroupCancel(): void {
-        this.setState({ showCreateGroupDialog: false });
-    }
-
-    handleCreateGroupAccept(groupName: string): void {
-        CreateGroupMessage.request(ipcRenderer, { name: groupName })
-            .then(() => this.props.onCollectionsModified())
-            .finally(() => {
-                this.setState({ showCreateGroupDialog: false });
-            });
-    }
-
-    handleDeleteGroup(groupId: number): void {
+    handleOpenDeleteGroupDialog(groupId: number): void {
         this.setState({
             showDialogDeleteGroup: true,
-            groupToDelete: extractGroups(this.props.rootGroup).find(g => g.id === groupId),
+            triggerGroupId: groupId,
         });
     }
 
-    handleDeleteGroupCancel(): void {
+
+    handleCloseDeleteGroupDialog(successful: boolean): void {
         this.setState({
             showDialogDeleteGroup: false,
-            groupToDelete: undefined,
+            triggerGroupId: undefined,
         });
+        if (successful) {
+            this.props.onCollectionsModified();
+        }
     }
 
-    handleDeleteGroupAccept(deleteChildren: boolean): void {
-        DeleteGroupMessage.request(ipcRenderer, {
-            groupId: this.state.groupToDelete.id,
-            deleteChildren: deleteChildren,
-        })
-            .then(() => this.props.onCollectionsModified())
-            .finally(() => {
-                this.setState({
-                    showDialogDeleteGroup: false,
-                    groupToDelete: undefined,
-                });
-            });
-    }
+    //=========================//
+    //      RENAME GROUP       //
+    //=========================//
 
-    handleRenameGroup(groupId: number): void {
+    handleOpenRenameGroupDialog(groupId: number): void {
         this.setState({
             showDialogRenameGroup: true,
-            groupToRename: extractGroups(this.props.rootGroup).find(g => g.id === groupId),
+            triggerGroupId: groupId,
         });
     }
 
-    handleRenameGroupCancel(): void {
+    handleCloseRenameGroupDialog(successful: boolean): void {
         this.setState({
             showDialogRenameGroup: false,
-            groupToRename: undefined,
+            triggerGroupId: undefined,
         });
+        if (successful) {
+            this.props.onCollectionsModified();
+        }
     }
 
-    handleRenameGroupAccept(newGroupName: string): void {
-        RenameGroupMessage.request(ipcRenderer, {
-            groupId: this.state.groupToRename.id,
-            newName: newGroupName,
-        })
-            .then(() => this.props.onCollectionsModified())
-            .finally(() => {
-                this.setState({
-                    showDialogRenameGroup: false,
-                    groupToRename: undefined,
-                });
-            });
+    //=========================//
+    //        MOVE GROUP       //
+    //=========================//
+
+    handleMoveGroup(groupId: number, targetGroupId: number | undefined): void {
+        MoveGroupMessage.request(ipcRenderer, {
+            groupId: groupId,
+            targetGroupId: targetGroupId,
+        }).then(() => this.props.onCollectionsModified());
     }
 
-    setMinimized(minimized: boolean): void {
-        this.setState({
-            minimized: minimized,
-        });
+    //=========================//
+    //        DRAG GROUP       //
+    //=========================//
+
+    handleDragStartGroup(groupId: number, event: React.DragEvent): void {
+        DragAndDropGroups.setDragData(event.dataTransfer, groupId);
+    }
+
+    //=========================//
+    //      DROP ON GROUP      //
+    //=========================//
+
+    handleDragOverGroup(groupId: number, event: React.DragEvent): void {
+        const dataTransfer: DataTransfer = event.dataTransfer;
+        const metaMimeType: string | undefined = DragAndDropUtils.getMetadataMimeType(dataTransfer);
+        DragAndDropUtils.setDropEffectForbidden(dataTransfer);
+        if (metaMimeType === DragAndDropGroups.META_MIME_TYPE) {
+            DragAndDropGroups.setDropEffect(dataTransfer, groupId, this.props.rootGroup);
+        }
+        if (metaMimeType === DragAndDropCollections.META_MIME_TYPE) {
+            DragAndDropCollections.setDropEffect(dataTransfer);
+        }
+    }
+
+    handleDropOnGroup(groupId: number, event: React.DragEvent): void {
+        const dataTransfer: DataTransfer = event.dataTransfer;
+        const metaMimeType: string | undefined = DragAndDropUtils.getMetadataMimeType(dataTransfer);
+        if (metaMimeType === DragAndDropGroups.META_MIME_TYPE) {
+            const dropData: DragAndDropGroups.Data = DragAndDropGroups.getDragData(dataTransfer);
+            if (DragAndDropGroups.allowDrop(dropData.groupId, groupId, this.props.rootGroup)) {
+                this.handleMoveGroup(dropData.groupId, groupId);
+            }
+        }
+        if (metaMimeType === DragAndDropCollections.META_MIME_TYPE) {
+            const dropData: DragAndDropCollections.Data = DragAndDropCollections.getDragData(dataTransfer);
+            this.handleMoveCollection(dropData.collectionId, groupId);
+        }
     }
 
 }

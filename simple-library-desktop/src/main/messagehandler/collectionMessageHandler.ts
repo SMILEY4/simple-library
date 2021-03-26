@@ -3,7 +3,7 @@ import { ipcMain } from 'electron';
 import {
     CreateCollectionMessage,
     DeleteCollectionMessage,
-    GetAllCollectionsMessage,
+    GetAllCollectionsMessage, MoveCollectionMessage,
     MoveItemsToCollectionsMessage,
     RenameCollectionMessage,
 } from '../../common/messaging/messagesCollections';
@@ -23,6 +23,7 @@ export class CollectionMessageHandler {
         CreateCollectionMessage.handle(ipcMain, payload => this.handleCreate(payload));
         DeleteCollectionMessage.handle(ipcMain, payload => this.handleDelete(payload));
         RenameCollectionMessage.handle(ipcMain, payload => this.handleRename(payload));
+        MoveCollectionMessage.handle(ipcMain, payload => this.handleMove(payload));
         MoveItemsToCollectionsMessage.handle(ipcMain, payload => this.handleMoveItems(payload));
     }
 
@@ -33,7 +34,7 @@ export class CollectionMessageHandler {
     }
 
     private async handleCreate(payload: CreateCollectionMessage.RequestPayload): Promise<CreateCollectionMessage.ResponsePayload | ErrorResponse> {
-        return this.collectionService.createCollection(payload.name)
+        return this.collectionService.createCollection(payload.name, payload.parentGroupId)
             .then((collection: Collection) => ({ collection: collection }))
             .catch(err => errorResponse(err));
     }
@@ -46,6 +47,12 @@ export class CollectionMessageHandler {
 
     private async handleRename(payload: RenameCollectionMessage.RequestPayload): Promise<RenameCollectionMessage.ResponsePayload | ErrorResponse> {
         return this.collectionService.renameCollection(payload.collectionId, payload.newName)
+            .then(() => ({}))
+            .catch(err => errorResponse(err));
+    }
+
+    private async handleMove(payload: MoveCollectionMessage.RequestPayload): Promise<MoveCollectionMessage.ResponsePayload | ErrorResponse> {
+        return this.collectionService.moveCollection(payload.collectionId, payload.targetGroupId)
             .then(() => ({}))
             .catch(err => errorResponse(err));
     }

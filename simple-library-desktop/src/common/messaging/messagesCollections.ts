@@ -29,6 +29,7 @@ export module CreateCollectionMessage {
 
     export interface RequestPayload {
         name: string
+        parentGroupId: number | undefined
     }
 
     export interface ResponsePayload {
@@ -81,6 +82,29 @@ export module RenameCollectionMessage {
     }
 
     const CHANNEL: string = 'collection.rename';
+
+    export function request(ipc: Electron.IpcRenderer, payload: RequestPayload): Promise<ResponsePayload> {
+        return sendRequest<RequestPayload, ResponsePayload>(ipc, CHANNEL, payload);
+    }
+
+    export function handle(ipc: Electron.IpcMain, action: (payload: RequestPayload) => Promise<ResponsePayload | ErrorResponse>) {
+        handleRequest<RequestPayload, ResponsePayload>(ipc, CHANNEL, action);
+    }
+
+}
+
+
+export module MoveCollectionMessage {
+
+    export interface RequestPayload {
+        collectionId: number,
+        targetGroupId: number | undefined
+    }
+
+    export interface ResponsePayload {
+    }
+
+    const CHANNEL: string = 'collection.move';
 
     export function request(ipc: Electron.IpcRenderer, payload: RequestPayload): Promise<ResponsePayload> {
         return sendRequest<RequestPayload, ResponsePayload>(ipc, CHANNEL, payload);

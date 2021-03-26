@@ -4,7 +4,7 @@ import {
     sqlDeleteGroup,
     sqlFindGroupById,
     sqlInsertGroup,
-    sqlUpdateGroupName,
+    sqlUpdateGroupName, sqlUpdateGroupsParentId,
     sqlUpdateGroupsParents,
 } from './sql/sql';
 import { GroupDTO } from '../../common/commonModels';
@@ -56,15 +56,16 @@ export class GroupDataAccess {
     /**
      * Creates a new group with the given name
      * @param name the name of the new group
+     * @param parentGroupId the id of the parent group or null
      * @return  a promise that resolves with the created {@link GroupDTO}
      */
-    public createGroup(name: string): Promise<GroupDTO> {
-        return this.dataAccess.executeRun(sqlInsertGroup(name))
+    public createGroup(name: string, parentGroupId: number | undefined): Promise<GroupDTO> {
+        return this.dataAccess.executeRun(sqlInsertGroup(name, parentGroupId))
             .then((id: number) => {
                 return {
                     id: id,
                     name: name,
-                    parentId: undefined,
+                    parentId: parentGroupId,
                 };
             });
     }
@@ -92,13 +93,23 @@ export class GroupDataAccess {
 
 
     /**
-     * Moves the all child groups of the given parent group to the new group
+     * Moves all child groups of the given parent group to the new group
      * @param prevParentGroupId the id of the previous parent group
      * @param newParentGroupId the id of the new parent group
      * @return a promise that resolves when the groups were moved
      */
     public moveGroups(prevParentGroupId: number | null, newParentGroupId: number | null): Promise<void> {
         return this.dataAccess.executeRun(sqlUpdateGroupsParents(prevParentGroupId, newParentGroupId)).then();
+    }
+
+    /**
+     * Sets the parent group id of the group with the given id
+     * @param groupId the id of the group to update
+     * @param parentGroupId the parent group id to set
+     * @return a promise that resolves when the id was set
+     */
+    public setParentGroup(groupId: number, parentGroupId: number | null): Promise<void> {
+        return this.dataAccess.executeRun(sqlUpdateGroupsParentId(groupId, parentGroupId)).then();
     }
 
 }

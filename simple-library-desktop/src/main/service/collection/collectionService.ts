@@ -36,10 +36,11 @@ export class CollectionService {
     /**
      * Create a new collection with the given name
      * @param name the name of the collection
+     * @param parentGroupId the id of the parent group or undefined
      * @return a promise that resolves with the created {@link Collection}
      */
-    public createCollection(name: string): Promise<Collection> {
-        return this.collectionDataAccess.createCollection(name.trim());
+    public createCollection(name: string, parentGroupId: number | undefined): Promise<Collection> {
+        return this.collectionDataAccess.createCollection(name.trim(), parentGroupId);
     }
 
 
@@ -61,6 +62,16 @@ export class CollectionService {
      */
     public renameCollection(collectionId: number, newCollectionName: string): Promise<void> {
         return this.collectionDataAccess.renameCollection(collectionId, newCollectionName);
+    }
+
+    /**
+     * Moves the collection with the given id into the group with the given id
+     * @param collectionId the id of the collection
+     * @param targetGroupId the id of the new parent group
+     * @return a promise that resolves when the collection was moved
+     */
+    public moveCollection(collectionId: number, targetGroupId: number | undefined): Promise<void> {
+        return this.collectionDataAccess.moveCollection(collectionId, targetGroupId ? targetGroupId : null);
     }
 
     /**

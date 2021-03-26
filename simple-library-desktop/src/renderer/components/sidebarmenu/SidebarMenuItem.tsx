@@ -18,6 +18,9 @@ export interface SidebarMenuItemProps {
     getDropEffect?: (event: React.DragEvent) => string,
     onDragOver?: (event: React.DragEvent) => void,
     onDrop?: (event: React.DragEvent) => void
+
+    onDragStart?: (event: React.DragEvent) => void,
+    draggable?:boolean,
 }
 
 export function SidebarMenuItem(props: React.PropsWithChildren<SidebarMenuItemProps>): React.ReactElement {
@@ -66,7 +69,10 @@ export function SidebarMenuItem(props: React.PropsWithChildren<SidebarMenuItemPr
              onClick={props.onClick}
              onContextMenu={props.onContextMenu}
              onDragOver={getDragOverHandler()}
-             onDrop={getDropHandler()}>
+             onDrop={getDropHandler()}
+             onDragStart={(event: React.DragEvent) => props.onDragStart && props.onDragStart(event)}
+             draggable={props.draggable}
+        >
             <div className={"sidebar-menu-item-title"}>
                 {props.icon ? props.icon : null}
                 <div className={"sidebar-menu-item-title-text"}>{props.title}</div>
