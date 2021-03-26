@@ -9,18 +9,18 @@ import {
     ImportProcessData,
 } from '../../../../common/commonModels';
 import { DialogImportFiles } from '../import/DialogImportFiles';
-import { DialogCreateCollectionController } from './DialogCreateCollection';
-import { DialogRenameCollectionController } from './DialogRenameCollection';
+import { DialogCreateCollectionController } from './dialogs/DialogCreateCollection';
+import { DialogRenameCollectionController } from './dialogs/DialogRenameCollection';
 import {
     DragAndDropCollections,
     DragAndDropGroups,
     DragAndDropItems,
     DragAndDropUtils,
 } from '../../common/dragAndDrop';
-import { DialogCreateGroupController } from './DialogCreateGroup';
-import { DialogDeleteGroupController } from './DialogDeleteGroup';
-import { DialogRenameGroupController } from './DialogRenameGroup';
-import { DialogDeleteCollectionController } from './DialogDeleteCollection';
+import { DialogCreateGroupController } from './dialogs/DialogCreateGroup';
+import { DialogDeleteGroupController } from './dialogs/DialogDeleteGroup';
+import { DialogRenameGroupController } from './dialogs/DialogRenameGroup';
+import { DialogDeleteCollectionController } from './dialogs/DialogDeleteCollection';
 import { MoveCollectionMessage } from '../../../../common/messaging/messagesCollections';
 import { MoveGroupMessage } from '../../../../common/messaging/messagesGroups';
 
@@ -149,7 +149,7 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
                     onGroupContextMenuMove={this.handleMoveGroup}
                 />
 
-                {this.state.showImportDialog && (  // todo
+                {this.state.showImportDialog && (
                     <DialogImportFiles
                         onClose={this.handleOnCloseImport}
                         onImport={this.handleOnDoImport} />

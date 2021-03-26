@@ -5,13 +5,16 @@ import { SidebarMenuSection } from '../../../components/sidebarmenu/SidebarMenuS
 import { Collection, Group } from '../../../../common/commonModels';
 import { SidebarMenuItem } from '../../../components/sidebarmenu/SidebarMenuItem';
 import { AiOutlineCloseCircle, BiImages, BiImport, HiOutlineFolder, HiOutlineRefresh, HiPlus } from 'react-icons/all';
-import { COLLECTION_CONTEXT_MENU_ID, CollectionContextMenu } from './CollectionContextMenu';
+import { COLLECTION_CONTEXT_MENU_ID, CollectionContextMenu } from './contextmenues/CollectionContextMenu';
 import { useContextMenu } from 'react-contexify';
 import { SidebarMenuGroup } from "../../../components/sidebarmenu/SidebarMenuGroup";
 import { DropdownButton } from '../../../components/button/dropdownbutton/DropdownButton';
 import { Variant } from '../../../components/common';
 import { DropdownItemType } from '../../../components/dropdown/Dropdown';
-import { GROUP_CONTEXT_MENU_ID, GroupContextMenu } from './GroupContextMenu';
+import { GROUP_CONTEXT_MENU_ID, GroupContextMenu } from './contextmenues/GroupContextMenu';
+import { GroupEntry } from './GroupEntry';
+import { CollectionEntry } from './CollectionEntry';
+import { CollectionSectionAction, MenuActionClose, MenuActionImport, MenuActionRefresh } from './sidebarEntries';
 
 
 export interface MenuSidebarProps {
@@ -52,36 +55,6 @@ export interface MenuSidebarProps {
 
 export function MenuSidebar(props: React.PropsWithChildren<MenuSidebarProps>): React.ReactElement {
 
-    function renderItems(collections: Collection[], groups: Group[]): ReactElement[] {
-        return [
-            ...collections.map((collection: Collection) => {
-                return <MenuCollection name={collection.name}
-                                       id={collection.id}
-                                       key={"collection-" + (collection.id ? collection.id : -1)}
-                                       itemCount={collection.itemCount}
-                                       selectedId={props.activeCollectionId}
-                                       onSelect={props.onSelectCollection}
-                                       onDragStart={(event: React.DragEvent) => props.onDragStartCollection(collection.id, event)}
-                                       onDragOver={(event: React.DragEvent) => props.onDragOverCollection(collection.id, event)}
-                                       onDrop={(event: React.DragEvent) => props.onDropOnCollection(collection.id, event)} />;
-            }),
-            ...groups.map((child: Group) => renderGroup(child)),
-        ];
-    }
-
-    function renderGroup(group: Group): React.ReactElement {
-        return (
-            <MenuGroup name={group.name}
-                       id={group.id}
-                       onDragStart={(event: React.DragEvent) => props.onDragStartGroup(group.id, event)}
-                       onDragOver={(event: React.DragEvent) => props.onDragOverGroup(group.id, event)}
-                       onDrop={(event: React.DragEvent) => props.onDropOnGroup(group.id, event)}
-                       key={"group-" + group.id}>
-                {renderItems(group.collections, group.children)}
-            </MenuGroup>
-        );
-    }
-
     return (
         <SidebarMenu fillHeight
                      minimizable={true}
@@ -119,123 +92,36 @@ export function MenuSidebar(props: React.PropsWithChildren<MenuSidebarProps>): R
 
         </SidebarMenu>
     );
+
+    function renderItems(collections: Collection[], groups: Group[]): ReactElement[] {
+        return [
+            ...collections.map((collection: Collection) => {
+                return <CollectionEntry name={collection.name}
+                                        id={collection.id}
+                                        key={"collection-" + (collection.id ? collection.id : -1)}
+                                        itemCount={collection.itemCount}
+                                        selectedId={props.activeCollectionId}
+                                        onSelect={props.onSelectCollection}
+                                        onDragStart={(event: React.DragEvent) => props.onDragStartCollection(collection.id, event)}
+                                        onDragOver={(event: React.DragEvent) => props.onDragOverCollection(collection.id, event)}
+                                        onDrop={(event: React.DragEvent) => props.onDropOnCollection(collection.id, event)} />;
+            }),
+            ...groups.map((child: Group) => renderGroup(child)),
+        ];
+    }
+
+    function renderGroup(group: Group): React.ReactElement {
+        return (
+            <GroupEntry name={group.name}
+                        id={group.id}
+                        onDragStart={(event: React.DragEvent) => props.onDragStartGroup(group.id, event)}
+                        onDragOver={(event: React.DragEvent) => props.onDragOverGroup(group.id, event)}
+                        onDrop={(event: React.DragEvent) => props.onDropOnGroup(group.id, event)}
+                        key={"group-" + group.id}>
+                {renderItems(group.collections, group.children)}
+            </GroupEntry>
+        );
+    }
 }
 
 
-interface SimpleMenuActionProps {
-    onAction: () => void,
-}
-
-function MenuActionImport(props: React.PropsWithChildren<SimpleMenuActionProps>): React.ReactElement {
-    return <SidebarMenuItem
-        title={"Import"}
-        icon={<BiImport />}
-        onClick={props.onAction}
-    />;
-}
-
-function MenuActionRefresh(props: React.PropsWithChildren<SimpleMenuActionProps>): React.ReactElement {
-    return <SidebarMenuItem
-        title={"Refresh"}
-        icon={<HiOutlineRefresh />}
-        onClick={props.onAction}
-    />;
-}
-
-function MenuActionClose(props: React.PropsWithChildren<SimpleMenuActionProps>): React.ReactElement {
-    return <SidebarMenuItem
-        title={"Close"}
-        icon={<AiOutlineCloseCircle />}
-        onClick={props.onAction}
-    />;
-}
-
-interface CollectionSectionActionProps {
-    onCreateCollection: () => void,
-    onCreateGroup: () => void
-}
-
-function CollectionSectionAction(props: React.PropsWithChildren<CollectionSectionActionProps>) {
-    return <DropdownButton icon={<HiPlus />} variant={Variant.GHOST} square items={[
-        {
-            type: DropdownItemType.ACTION,
-            title: "New Collection",
-            onAction: props.onCreateCollection,
-        },
-        {
-            type: DropdownItemType.ACTION,
-            title: "New Group",
-            onAction: props.onCreateGroup,
-        },
-    ]} />;
-}
-
-interface MenuCollectionProps {
-    name: string,
-    id: number | undefined,
-    itemCount: number,
-    selectedId: number | undefined,
-    onSelect: (id: number | undefined) => void,
-    onDragStart: (event: React.DragEvent) => void
-    onDragOver: (event: React.DragEvent) => void
-    onDrop: (event: React.DragEvent) => void
-}
-
-function MenuCollection(props: React.PropsWithChildren<MenuCollectionProps>): React.ReactElement {
-
-    const { show } = useContextMenu({
-        id: COLLECTION_CONTEXT_MENU_ID,
-        props: {
-            collectionId: props.id,
-        },
-    });
-
-    return <SidebarMenuItem title={props.name}
-                            icon={<BiImages />}
-                            label={"" + props.itemCount}
-                            selected={props.selectedId === props.id}
-                            onClick={() => props.onSelect(props.id)}
-                            onContextMenu={(event: React.MouseEvent) => {
-                                event.preventDefault();
-                                show(event);
-                            }}
-                            enableDrop={true}
-                            onDragOver={(event: React.DragEvent) => props.onDragOver(event)}
-                            onDrop={(event: React.DragEvent) => props.onDrop(event)}
-                            draggable={true}
-                            onDragStart={props.onDragStart} />;
-}
-
-interface MenuGroupProps {
-    name: string,
-    id: number,
-    onDragStart: (event: React.DragEvent) => void
-    onDragOver: (event: React.DragEvent) => void
-    onDrop: (event: React.DragEvent) => void
-}
-
-function MenuGroup(props: React.PropsWithChildren<MenuGroupProps>): React.ReactElement {
-
-    const { show } = useContextMenu({
-        id: GROUP_CONTEXT_MENU_ID,
-        props: {
-            groupId: props.id,
-        },
-    });
-
-    return (
-        <SidebarMenuGroup title={props.name}
-                          icon={<HiOutlineFolder />}
-                          onContextMenu={(event: React.MouseEvent) => {
-                              event.preventDefault();
-                              show(event);
-                          }}
-                          enableDrop={true}
-                          onDragOver={(event: React.DragEvent) => props.onDragOver(event)}
-                          onDrop={(event: React.DragEvent) => props.onDrop(event)}
-                          draggable={true}
-                          onDragStart={props.onDragStart}>
-            {props.children}
-        </SidebarMenuGroup>
-    );
-}

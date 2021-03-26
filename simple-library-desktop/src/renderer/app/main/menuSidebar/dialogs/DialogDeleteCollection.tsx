@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { Component, ReactElement } from 'react';
-import { Dialog } from '../../../components/modal/Dialog';
-import { AlignCross, AlignMain, Dir, Size, Type, Variant } from '../../../components/common';
-import { Box } from '../../../components/layout/Box';
-import { BodyText } from '../../../components/text/Text';
-import { Collection } from '../../../../common/commonModels';
-import { DeleteCollectionMessage } from '../../../../common/messaging/messagesCollections';
+import { Dialog } from '../../../../components/modal/Dialog';
+import { AlignCross, AlignMain, Dir, Size, Type, Variant } from '../../../../components/common';
+import { Box } from '../../../../components/layout/Box';
+import { BodyText } from '../../../../components/text/Text';
+import { Collection } from '../../../../../common/commonModels';
+import { DeleteCollectionMessage } from '../../../../../common/messaging/messagesCollections';
 
 const { ipcRenderer } = window.require('electron');
 

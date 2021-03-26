@@ -91,7 +91,7 @@ export class GroupService {
      * @return a promise that resolves when the group was renamed
      */
     public renameGroup(groupId: number, newName: string): Promise<void> {
-        return this.groupDataAccess.renameGroup(groupId, newName);
+        return this.groupDataAccess.renameGroup(groupId, newName.trim());
     }
 
 

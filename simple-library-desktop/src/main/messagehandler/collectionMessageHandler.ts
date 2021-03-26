@@ -3,8 +3,10 @@ import { ipcMain } from 'electron';
 import {
     CreateCollectionMessage,
     DeleteCollectionMessage,
-    GetAllCollectionsMessage, MoveCollectionMessage,
+    GetAllCollectionsMessage,
+    MoveCollectionMessage,
     MoveItemsToCollectionsMessage,
+    RemoveItemsFromCollectionsMessage,
     RenameCollectionMessage,
 } from '../../common/messaging/messagesCollections';
 import { Collection } from '../../common/commonModels';
@@ -25,6 +27,7 @@ export class CollectionMessageHandler {
         RenameCollectionMessage.handle(ipcMain, payload => this.handleRename(payload));
         MoveCollectionMessage.handle(ipcMain, payload => this.handleMove(payload));
         MoveItemsToCollectionsMessage.handle(ipcMain, payload => this.handleMoveItems(payload));
+        RemoveItemsFromCollectionsMessage.handle(ipcMain, payload => this.handleRemoveItems(payload));
     }
 
     private async handleGetAll(payload: GetAllCollectionsMessage.RequestPayload): Promise<GetAllCollectionsMessage.ResponsePayload | ErrorResponse> {
@@ -59,6 +62,12 @@ export class CollectionMessageHandler {
 
     private async handleMoveItems(payload: MoveItemsToCollectionsMessage.RequestPayload): Promise<MoveItemsToCollectionsMessage.ResponsePayload | ErrorResponse> {
         return this.collectionService.moveItemsToCollection(payload.sourceCollectionId, payload.targetCollectionId, payload.itemIds, payload.copy)
+            .then(() => ({}))
+            .catch(err => errorResponse(err));
+    }
+
+    private async handleRemoveItems(payload: RemoveItemsFromCollectionsMessage.RequestPayload): Promise<RemoveItemsFromCollectionsMessage.ResponsePayload | ErrorResponse> {
+        return this.collectionService.removeItemsFromCollection(payload.collectionId, payload.itemIds)
             .then(() => ({}))
             .catch(err => errorResponse(err));
     }

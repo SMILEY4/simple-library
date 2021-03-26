@@ -6,10 +6,12 @@ import { ItemPanelController } from './itemPanel/ItemPanelController';
 import { MenuSidebarController } from './menuSidebar/MenuSidebarController';
 import { MainView, MainViewMessageType } from './MainView';
 import { CloseLibraryMessage } from '../../../common/messaging/messagesLibrary';
-import { MoveItemsToCollectionsMessage } from '../../../common/messaging/messagesCollections';
+import {
+    MoveItemsToCollectionsMessage,
+    RemoveItemsFromCollectionsMessage,
+} from '../../../common/messaging/messagesCollections';
 import { GetGroupsMessage } from '../../../common/messaging/messagesGroups';
 import {
-    GetItemCountMessage,
     GetItemsMessage,
     ImportItemsMessage,
     ImportStatusUpdateCommand,
@@ -46,9 +48,7 @@ export class MainViewController extends Component<MainViewControllerProps, MainV
         };
         this.updateGroupsAndCollections = this.updateGroupsAndCollections.bind(this);
         this.updateItemList = this.updateItemList.bind(this);
-        this.fetchTotalItemCount = this.fetchTotalItemCount.bind(this);
-        this.fetchItems = this.fetchItems.bind(this);
-        this.actionCloseLibrary = this.actionCloseLibrary.bind(this);
+        this.handleCloseLibrary = this.handleCloseLibrary.bind(this);
         this.handleImportStatusUpdate = this.handleImportStatusUpdate.bind(this);
         this.handleImportFailed = this.handleImportFailed.bind(this);
         this.handleImportWithErrors = this.handleImportWithErrors.bind(this);
@@ -58,6 +58,7 @@ export class MainViewController extends Component<MainViewControllerProps, MainV
         this.handleOnRefresh = this.handleOnRefresh.bind(this);
         this.handleActionMoveItems = this.handleActionMoveItems.bind(this);
         this.handleActionCopyItems = this.handleActionCopyItems.bind(this);
+        this.actionRemoveItems = this.actionRemoveItems.bind(this);
         this.handleImport = this.handleImport.bind(this);
     }
 
@@ -79,7 +80,7 @@ export class MainViewController extends Component<MainViewControllerProps, MainV
                     onSelectCollection={this.handleOnSelectCollection}
                     onActionImport={this.handleImport}
                     onActionRefresh={this.handleOnRefresh}
-                    onActionClose={this.actionCloseLibrary}
+                    onActionClose={this.handleCloseLibrary}
                     onActionMoveItems={this.handleActionMoveItems}
                     onActionCopyItems={this.handleActionCopyItems}
                     onCollectionsModified={this.updateGroupsAndCollections}
@@ -90,6 +91,7 @@ export class MainViewController extends Component<MainViewControllerProps, MainV
                     items={this.state.items}
                     onActionMove={(targetCollectionId: number | undefined, itemIds: number[]) => this.actionMoveItems(this.state.currentCollectionId, targetCollectionId, itemIds, false)}
                     onActionCopy={(targetCollectionId: number | undefined, itemIds: number[]) => this.actionMoveItems(this.state.currentCollectionId, targetCollectionId, itemIds, true)}
+                    onActionRemove={(itemIds: number[]) => this.actionRemoveItems(this.state.currentCollectionId, itemIds)}
                 />
             </MainView>
         );
@@ -100,7 +102,7 @@ export class MainViewController extends Component<MainViewControllerProps, MainV
         this.updateItemList(collectionId);
     }
 
-    actionCloseLibrary() {
+    handleCloseLibrary() {
         CloseLibraryMessage.request(ipcRenderer)
             .then(() => this.props.onCloseProject());
     }
@@ -131,48 +133,32 @@ export class MainViewController extends Component<MainViewControllerProps, MainV
             .then(() => this.updateGroupsAndCollections().then(() => this.updateItemList(this.state.currentCollectionId)));
     }
 
+    actionRemoveItems(sourceCollectionId: number, itemIds: number[]) {
+        RemoveItemsFromCollectionsMessage.request(ipcRenderer, {
+            collectionId: sourceCollectionId,
+            itemIds: itemIds,
+        })
+            .catch((error) => {
+                this.showNotification(MainViewMessageType.REMOVE_ITEMS_FROM_COLLECTION_FAILED, error);
+                return Promise.reject();
+            })
+            .then(() => this.updateGroupsAndCollections().then(() => this.updateItemList(this.state.currentCollectionId)));
+    }
+
     updateGroupsAndCollections(): Promise<void> {
         return GetGroupsMessage.request(ipcRenderer, { includeCollections: true, includeItemCount: true })
             .then((response: GetGroupsMessage.ResponsePayload) => response.groups[0])
             .then((rootGroup: Group) => this.setState({ rootGroup: rootGroup }))
             .catch(error => {
-                this.showNotification(MainViewMessageType.FETCH_COLLECTIONS_FAILED, error); // todo: notification
+                this.showNotification(MainViewMessageType.FETCH_GROUPS_AND_COLLECTIONS_FAILED, error);
                 return Promise.reject();
             });
     }
 
     updateItemList(collectionId: number | undefined) {
-        this.fetchItems(collectionId)
-            .then(items => this.setState({ items: items }));
-    }
-
-    // fetchCollections(): Promise<Collection[]> {
-    //     return GetCollectionsMessage.request(ipcRenderer, true)
-    //         .then((response: Response) => {
-    //             return response.body;
-    //         })
-    //         .catch(error => {
-    //             this.showNotification(MainViewMessageType.FETCH_COLLECTIONS_FAILED, error);
-    //             return Promise.reject();
-    //         });
-    // }
-
-    fetchTotalItemCount(): Promise<number> {
-        return GetItemCountMessage.request(ipcRenderer)
-            .then((response: GetItemCountMessage.ResponsePayload) => {
-                return response.count;
-            })
-            .catch(error => {
-                this.showNotification(MainViewMessageType.FETCH_TOTAL_ITEM_COUNT_FAILED, error);
-                return Promise.reject();
-            });
-    }
-
-    fetchItems(collectionId: number | undefined): Promise<ItemData[]> {
         return GetItemsMessage.request(ipcRenderer, { collectionId: collectionId })
-            .then((response: GetItemsMessage.ResponsePayload) => {
-                return response.items;
-            })
+            .then((response: GetItemsMessage.ResponsePayload) => response.items)
+            .then((items: ItemData[]) => this.setState({ items: items }))
             .catch(error => {
                 this.showNotification(MainViewMessageType.FETCH_ITEMS_FAILED, error);
                 return Promise.reject();

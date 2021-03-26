@@ -100,8 +100,10 @@ export interface ImportStatus {
     completedFiles: number,
 }
 
+export const ALL_ITEMS_COLLECTION_ID: null = null;
+
 export interface Collection {
-    id: number,
+    id: number | null,
     name: string,
     itemCount: number | undefined,
     groupId: number | undefined

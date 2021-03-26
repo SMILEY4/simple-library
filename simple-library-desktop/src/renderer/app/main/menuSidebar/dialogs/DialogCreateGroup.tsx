@@ -1,31 +1,32 @@
 import * as React from 'react';
 import { Component, ReactElement } from 'react';
-import { extractGroups, Group } from '../../../../common/commonModels';
-import { CreateCollectionMessage } from '../../../../common/messaging/messagesCollections';
-import { Dialog } from '../../../components/modal/Dialog';
-import { AlignCross, AlignMain, Dir, Size, Type, Variant } from '../../../components/common';
-import { Box } from '../../../components/layout/Box';
-import { InputField } from '../../../components/inputfield/InputField';
-import { BodyText } from '../../../components/text/Text';
+import { Dialog } from '../../../../components/modal/Dialog';
+import { AlignCross, AlignMain, Dir, Size, Type, Variant } from '../../../../components/common';
+import { Box } from '../../../../components/layout/Box';
+import { InputField } from '../../../../components/inputfield/InputField';
+import { extractGroups, Group } from '../../../../../common/commonModels';
+import { BodyText } from '../../../../components/text/Text';
+import { CreateGroupMessage } from '../../../../../common/messaging/messagesGroups';
 
 const { ipcRenderer } = window.require('electron');
 
 
-interface DialogCreateCollectionControllerProps {
+interface DialogCreateGroupControllerProps {
     show: boolean,
     onClose: (successful: boolean) => void,
     triggerGroupId: number | undefined,
     rootGroup: Group,
 }
 
-interface DialogCreateCollectionControllerState {
+interface DialogCreateGroupControllerState {
     name: string,
     nameValid: boolean
 }
 
-export class DialogCreateCollectionController extends Component<DialogCreateCollectionControllerProps, DialogCreateCollectionControllerState> {
 
-    constructor(props: DialogCreateCollectionControllerProps) {
+export class DialogCreateGroupController extends Component<DialogCreateGroupControllerProps, DialogCreateGroupControllerState> {
+
+    constructor(props: DialogCreateGroupControllerProps) {
         super(props);
         this.state = {
             name: "",
@@ -38,7 +39,7 @@ export class DialogCreateCollectionController extends Component<DialogCreateColl
 
     render(): ReactElement {
         if (this.props.show) {
-            return <DialogCreateCollection
+            return <DialogCreateGroup
                 parentGroup={extractGroups(this.props.rootGroup).find(g => g.id === this.props.triggerGroupId)}
                 name={this.state.name}
                 onChangeName={(name: string) => this.setState({ name: name })}
@@ -67,7 +68,7 @@ export class DialogCreateCollectionController extends Component<DialogCreateColl
 
     handleCreate() {
         if (this.validate()) {
-            CreateCollectionMessage.request(ipcRenderer, {
+            CreateGroupMessage.request(ipcRenderer, {
                 name: this.state.name.trim(),
                 parentGroupId: this.props.triggerGroupId,
             }).finally(() => this.props.onClose(true));
@@ -77,7 +78,7 @@ export class DialogCreateCollectionController extends Component<DialogCreateColl
 }
 
 
-interface DialogCreateCollectionProps {
+interface DialogCreateGroupProps {
     parentGroup: Group | undefined,
     name: string,
     onChangeName: (name: string) => void
@@ -85,9 +86,9 @@ interface DialogCreateCollectionProps {
     onCreate: () => void
 }
 
-function DialogCreateCollection(props: React.PropsWithChildren<DialogCreateCollectionProps>): React.ReactElement {
+function DialogCreateGroup(props: React.PropsWithChildren<DialogCreateGroupProps>): React.ReactElement {
     return (
-        <Dialog title={"Create new Collection"}
+        <Dialog title={"Create new Group"}
                 show={true}
                 closeButton={true}
                 onClose={props.onClose}
@@ -109,7 +110,7 @@ function DialogCreateCollection(props: React.PropsWithChildren<DialogCreateColle
             <Box dir={Dir.DOWN} alignMain={AlignMain.CENTER} alignCross={AlignCross.STRETCH} spacing={Size.S_0_75}>
                 <InputField
                     autoFocus
-                    placeholder='Collection Name'
+                    placeholder='Group Name'
                     value={props.name}
                     onChange={props.onChangeName}
                 />

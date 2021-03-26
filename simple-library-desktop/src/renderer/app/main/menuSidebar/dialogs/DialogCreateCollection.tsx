@@ -1,28 +1,31 @@
 import * as React from 'react';
 import { Component, ReactElement } from 'react';
-import { Dialog } from '../../../components/modal/Dialog';
-import { AlignCross, AlignMain, Dir, Size, Type, Variant } from '../../../components/common';
-import { Box } from '../../../components/layout/Box';
-import { InputField } from '../../../components/inputfield/InputField';
-import { Group } from '../../../../common/commonModels';
-import { RenameGroupMessage } from '../../../../common/messaging/messagesGroups';
+import { extractGroups, Group } from '../../../../../common/commonModels';
+import { CreateCollectionMessage } from '../../../../../common/messaging/messagesCollections';
+import { Dialog } from '../../../../components/modal/Dialog';
+import { AlignCross, AlignMain, Dir, Size, Type, Variant } from '../../../../components/common';
+import { Box } from '../../../../components/layout/Box';
+import { InputField } from '../../../../components/inputfield/InputField';
+import { BodyText } from '../../../../components/text/Text';
 
 const { ipcRenderer } = window.require('electron');
 
-interface DialogRenameGroupControllerProps {
+
+interface DialogCreateCollectionControllerProps {
     show: boolean,
-    group: Group,
     onClose: (successful: boolean) => void,
+    triggerGroupId: number | undefined,
+    rootGroup: Group,
 }
 
-interface DialogRenameGroupControllerState {
+interface DialogCreateCollectionControllerState {
     name: string,
-    nameValid: boolean,
+    nameValid: boolean
 }
 
-export class DialogRenameGroupController extends Component<DialogRenameGroupControllerProps, DialogRenameGroupControllerState> {
+export class DialogCreateCollectionController extends Component<DialogCreateCollectionControllerProps, DialogCreateCollectionControllerState> {
 
-    constructor(props: DialogRenameGroupControllerProps) {
+    constructor(props: DialogCreateCollectionControllerProps) {
         super(props);
         this.state = {
             name: "",
@@ -30,32 +33,17 @@ export class DialogRenameGroupController extends Component<DialogRenameGroupCont
         };
         this.validate = this.validate.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
-        this.handleRename = this.handleRename.bind(this);
-    }
-
-    componentDidUpdate(prevProps: Readonly<DialogRenameGroupControllerProps>, prevState: Readonly<DialogRenameGroupControllerState>, snapshot?: any) {
-        if (prevProps.show !== this.props.show) {
-            if (this.props.show) {
-                this.setState({
-                    name: this.props.group.name,
-                    nameValid: true,
-                });
-            } else {
-                this.setState({
-                    name: "",
-                    nameValid: true,
-                });
-            }
-        }
+        this.handleCreate = this.handleCreate.bind(this);
     }
 
     render(): ReactElement {
         if (this.props.show) {
-            return <DialogRenameGroup
+            return <DialogCreateCollection
+                parentGroup={extractGroups(this.props.rootGroup).find(g => g.id === this.props.triggerGroupId)}
                 name={this.state.name}
                 onChangeName={(name: string) => this.setState({ name: name })}
                 onClose={this.handleCancel}
-                onRename={this.handleRename}
+                onCreate={this.handleCreate}
             />;
         } else {
             return null;
@@ -77,11 +65,11 @@ export class DialogRenameGroupController extends Component<DialogRenameGroupCont
         this.props.onClose(false);
     }
 
-    handleRename() {
+    handleCreate() {
         if (this.validate()) {
-            RenameGroupMessage.request(ipcRenderer, {
-                groupId: this.props.group.id,
-                newName: this.state.name,
+            CreateCollectionMessage.request(ipcRenderer, {
+                name: this.state.name.trim(),
+                parentGroupId: this.props.triggerGroupId,
             }).finally(() => this.props.onClose(true));
         }
     }
@@ -89,16 +77,17 @@ export class DialogRenameGroupController extends Component<DialogRenameGroupCont
 }
 
 
-interface DialogRenameGroupProps {
+interface DialogCreateCollectionProps {
+    parentGroup: Group | undefined,
     name: string,
     onChangeName: (name: string) => void
     onClose: () => void
-    onRename: () => void
+    onCreate: () => void
 }
 
-function DialogRenameGroup(props: React.PropsWithChildren<DialogRenameGroupProps>): React.ReactElement {
+function DialogCreateCollection(props: React.PropsWithChildren<DialogCreateCollectionProps>): React.ReactElement {
     return (
-        <Dialog title={"Rename Group"}
+        <Dialog title={"Create new Collection"}
                 show={true}
                 closeButton={true}
                 onClose={props.onClose}
@@ -110,21 +99,23 @@ function DialogRenameGroup(props: React.PropsWithChildren<DialogRenameGroupProps
                         triggeredByEscape: true,
                     },
                     {
-                        content: "Rename",
+                        content: "Create",
                         variant: Variant.SOLID,
                         type: Type.PRIMARY,
-                        onAction: props.onRename,
+                        onAction: props.onCreate,
                         triggeredByEnter: true,
-
                     },
                 ]}>
             <Box dir={Dir.DOWN} alignMain={AlignMain.CENTER} alignCross={AlignCross.STRETCH} spacing={Size.S_0_75}>
                 <InputField
                     autoFocus
-                    placeholder='Group Name'
+                    placeholder='Collection Name'
                     value={props.name}
                     onChange={props.onChangeName}
                 />
+                {props.parentGroup && (
+                    <BodyText>{'Create in group "' + props.parentGroup.name + '".'} </BodyText>
+                )}
             </Box>
         </Dialog>
     );

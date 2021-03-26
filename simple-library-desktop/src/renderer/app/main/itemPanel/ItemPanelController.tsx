@@ -5,11 +5,6 @@ import { ItemPanel } from './ItemPanel';
 import { Group, ItemData } from '../../../../common/commonModels';
 import { DragAndDropItems } from '../../common/dragAndDrop';
 
-export const ITEM_DRAG_GHOST_ID: string = "item-drag-ghost";
-export const ITEM_DRAG_GHOST_CLASS: string = "item-drag-ghost";
-export const ITEM_COPY_DRAG_GHOST_CLASS: string = "item-copy-drag-ghost";
-export const ITEM_MOVE_DRAG_GHOST_CLASS: string = "item-move-drag-ghost";
-
 export enum SelectMode {
     DEFAULT = "default",
     ADD = "add",
@@ -21,7 +16,8 @@ interface ItemPanelControllerProps {
     rootGroup: Group,
     items: ItemData[],
     onActionMove: (targetCollectionId: number | undefined, itemIds: number[]) => void,
-    onActionCopy: (targetCollectionId: number | undefined, itemIds: number[]) => void
+    onActionCopy: (targetCollectionId: number | undefined, itemIds: number[]) => void,
+    onActionRemove: (itemIds: number[]) => void,
 }
 
 interface ItemPanelControllerState {
@@ -136,8 +132,7 @@ export class ItemPanelController extends Component<ItemPanelControllerProps, Ite
         if (itemIds.indexOf(triggerItemId) === -1) {
             itemIds.push(triggerItemId);
         }
-        // todo: hacky -> build proper "remove"-message
-        this.props.onActionMove(undefined, itemIds);
+        this.props.onActionRemove(itemIds);
     }
 
     handleOnDragStart(triggerItemId: number, event: React.DragEvent): void {
