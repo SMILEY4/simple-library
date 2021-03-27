@@ -1,17 +1,16 @@
 import * as React from 'react';
 import { Component, ReactElement } from 'react';
-import { Dialog } from '../../../components/modal/Dialog';
-import { AlignCross, AlignMain, Dir, Size, Type, Variant } from '../../../components/common';
-import { Box } from '../../../components/layout/Box';
-import { InputField } from '../../../components/inputfield/InputField';
-import { Collection } from '../../../../common/commonModels';
-import { RenameCollectionMessage } from '../../../../common/messaging/messagesCollections';
+import { Dialog } from '../../../../components/modal/Dialog';
+import { AlignCross, AlignMain, Dir, Size, Type, Variant } from '../../../../components/common';
+import { Box } from '../../../../components/layout/Box';
+import { InputField } from '../../../../components/inputfield/InputField';
+import { Collection } from '../../../../../common/commonModels';
+import { RenameCollectionMessage } from '../../../../../common/messaging/messagesCollections';
 
 const { ipcRenderer } = window.require('electron');
 
 
 interface DialogRenameCollectionControllerProps {
-    show: boolean,
     collection: Collection,
     onClose: (successful: boolean) => void,
 
@@ -35,33 +34,13 @@ export class DialogRenameCollectionController extends Component<DialogRenameColl
         this.handleRename = this.handleRename.bind(this);
     }
 
-    componentDidUpdate(prevProps: Readonly<DialogRenameCollectionControllerProps>, prevState: Readonly<DialogRenameCollectionControllerState>, snapshot?: any) {
-        if (prevProps.show !== this.props.show) {
-            if (this.props.show) {
-                this.setState({
-                    name: this.props.collection.name,
-                    nameValid: true,
-                });
-            } else {
-                this.setState({
-                    name: "",
-                    nameValid: true,
-                });
-            }
-        }
-    }
-
     render(): ReactElement {
-        if (this.props.show) {
-            return <DialogRenameCollection
-                name={this.state.name}
-                onChangeName={(name: string) => this.setState({ name: name })}
-                onClose={this.handleCancel}
-                onRename={this.handleRename}
-            />;
-        } else {
-            return null;
-        }
+        return <DialogRenameCollection
+            name={this.state.name}
+            onChangeName={(name: string) => this.setState({ name: name })}
+            onClose={this.handleCancel}
+            onRename={this.handleRename}
+        />;
     }
 
     validate(): boolean {

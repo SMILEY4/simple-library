@@ -1,17 +1,16 @@
 import * as React from 'react';
 import { Component, ReactElement } from 'react';
-import { Dialog } from '../../../components/modal/Dialog';
-import { AlignCross, AlignMain, Dir, Size, Type, Variant } from '../../../components/common';
-import { Box } from '../../../components/layout/Box';
-import { BodyText } from '../../../components/text/Text';
-import { Collection } from '../../../../common/commonModels';
-import { DeleteCollectionMessage } from '../../../../common/messaging/messagesCollections';
+import { Dialog } from '../../../../components/modal/Dialog';
+import { AlignCross, AlignMain, Dir, Size, Type, Variant } from '../../../../components/common';
+import { Box } from '../../../../components/layout/Box';
+import { BodyText } from '../../../../components/text/Text';
+import { Collection } from '../../../../../common/commonModels';
+import { DeleteCollectionMessage } from '../../../../../common/messaging/messagesCollections';
 
 const { ipcRenderer } = window.require('electron');
 
 
 interface DialogDeleteCollectionControllerProps {
-    show: boolean,
     collection: Collection,
     onClose: (successful: boolean) => void,
 }
@@ -28,15 +27,11 @@ export class DialogDeleteCollectionController extends Component<DialogDeleteColl
     }
 
     render(): ReactElement {
-        if (this.props.show) {
-            return <DialogDeleteCollection
-                collectionName={this.props.collection.name}
-                onClose={this.handleCancel}
-                onDelete={this.handleDelete}
-            />;
-        } else {
-            return null;
-        }
+        return <DialogDeleteCollection
+            collectionName={this.props.collection.name}
+            onClose={this.handleCancel}
+            onDelete={this.handleDelete}
+        />;
     }
 
     handleCancel() {

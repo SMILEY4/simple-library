@@ -7,10 +7,11 @@ import { Box } from '../../components/layout/Box';
 import { NotificationEntry } from '../../components/notification/NotificationStack';
 
 export enum MainViewMessageType {
-    FETCH_COLLECTIONS_FAILED,
+    FETCH_GROUPS_AND_COLLECTIONS_FAILED,
     FETCH_TOTAL_ITEM_COUNT_FAILED,
     FETCH_ITEMS_FAILED,
     MOVE_ITEMS_IN_COLLECTION_FAILED,
+    REMOVE_ITEMS_FROM_COLLECTION_FAILED,
     IMPORT_FAILED_UNKNOWN,
     IMPORT_FAILED,
     IMPORT_WITH_ERRORS,
@@ -59,8 +60,8 @@ export class MainView extends Component<MainViewProps> {
 
     showNotification(type: MainViewMessageType, data: any): string {
         switch (type) {
-            case MainViewMessageType.FETCH_COLLECTIONS_FAILED: {
-                return this.addNotificationEntry(Type.ERROR, true, "Unexpected error when fetching collections", this.errorToString(data));
+            case MainViewMessageType.FETCH_GROUPS_AND_COLLECTIONS_FAILED: {
+                return this.addNotificationEntry(Type.ERROR, true, "Unexpected error when fetching collections,groups", this.errorToString(data));
             }
             case MainViewMessageType.FETCH_TOTAL_ITEM_COUNT_FAILED: {
                 return this.addNotificationEntry(Type.ERROR, true, "Unexpected error when fetching total item count", this.errorToString(data));
@@ -70,6 +71,9 @@ export class MainView extends Component<MainViewProps> {
             }
             case MainViewMessageType.MOVE_ITEMS_IN_COLLECTION_FAILED: {
                 return this.addNotificationEntry(Type.ERROR, true, "Unexpected error while moving items to collection", this.errorToString(data));
+            }
+            case MainViewMessageType.REMOVE_ITEMS_FROM_COLLECTION_FAILED: {
+                return this.addNotificationEntry(Type.ERROR, true, "Unexpected error while removing items from collection", this.errorToString(data));
             }
             case MainViewMessageType.IMPORT_FAILED_UNKNOWN: {
                 return this.addNotificationEntry(Type.ERROR, true, "Import failed unexpectedly", this.errorToString(data));

@@ -1,18 +1,17 @@
 import * as React from 'react';
 import { Component, ReactElement } from 'react';
-import { Dialog } from '../../../components/modal/Dialog';
-import { AlignCross, AlignMain, Dir, Size, Type, Variant } from '../../../components/common';
-import { Box } from '../../../components/layout/Box';
-import { BodyText } from '../../../components/text/Text';
-import { Checkbox } from '../../../components/checkbox/Checkbox';
-import { Group } from '../../../../common/commonModels';
-import { DeleteGroupMessage } from '../../../../common/messaging/messagesGroups';
+import { Dialog } from '../../../../components/modal/Dialog';
+import { AlignCross, AlignMain, Dir, Size, Type, Variant } from '../../../../components/common';
+import { Box } from '../../../../components/layout/Box';
+import { BodyText } from '../../../../components/text/Text';
+import { Checkbox } from '../../../../components/checkbox/Checkbox';
+import { Group } from '../../../../../common/commonModels';
+import { DeleteGroupMessage } from '../../../../../common/messaging/messagesGroups';
 
 const { ipcRenderer } = window.require('electron');
 
 
 interface DialogDeleteGroupControllerProps {
-    show: boolean,
     group: Group,
     onClose: (successful: boolean) => void,
 
@@ -34,17 +33,13 @@ export class DialogDeleteGroupController extends Component<DialogDeleteGroupCont
     }
 
     render(): ReactElement {
-        if (this.props.show) {
-            return <DialogDeleteGroup
-                groupName={this.props.group.name}
-                deleteChildren={this.state.deleteChildren}
-                onToggleDeleteChildren={(deleteChildren: boolean) => this.setState({ deleteChildren: deleteChildren })}
-                onClose={this.handleCancel}
-                onDelete={this.handleDelete}
-            />;
-        } else {
-            return null;
-        }
+        return <DialogDeleteGroup
+            groupName={this.props.group.name}
+            deleteChildren={this.state.deleteChildren}
+            onToggleDeleteChildren={(deleteChildren: boolean) => this.setState({ deleteChildren: deleteChildren })}
+            onClose={this.handleCancel}
+            onDelete={this.handleDelete}
+        />;
     }
 
 

@@ -43,11 +43,9 @@ export class LibraryDataAccess {
             await this.dataAccess.executeRun(sqlCreateTableCollections());
             await this.dataAccess.executeRun(sqlCreateTableCollectionItems());
             await this.dataAccess.executeRun(sqlCreateTableGroups());
-            await Promise.all([
-                this.dataAccess.executeRun(sqlInsertMetadataLibraryName(libraryName)),
-                this.dataAccess.executeRun(sqlInsertMetadataTimestampCreated(timestamp)),
-                this.dataAccess.executeRun(sqlInsertMetadataTimestampLastOpened(timestamp)),
-            ]);
+            await this.dataAccess.executeRun(sqlInsertMetadataLibraryName(libraryName));
+            await this.dataAccess.executeRun(sqlInsertMetadataTimestampCreated(timestamp));
+            await this.dataAccess.executeRun(sqlInsertMetadataTimestampLastOpened(timestamp));
         }
     }
 

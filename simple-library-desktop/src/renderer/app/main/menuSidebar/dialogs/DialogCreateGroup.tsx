@@ -1,18 +1,17 @@
 import * as React from 'react';
 import { Component, ReactElement } from 'react';
-import { Dialog } from '../../../components/modal/Dialog';
-import { AlignCross, AlignMain, Dir, Size, Type, Variant } from '../../../components/common';
-import { Box } from '../../../components/layout/Box';
-import { InputField } from '../../../components/inputfield/InputField';
-import { extractGroups, Group } from '../../../../common/commonModels';
-import { BodyText } from '../../../components/text/Text';
-import { CreateGroupMessage } from '../../../../common/messaging/messagesGroups';
+import { Dialog } from '../../../../components/modal/Dialog';
+import { AlignCross, AlignMain, Dir, Size, Type, Variant } from '../../../../components/common';
+import { Box } from '../../../../components/layout/Box';
+import { InputField } from '../../../../components/inputfield/InputField';
+import { extractGroups, Group } from '../../../../../common/commonModels';
+import { BodyText } from '../../../../components/text/Text';
+import { CreateGroupMessage } from '../../../../../common/messaging/messagesGroups';
 
 const { ipcRenderer } = window.require('electron');
 
 
 interface DialogCreateGroupControllerProps {
-    show: boolean,
     onClose: (successful: boolean) => void,
     triggerGroupId: number | undefined,
     rootGroup: Group,
@@ -38,17 +37,13 @@ export class DialogCreateGroupController extends Component<DialogCreateGroupCont
     }
 
     render(): ReactElement {
-        if (this.props.show) {
-            return <DialogCreateGroup
-                parentGroup={extractGroups(this.props.rootGroup).find(g => g.id === this.props.triggerGroupId)}
-                name={this.state.name}
-                onChangeName={(name: string) => this.setState({ name: name })}
-                onClose={this.handleCancel}
-                onCreate={this.handleCreate}
-            />;
-        } else {
-            return null;
-        }
+        return <DialogCreateGroup
+            parentGroup={extractGroups(this.props.rootGroup).find(g => g.id === this.props.triggerGroupId)}
+            name={this.state.name}
+            onChangeName={(name: string) => this.setState({ name: name })}
+            onClose={this.handleCancel}
+            onCreate={this.handleCreate}
+        />;
     }
 
     validate(): boolean {

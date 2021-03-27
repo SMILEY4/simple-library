@@ -9,18 +9,18 @@ import {
     ImportProcessData,
 } from '../../../../common/commonModels';
 import { DialogImportFiles } from '../import/DialogImportFiles';
-import { DialogCreateCollectionController } from './DialogCreateCollection';
-import { DialogRenameCollectionController } from './DialogRenameCollection';
+import { DialogCreateCollectionController } from './dialogs/DialogCreateCollection';
+import { DialogRenameCollectionController } from './dialogs/DialogRenameCollection';
 import {
     DragAndDropCollections,
     DragAndDropGroups,
     DragAndDropItems,
     DragAndDropUtils,
 } from '../../common/dragAndDrop';
-import { DialogCreateGroupController } from './DialogCreateGroup';
-import { DialogDeleteGroupController } from './DialogDeleteGroup';
-import { DialogRenameGroupController } from './DialogRenameGroup';
-import { DialogDeleteCollectionController } from './DialogDeleteCollection';
+import { DialogCreateGroupController } from './dialogs/DialogCreateGroup';
+import { DialogDeleteGroupController } from './dialogs/DialogDeleteGroup';
+import { DialogRenameGroupController } from './dialogs/DialogRenameGroup';
+import { DialogDeleteCollectionController } from './dialogs/DialogDeleteCollection';
 import { MoveCollectionMessage } from '../../../../common/messaging/messagesCollections';
 import { MoveGroupMessage } from '../../../../common/messaging/messagesGroups';
 
@@ -29,13 +29,13 @@ const { ipcRenderer } = window.require('electron');
 
 interface MenuSidebarControllerProps {
     rootGroup: Group,
-    activeCollectionId: number | undefined,
-    onSelectCollection: (collectionId: number | undefined) => void,
+    activeCollectionId: number | null,
+    onSelectCollection: (collectionId: number | null) => void,
     onActionImport: (data: ImportProcessData) => void,
     onActionRefresh: () => void,
     onActionClose: () => void,
-    onActionMoveItems: (srcCollectionId: number | undefined, tgtCollectionId: number | undefined, itemIds: number[]) => void,
-    onActionCopyItems: (srcCollectionId: number | undefined, tgtCollectionId: number | undefined, itemIds: number[]) => void,
+    onActionMoveItems: (srcCollectionId: number | null, tgtCollectionId: number | null, itemIds: number[]) => void,
+    onActionCopyItems: (srcCollectionId: number | null, tgtCollectionId: number | null, itemIds: number[]) => void,
     onCollectionsModified: () => void,
 }
 
@@ -149,49 +149,57 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
                     onGroupContextMenuMove={this.handleMoveGroup}
                 />
 
-                {this.state.showImportDialog && (  // todo
+                {this.state.showImportDialog && (
                     <DialogImportFiles
                         onClose={this.handleOnCloseImport}
-                        onImport={this.handleOnDoImport} />
+                        onImport={this.handleOnDoImport}
+                    />
                 )}
 
-                <DialogCreateCollectionController
-                    show={this.state.showCreateCollectionDialog}
-                    rootGroup={this.props.rootGroup}
-                    triggerGroupId={this.state.triggerGroupId}
-                    onClose={this.handleCloseCreateCollectionDialog}
-                />
+                {this.state.showCreateCollectionDialog && (
+                    <DialogCreateCollectionController
+                        rootGroup={this.props.rootGroup}
+                        triggerGroupId={this.state.triggerGroupId}
+                        onClose={this.handleCloseCreateCollectionDialog}
+                    />
+                )}
 
-                <DialogDeleteCollectionController
-                    show={this.state.showDialogDeleteCollection}
-                    collection={this.state.collectionToDelete}
-                    onClose={this.handleCloseDeleteCollectionDialog}
-                />
+                {this.state.showDialogDeleteCollection && (
+                    <DialogDeleteCollectionController
+                        collection={this.state.collectionToDelete}
+                        onClose={this.handleCloseDeleteCollectionDialog}
+                    />
+                )}
 
-                <DialogRenameCollectionController
-                    show={this.state.showDialogRenameCollection}
-                    collection={this.state.collectionToRename}
-                    onClose={this.handleCloseRenameCollectionDialog}
-                />
+                {this.state.showDialogRenameCollection && (
+                    <DialogRenameCollectionController
+                        collection={this.state.collectionToRename}
+                        onClose={this.handleCloseRenameCollectionDialog}
+                    />
+                )}
 
-                <DialogCreateGroupController
-                    show={this.state.showCreateGroupDialog}
-                    rootGroup={this.props.rootGroup}
-                    triggerGroupId={this.state.triggerGroupId}
-                    onClose={this.handleCloseCreateGroupDialog}
-                />
+                {this.state.showCreateGroupDialog && (
+                    <DialogCreateGroupController
+                        rootGroup={this.props.rootGroup}
+                        triggerGroupId={this.state.triggerGroupId}
+                        onClose={this.handleCloseCreateGroupDialog}
+                    />
+                )}
 
-                <DialogDeleteGroupController
-                    show={this.state.showDialogDeleteGroup}
-                    group={this.findGroupById(this.state.triggerGroupId)}
-                    onClose={this.handleCloseDeleteGroupDialog}
-                />
+                {this.state.showDialogDeleteGroup && (
+                    <DialogDeleteGroupController
+                        group={this.findGroupById(this.state.triggerGroupId)}
+                        onClose={this.handleCloseDeleteGroupDialog}
+                    />
+                )}
 
-                <DialogRenameGroupController
-                    show={this.state.showDialogRenameGroup}
-                    group={this.findGroupById(this.state.triggerGroupId)}
-                    onClose={this.handleCloseRenameGroupDialog}
-                />
+                {this.state.showDialogRenameGroup && (
+                    <DialogRenameGroupController
+                        group={this.findGroupById(this.state.triggerGroupId)}
+                        onClose={this.handleCloseRenameGroupDialog}
+                    />
+                )}
+
             </>
         );
     }
@@ -215,7 +223,7 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
         });
     }
 
-    findCollectionById(collectionId: number | undefined): Collection | undefined {
+    findCollectionById(collectionId: number | null): Collection | undefined {
         return extractCollections(this.props.rootGroup).find(c => c.id === collectionId);
     }
 
@@ -314,11 +322,11 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
     //    DROP ON COLLECTION   //
     //=========================//
 
-    handleDragOverCollection(collectionId: number | undefined, event: React.DragEvent): void {
+    handleDragOverCollection(collectionId: number | null, event: React.DragEvent): void {
         DragAndDropItems.setDropEffect(event.dataTransfer, collectionId);
     }
 
-    handleDropOnCollection(collectionId: number | undefined, event: React.DragEvent): void {
+    handleDropOnCollection(collectionId: number | null, event: React.DragEvent): void {
         const dropData: DragAndDropItems.Data = DragAndDropItems.getDragData(event.dataTransfer);
         const srcCollectionId: number = dropData.sourceCollectionId;
         if (srcCollectionId !== collectionId) {

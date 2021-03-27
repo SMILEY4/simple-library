@@ -5,7 +5,8 @@ import {
     sqlDeleteCollection,
     sqlInsertCollection,
     sqlRemoveItemFromCollection,
-    sqlUpdateCollectionName, sqlUpdateCollectionsGroupId,
+    sqlUpdateCollectionName,
+    sqlUpdateCollectionsGroupId,
     sqlUpdateCollectionsParents,
 } from './sql/sql';
 import { Collection } from '../../common/commonModels';
@@ -138,9 +139,17 @@ export class CollectionDataAccess {
                     }
                 })
                 .then();
-        } else {
-            return this.dataAccess.executeRun(sqlRemoveItemFromCollection(srcCollectionId, itemId)).then();
         }
+    }
+
+
+    /**
+     * Removes the given item from the given collection
+     * @param collectionId the id of the collection
+     * @param itemId the id of the item to remove
+     */
+    public removeItemsFromCollection(collectionId: number, itemId: number): Promise<void> {
+        return this.dataAccess.executeRun(sqlRemoveItemFromCollection(collectionId, itemId)).then();
     }
 
 }
