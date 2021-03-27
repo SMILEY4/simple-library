@@ -1,7 +1,14 @@
 import * as React from 'react';
 import { Component, ReactElement } from 'react';
 import { Theme } from '../application';
-import { Group, ImportProcessData, ImportResult, ImportStatus, ItemData } from '../../../common/commonModels';
+import {
+    ALL_ITEMS_COLLECTION_ID,
+    Group,
+    ImportProcessData,
+    ImportResult,
+    ImportStatus,
+    ItemData,
+} from '../../../common/commonModels';
 import { ItemPanelController } from './itemPanel/ItemPanelController';
 import { MenuSidebarController } from './menuSidebar/MenuSidebarController';
 import { MainView, MainViewMessageType } from './MainView';
@@ -29,7 +36,7 @@ interface MainViewControllerState {
     showImportFilesDialog: boolean
     rootGroup: Group,
     items: ItemData[],
-    currentCollectionId: number | undefined,
+    currentCollectionId: number | null,
 }
 
 export class MainViewController extends Component<MainViewControllerProps, MainViewControllerState> {
@@ -44,7 +51,7 @@ export class MainViewController extends Component<MainViewControllerProps, MainV
             showImportFilesDialog: false,
             rootGroup: undefined,
             items: [],
-            currentCollectionId: undefined,
+            currentCollectionId: ALL_ITEMS_COLLECTION_ID,
         };
         this.updateGroupsAndCollections = this.updateGroupsAndCollections.bind(this);
         this.updateItemList = this.updateItemList.bind(this);
@@ -89,8 +96,8 @@ export class MainViewController extends Component<MainViewControllerProps, MainV
                     rootGroup={this.state.rootGroup}
                     selectedCollectionId={this.state.currentCollectionId}
                     items={this.state.items}
-                    onActionMove={(targetCollectionId: number | undefined, itemIds: number[]) => this.actionMoveItems(this.state.currentCollectionId, targetCollectionId, itemIds, false)}
-                    onActionCopy={(targetCollectionId: number | undefined, itemIds: number[]) => this.actionMoveItems(this.state.currentCollectionId, targetCollectionId, itemIds, true)}
+                    onActionMove={(targetCollectionId: number | null, itemIds: number[]) => this.actionMoveItems(this.state.currentCollectionId, targetCollectionId, itemIds, false)}
+                    onActionCopy={(targetCollectionId: number | null, itemIds: number[]) => this.actionMoveItems(this.state.currentCollectionId, targetCollectionId, itemIds, true)}
                     onActionRemove={(itemIds: number[]) => this.actionRemoveItems(this.state.currentCollectionId, itemIds)}
                 />
             </MainView>
@@ -111,11 +118,11 @@ export class MainViewController extends Component<MainViewControllerProps, MainV
         this.updateItemList(this.state.currentCollectionId);
     }
 
-    handleActionMoveItems(srcCollectionId: number | undefined, tgtCollectionId: number | undefined, itemIds: number[]): void {
+    handleActionMoveItems(srcCollectionId: number | null, tgtCollectionId: number | null, itemIds: number[]): void {
         this.actionMoveItems(srcCollectionId, tgtCollectionId, itemIds, false);
     }
 
-    handleActionCopyItems(srcCollectionId: number | undefined, tgtCollectionId: number | undefined, itemIds: number[]): void {
+    handleActionCopyItems(srcCollectionId: number | null, tgtCollectionId: number | null, itemIds: number[]): void {
         this.actionMoveItems(srcCollectionId, tgtCollectionId, itemIds, true);
     }
 
@@ -155,7 +162,7 @@ export class MainViewController extends Component<MainViewControllerProps, MainV
             });
     }
 
-    updateItemList(collectionId: number | undefined) {
+    updateItemList(collectionId: number | null) {
         return GetItemsMessage.request(ipcRenderer, { collectionId: collectionId })
             .then((response: GetItemsMessage.ResponsePayload) => response.items)
             .then((items: ItemData[]) => this.setState({ items: items }))

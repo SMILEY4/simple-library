@@ -6,10 +6,10 @@ import { BiImages } from 'react-icons/all';
 
 interface CollectionEntryProps {
     name: string,
-    id: number | undefined,
+    id: number | null,
     itemCount: number,
-    selectedId: number | undefined,
-    onSelect: (id: number | undefined) => void,
+    selectedId: number | null,
+    onSelect: (id: number | null) => void,
     onDragStart: (event: React.DragEvent) => void
     onDragOver: (event: React.DragEvent) => void
     onDrop: (event: React.DragEvent) => void
@@ -23,6 +23,8 @@ export function CollectionEntry(props: React.PropsWithChildren<CollectionEntryPr
             collectionId: props.id,
         },
     });
+
+    console.log("SidebarMenu: " + props.id + "  selected=" + props.selectedId)
 
     return <SidebarMenuItem title={props.name}
                             icon={<BiImages />}

@@ -29,13 +29,13 @@ const { ipcRenderer } = window.require('electron');
 
 interface MenuSidebarControllerProps {
     rootGroup: Group,
-    activeCollectionId: number | undefined,
-    onSelectCollection: (collectionId: number | undefined) => void,
+    activeCollectionId: number | null,
+    onSelectCollection: (collectionId: number | null) => void,
     onActionImport: (data: ImportProcessData) => void,
     onActionRefresh: () => void,
     onActionClose: () => void,
-    onActionMoveItems: (srcCollectionId: number | undefined, tgtCollectionId: number | undefined, itemIds: number[]) => void,
-    onActionCopyItems: (srcCollectionId: number | undefined, tgtCollectionId: number | undefined, itemIds: number[]) => void,
+    onActionMoveItems: (srcCollectionId: number | null, tgtCollectionId: number | null, itemIds: number[]) => void,
+    onActionCopyItems: (srcCollectionId: number | null, tgtCollectionId: number | null, itemIds: number[]) => void,
     onCollectionsModified: () => void,
 }
 
@@ -215,7 +215,7 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
         });
     }
 
-    findCollectionById(collectionId: number | undefined): Collection | undefined {
+    findCollectionById(collectionId: number | null): Collection | undefined {
         return extractCollections(this.props.rootGroup).find(c => c.id === collectionId);
     }
 
@@ -314,11 +314,11 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
     //    DROP ON COLLECTION   //
     //=========================//
 
-    handleDragOverCollection(collectionId: number | undefined, event: React.DragEvent): void {
+    handleDragOverCollection(collectionId: number | null, event: React.DragEvent): void {
         DragAndDropItems.setDropEffect(event.dataTransfer, collectionId);
     }
 
-    handleDropOnCollection(collectionId: number | undefined, event: React.DragEvent): void {
+    handleDropOnCollection(collectionId: number | null, event: React.DragEvent): void {
         const dropData: DragAndDropItems.Data = DragAndDropItems.getDragData(event.dataTransfer);
         const srcCollectionId: number = dropData.sourceCollectionId;
         if (srcCollectionId !== collectionId) {

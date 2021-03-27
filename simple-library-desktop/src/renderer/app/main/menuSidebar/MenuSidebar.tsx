@@ -3,15 +3,8 @@ import { ReactElement } from 'react';
 import { SidebarMenu } from '../../../components/sidebarmenu/SidebarMenu';
 import { SidebarMenuSection } from '../../../components/sidebarmenu/SidebarMenuSection';
 import { Collection, Group } from '../../../../common/commonModels';
-import { SidebarMenuItem } from '../../../components/sidebarmenu/SidebarMenuItem';
-import { AiOutlineCloseCircle, BiImages, BiImport, HiOutlineFolder, HiOutlineRefresh, HiPlus } from 'react-icons/all';
-import { COLLECTION_CONTEXT_MENU_ID, CollectionContextMenu } from './contextmenues/CollectionContextMenu';
-import { useContextMenu } from 'react-contexify';
-import { SidebarMenuGroup } from "../../../components/sidebarmenu/SidebarMenuGroup";
-import { DropdownButton } from '../../../components/button/dropdownbutton/DropdownButton';
-import { Variant } from '../../../components/common';
-import { DropdownItemType } from '../../../components/dropdown/Dropdown';
-import { GROUP_CONTEXT_MENU_ID, GroupContextMenu } from './contextmenues/GroupContextMenu';
+import { CollectionContextMenu } from './contextmenues/CollectionContextMenu';
+import { GroupContextMenu } from './contextmenues/GroupContextMenu';
 import { GroupEntry } from './GroupEntry';
 import { CollectionEntry } from './CollectionEntry';
 import { CollectionSectionAction, MenuActionClose, MenuActionImport, MenuActionRefresh } from './sidebarEntries';
@@ -23,14 +16,14 @@ export interface MenuSidebarProps {
     onActionClose: () => void,
 
     rootGroup: Group,
-    activeCollectionId: number | undefined,
-    onSelectCollection: (collectionId: number | undefined) => void,
+    activeCollectionId: number | null,
+    onSelectCollection: (collectionId: number | null) => void,
 
     onDragStartCollection: (collectionId: number, event: React.DragEvent) => void,
     onDragStartGroup: (groupId: number, event: React.DragEvent) => void,
 
-    onDragOverCollection: (collectionId: number | undefined, event: React.DragEvent) => void,
-    onDropOnCollection: (collectionId: number | undefined, event: React.DragEvent) => void,
+    onDragOverCollection: (collectionId: number | null, event: React.DragEvent) => void,
+    onDropOnCollection: (collectionId: number | null, event: React.DragEvent) => void,
 
     onDragOverGroup: (groupId: number, event: React.DragEvent) => void,
     onDropOnGroup: (groupId: number, event: React.DragEvent) => void,
