@@ -10,7 +10,6 @@ import { RenameGroupMessage } from '../../../../../common/messaging/messagesGrou
 const { ipcRenderer } = window.require('electron');
 
 interface DialogRenameGroupControllerProps {
-    show: boolean,
     group: Group,
     onClose: (successful: boolean) => void,
 }
@@ -33,33 +32,13 @@ export class DialogRenameGroupController extends Component<DialogRenameGroupCont
         this.handleRename = this.handleRename.bind(this);
     }
 
-    componentDidUpdate(prevProps: Readonly<DialogRenameGroupControllerProps>, prevState: Readonly<DialogRenameGroupControllerState>, snapshot?: any) {
-        if (prevProps.show !== this.props.show) {
-            if (this.props.show) {
-                this.setState({
-                    name: this.props.group.name,
-                    nameValid: true,
-                });
-            } else {
-                this.setState({
-                    name: "",
-                    nameValid: true,
-                });
-            }
-        }
-    }
-
     render(): ReactElement {
-        if (this.props.show) {
-            return <DialogRenameGroup
-                name={this.state.name}
-                onChangeName={(name: string) => this.setState({ name: name })}
-                onClose={this.handleCancel}
-                onRename={this.handleRename}
-            />;
-        } else {
-            return null;
-        }
+        return <DialogRenameGroup
+            name={this.state.name}
+            onChangeName={(name: string) => this.setState({ name: name })}
+            onClose={this.handleCancel}
+            onRename={this.handleRename}
+        />;
     }
 
     validate(): boolean {

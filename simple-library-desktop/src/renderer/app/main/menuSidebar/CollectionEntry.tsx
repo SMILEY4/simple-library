@@ -24,8 +24,6 @@ export function CollectionEntry(props: React.PropsWithChildren<CollectionEntryPr
         },
     });
 
-    console.log("SidebarMenu: " + props.id + "  selected=" + props.selectedId)
-
     return <SidebarMenuItem title={props.name}
                             icon={<BiImages />}
                             label={"" + props.itemCount}

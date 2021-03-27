@@ -12,7 +12,6 @@ const { ipcRenderer } = window.require('electron');
 
 
 interface DialogCreateCollectionControllerProps {
-    show: boolean,
     onClose: (successful: boolean) => void,
     triggerGroupId: number | undefined,
     rootGroup: Group,
@@ -37,17 +36,13 @@ export class DialogCreateCollectionController extends Component<DialogCreateColl
     }
 
     render(): ReactElement {
-        if (this.props.show) {
-            return <DialogCreateCollection
-                parentGroup={extractGroups(this.props.rootGroup).find(g => g.id === this.props.triggerGroupId)}
-                name={this.state.name}
-                onChangeName={(name: string) => this.setState({ name: name })}
-                onClose={this.handleCancel}
-                onCreate={this.handleCreate}
-            />;
-        } else {
-            return null;
-        }
+        return <DialogCreateCollection
+            parentGroup={extractGroups(this.props.rootGroup).find(g => g.id === this.props.triggerGroupId)}
+            name={this.state.name}
+            onChangeName={(name: string) => this.setState({ name: name })}
+            onClose={this.handleCancel}
+            onCreate={this.handleCreate}
+        />;
     }
 
     validate(): boolean {

@@ -152,46 +152,54 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
                 {this.state.showImportDialog && (
                     <DialogImportFiles
                         onClose={this.handleOnCloseImport}
-                        onImport={this.handleOnDoImport} />
+                        onImport={this.handleOnDoImport}
+                    />
                 )}
 
-                <DialogCreateCollectionController
-                    show={this.state.showCreateCollectionDialog}
-                    rootGroup={this.props.rootGroup}
-                    triggerGroupId={this.state.triggerGroupId}
-                    onClose={this.handleCloseCreateCollectionDialog}
-                />
+                {this.state.showCreateCollectionDialog && (
+                    <DialogCreateCollectionController
+                        rootGroup={this.props.rootGroup}
+                        triggerGroupId={this.state.triggerGroupId}
+                        onClose={this.handleCloseCreateCollectionDialog}
+                    />
+                )}
 
-                <DialogDeleteCollectionController
-                    show={this.state.showDialogDeleteCollection}
-                    collection={this.state.collectionToDelete}
-                    onClose={this.handleCloseDeleteCollectionDialog}
-                />
+                {this.state.showDialogDeleteCollection && (
+                    <DialogDeleteCollectionController
+                        collection={this.state.collectionToDelete}
+                        onClose={this.handleCloseDeleteCollectionDialog}
+                    />
+                )}
 
-                <DialogRenameCollectionController
-                    show={this.state.showDialogRenameCollection}
-                    collection={this.state.collectionToRename}
-                    onClose={this.handleCloseRenameCollectionDialog}
-                />
+                {this.state.showDialogRenameCollection && (
+                    <DialogRenameCollectionController
+                        collection={this.state.collectionToRename}
+                        onClose={this.handleCloseRenameCollectionDialog}
+                    />
+                )}
 
-                <DialogCreateGroupController
-                    show={this.state.showCreateGroupDialog}
-                    rootGroup={this.props.rootGroup}
-                    triggerGroupId={this.state.triggerGroupId}
-                    onClose={this.handleCloseCreateGroupDialog}
-                />
+                {this.state.showCreateGroupDialog && (
+                    <DialogCreateGroupController
+                        rootGroup={this.props.rootGroup}
+                        triggerGroupId={this.state.triggerGroupId}
+                        onClose={this.handleCloseCreateGroupDialog}
+                    />
+                )}
 
-                <DialogDeleteGroupController
-                    show={this.state.showDialogDeleteGroup}
-                    group={this.findGroupById(this.state.triggerGroupId)}
-                    onClose={this.handleCloseDeleteGroupDialog}
-                />
+                {this.state.showDialogDeleteGroup && (
+                    <DialogDeleteGroupController
+                        group={this.findGroupById(this.state.triggerGroupId)}
+                        onClose={this.handleCloseDeleteGroupDialog}
+                    />
+                )}
 
-                <DialogRenameGroupController
-                    show={this.state.showDialogRenameGroup}
-                    group={this.findGroupById(this.state.triggerGroupId)}
-                    onClose={this.handleCloseRenameGroupDialog}
-                />
+                {this.state.showDialogRenameGroup && (
+                    <DialogRenameGroupController
+                        group={this.findGroupById(this.state.triggerGroupId)}
+                        onClose={this.handleCloseRenameGroupDialog}
+                    />
+                )}
+
             </>
         );
     }
