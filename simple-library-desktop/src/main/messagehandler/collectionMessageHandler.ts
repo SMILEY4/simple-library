@@ -1,4 +1,4 @@
-import { CollectionService } from '../service/collection/collectionService';
+import { CollectionService } from '../service/collectionService';
 import { ipcMain } from 'electron';
 import {
     CreateCollectionMessage,

@@ -1,9 +1,9 @@
-import { Collection, Group, GroupDTO } from '../../../common/commonModels';
-import { ItemService } from "../item/ItemService";
-import { CollectionService } from '../collection/collectionService';
-import { GroupDataAccess } from '../../persistence/groupDataAccess';
-import { CollectionDataAccess } from '../../persistence/collectionDataAccess';
-import { failedAsync } from '../../../common/AsyncCommon';
+import { Collection, Group, GroupDTO } from '../../common/commonModels';
+import { ItemService } from "./ItemService";
+import { CollectionService } from './collectionService';
+import { GroupDataAccess } from '../persistence/groupDataAccess';
+import { CollectionDataAccess } from '../persistence/collectionDataAccess';
+import { failedAsync } from '../../common/AsyncCommon';
 
 export class GroupService {
 

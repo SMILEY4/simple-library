@@ -4,8 +4,8 @@ import {
     ImportProcessData,
     ImportTargetAction,
     RenamePartType,
-} from '../../../../common/commonModels';
-import { FileSystemWrapper } from '../../utils/fileSystemWrapper';
+} from '../../../common/commonModels';
+import { FileSystemWrapper } from '../utils/fileSystemWrapper';
 
 
 export class ImportDataValidator {

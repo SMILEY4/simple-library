@@ -1,4 +1,4 @@
-import { ItemService } from '../service/item/ItemService';
+import { ItemService } from '../service/ItemService';
 import { ipcMain } from 'electron';
 import { errorResponse, ErrorResponse } from '../../common/messaging/messages';
 import { GetItemCountMessage, GetItemsMessage, ImportItemsMessage } from '../../common/messaging/messagesItems';

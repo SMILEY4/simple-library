@@ -1,12 +1,12 @@
 import { Test } from "./testutils/test";
 import { startAsync, startAsyncWithValue } from "../common/AsyncCommon";
-import { CollectionService } from "../main/service/collection/collectionService";
+import { CollectionService } from "../main/service/collectionService";
 import { CollectionDataAccess } from "../main/persistence/collectionDataAccess";
 import { Collection, CollectionType, Group, GroupDTO } from "../common/commonModels";
 import { allTrue, assertEqual } from "./testutils/testAssertions";
-import { ItemService } from "../main/service/item/ItemService";
+import { ItemService } from "../main/service/ItemService";
 import { GroupDataAccess } from '../main/persistence/groupDataAccess';
-import { GroupService } from '../main/service/group/groupService';
+import { GroupService } from '../main/service/groupService';
 
 export class GroupTest {
 

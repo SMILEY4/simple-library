@@ -1,8 +1,8 @@
-import { ItemDataAccess } from '../../persistence/itemDataAccess';
-import { Collection, CollectionType, ImportProcessData, ImportResult, ItemData } from '../../../common/commonModels';
+import { ItemDataAccess } from '../persistence/itemDataAccess';
+import { Collection, CollectionType, ImportProcessData, ImportResult, ItemData } from '../../common/commonModels';
 import { ImportService } from './importprocess/importService';
-import { CollectionDataAccess } from '../../persistence/collectionDataAccess';
-import { failedAsync } from '../../../common/AsyncCommon';
+import { CollectionDataAccess } from '../persistence/collectionDataAccess';
+import { failedAsync } from '../../common/AsyncCommon';
 
 export class ItemService {
 

@@ -1,7 +1,7 @@
-import { CollectionDataAccess } from '../../persistence/collectionDataAccess';
-import { ALL_ITEMS_COLLECTION_ID, Collection, CollectionType } from '../../../common/commonModels';
-import { ItemService } from "../item/ItemService";
-import { failedAsync } from '../../../common/AsyncCommon';
+import { CollectionDataAccess } from '../persistence/collectionDataAccess';
+import { ALL_ITEMS_COLLECTION_ID, Collection, CollectionType } from '../../common/commonModels';
+import { ItemService } from "./ItemService";
+import { failedAsync } from '../../common/AsyncCommon';
 
 export class CollectionService {
 
