@@ -8,6 +8,7 @@ import { useContextMenu } from 'react-contexify';
 import "react-contexify/dist/ReactContexify.css";
 
 interface ItemPanelProps {
+    collectionId: number | null,
     rootGroup: Group,
     items: ItemData[],
     selectedItemIds: number[],
@@ -37,6 +38,7 @@ export function ItemPanel(props: React.PropsWithChildren<ItemPanelProps>): React
                 }
             </VBox>
             <ItemContextMenu
+                collectionId={props.collectionId}
                 rootGroup={props.rootGroup}
                 onActionMove={props.onContextMenuActionMove}
                 onActionCopy={props.onContextMenuActionCopy}

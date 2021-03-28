@@ -12,7 +12,7 @@ export enum SelectMode {
 }
 
 interface ItemPanelControllerProps {
-    selectedCollectionId: number | undefined,
+    selectedCollectionId: number | null,
     rootGroup: Group,
     items: ItemData[],
     onActionMove: (targetCollectionId: number | undefined, itemIds: number[]) => void,
@@ -42,7 +42,8 @@ export class ItemPanelController extends Component<ItemPanelControllerProps, Ite
     }
 
     render() {
-        return <ItemPanel rootGroup={this.props.rootGroup}
+        return <ItemPanel collectionId={this.props.selectedCollectionId}
+                          rootGroup={this.props.rootGroup}
                           items={this.props.items}
                           selectedItemIds={this.state.selectedItemIds}
                           onSelectItem={this.handleOnSelectItem}
@@ -107,7 +108,7 @@ export class ItemPanelController extends Component<ItemPanelControllerProps, Ite
         });
     }
 
-    handleContextMenuActionMoveTo(targetCollectionId: number | undefined, triggerItemId: number) {
+    handleContextMenuActionMoveTo(targetCollectionId: number | null, triggerItemId: number) {
         if (targetCollectionId !== this.props.selectedCollectionId) {
             const itemIds: number[] = [...this.state.selectedItemIds];
             if (itemIds.indexOf(triggerItemId) === -1) {
@@ -117,7 +118,7 @@ export class ItemPanelController extends Component<ItemPanelControllerProps, Ite
         }
     }
 
-    handleContextMenuActionCopyTo(targetCollectionId: number | undefined, triggerItemId: number) {
+    handleContextMenuActionCopyTo(targetCollectionId: number | null, triggerItemId: number) {
         if (targetCollectionId !== this.props.selectedCollectionId) {
             const itemIds: number[] = [...this.state.selectedItemIds];
             if (itemIds.indexOf(triggerItemId) === -1) {

@@ -6,7 +6,10 @@ import { BiImages, HiOutlineFolder } from 'react-icons/all';
 import { BooleanPredicate } from 'react-contexify/src/types/index';
 
 
-export function contextMenuTrees(group: Group, rootLabel: string | null, onAction: (collection: Collection, data: ItemParams) => void): ReactElement {
+export function contextMenuTrees(group: Group,
+                                 rootLabel: string | null,
+                                 onAction: (collection: Collection, data: ItemParams) => void,
+                                 collectionFilter: (collection: Collection) => boolean): ReactElement {
     if (group && hasCollectionsInSubtree(group)) {
         return (
             <Submenu label={[
@@ -14,9 +17,9 @@ export function contextMenuTrees(group: Group, rootLabel: string | null, onActio
                 rootLabel ? rootLabel : group.name,
             ]}>
                 {[
-                    ...group.collections.map((collection: Collection) => collectionItem(collection, onAction)),
+                    ...group.collections.filter(collectionFilter).map((collection: Collection) => collectionItem(collection, onAction)),
                     (group.collections.length > 0 && group.children.length > 0 ? <Separator /> : null),
-                    ...group.children.map((group: Group) => contextMenuTrees(group, null, onAction)),
+                    ...group.children.map((group: Group) => contextMenuTrees(group, null, onAction, collectionFilter)),
                 ]}
             </Submenu>
         );
