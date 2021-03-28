@@ -9,7 +9,7 @@ import {
     RemoveItemsFromCollectionsMessage,
     RenameCollectionMessage,
 } from '../../common/messaging/messagesCollections';
-import { Collection } from '../../common/commonModels';
+import { Collection, CollectionType } from '../../common/commonModels';
 import { errorResponse, ErrorResponse } from '../../common/messaging/messages';
 
 export class CollectionMessageHandler {
@@ -37,7 +37,13 @@ export class CollectionMessageHandler {
     }
 
     private async handleCreate(payload: CreateCollectionMessage.RequestPayload): Promise<CreateCollectionMessage.ResponsePayload | ErrorResponse> {
-        return this.collectionService.createCollection(payload.name, payload.parentGroupId)
+        let promise: Promise<Collection>;
+        if (payload.type === CollectionType.SMART) {
+            promise = this.collectionService.createSmartCollection(payload.name, payload.smartQuery, payload.parentGroupId);
+        } else {
+            promise = this.collectionService.createNormalCollection(payload.name, payload.parentGroupId);
+        }
+        return promise
             .then((collection: Collection) => ({ collection: collection }))
             .catch(err => errorResponse(err));
     }

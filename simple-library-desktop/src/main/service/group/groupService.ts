@@ -3,7 +3,7 @@ import { ItemService } from "../item/ItemService";
 import { CollectionService } from '../collection/collectionService';
 import { GroupDataAccess } from '../../persistence/groupDataAccess';
 import { CollectionDataAccess } from '../../persistence/collectionDataAccess';
-import { failAsync } from '../../../common/AsyncCommon';
+import { failedAsync } from '../../../common/AsyncCommon';
 
 export class GroupService {
 
@@ -105,7 +105,7 @@ export class GroupService {
         if (await this.validateGroupMovement(groupId, targetGroupId)) {
             return this.groupDataAccess.setParentGroup(groupId, targetGroupId ? targetGroupId : null);
         } else {
-            return failAsync("Group movement is invalid.");
+            return failedAsync("Group movement is invalid.");
         }
     }
 

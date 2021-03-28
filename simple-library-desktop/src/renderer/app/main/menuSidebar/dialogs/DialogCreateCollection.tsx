@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Component, ReactElement } from 'react';
-import { extractGroups, Group } from '../../../../../common/commonModels';
+import { CollectionType, extractGroups, Group } from '../../../../../common/commonModels';
 import { CreateCollectionMessage } from '../../../../../common/messaging/messagesCollections';
 import { Dialog } from '../../../../components/modal/Dialog';
 import { AlignCross, AlignMain, Dir, Size, Type, Variant } from '../../../../components/common';
@@ -64,6 +64,7 @@ export class DialogCreateCollectionController extends Component<DialogCreateColl
         if (this.validate()) {
             CreateCollectionMessage.request(ipcRenderer, {
                 name: this.state.name.trim(),
+                type: CollectionType.NORMAL,
                 parentGroupId: this.props.triggerGroupId,
             }).finally(() => this.props.onClose(true));
         }

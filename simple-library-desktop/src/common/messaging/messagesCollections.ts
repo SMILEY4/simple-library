@@ -1,4 +1,4 @@
-import { Collection } from '../commonModels';
+import { Collection, CollectionType } from '../commonModels';
 import { ErrorResponse, handleRequest, sendRequest } from './messages';
 
 
@@ -29,7 +29,9 @@ export module CreateCollectionMessage {
 
     export interface RequestPayload {
         name: string
+        type: CollectionType,
         parentGroupId: number | undefined
+        smartQuery?: string
     }
 
     export interface ResponsePayload {

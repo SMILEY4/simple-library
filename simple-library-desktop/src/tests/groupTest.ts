@@ -2,7 +2,7 @@ import { Test } from "./testutils/test";
 import { startAsync, startAsyncWithValue } from "../common/AsyncCommon";
 import { CollectionService } from "../main/service/collection/collectionService";
 import { CollectionDataAccess } from "../main/persistence/collectionDataAccess";
-import { Collection, Group, GroupDTO } from "../common/commonModels";
+import { Collection, CollectionType, Group, GroupDTO } from "../common/commonModels";
 import { allTrue, assertEqual } from "./testutils/testAssertions";
 import { ItemService } from "../main/service/item/ItemService";
 import { GroupDataAccess } from '../main/persistence/groupDataAccess';
@@ -130,6 +130,8 @@ export class GroupTest {
         return {
             id: id,
             name: name,
+            type: CollectionType.NORMAL,
+            smartQuery: null,
             itemCount: itemCount,
             groupId: groupId,
         };
@@ -174,6 +176,8 @@ class CollectionDataAccessMock extends CollectionDataAccess {
                     return {
                         id: c.id,
                         name: c.name,
+                        type: CollectionType.NORMAL,
+                        smartQuery: null,
                         itemCount: undefined,
                         groupId: c.groupId,
                     };

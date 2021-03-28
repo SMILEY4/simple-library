@@ -10,6 +10,6 @@ export function doAsync<T>(executor: (resolve: (value: T | PromiseLike<T>) => vo
     return new Promise(executor);
 }
 
-export function failAsync<T>(error: string): Promise<T> {
+export function failedAsync<T>(error: string): Promise<T> {
     return new Promise((resolve, reject) => reject(error));
 }

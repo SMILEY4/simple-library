@@ -20,7 +20,7 @@ import collectionsDelete from "./collections/collections_delete.sql";
 import collectionsUpdateName from "./collections/collections_update_name.sql";
 import collectionsUpdateParents from "./collections/collections_update_parent_group.sql";
 import collectionsUpdateGroupId from "./collections/collections_update_group_id.sql";
-
+import collectionsFindById from "./collections/collections_find_by_id.sql";
 
 import itemsCreateTable from "./items/items_create_table.sql";
 import itemsInsert from "./items/items_insert.sql";
@@ -84,8 +84,6 @@ export function sqlUpdateGroupsParentId(groupId: number, parentGroupId: number |
 }
 
 
-
-
 //==================//
 //   COLLECTIONS    //
 //==================//
@@ -102,9 +100,16 @@ export function sqlAllCollections(includeItemCount: boolean) {
     }
 }
 
-export function sqlInsertCollection(name: string, groupId: number | null) {
+export function sqlFindCollectionById(collectionId: number): string {
+    return collectionsFindById
+        .replace("$collectionId", collectionId);
+}
+
+export function sqlInsertCollection(name: string, type: string, smartQuery: string | null, groupId: number | null) {
     return collectionsInsert
         .replace("$collectionName", "'" + name + "'")
+        .replace("$collectionType", "'" + type + "'")
+        .replace("$smartQuery", smartQuery ? "'" + smartQuery + "'" : null)
         .replace("$groupId", groupId);
 }
 
@@ -135,7 +140,6 @@ export function sqlUpdateCollectionsGroupId(collectionId: number, groupId: numbe
         .replace("$collectionId", collectionId)
         .replace("$groupId", groupId);
 }
-
 
 
 //==================//

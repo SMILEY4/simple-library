@@ -1,6 +1,7 @@
 import DataAccess from './dataAccess';
 import { sqlCountItems, sqlGetItemsInCollection, sqlInsertItem } from './sql/sql';
 import { ItemData } from '../../common/commonModels';
+import { startAsyncWithValue } from '../../common/AsyncCommon';
 
 export class ItemDataAccess {
 
@@ -56,6 +57,15 @@ export class ItemDataAccess {
                     thumbnail: row.thumbnail,
                 };
             }));
+    }
+
+    /**
+     * Get all items matching the given smart-query
+     * @param query the query as a string
+     * @return a promise that resolves with the array of {@link ItemData}
+     */
+    public getItemsBySmartQuery(query: string): Promise<ItemData[]> {
+        return startAsyncWithValue([]);
     }
 
 }

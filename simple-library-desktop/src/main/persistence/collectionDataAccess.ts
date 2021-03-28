@@ -3,13 +3,14 @@ import {
     sqlAddItemToCollection,
     sqlAllCollections,
     sqlDeleteCollection,
+    sqlFindCollectionById,
     sqlInsertCollection,
     sqlRemoveItemFromCollection,
     sqlUpdateCollectionName,
     sqlUpdateCollectionsGroupId,
     sqlUpdateCollectionsParents,
 } from './sql/sql';
-import { Collection } from '../../common/commonModels';
+import { ALL_ITEMS_COLLECTION_ID, Collection, CollectionType } from '../../common/commonModels';
 
 export class CollectionDataAccess {
 
@@ -32,6 +33,8 @@ export class CollectionDataAccess {
                     return {
                         id: row.collection_id,
                         name: row.collection_name,
+                        type: row.collection_type,
+                        smartQuery: row.smart_query ? row.smart_query : null,
                         itemCount: row.item_count,
                         groupId: row.group_id ? row.group_id : undefined,
                     };
@@ -42,6 +45,8 @@ export class CollectionDataAccess {
                     return {
                         id: row.collection_id,
                         name: row.collection_name,
+                        type: row.collection_type,
+                        smartQuery: row.smart_query ? row.smart_query : null,
                         groupId: row.group_id,
                         itemCount: undefined,
                     };
@@ -49,18 +54,46 @@ export class CollectionDataAccess {
         }
     }
 
+
+    /**
+     * Find the collection with the given id
+     * @param collectionId the id to search for
+     * @return a promise that resolves with the found collection or null if none found
+     */
+    public findCollection(collectionId: number): Promise<Collection | null> {
+        return this.dataAccess.querySingle(sqlFindCollectionById(collectionId))
+            .then((row: any | undefined) => {
+                if (row) {
+                    return {
+                        id: row.collection_id,
+                        name: row.collection_name,
+                        type: row.collection_type,
+                        smartQuery: row.smart_query ? row.smart_query : null,
+                        groupId: row.group_id,
+                        itemCount: undefined,
+                    };
+                } else {
+                    return null;
+                }
+            });
+    }
+
     /**
      * Creates a new collection with the given name
      * @param name the name of the collection
+     * @param type the type of the collection
+     * @param query the query for a smart-collection or null
      * @param parentGroupId the id of the parent group or undefined
      * @return a promise that resolves with the created collection
      */
-    public createCollection(name: string, parentGroupId: number | undefined): Promise<Collection> {
-        return this.dataAccess.executeRun(sqlInsertCollection(name, parentGroupId ? parentGroupId : null))
+    public createCollection(name: string, type: CollectionType, query: string | null, parentGroupId: number | undefined): Promise<Collection> {
+        return this.dataAccess.executeRun(sqlInsertCollection(name, type, query, parentGroupId ? parentGroupId : null))
             .then((id: number) => {
                 return {
                     id: id,
                     name: name,
+                    type: type,
+                    smartQuery: query,
                     itemCount: undefined,
                     groupId: parentGroupId,
                 };
