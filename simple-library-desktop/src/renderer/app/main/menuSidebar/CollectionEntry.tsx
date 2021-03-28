@@ -3,6 +3,7 @@ import { useContextMenu } from 'react-contexify';
 import { COLLECTION_CONTEXT_MENU_ID } from './contextmenues/CollectionContextMenu';
 import { SidebarMenuItem } from '../../../components/sidebarmenu/SidebarMenuItem';
 import { BiImages } from 'react-icons/all';
+import { ALL_ITEMS_COLLECTION_ID } from '../../../../common/commonModels';
 
 interface CollectionEntryProps {
     name: string,
@@ -36,7 +37,11 @@ export function CollectionEntry(props: React.PropsWithChildren<CollectionEntryPr
                             enableDrop={true}
                             onDragOver={(event: React.DragEvent) => props.onDragOver(event)}
                             onDrop={(event: React.DragEvent) => props.onDrop(event)}
-                            draggable={true}
-                            onDragStart={props.onDragStart} />;
+                            draggable={props.id !== ALL_ITEMS_COLLECTION_ID}
+                            onDragStart={(event: React.DragEvent) => {
+                                if (props.id !== ALL_ITEMS_COLLECTION_ID) {
+                                    props.onDragStart(event);
+                                }
+                            }} />;
 }
 

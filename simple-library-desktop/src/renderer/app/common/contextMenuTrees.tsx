@@ -3,6 +3,7 @@ import * as React from 'react';
 import { ReactElement } from 'react';
 import { Item, ItemParams, Separator, Submenu } from 'react-contexify';
 import { BiImages, HiOutlineFolder } from 'react-icons/all';
+import { BooleanPredicate } from 'react-contexify/src/types/index';
 
 
 export function contextMenuTrees(group: Group, rootLabel: string | null, onAction: (collection: Collection, data: ItemParams) => void): ReactElement {
@@ -25,13 +26,20 @@ export function contextMenuTrees(group: Group, rootLabel: string | null, onActio
 }
 
 
-export function contextMenuGroupTree(group: Group, rootLabel: string | null, includeNoneGroup: boolean, onAction: (group: Group, data: ItemParams) => void): ReactElement {
+export function contextMenuGroupTree(group: Group,
+                                     rootLabel: string | null,
+                                     includeNoneGroup: boolean,
+                                     onAction: (group: Group, data: ItemParams) => void,
+                                     disabled?: BooleanPredicate): ReactElement {
     if (group && group.children.length > 0) {
         return (
-            <Submenu label={[
-                rootLabel ? null : <HiOutlineFolder style={{ paddingRight: "var(--s-0-25)" }} />,
-                rootLabel ? rootLabel : group.name,
-            ]}>
+            <Submenu
+                label={[
+                    rootLabel ? null : <HiOutlineFolder style={{ paddingRight: "var(--s-0-25)" }} />,
+                    rootLabel ? rootLabel : group.name,
+                ]}
+                disabled={disabled}
+            >
                 {[
                     (includeNoneGroup ? groupItem(noneGroup(), onAction) : null),
                     ...group.children.map((group: Group) => groupItem(group, onAction)),
