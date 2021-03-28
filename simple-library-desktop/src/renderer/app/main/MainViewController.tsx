@@ -157,14 +157,9 @@ export class MainViewController extends Component<MainViewControllerProps, MainV
         return GetGroupsMessage.request(ipcRenderer, { includeCollections: true, includeItemCount: true })
             .then((response: GetGroupsMessage.ResponsePayload) => response.groups[0])
             .then((rootGroup: Group) => {
+                this.setState({ rootGroup: rootGroup });
                 if (!groupTreeContainsCollection(rootGroup, this.state.currentCollectionId)) {
-                    this.setState({
-                        currentCollectionId: ALL_ITEMS_COLLECTION_ID,
-                        rootGroup: rootGroup,
-                    });
-                    this.updateItemList(ALL_ITEMS_COLLECTION_ID)
-                } else {
-                    this.setState({ rootGroup: rootGroup });
+                    this.handleOnSelectCollection(ALL_ITEMS_COLLECTION_ID);
                 }
             })
             .catch(error => {

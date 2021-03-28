@@ -62,6 +62,14 @@ export class ItemPanelController extends Component<ItemPanelControllerProps, Ite
         document.removeEventListener("keydown", this.handleOnSelectAll);
     }
 
+    componentDidUpdate(prevProps: Readonly<ItemPanelControllerProps>, prevState: Readonly<ItemPanelControllerState>, snapshot?: any) {
+        if(prevProps.selectedCollectionId !== this.props.selectedCollectionId) {
+            this.setState({
+                selectedItemIds: [],
+            });
+        }
+    }
+
     handleOnSelectAll(event: KeyboardEvent) {
         if (event.ctrlKey && event.key === "a") {
             event.preventDefault();
