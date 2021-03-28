@@ -2,16 +2,20 @@ import { Collection, Group } from '../../../common/commonModels';
 import * as React from 'react';
 import { ReactElement } from 'react';
 import { Item, ItemParams, Separator, Submenu } from 'react-contexify';
+import { BiImages, HiOutlineFolder } from 'react-icons/all';
 
 
-export function contextMenuCollectionTree(group: Group, rootLabel: string | null, onAction: (collection: Collection, data: ItemParams) => void): ReactElement {
+export function contextMenuTrees(group: Group, rootLabel: string | null, onAction: (collection: Collection, data: ItemParams) => void): ReactElement {
     if (group && hasCollectionsInSubtree(group)) {
         return (
-            <Submenu label={rootLabel ? rootLabel : group.name}>
+            <Submenu label={[
+                rootLabel ? null : <HiOutlineFolder style={{ paddingRight: "var(--s-0-25)" }} />,
+                rootLabel ? rootLabel : group.name,
+            ]}>
                 {[
                     ...group.collections.map((collection: Collection) => collectionItem(collection, onAction)),
                     (group.collections.length > 0 && group.children.length > 0 ? <Separator /> : null),
-                    ...group.children.map((group: Group) => contextMenuCollectionTree(group, null, onAction)),
+                    ...group.children.map((group: Group) => contextMenuTrees(group, null, onAction)),
                 ]}
             </Submenu>
         );
@@ -24,7 +28,10 @@ export function contextMenuCollectionTree(group: Group, rootLabel: string | null
 export function contextMenuGroupTree(group: Group, rootLabel: string | null, includeNoneGroup: boolean, onAction: (group: Group, data: ItemParams) => void): ReactElement {
     if (group && group.children.length > 0) {
         return (
-            <Submenu label={rootLabel ? rootLabel : group.name}>
+            <Submenu label={[
+                rootLabel ? null : <HiOutlineFolder style={{ paddingRight: "var(--s-0-25)" }} />,
+                rootLabel ? rootLabel : group.name,
+            ]}>
                 {[
                     (includeNoneGroup ? groupItem(noneGroup(), onAction) : null),
                     ...group.children.map((group: Group) => groupItem(group, onAction)),
@@ -42,6 +49,7 @@ export function contextMenuGroupTree(group: Group, rootLabel: string | null, inc
 function collectionItem(collection: Collection, onAction: (collection: Collection, data: ItemParams) => void): ReactElement {
     return (
         <Item onClick={(data: ItemParams) => onAction(collection, data)} key={collection.id}>
+            <BiImages style={{ paddingRight: "var(--s-0-25)" }} />
             {collection.name}
         </Item>
     );
@@ -50,6 +58,7 @@ function collectionItem(collection: Collection, onAction: (collection: Collectio
 function groupItem(group: Group | null, onAction: (group: Group, data: ItemParams) => void): ReactElement {
     return (
         <Item onClick={(data: ItemParams) => onAction(group, data)} key={group.id}>
+            <HiOutlineFolder style={{ paddingRight: "var(--s-0-25)" }} />
             {group.name}
         </Item>
     );
