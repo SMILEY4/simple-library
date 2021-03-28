@@ -5,8 +5,9 @@
 	align-items:     stretch;
 	padding-left:    var(--s-0-5);
 	padding-right:   var(--s-0-5);
+	margin-bottom:   var(--s-0-15);
 	border-radius:   var(--radius-0);
-	height:          var(--s-2)
+	height:          var(--s-1-5)
 }
 
 .sidebar-menu-item > .sidebar-menu-item-title {
