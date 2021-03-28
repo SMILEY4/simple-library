@@ -63,7 +63,7 @@ export class ItemPanelController extends Component<ItemPanelControllerProps, Ite
     }
 
     componentDidUpdate(prevProps: Readonly<ItemPanelControllerProps>, prevState: Readonly<ItemPanelControllerState>, snapshot?: any) {
-        if(prevProps.selectedCollectionId !== this.props.selectedCollectionId) {
+        if (prevProps.selectedCollectionId !== this.props.selectedCollectionId) {
             this.setState({
                 selectedItemIds: [],
             });
@@ -146,9 +146,11 @@ export class ItemPanelController extends Component<ItemPanelControllerProps, Ite
 
     handleOnDragStart(triggerItemId: number, event: React.DragEvent): void {
         const copy: boolean = event.ctrlKey;
-        const itemsIdsToDrag: number[] = [...this.state.selectedItemIds];
-        if (itemsIdsToDrag.indexOf(triggerItemId) === -1) {
-            itemsIdsToDrag.push(triggerItemId);
+        let itemsIdsToDrag: number[] = [];
+        if (this.state.selectedItemIds.indexOf(triggerItemId) === -1) {
+            itemsIdsToDrag = [triggerItemId];
+        } else {
+            itemsIdsToDrag = [...this.state.selectedItemIds];
         }
         DragAndDropItems.setDragData(event.dataTransfer, this.props.selectedCollectionId, itemsIdsToDrag, copy);
         DragAndDropItems.setDragLabel(event.dataTransfer, copy, itemsIdsToDrag.length);
