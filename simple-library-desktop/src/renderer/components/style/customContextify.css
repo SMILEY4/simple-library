@@ -2,6 +2,7 @@
 	background-color: var(--background-color-1);
 	border-radius:    var(--radius-0);
 	min-width: var(--s-8);
+	padding: 5px 0;
 }
 
 .react-contexify__will-enter--scale {
@@ -10,8 +11,8 @@
 
 .react-contexify > .react-contexify__item > .react-contexify__item__content {
 	color:      var(--text-color-2);
-	height:     var(--s-1);
-	max-height: var(--s-1);
+	height:     var(--s-0-75);
+	max-height: var(--s-0-75);
 }
 
 .react-contexify__submenu-arrow {
