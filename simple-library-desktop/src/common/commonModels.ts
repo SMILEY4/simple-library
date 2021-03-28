@@ -144,3 +144,10 @@ export function extractGroups(group: Group | undefined): Group[] {
     }
     return groups;
 }
+
+export function groupTreeContainsCollection(root: Group, collectionId: number | null): boolean {
+    const index: number = extractCollections(root)
+        .map((collection: Collection) => collection.id)
+        .indexOf(collectionId);
+    return index !== -1;
+}

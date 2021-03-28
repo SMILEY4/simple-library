@@ -4,6 +4,7 @@ import { Theme } from '../application';
 import {
     ALL_ITEMS_COLLECTION_ID,
     Group,
+    groupTreeContainsCollection,
     ImportProcessData,
     ImportResult,
     ImportStatus,
@@ -155,7 +156,17 @@ export class MainViewController extends Component<MainViewControllerProps, MainV
     updateGroupsAndCollections(): Promise<void> {
         return GetGroupsMessage.request(ipcRenderer, { includeCollections: true, includeItemCount: true })
             .then((response: GetGroupsMessage.ResponsePayload) => response.groups[0])
-            .then((rootGroup: Group) => this.setState({ rootGroup: rootGroup }))
+            .then((rootGroup: Group) => {
+                if (!groupTreeContainsCollection(rootGroup, this.state.currentCollectionId)) {
+                    this.setState({
+                        currentCollectionId: ALL_ITEMS_COLLECTION_ID,
+                        rootGroup: rootGroup,
+                    });
+                    this.updateItemList(ALL_ITEMS_COLLECTION_ID)
+                } else {
+                    this.setState({ rootGroup: rootGroup });
+                }
+            })
             .catch(error => {
                 this.showNotification(MainViewMessageType.FETCH_GROUPS_AND_COLLECTIONS_FAILED, error);
                 return Promise.reject();
