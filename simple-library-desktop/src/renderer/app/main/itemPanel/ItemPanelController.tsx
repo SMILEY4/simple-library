@@ -15,14 +15,14 @@ interface ItemPanelControllerProps {
     selectedCollectionId: number | null,
     rootGroup: Group,
     items: ItemData[],
-    onActionMove: (targetCollectionId: number | undefined, itemIds: number[]) => void,
-    onActionCopy: (targetCollectionId: number | undefined, itemIds: number[]) => void,
+    onActionMove: (targetCollectionId: number, itemIds: number[]) => void,
+    onActionCopy: (targetCollectionId: number, itemIds: number[]) => void,
     onActionRemove: (itemIds: number[]) => void,
 }
 
 interface ItemPanelControllerState {
     selectedItemIds: number[]
-    lastSelectedItemId: number | undefined,
+    lastSelectedItemId: number | null,
 }
 
 export class ItemPanelController extends Component<ItemPanelControllerProps, ItemPanelControllerState> {
@@ -31,12 +31,13 @@ export class ItemPanelController extends Component<ItemPanelControllerProps, Ite
         super(props);
         this.state = {
             selectedItemIds: [],
-            lastSelectedItemId: undefined,
+            lastSelectedItemId: null,
         };
         this.handleOnSelectAll = this.handleOnSelectAll.bind(this);
         this.handleOnSelectItem = this.handleOnSelectItem.bind(this);
         this.handleContextMenuActionMoveTo = this.handleContextMenuActionMoveTo.bind(this);
         this.handleContextMenuActionCopyTo = this.handleContextMenuActionCopyTo.bind(this);
+        this.handleContextMenuActionCopyOrMove = this.handleContextMenuActionCopyOrMove.bind(this);
         this.handleContextMenuActionRemove = this.handleContextMenuActionRemove.bind(this);
         this.handleOnDragStart = this.handleOnDragStart.bind(this);
     }
@@ -116,23 +117,25 @@ export class ItemPanelController extends Component<ItemPanelControllerProps, Ite
         });
     }
 
-    handleContextMenuActionMoveTo(targetCollectionId: number | null, triggerItemId: number) {
-        if (targetCollectionId !== this.props.selectedCollectionId) {
-            const itemIds: number[] = [...this.state.selectedItemIds];
-            if (itemIds.indexOf(triggerItemId) === -1) {
-                itemIds.push(triggerItemId);
-            }
-            this.props.onActionMove(targetCollectionId, itemIds);
-        }
+    handleContextMenuActionMoveTo(targetCollectionId: number, triggerItemId: number) {
+        this.handleContextMenuActionCopyOrMove(targetCollectionId, triggerItemId, false);
     }
 
-    handleContextMenuActionCopyTo(targetCollectionId: number | null, triggerItemId: number) {
+    handleContextMenuActionCopyTo(targetCollectionId: number, triggerItemId: number) {
+        this.handleContextMenuActionCopyOrMove(targetCollectionId, triggerItemId, true);
+    }
+
+    handleContextMenuActionCopyOrMove(targetCollectionId: number, triggerItemId: number, copy: boolean) {
         if (targetCollectionId !== this.props.selectedCollectionId) {
             const itemIds: number[] = [...this.state.selectedItemIds];
             if (itemIds.indexOf(triggerItemId) === -1) {
                 itemIds.push(triggerItemId);
             }
-            this.props.onActionCopy(targetCollectionId, itemIds);
+            if (copy) {
+                this.props.onActionCopy(targetCollectionId, itemIds);
+            } else {
+                this.props.onActionMove(targetCollectionId, itemIds);
+            }
         }
     }
 

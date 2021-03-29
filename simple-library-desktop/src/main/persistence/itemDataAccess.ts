@@ -44,7 +44,7 @@ export class ItemDataAccess {
      * @param collectionId the id of the collection or undefined to get all items
      * @return a promise that resolves with the array of {@link ItemData}
      */
-    public getAllItems(collectionId: number | undefined): Promise<ItemData[]> {
+    public getAllItems(collectionId: number): Promise<ItemData[]> {
         return this.dataAccess.queryAll(sqlGetItemsInCollection(collectionId))
             .then((rows: any[]) => rows.map(ItemDataAccess.rowToItem));
     }

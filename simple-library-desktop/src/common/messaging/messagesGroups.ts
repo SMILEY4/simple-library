@@ -29,7 +29,7 @@ export module CreateGroupMessage {
 
     export interface RequestPayload {
         name: string,
-        parentGroupId: number | undefined
+        parentGroupId: number | null
     }
 
     export interface ResponsePayload {
@@ -98,7 +98,7 @@ export module MoveGroupMessage {
 
     export interface RequestPayload {
         groupId: number,
-        targetGroupId: number | undefined
+        targetGroupId: number | null
     }
 
     export interface ResponsePayload {

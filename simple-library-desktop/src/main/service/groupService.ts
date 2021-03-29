@@ -47,7 +47,7 @@ export class GroupService {
      * @param parentGroupId the id of the parent group or null
      * @return a promise that resolves with the created group
      */
-    public async createGroup(name: string, parentGroupId: number | undefined): Promise<Group> {
+    public async createGroup(name: string, parentGroupId: number | null): Promise<Group> {
         return this.groupDataAccess.createGroup(name, parentGroupId)
             .then((groupDTO: GroupDTO) => ({
                 id: groupDTO.id,
@@ -98,10 +98,10 @@ export class GroupService {
     /**
      * Renames the given group into the given parent group
      * @param groupId the id of the group
-     * @param targetGroupId the id of the new parent group
+     * @param targetGroupId the id of the new parent group or null
      * @return a promise that resolves when the group was moved
      */
-    public async moveGroup(groupId: number, targetGroupId: number | undefined): Promise<void> {
+    public async moveGroup(groupId: number, targetGroupId: number | null): Promise<void> {
         if (await this.validateGroupMovement(groupId, targetGroupId)) {
             return this.groupDataAccess.setParentGroup(groupId, targetGroupId ? targetGroupId : null);
         } else {
@@ -110,7 +110,7 @@ export class GroupService {
     }
 
 
-    private async validateGroupMovement(groupId: number, targetGroupId: number | undefined): Promise<boolean> {
+    private async validateGroupMovement(groupId: number, targetGroupId: number | null): Promise<boolean> {
         // group exists
         // group =!= targetGroupId
         // group can not be moved into a group of the subtree with itself as the root
@@ -118,24 +118,24 @@ export class GroupService {
             return false;
         }
 
-        const group: GroupDTO | undefined = await this.groupDataAccess.findGroupById(groupId);
-        if (group === undefined) {
+        const group: GroupDTO | null = await this.groupDataAccess.findGroupById(groupId);
+        if (!group) {
             return false;
         }
 
-        if (targetGroupId !== undefined) {
-            const targetGroup: GroupDTO | undefined = await this.groupDataAccess.findGroupById(targetGroupId);
-            if (targetGroup === undefined) {
+        if (targetGroupId) {
+            const targetGroup: GroupDTO | null = await this.groupDataAccess.findGroupById(targetGroupId);
+            if (!targetGroup) {
                 return false;
             }
 
             let counter: number = 0;
             let openGroupId: number | null = targetGroupId;
-            while (openGroupId !== null && openGroupId !== groupId && counter < 100) {
+            while (!openGroupId && openGroupId !== groupId && counter < 100) {
                 counter++;
                 const openGroup: GroupDTO = await this.groupDataAccess.findGroupById(openGroupId);
                 if (openGroup) {
-                    openGroupId = openGroup.parentId ? openGroup.parentId : null;
+                    openGroupId = openGroup.parentId;
                 } else {
                     openGroupId = null;
                 }
@@ -174,7 +174,7 @@ export class GroupService {
 
         if (collections) {
             const root: Group = {
-                id: undefined,
+                id: null,
                 name: "root",
                 children: rootGroups,
                 collections: collections.filter(c => !c.groupId),

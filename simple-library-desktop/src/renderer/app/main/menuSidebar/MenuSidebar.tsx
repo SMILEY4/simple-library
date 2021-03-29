@@ -17,13 +17,13 @@ export interface MenuSidebarProps {
 
     rootGroup: Group,
     activeCollectionId: number | null,
-    onSelectCollection: (collectionId: number | null) => void,
+    onSelectCollection: (collectionId: number) => void,
 
     onDragStartCollection: (collectionId: number, event: React.DragEvent) => void,
     onDragStartGroup: (groupId: number, event: React.DragEvent) => void,
 
-    onDragOverCollection: (collectionId: number | null, event: React.DragEvent) => void,
-    onDropOnCollection: (collectionId: number | null, event: React.DragEvent) => void,
+    onDragOverCollection: (collectionId: number, event: React.DragEvent) => void,
+    onDropOnCollection: (collectionId: number, event: React.DragEvent) => void,
 
     onDragOverGroup: (groupId: number, event: React.DragEvent) => void,
     onDropOnGroup: (groupId: number, event: React.DragEvent) => void,
@@ -36,13 +36,13 @@ export interface MenuSidebarProps {
 
     onCollectionContextMenuRename: (collectionId: number) => void
     onCollectionContextMenuDelete: (collectionId: number) => void
-    onCollectionContextMenuMove: (collectionId: number, targetGroupId: number | undefined) => void
+    onCollectionContextMenuMove: (collectionId: number, targetGroupId: number | null) => void
 
     onGroupContextMenuRename: (groupId: number) => void
     onGroupContextMenuDelete: (groupId: number) => void
     onGroupContextMenuCreateCollection: (triggerGroupId: number) => void
     onGroupContextMenuCreateGroup: (triggerGroupId: number) => void
-    onGroupContextMenuMove: (groupId: number, targetGroupId: number | undefined) => void
+    onGroupContextMenuMove: (groupId: number, targetGroupId: number | null) => void
 
 }
 
@@ -89,10 +89,8 @@ export function MenuSidebar(props: React.PropsWithChildren<MenuSidebarProps>): R
     function renderItems(collections: Collection[], groups: Group[]): ReactElement[] {
         return [
             ...collections.map((collection: Collection) => {
-                return <CollectionEntry name={collection.name}
-                                        id={collection.id}
+                return <CollectionEntry collection={collection}
                                         key={"collection-" + (collection.id ? collection.id : -1)}
-                                        itemCount={collection.itemCount}
                                         selectedId={props.activeCollectionId}
                                         onSelect={props.onSelectCollection}
                                         onDragStart={(event: React.DragEvent) => props.onDragStartCollection(collection.id, event)}
@@ -105,8 +103,7 @@ export function MenuSidebar(props: React.PropsWithChildren<MenuSidebarProps>): R
 
     function renderGroup(group: Group): React.ReactElement {
         return (
-            <GroupEntry name={group.name}
-                        id={group.id}
+            <GroupEntry group={group}
                         onDragStart={(event: React.DragEvent) => props.onDragStartGroup(group.id, event)}
                         onDragOver={(event: React.DragEvent) => props.onDragOverGroup(group.id, event)}
                         onDrop={(event: React.DragEvent) => props.onDropOnGroup(group.id, event)}

@@ -37,7 +37,7 @@ export class GroupDataAccess {
      * @param groupId the id of the group to fetch
      * @return a promise that resolves with the found group or null
      */
-    public findGroupById(groupId: number): Promise<GroupDTO | undefined> {
+    public findGroupById(groupId: number): Promise<GroupDTO | null> {
         return this.dataAccess.querySingle(sqlFindGroupById(groupId))
             .then((row: any | undefined) => {
                 if (row) {
@@ -47,7 +47,7 @@ export class GroupDataAccess {
                         parentId: row.parent_group_id,
                     };
                 } else {
-                    return undefined;
+                    return null;
                 }
             });
     }
@@ -59,7 +59,7 @@ export class GroupDataAccess {
      * @param parentGroupId the id of the parent group or null
      * @return  a promise that resolves with the created {@link GroupDTO}
      */
-    public createGroup(name: string, parentGroupId: number | undefined): Promise<GroupDTO> {
+    public createGroup(name: string, parentGroupId: number | null): Promise<GroupDTO> {
         return this.dataAccess.executeRun(sqlInsertGroup(name, parentGroupId ? parentGroupId : null))
             .then((id: number) => {
                 return {
@@ -94,8 +94,8 @@ export class GroupDataAccess {
 
     /**
      * Moves all child groups of the given parent group to the new group
-     * @param prevParentGroupId the id of the previous parent group
-     * @param newParentGroupId the id of the new parent group
+     * @param prevParentGroupId the id of the previous parent group or null
+     * @param newParentGroupId the id of the new parent group or null
      * @return a promise that resolves when the groups were moved
      */
     public moveGroups(prevParentGroupId: number | null, newParentGroupId: number | null): Promise<void> {

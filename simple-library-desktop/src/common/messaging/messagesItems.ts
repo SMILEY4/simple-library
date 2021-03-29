@@ -5,7 +5,7 @@ import { ErrorResponse, handleRequest, mainSendCommand, rendererOnCommand, sendR
 export module GetItemsMessage {
 
     export interface RequestPayload {
-        collectionId: number | undefined
+        collectionId: number
     }
 
     export interface ResponsePayload {
