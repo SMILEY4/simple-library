@@ -47,7 +47,11 @@ export class ItemService {
             return failedAsync("Could not fetch items. Collection does not exist.");
         }
         if (collection && collection.type === CollectionType.SMART) {
-            return this.itemDataAccess.getItemsBySmartQuery(collection.smartQuery);
+            if (collection.smartQuery && collection.smartQuery.trim().length > 0) {
+                return this.itemDataAccess.getItemsBySmartQuery(collection.smartQuery);
+            } else {
+                return this.itemDataAccess.getAllItems(undefined);
+            }
         } else {
             return this.itemDataAccess.getAllItems(collectionId);
         }
