@@ -78,7 +78,6 @@ export class DialogCreateCollectionController extends Component<DialogCreateColl
 
     validate(): boolean {
         const valid: boolean = this.state.name.trim().length > 0;
-        // todo: validate query: fetch all items for query -> check if error is thrown
         if (!valid) {
             this.setState({
                 name: this.state.name.trim(),

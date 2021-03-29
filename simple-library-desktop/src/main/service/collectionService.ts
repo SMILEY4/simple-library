@@ -60,7 +60,7 @@ export class CollectionService {
      * @return a promise that resolves with the created {@link Collection}
      */
     public createSmartCollection(name: string, query: string, parentGroupId: number | undefined): Promise<Collection> {
-        return this.collectionDataAccess.createCollection(name.trim(), CollectionType.SMART, query, parentGroupId);
+        return this.collectionDataAccess.createCollection(name.trim(), CollectionType.SMART, query.trim(), parentGroupId);
     }
 
 
