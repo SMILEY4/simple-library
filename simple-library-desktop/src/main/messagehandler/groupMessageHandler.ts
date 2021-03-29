@@ -7,7 +7,7 @@ import {
     GetGroupsMessage, MoveGroupMessage,
     RenameGroupMessage,
 } from '../../common/messaging/messagesGroups';
-import { GroupService } from '../service/group/groupService';
+import { GroupService } from '../service/groupService';
 
 export class GroupMessageHandler {
 

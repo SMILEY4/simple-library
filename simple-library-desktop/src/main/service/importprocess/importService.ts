@@ -1,13 +1,13 @@
-import { ItemDataAccess } from '../../../persistence/itemDataAccess';
+import { ItemDataAccess } from '../../persistence/itemDataAccess';
 import { ImportDataValidator } from './importDataValidator';
 import { ImportStepFileHash } from './importStepFileHash';
 import { ImportStepThumbnail } from './importStepThumbnail';
 import { ImportStepRename } from './importStepRename';
 import { ImportStepImportTarget } from './importStepImportTarget';
-import { ImportProcessData, ImportResult, ItemData } from '../../../../common/commonModels';
-import { startAsync } from '../../../../common/AsyncCommon';
-import { WindowService } from '../../windows/windowService';
-import { ImportStatusUpdateCommand } from '../../../../common/messaging/messagesItems';
+import { ImportProcessData, ImportResult, ItemData } from '../../../common/commonModels';
+import { startAsync } from '../../../common/AsyncCommon';
+import { WindowService } from '../windowService';
+import { ImportStatusUpdateCommand } from '../../../common/messaging/messagesItems';
 
 export class ImportService {
 

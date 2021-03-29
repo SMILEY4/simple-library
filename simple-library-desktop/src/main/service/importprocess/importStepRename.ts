@@ -5,9 +5,9 @@ import {
     ItemData,
     RenamePart,
     RenamePartType,
-} from '../../../../common/commonModels';
+} from '../../../common/commonModels';
 import path from 'path';
-import { startAsyncWithValue } from '../../../../common/AsyncCommon';
+import { startAsyncWithValue } from '../../../common/AsyncCommon';
 
 export class ImportStepRename {
 

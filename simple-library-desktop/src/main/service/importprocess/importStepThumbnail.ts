@@ -1,4 +1,4 @@
-import { ItemData } from '../../../../common/commonModels';
+import { ItemData } from '../../../common/commonModels';
 
 const sharp = require('sharp');
 

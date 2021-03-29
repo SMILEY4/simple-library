@@ -1,6 +1,6 @@
-import { ImportTargetAction, ItemData } from '../../../../common/commonModels';
-import { startAsync, startAsyncWithValue } from '../../../../common/AsyncCommon';
-import { FileSystemWrapper } from '../../utils/fileSystemWrapper';
+import { ImportTargetAction, ItemData } from '../../../common/commonModels';
+import { startAsync, startAsyncWithValue } from '../../../common/AsyncCommon';
+import { FileSystemWrapper } from '../utils/fileSystemWrapper';
 
 export class ImportStepImportTarget {
 

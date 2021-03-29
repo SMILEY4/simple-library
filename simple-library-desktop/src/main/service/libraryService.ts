@@ -1,7 +1,7 @@
 import path from 'path';
-import { LibraryDataAccess } from '../../persistence/libraryDataAccess';
-import { LastOpenedLibraryEntry, LibraryMetadata } from '../../../common/commonModels';
-import { ConfigDataAccess } from '../../persistence/configDataAccess';
+import { LibraryDataAccess } from '../persistence/libraryDataAccess';
+import { LastOpenedLibraryEntry, LibraryMetadata } from '../../common/commonModels';
+import { ConfigDataAccess } from '../persistence/configDataAccess';
 
 const fs = require('fs');
 

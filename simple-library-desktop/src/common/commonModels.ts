@@ -102,9 +102,16 @@ export interface ImportStatus {
 
 export const ALL_ITEMS_COLLECTION_ID: null = null;
 
+export enum CollectionType {
+    NORMAL = "normal",
+    SMART = "smart"
+}
+
 export interface Collection {
     id: number | null,
     name: string,
+    type: CollectionType
+    smartQuery: string | null,
     itemCount: number | undefined,
     groupId: number | undefined
 }

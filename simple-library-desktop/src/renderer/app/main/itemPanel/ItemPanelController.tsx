@@ -146,7 +146,7 @@ export class ItemPanelController extends Component<ItemPanelControllerProps, Ite
 
     handleOnDragStart(triggerItemId: number, event: React.DragEvent): void {
         const copy: boolean = event.ctrlKey;
-        let itemsIdsToDrag: number[] = [];
+        let itemsIdsToDrag: number[];
         if (this.state.selectedItemIds.indexOf(triggerItemId) === -1) {
             itemsIdsToDrag = [triggerItemId];
         } else {

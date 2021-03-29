@@ -2,7 +2,7 @@ import { Test } from '../testutils/test';
 import { ImportProcessData, ImportTargetAction, RenamePartType } from '../../common/commonModels';
 import { startAsyncWithValue } from '../../common/AsyncCommon';
 import { assertEqual } from '../testutils/testAssertions';
-import { ImportDataValidator } from '../../main/service/item/importprocess/importDataValidator';
+import { ImportDataValidator } from '../../main/service/importprocess/importDataValidator';
 import { FileSystemWrapperMock } from '../testutils/testMocks';
 
 export class ImportValidationTests {

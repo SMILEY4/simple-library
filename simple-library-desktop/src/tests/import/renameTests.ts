@@ -1,4 +1,4 @@
-import { ImportStepRename } from '../../main/service/item/importprocess/importStepRename';
+import { ImportStepRename } from '../../main/service/importprocess/importStepRename';
 import { BulkRenameInstruction, ImportTargetAction, ImportFileTarget, RenamePartType } from '../../common/commonModels';
 import { startAsyncWithValue } from '../../common/AsyncCommon';
 import { Test } from '../testutils/test';

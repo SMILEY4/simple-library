@@ -1,1 +1,2 @@
-SELECT * FROM items;
+SELECT *
+FROM items;

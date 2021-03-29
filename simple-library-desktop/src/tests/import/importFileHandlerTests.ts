@@ -1,4 +1,4 @@
-import { ImportStepImportTarget } from '../../main/service/item/importprocess/importStepImportTarget';
+import { ImportStepImportTarget } from '../../main/service/importprocess/importStepImportTarget';
 import { ImportTargetAction, ItemData } from '../../common/commonModels';
 import { Test } from '../testutils/test';
 import { FileSystemWrapperMock } from '../testutils/testMocks';
