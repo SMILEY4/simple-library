@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { Item, ItemParams, Menu, MenuProps, PredicateParams, useContextMenu } from 'react-contexify';
-import { ALL_ITEMS_COLLECTION_ID, Group, ItemData } from '../../../../../common/commonModels';
-import { contextMenuGroupTree } from '../../../common/contextMenuTrees';
+import { Item, ItemParams, Menu, useContextMenu } from 'react-contexify';
+import { Group } from '../../../../../common/commonModels';
+import { contextMenuGroupTree } from '../../../common/contextMenuTree';
 
 export const COLLECTION_CONTEXT_MENU_ID: string = "contextmenu.collection";
 
@@ -18,16 +18,11 @@ export function CollectionContextMenu(props: React.PropsWithChildren<CollectionC
         <Menu id={COLLECTION_CONTEXT_MENU_ID}
               onShown={handleOnShow}
               onHidden={handleOnHidden}>
-            <Item onClick={handleRename} disabled={isAllItems}>Rename Collection</Item>
-            <Item onClick={handleDelete} disabled={isAllItems}>Delete Collection</Item>
-            {contextMenuGroupTree(props.rootGroup, "Move", true, handleMoveTo, isAllItems)}
+            <Item onClick={handleRename}>Rename Collection</Item>
+            <Item onClick={handleDelete}>Delete Collection</Item>
+            {contextMenuGroupTree(props.rootGroup, "Move", true, handleMoveTo, false)}
         </Menu>
     );
-
-    function isAllItems({ props }: PredicateParams<MenuProps, ItemData>): boolean {
-        // @ts-ignore
-        return props.collectionId === ALL_ITEMS_COLLECTION_ID;
-    }
 
     function handleOnShow(): void {
         document.addEventListener('mousedown', handleOnMousedown);

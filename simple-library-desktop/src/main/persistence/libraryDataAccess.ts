@@ -1,5 +1,5 @@
 import DataAccess from './dataAccess';
-import { LibraryMetadata } from '../../common/commonModels';
+import { CollectionType, LibraryMetadata } from '../../common/commonModels';
 import {
     sqlAllMetadata,
     sqlCreateTableCollectionItems,
@@ -7,7 +7,7 @@ import {
     sqlCreateTableGroups,
     sqlCreateTableItems,
     sqlCreateTableMetadata,
-    sqlGetMetadataLibraryName,
+    sqlGetMetadataLibraryName, sqlInsertCollection,
     sqlInsertMetadataLibraryName,
     sqlInsertMetadataTimestampCreated,
     sqlInsertMetadataTimestampLastOpened,
@@ -46,9 +46,9 @@ export class LibraryDataAccess {
             await this.dataAccess.executeRun(sqlInsertMetadataLibraryName(libraryName));
             await this.dataAccess.executeRun(sqlInsertMetadataTimestampCreated(timestamp));
             await this.dataAccess.executeRun(sqlInsertMetadataTimestampLastOpened(timestamp));
+            await this.dataAccess.executeRun(sqlInsertCollection("All Items", CollectionType.SMART, "", null))
         }
     }
-
 
     /**
      * Opens the library at the given path. Fails if the file does not exist

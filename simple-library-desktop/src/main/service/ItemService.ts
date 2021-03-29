@@ -1,12 +1,5 @@
 import { ItemDataAccess } from '../persistence/itemDataAccess';
-import {
-    ALL_ITEMS_COLLECTION_ID,
-    Collection,
-    CollectionType,
-    ImportProcessData,
-    ImportResult,
-    ItemData,
-} from '../../common/commonModels';
+import { Collection, CollectionType, ImportProcessData, ImportResult, ItemData } from '../../common/commonModels';
 import { ImportService } from './importprocess/importService';
 import { CollectionDataAccess } from '../persistence/collectionDataAccess';
 import { failedAsync } from '../../common/AsyncCommon';
@@ -38,20 +31,22 @@ export class ItemService {
 
     /**
      * Get all items (in the given collection)
-     * @param collectionId the id of the collection. Set to undefined to get all items.
+     * @param collectionId the id of the collection.
      * @return a promise that resolves with the items
      */
-    public async getAllItems(collectionId: number | undefined): Promise<ItemData[]> {
+    public async getAllItems(collectionId: number): Promise<ItemData[]> {
         const collection: Collection | null = await this.collectionDataAccess.findCollection(collectionId);
-        if (collectionId !== ALL_ITEMS_COLLECTION_ID && collection === null) {
+
+        if (!collection) {
             return failedAsync("Could not fetch items. Collection does not exist.");
-        }
-        if (collection && collection.type === CollectionType.SMART) {
+
+        } else if (collection.type === CollectionType.SMART) {
             if (collection.smartQuery && collection.smartQuery.trim().length > 0) {
                 return this.itemDataAccess.getItemsBySmartQuery(collection.smartQuery);
             } else {
                 return this.itemDataAccess.getAllItems(undefined);
             }
+
         } else {
             return this.itemDataAccess.getAllItems(collectionId);
         }

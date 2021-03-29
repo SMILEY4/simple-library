@@ -100,26 +100,24 @@ export interface ImportStatus {
     completedFiles: number,
 }
 
-export const ALL_ITEMS_COLLECTION_ID: null = null;
-
 export enum CollectionType {
     NORMAL = "normal",
     SMART = "smart"
 }
 
 export interface Collection {
-    id: number | null,
+    id: number,
     name: string,
     type: CollectionType
     smartQuery: string | null,
-    itemCount: number | undefined,
-    groupId: number | undefined
+    itemCount: number | null,
+    groupId: number | null
 }
 
 export interface GroupDTO {
     id: number,
     name: string,
-    parentId: number | undefined
+    parentId: number | null
 }
 
 export interface Group {
@@ -129,7 +127,7 @@ export interface Group {
     collections: Collection[]
 }
 
-export function extractCollections(group: Group | undefined): Collection[] {
+export function extractCollections(group: Group | null): Collection[] {
     const collections: Collection[] = [];
     if (group) {
         collections.push(...group.collections);
@@ -141,7 +139,7 @@ export function extractCollections(group: Group | undefined): Collection[] {
 }
 
 
-export function extractGroups(group: Group | undefined): Group[] {
+export function extractGroups(group: Group | null): Group[] {
     const groups: Group[] = [];
     if (group) {
         groups.push(...group.children);

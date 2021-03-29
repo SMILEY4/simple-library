@@ -6,20 +6,21 @@ import { BiImages, HiOutlineFolder } from 'react-icons/all';
 import { BooleanPredicate } from 'react-contexify/src/types/index';
 
 
-export function contextMenuTrees(group: Group,
-                                 rootLabel: string | null,
-                                 onAction: (collection: Collection, data: ItemParams) => void,
-                                 collectionFilter: (collection: Collection) => boolean): ReactElement {
+export function contextMenuTree(group: Group,
+                                rootLabel: string | null,
+                                onAction: (collection: Collection, data: ItemParams) => void,
+                                collectionFilter: (collection: Collection) => boolean): ReactElement {
     if (group && hasCollectionsInSubtree(group)) {
         return (
-            <Submenu label={[
-                rootLabel ? null : <HiOutlineFolder style={{ paddingRight: "var(--s-0-25)" }} />,
-                rootLabel ? rootLabel : group.name,
-            ]}>
+            <Submenu label={
+                rootLabel
+                    ? rootLabel
+                    : [<HiOutlineFolder style={{ paddingRight: "var(--s-0-25)" }} />, group.name]
+            }>
                 {[
                     ...group.collections.filter(collectionFilter).map((collection: Collection) => collectionItem(collection, onAction)),
-                    (group.collections.length > 0 && group.children.length > 0 ? <Separator /> : null),
-                    ...group.children.map((group: Group) => contextMenuTrees(group, null, onAction, collectionFilter)),
+                    treeSeparator(group, collectionFilter),
+                    ...group.children.map((group: Group) => contextMenuTree(group, null, onAction, collectionFilter)),
                 ]}
             </Submenu>
         );
@@ -27,7 +28,6 @@ export function contextMenuTrees(group: Group,
         return null;
     }
 }
-
 
 export function contextMenuGroupTree(group: Group,
                                      rootLabel: string | null,
@@ -37,17 +37,17 @@ export function contextMenuGroupTree(group: Group,
     if (group && group.children.length > 0) {
         return (
             <Submenu
-                label={[
-                    rootLabel ? null : <HiOutlineFolder style={{ paddingRight: "var(--s-0-25)" }} />,
-                    rootLabel ? rootLabel : group.name,
-                ]}
+                label={
+                    rootLabel
+                        ? rootLabel
+                        : [<HiOutlineFolder style={{ paddingRight: "var(--s-0-25)" }} />, group.name]
+                }
                 disabled={disabled}
             >
                 {[
                     (includeNoneGroup ? groupItem(noneGroup(), onAction) : null),
                     ...group.children.map((group: Group) => groupItem(group, onAction)),
-                    (group.children.length > 0 && group.children.some(c => c.children.length > 0) ?
-                        <Separator /> : null),
+                    groupTreeSeparator(group),
                     ...group.children.map((group: Group) => contextMenuGroupTree(group, null, false, onAction)),
                 ]}
             </Submenu>
@@ -55,6 +55,18 @@ export function contextMenuGroupTree(group: Group,
     } else {
         return null;
     }
+}
+
+function treeSeparator(group: Group, collectionFilter: ((collection: Collection) => boolean) | undefined) {
+    return group.collections.filter((c:Collection) => collectionFilter ? collectionFilter(c) : true).length > 0 && group.children.length > 0
+        ? <Separator />
+        : null;
+}
+
+function groupTreeSeparator(group: Group) {
+    return group.children.length > 0 && group.children.some(c => c.children.length > 0)
+        ? <Separator />
+        : null;
 }
 
 function collectionItem(collection: Collection, onAction: (collection: Collection, data: ItemParams) => void): ReactElement {
@@ -85,7 +97,7 @@ function hasCollectionsInSubtree(group: Group): boolean {
 
 function noneGroup(): Group {
     return {
-        id: undefined,
+        id: null,
         name: "none",
         children: [],
         collections: [],

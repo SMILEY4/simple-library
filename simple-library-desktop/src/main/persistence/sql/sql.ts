@@ -55,7 +55,7 @@ export function sqlFindGroupById(groupId: number): string {
 
 }
 
-export function sqlInsertGroup(name: string, parentGroup: number | undefined): string {
+export function sqlInsertGroup(name: string, parentGroup: number | null): string {
     return groupsInsert
         .replace("$groupName", "'" + name + "'")
         .replace("$parentGroupId", parentGroup);
@@ -180,7 +180,7 @@ export function sqlInsertItem(filepath: string, timestamp: number, hash: string,
         .replace("$thumbnail", "'" + thumbnail + "'");
 }
 
-export function sqlGetItemsInCollection(collectionId: number | undefined) {
+export function sqlGetItemsInCollection(collectionId: number) {
     if (collectionId) {
         return itemsGetByCollection
             .replace("$collectionId", collectionId);

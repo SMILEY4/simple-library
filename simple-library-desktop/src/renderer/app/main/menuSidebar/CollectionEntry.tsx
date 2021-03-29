@@ -3,12 +3,10 @@ import { useContextMenu } from 'react-contexify';
 import { COLLECTION_CONTEXT_MENU_ID } from './contextmenues/CollectionContextMenu';
 import { SidebarMenuItem } from '../../../components/sidebarmenu/SidebarMenuItem';
 import { BiImages } from 'react-icons/all';
-import { ALL_ITEMS_COLLECTION_ID } from '../../../../common/commonModels';
+import { Collection } from '../../../../common/commonModels';
 
 interface CollectionEntryProps {
-    name: string,
-    id: number | null,
-    itemCount: number,
+    collection: Collection,
     selectedId: number | null,
     onSelect: (id: number | null) => void,
     onDragStart: (event: React.DragEvent) => void
@@ -21,15 +19,15 @@ export function CollectionEntry(props: React.PropsWithChildren<CollectionEntryPr
     const { show } = useContextMenu({
         id: COLLECTION_CONTEXT_MENU_ID,
         props: {
-            collectionId: props.id,
+            collectionId: props.collection.id,
         },
     });
 
-    return <SidebarMenuItem title={props.name}
+    return <SidebarMenuItem title={props.collection.name}
                             icon={<BiImages />}
-                            label={"" + props.itemCount}
-                            selected={props.selectedId === props.id}
-                            onClick={() => props.onSelect(props.id)}
+                            label={"" + props.collection.itemCount}
+                            selected={props.selectedId === props.collection.id}
+                            onClick={() => props.onSelect(props.collection.id)}
                             onContextMenu={(event: React.MouseEvent) => {
                                 event.preventDefault();
                                 show(event);
@@ -37,11 +35,7 @@ export function CollectionEntry(props: React.PropsWithChildren<CollectionEntryPr
                             enableDrop={true}
                             onDragOver={(event: React.DragEvent) => props.onDragOver(event)}
                             onDrop={(event: React.DragEvent) => props.onDrop(event)}
-                            draggable={props.id !== ALL_ITEMS_COLLECTION_ID}
-                            onDragStart={(event: React.DragEvent) => {
-                                if (props.id !== ALL_ITEMS_COLLECTION_ID) {
-                                    props.onDragStart(event);
-                                }
-                            }} />;
+                            draggable={true}
+                            onDragStart={(event: React.DragEvent) => props.onDragStart(event)} />;
 }
 

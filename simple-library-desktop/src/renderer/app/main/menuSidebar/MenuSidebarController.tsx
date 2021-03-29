@@ -30,12 +30,12 @@ const { ipcRenderer } = window.require('electron');
 interface MenuSidebarControllerProps {
     rootGroup: Group,
     activeCollectionId: number | null,
-    onSelectCollection: (collectionId: number | null) => void,
+    onSelectCollection: (collectionId: number) => void,
     onActionImport: (data: ImportProcessData) => void,
     onActionRefresh: () => void,
     onActionClose: () => void,
-    onActionMoveItems: (srcCollectionId: number | null, tgtCollectionId: number | null, itemIds: number[]) => void,
-    onActionCopyItems: (srcCollectionId: number | null, tgtCollectionId: number | null, itemIds: number[]) => void,
+    onActionMoveItems: (srcCollectionId: number, tgtCollectionId: number, itemIds: number[]) => void,
+    onActionCopyItems: (srcCollectionId: number, tgtCollectionId: number, itemIds: number[]) => void,
     onCollectionsModified: () => void,
 }
 
@@ -46,13 +46,13 @@ interface MenuSidebarControllerState {
     showCreateCollectionDialog: boolean
     showDialogDeleteCollection: boolean,
     showDialogRenameCollection: boolean,
-    collectionToDelete: Collection | undefined
-    collectionToRename: Collection | undefined
+    collectionToDelete: Collection | null
+    collectionToRename: Collection | null
 
     showCreateGroupDialog: boolean,
     showDialogDeleteGroup: boolean,
     showDialogRenameGroup: boolean,
-    triggerGroupId: number | undefined
+    triggerGroupId: number | null
 }
 
 export class MenuSidebarController extends Component<MenuSidebarControllerProps, MenuSidebarControllerState> {
@@ -164,14 +164,14 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
                     />
                 )}
 
-                {this.state.showDialogDeleteCollection && (
+                {this.state.showDialogDeleteCollection && this.state.collectionToDelete && (
                     <DialogDeleteCollectionController
                         collection={this.state.collectionToDelete}
                         onClose={this.handleCloseDeleteCollectionDialog}
                     />
                 )}
 
-                {this.state.showDialogRenameCollection && (
+                {this.state.showDialogRenameCollection && this.state.collectionToRename && (
                     <DialogRenameCollectionController
                         collection={this.state.collectionToRename}
                         onClose={this.handleCloseRenameCollectionDialog}
@@ -186,14 +186,14 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
                     />
                 )}
 
-                {this.state.showDialogDeleteGroup && (
+                {this.state.showDialogDeleteGroup && this.state.triggerGroupId && (
                     <DialogDeleteGroupController
                         group={this.findGroupById(this.state.triggerGroupId)}
                         onClose={this.handleCloseDeleteGroupDialog}
                     />
                 )}
 
-                {this.state.showDialogRenameGroup && (
+                {this.state.showDialogRenameGroup && this.state.triggerGroupId && (
                     <DialogRenameGroupController
                         group={this.findGroupById(this.state.triggerGroupId)}
                         onClose={this.handleCloseRenameGroupDialog}
@@ -223,15 +223,20 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
         });
     }
 
-    findCollectionById(collectionId: number | null): Collection | undefined {
-        return extractCollections(this.props.rootGroup).find(c => c.id === collectionId);
+    findCollectionById(collectionId: number | null): Collection | null {
+        const collection: Collection | undefined = extractCollections(this.props.rootGroup).find(c => c.id === collectionId);
+        if (collectionId && collection) {
+            return collection;
+        } else {
+            return null;
+        }
     }
 
-    findGroupById(groupId: number | undefined): Group | undefined {
+    findGroupById(groupId: number | null): Group | null {
         if (groupId) {
             return extractGroups(this.props.rootGroup).find(g => g.id === groupId);
         } else {
-            return undefined;
+            return null;
         }
     }
 
@@ -239,7 +244,7 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
     //    CREATE COLLECTION    //
     //=========================//
 
-    handleOpenCreateCollectionDialog(parentGroupId: number | undefined): void {
+    handleOpenCreateCollectionDialog(parentGroupId: number | null): void {
         this.setState({
             showCreateCollectionDialog: true,
             triggerGroupId: parentGroupId,
@@ -249,7 +254,7 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
     handleCloseCreateCollectionDialog(successful: boolean): void {
         this.setState({
             showCreateCollectionDialog: false,
-            triggerGroupId: undefined,
+            triggerGroupId: null,
         });
         if (successful) {
             this.props.onCollectionsModified();
@@ -270,7 +275,7 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
     handleCloseDeleteCollectionDialog(successful: boolean): void {
         this.setState({
             showDialogDeleteCollection: false,
-            collectionToDelete: undefined,
+            collectionToDelete: null,
         });
         if (successful) {
             this.props.onCollectionsModified();
@@ -292,7 +297,7 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
     handleCloseRenameCollectionDialog(successful: boolean): void {
         this.setState({
             showDialogRenameCollection: false,
-            collectionToRename: undefined,
+            collectionToRename: null,
         });
         if (successful) {
             this.props.onCollectionsModified();
@@ -303,7 +308,7 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
     //     MOVE COLLECTION     //
     //=========================//
 
-    handleMoveCollection(collectionId: number, targetGroupId: number | undefined): void {
+    handleMoveCollection(collectionId: number, targetGroupId: number | null): void {
         MoveCollectionMessage.request(ipcRenderer, {
             collectionId: collectionId,
             targetGroupId: targetGroupId,
@@ -323,7 +328,8 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
     //=========================//
 
     handleDragOverCollection(collectionId: number | null, event: React.DragEvent): void {
-        DragAndDropItems.setDropEffect(event.dataTransfer, collectionId);
+        const collection: Collection | null = this.findCollectionById(collectionId)
+        DragAndDropItems.setDropEffect(event.dataTransfer, collection);
     }
 
     handleDropOnCollection(collectionId: number | null, event: React.DragEvent): void {
@@ -342,7 +348,7 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
     //      CREATE GROUP       //
     //=========================//
 
-    handleOpenCreateGroupDialog(parentGroupId: number | undefined): void {
+    handleOpenCreateGroupDialog(parentGroupId: number | null): void {
         this.setState({
             showCreateGroupDialog: true,
             triggerGroupId: parentGroupId,
@@ -352,7 +358,7 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
     handleCloseCreateGroupDialog(successful: boolean): void {
         this.setState({
             showCreateGroupDialog: false,
-            triggerGroupId: undefined,
+            triggerGroupId: null,
         });
         if (successful) {
             this.props.onCollectionsModified();
@@ -374,7 +380,7 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
     handleCloseDeleteGroupDialog(successful: boolean): void {
         this.setState({
             showDialogDeleteGroup: false,
-            triggerGroupId: undefined,
+            triggerGroupId: null,
         });
         if (successful) {
             this.props.onCollectionsModified();
@@ -395,7 +401,7 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
     handleCloseRenameGroupDialog(successful: boolean): void {
         this.setState({
             showDialogRenameGroup: false,
-            triggerGroupId: undefined,
+            triggerGroupId: null,
         });
         if (successful) {
             this.props.onCollectionsModified();
@@ -406,7 +412,7 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
     //        MOVE GROUP       //
     //=========================//
 
-    handleMoveGroup(groupId: number, targetGroupId: number | undefined): void {
+    handleMoveGroup(groupId: number, targetGroupId: number | null): void {
         MoveGroupMessage.request(ipcRenderer, {
             groupId: groupId,
             targetGroupId: targetGroupId,

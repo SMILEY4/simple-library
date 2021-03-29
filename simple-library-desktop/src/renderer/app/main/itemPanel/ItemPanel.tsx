@@ -14,8 +14,8 @@ interface ItemPanelProps {
     selectedItemIds: number[],
     onSelectItem: (itemId: number, selectMode: SelectMode, rangeSelect: boolean) => void,
     onDragStart: (itemId: number, event: React.DragEvent) => void,
-    onContextMenuActionMove: (targetCollectionId: number | undefined, triggerItemId: number) => void,
-    onContextMenuActionCopy: (targetCollectionId: number | undefined, triggerItemId: number) => void,
+    onContextMenuActionMove: (targetCollectionId: number, triggerItemId: number) => void,
+    onContextMenuActionCopy: (targetCollectionId: number, triggerItemId: number) => void,
     onContextMenuActionRemove: (triggerItemId: number) => void;
 }
 

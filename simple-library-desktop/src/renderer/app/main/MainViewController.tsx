@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Component, ReactElement } from 'react';
 import { Theme } from '../application';
 import {
-    ALL_ITEMS_COLLECTION_ID,
     Group,
     groupTreeContainsCollection,
     ImportProcessData,
@@ -52,7 +51,7 @@ export class MainViewController extends Component<MainViewControllerProps, MainV
             showImportFilesDialog: false,
             rootGroup: undefined,
             items: [],
-            currentCollectionId: ALL_ITEMS_COLLECTION_ID,
+            currentCollectionId: null,
         };
         this.updateGroupsAndCollections = this.updateGroupsAndCollections.bind(this);
         this.updateItemList = this.updateItemList.bind(this);
@@ -97,15 +96,15 @@ export class MainViewController extends Component<MainViewControllerProps, MainV
                     rootGroup={this.state.rootGroup}
                     selectedCollectionId={this.state.currentCollectionId}
                     items={this.state.items}
-                    onActionMove={(targetCollectionId: number | null, itemIds: number[]) => this.actionMoveItems(this.state.currentCollectionId, targetCollectionId, itemIds, false)}
-                    onActionCopy={(targetCollectionId: number | null, itemIds: number[]) => this.actionMoveItems(this.state.currentCollectionId, targetCollectionId, itemIds, true)}
+                    onActionMove={(targetCollectionId: number, itemIds: number[]) => this.actionMoveItems(this.state.currentCollectionId, targetCollectionId, itemIds, false)}
+                    onActionCopy={(targetCollectionId: number, itemIds: number[]) => this.actionMoveItems(this.state.currentCollectionId, targetCollectionId, itemIds, true)}
                     onActionRemove={(itemIds: number[]) => this.actionRemoveItems(this.state.currentCollectionId, itemIds)}
                 />
             </MainView>
         );
     }
 
-    handleOnSelectCollection(collectionId: number): void {
+    handleOnSelectCollection(collectionId: number | null): void {
         this.setState({ currentCollectionId: collectionId });
         this.updateItemList(collectionId);
     }
@@ -116,14 +115,15 @@ export class MainViewController extends Component<MainViewControllerProps, MainV
     }
 
     handleOnRefresh(): void {
-        this.updateItemList(this.state.currentCollectionId);
+        this.updateGroupsAndCollections()
+            .then(() => this.updateItemList(this.state.currentCollectionId));
     }
 
-    handleActionMoveItems(srcCollectionId: number | null, tgtCollectionId: number | null, itemIds: number[]): void {
+    handleActionMoveItems(srcCollectionId: number, tgtCollectionId: number, itemIds: number[]): void {
         this.actionMoveItems(srcCollectionId, tgtCollectionId, itemIds, false);
     }
 
-    handleActionCopyItems(srcCollectionId: number | null, tgtCollectionId: number | null, itemIds: number[]): void {
+    handleActionCopyItems(srcCollectionId: number, tgtCollectionId: number, itemIds: number[]): void {
         this.actionMoveItems(srcCollectionId, tgtCollectionId, itemIds, true);
     }
 
@@ -138,7 +138,8 @@ export class MainViewController extends Component<MainViewControllerProps, MainV
                 this.showNotification(MainViewMessageType.MOVE_ITEMS_IN_COLLECTION_FAILED, error);
                 return Promise.reject();
             })
-            .then(() => this.updateGroupsAndCollections().then(() => this.updateItemList(this.state.currentCollectionId)));
+            .then(() => this.updateGroupsAndCollections())
+            .then(() => this.updateItemList(this.state.currentCollectionId));
     }
 
     actionRemoveItems(sourceCollectionId: number, itemIds: number[]) {
@@ -150,7 +151,8 @@ export class MainViewController extends Component<MainViewControllerProps, MainV
                 this.showNotification(MainViewMessageType.REMOVE_ITEMS_FROM_COLLECTION_FAILED, error);
                 return Promise.reject();
             })
-            .then(() => this.updateGroupsAndCollections().then(() => this.updateItemList(this.state.currentCollectionId)));
+            .then(() => this.updateGroupsAndCollections())
+            .then(() => this.updateItemList(this.state.currentCollectionId));
     }
 
     updateGroupsAndCollections(): Promise<void> {
@@ -159,7 +161,7 @@ export class MainViewController extends Component<MainViewControllerProps, MainV
             .then((rootGroup: Group) => {
                 this.setState({ rootGroup: rootGroup });
                 if (!groupTreeContainsCollection(rootGroup, this.state.currentCollectionId)) {
-                    this.handleOnSelectCollection(ALL_ITEMS_COLLECTION_ID);
+                    this.handleOnSelectCollection(null);
                 }
             })
             .catch(error => {
@@ -169,13 +171,17 @@ export class MainViewController extends Component<MainViewControllerProps, MainV
     }
 
     updateItemList(collectionId: number | null) {
-        return GetItemsMessage.request(ipcRenderer, { collectionId: collectionId })
-            .then((response: GetItemsMessage.ResponsePayload) => response.items)
-            .then((items: ItemData[]) => this.setState({ items: items }))
-            .catch(error => {
-                this.showNotification(MainViewMessageType.FETCH_ITEMS_FAILED, error);
-                return Promise.reject();
-            });
+        if (collectionId) {
+            return GetItemsMessage.request(ipcRenderer, { collectionId: collectionId })
+                .then((response: GetItemsMessage.ResponsePayload) => response.items)
+                .then((items: ItemData[]) => this.setState({ items: items }))
+                .catch(error => {
+                    this.showNotification(MainViewMessageType.FETCH_ITEMS_FAILED, error);
+                    return Promise.reject();
+                });
+        } else {
+            this.setState({ items: [] });
+        }
     }
 
     handleImport(data: ImportProcessData) {

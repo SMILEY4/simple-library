@@ -3,7 +3,8 @@
  * -> ALL FIELDS/MODELS MUST BE LOWERCASE
  */
 
-import { Group } from '../../../common/commonModels';
+import { Collection, CollectionType, Group } from '../../../common/commonModels';
+import { collectAllDependants } from 'ts-loader/dist/utils';
 
 export const META_MIME_TYPE_PREFIX = "custom/";
 
@@ -57,10 +58,10 @@ export module DragAndDropItems {
         return META_MIME_TYPE + ";meta=" + JSON.stringify(meta);
     }
 
-    export function setDropEffect(dataTransfer: DataTransfer, collectionIdOver: number | undefined): void {
+    export function setDropEffect(dataTransfer: DataTransfer, collectionOver: Collection | null): void {
         const meta: DragAndDropItems.Metadata | null = DragAndDropUtils.extractMimeTypeProvidedMetadata(dataTransfer, META_MIME_TYPE);
         let mode: string;
-        if (!meta || !collectionIdOver || meta.sourcecollection === collectionIdOver) {
+        if (!meta || !collectionOver || meta.sourcecollection === collectionOver.id || collectionOver.type === CollectionType.SMART) {
             mode = "none";
         } else {
             if (meta.copy) {

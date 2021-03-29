@@ -30,8 +30,8 @@ export module CreateCollectionMessage {
     export interface RequestPayload {
         name: string
         type: CollectionType,
-        parentGroupId: number | undefined
-        smartQuery?: string
+        parentGroupId: number | null
+        smartQuery: string | null
     }
 
     export interface ResponsePayload {
@@ -100,7 +100,7 @@ export module MoveCollectionMessage {
 
     export interface RequestPayload {
         collectionId: number,
-        targetGroupId: number | undefined
+        targetGroupId: number | null
     }
 
     export interface ResponsePayload {
@@ -122,7 +122,7 @@ export module MoveCollectionMessage {
 export module MoveItemsToCollectionsMessage {
 
     export interface RequestPayload {
-        sourceCollectionId: number | undefined,
+        sourceCollectionId: number,
         targetCollectionId: number,
         itemIds: number[],
         copy: boolean
