@@ -1,19 +1,19 @@
 import * as React from 'react';
 import { ReactElement } from 'react';
-import { BodyText } from '../../../components/text/Text';
+import { BodyText } from '../../../../../components/text/Text';
 import {
     displayStringToRenamePartType,
     RENAME_PART_TYPES,
     RenamePart,
     RenamePartType,
     renamePartTypeToDisplayString,
-} from '../../../../common/commonModels';
-import { HBox, VBox } from '../../../components/layout/Box';
-import { AlignCross, AlignMain, Fill, Size, Variant } from '../../../components/common';
-import { ChoiceBox } from '../../../components/choicebox/ChoiceBox';
-import { InputField } from '../../../components/inputfield/InputField';
-import { Checkbox } from '../../../components/checkbox/Checkbox';
-import { Grid } from '../../../components/layout/Grid';
+} from '../../../../../../common/commonModels';
+import { HBox, VBox } from '../../../../../components/layout/Box';
+import { AlignCross, AlignMain, Fill, Size, Variant } from '../../../../../components/common';
+import { ChoiceBox } from '../../../../../components/choicebox/ChoiceBox';
+import { InputField } from '../../../../../components/inputfield/InputField';
+import { Checkbox } from '../../../../../components/checkbox/Checkbox';
+import { Grid } from '../../../../../components/layout/Grid';
 
 export interface RenameFilesFormProps {
     enabled: boolean,
