@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { Component, ReactElement } from 'react';
-import { Dialog } from '../../../components/modal/Dialog';
-import { Type, Variant } from '../../../components/common';
+import { Dialog } from '../../../../../components/modal/Dialog';
+import { Type, Variant } from '../../../../../components/common';
 import { ImportFilesForm } from './ImportFilesForm';
-import { ImportProcessData, ImportTargetAction, RenamePartType } from '../../../../common/commonModels';
+import { ImportProcessData, ImportTargetAction, RenamePartType } from '../../../../../../common/commonModels';
 
 const electron = window.require('electron');
 

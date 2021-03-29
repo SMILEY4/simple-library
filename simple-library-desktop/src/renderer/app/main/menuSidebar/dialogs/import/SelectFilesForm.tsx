@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ReactElement } from 'react';
-import { BodyText } from '../../../components/text/Text';
-import { FileSelectionField } from '../../../components/inputfield/FileSelectionField';
+import { BodyText } from '../../../../../components/text/Text';
+import { FileSelectionField } from '../../../../../components/inputfield/FileSelectionField';
 
 export interface SelectFilesFormProps {
     files: string[],

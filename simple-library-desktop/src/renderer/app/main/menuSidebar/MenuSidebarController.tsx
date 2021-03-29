@@ -8,7 +8,7 @@ import {
     Group,
     ImportProcessData,
 } from '../../../../common/commonModels';
-import { DialogImportFiles } from '../import/DialogImportFiles';
+import { DialogImportFiles } from './dialogs/import/DialogImportFiles';
 import { DialogCreateCollectionController } from './dialogs/DialogCreateCollection';
 import { DialogRenameCollectionController } from './dialogs/DialogRenameCollection';
 import {

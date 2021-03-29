@@ -24,6 +24,7 @@ import { ChoiceBox } from "../choicebox/ChoiceBox";
 import { Notification } from '../notification/Notification';
 import { DropdownItemType } from '../dropdown/Dropdown';
 import { DropdownButton } from '../button/dropdownbutton/DropdownButton';
+import { SFTextArea } from '../textarea/SFTextArea';
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0");
@@ -46,6 +47,24 @@ export function ComponentShowcaseView(): any {
             </div>
         </div>
     );
+
+
+    function renderTextArea() {
+        return (
+            <>
+                <h3>Text Area</h3>
+
+                <SFTextArea
+                    placeholder={"Text Area"}
+                    rows={10}
+                    onChange={(value:string) => console.log("textarea.change: " + value)}
+                    onAccept={(value:string) => console.log("textarea.accept: " + value)}
+                />
+
+            </>
+        );
+    }
+
 
     function renderDropdownButton() {
         return (
@@ -594,6 +613,7 @@ export function ComponentShowcaseView(): any {
     function renderContent() {
         return (
             <>
+                {renderTextArea()}
                 {renderDropdownButton()}
                 {renderNotification()}
                 {renderSidebarMenu()}

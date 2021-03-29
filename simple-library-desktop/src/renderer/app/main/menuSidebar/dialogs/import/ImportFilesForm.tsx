@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { ReactElement } from 'react';
-import { VBox } from '../../../components/layout/Box';
-import { AlignCross, AlignMain, Size } from '../../../components/common';
-import { Separator, SeparatorDirection } from '../../../components/separator/Separator';
-import { ImportProcessData, ImportTargetAction, RenamePartType } from '../../../../common/commonModels';
+import { VBox } from '../../../../../components/layout/Box';
+import { AlignCross, AlignMain, Size } from '../../../../../components/common';
+import { Separator, SeparatorDirection } from '../../../../../components/separator/Separator';
+import { ImportProcessData, ImportTargetAction, RenamePartType } from '../../../../../../common/commonModels';
 import { SelectFilesForm } from './SelectFilesForm';
 import { ImportTargetForm } from './ImportTargetForm';
 import { RenameFilesForm } from './RenameFilesForm';
