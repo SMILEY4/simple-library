@@ -1,5 +1,12 @@
 import { ItemDataAccess } from '../persistence/itemDataAccess';
-import { Collection, CollectionType, ImportProcessData, ImportResult, ItemData } from '../../common/commonModels';
+import {
+    ALL_ITEMS_COLLECTION_ID,
+    Collection,
+    CollectionType,
+    ImportProcessData,
+    ImportResult,
+    ItemData,
+} from '../../common/commonModels';
 import { ImportService } from './importprocess/importService';
 import { CollectionDataAccess } from '../persistence/collectionDataAccess';
 import { failedAsync } from '../../common/AsyncCommon';
@@ -36,10 +43,10 @@ export class ItemService {
      */
     public async getAllItems(collectionId: number | undefined): Promise<ItemData[]> {
         const collection: Collection | null = await this.collectionDataAccess.findCollection(collectionId);
-        if (!collection) {
+        if (collectionId !== ALL_ITEMS_COLLECTION_ID && collection === null) {
             return failedAsync("Could not fetch items. Collection does not exist.");
         }
-        if (collection.type === CollectionType.SMART) {
+        if (collection && collection.type === CollectionType.SMART) {
             return this.itemDataAccess.getItemsBySmartQuery(collection.smartQuery);
         } else {
             return this.itemDataAccess.getAllItems(collectionId);

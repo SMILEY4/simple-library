@@ -26,6 +26,7 @@ import itemsCreateTable from "./items/items_create_table.sql";
 import itemsInsert from "./items/items_insert.sql";
 import itemsGetAll from "./items/items_get_all.sql";
 import itemsGetByCollection from "./items/items_get_by_collection.sql";
+import itemsGetByCustomFilter from "./items/items_get_by_custom_filter.sql";
 import itemsCount from "./items/items_count.sql";
 
 import metadataCreateTable from "./metadata/metadata_create_table.sql";
@@ -186,6 +187,11 @@ export function sqlGetItemsInCollection(collectionId: number | undefined) {
     } else {
         return itemsGetAll;
     }
+}
+
+export function sqlGetItemsByCustomFilter(query: string) {
+    return itemsGetByCustomFilter
+        .replace("$query", query);
 }
 
 export function sqlCountItems(): string {

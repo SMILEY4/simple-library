@@ -1,7 +1,6 @@
 import DataAccess from './dataAccess';
-import { sqlCountItems, sqlGetItemsInCollection, sqlInsertItem } from './sql/sql';
+import { sqlCountItems, sqlGetItemsByCustomFilter, sqlGetItemsInCollection, sqlInsertItem } from './sql/sql';
 import { ItemData } from '../../common/commonModels';
-import { startAsyncWithValue } from '../../common/AsyncCommon';
 
 export class ItemDataAccess {
 
@@ -32,7 +31,7 @@ export class ItemDataAccess {
      * @param data the item to save
      * @return a promise that resolves with the saved item data (including the item-id)
      */
-    public async insertItem(data: ItemData): Promise<ItemData> {
+    public insertItem(data: ItemData): Promise<ItemData> {
         return this.dataAccess.executeRun(sqlInsertItem(data.filepath, data.timestamp, data.hash, data.thumbnail))
             .then((id: number) => {
                 data.id = id;
@@ -47,16 +46,7 @@ export class ItemDataAccess {
      */
     public getAllItems(collectionId: number | undefined): Promise<ItemData[]> {
         return this.dataAccess.queryAll(sqlGetItemsInCollection(collectionId))
-            .then((rows: any[]) => rows.map((row: any) => {
-                return {
-                    id: row.item_id,
-                    timestamp: row.timestamp_imported,
-                    filepath: row.filepath,
-                    sourceFilepath: row.filepath,
-                    hash: row.hash,
-                    thumbnail: row.thumbnail,
-                };
-            }));
+            .then((rows: any[]) => rows.map(ItemDataAccess.rowToItem));
     }
 
     /**
@@ -65,7 +55,19 @@ export class ItemDataAccess {
      * @return a promise that resolves with the array of {@link ItemData}
      */
     public getItemsBySmartQuery(query: string): Promise<ItemData[]> {
-        return startAsyncWithValue([]);
+        return this.dataAccess.queryAll(sqlGetItemsByCustomFilter(query))
+            .then((rows: any[]) => rows.map(ItemDataAccess.rowToItem));
+    }
+
+    private static rowToItem(row: any): ItemData {
+        return {
+            id: row.item_id,
+            timestamp: row.timestamp_imported,
+            filepath: row.filepath,
+            sourceFilepath: row.filepath,
+            hash: row.hash,
+            thumbnail: row.thumbnail,
+        };
     }
 
 }
