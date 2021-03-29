@@ -19,7 +19,7 @@ export function contextMenuTree(group: Group,
             }>
                 {[
                     ...group.collections.filter(collectionFilter).map((collection: Collection) => collectionItem(collection, onAction)),
-                    treeSeparator(group),
+                    treeSeparator(group, collectionFilter),
                     ...group.children.map((group: Group) => contextMenuTree(group, null, onAction, collectionFilter)),
                 ]}
             </Submenu>
@@ -57,8 +57,8 @@ export function contextMenuGroupTree(group: Group,
     }
 }
 
-function treeSeparator(group: Group) {
-    return group.collections.length > 0 && group.children.length > 0
+function treeSeparator(group: Group, collectionFilter: ((collection: Collection) => boolean) | undefined) {
+    return group.collections.filter((c:Collection) => collectionFilter ? collectionFilter(c) : true).length > 0 && group.children.length > 0
         ? <Separator />
         : null;
 }

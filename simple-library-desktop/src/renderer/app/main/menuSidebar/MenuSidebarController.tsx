@@ -223,9 +223,9 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
         });
     }
 
-    findCollectionById(collectionId: number): Collection | null {
+    findCollectionById(collectionId: number | null): Collection | null {
         const collection: Collection | undefined = extractCollections(this.props.rootGroup).find(c => c.id === collectionId);
-        if (collection) {
+        if (collectionId && collection) {
             return collection;
         } else {
             return null;
@@ -328,7 +328,8 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
     //=========================//
 
     handleDragOverCollection(collectionId: number | null, event: React.DragEvent): void {
-        DragAndDropItems.setDropEffect(event.dataTransfer, collectionId);
+        const collection: Collection | null = this.findCollectionById(collectionId)
+        DragAndDropItems.setDropEffect(event.dataTransfer, collection);
     }
 
     handleDropOnCollection(collectionId: number | null, event: React.DragEvent): void {
