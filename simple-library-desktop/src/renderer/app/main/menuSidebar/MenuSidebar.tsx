@@ -88,16 +88,40 @@ export function MenuSidebar(props: React.PropsWithChildren<MenuSidebarProps>): R
 
     function renderItems(collections: Collection[], groups: Group[]): ReactElement[] {
         return [
-            ...collections.map((collection: Collection) => {
-                return <CollectionEntry collection={collection}
-                                        key={"collection-" + (collection.id ? collection.id : -1)}
-                                        selectedId={props.activeCollectionId}
-                                        onSelect={props.onSelectCollection}
-                                        onDragStart={(event: React.DragEvent) => props.onDragStartCollection(collection.id, event)}
-                                        onDragOver={(event: React.DragEvent) => props.onDragOverCollection(collection.id, event)}
-                                        onDrop={(event: React.DragEvent) => props.onDropOnCollection(collection.id, event)} />;
-            }),
-            ...groups.map((child: Group) => renderGroup(child)),
+            ...collections
+                .sort((a: Collection, b: Collection) => {
+                    const nameA: string = a.name.toUpperCase();
+                    const nameB: string = b.name.toUpperCase();
+                    if (nameA < nameB) {
+                        return -1;
+                    }
+                    if (nameA > nameB) {
+                        return 1;
+                    }
+                    return 0;
+                })
+                .map((collection: Collection) => {
+                    return <CollectionEntry collection={collection}
+                                            key={"collection-" + (collection.id ? collection.id : -1)}
+                                            selectedId={props.activeCollectionId}
+                                            onSelect={props.onSelectCollection}
+                                            onDragStart={(event: React.DragEvent) => props.onDragStartCollection(collection.id, event)}
+                                            onDragOver={(event: React.DragEvent) => props.onDragOverCollection(collection.id, event)}
+                                            onDrop={(event: React.DragEvent) => props.onDropOnCollection(collection.id, event)} />;
+                }),
+            ...groups
+                .sort((a: Group, b: Group) => {
+                    const nameA: string = a.name.toUpperCase();
+                    const nameB: string = b.name.toUpperCase();
+                    if (nameA < nameB) {
+                        return -1;
+                    }
+                    if (nameA > nameB) {
+                        return 1;
+                    }
+                    return 0;
+                })
+                .map((child: Group) => renderGroup(child)),
         ];
     }
 
