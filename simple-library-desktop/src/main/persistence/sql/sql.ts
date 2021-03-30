@@ -11,6 +11,7 @@ import collectionItemsCreateTable from "./collection_items/collection_items_crea
 import collectionItemsInsert from "./collection_items/collection_items_insert.sql";
 import collectionItemsDeleteCollection from "./collection_items/collection_items_delete_collection.sql";
 import collectionItemsDeleteItem from "./collection_items/collection_items_delete_item.sql";
+import collectionItemsCountWithCollectionId from "./collection_items/items_count_with_collection_id.sql";
 
 import collectionsCreateTable from "./collections/collections_create_table.sql";
 import collectionsSelectAll from "./collections/collections_select_all.sql";
@@ -27,7 +28,8 @@ import itemsInsert from "./items/items_insert.sql";
 import itemsGetAll from "./items/items_get_all.sql";
 import itemsGetByCollection from "./items/items_get_by_collection.sql";
 import itemsGetByCustomFilter from "./items/items_get_by_custom_filter.sql";
-import itemsCount from "./items/items_count.sql";
+import itemsCountWithCustomQuery from "./items/items_count_with_custom_query.sql";
+import itemsCountTotal from "./items/items_count_total.sql";
 
 import metadataCreateTable from "./metadata/metadata_create_table.sql";
 import metadataGetAll from "./metadata/metadata_get_all.sql";
@@ -163,6 +165,11 @@ export function sqlRemoveItemFromCollection(collectionId: number, itemId: number
         .replace("$itemId", itemId);
 }
 
+export function sqlCountItemsWithCollectionId(collectionId: number): string {
+    return collectionItemsCountWithCollectionId
+        .replace("$collectionId", collectionId);
+}
+
 
 //==================//
 //      ITEMS       //
@@ -194,10 +201,14 @@ export function sqlGetItemsByCustomFilter(query: string) {
         .replace("$query", query);
 }
 
-export function sqlCountItems(): string {
-    return itemsCount;
+export function sqlCountItemsWithCustomFilter(query: string): string {
+    return itemsCountWithCustomQuery
+        .replace("$query", query);
 }
 
+export function sqlGetItemsCountTotal() {
+    return itemsCountTotal;
+}
 
 //==================//
 //     LIBRARY      //

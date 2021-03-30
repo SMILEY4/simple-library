@@ -1,5 +1,12 @@
 import DataAccess from './dataAccess';
-import { sqlCountItems, sqlGetItemsByCustomFilter, sqlGetItemsInCollection, sqlInsertItem } from './sql/sql';
+import {
+    sqlCountItemsWithCollectionId,
+    sqlCountItemsWithCustomFilter,
+    sqlGetItemsByCustomFilter,
+    sqlGetItemsCountTotal,
+    sqlGetItemsInCollection,
+    sqlInsertItem,
+} from './sql/sql';
 import { ItemData } from '../../common/commonModels';
 
 export class ItemDataAccess {
@@ -9,21 +16,6 @@ export class ItemDataAccess {
 
     constructor(dataAccess: DataAccess) {
         this.dataAccess = dataAccess;
-    }
-
-
-    /**
-     * @return a promise that resolves with the number of all items in the library
-     */
-    public getTotalItemCount(): Promise<number> {
-        return this.dataAccess.queryAll(sqlCountItems())
-            .then((rows: any[]) => {
-                let count: number = 0;
-                if (rows && rows.length === 1) {
-                    count = rows[0].count;
-                }
-                return count;
-            });
     }
 
     /**
@@ -57,6 +49,35 @@ export class ItemDataAccess {
     public getItemsBySmartQuery(query: string): Promise<ItemData[]> {
         return this.dataAccess.queryAll(sqlGetItemsByCustomFilter(query))
             .then((rows: any[]) => rows.map(ItemDataAccess.rowToItem));
+    }
+
+    /**
+     * Get the total item count
+     * @return a promise that resolves with the number of total items
+     */
+    public getTotalItemCount(): Promise<number> {
+        return this.dataAccess.querySingle(sqlGetItemsCountTotal())
+            .then((row: any) => row.count);
+    }
+
+    /**
+     * Get the item count for a normal collection of the given id
+     * @param collectionId the id of the collection
+     * @return a promise that resolves with the number of items in the given collection
+     */
+    public getItemCountByCollectionId(collectionId: number): Promise<number> {
+        return this.dataAccess.querySingle(sqlCountItemsWithCollectionId(collectionId))
+            .then((row: any) => row.count);
+    }
+
+    /**
+     * Get the amount of items matching the given smart-query
+     * @param smartQuery the query to match
+     * @return a promise that resolves with the number of matching items
+     */
+    public getItemCountBySmartQuery(smartQuery: string): Promise<number> {
+        return this.dataAccess.querySingle(sqlCountItemsWithCustomFilter(smartQuery.trim()))
+            .then((row: any) => row.count);
     }
 
     private static rowToItem(row: any): ItemData {

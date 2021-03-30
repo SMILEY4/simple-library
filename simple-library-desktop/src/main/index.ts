@@ -42,7 +42,7 @@ if (RUN_TESTS) {
     const dataAccess: DataAccess = new DataAccess();
     const libraryDataAccess: LibraryDataAccess = new LibraryDataAccess(dataAccess);
     const itemDataAccess: ItemDataAccess = new ItemDataAccess(dataAccess);
-    const collectionDataAccess: CollectionDataAccess = new CollectionDataAccess(dataAccess);
+    const collectionDataAccess: CollectionDataAccess = new CollectionDataAccess(dataAccess, itemDataAccess);
     const groupDataAccess: GroupDataAccess = new GroupDataAccess(dataAccess);
 
     // service

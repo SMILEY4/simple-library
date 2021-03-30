@@ -52,13 +52,4 @@ export class ItemService {
         }
     }
 
-
-    /**
-     * Get the amount of all items of the library
-     * @return a promise that resolves with the count of all items
-     */
-    public getTotalItemCount(): Promise<number> {
-        return this.itemDataAccess.getTotalItemCount();
-    }
-
 }

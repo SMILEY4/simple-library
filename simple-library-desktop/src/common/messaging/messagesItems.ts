@@ -25,28 +25,6 @@ export module GetItemsMessage {
 }
 
 
-export module GetItemCountMessage {
-
-    export interface RequestPayload {
-    }
-
-    export interface ResponsePayload {
-        count: number
-    }
-
-    const CHANNEL: string = 'item.count';
-
-    export function request(ipc: Electron.IpcRenderer): Promise<ResponsePayload> {
-        return sendRequest<RequestPayload, ResponsePayload>(ipc, CHANNEL, {});
-    }
-
-    export function handle(ipc: Electron.IpcMain, action: (payload: RequestPayload) => Promise<ResponsePayload | ErrorResponse>) {
-        handleRequest<RequestPayload, ResponsePayload>(ipc, CHANNEL, action);
-    }
-
-}
-
-
 export module ImportItemsMessage {
 
     export interface RequestPayload {

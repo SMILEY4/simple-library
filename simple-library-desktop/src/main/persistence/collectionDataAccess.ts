@@ -11,14 +11,16 @@ import {
     sqlUpdateCollectionsParents,
 } from './sql/sql';
 import { Collection, CollectionType } from '../../common/commonModels';
+import { ItemDataAccess } from './itemDataAccess';
 
 export class CollectionDataAccess {
 
     dataAccess: DataAccess;
+    itemDataAccess: ItemDataAccess;
 
-
-    constructor(dataAccess: DataAccess) {
+    constructor(dataAccess: DataAccess, itemDataAccess: ItemDataAccess) {
         this.dataAccess = dataAccess;
+        this.itemDataAccess = itemDataAccess;
     }
 
     /**
@@ -29,28 +31,24 @@ export class CollectionDataAccess {
     public getCollections(includeItemCount: boolean): Promise<Collection[]> {
         if (includeItemCount) {
             return this.dataAccess.queryAll(sqlAllCollections(true))
-                .then((rows: any[]) => rows.map((row: any) => {
-                    return {
-                        id: row.collection_id,
-                        name: row.collection_name,
-                        type: row.collection_type,
-                        smartQuery: row.smart_query ? row.smart_query : null,
-                        itemCount: row.item_count,
-                        groupId: row.group_id ? row.group_id : null,
-                    };
-                }));
+                .then((rows: any[]) => rows.map((row: any) => this.rowToCollection(row, true)))
+                .then(async (collections: Collection[]) => {
+                    for (let i = 0; i < collections.length; i++) {
+                        const collection: Collection = collections[i];
+                        if (collection.type === CollectionType.SMART) {
+                            const smartQuery: string = collection.smartQuery;
+                            if (smartQuery && smartQuery.trim().length > 0) {
+                                collection.itemCount = await this.itemDataAccess.getItemCountBySmartQuery(smartQuery.trim());
+                            } else {
+                                collection.itemCount = await this.itemDataAccess.getTotalItemCount();
+                            }
+                        }
+                    }
+                    return collections;
+                });
         } else {
             return this.dataAccess.queryAll(sqlAllCollections(false))
-                .then((rows: any[]) => rows.map((row: any) => {
-                    return {
-                        id: row.collection_id,
-                        name: row.collection_name,
-                        type: row.collection_type,
-                        smartQuery: row.smart_query ? row.smart_query : null,
-                        groupId: row.group_id,
-                        itemCount: null,
-                    };
-                }));
+                .then((rows: any[]) => rows.map((row: any) => this.rowToCollection(row, false)));
         }
     }
 
@@ -62,20 +60,7 @@ export class CollectionDataAccess {
      */
     public findCollection(collectionId: number): Promise<Collection | null> {
         return this.dataAccess.querySingle(sqlFindCollectionById(collectionId))
-            .then((row: any | undefined) => {
-                if (row) {
-                    return {
-                        id: row.collection_id,
-                        name: row.collection_name,
-                        type: row.collection_type,
-                        smartQuery: row.smart_query ? row.smart_query : null,
-                        groupId: row.group_id,
-                        itemCount: null,
-                    };
-                } else {
-                    return null;
-                }
-            });
+            .then((row: any | undefined) => this.rowToCollection(row, false));
     }
 
     /**
@@ -176,6 +161,22 @@ export class CollectionDataAccess {
      */
     public removeItemFromCollection(collectionId: number, itemId: number): Promise<void> {
         return this.dataAccess.executeRun(sqlRemoveItemFromCollection(collectionId, itemId)).then();
+    }
+
+
+    private rowToCollection(row: any, includeItemCount: boolean): Collection | null {
+        if (row) {
+            return {
+                id: row.collection_id,
+                name: row.collection_name,
+                type: row.collection_type,
+                smartQuery: row.smart_query ? row.smart_query : null,
+                groupId: row.group_id,
+                itemCount: includeItemCount ? row.item_count : null,
+            };
+        } else {
+            return null;
+        }
     }
 
 }
