@@ -164,7 +164,7 @@ class CollectionDataAccessMock extends CollectionDataAccess {
     collections: Collection[];
 
     constructor(collections: Collection[]) {
-        super(undefined);
+        super(undefined, undefined);
         this.collections = collections;
     }
 
