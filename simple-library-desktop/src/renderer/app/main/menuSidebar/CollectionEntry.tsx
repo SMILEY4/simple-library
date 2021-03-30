@@ -2,8 +2,9 @@ import * as React from 'react';
 import { useContextMenu } from 'react-contexify';
 import { COLLECTION_CONTEXT_MENU_ID } from './contextmenues/CollectionContextMenu';
 import { SidebarMenuItem } from '../../../components/sidebarmenu/SidebarMenuItem';
+import { Collection, CollectionType } from '../../../../common/commonModels';
+import { BiImagesSmart } from '../../../components/icons/BiImagesSmart';
 import { BiImages } from 'react-icons/all';
-import { Collection } from '../../../../common/commonModels';
 
 interface CollectionEntryProps {
     collection: Collection,
@@ -24,7 +25,7 @@ export function CollectionEntry(props: React.PropsWithChildren<CollectionEntryPr
     });
 
     return <SidebarMenuItem title={props.collection.name}
-                            icon={<BiImages />}
+                            icon={props.collection.type === CollectionType.SMART ? <BiImagesSmart /> : <BiImages/>}
                             label={"" + props.collection.itemCount}
                             selected={props.selectedId === props.collection.id}
                             onClick={() => props.onSelect(props.collection.id)}
