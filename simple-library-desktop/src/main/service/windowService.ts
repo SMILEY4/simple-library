@@ -74,7 +74,7 @@ export class WindowService {
             },
         });
 
-        this.window.setAlwaysOnTop(true);
+        this.window.setAlwaysOnTop(false); // todo wip: only for testing (normally = false)
         if (isDev) {
             this.window.loadURL('http://localhost:8080');
             this.window.webContents.openDevTools();
