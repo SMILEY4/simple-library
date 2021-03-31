@@ -41,6 +41,7 @@
 	background-color: var(--base-color-1);
 }
 
+.sidebar-menu-item-drag-over,
 .sidebar-menu-item:hover {
 	background-color: var(--base-color-0);
 }
