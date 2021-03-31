@@ -10,7 +10,7 @@ import {
 } from '../../../../common/commonModels';
 import { DialogImportFiles } from './dialogs/import/DialogImportFiles';
 import { DialogCreateCollectionController } from './dialogs/DialogCreateCollection';
-import { DialogRenameCollectionController } from './dialogs/DialogRenameCollection';
+import { DialogEditCollectionController } from './dialogs/DialogEditCollection';
 import {
     DragAndDropCollections,
     DragAndDropGroups,
@@ -36,7 +36,7 @@ interface MenuSidebarControllerProps {
     onActionClose: () => void,
     onActionMoveItems: (srcCollectionId: number, tgtCollectionId: number, itemIds: number[]) => void,
     onActionCopyItems: (srcCollectionId: number, tgtCollectionId: number, itemIds: number[]) => void,
-    onCollectionsModified: () => void,
+    onCollectionsModified: (updateItems:boolean) => void,
 }
 
 interface MenuSidebarControllerState {
@@ -45,9 +45,9 @@ interface MenuSidebarControllerState {
 
     showCreateCollectionDialog: boolean
     showDialogDeleteCollection: boolean,
-    showDialogRenameCollection: boolean,
+    showDialogEditCollection: boolean,
     collectionToDelete: Collection | null
-    collectionToRename: Collection | null
+    collectionToEdit: Collection | null
 
     showCreateGroupDialog: boolean,
     showDialogDeleteGroup: boolean,
@@ -64,9 +64,9 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
             showImportDialog: false,
             showCreateCollectionDialog: false,
             showDialogDeleteCollection: false,
-            showDialogRenameCollection: false,
+            showDialogEditCollection: false,
             collectionToDelete: undefined,
-            collectionToRename: undefined,
+            collectionToEdit: undefined,
             showCreateGroupDialog: false,
             showDialogDeleteGroup: false,
             showDialogRenameGroup: false,
@@ -93,8 +93,8 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
         this.handleOpenDeleteCollectionDialog = this.handleOpenDeleteCollectionDialog.bind(this);
         this.handleCloseDeleteCollectionDialog = this.handleCloseDeleteCollectionDialog.bind(this);
 
-        this.handleOpenRenameCollectionDialog = this.handleOpenRenameCollectionDialog.bind(this);
-        this.handleCloseRenameCollectionDialog = this.handleCloseRenameCollectionDialog.bind(this);
+        this.handleOpenEditCollectionDialog = this.handleOpenEditCollectionDialog.bind(this);
+        this.handleCloseEditCollectionDialog = this.handleCloseEditCollectionDialog.bind(this);
 
         this.handleOpenCreateGroupDialog = this.handleOpenCreateGroupDialog.bind(this);
         this.handleCloseCreateGroupDialog = this.handleCloseCreateGroupDialog.bind(this);
@@ -138,7 +138,7 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
                     onCreateCollection={() => this.handleOpenCreateCollectionDialog(undefined)}
                     onCreateGroup={() => this.handleOpenCreateGroupDialog(undefined)}
 
-                    onCollectionContextMenuRename={this.handleOpenRenameCollectionDialog}
+                    onCollectionContextMenuEdit={this.handleOpenEditCollectionDialog}
                     onCollectionContextMenuDelete={this.handleOpenDeleteCollectionDialog}
                     onCollectionContextMenuMove={this.handleMoveCollection}
 
@@ -171,10 +171,10 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
                     />
                 )}
 
-                {this.state.showDialogRenameCollection && this.state.collectionToRename && (
-                    <DialogRenameCollectionController
-                        collection={this.state.collectionToRename}
-                        onClose={this.handleCloseRenameCollectionDialog}
+                {this.state.showDialogEditCollection && this.state.collectionToEdit && (
+                    <DialogEditCollectionController
+                        collection={this.state.collectionToEdit}
+                        onClose={this.handleCloseEditCollectionDialog}
                     />
                 )}
 
@@ -257,7 +257,7 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
             triggerGroupId: null,
         });
         if (successful) {
-            this.props.onCollectionsModified();
+            this.props.onCollectionsModified(false);
         }
     }
 
@@ -278,29 +278,29 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
             collectionToDelete: null,
         });
         if (successful) {
-            this.props.onCollectionsModified();
+            this.props.onCollectionsModified(false);
         }
     }
 
 
     //=========================//
-    //    RENAME COLLECTION    //
+    //    EDIT COLLECTION    //
     //=========================//
 
-    handleOpenRenameCollectionDialog(collectionId: number): void {
+    handleOpenEditCollectionDialog(collectionId: number): void {
         this.setState({
-            showDialogRenameCollection: true,
-            collectionToRename: extractCollections(this.props.rootGroup).find(c => c.id === collectionId),
+            showDialogEditCollection: true,
+            collectionToEdit: extractCollections(this.props.rootGroup).find(c => c.id === collectionId),
         });
     }
 
-    handleCloseRenameCollectionDialog(successful: boolean): void {
+    handleCloseEditCollectionDialog(successful: boolean): void {
         this.setState({
-            showDialogRenameCollection: false,
-            collectionToRename: null,
+            showDialogEditCollection: false,
+            collectionToEdit: null,
         });
         if (successful) {
-            this.props.onCollectionsModified();
+            this.props.onCollectionsModified(true);
         }
     }
 
@@ -312,7 +312,7 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
         MoveCollectionMessage.request(ipcRenderer, {
             collectionId: collectionId,
             targetGroupId: targetGroupId,
-        }).then(() => this.props.onCollectionsModified());
+        }).then(() => this.props.onCollectionsModified(false));
     }
 
     //=========================//
@@ -361,7 +361,7 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
             triggerGroupId: null,
         });
         if (successful) {
-            this.props.onCollectionsModified();
+            this.props.onCollectionsModified(false);
         }
     }
 
@@ -383,7 +383,7 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
             triggerGroupId: null,
         });
         if (successful) {
-            this.props.onCollectionsModified();
+            this.props.onCollectionsModified(false);
         }
     }
 
@@ -404,7 +404,7 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
             triggerGroupId: null,
         });
         if (successful) {
-            this.props.onCollectionsModified();
+            this.props.onCollectionsModified(false);
         }
     }
 
@@ -416,7 +416,7 @@ export class MenuSidebarController extends Component<MenuSidebarControllerProps,
         MoveGroupMessage.request(ipcRenderer, {
             groupId: groupId,
             targetGroupId: targetGroupId,
-        }).then(() => this.props.onCollectionsModified());
+        }).then(() => this.props.onCollectionsModified(false));
     }
 
     //=========================//

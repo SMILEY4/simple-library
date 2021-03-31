@@ -70,7 +70,7 @@ export class MainViewController extends Component<MainViewControllerProps, MainV
     }
 
     componentDidMount() {
-        this.updateGroupsAndCollections()
+        this.updateGroupsAndCollections(false)
             .then(() => this.updateItemList(this.state.currentCollectionId));
     }
 
@@ -115,7 +115,7 @@ export class MainViewController extends Component<MainViewControllerProps, MainV
     }
 
     handleOnRefresh(): void {
-        this.updateGroupsAndCollections()
+        this.updateGroupsAndCollections(false)
             .then(() => this.updateItemList(this.state.currentCollectionId));
     }
 
@@ -138,7 +138,7 @@ export class MainViewController extends Component<MainViewControllerProps, MainV
                 this.showNotification(MainViewMessageType.MOVE_ITEMS_IN_COLLECTION_FAILED, error);
                 return Promise.reject();
             })
-            .then(() => this.updateGroupsAndCollections())
+            .then(() => this.updateGroupsAndCollections(false))
             .then(() => this.updateItemList(this.state.currentCollectionId));
     }
 
@@ -151,17 +151,22 @@ export class MainViewController extends Component<MainViewControllerProps, MainV
                 this.showNotification(MainViewMessageType.REMOVE_ITEMS_FROM_COLLECTION_FAILED, error);
                 return Promise.reject();
             })
-            .then(() => this.updateGroupsAndCollections())
+            .then(() => this.updateGroupsAndCollections(false))
             .then(() => this.updateItemList(this.state.currentCollectionId));
     }
 
-    updateGroupsAndCollections(): Promise<void> {
+    updateGroupsAndCollections(updateItems:boolean): Promise<void> {
         return GetGroupsMessage.request(ipcRenderer, { includeCollections: true, includeItemCount: true })
             .then((response: GetGroupsMessage.ResponsePayload) => response.groups[0])
             .then((rootGroup: Group) => {
                 this.setState({ rootGroup: rootGroup });
                 if (!groupTreeContainsCollection(rootGroup, this.state.currentCollectionId)) {
                     this.handleOnSelectCollection(null);
+                }
+            })
+            .then(() => {
+                if(updateItems) {
+                    this.updateItemList(this.state.currentCollectionId)
                 }
             })
             .catch(error => {
@@ -200,7 +205,7 @@ export class MainViewController extends Component<MainViewControllerProps, MainV
             })
             .then(() => {
                 this.removeNotification(uidStatusNotification);
-                this.updateGroupsAndCollections()
+                this.updateGroupsAndCollections(false)
                     .then(() => this.updateItemList(this.state.currentCollectionId));
             })
             .catch(error => {

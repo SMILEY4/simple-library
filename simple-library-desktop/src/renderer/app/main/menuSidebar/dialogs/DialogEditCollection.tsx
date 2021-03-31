@@ -1,60 +1,55 @@
 import * as React from 'react';
 import { Component, ReactElement } from 'react';
-import { CollectionType, extractGroups, Group } from '../../../../../common/commonModels';
-import { CreateCollectionMessage } from '../../../../../common/messaging/messagesCollections';
 import { Dialog } from '../../../../components/modal/Dialog';
 import { AlignCross, AlignMain, Size, Type, Variant } from '../../../../components/common';
 import { HBox, VBox } from '../../../../components/layout/Box';
 import { InputField } from '../../../../components/inputfield/InputField';
+import { Collection, CollectionType } from '../../../../../common/commonModels';
+import { EditCollectionMessage } from '../../../../../common/messaging/messagesCollections';
+import { Separator, SeparatorDirection } from '../../../../components/separator/Separator';
 import { BodyText } from '../../../../components/text/Text';
 import { ChoiceBox } from '../../../../components/choicebox/ChoiceBox';
 import { TextArea } from '../../../../components/textarea/TextArea';
-import { Separator, SeparatorDirection } from '../../../../components/separator/Separator';
 
 const { ipcRenderer } = window.require('electron');
 
 
-interface DialogCreateCollectionControllerProps {
+interface DialogEditCollectionControllerProps {
+    collection: Collection,
     onClose: (successful: boolean) => void,
-    triggerGroupId: number | undefined,
-    rootGroup: Group,
+
 }
 
-interface DialogCreateCollectionControllerState {
+interface DialogEditCollectionControllerState {
     name: string,
     nameValid: boolean,
-    type: CollectionType
-    smartQuery: string
+    smartQuery: string,
 }
 
-export class DialogCreateCollectionController extends Component<DialogCreateCollectionControllerProps, DialogCreateCollectionControllerState> {
+export class DialogEditCollectionController extends Component<DialogEditCollectionControllerProps, DialogEditCollectionControllerState> {
 
-    constructor(props: DialogCreateCollectionControllerProps) {
+    constructor(props: DialogEditCollectionControllerProps) {
         super(props);
         this.state = {
-            name: "",
+            name: this.props.collection.name,
             nameValid: true,
-            type: CollectionType.NORMAL,
-            smartQuery: "",
+            smartQuery: this.props.collection.smartQuery,
         };
-        this.validate = this.validate.bind(this);
         this.typeToDisplayString = this.typeToDisplayString.bind(this);
-        this.displayStringToType = this.displayStringToType.bind(this);
+        this.validate = this.validate.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
-        this.handleCreate = this.handleCreate.bind(this);
+        this.handleRename = this.handleRename.bind(this);
     }
 
     render(): ReactElement {
-        return <DialogCreateCollection
-            parentGroup={extractGroups(this.props.rootGroup).find(g => g.id === this.props.triggerGroupId)}
+        return <DialogEditCollection
             name={this.state.name}
             onChangeName={(name: string) => this.setState({ name: name })}
-            type={this.typeToDisplayString(this.state.type)}
-            onSelectType={(type: string) => this.setState({ type: this.displayStringToType(type) })}
+            type={this.typeToDisplayString(this.props.collection.type)}
             smartQuery={this.state.smartQuery}
-            onChangeSmartQuery={(query: string) => this.setState({ smartQuery: query })}
+            onChangeSmartQuery={(smartQuery: string) => this.setState({ smartQuery: smartQuery })}
             onClose={this.handleCancel}
-            onCreate={this.handleCreate}
+            onRename={this.handleRename}
         />;
     }
 
@@ -64,15 +59,6 @@ export class DialogCreateCollectionController extends Component<DialogCreateColl
                 return "Normal";
             case CollectionType.SMART:
                 return "Smart";
-        }
-    }
-
-    displayStringToType(type: string): CollectionType {
-        switch (type) {
-            case "Normal":
-                return CollectionType.NORMAL;
-            case "Smart":
-                return CollectionType.SMART;
         }
     }
 
@@ -91,13 +77,12 @@ export class DialogCreateCollectionController extends Component<DialogCreateColl
         this.props.onClose(false);
     }
 
-    handleCreate() {
+    handleRename() {
         if (this.validate()) {
-            CreateCollectionMessage.request(ipcRenderer, {
-                name: this.state.name.trim(),
-                type: this.state.type,
-                smartQuery: this.state.type === CollectionType.SMART ? this.state.smartQuery : undefined,
-                parentGroupId: this.props.triggerGroupId,
+            EditCollectionMessage.request(ipcRenderer, {
+                collectionId: this.props.collection.id,
+                newName: this.state.name.trim(),
+                newSmartQuery: this.state.smartQuery.trim()
             }).finally(() => this.props.onClose(true));
         }
     }
@@ -105,25 +90,23 @@ export class DialogCreateCollectionController extends Component<DialogCreateColl
 }
 
 
-interface DialogCreateCollectionProps {
-    parentGroup: Group | undefined,
+interface DialogEditCollectionProps {
 
     name: string,
     onChangeName: (name: string) => void
 
     type: string,
-    onSelectType: (type: string) => void,
 
     smartQuery: string,
     onChangeSmartQuery: (query: string) => void
 
     onClose: () => void
-    onCreate: () => void
+    onRename: () => void
 }
 
-function DialogCreateCollection(props: React.PropsWithChildren<DialogCreateCollectionProps>): React.ReactElement {
+function DialogEditCollection(props: React.PropsWithChildren<DialogEditCollectionProps>): React.ReactElement {
     return (
-        <Dialog title={"Create new Collection"}
+        <Dialog title={"Edit Collection"}
                 show={true}
                 closeButton={true}
                 onClose={props.onClose}
@@ -135,17 +118,16 @@ function DialogCreateCollection(props: React.PropsWithChildren<DialogCreateColle
                         triggeredByEscape: true,
                     },
                     {
-                        content: "Create",
+                        content: "Save",
                         variant: Variant.SOLID,
                         type: Type.PRIMARY,
-                        onAction: props.onCreate,
+                        onAction: props.onRename,
                         triggeredByEnter: true,
                     },
                 ]}>
             <VBox alignMain={AlignMain.CENTER} alignCross={AlignCross.STRETCH} spacing={Size.S_0_75}>
 
                 <InputField
-                    autoFocus
                     placeholder='Collection Name'
                     value={props.name}
                     onChange={props.onChangeName}
@@ -154,12 +136,12 @@ function DialogCreateCollection(props: React.PropsWithChildren<DialogCreateColle
                 <Separator noBorder dir={SeparatorDirection.HORIZONTAL} spacing={Size.S_0_5} />
 
                 <HBox spacing={Size.S_0_25} alignCross={AlignCross.CENTER}>
-                    <BodyText>Collection Type:</BodyText>
+                    <BodyText disabled={true}>Collection Type:</BodyText>
                     <ChoiceBox variant={Variant.OUTLINE}
                                autoWidth={true}
                                items={["Normal", "Smart"]}
                                selected={props.type}
-                               onSelect={props.onSelectType}
+                               disabled={true}
                     />
                 </HBox>
 
@@ -174,10 +156,6 @@ function DialogCreateCollection(props: React.PropsWithChildren<DialogCreateColle
                         cols={40}
                     />
                 </VBox>
-
-                {props.parentGroup && (
-                    <BodyText>{'Create in group "' + props.parentGroup.name + '".'} </BodyText>
-                )}
 
             </VBox>
         </Dialog>

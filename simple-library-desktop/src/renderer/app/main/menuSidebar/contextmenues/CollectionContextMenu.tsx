@@ -7,7 +7,7 @@ export const COLLECTION_CONTEXT_MENU_ID: string = "contextmenu.collection";
 
 interface CollectionContextMenuProps {
     rootGroup: Group,
-    onActionRename: (collectionId: number) => void
+    onActionEdit: (collectionId: number) => void
     onActionDelete: (collectionId: number) => void
     onActionMove: (collectionId: number, targetGroupId: number) => void
 }
@@ -18,7 +18,7 @@ export function CollectionContextMenu(props: React.PropsWithChildren<CollectionC
         <Menu id={COLLECTION_CONTEXT_MENU_ID}
               onShown={handleOnShow}
               onHidden={handleOnHidden}>
-            <Item onClick={handleRename}>Rename Collection</Item>
+            <Item onClick={handleEdit}>Edit Collection</Item>
             <Item onClick={handleDelete}>Delete Collection</Item>
             {contextMenuGroupTree(props.rootGroup, "Move", true, handleMoveTo, false)}
         </Menu>
@@ -43,8 +43,8 @@ export function CollectionContextMenu(props: React.PropsWithChildren<CollectionC
         }
     }
 
-    function handleRename(data: ItemParams): void {
-        props.onActionRename(data.props.collectionId);
+    function handleEdit(data: ItemParams): void {
+        props.onActionEdit(data.props.collectionId);
     }
 
     function handleDelete(data: ItemParams): void {

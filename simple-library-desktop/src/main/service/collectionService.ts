@@ -61,11 +61,20 @@ export class CollectionService {
     /**
      * Deletes the collection with the given id
      * @param collectionId the id of the collection
-     * @param newCollectionName the new name of the collection
+     * @param newName the new name of the collection (null to not rename)
+     * @param newSmartQuery the new query (or null to not change)
      * @return a promise that resolves when the collection was renamed
      */
-    public renameCollection(collectionId: number, newCollectionName: string): Promise<void> {
-        return this.collectionDataAccess.renameCollection(collectionId, newCollectionName);
+    public async editCollection(collectionId: number, newName: string, newSmartQuery: string): Promise<void> {
+        if (newName) {
+            await this.collectionDataAccess.renameCollection(collectionId, newName);
+        }
+        const collection: Collection | null = await this.collectionDataAccess.findCollection(collectionId);
+        if (collection && collection.type === CollectionType.SMART) {
+            await this.collectionDataAccess.editCollectionSmartQuery(collectionId, newSmartQuery);
+        } else {
+            return failedAsync("Could not edit smart-query. Collection does not exist or is not a smart-collection.");
+        }
     }
 
 

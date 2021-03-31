@@ -73,17 +73,18 @@ export module DeleteCollectionMessage {
 }
 
 
-export module RenameCollectionMessage {
+export module EditCollectionMessage {
 
     export interface RequestPayload {
         collectionId: number,
-        newName: string
+        newName: string | null,
+        newSmartQuery: string | null
     }
 
     export interface ResponsePayload {
     }
 
-    const CHANNEL: string = 'collection.rename';
+    const CHANNEL: string = 'collection.edit';
 
     export function request(ipc: Electron.IpcRenderer, payload: RequestPayload): Promise<ResponsePayload> {
         return sendRequest<RequestPayload, ResponsePayload>(ipc, CHANNEL, payload);

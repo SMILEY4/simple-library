@@ -19,9 +19,11 @@ import collectionsSelectAllItemCount from "./collections/collections_select_all_
 import collectionsInsert from "./collections/collections_insert.sql";
 import collectionsDelete from "./collections/collections_delete.sql";
 import collectionsUpdateName from "./collections/collections_update_name.sql";
+import collectionsUpdateSmartQuery from "./collections/collections_update_smart_query.sql";
 import collectionsUpdateParents from "./collections/collections_update_parent_group.sql";
 import collectionsUpdateGroupId from "./collections/collections_update_group_id.sql";
 import collectionsFindById from "./collections/collections_find_by_id.sql";
+
 
 import itemsCreateTable from "./items/items_create_table.sql";
 import itemsInsert from "./items/items_insert.sql";
@@ -131,6 +133,13 @@ export function sqlUpdateCollectionName(collectionId: number, name: string) {
         .replace("$collectionName", "'" + name + "'")
         .replace("$collectionId", collectionId);
 }
+
+export function sqlUpdateCollectionSmartQuery(collectionId: number, smartQuery: string) {
+    return collectionsUpdateSmartQuery
+        .replace("$collectionSmartQuery", "'" + smartQuery + "'")
+        .replace("$collectionId", collectionId);
+}
+
 
 export function sqlUpdateCollectionsParents(prevParentGroupId: number | null, newParentGroupId: number | null) {
     return collectionsUpdateParents
