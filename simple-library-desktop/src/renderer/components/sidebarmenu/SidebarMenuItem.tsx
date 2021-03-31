@@ -20,7 +20,9 @@ export interface SidebarMenuItemProps {
     onDrop?: (event: React.DragEvent) => void
 
     onDragStart?: (event: React.DragEvent) => void,
-    draggable?:boolean,
+    draggable?: boolean,
+
+    highlightDragOver?: boolean;
 }
 
 export function SidebarMenuItem(props: React.PropsWithChildren<SidebarMenuItemProps>): React.ReactElement {
@@ -64,14 +66,37 @@ export function SidebarMenuItem(props: React.PropsWithChildren<SidebarMenuItemPr
         }
     }
 
+    const DRAG_OVER_CLASS_NAME: string = "sidebar-menu-item-drag-over";
+
+    function handleDragOverStart(event: React.DragEvent) {
+        if (props.highlightDragOver) {
+            if (!event.currentTarget.className.includes(DRAG_OVER_CLASS_NAME)) {
+                event.currentTarget.className = event.currentTarget.className + " " + DRAG_OVER_CLASS_NAME;
+            }
+        }
+    }
+
+    function handleDragOverEnd(event: React.DragEvent) {
+        if (props.highlightDragOver) {
+            event.currentTarget.className = event.currentTarget.className
+                .replace(DRAG_OVER_CLASS_NAME, "")
+                .replace("  ", " ");
+        }
+    }
+
     return (
         <div className={getClassNames()}
              onClick={props.onClick}
              onContextMenu={props.onContextMenu}
              onDragOver={getDragOverHandler()}
-             onDrop={getDropHandler()}
+             onDrop={(event: React.DragEvent) => {
+                 handleDragOverEnd(event);
+                 getDropHandler()(event);
+             }}
              onDragStart={(event: React.DragEvent) => props.onDragStart && props.onDragStart(event)}
              draggable={props.draggable}
+             onDragEnter={handleDragOverStart}
+             onDragLeave={handleDragOverEnd}
         >
             <div className={"sidebar-menu-item-title"}>
                 {props.icon ? props.icon : null}

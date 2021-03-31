@@ -59,6 +59,7 @@ export class SidebarMenuGroup extends Component<SidebarMenuGroupProps, SidebarMe
                                  onDrop={this.props.onDrop}
                                  draggable={this.props.draggable}
                                  onDragStart={this.props.onDragStart}
+                                 highlightDragOver={true}
                 />
                 {this.state.expanded && (
                     <div className={"sidebar-menu-group-content"}>

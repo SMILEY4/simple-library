@@ -25,7 +25,7 @@ export function CollectionEntry(props: React.PropsWithChildren<CollectionEntryPr
     });
 
     return <SidebarMenuItem title={props.collection.name}
-                            icon={props.collection.type === CollectionType.SMART ? <BiImagesSmart /> : <BiImages/>}
+                            icon={props.collection.type === CollectionType.SMART ? <BiImagesSmart /> : <BiImages />}
                             label={"" + props.collection.itemCount}
                             selected={props.selectedId === props.collection.id}
                             onClick={() => props.onSelect(props.collection.id)}
@@ -37,6 +37,7 @@ export function CollectionEntry(props: React.PropsWithChildren<CollectionEntryPr
                             onDragOver={(event: React.DragEvent) => props.onDragOver(event)}
                             onDrop={(event: React.DragEvent) => props.onDrop(event)}
                             draggable={true}
-                            onDragStart={(event: React.DragEvent) => props.onDragStart(event)} />;
+                            onDragStart={(event: React.DragEvent) => props.onDragStart(event)}
+                            highlightDragOver={true} />;
 }
 
