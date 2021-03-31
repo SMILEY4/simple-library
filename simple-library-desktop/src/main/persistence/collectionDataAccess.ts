@@ -7,7 +7,7 @@ import {
     sqlInsertCollection,
     sqlRemoveItemFromCollection,
     sqlUpdateCollectionName,
-    sqlUpdateCollectionsGroupId,
+    sqlUpdateCollectionsGroupId, sqlUpdateCollectionSmartQuery,
     sqlUpdateCollectionsParents,
 } from './sql/sql';
 import { Collection, CollectionType } from '../../common/commonModels';
@@ -103,6 +103,16 @@ export class CollectionDataAccess {
      */
     public renameCollection(collectionId: number, name: string): Promise<void> {
         return this.dataAccess.executeRun(sqlUpdateCollectionName(collectionId, name)).then();
+    }
+
+    /**
+     * Edits the smart-query of the given collection
+     * @param collectionId the id of the collection
+     * @param query the new smart-query of the collection
+     * @return a promise that resolves when the collection was modified
+     */
+    public editCollectionSmartQuery(collectionId: number, query: string): Promise<void> {
+        return this.dataAccess.executeRun(sqlUpdateCollectionSmartQuery(collectionId, query)).then();
     }
 
     /**

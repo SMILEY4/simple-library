@@ -34,7 +34,7 @@ export interface MenuSidebarProps {
     onCreateCollection: () => void,
     onCreateGroup: () => void,
 
-    onCollectionContextMenuRename: (collectionId: number) => void
+    onCollectionContextMenuEdit: (collectionId: number) => void
     onCollectionContextMenuDelete: (collectionId: number) => void
     onCollectionContextMenuMove: (collectionId: number, targetGroupId: number | null) => void
 
@@ -69,7 +69,7 @@ export function MenuSidebar(props: React.PropsWithChildren<MenuSidebarProps>): R
 
             <CollectionContextMenu
                 rootGroup={props.rootGroup}
-                onActionRename={props.onCollectionContextMenuRename}
+                onActionEdit={props.onCollectionContextMenuEdit}
                 onActionDelete={props.onCollectionContextMenuDelete}
                 onActionMove={props.onCollectionContextMenuMove}
             />
