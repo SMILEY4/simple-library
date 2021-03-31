@@ -8,23 +8,33 @@ import {
     AiOutlineAlignCenter,
     AiOutlineAlignLeft,
     AiOutlineAlignRight,
+    AiOutlineCloseCircle,
     AiOutlineSearch,
+    BiImages,
+    BiImport,
+    HiOutlineFolder,
+    HiOutlineRefresh,
+    HiPlus,
 } from 'react-icons/all';
-import { GroupPosition, Type, Variant } from '../common';
+import { Fill, GroupPosition, Type, Variant } from '../common';
 import { LabelBox } from '../text/LabelBox';
 import { Button } from '../button/Button';
 import { Text, TextVariant } from '../text/Text';
 import { SFInputField } from '../inputfield/SFInputField';
 import { SFToggleButton } from '../button/togglebutton/SFToggleButton';
 import { Dialog } from '../modal/Dialog';
-import { Image, ImageMode } from "../image/Image";
-import forest from "./forest.jpg";
 import { SFCheckbox } from "../checkbox/SFCheckbox";
 import { ChoiceBox } from "../choicebox/ChoiceBox";
 import { Notification } from '../notification/Notification';
 import { DropdownItemType } from '../dropdown/Dropdown';
 import { DropdownButton } from '../button/dropdownbutton/DropdownButton';
 import { SFTextArea } from '../textarea/SFTextArea';
+import { Grid } from '../layout/Grid';
+import { SidebarMenu } from '../sidebarmenu/SidebarMenu';
+import { SidebarMenuSection } from '../sidebarmenu/SidebarMenuSection';
+import { SidebarMenuItem } from '../sidebarmenu/SidebarMenuItem';
+import { BiImagesSmart } from '../icons/BiImagesSmart';
+import { SidebarMenuGroup } from '../sidebarmenu/SidebarMenuGroup';
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0");
@@ -48,6 +58,59 @@ export function ComponentShowcaseView(): any {
         </div>
     );
 
+    function renderSidebar() {
+        return (
+            <>
+
+                <div style={{
+                    minWidth: "500px",
+                    minHeight: "300px",
+                    width: "500px",
+                    height: "300px",
+                    maxWidth: "500px",
+                    maxHeight: "300px",
+                    border: "1px solid red",
+                    display: 'flex',
+                }}>
+                    <Grid columns={['auto', '1fr']}
+                          rows={['300px']}
+                          fill={Fill.TRUE}
+                          style={{ maxHeight: "300px" }}
+                    >
+
+                        <SidebarMenu fillHeight
+                                     minimizable={false}
+                                     style={{ width: 'var(--s-12)' }}>
+                            <SidebarMenuSection title='Actions'>
+                                <SidebarMenuItem title={"Import"} icon={<BiImport />} />
+                                <SidebarMenuItem title={"Refresh"} icon={<HiOutlineRefresh />} />
+                                <SidebarMenuItem title={"Close"} icon={<AiOutlineCloseCircle />} />
+                            </SidebarMenuSection>
+                            <SidebarMenuSection title={'Collections'} actionButton={
+                                <Button variant={Variant.GHOST} icon={<HiPlus />} square />}>
+                                <SidebarMenuItem title={"All Items"} icon={<BiImagesSmart />} label={"64"} />
+                                <SidebarMenuGroup title={"19XX"} icon={<HiOutlineFolder />}>
+                                    <SidebarMenuItem title={"1998"} icon={<BiImages />} label={"1"} />
+                                    <SidebarMenuItem title={"1990"} icon={<BiImages />} label={"21"} />
+                                </SidebarMenuGroup>
+                                <SidebarMenuGroup title={"20XX"} icon={<HiOutlineFolder />}>
+                                    <SidebarMenuItem title={"2000"} icon={<BiImages />} label={"23"} />
+                                    <SidebarMenuItem title={"2001"} icon={<BiImages />} label={"126"} />
+                                    <SidebarMenuItem title={"2002"} icon={<BiImages />} label={"0"} />
+                                </SidebarMenuGroup>
+                            </SidebarMenuSection>
+                        </SidebarMenu>
+
+                        <div style={{ backgroundColor: "blue" }} />
+
+                    </Grid>
+
+                </div>
+
+            </>
+        );
+    }
+
 
     function renderTextArea() {
         return (
@@ -57,8 +120,8 @@ export function ComponentShowcaseView(): any {
                 <SFTextArea
                     placeholder={"Text Area"}
                     rows={10}
-                    onChange={(value:string) => console.log("textarea.change: " + value)}
-                    onAccept={(value:string) => console.log("textarea.accept: " + value)}
+                    onChange={(value: string) => console.log("textarea.change: " + value)}
+                    onAccept={(value: string) => console.log("textarea.accept: " + value)}
                 />
 
             </>
@@ -154,124 +217,6 @@ export function ComponentShowcaseView(): any {
         );
     }
 
-
-    function renderSidebarMenu() {
-        return (
-            <>
-                {/*<h3>SidebarMenu</h3>*/}
-
-                {/*<ShowcaseRow>*/}
-
-                {/*    <div style={{ height: "200px", border: "1px solid blue" }}>*/}
-                {/*        <SFSidebarMenu*/}
-                {/*            elements={[*/}
-                {/*                {*/}
-                {/*                    text: "Home",*/}
-                {/*                    icon: <AiOutlineHome />,*/}
-                {/*                },*/}
-                {/*                {*/}
-                {/*                    text: "Team",*/}
-                {/*                    icon: <AiOutlineTeam />,*/}
-                {/*                },*/}
-                {/*                {*/}
-                {/*                    text: "All Projects",*/}
-                {/*                    icon: <FiFolder />,*/}
-                {/*                },*/}
-                {/*            ]}*/}
-                {/*            align={AlignMain.CENTER}*/}
-                {/*            fillHeight*/}
-                {/*        />*/}
-                {/*    </div>*/}
-
-                {/*    <div style={{ height: "200px", border: "1px solid blue" }}>*/}
-                {/*        <SFSidebarMenu*/}
-                {/*            elements={[*/}
-                {/*                {*/}
-                {/*                    text: "Home",*/}
-                {/*                    icon: <AiOutlineHome />,*/}
-                {/*                },*/}
-                {/*                {*/}
-                {/*                    text: "Team",*/}
-                {/*                    icon: <AiOutlineTeam />,*/}
-                {/*                },*/}
-                {/*                {*/}
-                {/*                    text: "All Projects",*/}
-                {/*                    icon: <FiFolder />,*/}
-                {/*                },*/}
-                {/*            ]}*/}
-                {/*            align={AlignMain.CENTER}*/}
-                {/*            fillHeight*/}
-                {/*            minimizable*/}
-                {/*        />*/}
-                {/*    </div>*/}
-
-                {/*    <div style={{ height: "200px", border: "1px solid blue" }}>*/}
-                {/*        <SFSidebarMenu*/}
-                {/*            elements={[*/}
-                {/*                {*/}
-                {/*                    text: "Home",*/}
-                {/*                    icon: <AiOutlineHome />,*/}
-                {/*                },*/}
-                {/*                {*/}
-                {/*                    text: "Team",*/}
-                {/*                    icon: <AiOutlineTeam />,*/}
-                {/*                },*/}
-                {/*                {*/}
-                {/*                    text: "Projects",*/}
-                {/*                    icon: <FiFolder />,*/}
-                {/*                },*/}
-                {/*                {*/}
-                {/*                    text: "Projects",*/}
-                {/*                    icon: <FiFolder />,*/}
-                {/*                },*/}
-                {/*                {*/}
-                {/*                    text: "Projects",*/}
-                {/*                    icon: <FiFolder />,*/}
-                {/*                },*/}
-                {/*                {*/}
-                {/*                    text: "Projects",*/}
-                {/*                    icon: <FiFolder />,*/}
-                {/*                },*/}
-                {/*                {*/}
-                {/*                    text: "Projects",*/}
-                {/*                    icon: <FiFolder />,*/}
-                {/*                },*/}
-                {/*                {*/}
-                {/*                    text: "Projects",*/}
-                {/*                    icon: <FiFolder />,*/}
-                {/*                },*/}
-                {/*                {*/}
-                {/*                    text: "Projects",*/}
-                {/*                    icon: <FiFolder />,*/}
-                {/*                },*/}
-                {/*                {*/}
-                {/*                    text: "Projects",*/}
-                {/*                    icon: <FiFolder />,*/}
-                {/*                },*/}
-                {/*                {*/}
-                {/*                    text: "Projects",*/}
-                {/*                    icon: <FiFolder />,*/}
-                {/*                },*/}
-                {/*                {*/}
-                {/*                    text: "Projects",*/}
-                {/*                    icon: <FiFolder />,*/}
-                {/*                },*/}
-                {/*                {*/}
-                {/*                    text: "Projects",*/}
-                {/*                    icon: <FiFolder />,*/}
-                {/*                },*/}
-                {/*            ]}*/}
-                {/*            align={AlignMain.START}*/}
-                {/*            fillHeight*/}
-                {/*            minimizable*/}
-                {/*        />*/}
-                {/*    </div>*/}
-
-                {/*</ShowcaseRow>*/}
-            </>
-        );
-    }
-
     function renderChoiceBox() {
 
         const itemsArray = [
@@ -355,32 +300,32 @@ export function ComponentShowcaseView(): any {
         );
     }
 
-    function renderImage() {
-        return (
-            <>
-                <h3>Image</h3>
-
-                <ShowcaseRow fullWidth>
-                    <div style={{display: 'grid', width: '50%', height: '150px',}}>
-                        <Image url={forest} mode={ImageMode.AUTO} color="red">
-                            Mode Auto
-                        </Image>
-                    </div>
-                    <div style={{display: 'grid', width: '50%', height: '150px',}}>
-                        <Image url={forest} mode={ImageMode.CONTAIN} color="red">
-                            Mode Contain
-                        </Image>
-                    </div>
-                    <div style={{display: 'grid', width: '50%', height: '150px',}}>
-                        <Image url={forest} mode={ImageMode.COVER} color="red">
-                            Mode Cover
-                        </Image>
-                    </div>
-                </ShowcaseRow>
-
-            </>
-        );
-    }
+    // function renderImage() {
+    //     return (
+    //         <>
+    //             <h3>Image</h3>
+    //
+    //             <ShowcaseRow fullWidth>
+    //                 <div style={{display: 'grid', width: '50%', height: '150px',}}>
+    //                     <Image url={forest} mode={ImageMode.AUTO} color="red">
+    //                         Mode Auto
+    //                     </Image>
+    //                 </div>
+    //                 <div style={{display: 'grid', width: '50%', height: '150px',}}>
+    //                     <Image url={forest} mode={ImageMode.CONTAIN} color="red">
+    //                         Mode Contain
+    //                     </Image>
+    //                 </div>
+    //                 <div style={{display: 'grid', width: '50%', height: '150px',}}>
+    //                     <Image url={forest} mode={ImageMode.COVER} color="red">
+    //                         Mode Cover
+    //                     </Image>
+    //                 </div>
+    //             </ShowcaseRow>
+    //
+    //         </>
+    //     );
+    // }
 
     function renderDialogs() {
         return (
@@ -613,13 +558,13 @@ export function ComponentShowcaseView(): any {
     function renderContent() {
         return (
             <>
+                {renderSidebar()}
                 {renderTextArea()}
                 {renderDropdownButton()}
                 {renderNotification()}
-                {renderSidebarMenu()}
                 {renderChoiceBox()}
                 {renderCheckbox()}
-                {renderImage()}
+                {/*{renderImage()}*/}
                 {renderDialogs()}
                 {renderInputField()}
                 {renderToggleButtons()}

@@ -5,6 +5,7 @@ import { Grid } from '../../components/layout/Grid';
 import { SFNotificationStack } from '../../components/notification/SFNotificationStack';
 import { Box } from '../../components/layout/Box';
 import { NotificationEntry } from '../../components/notification/NotificationStack';
+import SplitPane from 'react-split-pane';
 
 export enum MainViewMessageType {
     FETCH_GROUPS_AND_COLLECTIONS_FAILED,
@@ -43,12 +44,20 @@ export class MainView extends Component<MainViewProps> {
     render() {
         return (
             <Box dir={Dir.DOWN}>
-                <Grid columns={['auto', '1fr']}
-                      rows={['100vh']}
-                      fill={Fill.TRUE}
-                      style={{ maxHeight: "100vh" }}>
+
+                <SplitPane split="vertical" defaultSize={300} style={{
+                    height: "100vh",
+                    maxHeight: "100vh"
+                }}>
                     {this.props.children}
-                </Grid>
+                </SplitPane>
+
+                {/*<Grid columns={['auto', '1fr']}*/}
+                {/*      rows={['100vh']}*/}
+                {/*      fill={Fill.TRUE}*/}
+                {/*      style={{ maxHeight: "100vh" }}>*/}
+                {/*    {this.props.children}*/}
+                {/*</Grid>*/}
                 <SFNotificationStack modalRootId='root'
                                      setAddSimpleFunction={(fun) => this.addNotificationEntry = fun}
                                      setUpdateNotification={(fun) => this.updateNotificationEntry = fun}

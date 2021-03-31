@@ -52,8 +52,7 @@ export function MenuSidebar(props: React.PropsWithChildren<MenuSidebarProps>): R
         <SidebarMenu fillHeight
                      minimizable={true}
                      minimized={props.minimized}
-                     onToggleMinimized={props.onSetMinimize}
-                     style={{ width: 'var(--s-12)' }}>
+                     onToggleMinimized={props.onSetMinimize}>
 
             <SidebarMenuSection title='Actions'>
                 <MenuActionImport onAction={props.onActionImport} />
