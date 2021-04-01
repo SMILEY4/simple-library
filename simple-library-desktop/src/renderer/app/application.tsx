@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { ComponentShowcaseView } from '../components/_showcase/ComponentShowcaseView';
 import { WelcomeView } from './welcome/welcomeView';
 import { MainViewController } from './main/MainViewController';
+import { GlobalStateProvider } from './store/provider';
 
 export enum Theme {
     LIGHT = 'light',
@@ -97,20 +98,22 @@ export class Application extends Component<any, AppState> {
 
     renderMainView() {
         return (
-            <div className={'root-view theme-' + this.state.theme}
-                 style={{ width: '100%', height: '100%' }}
-                 id='root'>
-                <MainViewController
-                    theme={this.state.theme}
-                    onChangeTheme={() => {
-                        const nextTheme: Theme = this.state.theme === Theme.LIGHT ? Theme.DARK : Theme.LIGHT;
-                        this.setState({ theme: nextTheme });
-                    }}
-                    onCloseProject={() => {
-                        this.setState({ currentView: View.WELCOME });
-                    }}
-                />
-            </div>
+            <GlobalStateProvider>
+                <div className={'root-view theme-' + this.state.theme}
+                     style={{ width: '100%', height: '100%' }}
+                     id='root'>
+                    <MainViewController
+                        theme={this.state.theme}
+                        onChangeTheme={() => {
+                            const nextTheme: Theme = this.state.theme === Theme.LIGHT ? Theme.DARK : Theme.LIGHT;
+                            this.setState({ theme: nextTheme });
+                        }}
+                        onCloseProject={() => {
+                            this.setState({ currentView: View.WELCOME });
+                        }}
+                    />
+                </div>
+            </GlobalStateProvider>
         );
     }
 

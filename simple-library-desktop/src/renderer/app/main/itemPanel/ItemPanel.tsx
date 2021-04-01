@@ -1,11 +1,13 @@
 import * as React from 'react';
 import { HBox, VBox } from '../../../components/layout/Box';
 import { AlignCross, concatClasses, Size } from '../../../components/common';
-import {Collection, Group, ItemData} from '../../../../common/commonModels';
+import { Group, ItemData } from '../../../../common/commonModels';
 import { SelectMode } from './ItemPanelController';
 import { ITEM_CONTEXT_MENU_ID, ItemContextMenu } from './ItemContextMenu';
 import { useContextMenu } from 'react-contexify';
 import "react-contexify/dist/ReactContexify.css";
+import { ActionType } from '../../store/reducer';
+import { useGlobalState } from '../../store/provider';
 
 interface ItemPanelProps {
     collectionId: number | null,
@@ -20,12 +22,23 @@ interface ItemPanelProps {
 }
 
 export function ItemPanel(props: React.PropsWithChildren<ItemPanelProps>): React.ReactElement {
+
+    const { state, dispatch } = useGlobalState();
+
+
     return (
         <div style={{
             maxHeight: "100vh",
             overflow: "auto",
         }}>
             <VBox spacing={Size.S_0_5} alignCross={AlignCross.STRETCH} className={"item-container"}>
+                <div>{"counter = " + state.counter}</div>
+                <button onClick={() => dispatch({ type: ActionType.INCREMENT })}>
+                    Increment
+                </button>
+                <button onClick={() => dispatch({ type: ActionType.SET, payload: 42 })}>
+                    Set to 42
+                </button>
                 {
                     props.items.map((item: ItemData) => {
                         return <Item item={item}
