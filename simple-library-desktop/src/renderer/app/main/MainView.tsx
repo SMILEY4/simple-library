@@ -1,27 +1,15 @@
 import * as React from 'react';
-import { Component, ReactElement } from 'react';
+import { Component } from 'react';
 import { Dir, Fill, Type } from '../../components/common';
 import { Grid } from '../../components/layout/Grid';
 import { SFNotificationStack } from '../../components/notification/SFNotificationStack';
 import { Box } from '../../components/layout/Box';
 import { NotificationEntry } from '../../components/notification/NotificationStack';
-
-export enum MainViewMessageType {
-    FETCH_GROUPS_AND_COLLECTIONS_FAILED,
-    FETCH_TOTAL_ITEM_COUNT_FAILED,
-    FETCH_ITEMS_FAILED,
-    MOVE_ITEMS_IN_COLLECTION_FAILED,
-    REMOVE_ITEMS_FROM_COLLECTION_FAILED,
-    IMPORT_FAILED_UNKNOWN,
-    IMPORT_FAILED,
-    IMPORT_WITH_ERRORS,
-    IMPORT_SUCCESSFUL,
-    IMPORT_STATUS,
-}
+import { AppNotificationType } from '../store/state';
 
 interface MainViewProps {
-    setShowNotification: (fun: (type: MainViewMessageType, data: any) => string) => void,
-    setUpdateNotification: (fun: (notificationId: string, type: MainViewMessageType, data: any) => void) => void,
+    setShowNotification: (fun: (type: AppNotificationType, data: any) => string) => void,
+    setUpdateNotification: (fun: (notificationId: string, type: AppNotificationType, data: any) => void) => void,
     setRemoveNotification: (fun: (notificationId: string) => void) => void,
 }
 
@@ -58,54 +46,57 @@ export class MainView extends Component<MainViewProps> {
         );
     }
 
-    showNotification(type: MainViewMessageType, data: any): string {
+    showNotification(type: AppNotificationType, data: any): string {
         switch (type) {
-            case MainViewMessageType.FETCH_GROUPS_AND_COLLECTIONS_FAILED: {
-                return this.addNotificationEntry(Type.ERROR, true, "Unexpected error when fetching collections,groups", this.errorToString(data));
-            }
-            case MainViewMessageType.FETCH_TOTAL_ITEM_COUNT_FAILED: {
-                return this.addNotificationEntry(Type.ERROR, true, "Unexpected error when fetching total item count", this.errorToString(data));
-            }
-            case MainViewMessageType.FETCH_ITEMS_FAILED: {
-                return this.addNotificationEntry(Type.ERROR, true, "Unexpected error when fetching items", this.errorToString(data));
-            }
-            case MainViewMessageType.MOVE_ITEMS_IN_COLLECTION_FAILED: {
-                return this.addNotificationEntry(Type.ERROR, true, "Unexpected error while moving items to collection", this.errorToString(data));
-            }
-            case MainViewMessageType.REMOVE_ITEMS_FROM_COLLECTION_FAILED: {
-                return this.addNotificationEntry(Type.ERROR, true, "Unexpected error while removing items from collection", this.errorToString(data));
-            }
-            case MainViewMessageType.IMPORT_FAILED_UNKNOWN: {
-                return this.addNotificationEntry(Type.ERROR, true, "Import failed unexpectedly", this.errorToString(data));
-            }
-            case MainViewMessageType.IMPORT_FAILED: {
-                return this.addNotificationEntry(Type.ERROR, true, "Import failed", data.failureReason);
-            }
-            case MainViewMessageType.IMPORT_WITH_ERRORS: {
-                const message: ReactElement = (
-                    <ul>
-                        {data.filesWithErrors.map((entry: ([string, string])) => <li>{entry[0] + ": " + entry[1]}</li>)}
-                    </ul>
-                );
-                return this.addNotificationEntry(Type.WARN, true, "Import encountered errors", message);
-            }
-            case MainViewMessageType.IMPORT_SUCCESSFUL: {
-                return this.addNotificationEntry(Type.SUCCESS, true, "Import successful", "Imported " + data.amountFiles + " files.");
-            }
-            case MainViewMessageType.IMPORT_STATUS: {
-                return this.addNotificationEntry(Type.PRIMARY, true, "Importing...", null);
+            // case MainViewMessageType.FETCH_ROOT_GROUP: {
+            //     return this.addNotificationEntry(Type.ERROR, true, "Unexpected error when fetching collections,groups", this.errorToString(data));
+            // }
+            // case MainViewMessageType.FETCH_TOTAL_ITEM_COUNT_FAILED: {
+            //     return this.addNotificationEntry(Type.ERROR, true, "Unexpected error when fetching total item count", this.errorToString(data));
+            // }
+            // case MainViewMessageType.FETCH_ITEMS_FAILED: {
+            //     return this.addNotificationEntry(Type.ERROR, true, "Unexpected error when fetching items", this.errorToString(data));
+            // }
+            // case MainViewMessageType.MOVE_ITEMS_IN_COLLECTION_FAILED: {
+            //     return this.addNotificationEntry(Type.ERROR, true, "Unexpected error while moving items to collection", this.errorToString(data));
+            // }
+            // case MainViewMessageType.REMOVE_ITEMS_FROM_COLLECTION_FAILED: {
+            //     return this.addNotificationEntry(Type.ERROR, true, "Unexpected error while removing items from collection", this.errorToString(data));
+            // }
+            // case MainViewMessageType.IMPORT_FAILED_UNKNOWN: {
+            //     return this.addNotificationEntry(Type.ERROR, true, "Import failed unexpectedly", this.errorToString(data));
+            // }
+            // case MainViewMessageType.IMPORT_FAILED: {
+            //     return this.addNotificationEntry(Type.ERROR, true, "Import failed", data.failureReason);
+            // }
+            // case MainViewMessageType.IMPORT_WITH_ERRORS: {
+            //     const message: ReactElement = (
+            //         <ul>
+            //             {data.filesWithErrors.map((entry: ([string, string])) => <li>{entry[0] + ": " + entry[1]}</li>)}
+            //         </ul>
+            //     );
+            //     return this.addNotificationEntry(Type.WARN, true, "Import encountered errors", message);
+            // }
+            // case MainViewMessageType.IMPORT_SUCCESSFUL: {
+            //     return this.addNotificationEntry(Type.SUCCESS, true, "Import successful", "Imported " + data.amountFiles + " files.");
+            // }
+            // case MainViewMessageType.IMPORT_STATUS: {
+            //     return this.addNotificationEntry(Type.PRIMARY, true, "Importing...", null);
+            // }
+            default: {
+                return "";
             }
         }
     }
 
-    updateNotification(notificationId: string, type: MainViewMessageType, data: any): void {
+    updateNotification(notificationId: string, type: AppNotificationType, data: any): void {
         this.updateNotificationEntry(notificationId, (entry: NotificationEntry) => {
-            switch (type) {
-                case MainViewMessageType.IMPORT_STATUS: {
-                    entry.content = data.completedFiles + "/" + data.totalAmountFiles + " files imported.";
-                    break;
-                }
-            }
+            // switch (type) {
+            //     case MainViewMessageType.IMPORT_STATUS: {
+            //         entry.content = data.completedFiles + "/" + data.totalAmountFiles + " files imported.";
+            //         break;
+            //     }
+            // }
             return entry;
         });
     }
