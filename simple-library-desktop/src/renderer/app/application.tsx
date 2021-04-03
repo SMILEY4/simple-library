@@ -1,9 +1,9 @@
 import { hot } from 'react-hot-loader/root';
 import React, { Component } from 'react';
 import { ComponentShowcaseView } from '../components/_showcase/ComponentShowcaseView';
-import { WelcomeView } from './welcome/welcomeView';
-import { GlobalStateProvider } from '../store/provider';
-import { MainView } from './main/MainView';
+import { WelcomeView } from './views/welcome/welcomeView';
+import { GlobalStateProvider } from './store/provider';
+import { MainView } from './views/main/MainView';
 
 export enum Theme {
     LIGHT = 'light',
