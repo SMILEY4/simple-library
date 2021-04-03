@@ -66,11 +66,8 @@ export function ItemEntry(props: React.PropsWithChildren<ItemEntryProps>): React
     }
 
     function handleDragStart(event: React.DragEvent) {
-        event.preventDefault();
-        event.stopPropagation();
         props.onDragStart(props.item.id, event, process.platform === "darwin" ? event.metaKey : event.ctrlKey);
     }
-
 
 }
 

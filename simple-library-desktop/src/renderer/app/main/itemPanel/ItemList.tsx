@@ -89,12 +89,12 @@ export function ItemList(): React.ReactElement {
 
     function handleDragStart(itemId: number, event: React.DragEvent, copyMode: boolean): void {
         let itemsIdsToDrag: number[];
-        if (this.state.selectedItemIds.indexOf(itemId) === -1) {
+        if (selectedItemIds.indexOf(itemId) === -1) {
             itemsIdsToDrag = [itemId];
         } else {
-            itemsIdsToDrag = [...this.state.selectedItemIds];
+            itemsIdsToDrag = [...selectedItemIds];
         }
-        DragAndDropItems.setDragData(event.dataTransfer, this.props.selectedCollectionId, itemsIdsToDrag, copyMode);
+        DragAndDropItems.setDragData(event.dataTransfer, activeCollectionId, itemsIdsToDrag, copyMode);
         DragAndDropItems.setDragLabel(event.dataTransfer, copyMode, itemsIdsToDrag.length);
     }
 

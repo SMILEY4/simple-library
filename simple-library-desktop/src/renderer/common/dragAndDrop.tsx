@@ -47,6 +47,7 @@ export module DragAndDropItems {
         } else {
             text = "Move " + nItems + (nItems === 1 ? " item" : " items");
         }
+        console.log("set drag label")
         DragAndDropUtils.setDragImageLabel(dataTransfer, "root", DOM_ELEMENT_LABEL_ID, text);
     }
 
