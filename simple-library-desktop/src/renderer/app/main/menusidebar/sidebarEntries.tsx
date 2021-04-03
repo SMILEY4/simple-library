@@ -5,25 +5,6 @@ import { DropdownButton } from '../../../components/button/dropdownbutton/Dropdo
 import { Variant } from '../../../components/common';
 import { DropdownItemType } from '../../../components/dropdown/Dropdown';
 
-interface CollectionSectionActionProps {
-    onCreateCollection: () => void,
-    onCreateGroup: () => void
-}
-
-export function CollectionSectionAction(props: React.PropsWithChildren<CollectionSectionActionProps>) {
-    return <DropdownButton icon={<HiPlus />} variant={Variant.GHOST} square items={[
-        {
-            type: DropdownItemType.ACTION,
-            title: "New Collection",
-            onAction: props.onCreateCollection,
-        },
-        {
-            type: DropdownItemType.ACTION,
-            title: "New Group",
-            onAction: props.onCreateGroup,
-        },
-    ]} />;
-}
 
 interface SimpleMenuActionProps {
     onAction: () => void,
@@ -33,14 +14,6 @@ export function MenuActionImport(props: React.PropsWithChildren<SimpleMenuAction
     return <SidebarMenuItem
         title={"Import"}
         icon={<BiImport />}
-        onClick={props.onAction}
-    />;
-}
-
-export function MenuActionRefresh(props: React.PropsWithChildren<SimpleMenuActionProps>): React.ReactElement {
-    return <SidebarMenuItem
-        title={"Refresh"}
-        icon={<HiOutlineRefresh />}
         onClick={props.onAction}
     />;
 }

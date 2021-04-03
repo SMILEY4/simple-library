@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Item, ItemParams, Menu, useContextMenu } from 'react-contexify';
 import { Group } from '../../../../../common/commonModels';
-import { contextMenuGroupTree } from '../../../common/contextMenuTree';
+import { contextMenuGroupTree } from '../../../../common/contextMenuTree';
 
 export const COLLECTION_CONTEXT_MENU_ID: string = "contextmenu.collection";
 

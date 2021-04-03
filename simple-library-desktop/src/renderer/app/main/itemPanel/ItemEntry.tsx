@@ -2,7 +2,7 @@ import * as React from 'react';
 import { ItemData } from '../../../../common/commonModels';
 import { HBox, VBox } from '../../../components/layout/Box';
 import { concatClasses, Size } from '../../../components/common';
-import { getSelectionMode, SelectMode } from '../../common/utils';
+import { getSelectionMode, SelectMode } from '../../../common/utils/utils';
 import "./itemEntry.css";
 import { useContextMenu } from 'react-contexify';
 import { ITEM_CONTEXT_MENU_ID } from './ItemContextMenu';

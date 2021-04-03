@@ -1,11 +1,19 @@
-import { Group, ImportProcessData, ImportResult, ImportStatus, ItemData } from '../../../common/commonModels';
-import { GetGroupsMessage } from '../../../common/messaging/messagesGroups';
+import {
+    CollectionType,
+    Group,
+    ImportProcessData,
+    ImportResult,
+    ImportStatus,
+    ItemData,
+} from '../../../common/commonModels';
+import { CreateGroupMessage, GetGroupsMessage } from '../../../common/messaging/messagesGroups';
 import {
     GetItemsMessage,
     ImportItemsMessage,
     ImportStatusUpdateCommand,
 } from '../../../common/messaging/messagesItems';
 import {
+    CreateCollectionMessage,
     MoveItemsToCollectionsMessage,
     RemoveItemsFromCollectionsMessage,
 } from '../../../common/messaging/messagesCollections';
@@ -28,6 +36,7 @@ export function fetchItems(collectionId: number): Promise<ItemData[]> {
     }).then((response: GetItemsMessage.ResponsePayload) => response.items);
 }
 
+
 export function requestMoveItems(srcCollectionId: number, tgtCollectionId: number, itemIds: number[], copy: boolean): Promise<void> {
     return MoveItemsToCollectionsMessage.request(ipcRenderer, {
         sourceCollectionId: srcCollectionId,
@@ -37,12 +46,14 @@ export function requestMoveItems(srcCollectionId: number, tgtCollectionId: numbe
     }).then();
 }
 
+
 export function requestRemoveItems(collectionId: number, itemIds: number[]): Promise<void> {
     return RemoveItemsFromCollectionsMessage.request(ipcRenderer, {
         collectionId: collectionId,
         itemIds: itemIds,
     }).then();
 }
+
 
 export function requestImport(data: ImportProcessData,
                               callbackSuccess: (result: ImportResult) => void,
@@ -64,12 +75,32 @@ export function requestImport(data: ImportProcessData,
         });
 }
 
+
 export function onImportStatusCommands(onStatus: (status: ImportStatus) => void) {
     ImportStatusUpdateCommand.on(ipcRenderer, (status: ImportStatus) => {
         onStatus(status);
     });
 }
 
+
 export function requestCloseLibrary(): Promise<void> {
     return CloseLibraryMessage.request(ipcRenderer).then();
+}
+
+
+export function requestCreateCollection(name: string, type: CollectionType, query: string | null, parentGroupId: number | null): Promise<void> {
+    return CreateCollectionMessage.request(ipcRenderer, {
+        name: name,
+        type: type,
+        smartQuery: type === CollectionType.SMART ? query : null,
+        parentGroupId: parentGroupId,
+    }).then();
+}
+
+
+export function requestCreateGroup(name: string, parentGroupId: number | null): Promise<void> {
+    return CreateGroupMessage.request(ipcRenderer, {
+        name: name,
+        parentGroupId: parentGroupId,
+    }).then();
 }

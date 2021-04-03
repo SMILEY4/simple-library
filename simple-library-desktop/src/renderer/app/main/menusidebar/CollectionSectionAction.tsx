@@ -9,7 +9,6 @@ interface CollectionSectionActionProps {
     onCreateGroup: () => void
 }
 
-
 export function CollectionSectionAction(props: React.PropsWithChildren<CollectionSectionActionProps>): React.ReactElement {
 
     return <DropdownButton icon={<HiPlus />} variant={Variant.GHOST} square items={[
@@ -21,7 +20,7 @@ export function CollectionSectionAction(props: React.PropsWithChildren<Collectio
         {
             type: DropdownItemType.ACTION,
             title: "New Group",
-            onAction: props.onCreateCollection,
+            onAction: props.onCreateGroup,
         },
     ]} />;
 

@@ -1,4 +1,4 @@
-import { Collection, Group } from '../../../common/commonModels';
+import { Collection, Group } from '../../common/commonModels';
 import * as React from 'react';
 import { ReactElement } from 'react';
 import { Item, ItemParams, Separator, Submenu } from 'react-contexify';

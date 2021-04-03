@@ -1,4 +1,5 @@
 import React from 'react';
+import { Collection, Group } from '../../../common/commonModels';
 
 
 /*
@@ -65,4 +66,29 @@ export function getSelectionMode(event: React.MouseEvent): SelectMode {
         return SelectMode.RANGE;
     }
     return SelectMode.DEFAULT;
+}
+
+
+export function compareCollections(a: Collection, b: Collection): number {
+    const nameA: string = a.name.toUpperCase();
+    const nameB: string = b.name.toUpperCase();
+    if (nameA < nameB) {
+        return -1;
+    }
+    if (nameA > nameB) {
+        return 1;
+    }
+    return 0;
+}
+
+export function compareGroups(a: Group, b: Group): number {
+    const nameA: string = a.name.toUpperCase();
+    const nameB: string = b.name.toUpperCase();
+    if (nameA < nameB) {
+        return -1;
+    }
+    if (nameA > nameB) {
+        return 1;
+    }
+    return 0;
 }

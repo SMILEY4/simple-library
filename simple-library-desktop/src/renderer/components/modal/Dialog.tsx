@@ -7,7 +7,7 @@ import { H3Text } from '../text/Text';
 import { Button, ButtonProps } from '../button/Button';
 import { CgClose } from 'react-icons/cg';
 import { HBox } from '../layout/Box';
-import { componentLifecycle } from '../../app/common/functionalReactLifecycle';
+import { componentLifecycle } from '../../common/utils/functionalReactLifecycle';
 
 interface DialogActionProps extends ButtonProps {
     content?: any,

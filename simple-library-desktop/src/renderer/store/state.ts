@@ -1,4 +1,4 @@
-import { Group, ItemData } from '../../../common/commonModels';
+import { Group, ItemData } from '../../common/commonModels';
 
 
 export interface GlobalApplicationState {
@@ -28,8 +28,9 @@ export enum AppNotificationType {
     IMPORT_FAILED_UNKNOWN,
     IMPORT_WITH_ERRORS,
     IMPORT_SUCCESSFUL,
-    IMPORT_STATUS
-
+    IMPORT_STATUS,
+    COLLECTION_CREATE_FAILED,
+    GROUP_CREATE_FAILED
 }
 
 

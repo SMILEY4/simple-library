@@ -1,9 +1,9 @@
 /*
  * MIME-TYPES SEEM TO BE ALWAYS CONVERTED TO LOWERCASE
- * -> ALL FIELDS/MODELS MUST BE LOWERCASE
+ * => ALL FIELDS/MODELS MUST BE LOWERCASE
  */
 
-import { Collection, CollectionType, Group } from '../../../common/commonModels';
+import { Collection, CollectionType, Group } from '../../common/commonModels';
 import { collectAllDependants } from 'ts-loader/dist/utils';
 
 export const META_MIME_TYPE_PREFIX = "custom/";

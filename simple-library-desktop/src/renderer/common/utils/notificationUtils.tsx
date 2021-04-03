@@ -1,6 +1,6 @@
 import { NotificationEntry } from '../../components/notification/NotificationStack';
 import { Type } from '../../components/common';
-import { AppNotification, AppNotificationType } from '../store/state';
+import { AppNotification, AppNotificationType } from '../../store/state';
 import React, { ReactElement } from 'react';
 
 
@@ -103,6 +103,24 @@ export function toNotificationEntry(notificationData: AppNotification, onClose: 
                 content: notificationData.data
                     ? (notificationData.data.completedFiles + "/" + notificationData.data.totalAmountFiles + " files imported.")
                     : null,
+                withCloseButton: true,
+                onClose: () => onClose(),
+            };
+        }
+        case AppNotificationType.COLLECTION_CREATE_FAILED: {
+            return {
+                type: Type.ERROR,
+                title: "Failed to create collection",
+                content: errorToString(notificationData.data),
+                withCloseButton: true,
+                onClose: () => onClose(),
+            };
+        }
+        case AppNotificationType.GROUP_CREATE_FAILED: {
+            return {
+                type: Type.ERROR,
+                title: "Failed to create group",
+                content: errorToString(notificationData.data),
                 withCloseButton: true,
                 onClose: () => onClose(),
             };

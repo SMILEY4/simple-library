@@ -33,12 +33,3 @@ const asyncer = (dispatch: any, state: GlobalApplicationState) => (action: any) 
         ? action(dispatch, state)
         : dispatch(action);
 
-
-export const useGlobalState = () => {
-    const { state, dispatch } = useContext(GlobalStateContext);
-    if (state) {
-        return { state, dispatch };
-    } else {
-        console.error("Error: No global state found.");
-    }
-};

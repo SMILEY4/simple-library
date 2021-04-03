@@ -1,112 +1,39 @@
 import * as React from 'react';
-import { Component } from 'react';
-import { Dir, Fill, Type } from '../../components/common';
+import { VBox } from '../../components/layout/Box';
+import { Fill } from '../../components/common';
 import { Grid } from '../../components/layout/Grid';
-import { SFNotificationStack } from '../../components/notification/SFNotificationStack';
-import { Box } from '../../components/layout/Box';
-import { NotificationEntry } from '../../components/notification/NotificationStack';
-import { AppNotificationType } from '../store/state';
+import { componentWillMount } from '../../common/utils/functionalReactLifecycle';
+import { useRootGroup } from '../../common/hooks/groupHooks';
+import { NotificationStack } from '../../components/notification/NotificationStack';
+import { genNotificationId, toNotificationEntries } from '../../common/utils/notificationUtils';
+import { AppNotificationType } from '../../store/state';
+import { ItemList } from './itemPanel/ItemList';
+import { fetchRootGroup } from '../../common/messaging/messagingInterface';
+import { MenuSidebar } from './menusidebar/MenuSidebar';
+import { useNotifications } from '../../common/hooks/miscHooks';
 
-interface MainViewProps {
-    setShowNotification: (fun: (type: AppNotificationType, data: any) => string) => void,
-    setUpdateNotification: (fun: (notificationId: string, type: AppNotificationType, data: any) => void) => void,
-    setRemoveNotification: (fun: (notificationId: string) => void) => void,
+interface NewMainViewProps {
+    onActionClose: () => void
 }
 
-export class MainView extends Component<MainViewProps> {
+export function MainView(props: React.PropsWithChildren<NewMainViewProps>): React.ReactElement {
 
-    addNotificationEntry: (type: Type, closable: boolean, title: string, content: any) => string;
-    updateNotificationEntry: (uid: string, action: (entry: NotificationEntry) => NotificationEntry) => void;
+    const { notifications, addNotification, removeNotification } = useNotifications();
+    const { setRootGroup } = useRootGroup();
 
-    constructor(props: MainViewProps) {
-        super(props);
-        this.showNotification = this.showNotification.bind(this);
-        this.updateNotification = this.updateNotification.bind(this);
-        this.errorToString = this.errorToString.bind(this);
-        this.showNotification = this.showNotification.bind(this);
-        this.props.setShowNotification(this.showNotification);
-        this.props.setUpdateNotification(this.updateNotification);
-    }
+    componentWillMount(() => {
+        fetchRootGroup()
+            .then(setRootGroup)
+            .catch(error => addNotification(genNotificationId(), AppNotificationType.ROOT_GROUP_FETCH_FAILED, error));
+    });
 
-    render() {
-        return (
-            <Box dir={Dir.DOWN}>
-                <Grid columns={['auto', '1fr']}
-                      rows={['100vh']}
-                      fill={Fill.TRUE}
-                      style={{ maxHeight: "100vh" }}>
-                    {this.props.children}
-                </Grid>
-                <SFNotificationStack modalRootId='root'
-                                     setAddSimpleFunction={(fun) => this.addNotificationEntry = fun}
-                                     setUpdateNotification={(fun) => this.updateNotificationEntry = fun}
-                                     setRemoveFunction={(fun) => this.props.setRemoveNotification(fun)}
-                />
-            </Box>
-        );
-    }
-
-    showNotification(type: AppNotificationType, data: any): string {
-        switch (type) {
-            // case MainViewMessageType.FETCH_ROOT_GROUP: {
-            //     return this.addNotificationEntry(Type.ERROR, true, "Unexpected error when fetching collections,groups", this.errorToString(data));
-            // }
-            // case MainViewMessageType.FETCH_TOTAL_ITEM_COUNT_FAILED: {
-            //     return this.addNotificationEntry(Type.ERROR, true, "Unexpected error when fetching total item count", this.errorToString(data));
-            // }
-            // case MainViewMessageType.FETCH_ITEMS_FAILED: {
-            //     return this.addNotificationEntry(Type.ERROR, true, "Unexpected error when fetching items", this.errorToString(data));
-            // }
-            // case MainViewMessageType.MOVE_ITEMS_IN_COLLECTION_FAILED: {
-            //     return this.addNotificationEntry(Type.ERROR, true, "Unexpected error while moving items to collection", this.errorToString(data));
-            // }
-            // case MainViewMessageType.REMOVE_ITEMS_FROM_COLLECTION_FAILED: {
-            //     return this.addNotificationEntry(Type.ERROR, true, "Unexpected error while removing items from collection", this.errorToString(data));
-            // }
-            // case MainViewMessageType.IMPORT_FAILED_UNKNOWN: {
-            //     return this.addNotificationEntry(Type.ERROR, true, "Import failed unexpectedly", this.errorToString(data));
-            // }
-            // case MainViewMessageType.IMPORT_FAILED: {
-            //     return this.addNotificationEntry(Type.ERROR, true, "Import failed", data.failureReason);
-            // }
-            // case MainViewMessageType.IMPORT_WITH_ERRORS: {
-            //     const message: ReactElement = (
-            //         <ul>
-            //             {data.filesWithErrors.map((entry: ([string, string])) => <li>{entry[0] + ": " + entry[1]}</li>)}
-            //         </ul>
-            //     );
-            //     return this.addNotificationEntry(Type.WARN, true, "Import encountered errors", message);
-            // }
-            // case MainViewMessageType.IMPORT_SUCCESSFUL: {
-            //     return this.addNotificationEntry(Type.SUCCESS, true, "Import successful", "Imported " + data.amountFiles + " files.");
-            // }
-            // case MainViewMessageType.IMPORT_STATUS: {
-            //     return this.addNotificationEntry(Type.PRIMARY, true, "Importing...", null);
-            // }
-            default: {
-                return "";
-            }
-        }
-    }
-
-    updateNotification(notificationId: string, type: AppNotificationType, data: any): void {
-        this.updateNotificationEntry(notificationId, (entry: NotificationEntry) => {
-            // switch (type) {
-            //     case MainViewMessageType.IMPORT_STATUS: {
-            //         entry.content = data.completedFiles + "/" + data.totalAmountFiles + " files imported.";
-            //         break;
-            //     }
-            // }
-            return entry;
-        });
-    }
-
-    errorToString(error: any) {
-        let errorString: string = String(error);
-        if (errorString === "[object Object]") {
-            errorString = JSON.stringify(error);
-        }
-        return errorString;
-    }
-
+    return (
+        <VBox>
+            <Grid columns={['auto', '1fr']} rows={['100vh']} fill={Fill.TRUE} style={{ maxHeight: "100vh" }}>
+                <MenuSidebar onActionClose={props.onActionClose} />
+                <ItemList />
+            </Grid>
+            <NotificationStack modalRootId='root' notifications={toNotificationEntries(notifications, removeNotification)} />
+        </VBox>
+    );
 }
