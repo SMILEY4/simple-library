@@ -1,14 +1,14 @@
 import * as React from 'react';
 import { VBox } from '../../../../components/layout/Box';
 import { AlignCross, Size } from '../../../../components/common';
-import { useGroups } from '../../../common/hooks/groupHooks';
+import { useGroups } from '../../../hooks/groupHooks';
 import { ItemData } from '../../../../../common/commonModels';
 import { ItemEntry } from './ItemEntry';
 import { SelectMode } from '../../../common/utils/utils';
 import { DragAndDropItems } from '../../../common/dragAndDrop';
 import { ItemContextMenu } from './ItemContextMenu';
-import { useCollections } from '../../../common/hooks/collectionHooks';
-import { useItems, useItemSelection } from '../../../common/hooks/itemHooks';
+import { useCollections } from '../../../hooks/collectionHooks';
+import { useItems, useItemSelection } from '../../../hooks/itemHooks';
 
 
 export function ItemList(): React.ReactElement {

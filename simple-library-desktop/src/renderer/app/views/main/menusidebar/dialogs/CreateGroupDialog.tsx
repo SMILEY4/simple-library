@@ -5,7 +5,7 @@ import { AlignCross, AlignMain, Size, Type, Variant } from '../../../../../compo
 import { VBox } from '../../../../../components/layout/Box';
 import { InputField } from '../../../../../components/inputfield/InputField';
 import { BodyText } from '../../../../../components/text/Text';
-import { useGroupName } from '../../../../common/hooks/groupHooks';
+import { useGroupName } from '../../../../hooks/groupHooks';
 
 interface CreateGroupDialogProps {
     parentGroup: Group,

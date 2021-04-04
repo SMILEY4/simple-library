@@ -18,7 +18,6 @@ export interface ImportFilesFormProps {
     onToggleRenameFiles: (enabled: boolean) => void,
     onSetFilenamePartType: (index: number, type: RenamePartType) => void
     onSetFilenamePartValue: (index: number, value: string) => void
-
 }
 
 

@@ -7,8 +7,8 @@ import { useContextMenu } from 'react-contexify';
 import { GROUP_CONTEXT_MENU_ID } from './contextmenues/GroupContextMenu';
 import { compareCollections, compareGroups } from '../../../common/utils/utils';
 import { DragAndDropCollections, DragAndDropGroups, DragAndDropUtils } from '../../../common/dragAndDrop';
-import { useGroups } from '../../../common/hooks/groupHooks';
-import { useCollections } from '../../../common/hooks/collectionHooks';
+import { useGroups } from '../../../hooks/groupHooks';
+import { useCollections } from '../../../hooks/collectionHooks';
 
 interface GroupSidebarItemProps {
     group: Group,

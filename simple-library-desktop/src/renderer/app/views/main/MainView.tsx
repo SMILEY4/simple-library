@@ -3,14 +3,14 @@ import { VBox } from '../../../components/layout/Box';
 import { Fill } from '../../../components/common';
 import { Grid } from '../../../components/layout/Grid';
 import { componentWillMount } from '../../common/utils/functionalReactLifecycle';
-import { useGroups } from '../../common/hooks/groupHooks';
+import { useGroups } from '../../hooks/groupHooks';
 import { NotificationStack } from '../../../components/notification/NotificationStack';
 import { genNotificationId, toNotificationEntries } from '../../common/utils/notificationUtils';
 import { AppNotificationType } from '../../store/state';
 import { ItemList } from './itemPanel/ItemList';
 import { fetchRootGroup } from '../../common/messaging/messagingInterface';
 import { MenuSidebar } from './menusidebar/MenuSidebar';
-import { useNotifications } from '../../common/hooks/miscHooks';
+import { useNotifications } from '../../hooks/miscHooks';
 
 interface NewMainViewProps {
     onActionClose: () => void

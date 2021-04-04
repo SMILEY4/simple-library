@@ -4,7 +4,7 @@ import { Dialog } from '../../../../../components/modal/Dialog';
 import { AlignCross, AlignMain, Size, Type, Variant } from '../../../../../components/common';
 import { VBox } from '../../../../../components/layout/Box';
 import { InputField } from '../../../../../components/inputfield/InputField';
-import { useGroupName } from '../../../../common/hooks/groupHooks';
+import { useGroupName } from '../../../../hooks/groupHooks';
 
 interface RenameGroupDialogProps {
     group: Group,

@@ -4,7 +4,7 @@ import { Dialog } from '../../../../../components/modal/Dialog';
 import { AlignCross, AlignMain, Size, Type, Variant } from '../../../../../components/common';
 import { VBox } from '../../../../../components/layout/Box';
 import { BodyText } from '../../../../../components/text/Text';
-import { useStateRef } from '../../../../common/hooks/miscHooks';
+import { useStateRef } from '../../../../hooks/miscHooks';
 import { Checkbox } from '../../../../../components/checkbox/Checkbox';
 
 interface DeleteGroupDialogProps {

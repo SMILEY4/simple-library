@@ -1,14 +1,14 @@
-import { ActionType } from '../../store/reducer';
-import { Collection, extractCollections, extractGroups, Group } from '../../../../common/commonModels';
-import { genNotificationId } from '../utils/notificationUtils';
-import { AppNotificationType } from '../../store/state';
+import { ActionType } from '../store/reducer';
+import { Collection, extractCollections, extractGroups, Group } from '../../../common/commonModels';
+import { genNotificationId } from '../common/utils/notificationUtils';
+import { AppNotificationType } from '../store/state';
 import { useState } from 'react';
 import {
     fetchRootGroup,
     requestCreateGroup, requestDeleteGroup,
     requestMoveGroup,
     requestRenameGroup,
-} from '../messaging/messagingInterface';
+} from '../common/messaging/messagingInterface';
 import { useDialogHook, useGlobalState, useNotifications, useStateRef } from './miscHooks';
 
 

@@ -1,18 +1,17 @@
 import { useDialogHook, useGlobalState, useNotifications, useStateRef } from './miscHooks';
-import { ActionType } from '../../store/reducer';
+import { ActionType } from '../store/reducer';
 import {
     fetchItems,
     requestCreateCollection,
     requestDeleteCollection,
     requestEditCollection,
     requestMoveCollection,
-} from '../messaging/messagingInterface';
-import { CollectionType, Group, ItemData } from '../../../../common/commonModels';
-import { genNotificationId } from '../utils/notificationUtils';
-import { AppNotificationType } from '../../store/state';
+} from '../common/messaging/messagingInterface';
+import { CollectionType, Group, ItemData } from '../../../common/commonModels';
+import { genNotificationId } from '../common/utils/notificationUtils';
+import { AppNotificationType } from '../store/state';
 import { useState } from 'react';
 import { useGroups } from './groupHooks';
-import { useItems } from './itemHooks';
 
 
 export function useCollections() {

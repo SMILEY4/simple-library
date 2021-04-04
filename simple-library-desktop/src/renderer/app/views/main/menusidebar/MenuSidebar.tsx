@@ -4,7 +4,7 @@ import { SidebarMenu } from '../../../../components/sidebarmenu/SidebarMenu';
 import { SidebarMenuSection } from '../../../../components/sidebarmenu/SidebarMenuSection';
 import { MenuActionClose, MenuActionImport } from './sidebarEntries';
 import { DialogImportFiles } from './dialogs/import/DialogImportFiles';
-import { useCreateGroup, useDeleteGroup, useGroups, useRenameGroup } from '../../../common/hooks/groupHooks';
+import { useCreateGroup, useDeleteGroup, useGroups, useRenameGroup } from '../../../hooks/groupHooks';
 import { requestCloseLibrary } from '../../../common/messaging/messagingInterface';
 import { CollectionSectionAction } from './CollectionSectionAction';
 import { compareCollections, compareGroups } from '../../../common/utils/utils';
@@ -19,8 +19,8 @@ import {
     useCreateCollection,
     useDeleteCollection,
     useEditCollection,
-} from '../../../common/hooks/collectionHooks';
-import { useImport } from '../../../common/hooks/miscHooks';
+} from '../../../hooks/collectionHooks';
+import { useImport } from '../../../hooks/miscHooks';
 import { EditCollectionDialog } from './dialogs/EditCollectionDialog';
 import { DeleteCollectionDialog } from './dialogs/DeleteCollectionDialog';
 import { RenameGroupDialog } from './dialogs/RenameGroupDialog';

@@ -1,10 +1,10 @@
 import { useCollections } from './collectionHooks';
 import { useGlobalState, useNotifications } from './miscHooks';
-import { fetchItems, requestMoveItems, requestRemoveItems } from '../messaging/messagingInterface';
-import { genNotificationId } from '../utils/notificationUtils';
-import { AppNotificationType } from '../../store/state';
-import { ItemData } from '../../../../common/commonModels';
-import { ActionType } from '../../store/reducer';
+import { fetchItems, requestMoveItems, requestRemoveItems } from '../common/messaging/messagingInterface';
+import { genNotificationId } from '../common/utils/notificationUtils';
+import { AppNotificationType } from '../store/state';
+import { ItemData } from '../../../common/commonModels';
+import { ActionType } from '../store/reducer';
 import { useGroups } from './groupHooks';
 
 
