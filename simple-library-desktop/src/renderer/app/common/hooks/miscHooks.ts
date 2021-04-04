@@ -108,3 +108,29 @@ export function useImport() {
     };
 
 }
+
+
+export function useDialogHook() {
+
+    const [showDialog, setShowDialog] = useState(false);
+
+    const open = () => {
+        setShowDialog(true);
+    };
+
+    const close = () => {
+        setShowDialog(false);
+    };
+
+    const accept = () => {
+        close();
+    };
+
+    return {
+        showDialog: showDialog,
+        openDialog: open,
+        closeDialog: close,
+        acceptDialog: accept,
+    };
+
+}

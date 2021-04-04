@@ -11,7 +11,7 @@ interface GroupContextMenuProps {
     onActionDelete: (groupId: number) => void
     onActionCreateCollection: (triggerGroupId: number) => void,
     onActionCreateGroup: (triggerGroupId: number) => void,
-    onActionMove: (groupId: number, targetGroupId: number) => void
+    onActionMove: (groupId: number, targetGroupId: number | null) => void
 }
 
 export function GroupContextMenu(props: React.PropsWithChildren<GroupContextMenuProps>): React.ReactElement {

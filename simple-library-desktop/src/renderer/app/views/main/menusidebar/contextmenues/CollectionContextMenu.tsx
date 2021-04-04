@@ -9,7 +9,7 @@ interface CollectionContextMenuProps {
     rootGroup: Group,
     onActionEdit: (collectionId: number) => void
     onActionDelete: (collectionId: number) => void
-    onActionMove: (collectionId: number, targetGroupId: number) => void
+    onActionMove: (collectionId: number, targetGroupId: number | null) => void
 }
 
 export function CollectionContextMenu(props: React.PropsWithChildren<CollectionContextMenuProps>): React.ReactElement {

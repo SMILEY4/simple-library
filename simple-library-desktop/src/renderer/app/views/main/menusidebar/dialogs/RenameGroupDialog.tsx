@@ -4,22 +4,20 @@ import { Dialog } from '../../../../../components/modal/Dialog';
 import { AlignCross, AlignMain, Size, Type, Variant } from '../../../../../components/common';
 import { VBox } from '../../../../../components/layout/Box';
 import { InputField } from '../../../../../components/inputfield/InputField';
-import { BodyText } from '../../../../../components/text/Text';
 import { useGroupName } from '../../../../common/hooks/groupHooks';
 
-interface CreateGroupDialogProps {
-    parentGroup: Group,
-    rootGroup: Group,
+interface RenameGroupDialogProps {
+    group: Group,
     onCancel: () => void,
-    onCreate: (name: string) => void,
+    onRename: (groupId: number, name: string) => void,
 }
 
-export function CreateGroupDialog(props: React.PropsWithChildren<CreateGroupDialogProps>): React.ReactElement {
+export function RenameGroupDialog(props: React.PropsWithChildren<RenameGroupDialogProps>): React.ReactElement {
 
-    const { name, nameValid, getRefName, setName } = useGroupName();
+    const { name, nameValid, getRefName, setName } = useGroupName(props.group.name);
 
     return (
-        <Dialog title={"Create new Group"}
+        <Dialog title={"Rename Group"}
                 show={true}
                 closeButton={true}
                 onClose={props.onCancel}
@@ -31,10 +29,10 @@ export function CreateGroupDialog(props: React.PropsWithChildren<CreateGroupDial
                         triggeredByEscape: true,
                     },
                     {
-                        content: "Create",
+                        content: "Rename",
                         variant: Variant.SOLID,
                         type: Type.PRIMARY,
-                        onAction: handleCreate,
+                        onAction: handleRename,
                         triggeredByEnter: true,
                     },
                 ]}>
@@ -45,18 +43,16 @@ export function CreateGroupDialog(props: React.PropsWithChildren<CreateGroupDial
                     placeholder='Group Name'
                     value={name}
                     onChange={setName}
+                    invalid={!nameValid}
                 />
-                {props.parentGroup && (
-                    <BodyText>{'Create in group "' + props.parentGroup.name + '".'} </BodyText>
-                )}
             </VBox>
 
         </Dialog>
     );
 
-    function handleCreate() {
+    function handleRename() {
         if (nameValid) {
-            props.onCreate(getRefName());
+            props.onRename(props.group.id, getRefName());
         }
     }
 

@@ -4,7 +4,7 @@ import { SidebarMenu } from '../../../../components/sidebarmenu/SidebarMenu';
 import { SidebarMenuSection } from '../../../../components/sidebarmenu/SidebarMenuSection';
 import { MenuActionClose, MenuActionImport } from './sidebarEntries';
 import { DialogImportFiles } from './dialogs/import/DialogImportFiles';
-import { useCreateGroup, useGroups } from '../../../common/hooks/groupHooks';
+import { useCreateGroup, useDeleteGroup, useGroups, useRenameGroup } from '../../../common/hooks/groupHooks';
 import { requestCloseLibrary } from '../../../common/messaging/messagingInterface';
 import { CollectionSectionAction } from './CollectionSectionAction';
 import { compareCollections, compareGroups } from '../../../common/utils/utils';
@@ -14,8 +14,17 @@ import { CollectionContextMenu } from './contextmenues/CollectionContextMenu';
 import { GroupContextMenu } from './contextmenues/GroupContextMenu';
 import { CreateCollectionDialog } from './dialogs/CreateCollectionDialog';
 import { CreateGroupDialog } from './dialogs/CreateGroupDialog';
-import { useCreateCollection } from '../../../common/hooks/collectionHooks';
+import {
+    useCollections,
+    useCreateCollection,
+    useDeleteCollection,
+    useEditCollection,
+} from '../../../common/hooks/collectionHooks';
 import { useImport } from '../../../common/hooks/miscHooks';
+import { EditCollectionDialog } from './dialogs/EditCollectionDialog';
+import { DeleteCollectionDialog } from './dialogs/DeleteCollectionDialog';
+import { RenameGroupDialog } from './dialogs/RenameGroupDialog';
+import { DeleteGroupDialog } from './dialogs/DeleteGroupDialog';
 
 interface MenuSidebarProps {
     onActionClose: () => void
@@ -25,7 +34,9 @@ export function MenuSidebar(props: React.PropsWithChildren<MenuSidebarProps>): R
 
     const [minimized, setMinimized] = useState(false);
 
-    const { rootGroup } = useGroups();
+    const { rootGroup, findCollection, moveGroup } = useGroups();
+
+    const { moveCollection } = useCollections();
 
     const {
         showImportDialog,
@@ -43,12 +54,44 @@ export function MenuSidebar(props: React.PropsWithChildren<MenuSidebarProps>): R
     } = useCreateCollection();
 
     const {
+        showEditCollection,
+        editCollectionId,
+        openEditCollection,
+        cancelEditCollection,
+        editCollection,
+    } = useEditCollection();
+
+    const {
+        showDeleteCollection,
+        deleteCollectionId,
+        openDeleteCollection,
+        cancelDeleteCollection,
+        deleteCollection,
+    } = useDeleteCollection();
+
+    const {
         showCreateGroup,
         createGroupParentGroup,
         openCreateGroup,
         cancelCreateGroup,
         createGroup,
     } = useCreateGroup();
+
+    const {
+        showRenameGroup,
+        groupToRename,
+        openRenameGroup,
+        cancelRenameGroup,
+        renameGroup,
+    } = useRenameGroup();
+
+    const {
+        showDeleteGroup,
+        groupToDelete,
+        openDeleteGroup,
+        cancelDeleteGroup,
+        deleteGroup,
+    } = useDeleteGroup();
 
     return (
         <>
@@ -78,16 +121,16 @@ export function MenuSidebar(props: React.PropsWithChildren<MenuSidebarProps>): R
 
             <CollectionContextMenu
                 rootGroup={rootGroup}
-                onActionEdit={undefined}
-                onActionDelete={undefined}
-                onActionMove={undefined}
+                onActionEdit={openEditCollection}
+                onActionDelete={openDeleteCollection}
+                onActionMove={moveCollection}
             />
 
             <GroupContextMenu
                 rootGroup={rootGroup}
-                onActionRename={undefined}
-                onActionDelete={undefined}
-                onActionMove={undefined}
+                onActionRename={openRenameGroup}
+                onActionDelete={openDeleteGroup}
+                onActionMove={moveGroup}
                 onActionCreateCollection={openCreateCollection}
                 onActionCreateGroup={openCreateGroup}
             />
@@ -108,6 +151,22 @@ export function MenuSidebar(props: React.PropsWithChildren<MenuSidebarProps>): R
                 />
             )}
 
+            {showEditCollection && (
+                <EditCollectionDialog
+                    collection={findCollection(editCollectionId)}
+                    onCancel={cancelEditCollection}
+                    onEdit={editCollection}
+                />
+            )}
+
+            {showDeleteCollection && (
+                <DeleteCollectionDialog
+                    collection={findCollection(deleteCollectionId)}
+                    onCancel={cancelDeleteCollection}
+                    onDelete={deleteCollection}
+                />
+            )}
+
             {showCreateGroup && (
                 <CreateGroupDialog
                     rootGroup={rootGroup}
@@ -117,6 +176,21 @@ export function MenuSidebar(props: React.PropsWithChildren<MenuSidebarProps>): R
                 />
             )}
 
+            {showRenameGroup && (
+                <RenameGroupDialog
+                    group={groupToRename}
+                    onCancel={cancelRenameGroup}
+                    onRename={renameGroup}
+                />
+            )}
+
+            {showDeleteGroup && (
+                <DeleteGroupDialog
+                    group={groupToDelete}
+                    onCancel={cancelDeleteGroup}
+                    onDelete={deleteGroup}
+                />
+            )}
         </>
     );
 

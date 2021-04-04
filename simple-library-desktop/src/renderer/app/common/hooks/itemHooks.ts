@@ -23,6 +23,13 @@ export function useItems() {
             }));
     };
 
+    const clearItems = () => {
+        dispatch({
+            type: ActionType.SET_ITEMS,
+            payload: [],
+        })
+    }
+
     const reloadItems = () => {
         setItems(activeCollectionId);
     };
@@ -56,6 +63,7 @@ export function useItems() {
         items: state.items,
         reloadItems: reloadItems,
         setItems: setItems,
+        clearItems: clearItems,
         moveItems: moveItems,
         copyItems: copyItems,
         removeItems: removeItems,

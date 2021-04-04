@@ -6,7 +6,13 @@ import {
     ImportStatus,
     ItemData,
 } from '../../../../common/commonModels';
-import { CreateGroupMessage, GetGroupsMessage, MoveGroupMessage } from '../../../../common/messaging/messagesGroups';
+import {
+    CreateGroupMessage,
+    DeleteGroupMessage,
+    GetGroupsMessage,
+    MoveGroupMessage,
+    RenameGroupMessage,
+} from '../../../../common/messaging/messagesGroups';
 import {
     GetItemsMessage,
     ImportItemsMessage,
@@ -14,6 +20,8 @@ import {
 } from '../../../../common/messaging/messagesItems';
 import {
     CreateCollectionMessage,
+    DeleteCollectionMessage,
+    EditCollectionMessage,
     MoveCollectionMessage,
     MoveItemsToCollectionsMessage,
     RemoveItemsFromCollectionsMessage,
@@ -99,6 +107,20 @@ export function requestCreateCollection(name: string, type: CollectionType, quer
 }
 
 
+export function requestEditCollection(collectionId: number, name: string, query: string | null): Promise<void> {
+    return EditCollectionMessage.request(ipcRenderer, {
+        collectionId: collectionId,
+        newName: name,
+        newSmartQuery: query,
+    }).then();
+}
+
+export function requestDeleteCollection(collectionId: number): Promise<void> {
+    return DeleteCollectionMessage.request(ipcRenderer, {
+        collectionId: collectionId,
+    }).then();
+}
+
 export function requestCreateGroup(name: string, parentGroupId: number | null): Promise<void> {
     return CreateGroupMessage.request(ipcRenderer, {
         name: name,
@@ -106,6 +128,20 @@ export function requestCreateGroup(name: string, parentGroupId: number | null): 
     }).then();
 }
 
+
+export function requestRenameGroup(groupId: number, name: string): Promise<void> {
+    return RenameGroupMessage.request(ipcRenderer, {
+        groupId: groupId,
+        newName: name,
+    }).then();
+}
+
+export function requestDeleteGroup(groupId: number, deleteChildren: boolean): Promise<void> {
+    return DeleteGroupMessage.request(ipcRenderer, {
+        groupId: groupId,
+        deleteChildren: deleteChildren,
+    }).then();
+}
 
 export function requestMoveGroup(groupId: number, targetGroupId: number | null): Promise<void> {
     return MoveGroupMessage.request(ipcRenderer, {

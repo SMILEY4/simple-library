@@ -125,6 +125,24 @@ export function toNotificationEntry(notificationData: AppNotification, onClose: 
                 onClose: () => onClose(),
             };
         }
+        case AppNotificationType.COLLECTION_EDIT_FAILED: {
+            return {
+                type: Type.ERROR,
+                title: "Failed to edit collection",
+                content: errorToString(notificationData.data),
+                withCloseButton: true,
+                onClose: () => onClose(),
+            };
+        }
+        case AppNotificationType.COLLECTION_DELETE_FAILED: {
+            return {
+                type: Type.ERROR,
+                title: "Failed to delete collection",
+                content: errorToString(notificationData.data),
+                withCloseButton: true,
+                onClose: () => onClose(),
+            };
+        }
         case AppNotificationType.GROUP_CREATE_FAILED: {
             return {
                 type: Type.ERROR,
@@ -138,6 +156,24 @@ export function toNotificationEntry(notificationData: AppNotification, onClose: 
             return {
                 type: Type.ERROR,
                 title: "Failed to move group",
+                content: errorToString(notificationData.data),
+                withCloseButton: true,
+                onClose: () => onClose(),
+            };
+        }
+        case AppNotificationType.GROUP_RENAME_FAILED: {
+            return {
+                type: Type.ERROR,
+                title: "Failed to rename group",
+                content: errorToString(notificationData.data),
+                withCloseButton: true,
+                onClose: () => onClose(),
+            };
+        }
+        case AppNotificationType.GROUP_DELETE_FAILED: {
+            return {
+                type: Type.ERROR,
+                title: "Failed to delete group",
                 content: errorToString(notificationData.data),
                 withCloseButton: true,
                 onClose: () => onClose(),
