@@ -4,9 +4,9 @@ import { VBox } from '../../../../../../components/layout/Box';
 import { AlignCross, AlignMain, Size } from '../../../../../../components/common';
 import { Separator, SeparatorDirection } from '../../../../../../components/separator/Separator';
 import { ImportProcessData, ImportTargetAction, RenamePartType } from '../../../../../../../common/commonModels';
-import { SelectFilesForm } from './SelectFilesForm';
-import { ImportTargetForm } from './ImportTargetForm';
-import { RenameFilesForm } from './RenameFilesForm';
+import { SelectFilesForm } from '../newimport/SelectFilesForm';
+import { ImportTargetForm } from '../newimport/ImportTargetForm';
+import { RenameFilesForm } from '../newimport/RenameFilesForm';
 import { ImportValidationData } from './DialogImportFiles';
 
 export interface ImportFilesFormProps {

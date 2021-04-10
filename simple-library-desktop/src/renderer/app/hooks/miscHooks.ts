@@ -75,41 +75,6 @@ export function useNotifications() {
 }
 
 
-export function useImport() {
-
-    const [showDialog, setShowDialog] = useState(false);
-    const { addNotification, updateNotification, removeNotification } = useNotifications();
-    const { reloadRootGroup } = useGroups();
-    const { reloadItems } = useItems();
-
-    const startImportProcess = (data: ImportProcessData) => {
-        setShowDialog(false);
-
-        const importStatusNotificationId = genNotificationId();
-        addNotification(importStatusNotificationId, AppNotificationType.IMPORT_STATUS, null);
-        onImportStatusCommands((status: ImportStatus) => updateNotification(importStatusNotificationId, status));
-
-        requestImport(data,
-            (result: ImportResult) => addNotification(genNotificationId(), AppNotificationType.IMPORT_SUCCESSFUL, result),
-            (result: ImportResult) => addNotification(genNotificationId(), AppNotificationType.IMPORT_FAILED, result),
-            (result: ImportResult) => addNotification(genNotificationId(), AppNotificationType.IMPORT_WITH_ERRORS, result),
-        )
-            .catch(error => addNotification(genNotificationId(), AppNotificationType.IMPORT_FAILED_UNKNOWN, error))
-            .then(() => reloadRootGroup())
-            .then(() => reloadItems())
-            .finally(() => removeNotification(importStatusNotificationId));
-    };
-
-    return {
-        showImportDialog: showDialog,
-        openImportDialog: () => setShowDialog(true),
-        closeImportDialog: () => setShowDialog(false),
-        startImportProcess: startImportProcess,
-    };
-
-}
-
-
 export function useDialogHook() {
 
     const [showDialog, setShowDialog] = useState(false);

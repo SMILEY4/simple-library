@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { SidebarMenu } from '../../../../components/sidebarmenu/SidebarMenu';
 import { SidebarMenuSection } from '../../../../components/sidebarmenu/SidebarMenuSection';
 import { MenuActionClose, MenuActionImport } from './sidebarEntries';
-import { DialogImportFiles } from './dialogs/import/DialogImportFiles';
 import { useCreateGroup, useDeleteGroup, useGroups, useRenameGroup } from '../../../hooks/groupHooks';
 import { requestCloseLibrary } from '../../../common/messaging/messagingInterface';
 import { CollectionSectionAction } from './CollectionSectionAction';
@@ -20,11 +19,12 @@ import {
     useDeleteCollection,
     useEditCollection,
 } from '../../../hooks/collectionHooks';
-import { useImport } from '../../../hooks/miscHooks';
 import { EditCollectionDialog } from './dialogs/EditCollectionDialog';
 import { DeleteCollectionDialog } from './dialogs/DeleteCollectionDialog';
 import { RenameGroupDialog } from './dialogs/RenameGroupDialog';
 import { DeleteGroupDialog } from './dialogs/DeleteGroupDialog';
+import { useImport } from '../../../hooks/importHooks';
+import { ImportFilesDialog } from './dialogs/newimport/ImportFilesDialog';
 
 interface MenuSidebarProps {
     onActionClose: () => void
@@ -135,8 +135,14 @@ export function MenuSidebar(props: React.PropsWithChildren<MenuSidebarProps>): R
                 onActionCreateGroup={openCreateGroup}
             />
 
+            {/*
+            TODO: for all dialogs:
+            - trigger validation-checks on "accept"
+            - check if "useState" for "validation" is enough -> or useStateRef necessary ?
+            */}
+
             {showImportDialog && (
-                <DialogImportFiles
+                <ImportFilesDialog
                     onClose={closeImportDialog}
                     onImport={startImportProcess}
                 />
