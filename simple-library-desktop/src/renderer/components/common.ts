@@ -139,6 +139,20 @@ export function map<T, R>(value: T | undefined | null, mapping: (v: T) => R): R 
 }
 
 /**
+ *
+ * @param condition the boolean condition
+ * @param value the value to return
+ * @return the given value only if the condition is "true", return undefined otherwise
+ */
+export function getIf<R>(condition: boolean | undefined | null, value: R): R | undefined {
+    if (condition === true) {
+        return value;
+    } else {
+        return undefined;
+    }
+}
+
+/**
  * Calls the given function if it is not null or undefined
  * @param func the function to call
  */

@@ -1,29 +1,17 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { ReactElement, useState } from 'react';
 import "./showcase.css";
+import { BodyText, Text, TextVariant } from '../text/Text';
+import { Box, CBox } from '../layout/Box';
+import { Dir, GroupPosition, Type, Variant } from '../common';
+import { Button } from '../button/Button';
 import {
     AiFillCaretRight,
-    AiFillFolder,
     AiFillHome,
     AiOutlineAlignCenter,
     AiOutlineAlignLeft,
     AiOutlineAlignRight,
-    AiOutlineSearch,
 } from 'react-icons/all';
-import { GroupPosition, Type, Variant } from '../common';
-import { LabelBox } from '../text/LabelBox';
-import { Button } from '../button/Button';
-import { Text, TextVariant } from '../text/Text';
-import { SFInputField } from '../inputfield/SFInputField';
-import { SFToggleButton } from '../button/togglebutton/SFToggleButton';
-import { Dialog } from '../modal/Dialog';
-import { SFCheckbox } from "../checkbox/SFCheckbox";
-import { ChoiceBox } from "../choicebox/ChoiceBox";
-import { Notification } from '../notification/Notification';
-import { DropdownItemType } from '../dropdown/Dropdown';
-import { DropdownButton } from '../button/dropdownbutton/DropdownButton';
-import { SFTextArea } from '../textarea/SFTextArea';
-import { NewInputField } from '../newinputfield/NewInputField';
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0");
@@ -47,436 +35,103 @@ export function ComponentShowcaseView(): any {
         </div>
     );
 
-    function renderNewInputField() {
+    function renderContent() {
         return (
             <>
-                <h3>New Input Field</h3>
-                <NewInputField
-                    placeholder={"Type here"}
-                    validateOnSubmit
-                    showError
-                    validation={(value: string) => {
-                        if (value.trim().length === 0) {
-                            return "Email may not be empty";
-                        }
-                        const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-                        if (!emailRegex.test(value)) {
-                            return "Invalid email format";
-                        }
-                        return null;
-                    }}
-                />
+                {renderBoxes()}
+                {renderButtons()}
+                {renderText()}
             </>
         );
     }
 
+    function renderBoxes() {
 
-    function renderTextArea() {
-        return (
-            <>
-                <h3>Text Area</h3>
-
-                <SFTextArea
-                    placeholder={"Text Area"}
-                    rows={10}
-                    onChange={(value: string) => console.log("textarea.change: " + value)}
-                    onAccept={(value: string) => console.log("textarea.accept: " + value)}
-                />
-
-            </>
-        );
-    }
-
-
-    function renderDropdownButton() {
-        return (
-            <>
-                <h3>Dropdown Button</h3>
-
-                <DropdownButton buttonTitle={"Button"} variant={Variant.OUTLINE} items={[
-                    {
-                        type: DropdownItemType.ACTION,
-                        title: "Create",
-                        onAction: () => console.log("on create"),
-                    },
-                    {
-                        type: DropdownItemType.ACTION,
-                        title: "Read",
-                        onAction: () => console.log("on read"),
-                    },
-                    {
-                        type: DropdownItemType.ACTION,
-                        title: "Update",
-                        onAction: () => console.log("on update"),
-                    },
-                    {
-                        type: DropdownItemType.ACTION,
-                        title: "Delete",
-                        onAction: () => console.log("on delete"),
-                    },
-                ]} />
-
-            </>
-        );
-    }
-
-    function renderNotification() {
-        return (
-            <>
-                <h3>Notification</h3>
-
-                <Notification type={Type.PRIMARY}
-                              icon={<AiFillHome />}
-                              title={"Notification Title"}
-                              caption={"18.02.2021"}
-                              withCloseButton={true}>
-                    This is an example info/primary notification.
-                </Notification>
-
-                <Notification type={Type.SUCCESS}
-                              icon={<AiFillHome />}
-                              title={"Notification Title"}
-                              caption={"18.02.2021"}
-                              withCloseButton={true}>
-                    This is an example success notification.
-                </Notification>
-
-                <Notification type={Type.ERROR}
-                              icon={<AiFillHome />}
-                              title={"Notification Title"}
-                              caption={"18.02.2021"}
-                              withCloseButton={true}>
-                    This is an example error notification.
-                </Notification>
-
-                <Notification type={Type.WARN}
-                              icon={<AiFillHome />}
-                              title={"Notification Title"}
-                              caption={"18.02.2021"}
-                              withCloseButton={true}>
-                    This is an example warn notification.
-                </Notification>
-
-                {/*<NotificationStack notifications={[*/}
-                {/*    {*/}
-                {/*        type: Type.PRIMARY,*/}
-                {/*        content: "Primary notification on the stack.",*/}
-                {/*    },*/}
-                {/*    {*/}
-                {/*        type: Type.ERROR,*/}
-                {/*        content: "Error notification on the stack.",*/}
-                {/*    },*/}
-                {/*    {*/}
-                {/*        type: Type.WARN,*/}
-                {/*        content: "Warn notification on the stack.",*/}
-                {/*    },*/}
-                {/*]} />*/}
-
-            </>
-        );
-    }
-
-
-    function renderSidebarMenu() {
-        return (
-            <>
-                {/*<h3>SidebarMenu</h3>*/}
-
-                {/*<ShowcaseRow>*/}
-
-                {/*    <div style={{ height: "200px", border: "1px solid blue" }}>*/}
-                {/*        <SFSidebarMenu*/}
-                {/*            elements={[*/}
-                {/*                {*/}
-                {/*                    text: "Home",*/}
-                {/*                    icon: <AiOutlineHome />,*/}
-                {/*                },*/}
-                {/*                {*/}
-                {/*                    text: "Team",*/}
-                {/*                    icon: <AiOutlineTeam />,*/}
-                {/*                },*/}
-                {/*                {*/}
-                {/*                    text: "All Projects",*/}
-                {/*                    icon: <FiFolder />,*/}
-                {/*                },*/}
-                {/*            ]}*/}
-                {/*            align={AlignMain.CENTER}*/}
-                {/*            fillHeight*/}
-                {/*        />*/}
-                {/*    </div>*/}
-
-                {/*    <div style={{ height: "200px", border: "1px solid blue" }}>*/}
-                {/*        <SFSidebarMenu*/}
-                {/*            elements={[*/}
-                {/*                {*/}
-                {/*                    text: "Home",*/}
-                {/*                    icon: <AiOutlineHome />,*/}
-                {/*                },*/}
-                {/*                {*/}
-                {/*                    text: "Team",*/}
-                {/*                    icon: <AiOutlineTeam />,*/}
-                {/*                },*/}
-                {/*                {*/}
-                {/*                    text: "All Projects",*/}
-                {/*                    icon: <FiFolder />,*/}
-                {/*                },*/}
-                {/*            ]}*/}
-                {/*            align={AlignMain.CENTER}*/}
-                {/*            fillHeight*/}
-                {/*            minimizable*/}
-                {/*        />*/}
-                {/*    </div>*/}
-
-                {/*    <div style={{ height: "200px", border: "1px solid blue" }}>*/}
-                {/*        <SFSidebarMenu*/}
-                {/*            elements={[*/}
-                {/*                {*/}
-                {/*                    text: "Home",*/}
-                {/*                    icon: <AiOutlineHome />,*/}
-                {/*                },*/}
-                {/*                {*/}
-                {/*                    text: "Team",*/}
-                {/*                    icon: <AiOutlineTeam />,*/}
-                {/*                },*/}
-                {/*                {*/}
-                {/*                    text: "Projects",*/}
-                {/*                    icon: <FiFolder />,*/}
-                {/*                },*/}
-                {/*                {*/}
-                {/*                    text: "Projects",*/}
-                {/*                    icon: <FiFolder />,*/}
-                {/*                },*/}
-                {/*                {*/}
-                {/*                    text: "Projects",*/}
-                {/*                    icon: <FiFolder />,*/}
-                {/*                },*/}
-                {/*                {*/}
-                {/*                    text: "Projects",*/}
-                {/*                    icon: <FiFolder />,*/}
-                {/*                },*/}
-                {/*                {*/}
-                {/*                    text: "Projects",*/}
-                {/*                    icon: <FiFolder />,*/}
-                {/*                },*/}
-                {/*                {*/}
-                {/*                    text: "Projects",*/}
-                {/*                    icon: <FiFolder />,*/}
-                {/*                },*/}
-                {/*                {*/}
-                {/*                    text: "Projects",*/}
-                {/*                    icon: <FiFolder />,*/}
-                {/*                },*/}
-                {/*                {*/}
-                {/*                    text: "Projects",*/}
-                {/*                    icon: <FiFolder />,*/}
-                {/*                },*/}
-                {/*                {*/}
-                {/*                    text: "Projects",*/}
-                {/*                    icon: <FiFolder />,*/}
-                {/*                },*/}
-                {/*                {*/}
-                {/*                    text: "Projects",*/}
-                {/*                    icon: <FiFolder />,*/}
-                {/*                },*/}
-                {/*                {*/}
-                {/*                    text: "Projects",*/}
-                {/*                    icon: <FiFolder />,*/}
-                {/*                },*/}
-                {/*            ]}*/}
-                {/*            align={AlignMain.START}*/}
-                {/*            fillHeight*/}
-                {/*            minimizable*/}
-                {/*        />*/}
-                {/*    </div>*/}
-
-                {/*</ShowcaseRow>*/}
-            </>
-        );
-    }
-
-    function renderChoiceBox() {
-
-        const itemsArray = [
-            "Austria",
-            "Belgium",
-            "Bulgaria",
-            "Croatia",
-            "Cyprus",
-            "Czechia",
-            "Denmark",
-            "Estonia",
-            "Finland",
-            "France",
-            "Germany",
-            "Greece",
-            "Hungary",
-            "Ireland",
-            "Italy",
-            "Latvia",
-            "Lithuania",
-            "Luxemburg",
-            "Malta",
-            "Netherlands",
-            "Poland",
-            "Portugal",
-            "Romania",
-            "Slovakia",
-            "Slovenia",
-            "Spain",
-            "Sweden",
+        const data: any = [
+            {
+                outlined: false,
+                filled: false,
+                types: [undefined, Type.PRIMARY, Type.SUCCESS, Type.WARN, Type.ERROR],
+            },
+            {
+                outlined: true,
+                filled: false,
+                types: [undefined, Type.PRIMARY, Type.SUCCESS, Type.WARN, Type.ERROR],
+            },
+            {
+                outlined: false,
+                filled: true,
+                types: [undefined, Type.PRIMARY, Type.SUCCESS, Type.WARN, Type.ERROR],
+            },
+            {
+                outlined: true,
+                filled: true,
+                types: [undefined, Type.PRIMARY, Type.SUCCESS, Type.WARN, Type.ERROR],
+            },
         ];
 
+        function box(filled: boolean, outlined: boolean, type: Type, groupPos: GroupPosition, disabled: boolean, interactive: boolean): ReactElement {
+            return (
+                <CBox
+                    filled={filled}
+                    outlined={outlined}
+                    type={type}
+                    groupPos={groupPos}
+                    disabled={disabled}
+                    interactive={interactive}
+                    style={{ width: "50px", height: "50px" }}
+                >
+                    <BodyText onType type={filled && interactive ? type : undefined} disabled={disabled}>
+                        {"Box-" + (interactive ? "i" : "") + (disabled ? "d" : "") + (filled ? "f" : "") + (outlined ? "o" : "")}
+                    </BodyText>
+                </CBox>
+            );
+        }
+
         return (
             <>
-                <h3>ChoiceBox</h3>
+                <h3>Boxes</h3>
+
+                {data.map((row: any) => {
+                    return (
+                        <ShowcaseRow>
+                            {row.types.map((type: Type) => {
+                                return [
+                                    box(row.filled, row.outlined, type, undefined, true, false),
+                                    box(row.filled, row.outlined, type, undefined, false, false),
+                                ];
+                            })}
+                        </ShowcaseRow>
+                    );
+                })}
                 <ShowcaseRow>
-                    <ChoiceBox
-                        variant={Variant.SOLID}
-                        items={itemsArray}
-                        selected='Germany'
-                        // itemFilter={(item) => item.startsWith("S")}
-                        maxVisibleItems={6}
-                        autoWidth={true}
-                    />
-                    <ChoiceBox
-                        variant={Variant.OUTLINE}
-                        items={itemsArray}
-                        selected='Germany'
-                        // itemFilter={(item) => item.startsWith("S")}
-                        maxVisibleItems={6}
-                        autoWidth={true}
-                    />
-                    <ChoiceBox
-                        variant={Variant.GHOST}
-                        items={itemsArray}
-                        selected='Germany'
-                        // itemFilter={(item) => item.startsWith("S")}
-                        maxVisibleItems={6}
-                        autoWidth={true}
-                    />
-                </ShowcaseRow>
-            </>
-        );
-
-    }
-
-
-    function renderCheckbox() {
-        return (
-            <>
-                <h3>Checkbox</h3>
-                <ShowcaseRow>
-                    <SFCheckbox variant={Variant.OUTLINE} selected={true} />
-                    <SFCheckbox variant={Variant.OUTLINE} selected={false} />
-                </ShowcaseRow>
-                <ShowcaseRow>
-                    <SFCheckbox disabled={true} variant={Variant.OUTLINE} selected={true} />
-                    <SFCheckbox disabled={true} variant={Variant.OUTLINE} selected={false} />
-                </ShowcaseRow>
-            </>
-        );
-    }
-
-    // function renderImage() {
-    //     return (
-    //         <>
-    //             <h3>Image</h3>
-    //
-    //             <ShowcaseRow fullWidth>
-    //                 <div style={{display: 'grid', width: '50%', height: '150px',}}>
-    //                     <Image url={forest} mode={ImageMode.AUTO} color="red">
-    //                         Mode Auto
-    //                     </Image>
-    //                 </div>
-    //                 <div style={{display: 'grid', width: '50%', height: '150px',}}>
-    //                     <Image url={forest} mode={ImageMode.CONTAIN} color="red">
-    //                         Mode Contain
-    //                     </Image>
-    //                 </div>
-    //                 <div style={{display: 'grid', width: '50%', height: '150px',}}>
-    //                     <Image url={forest} mode={ImageMode.COVER} color="red">
-    //                         Mode Cover
-    //                     </Image>
-    //                 </div>
-    //             </ShowcaseRow>
-    //
-    //         </>
-    //     );
-    // }
-
-    function renderDialogs() {
-        return (
-            <>
-                <h3>Dialogs</h3>
-                <ToggleableShowcase text='Open'>
-                    <Dialog show={true}
-                            title={"Some rather or lets say very long title"}
-                            closeButton={true}
-                            onClose={() => console.log("DialogAction: Close")}
-                            actions={[
-                                {
-                                    variant: Variant.OUTLINE,
-                                    content: "Cancel",
-                                    onAction: () => console.log("DialogAction: Cancel"),
-                                },
-                                {
-                                    variant: Variant.SOLID,
-                                    type: Type.PRIMARY,
-                                    content: "Accept",
-                                    onAction: () => console.log("DialogAction: Accept"),
-                                },
-                            ]}
-                    >
-                        Test Data
-                    </Dialog>
-                </ToggleableShowcase>
-            </>
-        );
-    }
-
-    function renderInputField() {
-        return (
-            <>
-                <h3>Input Field</h3>
-                <ShowcaseRow>
-                    <SFInputField placeholder={"Input"}
-                                  value={"Initial"}
-                                  onChange={value => console.log("changed:" + value)}
-                                  onAccept={value => console.log("accept:" + value)} />
-                    <SFInputField disabled={true} value={"Disabled"} />
-                    <SFInputField locked={true} value={"Locked"} />
-                </ShowcaseRow>
-                <ShowcaseRow>
-                    <SFInputField icon={<AiOutlineSearch />} placeholder={"Icon Left"} />
-                    <SFInputField iconRight={<AiOutlineSearch />} placeholder={"Icon Right"} />
-                    <SFInputField icon={<AiFillFolder />} iconRight={<AiOutlineSearch />} placeholder={"Two Icons"} />
+                    <Box dir={Dir.RIGHT}>
+                        {box(true, true, Type.PRIMARY, GroupPosition.START, false, false)}
+                        {box(true, true, Type.WARN, GroupPosition.MIDDLE, false, false)}
+                        {box(true, true, Type.ERROR, GroupPosition.END, false, false)}
+                    </Box>
                 </ShowcaseRow>
 
-                <SFInputField placeholder={"example.com"}
-                              contentLeading={
-                                  <LabelBox variant={Variant.OUTLINE} groupPos={GroupPosition.START}>https://</LabelBox>
-                              }
-                />
-                <SFInputField placeholder={"info.example"}
-                              contentTrailing={
-                                  <LabelBox variant={Variant.OUTLINE} groupPos={GroupPosition.END}>@email.me</LabelBox>
-                              }
-                />
-                <SFInputField placeholder={"example"}
-                              contentLeading={
-                                  <LabelBox variant={Variant.OUTLINE} groupPos={GroupPosition.START}>https://</LabelBox>
-                              }
-                              contentTrailing={
-                                  <LabelBox variant={Variant.OUTLINE} groupPos={GroupPosition.END}>.com</LabelBox>
-                              }
-                />
 
-                <SFInputField placeholder={"Input"}
-                              icon={<AiOutlineSearch />}
-                              contentTrailing={
-                                  <Button variant={Variant.SOLID} groupPos={GroupPosition.END}>Search</Button>
-                              }
-                />
+                {data.map((row: any) => {
+                    return (
+                        <ShowcaseRow>
+                            {row.types.map((type: Type) => {
+                                return [
+                                    box(row.filled, row.outlined, type, undefined, true, true),
+                                    box(row.filled, row.outlined, type, undefined, false, true),
+                                ];
+                            })}
+                        </ShowcaseRow>
+                    );
+                })}
+                <ShowcaseRow>
+                    <Box dir={Dir.RIGHT}>
+                        {box(true, true, Type.PRIMARY, GroupPosition.START, false, true)}
+                        {box(true, true, Type.WARN, GroupPosition.MIDDLE, false, true)}
+                        {box(true, true, Type.ERROR, GroupPosition.END, false, true)}
+                    </Box>
+                </ShowcaseRow>
 
             </>
         );
@@ -494,60 +149,6 @@ export function ComponentShowcaseView(): any {
                 <Button type={type} disabled={true} variant={Variant.GHOST}>Ghost</Button>
                 <Button type={type} disabled={true} variant={Variant.LINK}>Link</Button>
             </ShowcaseRow>
-        );
-    }
-
-    function renderToggleButtons() {
-        return (
-            <>
-                <h3>Toggle Buttons</h3>
-                <SFToggleButton variant={Variant.SOLID}>Toggle</SFToggleButton>
-                <SFToggleButton disabled={true} variant={Variant.SOLID}>Disabled</SFToggleButton>
-
-                <ShowcaseRow>
-
-                    <div style={{ display: 'flex' }}>
-                        <SFToggleButton variant={Variant.SOLID} groupPos={GroupPosition.START} icon={
-                            <AiOutlineAlignRight />} />
-                        <SFToggleButton variant={Variant.SOLID} groupPos={GroupPosition.MIDDLE} icon={
-                            <AiOutlineAlignCenter />} />
-                        <SFToggleButton variant={Variant.SOLID} groupPos={GroupPosition.END} icon={
-                            <AiOutlineAlignLeft />} />
-                    </div>
-
-                    <div style={{ display: 'flex' }}>
-                        <SFToggleButton variant={Variant.SOLID} type={Type.PRIMARY} groupPos={GroupPosition.START}
-                                        icon={
-                                            <AiOutlineAlignRight />} />
-                        <SFToggleButton variant={Variant.SOLID} type={Type.PRIMARY} groupPos={GroupPosition.MIDDLE}
-                                        icon={
-                                            <AiOutlineAlignCenter />} />
-                        <SFToggleButton variant={Variant.SOLID} type={Type.PRIMARY} groupPos={GroupPosition.END} icon={
-                            <AiOutlineAlignLeft />} />
-                    </div>
-
-                    <div style={{ display: 'flex' }}>
-                        <SFToggleButton variant={Variant.OUTLINE} groupPos={GroupPosition.START} icon={
-                            <AiOutlineAlignRight />} />
-                        <SFToggleButton variant={Variant.OUTLINE} groupPos={GroupPosition.MIDDLE} icon={
-                            <AiOutlineAlignCenter />} />
-                        <SFToggleButton variant={Variant.OUTLINE} groupPos={GroupPosition.END} icon={
-                            <AiOutlineAlignLeft />} />
-                    </div>
-
-                    <div style={{ display: 'flex' }}>
-                        <SFToggleButton variant={Variant.GHOST} groupPos={GroupPosition.START} icon={
-                            <AiOutlineAlignRight />} />
-                        <SFToggleButton variant={Variant.GHOST} groupPos={GroupPosition.MIDDLE} icon={
-                            <AiOutlineAlignCenter />} />
-                        <SFToggleButton variant={Variant.GHOST} groupPos={GroupPosition.END} icon={
-                            <AiOutlineAlignLeft />} />
-                    </div>
-
-                </ShowcaseRow>
-
-
-            </>
         );
     }
 
@@ -627,30 +228,15 @@ export function ComponentShowcaseView(): any {
                 <Text variant={TextVariant.H5}>Heading 5</Text>
                 <Text variant={TextVariant.BODY}>Body</Text>
                 <Text variant={TextVariant.CAPTION}>Caption</Text>
+                <Text variant={TextVariant.BODY} type={Type.PRIMARY}>Primary</Text>
+                <Text variant={TextVariant.BODY} type={Type.SUCCESS}>Success</Text>
+                <Text variant={TextVariant.BODY} type={Type.WARN}>Warn</Text>
+                <Text variant={TextVariant.BODY} type={Type.ERROR}>Error</Text>
             </>
         );
     }
 
 
-    function renderContent() {
-        return (
-            <>
-                {renderNewInputField()}
-                {renderTextArea()}
-                {renderDropdownButton()}
-                {renderNotification()}
-                {renderSidebarMenu()}
-                {renderChoiceBox()}
-                {renderCheckbox()}
-                {/*{renderImage()}*/}
-                {renderDialogs()}
-                {renderInputField()}
-                {renderToggleButtons()}
-                {renderButtons()}
-                {renderText()}
-            </>
-        );
-    }
 }
 
 

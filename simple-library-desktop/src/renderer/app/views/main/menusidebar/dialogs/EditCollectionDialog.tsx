@@ -62,7 +62,7 @@ export function EditCollectionDialog(props: React.PropsWithChildren<EditCollecti
                     />
                 </HBox>
 
-                <VBox alignMain={AlignMain.CENTER} alignCross={AlignCross.STRETCH} spacing={Size.S_0_25} padding={Size.S_1} withBorder>
+                <VBox alignMain={AlignMain.CENTER} alignCross={AlignCross.STRETCH} spacing={Size.S_0_25} padding={Size.S_1} outlined>
                     <BodyText disabled={isNormalCollection()}>Smart-Collection Query:</BodyText>
                     <TextArea
                         value={query}

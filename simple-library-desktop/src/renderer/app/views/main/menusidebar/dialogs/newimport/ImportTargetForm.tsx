@@ -42,7 +42,7 @@ export function ImportTargetForm(props: React.PropsWithChildren<ImportTargetForm
     return (
         <>
 
-            <VBox alignMain={AlignMain.CENTER} alignCross={AlignCross.STRETCH} spacing={Size.S_0_75} padding={Size.S_1} withBorder>
+            <VBox alignMain={AlignMain.CENTER} alignCross={AlignCross.STRETCH} spacing={Size.S_0_75} padding={Size.S_1} outlined>
 
                 <div style={{
                     display: "flex",

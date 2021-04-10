@@ -61,3 +61,22 @@ h5 {
 .text-disabled {
 	color: var(--text-color-0);
 }
+
+/* types */
+
+.text-on-type-primary,
+.text-on-type-success,
+.text-on-type-error,
+.text-on-type-warn {
+	color: white;
+}
+
+
+.text-type-primary { color: var(--color-primary-2) }
+.text-type-success { color: var(--color-success-2) }
+.text-type-error { color: var(--color-error-2) }
+.text-type-warn { color: var(--color-warn-2) }
+
+
+
+

@@ -9,7 +9,7 @@ import {
     renamePartTypeToDisplayString,
 } from '../../../../../../../common/commonModels';
 import { HBox, VBox } from '../../../../../../components/layout/Box';
-import { AlignCross, AlignMain, Fill, Size, Variant } from '../../../../../../components/common';
+import { AlignCross, AlignMain, Fill, Size, Type, Variant } from '../../../../../../components/common';
 import { ChoiceBox } from '../../../../../../components/choicebox/ChoiceBox';
 import { InputField } from '../../../../../../components/inputfield/InputField';
 import { Checkbox } from '../../../../../../components/checkbox/Checkbox';
@@ -39,8 +39,8 @@ export function RenameFilesForm(props: React.PropsWithChildren<RenameFilesFormPr
                   alignCross={AlignCross.STRETCH}
                   spacing={Size.S_0_75}
                   padding={Size.S_1}
-                  withBorder
-                  invalid={props.renameDataInvalid}
+                  outlined
+                  type={props.renameDataInvalid ? Type.ERROR : undefined}
             >
 
                 <Grid columns={['1fr', '1fr', '1fr']} rows={['1fr']} fill={Fill.TRUE} gap={Size.S_0_5}>

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ReactElement } from 'react';
-import { concatClasses } from '../common';
+import { concatClasses, getIf, map, Type } from '../common';
 import './text.css';
 
 export enum TextVariant {
@@ -18,8 +18,11 @@ interface TextProps {
     variant: TextVariant,
     bold?: boolean,
     italic?: boolean,
+
     disabled?: boolean,
-    color?: string,
+    type?: Type,
+    onType?: boolean,
+
     className?: string
     style?: React.CSSProperties,
 }
@@ -32,26 +35,30 @@ export function Text(props: React.PropsWithChildren<TextProps>): ReactElement | 
     const className = concatClasses(
         props.variant,
         props.className,
-        (props.bold ? "text-bold" : null),
-        (props.italic ? "text-italic" : null),
-        (props.disabled ? "text-disabled" : null),
+        getIf(props.bold, "text-bold"),
+        getIf(props.italic, "text-italic"),
+        getIf(props.disabled, "text-disabled"),
+        map(props.type, (type) => {
+            return props.onType === true
+                ? "text-on-type-" + type
+                : "text-type-" + type;
+        }),
     );
-    const style: React.CSSProperties = props.color ? {color: props.color, ...props.style} : undefined;
     switch (props.variant) {
         case TextVariant.H1:
-            return <h1 className={className} style={style}>{props.children}</h1>;
+            return <h1 className={className} style={props.style}>{props.children}</h1>;
         case TextVariant.H2:
-            return <h2 className={className} style={style}>{props.children}</h2>;
+            return <h2 className={className} style={props.style}>{props.children}</h2>;
         case TextVariant.H3:
-            return <h3 className={className} style={style}>{props.children}</h3>;
+            return <h3 className={className} style={props.style}>{props.children}</h3>;
         case TextVariant.H4:
-            return <h4 className={className} style={style}>{props.children}</h4>;
+            return <h4 className={className} style={props.style}>{props.children}</h4>;
         case TextVariant.H5:
-            return <h5 className={className} style={style}>{props.children}</h5>;
+            return <h5 className={className} style={props.style}>{props.children}</h5>;
         case TextVariant.BODY:
-            return <div className={className} style={style}>{props.children}</div>;
+            return <div className={className} style={props.style}>{props.children}</div>;
         case TextVariant.CAPTION:
-            return <div className={className} style={style}>{props.children}</div>;
+            return <div className={className} style={props.style}>{props.children}</div>;
         default: {
             return null;
         }

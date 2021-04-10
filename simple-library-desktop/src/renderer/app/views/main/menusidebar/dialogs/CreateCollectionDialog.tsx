@@ -65,7 +65,7 @@ export function CreateCollectionDialog(props: React.PropsWithChildren<CreateColl
                     />
                 </HBox>
 
-                <VBox alignMain={AlignMain.CENTER} alignCross={AlignCross.STRETCH} spacing={Size.S_0_25} padding={Size.S_1} withBorder>
+                <VBox alignMain={AlignMain.CENTER} alignCross={AlignCross.STRETCH} spacing={Size.S_0_25} padding={Size.S_1} outlined>
                     <BodyText disabled={isNormal()}>Smart-Collection Query:</BodyText>
                     <TextArea
                         value={query}

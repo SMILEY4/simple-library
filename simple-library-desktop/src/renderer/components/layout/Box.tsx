@@ -1,58 +1,80 @@
 import * as React from 'react';
-import {ReactElement} from 'react';
-import './box.css';
-import {AlignCross, AlignMain, concatClasses, Dir, Fill, map, Size} from '../common';
-
+import { ReactElement } from 'react';
+import { AlignCross, AlignMain, concatClasses, Dir, Fill, getIf, GroupPosition, map, Size, Type } from '../common';
+import "./box.css";
 
 interface BoxProps {
+
     dir?: Dir
     alignMain?: AlignMain,
     alignCross?: AlignCross
     fill?: Fill,
+
     spacing?: Size,
     padding?: Size,
-    withBorder?: boolean,
-    invalid?: boolean,
+    margin?: Size,
+
+    outlined?: boolean,
+    filled?: boolean,
+
+    type?: Type,
+    interactive?: boolean,
+    disabled?: boolean,
+
+    groupPos?: GroupPosition,
+
+
     style?: React.CSSProperties,
     className?: string
 }
 
-interface VBoxProps extends Omit<BoxProps, 'dir'> {
-
-}
-
-interface HBoxProps extends Omit<BoxProps, 'dir'> {
-
-}
-
-interface CBoxProps extends Omit<BoxProps, 'alignMain' | 'alignCross'> {
-
-}
-
 export function Box(props: React.PropsWithChildren<BoxProps>): ReactElement {
+
+    return (
+        <div className={getClassNames()} style={getStyle()}>
+            {props.children}
+        </div>
+    );
 
     function getClassNames(): string {
         return concatClasses(
-            'box',
+            "box",
+
             map(props.dir, (dir) => 'box-dir-' + dir),
             map(props.alignMain, (align) => 'box-align-main-' + align),
             map(props.alignCross, (align) => 'box-align-cross-' + align),
             map(props.fill, (fill) => 'fill-' + fill),
+
             map(props.spacing, (spacing) => 'gap-' + spacing),
             map(props.padding, (padding) => 'padding-' + padding),
-            (props.withBorder ? "box-with-border" : null),
-            (props.invalid ? "box-invalid" : null),
+            map(props.margin, (margin) => 'margin-' + margin),
+
+            getIf(props.filled, "box-filled"),
+            getIf(props.outlined, "box-outlined"),
+
+            map(props.type, (type) => "box-type-" + type),
+            getIf(props.interactive, "box-interactive"),
+            getIf(props.disabled, "box-disabled"),
+
+            map(props.groupPos, (groupPos) => "group-pos-" + groupPos),
+
             props.className,
         );
     }
 
-    return (
-        <div className={getClassNames()} style={props.style}>
-            {props.children}
-        </div>
-    );
+
+    function getStyle(): React.CSSProperties {
+        return {
+            ...(props.style ? props.style : {}),
+        };
+    }
+
 }
 
+
+interface VBoxProps extends Omit<BoxProps, 'dir'> {
+
+}
 
 export function VBox(props: React.PropsWithChildren<VBoxProps>): ReactElement {
     const baseProps = {
@@ -65,6 +87,10 @@ export function VBox(props: React.PropsWithChildren<VBoxProps>): ReactElement {
 }
 
 
+interface HBoxProps extends Omit<BoxProps, 'dir'> {
+
+}
+
 export function HBox(props: React.PropsWithChildren<HBoxProps>): ReactElement {
     const baseProps = {
         dir: Dir.RIGHT,
@@ -76,6 +102,10 @@ export function HBox(props: React.PropsWithChildren<HBoxProps>): ReactElement {
 }
 
 
+interface CBoxProps extends Omit<BoxProps, 'alignMain' | 'alignCross'> {
+
+}
+
 export function CBox(props: React.PropsWithChildren<CBoxProps>): ReactElement {
     const baseProps = {
         alignMain: AlignMain.CENTER,
@@ -86,3 +116,4 @@ export function CBox(props: React.PropsWithChildren<CBoxProps>): ReactElement {
         <Box {...baseProps} />
     );
 }
+

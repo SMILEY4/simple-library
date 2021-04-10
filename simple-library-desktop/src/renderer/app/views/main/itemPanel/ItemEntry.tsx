@@ -30,7 +30,7 @@ export function ItemEntry(props: React.PropsWithChildren<ItemEntryProps>): React
             onDragStart={handleDragStart}
             draggable={true}
         >
-            <HBox withBorder
+            <HBox outlined
                   spacing={Size.S_0}
                   className={itemClassNames()}
             >

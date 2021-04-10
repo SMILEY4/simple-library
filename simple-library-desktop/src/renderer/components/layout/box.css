@@ -1,58 +1,139 @@
 .box {
-	display:  flex;
-	position: relative;
-	box-sizing: border-box;
-}
-
-.box-with-border {
-	border:        1px solid var(--base-color-2);
+	display:       flex;
+	position:      relative;
+	box-sizing:    border-box;
+	border:        1px solid transparent;
 	border-radius: var(--radius-0);
 }
 
-.box-invalid {
-	border-color: var(--color-error-3);
-}
 
-/*DIRECTION*/
+/* DIRECTION */
 
-.box-dir-up {flex-direction: column-reverse; }
-
-
-.box-dir-down {flex-direction: column; }
+.box-dir-up { flex-direction: column-reverse; }
+.box-dir-down { flex-direction: column; }
+.box-dir-left { flex-direction: row-reverse; }
+.box-dir-right { flex-direction: row; }
 
 
-.box-dir-left {flex-direction: row-reverse; }
-
-
-.box-dir-right {flex-direction: row; }
-
-
-/*ALIGNMENT MAIN AXIS*/
+/* ALIGNMENT MAIN AXIS */
 
 .box-align-main-start { justify-content: flex-start; }
-
-
 .box-align-main-end { justify-content: flex-end; }
-
-
 .box-align-main-center { justify-content: center; }
-
-
 .box-align-main-space-between { justify-content: space-between; }
-
-
 .box-align-main-spaced { justify-content: space-evenly; }
 
 
-/*ALIGNMENT CROSS AXIS*/
+/* ALIGNMENT CROSS AXIS */
 
 .box-align-cross-start { align-items: flex-start; }
-
-
 .box-align-cross-end { align-items: flex-end; }
-
-
 .box-align-cross-center { align-items: center; }
-
-
 .box-align-cross-stretch { align-items: stretch; }
+
+
+/* BACKGROUNDS */
+
+/* non interactive */
+
+:not(.box-interactive).box-filled.box-disabled { background-color: var(--base-color-0) }
+:not(.box-interactive).box-outlined.box-disabled { border-color: var(--base-color-0) }
+:not(.box-interactive).box-filled { background-color: var(--base-color-1) }
+:not(.box-interactive).box-outlined { border-color: var(--base-color-4) }
+
+:not(.box-interactive).box-type-primary.box-filled.box-disabled { background-color: var(--color-primary-0); }
+:not(.box-interactive).box-type-primary.box-outlined.box-disabled { border-color: var(--color-primary-1) }
+:not(.box-interactive).box-type-primary.box-filled { background-color: var(--color-primary-1) }
+:not(.box-interactive).box-type-primary.box-outlined { border-color: var(--color-primary-4) }
+
+:not(.box-interactive).box-type-success.box-filled.box-disabled { background-color: var(--color-success-0) }
+:not(.box-interactive).box-type-success.box-outlined.box-disabled { border-color: var(--color-success-1) }
+:not(.box-interactive).box-type-success.box-filled { background-color: var(--color-success-1) }
+:not(.box-interactive).box-type-success.box-outlined { border-color: var(--color-success-4) }
+
+:not(.box-interactive).box-type-warn.box-filled.box-disabled { background-color: var(--color-warn-0) }
+:not(.box-interactive).box-type-warn.box-outlined.box-disabled { border-color: var(--color-warn-1) }
+:not(.box-interactive).box-type-warn.box-filled { background-color: var(--color-warn-1) }
+:not(.box-interactive).box-type-warn.box-outlined { border-color: var(--color-warn-4) }
+
+:not(.box-interactive).box-type-error.box-filled.box-disabled { background-color: var(--color-error-0) }
+:not(.box-interactive).box-type-error.box-outlined.box-disabled { border-color: var(--color-error-1) }
+:not(.box-interactive).box-type-error.box-filled { background-color: var(--color-error-1) }
+:not(.box-interactive).box-type-error.box-outlined { border-color: var(--color-error-4) }
+
+
+/* Interactive */
+
+/*   default - outline */
+.box-interactive.box-outlined.box-disabled { border-color: var(--base-color-0) }
+.box-interactive.box-outlined { border-color: var(--base-color-4) }
+
+/*   default - filled */
+.box-interactive.box-filled.box-disabled { background-color: var(--base-color-0) }
+.box-interactive.box-filled { background-color: var(--base-color-1) }
+.box-interactive:not(.box-disabled).box-filled:hover { background-color: var(--base-color-2) }
+.box-interactive:not(.box-disabled).box-filled:active { background-color: var(--base-color-3) }
+
+/*   default - non filled */
+.box-interactive:not(.box-disabled):not(.box-filled):hover { background-color: var(--base-color-0) }
+.box-interactive:not(.box-disabled):not(.box-filled):active { background-color: var(--base-color-1) }
+
+
+/*   primary - outline */
+.box-interactive.box-type-primary.box-outlined.box-disabled { border-color: var(--color-primary-0) }
+.box-interactive.box-type-primary.box-outlined { border-color: var(--color-primary-4) }
+
+/*   primary - filled */
+.box-interactive.box-type-primary.box-filled.box-disabled { background-color: var(--color-primary-1) }
+.box-interactive.box-type-primary.box-filled { background-color: var(--color-primary-2) }
+.box-interactive.box-type-primary:not(.box-disabled).box-filled:hover { background-color: var(--color-primary-3) }
+.box-interactive.box-type-primary:not(.box-disabled).box-filled:active { background-color: var(--color-primary-4) }
+
+/*   primary - non filled */
+.box-interactive.box-type-primary:not(.box-disabled):not(.box-filled):hover { background-color: var(--color-primary-0) }
+.box-interactive.box-type-primary:not(.box-disabled):not(.box-filled):active { background-color: var(--color-primary-0) }
+
+
+/*   success - outline */
+.box-interactive.box-type-success.box-outlined.box-disabled { border-color: var(--color-success-0) }
+.box-interactive.box-type-success.box-outlined { border-color: var(--color-success-4) }
+
+/*   success - filled */
+.box-interactive.box-type-success.box-filled.box-disabled { background-color: var(--color-success-1) }
+.box-interactive.box-type-success.box-filled { background-color: var(--color-success-2) }
+.box-interactive.box-type-success:not(.box-disabled).box-filled:hover { background-color: var(--color-success-3) }
+.box-interactive.box-type-success:not(.box-disabled).box-filled:active { background-color: var(--color-success-4) }
+
+/*   success - non filled */
+.box-interactive.box-type-success:not(.box-disabled):not(.box-filled):hover { background-color: var(--color-success-0) }
+.box-interactive.box-type-success:not(.box-disabled):not(.box-filled):active { background-color: var(--color-success-0) }
+
+
+/*   warn - outline */
+.box-interactive.box-type-warn.box-outlined.box-disabled { border-color: var(--color-warn-0) }
+.box-interactive.box-type-warn.box-outlined { border-color: var(--color-warn-4) }
+
+/*   warn - filled */
+.box-interactive.box-type-warn.box-filled.box-disabled { background-color: var(--color-warn-1) }
+.box-interactive.box-type-warn.box-filled { background-color: var(--color-warn-2) }
+.box-interactive.box-type-warn:not(.box-disabled).box-filled:hover { background-color: var(--color-warn-3) }
+.box-interactive.box-type-warn:not(.box-disabled).box-filled:active { background-color: var(--color-warn-4) }
+
+/*   warn - non filled */
+.box-interactive.box-type-warn:not(.box-disabled):not(.box-filled):hover { background-color: var(--color-warn-0) }
+.box-interactive.box-type-warn:not(.box-disabled):not(.box-filled):active { background-color: var(--color-warn-0) }
+
+
+/*   error - outline */
+.box-interactive.box-type-error.box-outlined.box-disabled { border-color: var(--color-error-0) }
+.box-interactive.box-type-error.box-outlined { border-color: var(--color-error-4) }
+
+/*   error - filled */
+.box-interactive.box-type-error.box-filled.box-disabled { background-color: var(--color-error-1) }
+.box-interactive.box-type-error.box-filled { background-color: var(--color-error-2) }
+.box-interactive.box-type-error:not(.box-disabled).box-filled:hover { background-color: var(--color-error-3) }
+.box-interactive.box-type-error:not(.box-disabled).box-filled:active { background-color: var(--color-error-4) }
+
+/*   error - non filled */
+.box-interactive.box-type-error:not(.box-disabled):not(.box-filled):hover { background-color: var(--color-error-0) }
+.box-interactive.box-type-error:not(.box-disabled):not(.box-filled):active { background-color: var(--color-error-0) }
