@@ -1,6 +1,6 @@
 /*
  * MIME-TYPES SEEM TO BE ALWAYS CONVERTED TO LOWERCASE
- * -> ALL FIELDS/MODELS MUST BE LOWERCASE
+ * => ALL FIELDS/MODELS MUST BE LOWERCASE
  */
 
 import { Collection, CollectionType, Group } from '../../../common/commonModels';
@@ -47,6 +47,7 @@ export module DragAndDropItems {
         } else {
             text = "Move " + nItems + (nItems === 1 ? " item" : " items");
         }
+        console.log("set drag label")
         DragAndDropUtils.setDragImageLabel(dataTransfer, "root", DOM_ELEMENT_LABEL_ID, text);
     }
 

@@ -44,11 +44,6 @@ textarea:invalid {
 	border: 1px solid var(--base-color-1);
 }
 
-.text-area-disabled > input {
+.text-area-disabled > textarea {
 	color: var(--text-color-0);
-}
-
-.text-area-disabled > svg {
-	fill:   var(--text-color-0);
-	stroke: var(--text-color-0);
 }
