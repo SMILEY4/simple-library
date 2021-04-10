@@ -3,9 +3,9 @@ import { Group } from '../../../../../../common/commonModels';
 import { Dialog } from '../../../../../components/modal/Dialog';
 import { AlignCross, AlignMain, Size, Type, Variant } from '../../../../../components/common';
 import { VBox } from '../../../../../components/layout/Box';
-import { InputField } from '../../../../../components/inputfield/InputField';
 import { BodyText } from '../../../../../components/text/Text';
-import { useGroupName } from '../../../../hooks/groupHooks';
+import { useCreateGroupDialog } from '../../../../hooks/groupHooks';
+import { NewInputField } from '../../../../../components/newinputfield/NewInputField';
 
 interface CreateGroupDialogProps {
     parentGroup: Group,
@@ -16,7 +16,9 @@ interface CreateGroupDialogProps {
 
 export function CreateGroupDialog(props: React.PropsWithChildren<CreateGroupDialogProps>): React.ReactElement {
 
-    const { name, nameValid, getRefName, setName } = useGroupName();
+    const { getRefName, setName, validateName, valid, setValid, getRefValid } = useCreateGroupDialog();
+
+    let validate: null | (() => boolean) = null;
 
     return (
         <Dialog title={"Create new Group"}
@@ -35,16 +37,22 @@ export function CreateGroupDialog(props: React.PropsWithChildren<CreateGroupDial
                         variant: Variant.SOLID,
                         type: Type.PRIMARY,
                         onAction: handleCreate,
+                        disabled: !valid,
                         triggeredByEnter: true,
                     },
                 ]}>
 
             <VBox alignMain={AlignMain.CENTER} alignCross={AlignCross.STRETCH} spacing={Size.S_0_75}>
-                <InputField
-                    autoFocus
+                <NewInputField
                     placeholder='Group Name'
-                    value={name}
-                    onChange={setName}
+                    onSubmit={setName}
+                    autoFocus
+                    validateOnSubmit
+                    validateOnChange
+                    showError
+                    validation={validateName}
+                    onValidated={setValid}
+                    triggerValidation={fun => validate = fun}
                 />
                 {props.parentGroup && (
                     <BodyText>{'Create in group "' + props.parentGroup.name + '".'} </BodyText>
@@ -55,7 +63,7 @@ export function CreateGroupDialog(props: React.PropsWithChildren<CreateGroupDial
     );
 
     function handleCreate() {
-        if (nameValid) {
+        if (validate() && getRefValid()) {
             props.onCreate(getRefName());
         }
     }

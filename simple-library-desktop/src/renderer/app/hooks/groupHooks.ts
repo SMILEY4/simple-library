@@ -5,11 +5,13 @@ import { AppNotificationType } from '../store/state';
 import { useState } from 'react';
 import {
     fetchRootGroup,
-    requestCreateGroup, requestDeleteGroup,
+    requestCreateGroup,
+    requestDeleteGroup,
     requestMoveGroup,
     requestRenameGroup,
 } from '../common/messaging/messagingInterface';
 import { useDialogHook, useGlobalState, useNotifications, useStateRef } from './miscHooks';
+import { validateNotBlank } from '../../components/validations';
 
 
 export function useGroups() {
@@ -109,7 +111,7 @@ export function useRenameGroup() {
         openDialog();
     };
 
-    const rename = (groupId:number, name: string) => {
+    const rename = (groupId: number, name: string) => {
         requestRenameGroup(groupId, name.trim())
             .catch(error => addNotification(genNotificationId(), AppNotificationType.GROUP_RENAME_FAILED, error))
             .then(() => reloadRootGroup())
@@ -142,7 +144,7 @@ export function useDeleteGroup() {
         openDialog();
     };
 
-    const deleteGroup = (groupId:number, deleteChildren: boolean) => {
+    const deleteGroup = (groupId: number, deleteChildren: boolean) => {
         requestDeleteGroup(groupId, deleteChildren)
             .catch(error => addNotification(genNotificationId(), AppNotificationType.GROUP_DELETE_FAILED, error))
             .then(() => reloadRootGroup())
@@ -175,4 +177,24 @@ export function useGroupName(initialName?:string) {
         setName: changeName,
         nameValid: valid,
     };
+}
+
+
+export function useCreateGroupDialog() {
+
+    const [name, setName, refName] = useStateRef("");
+    const [valid, setValid, refValid] = useStateRef(true);
+
+    const validateName = (name: string): string | null => validateNotBlank(name, "Name may not be empty.");
+
+    return {
+        name: name,
+        getRefName: () => refName.current,
+        setName: setName,
+        validateName: validateName,
+        valid: valid,
+        setValid: setValid,
+        getRefValid: () => refValid.current,
+    };
+
 }

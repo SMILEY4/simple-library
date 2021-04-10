@@ -19,7 +19,9 @@ interface TextProps {
     bold?: boolean,
     italic?: boolean,
     disabled?: boolean,
+    color?: string,
     className?: string
+    style?: React.CSSProperties,
 }
 
 interface GenericTextProps extends Omit<TextProps, 'variant'> {
@@ -34,21 +36,22 @@ export function Text(props: React.PropsWithChildren<TextProps>): ReactElement | 
         (props.italic ? "text-italic" : null),
         (props.disabled ? "text-disabled" : null),
     );
+    const style: React.CSSProperties = props.color ? {color: props.color, ...props.style} : undefined;
     switch (props.variant) {
         case TextVariant.H1:
-            return <h1 className={className}>{props.children}</h1>;
+            return <h1 className={className} style={style}>{props.children}</h1>;
         case TextVariant.H2:
-            return <h2 className={className}>{props.children}</h2>;
+            return <h2 className={className} style={style}>{props.children}</h2>;
         case TextVariant.H3:
-            return <h3 className={className}>{props.children}</h3>;
+            return <h3 className={className} style={style}>{props.children}</h3>;
         case TextVariant.H4:
-            return <h4 className={className}>{props.children}</h4>;
+            return <h4 className={className} style={style}>{props.children}</h4>;
         case TextVariant.H5:
-            return <h5 className={className}>{props.children}</h5>;
+            return <h5 className={className} style={style}>{props.children}</h5>;
         case TextVariant.BODY:
-            return <div className={className}>{props.children}</div>;
+            return <div className={className} style={style}>{props.children}</div>;
         case TextVariant.CAPTION:
-            return <div className={className}>{props.children}</div>;
+            return <div className={className} style={style}>{props.children}</div>;
         default: {
             return null;
         }

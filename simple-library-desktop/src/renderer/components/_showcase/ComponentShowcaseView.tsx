@@ -17,14 +17,13 @@ import { Text, TextVariant } from '../text/Text';
 import { SFInputField } from '../inputfield/SFInputField';
 import { SFToggleButton } from '../button/togglebutton/SFToggleButton';
 import { Dialog } from '../modal/Dialog';
-import { Image, ImageMode } from "../image/Image";
-import forest from "./forest.jpg";
 import { SFCheckbox } from "../checkbox/SFCheckbox";
 import { ChoiceBox } from "../choicebox/ChoiceBox";
 import { Notification } from '../notification/Notification';
 import { DropdownItemType } from '../dropdown/Dropdown';
 import { DropdownButton } from '../button/dropdownbutton/DropdownButton';
 import { SFTextArea } from '../textarea/SFTextArea';
+import { NewInputField } from '../newinputfield/NewInputField';
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0");
@@ -48,6 +47,29 @@ export function ComponentShowcaseView(): any {
         </div>
     );
 
+    function renderNewInputField() {
+        return (
+            <>
+                <h3>New Input Field</h3>
+                <NewInputField
+                    placeholder={"Type here"}
+                    validateOnSubmit
+                    showError
+                    validation={(value: string) => {
+                        if (value.trim().length === 0) {
+                            return "Email may not be empty";
+                        }
+                        const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+                        if (!emailRegex.test(value)) {
+                            return "Invalid email format";
+                        }
+                        return null;
+                    }}
+                />
+            </>
+        );
+    }
+
 
     function renderTextArea() {
         return (
@@ -57,8 +79,8 @@ export function ComponentShowcaseView(): any {
                 <SFTextArea
                     placeholder={"Text Area"}
                     rows={10}
-                    onChange={(value:string) => console.log("textarea.change: " + value)}
-                    onAccept={(value:string) => console.log("textarea.accept: " + value)}
+                    onChange={(value: string) => console.log("textarea.change: " + value)}
+                    onAccept={(value: string) => console.log("textarea.accept: " + value)}
                 />
 
             </>
@@ -355,32 +377,32 @@ export function ComponentShowcaseView(): any {
         );
     }
 
-    function renderImage() {
-        return (
-            <>
-                <h3>Image</h3>
-
-                <ShowcaseRow fullWidth>
-                    <div style={{display: 'grid', width: '50%', height: '150px',}}>
-                        <Image url={forest} mode={ImageMode.AUTO} color="red">
-                            Mode Auto
-                        </Image>
-                    </div>
-                    <div style={{display: 'grid', width: '50%', height: '150px',}}>
-                        <Image url={forest} mode={ImageMode.CONTAIN} color="red">
-                            Mode Contain
-                        </Image>
-                    </div>
-                    <div style={{display: 'grid', width: '50%', height: '150px',}}>
-                        <Image url={forest} mode={ImageMode.COVER} color="red">
-                            Mode Cover
-                        </Image>
-                    </div>
-                </ShowcaseRow>
-
-            </>
-        );
-    }
+    // function renderImage() {
+    //     return (
+    //         <>
+    //             <h3>Image</h3>
+    //
+    //             <ShowcaseRow fullWidth>
+    //                 <div style={{display: 'grid', width: '50%', height: '150px',}}>
+    //                     <Image url={forest} mode={ImageMode.AUTO} color="red">
+    //                         Mode Auto
+    //                     </Image>
+    //                 </div>
+    //                 <div style={{display: 'grid', width: '50%', height: '150px',}}>
+    //                     <Image url={forest} mode={ImageMode.CONTAIN} color="red">
+    //                         Mode Contain
+    //                     </Image>
+    //                 </div>
+    //                 <div style={{display: 'grid', width: '50%', height: '150px',}}>
+    //                     <Image url={forest} mode={ImageMode.COVER} color="red">
+    //                         Mode Cover
+    //                     </Image>
+    //                 </div>
+    //             </ShowcaseRow>
+    //
+    //         </>
+    //     );
+    // }
 
     function renderDialogs() {
         return (
@@ -613,13 +635,14 @@ export function ComponentShowcaseView(): any {
     function renderContent() {
         return (
             <>
+                {renderNewInputField()}
                 {renderTextArea()}
                 {renderDropdownButton()}
                 {renderNotification()}
                 {renderSidebarMenu()}
                 {renderChoiceBox()}
                 {renderCheckbox()}
-                {renderImage()}
+                {/*{renderImage()}*/}
                 {renderDialogs()}
                 {renderInputField()}
                 {renderToggleButtons()}
