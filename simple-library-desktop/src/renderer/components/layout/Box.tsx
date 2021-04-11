@@ -3,7 +3,7 @@ import { ReactElement } from 'react';
 import { AlignCross, AlignMain, concatClasses, Dir, Fill, getIf, GroupPosition, map, Size, Type } from '../common';
 import "./box.css";
 
-interface BoxProps {
+interface BoxProps extends React.HTMLAttributes<HTMLDivElement> {
 
     dir?: Dir
     alignMain?: AlignMain,
@@ -23,15 +23,14 @@ interface BoxProps {
 
     groupPos?: GroupPosition,
 
-
     style?: React.CSSProperties,
-    className?: string
+    className?: string,
 }
 
 export function Box(props: React.PropsWithChildren<BoxProps>): ReactElement {
 
     return (
-        <div className={getClassNames()} style={getStyle()}>
+        <div {...props} className={getClassNames()} style={getStyle()}>
             {props.children}
         </div>
     );
