@@ -69,14 +69,14 @@ export function NewInputField(props: React.PropsWithChildren<NewInputFieldProps>
                         : null
                 }
             </div>
-            {props.showError === true && (
-                valid
-                    ? (<div style={{ height: "1em" }} />)
-                    : (<CaptionText color={"var(--color-error-3)"} style={{
-                        height: "1em",
-                        fontWeight: 500,
-                    }}>{error}</CaptionText>)
-            )}
+            {/*{props.showError === true && (*/}
+            {/*    valid*/}
+            {/*        ? (<div style={{ height: "1em" }} />)*/}
+            {/*        : (<CaptionText color={"var(--color-error-3)"} style={{*/}
+            {/*            height: "1em",*/}
+            {/*            fontWeight: 500,*/}
+            {/*        }}>{error}</CaptionText>)*/}
+            {/*)}*/}
         </VBox>
     );
 

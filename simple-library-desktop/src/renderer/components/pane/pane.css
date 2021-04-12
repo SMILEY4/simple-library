@@ -1,0 +1,36 @@
+.pane {
+	position:      relative;
+	box-sizing:    border-box;
+	border:        1px solid transparent;
+	border-radius: var(--radius-0);
+}
+
+
+/* outline + fill */
+
+.pane-outline-default { border-color: var(--base-color-4) }
+.pane-outline-primary { border-color: var(--color-primary-2) }
+.pane-outline-success { border-color: var(--color-success-2) }
+.pane-outline-warn { border-color: var(--color-warn-2) }
+.pane-outline-error { border-color: var(--color-error-2) }
+
+.pane-fill-default { background-color: var(--base-color-0) }
+.pane-fill-primary { background-color: var(--color-primary-1) }
+.pane-fill-success { background-color: var(--color-success-1) }
+.pane-fill-warn { background-color: var(--color-warn-1) }
+.pane-fill-error { background-color: var(--color-error-1) }
+
+
+/* disabled outline + fill */
+
+.pane-outline-default.pane-disabled { border-color: var(--base-color-1) }
+.pane-outline-primary.pane-disabled { border-color: var(--color-primary-1) }
+.pane-outline-success.pane-disabled { border-color: var(--color-success-1) }
+.pane-outline-warn.pane-disabled { border-color: var(--color-warn-1) }
+.pane-outline-error.pane-disabled { border-color: var(--color-error-1) }
+
+.pane-fill-default.pane-disabled { background-color: var(--base-color-0) }
+.pane-fill-primary.pane-disabled { background-color: var(--color-primary-0) }
+.pane-fill-success.pane-disabled { background-color: var(--color-success-0) }
+.pane-fill-warn.pane-disabled { background-color: var(--color-warn-0) }
+.pane-fill-error.pane-disabled { background-color: var(--color-error-0) }

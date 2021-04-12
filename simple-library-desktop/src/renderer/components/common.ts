@@ -14,6 +14,7 @@ export enum Variant {
 }
 
 export enum Type {
+    DEFAULT = "default",
     PRIMARY = "primary",
     SUCCESS = "success",
     ERROR = "error",

@@ -1,9 +1,8 @@
 import * as React from 'react';
-import { ReactElement, useState } from 'react';
+import { useState } from 'react';
 import "./showcase.css";
-import { BodyText, Text, TextVariant } from '../text/Text';
-import { Box, CBox } from '../layout/Box';
-import { Dir, GroupPosition, Type, Variant } from '../common';
+import { Text, TextVariant } from '../text/Text';
+import { GroupPosition, Type, Variant } from '../common';
 import { Button } from '../button/Button';
 import {
     AiFillCaretRight,
@@ -12,6 +11,8 @@ import {
     AiOutlineAlignLeft,
     AiOutlineAlignRight,
 } from 'react-icons/all';
+import { Pane } from '../pane/Pane';
+import { HBox } from '../layout/Box';
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0");
@@ -38,119 +39,76 @@ export function ComponentShowcaseView(): any {
     function renderContent() {
         return (
             <>
-                {renderBoxes()}
-                {renderButtons()}
+                {/*{renderBoxes()}*/}
+                {/*{renderButtons()}*/}
+                {renderPanes()}
                 {renderText()}
             </>
         );
     }
 
-    function renderBoxes() {
 
-        const data: any = [
-            {
-                outlined: false,
-                filled: false,
-                types: [undefined, Type.PRIMARY, Type.SUCCESS, Type.WARN, Type.ERROR],
-            },
-            {
-                outlined: true,
-                filled: false,
-                types: [undefined, Type.PRIMARY, Type.SUCCESS, Type.WARN, Type.ERROR],
-            },
-            {
-                outlined: false,
-                filled: true,
-                types: [undefined, Type.PRIMARY, Type.SUCCESS, Type.WARN, Type.ERROR],
-            },
-            {
-                outlined: true,
-                filled: true,
-                types: [undefined, Type.PRIMARY, Type.SUCCESS, Type.WARN, Type.ERROR],
-            },
-        ];
 
-        function box(filled: boolean, outlined: boolean, type: Type, groupPos: GroupPosition, disabled: boolean, interactive: boolean): ReactElement {
-            return (
-                <CBox
-                    filled={filled}
-                    outlined={outlined}
-                    type={type}
-                    groupPos={groupPos}
-                    disabled={disabled}
-                    interactive={interactive}
-                    style={{ width: "50px", height: "50px" }}
-                >
-                    <BodyText onType type={filled && interactive ? type : undefined} disabled={disabled}>
-                        {"Box-" + (interactive ? "i" : "") + (disabled ? "d" : "") + (filled ? "f" : "") + (outlined ? "o" : "")}
-                    </BodyText>
-                </CBox>
-            );
-        }
-
+    function renderPanes() {
         return (
             <>
-                <h3>Boxes</h3>
-
-                {data.map((row: any) => {
-                    return (
-                        <ShowcaseRow>
-                            {row.types.map((type: Type) => {
-                                return [
-                                    box(row.filled, row.outlined, type, undefined, true, false),
-                                    box(row.filled, row.outlined, type, undefined, false, false),
-                                ];
-                            })}
-                        </ShowcaseRow>
-                    );
-                })}
+                <h3>Panes</h3>
+                {
+                    [[true, false], [false, true], [true, true]].map((style) => {
+                        return (
+                            <ShowcaseRow>
+                                {
+                                    [Type.DEFAULT, Type.PRIMARY, Type.SUCCESS, Type.WARN, Type.ERROR].map((type: Type) => {
+                                        return pane(style[0], style[1], type);
+                                    })
+                                }
+                            </ShowcaseRow>
+                        );
+                    })
+                }
                 <ShowcaseRow>
-                    <Box dir={Dir.RIGHT}>
-                        {box(true, true, Type.PRIMARY, GroupPosition.START, false, false)}
-                        {box(true, true, Type.WARN, GroupPosition.MIDDLE, false, false)}
-                        {box(true, true, Type.ERROR, GroupPosition.END, false, false)}
-                    </Box>
+                    {paneTyped(Type.ERROR, Type.DEFAULT)}
                 </ShowcaseRow>
 
-
-                {data.map((row: any) => {
-                    return (
-                        <ShowcaseRow>
-                            {row.types.map((type: Type) => {
-                                return [
-                                    box(row.filled, row.outlined, type, undefined, true, true),
-                                    box(row.filled, row.outlined, type, undefined, false, true),
-                                ];
-                            })}
-                        </ShowcaseRow>
-                    );
-                })}
                 <ShowcaseRow>
-                    <Box dir={Dir.RIGHT}>
-                        {box(true, true, Type.PRIMARY, GroupPosition.START, false, true)}
-                        {box(true, true, Type.WARN, GroupPosition.MIDDLE, false, true)}
-                        {box(true, true, Type.ERROR, GroupPosition.END, false, true)}
-                    </Box>
+                    <HBox>
+                        <Pane outline={Type.PRIMARY} fill={Type.PRIMARY} groupPos={GroupPosition.START} style={{
+                            width: "30px",
+                            height: "30px",
+                        }} />
+                        <Pane outline={Type.SUCCESS} fill={Type.SUCCESS} groupPos={GroupPosition.MIDDLE} style={{
+                            width: "30px",
+                            height: "30px",
+                        }} />
+                        <Pane outline={Type.ERROR} fill={Type.ERROR} groupPos={GroupPosition.END} style={{
+                            width: "30px",
+                            height: "30px",
+                        }} />
+                    </HBox>
                 </ShowcaseRow>
 
             </>
         );
+
+        function pane(outline: boolean, filled: boolean, type: Type) {
+            return paneTyped(outline ? type : undefined, filled ? type : undefined);
+        }
+
+        function paneTyped(outline: Type, fill: Type) {
+            return [
+                <Pane outline={outline} fill={fill} disabled={true} style={{
+                    width: "30px",
+                    height: "30px",
+                }} />,
+                <Pane outline={outline} fill={fill} disabled={false} style={{
+                    width: "30px",
+                    height: "30px",
+                }} />,
+            ];
+        }
+
     }
 
-    function renderButtonRow(type?: Type) {
-        return (
-            <ShowcaseRow>
-                <Button type={type} variant={Variant.SOLID}>Solid</Button>
-                <Button type={type} variant={Variant.OUTLINE}>Outline</Button>
-                <Button type={type} variant={Variant.GHOST}>Ghost</Button>
-                <Button type={type} variant={Variant.LINK}>Link</Button>
-                <Button type={type} disabled={true} variant={Variant.SOLID}>Solid</Button>
-                <Button type={type} disabled={true} variant={Variant.OUTLINE}>Outline</Button>
-                <Button type={type} disabled={true} variant={Variant.GHOST}>Ghost</Button>
-                <Button type={type} disabled={true} variant={Variant.LINK}>Link</Button>
-            </ShowcaseRow>
-        );
-    }
 
     function renderButtons() {
         return (
@@ -215,7 +173,23 @@ export function ComponentShowcaseView(): any {
 
             </>
         );
+
+        function renderButtonRow(type?: Type) {
+            return (
+                <ShowcaseRow>
+                    <Button type={type} variant={Variant.SOLID}>Solid</Button>
+                    <Button type={type} variant={Variant.OUTLINE}>Outline</Button>
+                    <Button type={type} variant={Variant.GHOST}>Ghost</Button>
+                    <Button type={type} variant={Variant.LINK}>Link</Button>
+                    <Button type={type} disabled={true} variant={Variant.SOLID}>Solid</Button>
+                    <Button type={type} disabled={true} variant={Variant.OUTLINE}>Outline</Button>
+                    <Button type={type} disabled={true} variant={Variant.GHOST}>Ghost</Button>
+                    <Button type={type} disabled={true} variant={Variant.LINK}>Link</Button>
+                </ShowcaseRow>
+            );
+        }
     }
+
 
     function renderText() {
         return (
