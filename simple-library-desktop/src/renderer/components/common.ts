@@ -21,6 +21,40 @@ export enum Type {
     WARN = "warn"
 }
 
+export enum ColorType {
+
+    BASE_0 = "base-0",
+    BASE_1 = "base-1",
+    BASE_2 = "base-2",
+    BASE_3 = "base-3",
+    BASE_4 = "base-4",
+
+    PRIMARY_0 = "primary-0",
+    PRIMARY_1 = "primary-1",
+    PRIMARY_2 = "primary-2",
+    PRIMARY_3 = "primary-3",
+    PRIMARY_4 = "primary-4",
+
+    SUCCESS_0 = "success-0",
+    SUCCESS_1 = "success-1",
+    SUCCESS_2 = "success-2",
+    SUCCESS_3 = "success-3",
+    SUCCESS_4 = "success-4",
+
+    ERROR_0 = "error-0",
+    ERROR_1 = "error-1",
+    ERROR_2 = "error-2",
+    ERROR_3 = "error-3",
+    ERROR_4 = "error-4",
+
+    WARN_0 = "warn-0",
+    WARN_1 = "warn-1",
+    WARN_2 = "warn-2",
+    WARN_3 = "warn-3",
+    WARN_4 = "warn-4",
+
+}
+
 export enum AlignMain {
     START = 'start',
     END = 'end',

@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { ReactElement, useState } from 'react';
 import "./showcase.css";
 import { Text, TextVariant } from '../text/Text';
-import { GroupPosition, Type, Variant } from '../common';
+import { ColorType, GroupPosition, Type, Variant } from '../common';
 import { Button } from '../button/Button';
 import {
     AiFillCaretRight,
@@ -12,7 +12,6 @@ import {
     AiOutlineAlignRight,
 } from 'react-icons/all';
 import { Pane } from '../pane/Pane';
-import { HBox } from '../layout/Box';
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0");
@@ -41,73 +40,218 @@ export function ComponentShowcaseView(): any {
             <>
                 {/*{renderBoxes()}*/}
                 {/*{renderButtons()}*/}
-                {renderPanes()}
+                {/*{renderPanes()}*/}
+                {renderPanesInteractive()}
                 {renderText()}
             </>
         );
     }
 
+    function renderPanesInteractive() {
+        const settingBase: any = {
+            ghost: {
+                typeOutline: undefined,
+                typeDefault: undefined,
+                typeReady: ColorType.BASE_0,
+                typeActive: ColorType.BASE_1,
+            },
+            outline: {
+                typeOutline: ColorType.BASE_4,
+                typeDefault: undefined,
+                typeReady: ColorType.BASE_0,
+                typeActive: ColorType.BASE_1,
+            },
+            filled: {
+                typeOutline: ColorType.BASE_4,
+                typeDefault: ColorType.BASE_1,
+                typeReady: ColorType.BASE_2,
+                typeActive: ColorType.BASE_3,
+            },
+        };
+        const settingPrimary: any = {
+            ghost: {
+                typeOutline: undefined,
+                typeDefault: undefined,
+                typeReady: ColorType.PRIMARY_0,
+                typeActive: ColorType.PRIMARY_1,
+            },
+            outline: {
+                typeOutline: ColorType.PRIMARY_4,
+                typeDefault: undefined,
+                typeReady: ColorType.PRIMARY_0,
+                typeActive: ColorType.PRIMARY_1,
+            },
+            filled: {
+                typeOutline: ColorType.PRIMARY_2,
+                typeDefault: ColorType.PRIMARY_2,
+                typeReady: ColorType.PRIMARY_3,
+                typeActive: ColorType.PRIMARY_4,
+            },
+        };
+        const settingSuccess: any = {
+            ghost: {
+                typeOutline: undefined,
+                typeDefault: undefined,
+                typeReady: ColorType.SUCCESS_0,
+                typeActive: ColorType.SUCCESS_1,
+            },
+            outline: {
+                typeOutline: ColorType.SUCCESS_4,
+                typeDefault: undefined,
+                typeReady: ColorType.SUCCESS_0,
+                typeActive: ColorType.SUCCESS_1,
+            },
+            filled: {
+                typeOutline: ColorType.SUCCESS_2,
+                typeDefault: ColorType.SUCCESS_2,
+                typeReady: ColorType.SUCCESS_3,
+                typeActive: ColorType.SUCCESS_4,
+            },
+        };
+        const settingError: any = {
+            ghost: {
+                typeOutline: undefined,
+                typeDefault: undefined,
+                typeReady: ColorType.ERROR_0,
+                typeActive: ColorType.ERROR_1,
+            },
+            outline: {
+                typeOutline: ColorType.ERROR_4,
+                typeDefault: undefined,
+                typeReady: ColorType.ERROR_0,
+                typeActive: ColorType.ERROR_1,
+            },
+            filled: {
+                typeOutline: ColorType.ERROR_2,
+                typeDefault: ColorType.ERROR_2,
+                typeReady: ColorType.ERROR_3,
+                typeActive: ColorType.ERROR_4,
+            },
+        };
+        const settingWarn: any = {
+            ghost: {
+                typeOutline: undefined,
+                typeDefault: undefined,
+                typeReady: ColorType.WARN_0,
+                typeActive: ColorType.WARN_1,
+            },
+            outline: {
+                typeOutline: ColorType.WARN_4,
+                typeDefault: undefined,
+                typeReady: ColorType.WARN_0,
+                typeActive: ColorType.WARN_1,
+            },
+            filled: {
+                typeOutline: ColorType.WARN_2,
+                typeDefault: ColorType.WARN_2,
+                typeReady: ColorType.WARN_3,
+                typeActive: ColorType.WARN_4,
+            },
+        };
 
+        function paneRow(settings: any): ReactElement {
+            return (
+                <ShowcaseRow>
+                    {[
+                        pane(settings.ghost),
+                        pane(settings.outline),
+                        pane(settings.filled),
+                    ]}
+                </ShowcaseRow>
+            );
+        }
 
-    function renderPanes() {
+        function pane(variantSettings: any): ReactElement {
+            return <Pane
+                outline={variantSettings.typeOutline}
+                fillDefault={variantSettings.typeDefault}
+                fillReady={variantSettings.typeReady}
+                fillActive={variantSettings.typeActive}
+                style={{
+                    width: "30px",
+                    height: "30px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center"
+                }}
+                className="behaviour-no-select"
+            >P</Pane>;
+        }
+
         return (
             <>
                 <h3>Panes</h3>
                 {
-                    [[true, false], [false, true], [true, true]].map((style) => {
-                        return (
-                            <ShowcaseRow>
-                                {
-                                    [Type.DEFAULT, Type.PRIMARY, Type.SUCCESS, Type.WARN, Type.ERROR].map((type: Type) => {
-                                        return pane(style[0], style[1], type);
-                                    })
-                                }
-                            </ShowcaseRow>
-                        );
+                    [settingBase, settingPrimary, settingSuccess, settingWarn, settingError].map((settings: any) => {
+                        return paneRow(settings);
                     })
                 }
-                <ShowcaseRow>
-                    {paneTyped(Type.ERROR, Type.DEFAULT)}
-                </ShowcaseRow>
-
-                <ShowcaseRow>
-                    <HBox>
-                        <Pane outline={Type.PRIMARY} fill={Type.PRIMARY} groupPos={GroupPosition.START} style={{
-                            width: "30px",
-                            height: "30px",
-                        }} />
-                        <Pane outline={Type.SUCCESS} fill={Type.SUCCESS} groupPos={GroupPosition.MIDDLE} style={{
-                            width: "30px",
-                            height: "30px",
-                        }} />
-                        <Pane outline={Type.ERROR} fill={Type.ERROR} groupPos={GroupPosition.END} style={{
-                            width: "30px",
-                            height: "30px",
-                        }} />
-                    </HBox>
-                </ShowcaseRow>
-
             </>
         );
 
-        function pane(outline: boolean, filled: boolean, type: Type) {
-            return paneTyped(outline ? type : undefined, filled ? type : undefined);
-        }
-
-        function paneTyped(outline: Type, fill: Type) {
-            return [
-                <Pane outline={outline} fill={fill} disabled={true} style={{
-                    width: "30px",
-                    height: "30px",
-                }} />,
-                <Pane outline={outline} fill={fill} disabled={false} style={{
-                    width: "30px",
-                    height: "30px",
-                }} />,
-            ];
-        }
-
     }
+
+
+    //
+    // function renderPanes() {
+    //     return (
+    //         <>
+    //             <h3>Panes</h3>
+    //             {
+    //                 [[true, false], [false, true], [true, true]].map((style) => {
+    //                     return (
+    //                         <ShowcaseRow>
+    //                             {
+    //                                 [Type.DEFAULT, Type.PRIMARY, Type.SUCCESS, Type.WARN, Type.ERROR].map((type: Type) => {
+    //                                     return pane(style[0], style[1], type);
+    //                                 })
+    //                             }
+    //                         </ShowcaseRow>
+    //                     );
+    //                 })
+    //             }
+    //             <ShowcaseRow>
+    //                 {paneTyped(Type.ERROR, Type.DEFAULT)}
+    //             </ShowcaseRow>
+    //
+    //             <ShowcaseRow>
+    //                 <HBox>
+    //                     <Pane outline={Type.PRIMARY} fill={Type.PRIMARY} groupPos={GroupPosition.START} style={{
+    //                         width: "30px",
+    //                         height: "30px",
+    //                     }} />
+    //                     <Pane outline={Type.SUCCESS} fill={Type.SUCCESS} groupPos={GroupPosition.MIDDLE} style={{
+    //                         width: "30px",
+    //                         height: "30px",
+    //                     }} />
+    //                     <Pane outline={Type.ERROR} fill={Type.ERROR} groupPos={GroupPosition.END} style={{
+    //                         width: "30px",
+    //                         height: "30px",
+    //                     }} />
+    //                 </HBox>
+    //             </ShowcaseRow>
+    //
+    //         </>
+    //     );
+    //
+    //     function pane(outline: boolean, filled: boolean, type: Type) {
+    //         return paneTyped(outline ? type : undefined, filled ? type : undefined);
+    //     }
+    //
+    //     function paneTyped(outline: Type, fill: Type) {
+    //         return [
+    //             <Pane outline={outline} fill={fill} disabled={true} style={{
+    //                 width: "30px",
+    //                 height: "30px",
+    //             }} />,
+    //             <Pane outline={outline} fill={fill} disabled={false} style={{
+    //                 width: "30px",
+    //                 height: "30px",
+    //             }} />,
+    //         ];
+    //     }
+    //
+    // }
 
 
     function renderButtons() {
