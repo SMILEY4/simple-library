@@ -4,7 +4,7 @@ import { ColorType, concatClasses, GroupPosition, map, Size } from '../common';
 import "./pane.css";
 
 
-export interface PaneProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface PaneProps {
 
     spacing?: Size,
     padding?: Size,
@@ -16,11 +16,13 @@ export interface PaneProps extends React.HTMLAttributes<HTMLDivElement> {
     fillActive?: ColorType,
 
     groupPos?: GroupPosition,
+
+    domProps?: React.HTMLAttributes<HTMLDivElement>
 }
 
 export function Pane(props: React.PropsWithChildren<PaneProps>): ReactElement {
     return (
-        <div {...props} className={getClassName()}>
+        <div {...props.domProps} className={getClassName()}>
             {props.children}
         </div>
     );
@@ -40,7 +42,7 @@ export function Pane(props: React.PropsWithChildren<PaneProps>): ReactElement {
 
             map(props.groupPos, (groupPos) => "group-pos-" + groupPos),
 
-            props.className,
+            (props.domProps ? props.domProps.className : null)
         );
     }
 

@@ -14,15 +14,6 @@ interface BoxProps extends React.HTMLAttributes<HTMLDivElement> {
     padding?: Size,
     margin?: Size,
 
-    outlined?: boolean,
-    filled?: boolean,
-
-    type?: Type,
-    interactive?: boolean,
-    disabled?: boolean,
-
-    groupPos?: GroupPosition,
-
     style?: React.CSSProperties,
     className?: string,
 }
@@ -48,19 +39,9 @@ export function Box(props: React.PropsWithChildren<BoxProps>): ReactElement {
             map(props.padding, (padding) => 'padding-' + padding),
             map(props.margin, (margin) => 'margin-' + margin),
 
-            getIf(props.filled, "box-filled"),
-            getIf(props.outlined, "box-outlined"),
-
-            map(props.type, (type) => "box-type-" + type),
-            getIf(props.interactive, "box-interactive"),
-            getIf(props.disabled, "box-disabled"),
-
-            map(props.groupPos, (groupPos) => "group-pos-" + groupPos),
-
             props.className,
         );
     }
-
 
     function getStyle(): React.CSSProperties {
         return {
