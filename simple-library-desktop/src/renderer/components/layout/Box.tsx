@@ -16,6 +16,9 @@ interface BoxProps extends React.HTMLAttributes<HTMLDivElement> {
 
     style?: React.CSSProperties,
     className?: string,
+
+    outlined?: any, //todo: deprecated -> remove
+    type?: any, //todo: deprecated -> remove
 }
 
 export function Box(props: React.PropsWithChildren<BoxProps>): ReactElement {

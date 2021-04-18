@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { ReactElement, useState } from 'react';
+import {ReactElement, useState} from 'react';
 import "./showcase.css";
-import { Text, TextVariant } from '../text/Text';
-import { ColorType, GroupPosition, Type, Variant } from '../common';
-import { Button } from '../button/Button';
+import {Text, TextVariant} from '../text/Text';
+import {ColorType, GroupPosition, Size, Type, Variant} from '../common';
+import {Button} from '../button/Button';
 import {
     AiFillCaretRight,
     AiFillHome,
@@ -11,7 +11,8 @@ import {
     AiOutlineAlignLeft,
     AiOutlineAlignRight,
 } from 'react-icons/all';
-import { Pane } from '../pane/Pane';
+import {Pane} from '../pane/Pane';
+import {Icon, IconType} from "../icon/Icon";
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0");
@@ -38,6 +39,7 @@ export function ComponentShowcaseView(): any {
     function renderContent() {
         return (
             <>
+                {renderIcons()}
                 {renderButtons()}
                 {renderPanesInteractive()}
                 {renderText()}
@@ -45,6 +47,29 @@ export function ComponentShowcaseView(): any {
         );
     }
 
+
+    function renderIcons() {
+        return (
+            <>
+                <h3>Icons</h3>
+                <ShowcaseRow>
+                    <Icon type={IconType.FOLDER} color={ColorType.BASE_4}/>
+                    <Icon type={IconType.FOLDER} color={ColorType.PRIMARY_2}/>
+                    <Icon type={IconType.FOLDER} color={ColorType.SUCCESS_2}/>
+                    <Icon type={IconType.FOLDER} color={ColorType.ERROR_2}/>
+                    <Icon type={IconType.FOLDER} color={ColorType.WARN_2}/>
+                </ShowcaseRow>
+                <ShowcaseRow>
+                    <Icon type={IconType.FOLDER} size={Size.S_0_5}/>
+                    <Icon type={IconType.FOLDER} size={Size.S_0_75}/>
+                    <Icon type={IconType.FOLDER} size={Size.S_1}/>
+                    <Icon type={IconType.FOLDER} size={Size.S_1_5}/>
+                    <Icon type={IconType.FOLDER} size={Size.S_2}/>
+                    <Icon type={IconType.FOLDER} size={Size.S_3}/>
+                </ShowcaseRow>
+            </>
+        )
+    }
 
     function renderButtons() {
         return (
@@ -56,62 +81,68 @@ export function ComponentShowcaseView(): any {
                 {renderButtonRow(Type.ERROR)}
                 {renderButtonRow(Type.WARN)}
                 <ShowcaseRow>
-                    <Button type={Type.PRIMARY} variant={Variant.SOLID} icon={<AiFillHome />}>With Icon</Button>
-                    <Button type={Type.DEFAULT} variant={Variant.SOLID} icon={<AiFillHome />}>With Icon</Button>
-                    <Button type={Type.DEFAULT} variant={Variant.OUTLINE} icon={<AiFillHome />}>With Icon</Button>
-                    <Button type={Type.DEFAULT} variant={Variant.GHOST} icon={<AiFillHome />}>With Icon</Button>
-                    <Button type={Type.DEFAULT} variant={Variant.LINK} icon={<AiFillHome />}>With Icon</Button>
+                    <Button type={Type.PRIMARY} variant={Variant.SOLID} icon={IconType.HOME}>With Icon</Button>
+                    <Button type={Type.DEFAULT} variant={Variant.SOLID} icon={IconType.HOME}>With Icon</Button>
+                    <Button type={Type.DEFAULT} variant={Variant.OUTLINE} icon={IconType.HOME}>With Icon</Button>
+                    <Button type={Type.DEFAULT} variant={Variant.GHOST} icon={IconType.HOME}>With Icon</Button>
+                    <Button type={Type.DEFAULT} variant={Variant.LINK} icon={IconType.HOME}>With Icon</Button>
                 </ShowcaseRow>
                 <ShowcaseRow>
-                    <Button disabled={true} type={Type.PRIMARY} variant={Variant.SOLID} icon={<AiFillHome />}>With
+                    <Button disabled={true} type={Type.PRIMARY} variant={Variant.SOLID} icon={IconType.HOME}>With
                         Icon</Button>
-                    <Button type={Type.DEFAULT} disabled={true} variant={Variant.SOLID} icon={<AiFillHome />}>With
+                    <Button type={Type.DEFAULT} disabled={true} variant={Variant.SOLID} icon={IconType.HOME}>With
                         Icon</Button>
-                    <Button type={Type.DEFAULT} disabled={true} variant={Variant.OUTLINE} icon={<AiFillHome />}>With
+                    <Button type={Type.DEFAULT} disabled={true} variant={Variant.OUTLINE} icon={IconType.HOME}>With
                         Icon</Button>
-                    <Button type={Type.DEFAULT} disabled={true} variant={Variant.GHOST} icon={<AiFillHome />}>With
+                    <Button type={Type.DEFAULT} disabled={true} variant={Variant.GHOST} icon={IconType.HOME}>With
                         Icon</Button>
-                    <Button type={Type.DEFAULT} disabled={true} variant={Variant.LINK} icon={<AiFillHome />}>With
+                    <Button type={Type.DEFAULT} disabled={true} variant={Variant.LINK} icon={IconType.HOME}>With
                         Icon</Button>
                 </ShowcaseRow>
-                <Button type={Type.DEFAULT} variant={Variant.SOLID} icon={<AiFillHome />} iconRight={
-                    <AiFillCaretRight />}>Two
-                    Icons</Button>
+                {/*<Button type={Type.DEFAULT} variant={Variant.SOLID} icon={IconType.HOME} iconRight={*/}
+                {/*    <AiFillCaretRight/>}>Two*/}
+                {/*    Icons</Button>*/}
                 <ShowcaseRow>
-                    <Button type={Type.PRIMARY} variant={Variant.SOLID} icon={<AiFillHome />} />
-                    <Button type={Type.DEFAULT} variant={Variant.SOLID} icon={<AiFillHome />} />
-                    <Button type={Type.DEFAULT} variant={Variant.OUTLINE} icon={<AiFillHome />} />
-                    <Button type={Type.DEFAULT} variant={Variant.GHOST} icon={<AiFillHome />} />
-                    <Button type={Type.DEFAULT} variant={Variant.LINK} icon={<AiFillHome />} />
+                    <Button type={Type.PRIMARY} variant={Variant.SOLID} icon={IconType.HOME}/>
+                    <Button type={Type.DEFAULT} variant={Variant.SOLID} icon={IconType.HOME}/>
+                    <Button type={Type.DEFAULT} variant={Variant.OUTLINE} icon={IconType.HOME}/>
+                    <Button type={Type.DEFAULT} variant={Variant.GHOST} icon={IconType.HOME}/>
+                    <Button type={Type.DEFAULT} variant={Variant.LINK} icon={IconType.HOME}/>
                 </ShowcaseRow>
                 <ShowcaseRow>
-                    <Button square={true} type={Type.PRIMARY} variant={Variant.SOLID} icon={<AiFillHome />} />
-                    <Button square={true} type={Type.DEFAULT} variant={Variant.SOLID} icon={<AiFillHome />} />
-                    <Button square={true} type={Type.DEFAULT} variant={Variant.OUTLINE} icon={<AiFillHome />} />
-                    <Button square={true} type={Type.DEFAULT} variant={Variant.GHOST} icon={<AiFillHome />} />
-                    <Button square={true} type={Type.DEFAULT} variant={Variant.LINK} icon={<AiFillHome />} />
+                    <Button square={true} type={Type.PRIMARY} variant={Variant.SOLID} icon={IconType.HOME}/>
+                    <Button square={true} type={Type.DEFAULT} variant={Variant.SOLID} icon={IconType.HOME}/>
+                    <Button square={true} type={Type.DEFAULT} variant={Variant.OUTLINE} icon={IconType.HOME}/>
+                    <Button square={true} type={Type.DEFAULT} variant={Variant.GHOST} icon={IconType.HOME}/>
+                    <Button square={true} type={Type.DEFAULT} variant={Variant.LINK} icon={IconType.HOME}/>
                 </ShowcaseRow>
                 <ShowcaseRow>
-                    <div style={{ display: 'flex' }}>
-                        <Button type={Type.DEFAULT} variant={Variant.SOLID} groupPos={GroupPosition.START}>Start</Button>
-                        <Button type={Type.DEFAULT} variant={Variant.SOLID} groupPos={GroupPosition.MIDDLE}>Middle</Button>
-                        <Button type={Type.DEFAULT} variant={Variant.SOLID} groupPos={GroupPosition.MIDDLE}>Middle</Button>
+                    <div style={{display: 'flex'}}>
+                        <Button type={Type.DEFAULT} variant={Variant.SOLID}
+                                groupPos={GroupPosition.START}>Start</Button>
+                        <Button type={Type.DEFAULT} variant={Variant.SOLID}
+                                groupPos={GroupPosition.MIDDLE}>Middle</Button>
+                        <Button type={Type.DEFAULT} variant={Variant.SOLID}
+                                groupPos={GroupPosition.MIDDLE}>Middle</Button>
                         <Button type={Type.DEFAULT} variant={Variant.SOLID} groupPos={GroupPosition.END}>End</Button>
                     </div>
-                    <div style={{ display: 'flex' }}>
-                        <Button type={Type.DEFAULT} variant={Variant.OUTLINE} groupPos={GroupPosition.START}>Start</Button>
-                        <Button type={Type.DEFAULT} variant={Variant.OUTLINE} groupPos={GroupPosition.MIDDLE}>Middle</Button>
-                        <Button type={Type.DEFAULT} variant={Variant.OUTLINE} groupPos={GroupPosition.MIDDLE}>Middle</Button>
+                    <div style={{display: 'flex'}}>
+                        <Button type={Type.DEFAULT} variant={Variant.OUTLINE}
+                                groupPos={GroupPosition.START}>Start</Button>
+                        <Button type={Type.DEFAULT} variant={Variant.OUTLINE}
+                                groupPos={GroupPosition.MIDDLE}>Middle</Button>
+                        <Button type={Type.DEFAULT} variant={Variant.OUTLINE}
+                                groupPos={GroupPosition.MIDDLE}>Middle</Button>
                         <Button type={Type.DEFAULT} variant={Variant.OUTLINE} groupPos={GroupPosition.END}>End</Button>
                     </div>
-                    <div style={{ display: 'flex' }}>
-                        <Button type={Type.DEFAULT} variant={Variant.SOLID} groupPos={GroupPosition.START} icon={
-                            <AiOutlineAlignRight />} />
-                        <Button type={Type.DEFAULT} variant={Variant.SOLID} groupPos={GroupPosition.MIDDLE} icon={
-                            <AiOutlineAlignCenter />} />
-                        <Button type={Type.DEFAULT} variant={Variant.SOLID} groupPos={GroupPosition.END} icon={
-                            <AiOutlineAlignLeft />} />
-                    </div>
+                    {/*<div style={{display: 'flex'}}>*/}
+                    {/*    <Button type={Type.DEFAULT} variant={Variant.SOLID} groupPos={GroupPosition.START} icon={*/}
+                    {/*        <AiOutlineAlignRight/>}/>*/}
+                    {/*    <Button type={Type.DEFAULT} variant={Variant.SOLID} groupPos={GroupPosition.MIDDLE} icon={*/}
+                    {/*        <AiOutlineAlignCenter/>}/>*/}
+                    {/*    <Button type={Type.DEFAULT} variant={Variant.SOLID} groupPos={GroupPosition.END} icon={*/}
+                    {/*        <AiOutlineAlignLeft/>}/>*/}
+                    {/*</div>*/}
                 </ShowcaseRow>
 
             </>

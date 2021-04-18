@@ -53,6 +53,12 @@ export enum ColorType {
     WARN_3 = "warn-3",
     WARN_4 = "warn-4",
 
+    TEXT_0 = "text-0",
+    TEXT_1 = "text-1",
+    TEXT_2 = "text-2",
+    TEXT_3 = "text-3",
+    TEXT_ON_COLOR = "text-on-color",
+
 }
 
 export enum AlignMain {

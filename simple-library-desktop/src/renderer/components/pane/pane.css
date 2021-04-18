@@ -50,6 +50,14 @@
 .pane-outline-warn-3 { border-color: var(--color-warn-3)}
 .pane-outline-warn-4 { border-color: var(--color-warn-4)}
 
+/* text */
+
+.pane-outline-text-0 { border-color: var(--text-color-0)}
+.pane-outline-text-1 { border-color: var(--text-color-1)}
+.pane-outline-text-2 { border-color: var(--text-color-2)}
+.pane-outline-text-3 { border-color: var(--text-color-3)}
+.pane-outline-text-on-color:active { border-color: var(--text-on-color)}
+
 
 
 
@@ -95,6 +103,13 @@
 .pane-fill-default-warn-3 { background-color: var(--color-warn-3)}
 .pane-fill-default-warn-4 { background-color: var(--color-warn-4)}
 
+/* text */
+
+.pane-fill-default-text-0 { background-color: var(--text-color-0)}
+.pane-fill-default-text-1 { background-color: var(--text-color-1)}
+.pane-fill-default-text-2 { background-color: var(--text-color-2)}
+.pane-fill-default-text-3 { background-color: var(--text-color-3)}
+.pane-fill-default-text-on-color:active { background-color: var(--text-on-color)}
 
 
 
@@ -140,6 +155,14 @@
 .pane-fill-ready-warn-3:hover { background-color: var(--color-warn-3)}
 .pane-fill-ready-warn-4:hover { background-color: var(--color-warn-4)}
 
+/* text */
+
+.pane-fill-ready-text-0:hover { background-color: var(--text-color-0)}
+.pane-fill-ready-text-1:hover { background-color: var(--text-color-1)}
+.pane-fill-ready-text-2:hover { background-color: var(--text-color-2)}
+.pane-fill-ready-text-3:hover { background-color: var(--text-color-3)}
+.pane-fill-ready-text-on-color:active { background-color: var(--text-on-color)}
+
 
 
 
@@ -184,3 +207,11 @@
 .pane-fill-active-warn-2:active { background-color: var(--color-warn-2)}
 .pane-fill-active-warn-3:active { background-color: var(--color-warn-3)}
 .pane-fill-active-warn-4:active { background-color: var(--color-warn-4)}
+
+/* text */
+
+.pane-fill-active-text-0:active { background-color: var(--text-color-0)}
+.pane-fill-active-text-1:active { background-color: var(--text-color-1)}
+.pane-fill-active-text-2:active { background-color: var(--text-color-2)}
+.pane-fill-active-text-3:active { background-color: var(--text-color-3)}
+.pane-fill-active-text-on-color:active { background-color: var(--text-on-color)}

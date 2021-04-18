@@ -1,22 +1,36 @@
 import * as React from 'react';
-import { ReactElement } from 'react';
+import {ReactElement} from 'react';
 import "./button.css";
-import { AlignCross, AlignMain, ColorType, concatClasses, getIf, GroupPosition, Size, Type, Variant } from '../common';
-import { Pane } from '../pane/Pane';
-import { HBox } from '../layout/Box';
+import {
+    AlignCross,
+    AlignMain,
+    ColorType,
+    concatClasses,
+    getIf,
+    GroupPosition,
+    map,
+    orDefault,
+    Size,
+    Type,
+    Variant
+} from '../common';
+import {Pane} from '../pane/Pane';
+import {HBox} from '../layout/Box';
+import {Icon, IconType} from "../icon/Icon";
 
 export interface ButtonProps {
 
     variant: Variant,
-    type: Type,
+    type?: Type,
 
     groupPos?: GroupPosition,
 
-    icon?: any,
-    iconRight?: any,
+    icon?: IconType,
+    iconRight?: IconType,
     square?: boolean,
 
     disabled?: boolean,
+
     onAction?: () => void,
     renderAsActive?: boolean,
     className?: string
@@ -160,10 +174,10 @@ const BUTTON_PANE_CONFIG: any = {
 export function Button(props: React.PropsWithChildren<ButtonProps>): ReactElement {
 
     return (
-        <Pane outline={getOutline(props.variant, props.type)}
-              fillDefault={getFillDefault(props.variant, props.type)}
-              fillReady={getFillReady(props.variant, props.type)}
-              fillActive={getFillActive(props.variant, props.type)}
+        <Pane outline={getOutline(props.variant, orDefault(props.type, Type.DEFAULT))}
+              fillDefault={getFillDefault(props.variant, orDefault(props.type, Type.DEFAULT))}
+              fillReady={getFillReady(props.variant, orDefault(props.type, Type.DEFAULT))}
+              fillActive={getFillActive(props.variant, orDefault(props.type, Type.DEFAULT))}
               groupPos={props.groupPos}
               domProps={{
                   className: getClassNames(),
@@ -173,25 +187,77 @@ export function Button(props: React.PropsWithChildren<ButtonProps>): ReactElemen
             <HBox alignMain={AlignMain.CENTER}
                   alignCross={AlignCross.CENTER}
                   className={"button-content"}
-                  spacing={ (props.icon || props.iconRight) && !props.children ? Size.S_0_5 : Size.S_0}
-                  style={{
-                      width: "100%",
-                      height: "100%"
-                  }}
+                  spacing={Size.S_0_5}
+                  style={{width: "100%", height: "100%"}}
             >
-                {props.icon ? props.icon : null}
-                <div className={"button-text"}>
-                    {props.children}
-                </div>
-                {props.iconRight ? props.iconRight : null}
+                {renderLeftIcon()}
+                {renderCenterContent()}
+                {renderRightIcon()}
             </HBox>
         </Pane>
     );
+
+    function renderCenterContent(): ReactElement | null {
+        return props.children && (
+            <div className={"button-text " + map(getContentColor(), color => "text-color-" + color)}>{
+                props.children}
+            </div>
+        )
+    }
+
+    function renderLeftIcon(): ReactElement | null {
+        return props.icon
+            ? (
+                <Icon
+                    type={props.icon}
+                    color={getContentColor()}
+                    size={Size.S_1}
+                />
+            )
+            : null;
+    }
+
+    function renderRightIcon(): ReactElement | null {
+        return props.iconRight
+            ? (
+                <Icon
+                    type={props.iconRight}
+                    color={getContentColor()}
+                    size={Size.S_1}
+                />
+            )
+            : null;
+    }
+
+    function getContentColor(): ColorType {
+        if(props.disabled) {
+            if(!props.type || props.type === Type.DEFAULT) {
+                return ColorType.TEXT_0
+            } else {
+                if(props.variant === Variant.SOLID) {
+                    return ColorType.TEXT_ON_COLOR
+                } else {
+                    return ColorType.TEXT_0
+                }
+            }
+        } else {
+            if(!props.type || props.type === Type.DEFAULT) {
+                return ColorType.TEXT_2
+            } else {
+                if(props.variant === Variant.SOLID) {
+                    return ColorType.TEXT_ON_COLOR
+                } else {
+                    return ColorType.TEXT_2
+                }
+            }
+        }
+    }
 
     function getClassNames(): string {
         return concatClasses(
             "button",
             "behaviour-button",
+            getIf(props.variant === Variant.LINK, "button-link"),
             getIf(props.square, "button-square"),
             props.className,
         );

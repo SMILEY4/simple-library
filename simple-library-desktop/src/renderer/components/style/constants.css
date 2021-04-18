@@ -27,6 +27,7 @@
 	--text-color-dark-1:        hsl(0, 0%, 80%);
 	--text-color-dark-2:        hsl(0, 0%, 90%);
 	--text-color-dark-3:        hsl(0, 0%, 60%);
+	--text-on-color:            hsl(0, 0%, 90%);
 
 	--overlay-color-light:      hsla(0, 0%, 0%, 0.3);
 	--overlay-color-dark:       hsla(0, 0%, 35%, 0.6);

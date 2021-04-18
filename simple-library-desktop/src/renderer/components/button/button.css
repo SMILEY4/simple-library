@@ -4,35 +4,16 @@
 	padding-right:   var(--s-0-75);
 }
 
-/*.button > svg {*/
-/*	width:  var(--s-1);*/
-/*	height: var(--s-1);*/
-/*}*/
+.button-square {
+	padding:    0;
+	width:      var(--s-1-5);
+	height:     var(--s-1-5);
+	max-width:  var(--s-1-5);
+	max-height: var(--s-1-5);
+	min-width:  var(--s-1-5);
+	min-height: var(--s-1-5);
+}
 
-/*.button-mixed {*/
-/*	gap: var(--s-0-5);*/
-/*	justify-content: space-between;*/
-/*}*/
-
-/*.button-square {*/
-/*	padding:    0;*/
-/*	width:      var(--s-1-5);*/
-/*	height:     var(--s-1-5);*/
-/*	max-width:  var(--s-1-5);*/
-/*	max-height: var(--s-1-5);*/
-/*	min-width:  var(--s-1-5);*/
-/*	min-height: var(--s-1-5);*/
-/*}*/
-
-/*.button-disabled > svg {*/
-/*	fill:   var(--text-color-0);*/
-/*	stroke: var(--text-color-0);*/
-/*}*/
-
-/*.button-disabled {*/
-/*	cursor: unset !important;*/
-/*}*/
-
-/*.button-disabled > .button-text {*/
-/*	color: var(--text-color-0);*/
-/*}*/
+.button-link:hover > .button-content > .button-text {
+	text-decoration: underline;
+}
