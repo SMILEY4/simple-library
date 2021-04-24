@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Component, ReactElement } from 'react';
-import { Button, ButtonProps } from '../Button';
-import { Dropdown, DropdownActionItem, DropdownProps } from '../../dropdown/Dropdown';
+import { Button, ButtonProps } from '../button/Button';
+import { Dropdown, DropdownActionItem, DropdownProps } from '../dropdown/Dropdown';
 
 interface DropdownButtonProps extends Omit<ButtonProps, 'renderAsActive'>, DropdownProps {
     buttonTitle?: string | ReactElement,
@@ -55,7 +55,7 @@ export class DropdownButton extends Component<DropdownButtonProps, DropdownButto
 
     getButtonProps(): ButtonProps {
         return {
-            renderAsActive: this.state.showDropdown !== false,
+            // renderAsActive: this.state.showDropdown !== false,
             onAction: this.handleButtonClick,
             ...this.props,
         };

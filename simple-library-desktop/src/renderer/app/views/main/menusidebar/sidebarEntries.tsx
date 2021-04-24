@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { SidebarMenuItem } from '../../../../components/sidebarmenu/SidebarMenuItem';
 import { AiOutlineCloseCircle, BiImport, HiOutlineRefresh, HiPlus } from 'react-icons/all';
-import { DropdownButton } from '../../../../components/button/dropdownbutton/DropdownButton';
+import { DropdownButton } from '../../../../components/dropdownbutton/DropdownButton';
 import { Variant } from '../../../../components/common';
 import { DropdownItemType } from '../../../../components/dropdown/Dropdown';
 

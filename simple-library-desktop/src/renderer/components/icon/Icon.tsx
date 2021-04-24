@@ -34,13 +34,13 @@ export enum IconType {
 
 }
 
-const OUTLINED = "outlined";
-const FILLED = "filled";
+const SVG_OUTLINED = "outlined";
+const SVG_FILLED = "filled";
 
 
 const ICON_COLOR_TYPE = new Map<IconType, string>([
-    [IconType.FOLDER, OUTLINED],
-    [IconType.HOME, FILLED]
+    [IconType.FOLDER, SVG_OUTLINED],
+    [IconType.HOME, SVG_FILLED]
 ]);
 
 export interface IconProps {
@@ -61,8 +61,8 @@ export function Icon(props: React.PropsWithChildren<IconProps>): React.ReactElem
     }
 
     function getClassName(): string {
-        const isFilled = ICON_COLOR_TYPE.get(props.type) === FILLED
-        const isOutlined = ICON_COLOR_TYPE.get(props.type) === OUTLINED
+        const isFilled = ICON_COLOR_TYPE.get(props.type) === SVG_FILLED
+        const isOutlined = ICON_COLOR_TYPE.get(props.type) === SVG_OUTLINED
         return concatClasses(
             "icon",
             map(props.size, size => "icon-size-" + size),

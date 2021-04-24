@@ -14,6 +14,6 @@
 	min-height: var(--s-1-5);
 }
 
-.button-link:hover > .button-content > .button-text {
+.button-link:hover > .label > .label-content {
 	text-decoration: underline;
 }

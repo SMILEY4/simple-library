@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ReactElement } from 'react';
-import { AlignCross, AlignMain, concatClasses, Dir, Fill, getIf, GroupPosition, map, Size, Type } from '../common';
+import { AlignCross, AlignMain, concatClasses, Dir, Fill, map, Size } from '../common';
 import "./box.css";
 
 interface BoxProps extends React.HTMLAttributes<HTMLDivElement> {

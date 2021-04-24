@@ -1,3 +1,5 @@
+import * as React from 'react';
+
 export enum GroupPosition {
     START = "start",
     MIDDLE = "middle",
@@ -108,6 +110,15 @@ export enum Size {
     S_32 = 's-32',
     S_40 = 's-40',
     S_48 = 's-48',
+}
+
+export interface BaseProps {
+    className?: string,
+    style?: React.CSSProperties,
+}
+
+export interface ClickableProps {
+    onClick?: (event:React.MouseEvent) => void
 }
 
 

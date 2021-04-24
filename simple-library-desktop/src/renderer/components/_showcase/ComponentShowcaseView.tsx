@@ -1,18 +1,13 @@
 import * as React from 'react';
-import {ReactElement, useState} from 'react';
+import { ReactElement, useState } from 'react';
 import "./showcase.css";
-import {Text, TextVariant} from '../text/Text';
-import {ColorType, GroupPosition, Size, Type, Variant} from '../common';
-import {Button} from '../button/Button';
-import {
-    AiFillCaretRight,
-    AiFillHome,
-    AiOutlineAlignCenter,
-    AiOutlineAlignLeft,
-    AiOutlineAlignRight,
-} from 'react-icons/all';
-import {Pane} from '../pane/Pane';
-import {Icon, IconType} from "../icon/Icon";
+import { Text, TextVariant } from '../text/Text';
+import { ColorType, GroupPosition, Size, Type, Variant } from '../common';
+import { Button } from '../button/Button';
+import { Pane } from '../pane/Pane';
+import { Icon, IconType } from "../icon/Icon";
+import { Label } from '../label/Label';
+import { ExpButton } from '../button/ExpButton';
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0");
@@ -20,7 +15,7 @@ export function ComponentShowcaseView(): any {
     const bgNr = (theme === "light-0" || theme === "dark-0") ? "0" : "1";
     return (
         <div className={
-            "_showcase-view"
+            "showcase-view"
             + " theme-" + themeName
             + " background-" + bgNr
         }>
@@ -39,36 +34,55 @@ export function ComponentShowcaseView(): any {
     function renderContent() {
         return (
             <>
-                {renderIcons()}
-                {renderButtons()}
-                {renderPanesInteractive()}
-                {renderText()}
+                <ExpButton>
+                    <div>TestDiv</div>
+                    Content
+                    <b>bold element</b>
+                </ExpButton>
+                {/*{renderLabels()}*/}
+                {/*{renderIcons()}*/}
+                {/*{renderButtons()}*/}
+                {/*{renderPanesInteractive()}*/}
+                {/*{renderText()}*/}
             </>
         );
     }
 
+
+    function renderLabels() {
+        return (
+            <>
+                <h3>Labels</h3>
+                <Label>Label</Label>
+                <Label icon={IconType.HOME}>Label</Label>
+                <Label iconRight={IconType.HOME}>Label</Label>
+                <Label icon={IconType.HOME} iconRight={IconType.HOME}>Label</Label>
+                <Label icon={IconType.HOME}>Label</Label>
+            </>
+        );
+    }
 
     function renderIcons() {
         return (
             <>
                 <h3>Icons</h3>
                 <ShowcaseRow>
-                    <Icon type={IconType.FOLDER} color={ColorType.BASE_4}/>
-                    <Icon type={IconType.FOLDER} color={ColorType.PRIMARY_2}/>
-                    <Icon type={IconType.FOLDER} color={ColorType.SUCCESS_2}/>
-                    <Icon type={IconType.FOLDER} color={ColorType.ERROR_2}/>
-                    <Icon type={IconType.FOLDER} color={ColorType.WARN_2}/>
+                    <Icon type={IconType.FOLDER} color={ColorType.BASE_4} />
+                    <Icon type={IconType.FOLDER} color={ColorType.PRIMARY_2} />
+                    <Icon type={IconType.FOLDER} color={ColorType.SUCCESS_2} />
+                    <Icon type={IconType.FOLDER} color={ColorType.ERROR_2} />
+                    <Icon type={IconType.FOLDER} color={ColorType.WARN_2} />
                 </ShowcaseRow>
                 <ShowcaseRow>
-                    <Icon type={IconType.FOLDER} size={Size.S_0_5}/>
-                    <Icon type={IconType.FOLDER} size={Size.S_0_75}/>
-                    <Icon type={IconType.FOLDER} size={Size.S_1}/>
-                    <Icon type={IconType.FOLDER} size={Size.S_1_5}/>
-                    <Icon type={IconType.FOLDER} size={Size.S_2}/>
-                    <Icon type={IconType.FOLDER} size={Size.S_3}/>
+                    <Icon type={IconType.FOLDER} size={Size.S_0_5} />
+                    <Icon type={IconType.FOLDER} size={Size.S_0_75} />
+                    <Icon type={IconType.FOLDER} size={Size.S_1} />
+                    <Icon type={IconType.FOLDER} size={Size.S_1_5} />
+                    <Icon type={IconType.FOLDER} size={Size.S_2} />
+                    <Icon type={IconType.FOLDER} size={Size.S_3} />
                 </ShowcaseRow>
             </>
-        )
+        );
     }
 
     function renderButtons() {
@@ -99,25 +113,24 @@ export function ComponentShowcaseView(): any {
                     <Button type={Type.DEFAULT} disabled={true} variant={Variant.LINK} icon={IconType.HOME}>With
                         Icon</Button>
                 </ShowcaseRow>
-                {/*<Button type={Type.DEFAULT} variant={Variant.SOLID} icon={IconType.HOME} iconRight={*/}
-                {/*    <AiFillCaretRight/>}>Two*/}
-                {/*    Icons</Button>*/}
+                <Button type={Type.DEFAULT} variant={Variant.SOLID} icon={IconType.HOME} iconRight={IconType.HOME}>Two
+                    Icons</Button>
                 <ShowcaseRow>
-                    <Button type={Type.PRIMARY} variant={Variant.SOLID} icon={IconType.HOME}/>
-                    <Button type={Type.DEFAULT} variant={Variant.SOLID} icon={IconType.HOME}/>
-                    <Button type={Type.DEFAULT} variant={Variant.OUTLINE} icon={IconType.HOME}/>
-                    <Button type={Type.DEFAULT} variant={Variant.GHOST} icon={IconType.HOME}/>
-                    <Button type={Type.DEFAULT} variant={Variant.LINK} icon={IconType.HOME}/>
+                    <Button type={Type.PRIMARY} variant={Variant.SOLID} icon={IconType.HOME} />
+                    <Button type={Type.DEFAULT} variant={Variant.SOLID} icon={IconType.HOME} />
+                    <Button type={Type.DEFAULT} variant={Variant.OUTLINE} icon={IconType.HOME} />
+                    <Button type={Type.DEFAULT} variant={Variant.GHOST} icon={IconType.HOME} />
+                    <Button type={Type.DEFAULT} variant={Variant.LINK} icon={IconType.HOME} />
                 </ShowcaseRow>
                 <ShowcaseRow>
-                    <Button square={true} type={Type.PRIMARY} variant={Variant.SOLID} icon={IconType.HOME}/>
-                    <Button square={true} type={Type.DEFAULT} variant={Variant.SOLID} icon={IconType.HOME}/>
-                    <Button square={true} type={Type.DEFAULT} variant={Variant.OUTLINE} icon={IconType.HOME}/>
-                    <Button square={true} type={Type.DEFAULT} variant={Variant.GHOST} icon={IconType.HOME}/>
-                    <Button square={true} type={Type.DEFAULT} variant={Variant.LINK} icon={IconType.HOME}/>
+                    <Button square={true} type={Type.PRIMARY} variant={Variant.SOLID} icon={IconType.HOME} />
+                    <Button square={true} type={Type.DEFAULT} variant={Variant.SOLID} icon={IconType.HOME} />
+                    <Button square={true} type={Type.DEFAULT} variant={Variant.OUTLINE} icon={IconType.HOME} />
+                    <Button square={true} type={Type.DEFAULT} variant={Variant.GHOST} icon={IconType.HOME} />
+                    <Button square={true} type={Type.DEFAULT} variant={Variant.LINK} icon={IconType.HOME} />
                 </ShowcaseRow>
                 <ShowcaseRow>
-                    <div style={{display: 'flex'}}>
+                    <div style={{ display: 'flex' }}>
                         <Button type={Type.DEFAULT} variant={Variant.SOLID}
                                 groupPos={GroupPosition.START}>Start</Button>
                         <Button type={Type.DEFAULT} variant={Variant.SOLID}
@@ -126,7 +139,7 @@ export function ComponentShowcaseView(): any {
                                 groupPos={GroupPosition.MIDDLE}>Middle</Button>
                         <Button type={Type.DEFAULT} variant={Variant.SOLID} groupPos={GroupPosition.END}>End</Button>
                     </div>
-                    <div style={{display: 'flex'}}>
+                    <div style={{ display: 'flex' }}>
                         <Button type={Type.DEFAULT} variant={Variant.OUTLINE}
                                 groupPos={GroupPosition.START}>Start</Button>
                         <Button type={Type.DEFAULT} variant={Variant.OUTLINE}
@@ -285,17 +298,17 @@ export function ComponentShowcaseView(): any {
                 fillDefault={variantSettings.typeDefault}
                 fillReady={variantSettings.typeReady}
                 fillActive={variantSettings.typeActive}
-                domProps={{
-                    className: "behaviour-no-select",
-                    style: {
-                        width: "30px",
-                        height: "30px",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                    },
+                className='behaviour-no-select'
+                style={{
+                    width: "30px",
+                    height: "30px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
                 }}
-            >P</Pane>;
+            >
+                P
+            </Pane>;
         }
 
         return (

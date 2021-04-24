@@ -1,253 +1,71 @@
 import * as React from 'react';
-import {ReactElement} from 'react';
+import { ReactElement } from 'react';
 import "./button.css";
-import {
-    AlignCross,
-    AlignMain,
-    ColorType,
-    concatClasses,
-    getIf,
-    GroupPosition,
-    map,
-    orDefault,
-    Size,
-    Type,
-    Variant
-} from '../common';
-import {Pane} from '../pane/Pane';
-import {HBox} from '../layout/Box';
-import {Icon, IconType} from "../icon/Icon";
+import { BaseProps, ColorType, concatClasses, getIf, GroupPosition, orDefault, Type, Variant } from '../common';
+import { Pane } from '../pane/Pane';
+import { BUTTON_PANE_CONFIG } from './buttonConfig';
+import { Label } from '../label/Label';
 
-export interface ButtonProps {
+export interface ButtonProps extends BaseProps {
 
     variant: Variant,
     type?: Type,
 
-    groupPos?: GroupPosition,
+    icon?: any, //IconType, todo
+    iconRight?: any, //IconType, todo
 
-    icon?: IconType,
-    iconRight?: IconType,
+    groupPos?: GroupPosition,
     square?: boolean,
 
     disabled?: boolean,
+    forceFillDefault?: ColorType,
 
     onAction?: () => void,
-    renderAsActive?: boolean,
-    className?: string
 }
-
-
-const BUTTON_PANE_CONFIG: any = {
-    default: {
-        link: {
-            typeOutline: undefined,
-            typeDefault: undefined,
-            typeReady: undefined,
-            typeActive: undefined,
-        },
-        ghost: {
-            typeOutline: undefined,
-            typeDefault: undefined,
-            typeReady: ColorType.BASE_0,
-            typeActive: ColorType.BASE_1,
-        },
-        outline: {
-            typeOutline: ColorType.BASE_4,
-            typeDefault: undefined,
-            typeReady: ColorType.BASE_0,
-            typeActive: ColorType.BASE_1,
-        },
-        solid: {
-            typeOutline: ColorType.BASE_4,
-            typeDefault: ColorType.BASE_1,
-            typeReady: ColorType.BASE_2,
-            typeActive: ColorType.BASE_3,
-        },
-    },
-    primary: {
-        link: {
-            typeOutline: undefined,
-            typeDefault: undefined,
-            typeReady: undefined,
-            typeActive: undefined,
-        },
-        ghost: {
-            typeOutline: undefined,
-            typeDefault: undefined,
-            typeReady: ColorType.PRIMARY_0,
-            typeActive: ColorType.PRIMARY_1,
-        },
-        outline: {
-            typeOutline: ColorType.PRIMARY_4,
-            typeDefault: undefined,
-            typeReady: ColorType.PRIMARY_0,
-            typeActive: ColorType.PRIMARY_1,
-        },
-        solid: {
-            typeOutline: ColorType.PRIMARY_2,
-            typeDefault: ColorType.PRIMARY_2,
-            typeReady: ColorType.PRIMARY_3,
-            typeActive: ColorType.PRIMARY_4,
-        },
-    },
-    success: {
-        link: {
-            typeOutline: undefined,
-            typeDefault: undefined,
-            typeReady: undefined,
-            typeActive: undefined,
-        },
-        ghost: {
-            typeOutline: undefined,
-            typeDefault: undefined,
-            typeReady: ColorType.SUCCESS_0,
-            typeActive: ColorType.SUCCESS_1,
-        },
-        outline: {
-            typeOutline: ColorType.SUCCESS_4,
-            typeDefault: undefined,
-            typeReady: ColorType.SUCCESS_0,
-            typeActive: ColorType.SUCCESS_1,
-        },
-        solid: {
-            typeOutline: ColorType.SUCCESS_2,
-            typeDefault: ColorType.SUCCESS_2,
-            typeReady: ColorType.SUCCESS_3,
-            typeActive: ColorType.SUCCESS_4,
-        },
-    },
-    error: {
-        link: {
-            typeOutline: undefined,
-            typeDefault: undefined,
-            typeReady: undefined,
-            typeActive: undefined,
-        },
-        ghost: {
-            typeOutline: undefined,
-            typeDefault: undefined,
-            typeReady: ColorType.ERROR_0,
-            typeActive: ColorType.ERROR_1,
-        },
-        outline: {
-            typeOutline: ColorType.ERROR_4,
-            typeDefault: undefined,
-            typeReady: ColorType.ERROR_0,
-            typeActive: ColorType.ERROR_1,
-        },
-        solid: {
-            typeOutline: ColorType.ERROR_2,
-            typeDefault: ColorType.ERROR_2,
-            typeReady: ColorType.ERROR_3,
-            typeActive: ColorType.ERROR_4,
-        },
-    },
-    warn: {
-        link: {
-            typeOutline: undefined,
-            typeDefault: undefined,
-            typeReady: undefined,
-            typeActive: undefined,
-        },
-        ghost: {
-            typeOutline: undefined,
-            typeDefault: undefined,
-            typeReady: ColorType.WARN_0,
-            typeActive: ColorType.WARN_1,
-        },
-        outline: {
-            typeOutline: ColorType.WARN_4,
-            typeDefault: undefined,
-            typeReady: ColorType.WARN_0,
-            typeActive: ColorType.WARN_1,
-        },
-        solid: {
-            typeOutline: ColorType.WARN_2,
-            typeDefault: ColorType.WARN_2,
-            typeReady: ColorType.WARN_3,
-            typeActive: ColorType.WARN_4,
-        },
-    },
-};
 
 
 export function Button(props: React.PropsWithChildren<ButtonProps>): ReactElement {
 
+    const type: Type = orDefault(props.type, Type.DEFAULT);
+
     return (
-        <Pane outline={getOutline(props.variant, orDefault(props.type, Type.DEFAULT))}
-              fillDefault={getFillDefault(props.variant, orDefault(props.type, Type.DEFAULT))}
-              fillReady={getFillReady(props.variant, orDefault(props.type, Type.DEFAULT))}
-              fillActive={getFillActive(props.variant, orDefault(props.type, Type.DEFAULT))}
+        <Pane outline={getOutline(props.variant, type)}
+              fillDefault={getFillDefault(props.variant, type)}
+              fillReady={getFillReady(props.variant, type)}
+              fillActive={getFillActive(props.variant, type)}
               groupPos={props.groupPos}
-              domProps={{
-                  className: getClassNames(),
-                  onClick: () => handleOnClick(props),
-              }}
+              onClick={handleOnClick}
+              className={getClassNames()}
         >
-            <HBox alignMain={AlignMain.CENTER}
-                  alignCross={AlignCross.CENTER}
-                  className={"button-content"}
-                  spacing={Size.S_0_5}
-                  style={{width: "100%", height: "100%"}}
+            <Label icon={props.icon}
+                   iconRight={props.iconRight}
+                   color={getContentColor()}
+                   style={{ width: "100%", height: "100%" }}
             >
-                {renderLeftIcon()}
-                {renderCenterContent()}
-                {renderRightIcon()}
-            </HBox>
+                {props.children}
+            </Label>
         </Pane>
     );
 
-    function renderCenterContent(): ReactElement | null {
-        return props.children && (
-            <div className={"button-text " + map(getContentColor(), color => "text-color-" + color)}>{
-                props.children}
-            </div>
-        )
-    }
-
-    function renderLeftIcon(): ReactElement | null {
-        return props.icon
-            ? (
-                <Icon
-                    type={props.icon}
-                    color={getContentColor()}
-                    size={Size.S_1}
-                />
-            )
-            : null;
-    }
-
-    function renderRightIcon(): ReactElement | null {
-        return props.iconRight
-            ? (
-                <Icon
-                    type={props.iconRight}
-                    color={getContentColor()}
-                    size={Size.S_1}
-                />
-            )
-            : null;
-    }
-
     function getContentColor(): ColorType {
-        if(props.disabled) {
-            if(!props.type || props.type === Type.DEFAULT) {
-                return ColorType.TEXT_0
+        if (props.disabled) {
+            if (!props.type || props.type === Type.DEFAULT) {
+                return ColorType.TEXT_0;
             } else {
-                if(props.variant === Variant.SOLID) {
-                    return ColorType.TEXT_ON_COLOR
+                if (props.variant === Variant.SOLID) {
+                    return ColorType.TEXT_ON_COLOR;
                 } else {
-                    return ColorType.TEXT_0
+                    return ColorType.TEXT_0;
                 }
             }
         } else {
-            if(!props.type || props.type === Type.DEFAULT) {
-                return ColorType.TEXT_2
+            if (!props.type || props.type === Type.DEFAULT) {
+                return ColorType.TEXT_2;
             } else {
-                if(props.variant === Variant.SOLID) {
-                    return ColorType.TEXT_ON_COLOR
+                if (props.variant === Variant.SOLID) {
+                    return ColorType.TEXT_ON_COLOR;
                 } else {
-                    return ColorType.TEXT_2
+                    return ColorType.TEXT_2;
                 }
             }
         }
@@ -263,7 +81,7 @@ export function Button(props: React.PropsWithChildren<ButtonProps>): ReactElemen
         );
     }
 
-    function handleOnClick(props: ButtonProps): void {
+    function handleOnClick(): void {
         if (!props.disabled && props.onAction) {
             props.onAction();
         }
@@ -274,7 +92,11 @@ export function Button(props: React.PropsWithChildren<ButtonProps>): ReactElemen
     }
 
     function getFillDefault(variant: Variant, type: Type): ColorType {
-        return BUTTON_PANE_CONFIG[type.toString()][variant.toString()].typeDefault;
+        if (props.forceFillDefault) {
+            return props.forceFillDefault;
+        } else {
+            return BUTTON_PANE_CONFIG[type.toString()][variant.toString()].typeDefault;
+        }
     }
 
     function getFillReady(variant: Variant, type: Type): ColorType {
