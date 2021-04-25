@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ReactElement } from 'react';
-import { concatClasses, getIf, map, Type } from '../../common/common';
+import { BaseProps, concatClasses, getIf, map, Type } from '../../common/common';
 import './text.css';
 
 export enum TextVariant {
@@ -14,7 +14,7 @@ export enum TextVariant {
 }
 
 
-interface TextProps {
+interface TextProps extends BaseProps {
     variant: TextVariant,
     bold?: boolean,
     italic?: boolean,
@@ -22,9 +22,6 @@ interface TextProps {
     disabled?: boolean,
     type?: Type,
     onType?: boolean,
-
-    className?: string
-    style?: React.CSSProperties,
 }
 
 interface GenericTextProps extends Omit<TextProps, 'variant'> {

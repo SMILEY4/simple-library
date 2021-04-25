@@ -4,7 +4,6 @@
 	padding-right:   var(--s-0-75);
 }
 
-
 .button-square {
 	padding:    0;
 	width:      var(--s-1-5);
@@ -15,6 +14,6 @@
 	min-height: var(--s-1-5);
 }
 
-.button-link:hover > .label > .label-content {
+.button-link:hover {
 	text-decoration: underline;
 }

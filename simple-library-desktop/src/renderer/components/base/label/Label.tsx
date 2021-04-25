@@ -9,27 +9,38 @@ interface LabelProps extends BaseProps {
 }
 
 
+/**
+ * Displays and handles a no editable text with optional icons and other elements.
+ * The given color will also automatically be applied to any icon inside the label.
+ */
 export function Label(props: React.PropsWithChildren<LabelProps>): ReactElement {
 
-    const modifiedChildren = React.Children.map(props.children, child => {
-        if (React.isValidElement(child) && (child as React.ReactElement<any>).type === Icon) {
-            return React.cloneElement(child, { color: getContentColor() });
-        } else {
-            return child;
-        }
-    });
-
     return (
-        <HBox spacing={Size.S_0_25}
-              className={concatClasses("label", props.className, map(getContentColor(), color => "text-color-" + color))}
-              style={props.style}
-        >
-            {modifiedChildren}
+        <HBox spacing={Size.S_0_25} className={getClassName()} style={props.style}>
+            {getModifiedChildren()}
         </HBox>
     );
 
     function getContentColor(): ColorType {
         return orDefault(props.color, ColorType.TEXT_2);
+    }
+
+    function getClassName() {
+        return concatClasses(
+            "label",
+            map(getContentColor(), color => "text-color-" + color),
+            props.className,
+        );
+    }
+
+    function getModifiedChildren() {
+        return React.Children.map(props.children, child => {
+            if (React.isValidElement(child) && (child as React.ReactElement<any>).type === Icon) {
+                return React.cloneElement(child, { color: getContentColor() });
+            } else {
+                return child;
+            }
+        });
     }
 
 }

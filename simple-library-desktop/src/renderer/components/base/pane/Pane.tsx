@@ -14,6 +14,9 @@ export interface PaneProps extends BaseProps, ClickableProps{
     groupPos?: GroupPosition,
 }
 
+/**
+ * A simple box that does not affect its content. Background, border, etc can be styled.
+ */
 export function Pane(props: React.PropsWithChildren<PaneProps>): ReactElement {
     return (
         <div className={getClassName()} style={props.style} onClick={props.onClick}>

@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { ReactElement } from 'react';
-import { AlignCross, AlignMain, concatClasses, Dir, Fill, map, orDefault, Size } from '../../common/common';
+import { AlignCross, AlignMain, BaseProps, concatClasses, Dir, Fill, map, orDefault, Size } from '../../common/common';
 import "./box.css";
 
-interface BoxProps extends React.HTMLAttributes<HTMLDivElement> {
+interface BoxProps extends React.HTMLAttributes<HTMLDivElement>, BaseProps {
 
     dir?: Dir
     alignMain?: AlignMain,
@@ -13,9 +13,6 @@ interface BoxProps extends React.HTMLAttributes<HTMLDivElement> {
     spacing?: Size,
     padding?: Size,
     margin?: Size,
-
-    style?: React.CSSProperties,
-    className?: string,
 
     outlined?: any, //todo: deprecated -> remove
     type?: any, //todo: deprecated -> remove

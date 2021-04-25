@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ReactElement, useState } from 'react';
 import "./showcase.css";
-import { Text, TextVariant } from '../base/text/Text';
+import { BodyText, H2Text, Text, TextVariant } from '../base/text/Text';
 import { ColorType, GroupPosition, Size, Type, Variant } from '../common/common';
 import { Button } from '../input/button/Button';
 import { Pane } from '../base/pane/Pane';
@@ -110,6 +110,10 @@ export function ComponentShowcaseView(): any {
                     <Icon type={IconType.HOME} />
                     After
                 </Label>
+                <Label>
+                    <Icon type={IconType.HOME} size={Size.S_1} />
+                    <H2Text bold>Header 2</H2Text>
+                </Label>
             </>
         );
     }
@@ -150,52 +154,52 @@ export function ComponentShowcaseView(): any {
                 <ShowcaseRow>
                     <Button type={Type.PRIMARY} variant={Variant.SOLID}>
                         <Icon type={IconType.HOME} />
-                        With Icon
+                        <BodyText onType type={Type.PRIMARY}>With Icon</BodyText>
                     </Button>
                     <Button type={Type.DEFAULT} variant={Variant.SOLID}>
                         <Icon type={IconType.HOME} />
-                        With Icon
+                        <BodyText>With Icon</BodyText>
                     </Button>
                     <Button type={Type.DEFAULT} variant={Variant.OUTLINE}>
                         <Icon type={IconType.HOME} />
-                        With Icon
+                        <BodyText>With Icon</BodyText>
                     </Button>
                     <Button type={Type.DEFAULT} variant={Variant.GHOST}>
                         <Icon type={IconType.HOME} />
-                        With Icon
+                        <BodyText>With Icon</BodyText>
                     </Button>
                     <Button type={Type.DEFAULT} variant={Variant.LINK}>
                         <Icon type={IconType.HOME} />
-                        With Icon
+                        <BodyText>With Icon</BodyText>
                     </Button>
                 </ShowcaseRow>
 
                 <ShowcaseRow>
-                    <Button disabled={true} type={Type.PRIMARY} variant={Variant.SOLID}>
+                    <Button type={Type.PRIMARY} variant={Variant.SOLID} disabled>
                         <Icon type={IconType.HOME} />
-                        With Icon
+                        <BodyText onType type={Type.PRIMARY} disabled>With Icon</BodyText>
                     </Button>
-                    <Button type={Type.DEFAULT} disabled={true} variant={Variant.SOLID}>
+                    <Button type={Type.DEFAULT} variant={Variant.SOLID} disabled>
                         <Icon type={IconType.HOME} />
-                        With Icon
+                        <BodyText disabled>With Icon</BodyText>
                     </Button>
-                    <Button type={Type.DEFAULT} disabled={true} variant={Variant.OUTLINE}>
+                    <Button type={Type.DEFAULT} variant={Variant.OUTLINE} disabled>
                         <Icon type={IconType.HOME} />
-                        With Icon
+                        <BodyText disabled>With Icon</BodyText>
                     </Button>
-                    <Button type={Type.DEFAULT} disabled={true} variant={Variant.GHOST}>
+                    <Button type={Type.DEFAULT} variant={Variant.GHOST} disabled>
                         <Icon type={IconType.HOME} />
-                        With Icon
+                        <BodyText disabled>With Icon</BodyText>
                     </Button>
-                    <Button type={Type.DEFAULT} disabled={true} variant={Variant.LINK}>
+                    <Button type={Type.DEFAULT} variant={Variant.LINK} disabled>
                         <Icon type={IconType.HOME} />
-                        With Icon
+                        <BodyText disabled>With Icon</BodyText>
                     </Button>
                 </ShowcaseRow>
 
                 <Button type={Type.DEFAULT} variant={Variant.SOLID}>
                     <Icon type={IconType.HOME} />
-                    Two Icons
+                    <BodyText>Two Icons</BodyText>
                     <Icon type={IconType.HOME} />
                 </Button>
 
@@ -218,19 +222,19 @@ export function ComponentShowcaseView(): any {
                 </ShowcaseRow>
 
                 <ShowcaseRow>
-                    <Button square={true} type={Type.PRIMARY} variant={Variant.SOLID}>
+                    <Button square type={Type.PRIMARY} variant={Variant.SOLID}>
                         <Icon type={IconType.HOME} />
                     </Button>
-                    <Button square={true} type={Type.DEFAULT} variant={Variant.SOLID}>
+                    <Button square type={Type.DEFAULT} variant={Variant.SOLID}>
                         <Icon type={IconType.HOME} />
                     </Button>
-                    <Button square={true} type={Type.DEFAULT} variant={Variant.OUTLINE}>
+                    <Button square type={Type.DEFAULT} variant={Variant.OUTLINE}>
                         <Icon type={IconType.HOME} />
                     </Button>
-                    <Button square={true} type={Type.DEFAULT} variant={Variant.GHOST}>
+                    <Button square type={Type.DEFAULT} variant={Variant.GHOST}>
                         <Icon type={IconType.HOME} />
                     </Button>
-                    <Button square={true} type={Type.DEFAULT} variant={Variant.LINK}>
+                    <Button square type={Type.DEFAULT} variant={Variant.LINK}>
                         <Icon type={IconType.HOME} />
                     </Button>
                 </ShowcaseRow>
@@ -274,14 +278,55 @@ export function ComponentShowcaseView(): any {
         function renderButtonRow(type: Type) {
             return (
                 <ShowcaseRow>
-                    <Button type={type} variant={Variant.SOLID}>Solid</Button>
-                    <Button type={type} variant={Variant.OUTLINE}>Outline</Button>
-                    <Button type={type} variant={Variant.GHOST}>Ghost</Button>
-                    <Button type={type} variant={Variant.LINK}>Link</Button>
-                    <Button type={type} disabled={true} variant={Variant.SOLID}>Solid</Button>
-                    <Button type={type} disabled={true} variant={Variant.OUTLINE}>Outline</Button>
-                    <Button type={type} disabled={true} variant={Variant.GHOST}>Ghost</Button>
-                    <Button type={type} disabled={true} variant={Variant.LINK}>Link</Button>
+
+                    <Button type={type} variant={Variant.SOLID}>
+                        <BodyText onType type={type}>
+                            Solid
+                        </BodyText>
+                    </Button>
+
+                    <Button type={type} variant={Variant.OUTLINE}>
+                        <BodyText>
+                            Outline
+                        </BodyText>
+                    </Button>
+
+                    <Button type={type} variant={Variant.GHOST}>
+                        <BodyText>
+                            Ghost
+                        </BodyText>
+                    </Button>
+
+                    <Button type={type} variant={Variant.LINK}>
+                        <BodyText>
+                            Link
+                        </BodyText>
+                    </Button>
+
+                    <Button type={type} disabled variant={Variant.SOLID}>
+                        <BodyText onType type={type} disabled>
+                            Solid
+                        </BodyText>
+                    </Button>
+
+                    <Button type={type} disabled variant={Variant.OUTLINE}>
+                        <BodyText disabled>
+                            Outline
+                        </BodyText>
+                    </Button>
+
+                    <Button type={type} disabled variant={Variant.GHOST}>
+                        <BodyText disabled>
+                            Ghost
+                        </BodyText>
+                    </Button>
+
+                    <Button type={type} disabled variant={Variant.LINK}>
+                        <BodyText disabled>
+                            Link
+                        </BodyText>
+                    </Button>
+
                 </ShowcaseRow>
             );
         }

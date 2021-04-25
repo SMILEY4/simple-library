@@ -11,8 +11,8 @@ export interface ButtonProps extends BaseProps {
     variant: Variant,
     type?: Type,
 
-    icon?: any, // todo deprecated
-    iconRight?: any, // todo deprecated
+    icon?: any, // todo deprecated -> remove
+    iconRight?: any, // todo deprecated -> remove
 
     groupPos?: GroupPosition,
     square?: boolean,

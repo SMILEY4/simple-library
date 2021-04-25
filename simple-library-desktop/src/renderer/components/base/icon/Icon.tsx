@@ -4,34 +4,26 @@ import { ColorType, concatClasses, getIf, map, Size } from "../../common/common"
 import { AiFillHome, FaCheck, HiOutlineFolder } from 'react-icons/all';
 
 export enum IconType {
-
     CHEVRON_UP,
     CHEVRON_DOWN,
     CHEVRON_LEFT,
     CHEVRON_RIGHT,
-
     CHEVRON_DOUBLE_UP,
     CHEVRON_DOUBLE_DOWN,
     CHEVRON_DOUBLE_LEFT,
     CHEVRON_DOUBLE_RIGHT,
-
     PLUS,
     MINUS,
     CROSS,
-
     CLOSE,
     REFRESH,
     IMPORT,
     HOME,
-
     CHECKMARK,
-
     DIRECTORY,
     FILE,
-
     IMAGES,
     FOLDER,
-
 }
 
 const SVG_OUTLINED = "outlined";
@@ -51,7 +43,11 @@ export interface IconProps {
     className?: string
 }
 
+/**
+ * Displays and handles an svg icon with a given color and size.
+ */
 export function Icon(props: React.PropsWithChildren<IconProps>): React.ReactElement {
+
     switch (props.type) {
         case IconType.FOLDER:
             return <HiOutlineFolder className={getClassName()} />;
