@@ -8,6 +8,7 @@ import { Pane, PaneState } from '../base/pane/Pane';
 import { Icon, IconType } from "../base/icon/Icon";
 import { Label } from '../base/label/Label';
 import { Checkbox } from '../input/checkbox/Checkbox';
+import { ToggleButton } from '../input/togglebutton/ToggleButton';
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0");
@@ -37,6 +38,7 @@ export function ComponentShowcaseView(): any {
                 {renderCheckboxes()}
                 {renderLabels()}
                 {renderIcons()}
+                {renderToggleButtons()}
                 {renderButtons()}
                 {renderPanesInteractive()}
                 {renderText()}
@@ -147,6 +149,204 @@ export function ComponentShowcaseView(): any {
         );
     }
 
+
+    function renderToggleButtons() {
+        return (
+            <>
+                <h3>ToggleButtons</h3>
+                {renderToggleButtonRow(Type.DEFAULT)}
+                {renderToggleButtonRow(Type.PRIMARY)}
+                {renderToggleButtonRow(Type.SUCCESS)}
+                {renderToggleButtonRow(Type.ERROR)}
+                {renderToggleButtonRow(Type.WARN)}
+
+                <ShowcaseRow>
+                    <ToggleButton type={Type.PRIMARY} variant={Variant.SOLID}>
+                        <Icon type={IconType.HOME} />
+                        <BodyText onType type={Type.PRIMARY}>With Icon</BodyText>
+                    </ToggleButton>
+                    <ToggleButton type={Type.DEFAULT} variant={Variant.SOLID}>
+                        <Icon type={IconType.HOME} />
+                        <BodyText>With Icon</BodyText>
+                    </ToggleButton>
+                    <ToggleButton type={Type.DEFAULT} variant={Variant.OUTLINE}>
+                        <Icon type={IconType.HOME} />
+                        <BodyText>With Icon</BodyText>
+                    </ToggleButton>
+                    <ToggleButton type={Type.DEFAULT} variant={Variant.GHOST}>
+                        <Icon type={IconType.HOME} />
+                        <BodyText>With Icon</BodyText>
+                    </ToggleButton>
+                    <ToggleButton type={Type.DEFAULT} variant={Variant.LINK}>
+                        <Icon type={IconType.HOME} />
+                        <BodyText>With Icon</BodyText>
+                    </ToggleButton>
+                </ShowcaseRow>
+
+                <ShowcaseRow>
+                    <ToggleButton type={Type.PRIMARY} variant={Variant.SOLID} disabled>
+                        <Icon type={IconType.HOME} />
+                        <BodyText onType type={Type.PRIMARY} disabled>With Icon</BodyText>
+                    </ToggleButton>
+                    <ToggleButton type={Type.DEFAULT} variant={Variant.SOLID} disabled>
+                        <Icon type={IconType.HOME} />
+                        <BodyText disabled>With Icon</BodyText>
+                    </ToggleButton>
+                    <ToggleButton type={Type.DEFAULT} variant={Variant.OUTLINE} disabled>
+                        <Icon type={IconType.HOME} />
+                        <BodyText disabled>With Icon</BodyText>
+                    </ToggleButton>
+                    <ToggleButton type={Type.DEFAULT} variant={Variant.GHOST} disabled>
+                        <Icon type={IconType.HOME} />
+                        <BodyText disabled>With Icon</BodyText>
+                    </ToggleButton>
+                    <ToggleButton type={Type.DEFAULT} variant={Variant.LINK} disabled>
+                        <Icon type={IconType.HOME} />
+                        <BodyText disabled>With Icon</BodyText>
+                    </ToggleButton>
+                </ShowcaseRow>
+
+                <ToggleButton type={Type.DEFAULT} variant={Variant.SOLID}>
+                    <Icon type={IconType.HOME} />
+                    <BodyText>Two Icons</BodyText>
+                    <Icon type={IconType.HOME} />
+                </ToggleButton>
+
+                <ShowcaseRow>
+                    <ToggleButton type={Type.PRIMARY} variant={Variant.SOLID}>
+                        <Icon type={IconType.HOME} />
+                    </ToggleButton>
+                    <ToggleButton type={Type.DEFAULT} variant={Variant.SOLID}>
+                        <Icon type={IconType.HOME} />
+                    </ToggleButton>
+                    <ToggleButton type={Type.DEFAULT} variant={Variant.OUTLINE}>
+                        <Icon type={IconType.HOME} />
+                    </ToggleButton>
+                    <ToggleButton type={Type.DEFAULT} variant={Variant.GHOST}>
+                        <Icon type={IconType.HOME} />
+                    </ToggleButton>
+                    <ToggleButton type={Type.DEFAULT} variant={Variant.LINK}>
+                        <Icon type={IconType.HOME} />
+                    </ToggleButton>
+                </ShowcaseRow>
+
+                <ShowcaseRow>
+                    <ToggleButton square type={Type.PRIMARY} variant={Variant.SOLID}>
+                        <Icon type={IconType.HOME} />
+                    </ToggleButton>
+                    <ToggleButton square type={Type.DEFAULT} variant={Variant.SOLID}>
+                        <Icon type={IconType.HOME} />
+                    </ToggleButton>
+                    <ToggleButton square type={Type.DEFAULT} variant={Variant.OUTLINE}>
+                        <Icon type={IconType.HOME} />
+                    </ToggleButton>
+                    <ToggleButton square type={Type.DEFAULT} variant={Variant.GHOST}>
+                        <Icon type={IconType.HOME} />
+                    </ToggleButton>
+                    <ToggleButton square type={Type.DEFAULT} variant={Variant.LINK}>
+                        <Icon type={IconType.HOME} />
+                    </ToggleButton>
+                </ShowcaseRow>
+
+                <ShowcaseRow>
+
+                    <div style={{ display: 'flex' }}>
+                        <ToggleButton type={Type.DEFAULT} variant={Variant.SOLID} groupPos={GroupPosition.START}>
+                            Start
+                        </ToggleButton>
+                        <ToggleButton type={Type.DEFAULT} variant={Variant.SOLID} groupPos={GroupPosition.MIDDLE}>
+                            Middle
+                        </ToggleButton>
+                        <ToggleButton type={Type.DEFAULT} variant={Variant.SOLID} groupPos={GroupPosition.MIDDLE}>
+                            Middle
+                        </ToggleButton>
+                        <ToggleButton type={Type.DEFAULT} variant={Variant.SOLID} groupPos={GroupPosition.END}>
+                            End
+                        </ToggleButton>
+                    </div>
+
+                    <div style={{ display: 'flex' }}>
+                        <ToggleButton type={Type.DEFAULT} variant={Variant.OUTLINE} groupPos={GroupPosition.START}>
+                            Start
+                        </ToggleButton>
+                        <ToggleButton type={Type.DEFAULT} variant={Variant.OUTLINE} groupPos={GroupPosition.MIDDLE}>
+                            Middle
+                        </ToggleButton>
+                        <ToggleButton type={Type.DEFAULT} variant={Variant.OUTLINE} groupPos={GroupPosition.MIDDLE}>
+                            Middle
+                        </ToggleButton>
+                        <ToggleButton type={Type.DEFAULT} variant={Variant.OUTLINE} groupPos={GroupPosition.END}>
+                            End
+                        </ToggleButton>
+                    </div>
+                </ShowcaseRow>
+
+                <ToggleButton switchContent>
+                    <BodyText>Switch to selected</BodyText>
+                    <BodyText>Switch to not selected</BodyText>
+                </ToggleButton>
+
+            </>
+        );
+
+        function renderToggleButtonRow(type: Type) {
+            return (
+                <ShowcaseRow>
+
+                    <ToggleButton type={type} variant={Variant.SOLID}>
+                        <BodyText onType type={type}>
+                            Solid
+                        </BodyText>
+                    </ToggleButton>
+
+                    <ToggleButton type={type} variant={Variant.OUTLINE}>
+                        <BodyText>
+                            Outline
+                        </BodyText>
+                    </ToggleButton>
+
+                    <ToggleButton type={type} variant={Variant.GHOST}>
+                        <BodyText>
+                            Ghost
+                        </BodyText>
+                    </ToggleButton>
+
+                    <ToggleButton type={type} variant={Variant.LINK}>
+                        <BodyText>
+                            Link
+                        </BodyText>
+                    </ToggleButton>
+
+                    <ToggleButton type={type} disabled variant={Variant.SOLID}>
+                        <BodyText onType type={type} disabled>
+                            Solid
+                        </BodyText>
+                    </ToggleButton>
+
+                    <ToggleButton type={type} disabled variant={Variant.OUTLINE}>
+                        <BodyText disabled>
+                            Outline
+                        </BodyText>
+                    </ToggleButton>
+
+                    <ToggleButton type={type} disabled variant={Variant.GHOST}>
+                        <BodyText disabled>
+                            Ghost
+                        </BodyText>
+                    </ToggleButton>
+
+                    <ToggleButton type={type} disabled variant={Variant.LINK}>
+                        <BodyText disabled>
+                            Link
+                        </BodyText>
+                    </ToggleButton>
+
+                </ShowcaseRow>
+            );
+        }
+    }
+    
+    
     function renderButtons() {
         return (
             <>
@@ -246,7 +446,6 @@ export function ComponentShowcaseView(): any {
                 </ShowcaseRow>
 
                 <ShowcaseRow>
-
                     <div style={{ display: 'flex' }}>
                         <Button type={Type.DEFAULT} variant={Variant.SOLID} groupPos={GroupPosition.START}>
                             Start
@@ -261,7 +460,6 @@ export function ComponentShowcaseView(): any {
                             End
                         </Button>
                     </div>
-
                     <div style={{ display: 'flex' }}>
                         <Button type={Type.DEFAULT} variant={Variant.OUTLINE} groupPos={GroupPosition.START}>
                             Start
@@ -276,6 +474,21 @@ export function ComponentShowcaseView(): any {
                             End
                         </Button>
                     </div>
+                </ShowcaseRow>
+
+                <ShowcaseRow>
+                    <Button variant={Variant.SOLID} error>
+                        Error State
+                    </Button>
+                    <Button variant={Variant.OUTLINE} error>
+                        Error State
+                    </Button>
+                    <Button variant={Variant.GHOST} error>
+                        Error State
+                    </Button>
+                    <Button variant={Variant.LINK} error>
+                        Error State
+                    </Button>
                 </ShowcaseRow>
 
             </>

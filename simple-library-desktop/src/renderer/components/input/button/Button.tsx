@@ -11,7 +11,7 @@ import {
     Type,
     Variant,
 } from '../../common/common';
-import { Pane } from '../../base/pane/Pane';
+import { Pane, PaneState } from '../../base/pane/Pane';
 import { BUTTON_PANE_CONFIG } from './buttonConfig';
 import { Label } from '../../base/label/Label';
 
@@ -21,6 +21,7 @@ export interface ButtonProps extends BaseProps {
     groupPos?: GroupPosition,
     square?: boolean,
     error?: boolean,
+    forcedPaneState?: PaneState,
     disabled?: boolean,
     onAction?: () => void,
 
@@ -39,6 +40,7 @@ export function Button(props: React.PropsWithChildren<ButtonProps>): ReactElemen
               fillDefault={getFillDefault(variant, type)}
               fillReady={getFillReady(variant, type)}
               fillActive={getFillActive(variant, type)}
+              forcedState={props.forcedPaneState}
               groupPos={props.groupPos}
               onClick={handleOnClick}
               className={getClassNames()}
@@ -94,7 +96,7 @@ export function Button(props: React.PropsWithChildren<ButtonProps>): ReactElemen
 
     function getOutline(variant: Variant, type: Type): ColorType {
         if (props.error) {
-            return BUTTON_PANE_CONFIG[Type.ERROR.toString()][variant.toString()].typeOutline;
+            return BUTTON_PANE_CONFIG[Type.ERROR.toString()][Variant.OUTLINE.toString()].typeOutline;
         } else {
             return BUTTON_PANE_CONFIG[type.toString()][variant.toString()].typeOutline;
         }

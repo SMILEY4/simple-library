@@ -8,11 +8,11 @@ import { Icon, IconType } from '../../base/icon/Icon';
 import { HBox } from '../../layout/box/Box';
 
 export interface CheckboxProps {
-    variant: Variant,
     selected?: boolean,
     forceState?: boolean
-    disabled?: boolean,
+    variant: Variant,
     error?: boolean,
+    disabled?: boolean,
     onToggle?: (selected: boolean) => void
 }
 

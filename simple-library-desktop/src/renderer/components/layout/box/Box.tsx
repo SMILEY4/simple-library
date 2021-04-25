@@ -4,12 +4,10 @@ import { AlignCross, AlignMain, BaseProps, concatClasses, Dir, Fill, map, orDefa
 import "./box.css";
 
 interface BoxProps extends React.HTMLAttributes<HTMLDivElement>, BaseProps {
-
     dir?: Dir
     alignMain?: AlignMain,
     alignCross?: AlignCross
     fill?: Fill,
-
     spacing?: Size,
     padding?: Size,
     margin?: Size,
