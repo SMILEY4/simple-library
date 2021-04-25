@@ -18,10 +18,9 @@ interface TextProps extends BaseProps {
     variant: TextVariant,
     bold?: boolean,
     italic?: boolean,
-
-    disabled?: boolean,
     type?: Type,
     onType?: boolean,
+    disabled?: boolean,
 }
 
 interface GenericTextProps extends Omit<TextProps, 'variant'> {

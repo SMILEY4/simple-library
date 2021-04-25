@@ -4,7 +4,7 @@ import "./showcase.css";
 import { BodyText, H2Text, Text, TextVariant } from '../base/text/Text';
 import { ColorType, GroupPosition, Size, Type, Variant } from '../common/common';
 import { Button } from '../input/button/Button';
-import { Pane } from '../base/pane/Pane';
+import { Pane, PaneState } from '../base/pane/Pane';
 import { Icon, IconType } from "../base/icon/Icon";
 import { Label } from '../base/label/Label';
 import { Checkbox } from '../input/checkbox/Checkbox';
@@ -48,38 +48,44 @@ export function ComponentShowcaseView(): any {
     function renderCheckboxes() {
         return (
             <>
-                <h3>Checboxes</h3>
+                <h3>Checkboxes</h3>
 
                 <ShowcaseRow>
-                    <Checkbox variant={Variant.SOLID} selected={true}>
+                    <Checkbox variant={Variant.SOLID} selected>
                         Solid Checkbox
                     </Checkbox>
-                    <Checkbox variant={Variant.OUTLINE} selected={true}>
+                    <Checkbox variant={Variant.OUTLINE} selected>
                         Outline Checkbox
                     </Checkbox>
-                    <Checkbox variant={Variant.GHOST} selected={true}>
+                    <Checkbox variant={Variant.GHOST} selected>
                         Ghost Checkbox
                     </Checkbox>
                 </ShowcaseRow>
 
-
                 <ShowcaseRow>
-                    <Checkbox variant={Variant.SOLID} selected={true} disabled>
+                    <Checkbox variant={Variant.SOLID} selected disabled>
                         Solid Checkbox Disabled
                     </Checkbox>
-                    <Checkbox variant={Variant.OUTLINE} selected={true} disabled>
+                    <Checkbox variant={Variant.OUTLINE} selected disabled>
                         Outline Checkbox Disabled
                     </Checkbox>
-                    <Checkbox variant={Variant.GHOST} selected={true} disabled>
+                    <Checkbox variant={Variant.GHOST} selected disabled>
                         Ghost Checkbox Disabled
                     </Checkbox>
                 </ShowcaseRow>
+
+                <Checkbox variant={Variant.OUTLINE} error selected>
+                    Error Checkbox
+                </Checkbox>
 
                 <Checkbox variant={Variant.OUTLINE}>
                     <Icon type={IconType.HOME} />
                     With Icon
                 </Checkbox>
 
+                <Checkbox variant={Variant.OUTLINE} selected forceState>
+                    Checkbox Force State
+                </Checkbox>
             </>
         );
     }
@@ -448,11 +454,16 @@ export function ComponentShowcaseView(): any {
         }
 
         function pane(variantSettings: any): ReactElement {
+            return paneForcedState(variantSettings, undefined);
+        }
+
+        function paneForcedState(variantSettings: any, state: PaneState): ReactElement {
             return <Pane
                 outline={variantSettings.typeOutline}
                 fillDefault={variantSettings.typeDefault}
                 fillReady={variantSettings.typeReady}
                 fillActive={variantSettings.typeActive}
+                forcedState={state}
                 className='behaviour-no-select'
                 style={{
                     width: "30px",
@@ -474,6 +485,12 @@ export function ComponentShowcaseView(): any {
                         return paneRow(settings);
                     })
                 }
+                <ShowcaseRow>
+                    {paneForcedState(settingBase.outline, undefined)}
+                    {paneForcedState(settingBase.outline, PaneState.DEFAULT)}
+                    {paneForcedState(settingBase.outline, PaneState.READY)}
+                    {paneForcedState(settingBase.outline, PaneState.ACTIVE)}
+                </ShowcaseRow>
             </>
         );
 

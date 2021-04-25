@@ -10,7 +10,9 @@ import { HBox } from '../../layout/box/Box';
 export interface CheckboxProps {
     variant: Variant,
     selected?: boolean,
+    forceState?: boolean
     disabled?: boolean,
+    error?: boolean,
     onToggle?: (selected: boolean) => void
 }
 
@@ -24,6 +26,7 @@ export function Checkbox(props: React.PropsWithChildren<CheckboxProps>): ReactEl
             <Button
                 variant={props.variant}
                 disabled={props.disabled}
+                error={props.error}
                 onAction={handleToggle}
                 className={"checkbox-button"}
             >
@@ -36,7 +39,7 @@ export function Checkbox(props: React.PropsWithChildren<CheckboxProps>): ReactEl
     );
 
     function getIcon() {
-        if (isSelected) {
+        if (props.forceState === true ? props.selected : isSelected) {
             return <Icon type={IconType.CHECKMARK} />;
         } else {
             return undefined;
@@ -44,9 +47,13 @@ export function Checkbox(props: React.PropsWithChildren<CheckboxProps>): ReactEl
     }
 
     function handleToggle(): void {
-        const nextSelected: boolean = !isSelected;
-        setSelected(nextSelected);
-        props.onToggle && props.onToggle(nextSelected);
+        if (props.forceState === true) {
+            props.onToggle && props.onToggle(!props.selected);
+        } else {
+            const nextSelected: boolean = !isSelected;
+            setSelected(nextSelected);
+            props.onToggle && props.onToggle(nextSelected);
+        }
     }
 
 }

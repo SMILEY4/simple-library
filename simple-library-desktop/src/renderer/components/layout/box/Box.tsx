@@ -80,20 +80,3 @@ export function HBox(props: React.PropsWithChildren<HBoxProps>): ReactElement {
         <Box {...baseProps} />
     );
 }
-
-
-interface CBoxProps extends Omit<BoxProps, 'alignMain' | 'alignCross'> {
-
-}
-
-export function CBox(props: React.PropsWithChildren<CBoxProps>): ReactElement {
-    const baseProps = {
-        alignMain: AlignMain.CENTER,
-        alignCross: AlignCross.CENTER,
-        ...props,
-    };
-    return (
-        <Box {...baseProps} />
-    );
-}
-
