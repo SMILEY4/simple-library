@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Group } from '../../../../../common/commonModels';
-import { SidebarMenuGroup } from '../../../../components/sidebarmenu/SidebarMenuGroup';
+import { SidebarMenuGroup } from '../../../../components/_old/sidebarmenu/SidebarMenuGroup';
 import { HiOutlineFolder } from 'react-icons/all';
 import { CollectionSidebarItem } from './CollectionSidebarItem';
 import { useContextMenu } from 'react-contexify';

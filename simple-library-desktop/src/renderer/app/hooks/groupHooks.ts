@@ -11,7 +11,7 @@ import {
     requestRenameGroup,
 } from '../common/messaging/messagingInterface';
 import { useDialogHook, useGlobalState, useNotifications, useStateRef } from './miscHooks';
-import { validateNotBlank } from '../../components/validations';
+import { validateNotBlank } from '../../components/common/validations';
 
 
 export function useGroups() {

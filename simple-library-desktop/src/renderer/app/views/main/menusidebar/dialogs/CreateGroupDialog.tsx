@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { Group } from '../../../../../../common/commonModels';
-import { Dialog } from '../../../../../components/modal/Dialog';
-import { AlignCross, AlignMain, Size, Type, Variant } from '../../../../../components/common';
-import { VBox } from '../../../../../components/layout/Box';
-import { BodyText } from '../../../../../components/text/Text';
+import { Dialog } from '../../../../../components/_old/modal/Dialog';
+import { AlignCross, AlignMain, Size, Type, Variant } from '../../../../../components/common/common';
+import { VBox } from '../../../../../components/layout/box/Box';
+import { BodyText } from '../../../../../components/base/text/Text';
 import { useCreateGroupDialog } from '../../../../hooks/groupHooks';
-import { NewInputField } from '../../../../../components/newinputfield/NewInputField';
+import { NewInputField } from '../../../../../components/_old/newinputfield/NewInputField';
 
 interface CreateGroupDialogProps {
     parentGroup: Group,

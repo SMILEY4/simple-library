@@ -1,5 +1,5 @@
-import { NotificationEntry } from '../../../components/notification/NotificationStack';
-import { Type } from '../../../components/common';
+import { NotificationEntry } from '../../../components/_old/notification/NotificationStack';
+import { Type } from '../../../components/common/common';
 import { AppNotification, AppNotificationType } from '../../store/state';
 import React, { ReactElement } from 'react';
 

@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { SidebarMenuItem } from '../../../../components/sidebarmenu/SidebarMenuItem';
+import { SidebarMenuItem } from '../../../../components/_old/sidebarmenu/SidebarMenuItem';
 import { AiOutlineCloseCircle, BiImport, HiOutlineRefresh, HiPlus } from 'react-icons/all';
-import { DropdownButton } from '../../../../components/dropdownbutton/DropdownButton';
-import { Variant } from '../../../../components/common';
-import { DropdownItemType } from '../../../../components/dropdown/Dropdown';
+import { DropdownButton } from '../../../../components/_old/dropdownbutton/DropdownButton';
+import { Variant } from '../../../../components/common/common';
+import { DropdownItemType } from '../../../../components/_old/dropdown/Dropdown';
 
 
 interface SimpleMenuActionProps {

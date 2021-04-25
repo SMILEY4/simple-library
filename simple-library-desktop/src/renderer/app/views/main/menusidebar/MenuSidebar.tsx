@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { SidebarMenu } from '../../../../components/sidebarmenu/SidebarMenu';
-import { SidebarMenuSection } from '../../../../components/sidebarmenu/SidebarMenuSection';
+import { SidebarMenu } from '../../../../components/_old/sidebarmenu/SidebarMenu';
+import { SidebarMenuSection } from '../../../../components/_old/sidebarmenu/SidebarMenuSection';
 import { MenuActionClose, MenuActionImport } from './sidebarEntries';
 import { useCreateGroup, useDeleteGroup, useGroups, useRenameGroup } from '../../../hooks/groupHooks';
 import { requestCloseLibrary } from '../../../common/messaging/messagingInterface';

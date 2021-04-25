@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { VBox } from '../../../components/layout/Box';
-import { Fill } from '../../../components/common';
-import { Grid } from '../../../components/layout/Grid';
+import { VBox } from '../../../components/layout/box/Box';
+import { Fill } from '../../../components/common/common';
+import { Grid } from '../../../components/_old/layout/Grid';
 import { componentWillMount } from '../../common/utils/functionalReactLifecycle';
 import { useGroups } from '../../hooks/groupHooks';
-import { NotificationStack } from '../../../components/notification/NotificationStack';
+import { NotificationStack } from '../../../components/_old/notification/NotificationStack';
 import { genNotificationId, toNotificationEntries } from '../../common/utils/notificationUtils';
 import { AppNotificationType } from '../../store/state';
 import { ItemList } from './itemPanel/ItemList';

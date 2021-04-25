@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { Collection, CollectionType } from '../../../../../../common/commonModels';
-import { Dialog } from '../../../../../components/modal/Dialog';
-import { AlignCross, AlignMain, Size, Type, Variant } from '../../../../../components/common';
-import { HBox, VBox } from '../../../../../components/layout/Box';
-import { InputField } from '../../../../../components/inputfield/InputField';
-import { BodyText } from '../../../../../components/text/Text';
-import { Separator, SeparatorDirection } from '../../../../../components/separator/Separator';
-import { ChoiceBox } from '../../../../../components/choicebox/ChoiceBox';
-import { TextArea } from '../../../../../components/textarea/TextArea';
+import { Dialog } from '../../../../../components/_old/modal/Dialog';
+import { AlignCross, AlignMain, Size, Type, Variant } from '../../../../../components/common/common';
+import { HBox, VBox } from '../../../../../components/layout/box/Box';
+import { InputField } from '../../../../../components/_old/inputfield/InputField';
+import { BodyText } from '../../../../../components/base/text/Text';
+import { Separator, SeparatorDirection } from '../../../../../components/_old/separator/Separator';
+import { ChoiceBox } from '../../../../../components/_old/choicebox/ChoiceBox';
+import { TextArea } from '../../../../../components/_old/textarea/TextArea';
 import { useCollectionName, useCollectionQuery } from '../../../../hooks/collectionHooks';
 
 interface EditCollectionDialogProps {

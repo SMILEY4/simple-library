@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { Component, ReactElement } from 'react';
-import { Dialog } from '../../../components/modal/Dialog';
-import { AlignCross, AlignMain, GroupPosition, Size, Type, Variant } from '../../../components/common';
-import { VBox } from '../../../components/layout/Box';
-import { InputField } from '../../../components/inputfield/InputField';
+import { Dialog } from '../../../components/_old/modal/Dialog';
+import { AlignCross, AlignMain, GroupPosition, Size, Type, Variant } from '../../../components/common/common';
+import { VBox } from '../../../components/layout/box/Box';
+import { InputField } from '../../../components/_old/inputfield/InputField';
 import { GoFileDirectory } from 'react-icons/all';
-import { Button } from '../../../components/button/Button';
+import { Button } from '../../../components/input/button/Button';
 
 const electron = window.require('electron');
 

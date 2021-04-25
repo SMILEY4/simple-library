@@ -1,0 +1,24 @@
+https://react.semantic-ui.com
+
+
+BASE COMPONENTS
+- pane ✔
+- icon ✔
+- label ✔
+
+LAYOUT COMPONENTS
+- box / hbox / vbox
+- grid
+
+
+INPUT COMPONENTS
+- button ✔
+- checkbox ✔
+- input field
+- choicebox
+
+
+
+POPUPS (hint: https://popper.js.org/)
+- tooltip
+- dropdown-menu

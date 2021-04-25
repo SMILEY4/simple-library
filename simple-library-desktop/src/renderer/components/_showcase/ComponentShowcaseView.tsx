@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { ReactElement, useState } from 'react';
 import "./showcase.css";
-import { Text, TextVariant } from '../text/Text';
-import { ColorType, GroupPosition, Size, Type, Variant } from '../common';
-import { Button } from '../button/Button';
-import { Pane } from '../pane/Pane';
-import { Icon, IconType } from "../icon/Icon";
-import { Label } from '../label/Label';
-import { ExpButton } from '../button/ExpButton';
+import { Text, TextVariant } from '../base/text/Text';
+import { ColorType, GroupPosition, Size, Type, Variant } from '../common/common';
+import { Button } from '../input/button/Button';
+import { Pane } from '../base/pane/Pane';
+import { Icon, IconType } from "../base/icon/Icon";
+import { Label } from '../base/label/Label';
+import { Checkbox } from '../input/checkbox/Checkbox';
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0");
@@ -34,16 +34,52 @@ export function ComponentShowcaseView(): any {
     function renderContent() {
         return (
             <>
-                <ExpButton>
-                    <div>TestDiv</div>
-                    Content
-                    <b>bold element</b>
-                </ExpButton>
-                {/*{renderLabels()}*/}
-                {/*{renderIcons()}*/}
-                {/*{renderButtons()}*/}
-                {/*{renderPanesInteractive()}*/}
-                {/*{renderText()}*/}
+                {renderCheckboxes()}
+                {renderLabels()}
+                {renderIcons()}
+                {renderButtons()}
+                {renderPanesInteractive()}
+                {renderText()}
+            </>
+        );
+    }
+
+
+    function renderCheckboxes() {
+        return (
+            <>
+                <h3>Checboxes</h3>
+
+                <ShowcaseRow>
+                    <Checkbox variant={Variant.SOLID} selected={true}>
+                        Solid Checkbox
+                    </Checkbox>
+                    <Checkbox variant={Variant.OUTLINE} selected={true}>
+                        Outline Checkbox
+                    </Checkbox>
+                    <Checkbox variant={Variant.GHOST} selected={true}>
+                        Ghost Checkbox
+                    </Checkbox>
+                </ShowcaseRow>
+
+
+                <ShowcaseRow>
+                    <Checkbox variant={Variant.SOLID} selected={true} disabled>
+                        Solid Checkbox Disabled
+                    </Checkbox>
+                    <Checkbox variant={Variant.OUTLINE} selected={true} disabled>
+                        Outline Checkbox Disabled
+                    </Checkbox>
+                    <Checkbox variant={Variant.GHOST} selected={true} disabled>
+                        Ghost Checkbox Disabled
+                    </Checkbox>
+                </ShowcaseRow>
+
+                <Checkbox variant={Variant.OUTLINE}>
+                    <Icon type={IconType.HOME} />
+                    With Icon
+                </Checkbox>
+
             </>
         );
     }
@@ -53,11 +89,27 @@ export function ComponentShowcaseView(): any {
         return (
             <>
                 <h3>Labels</h3>
-                <Label>Label</Label>
-                <Label icon={IconType.HOME}>Label</Label>
-                <Label iconRight={IconType.HOME}>Label</Label>
-                <Label icon={IconType.HOME} iconRight={IconType.HOME}>Label</Label>
-                <Label icon={IconType.HOME}>Label</Label>
+                <Label>
+                    Label
+                </Label>
+                <Label color={ColorType.PRIMARY_2}>
+                    <Icon type={IconType.HOME} />
+                    Label
+                </Label>
+                <Label>
+                    Label
+                    <Icon type={IconType.HOME} />
+                </Label>
+                <Label>
+                    <Icon type={IconType.HOME} />
+                    Label
+                    <Icon type={IconType.HOME} />
+                </Label>
+                <Label>
+                    Before
+                    <Icon type={IconType.HOME} />
+                    After
+                </Label>
             </>
         );
     }
@@ -94,68 +146,126 @@ export function ComponentShowcaseView(): any {
                 {renderButtonRow(Type.SUCCESS)}
                 {renderButtonRow(Type.ERROR)}
                 {renderButtonRow(Type.WARN)}
+
                 <ShowcaseRow>
-                    <Button type={Type.PRIMARY} variant={Variant.SOLID} icon={IconType.HOME}>With Icon</Button>
-                    <Button type={Type.DEFAULT} variant={Variant.SOLID} icon={IconType.HOME}>With Icon</Button>
-                    <Button type={Type.DEFAULT} variant={Variant.OUTLINE} icon={IconType.HOME}>With Icon</Button>
-                    <Button type={Type.DEFAULT} variant={Variant.GHOST} icon={IconType.HOME}>With Icon</Button>
-                    <Button type={Type.DEFAULT} variant={Variant.LINK} icon={IconType.HOME}>With Icon</Button>
+                    <Button type={Type.PRIMARY} variant={Variant.SOLID}>
+                        <Icon type={IconType.HOME} />
+                        With Icon
+                    </Button>
+                    <Button type={Type.DEFAULT} variant={Variant.SOLID}>
+                        <Icon type={IconType.HOME} />
+                        With Icon
+                    </Button>
+                    <Button type={Type.DEFAULT} variant={Variant.OUTLINE}>
+                        <Icon type={IconType.HOME} />
+                        With Icon
+                    </Button>
+                    <Button type={Type.DEFAULT} variant={Variant.GHOST}>
+                        <Icon type={IconType.HOME} />
+                        With Icon
+                    </Button>
+                    <Button type={Type.DEFAULT} variant={Variant.LINK}>
+                        <Icon type={IconType.HOME} />
+                        With Icon
+                    </Button>
                 </ShowcaseRow>
+
                 <ShowcaseRow>
-                    <Button disabled={true} type={Type.PRIMARY} variant={Variant.SOLID} icon={IconType.HOME}>With
-                        Icon</Button>
-                    <Button type={Type.DEFAULT} disabled={true} variant={Variant.SOLID} icon={IconType.HOME}>With
-                        Icon</Button>
-                    <Button type={Type.DEFAULT} disabled={true} variant={Variant.OUTLINE} icon={IconType.HOME}>With
-                        Icon</Button>
-                    <Button type={Type.DEFAULT} disabled={true} variant={Variant.GHOST} icon={IconType.HOME}>With
-                        Icon</Button>
-                    <Button type={Type.DEFAULT} disabled={true} variant={Variant.LINK} icon={IconType.HOME}>With
-                        Icon</Button>
+                    <Button disabled={true} type={Type.PRIMARY} variant={Variant.SOLID}>
+                        <Icon type={IconType.HOME} />
+                        With Icon
+                    </Button>
+                    <Button type={Type.DEFAULT} disabled={true} variant={Variant.SOLID}>
+                        <Icon type={IconType.HOME} />
+                        With Icon
+                    </Button>
+                    <Button type={Type.DEFAULT} disabled={true} variant={Variant.OUTLINE}>
+                        <Icon type={IconType.HOME} />
+                        With Icon
+                    </Button>
+                    <Button type={Type.DEFAULT} disabled={true} variant={Variant.GHOST}>
+                        <Icon type={IconType.HOME} />
+                        With Icon
+                    </Button>
+                    <Button type={Type.DEFAULT} disabled={true} variant={Variant.LINK}>
+                        <Icon type={IconType.HOME} />
+                        With Icon
+                    </Button>
                 </ShowcaseRow>
-                <Button type={Type.DEFAULT} variant={Variant.SOLID} icon={IconType.HOME} iconRight={IconType.HOME}>Two
-                    Icons</Button>
+
+                <Button type={Type.DEFAULT} variant={Variant.SOLID}>
+                    <Icon type={IconType.HOME} />
+                    Two Icons
+                    <Icon type={IconType.HOME} />
+                </Button>
+
                 <ShowcaseRow>
-                    <Button type={Type.PRIMARY} variant={Variant.SOLID} icon={IconType.HOME} />
-                    <Button type={Type.DEFAULT} variant={Variant.SOLID} icon={IconType.HOME} />
-                    <Button type={Type.DEFAULT} variant={Variant.OUTLINE} icon={IconType.HOME} />
-                    <Button type={Type.DEFAULT} variant={Variant.GHOST} icon={IconType.HOME} />
-                    <Button type={Type.DEFAULT} variant={Variant.LINK} icon={IconType.HOME} />
+                    <Button type={Type.PRIMARY} variant={Variant.SOLID}>
+                        <Icon type={IconType.HOME} />
+                    </Button>
+                    <Button type={Type.DEFAULT} variant={Variant.SOLID}>
+                        <Icon type={IconType.HOME} />
+                    </Button>
+                    <Button type={Type.DEFAULT} variant={Variant.OUTLINE}>
+                        <Icon type={IconType.HOME} />
+                    </Button>
+                    <Button type={Type.DEFAULT} variant={Variant.GHOST}>
+                        <Icon type={IconType.HOME} />
+                    </Button>
+                    <Button type={Type.DEFAULT} variant={Variant.LINK}>
+                        <Icon type={IconType.HOME} />
+                    </Button>
                 </ShowcaseRow>
+
                 <ShowcaseRow>
-                    <Button square={true} type={Type.PRIMARY} variant={Variant.SOLID} icon={IconType.HOME} />
-                    <Button square={true} type={Type.DEFAULT} variant={Variant.SOLID} icon={IconType.HOME} />
-                    <Button square={true} type={Type.DEFAULT} variant={Variant.OUTLINE} icon={IconType.HOME} />
-                    <Button square={true} type={Type.DEFAULT} variant={Variant.GHOST} icon={IconType.HOME} />
-                    <Button square={true} type={Type.DEFAULT} variant={Variant.LINK} icon={IconType.HOME} />
+                    <Button square={true} type={Type.PRIMARY} variant={Variant.SOLID}>
+                        <Icon type={IconType.HOME} />
+                    </Button>
+                    <Button square={true} type={Type.DEFAULT} variant={Variant.SOLID}>
+                        <Icon type={IconType.HOME} />
+                    </Button>
+                    <Button square={true} type={Type.DEFAULT} variant={Variant.OUTLINE}>
+                        <Icon type={IconType.HOME} />
+                    </Button>
+                    <Button square={true} type={Type.DEFAULT} variant={Variant.GHOST}>
+                        <Icon type={IconType.HOME} />
+                    </Button>
+                    <Button square={true} type={Type.DEFAULT} variant={Variant.LINK}>
+                        <Icon type={IconType.HOME} />
+                    </Button>
                 </ShowcaseRow>
+
                 <ShowcaseRow>
+
                     <div style={{ display: 'flex' }}>
-                        <Button type={Type.DEFAULT} variant={Variant.SOLID}
-                                groupPos={GroupPosition.START}>Start</Button>
-                        <Button type={Type.DEFAULT} variant={Variant.SOLID}
-                                groupPos={GroupPosition.MIDDLE}>Middle</Button>
-                        <Button type={Type.DEFAULT} variant={Variant.SOLID}
-                                groupPos={GroupPosition.MIDDLE}>Middle</Button>
-                        <Button type={Type.DEFAULT} variant={Variant.SOLID} groupPos={GroupPosition.END}>End</Button>
+                        <Button type={Type.DEFAULT} variant={Variant.SOLID} groupPos={GroupPosition.START}>
+                            Start
+                        </Button>
+                        <Button type={Type.DEFAULT} variant={Variant.SOLID} groupPos={GroupPosition.MIDDLE}>
+                            Middle
+                        </Button>
+                        <Button type={Type.DEFAULT} variant={Variant.SOLID} groupPos={GroupPosition.MIDDLE}>
+                            Middle
+                        </Button>
+                        <Button type={Type.DEFAULT} variant={Variant.SOLID} groupPos={GroupPosition.END}>
+                            End
+                        </Button>
                     </div>
+
                     <div style={{ display: 'flex' }}>
-                        <Button type={Type.DEFAULT} variant={Variant.OUTLINE}
-                                groupPos={GroupPosition.START}>Start</Button>
-                        <Button type={Type.DEFAULT} variant={Variant.OUTLINE}
-                                groupPos={GroupPosition.MIDDLE}>Middle</Button>
-                        <Button type={Type.DEFAULT} variant={Variant.OUTLINE}
-                                groupPos={GroupPosition.MIDDLE}>Middle</Button>
-                        <Button type={Type.DEFAULT} variant={Variant.OUTLINE} groupPos={GroupPosition.END}>End</Button>
+                        <Button type={Type.DEFAULT} variant={Variant.OUTLINE} groupPos={GroupPosition.START}>
+                            Start
+                        </Button>
+                        <Button type={Type.DEFAULT} variant={Variant.OUTLINE} groupPos={GroupPosition.MIDDLE}>
+                            Middle
+                        </Button>
+                        <Button type={Type.DEFAULT} variant={Variant.OUTLINE} groupPos={GroupPosition.MIDDLE}>
+                            Middle
+                        </Button>
+                        <Button type={Type.DEFAULT} variant={Variant.OUTLINE} groupPos={GroupPosition.END}>
+                            End
+                        </Button>
                     </div>
-                    {/*<div style={{display: 'flex'}}>*/}
-                    {/*    <Button type={Type.DEFAULT} variant={Variant.SOLID} groupPos={GroupPosition.START} icon={*/}
-                    {/*        <AiOutlineAlignRight/>}/>*/}
-                    {/*    <Button type={Type.DEFAULT} variant={Variant.SOLID} groupPos={GroupPosition.MIDDLE} icon={*/}
-                    {/*        <AiOutlineAlignCenter/>}/>*/}
-                    {/*    <Button type={Type.DEFAULT} variant={Variant.SOLID} groupPos={GroupPosition.END} icon={*/}
-                    {/*        <AiOutlineAlignLeft/>}/>*/}
-                    {/*</div>*/}
                 </ShowcaseRow>
 
             </>

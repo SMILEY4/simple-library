@@ -1,0 +1,5 @@
+.checkbox-button {
+	width:  var(--s-1);
+	height: var(--s-1);
+	padding: unset;
+}

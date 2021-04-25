@@ -2,16 +2,16 @@ import * as React from 'react';
 import { Component, ReactElement } from 'react';
 import './welcome.css';
 import { Theme } from '../../application';
-import { Fill, Type } from '../../../components/common';
+import { Fill, Type } from '../../../components/common/common';
 import imgWelcome from './imgWelcome.jpg';
-import { Box } from '../../../components/layout/Box';
-import { Grid } from '../../../components/layout/Grid';
+import { Box } from '../../../components/layout/box/Box';
+import { Grid } from '../../../components/_old/layout/Grid';
 import { DialogCreateLibrary } from './DialogCreateLibrary';
-import { Image } from '../../../components/image/Image';
-import { SFNotificationStack } from '../../../components/notification/SFNotificationStack';
-import { SidebarMenu } from '../../../components/sidebarmenu/SidebarMenu';
-import { SidebarMenuSection } from '../../../components/sidebarmenu/SidebarMenuSection';
-import { SidebarMenuItem } from '../../../components/sidebarmenu/SidebarMenuItem';
+import { Image } from '../../../components/_old/image/Image';
+import { SFNotificationStack } from '../../../components/_old/notification/SFNotificationStack';
+import { SidebarMenu } from '../../../components/_old/sidebarmenu/SidebarMenu';
+import { SidebarMenuSection } from '../../../components/_old/sidebarmenu/SidebarMenuSection';
+import { SidebarMenuItem } from '../../../components/_old/sidebarmenu/SidebarMenuItem';
 import {
     CreateLibraryMessage,
     GetLastOpenedLibrariesMessage,

@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { ReactElement } from 'react';
-import { AlignCross, AlignMain, Size, Variant } from '../../../../../../components/common';
+import { AlignCross, AlignMain, Size, Variant } from '../../../../../../components/common/common';
 import { ImportTargetAction } from '../../../../../../../common/commonModels';
-import { VBox } from '../../../../../../components/layout/Box';
-import { DirectorySelectionField } from '../../../../../../components/inputfield/DirectorySelectionField';
-import { ChoiceBox } from '../../../../../../components/choicebox/ChoiceBox';
+import { VBox } from '../../../../../../components/layout/box/Box';
+import { DirectorySelectionField } from '../../../../../../components/_old/inputfield/DirectorySelectionField';
+import { ChoiceBox } from '../../../../../../components/_old/choicebox/ChoiceBox';
 
 export interface ImportTargetFormProps {
     action: ImportTargetAction,
