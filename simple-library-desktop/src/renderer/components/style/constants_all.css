@@ -17,26 +17,26 @@
 	--background-color-dark-0:  hsl(195, 3%, 25%);
 	--background-color-dark-1:  hsl(195, 3%, 20%);
 
-	--base-color-dark-0:        hsl(195, 3%, 28%);
-	--base-color-dark-1:        hsl(195, 2%, 30%);
-	--base-color-dark-2:        hsl(195, 2%, 33%);
-	--base-color-dark-3:        hsl(195, 2%, 36%);
-	--base-color-dark-4:        hsl(195, 2%, 40%);
+	--base-color-dark-0:     hsl(195, 3%, 28%);
+	--base-color-dark-1:     hsl(195, 2%, 30%);
+	--base-color-dark-2:     hsl(195, 2%, 33%);
+	--base-color-dark-3:     hsl(195, 2%, 36%);
+	--base-color-dark-4:     hsl(195, 2%, 40%);
 
-	--text-color-dark-0:        hsl(0, 0%, 55%);
-	--text-color-dark-1:        hsl(0, 0%, 80%);
-	--text-color-dark-2:        hsl(0, 0%, 90%);
-	--text-color-dark-3:        hsl(0, 0%, 60%);
-	--text-on-color:            hsl(0, 0%, 90%);
+	--text-color-dark-0:     hsl(0, 0%, 55%);
+	--text-color-dark-1:     hsl(0, 0%, 80%);
+	--text-color-dark-2:     hsl(0, 0%, 90%);
+	--text-color-dark-3:     hsl(0, 0%, 60%);
+	--text-on-color:         hsl(0, 0%, 90%);
 
-	--overlay-color-light:      hsla(0, 0%, 0%, 0.3);
-	--overlay-color-dark:       hsla(0, 0%, 35%, 0.6);
+	--overlay-color-light:   hsla(0, 0%, 0%, 0.3);
+	--overlay-color-dark:    hsla(0, 0%, 35%, 0.6);
 
-	--color-primary-light-0:    hsl(204, 55%, 90%);
-	--color-primary-light-1:    hsl(204, 50%, 85%);
-	--color-primary-light-2:    hsl(204, 70%, 50%);
-	--color-primary-light-3:    hsl(204, 70%, 48%);
-	--color-primary-light-4:    hsl(204, 70%, 46%);
+	--color-primary-light-0: hsl(204, 55%, 90%);
+	--color-primary-light-1: hsl(204, 50%, 85%);
+	--color-primary-light-2: hsl(204, 70%, 50%);
+	--color-primary-light-3: hsl(204, 70%, 48%);
+	--color-primary-light-4: hsl(204, 70%, 46%);
 
 	--color-primary-dark-0:     hsl(204, 20%, 29%);
 	--color-primary-dark-1:     hsl(204, 25%, 30%);

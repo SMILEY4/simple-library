@@ -12,7 +12,13 @@ import {
     Variant,
 } from '../../common/common';
 import { Pane, PaneState } from '../../base/pane/Pane';
-import { BUTTON_PANE_CONFIG } from './buttonConfig';
+import {
+    CLICKABLE_PANE_CONFIG,
+    getFillActive,
+    getFillDefault,
+    getFillReady,
+    getOutline,
+} from '../../base/pane/paneConfig';
 import { Label } from '../../base/label/Label';
 
 export interface ButtonProps extends BaseProps {
@@ -36,10 +42,10 @@ export function Button(props: React.PropsWithChildren<ButtonProps>): ReactElemen
     const type: Type = orDefault(props.type, Type.DEFAULT);
 
     return (
-        <Pane outline={getOutline(variant, type)}
-              fillDefault={getFillDefault(variant, type)}
-              fillReady={getFillReady(variant, type)}
-              fillActive={getFillActive(variant, type)}
+        <Pane outline={getOutline(CLICKABLE_PANE_CONFIG, variant, type, props.error)}
+              fillDefault={getFillDefault(CLICKABLE_PANE_CONFIG, variant, type)}
+              fillReady={getFillReady(CLICKABLE_PANE_CONFIG, variant, type, props.disabled)}
+              fillActive={getFillActive(CLICKABLE_PANE_CONFIG, variant, type, props.disabled)}
               forcedState={props.forcedPaneState}
               groupPos={props.groupPos}
               onClick={handleOnClick}
@@ -91,34 +97,6 @@ export function Button(props: React.PropsWithChildren<ButtonProps>): ReactElemen
     function handleOnClick(): void {
         if (!props.disabled && props.onAction) {
             props.onAction();
-        }
-    }
-
-    function getOutline(variant: Variant, type: Type): ColorType {
-        if (props.error) {
-            return BUTTON_PANE_CONFIG[Type.ERROR.toString()][Variant.OUTLINE.toString()].typeOutline;
-        } else {
-            return BUTTON_PANE_CONFIG[type.toString()][variant.toString()].typeOutline;
-        }
-    }
-
-    function getFillDefault(variant: Variant, type: Type): ColorType {
-        return BUTTON_PANE_CONFIG[type.toString()][variant.toString()].typeDefault;
-    }
-
-    function getFillReady(variant: Variant, type: Type): ColorType {
-        if (props.disabled === true) {
-            return undefined;
-        } else {
-            return BUTTON_PANE_CONFIG[type.toString()][variant.toString()].typeReady;
-        }
-    }
-
-    function getFillActive(variant: Variant, type: Type): ColorType {
-        if (props.disabled === true) {
-            return undefined;
-        } else {
-            return BUTTON_PANE_CONFIG[type.toString()][variant.toString()].typeActive;
         }
     }
 

@@ -9,6 +9,7 @@ import { Icon, IconType } from "../base/icon/Icon";
 import { Label } from '../base/label/Label';
 import { Checkbox } from '../input/checkbox/Checkbox';
 import { ToggleButton } from '../input/togglebutton/ToggleButton';
+import { TextField } from '../input/textfield/TextField';
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0");
@@ -35,6 +36,7 @@ export function ComponentShowcaseView(): any {
     function renderContent() {
         return (
             <>
+                {renderTextFields()}
                 {renderCheckboxes()}
                 {renderLabels()}
                 {renderIcons()}
@@ -42,6 +44,59 @@ export function ComponentShowcaseView(): any {
                 {renderButtons()}
                 {renderPanesInteractive()}
                 {renderText()}
+            </>
+        );
+    }
+
+
+    function renderTextFields() {
+        return (
+            <>
+                <h3>TextFields</h3>
+                <ShowcaseRow>
+                    <TextField variant={Variant.SOLID} type={Type.DEFAULT} placeholder={"Textfield"}/>
+                    <TextField variant={Variant.OUTLINE} type={Type.DEFAULT} placeholder={"Textfield"} />
+                    <TextField variant={Variant.GHOST} type={Type.DEFAULT} placeholder={"Textfield"} />
+                    <TextField variant={Variant.LINK} type={Type.DEFAULT} placeholder={"Textfield"} />
+                </ShowcaseRow>
+                <ShowcaseRow>
+                    <TextField disabled variant={Variant.SOLID} type={Type.DEFAULT} placeholder={"Disabled"}/>
+                    <TextField disabled variant={Variant.OUTLINE} type={Type.DEFAULT} placeholder={"Disabled"} />
+                    <TextField disabled variant={Variant.GHOST} type={Type.DEFAULT} placeholder={"Disabled"} />
+                    <TextField disabled variant={Variant.LINK} type={Type.DEFAULT} placeholder={"Disabled"} />
+                </ShowcaseRow>
+                <ShowcaseRow>
+                    <TextField variant={Variant.SOLID} type={Type.PRIMARY} placeholder={"Textfield"} />
+                    <TextField variant={Variant.OUTLINE} type={Type.PRIMARY} placeholder={"Textfield"} />
+                    <TextField variant={Variant.GHOST} type={Type.PRIMARY} placeholder={"Textfield"} />
+                    <TextField variant={Variant.LINK} type={Type.PRIMARY} placeholder={"Textfield"} />
+                </ShowcaseRow>
+                <ShowcaseRow>
+                    <TextField error variant={Variant.SOLID} type={Type.DEFAULT} placeholder={"Textfield"}/>
+                    <TextField error variant={Variant.OUTLINE} type={Type.DEFAULT} placeholder={"Textfield"} />
+                    <TextField error variant={Variant.GHOST} type={Type.DEFAULT} placeholder={"Textfield"} />
+                    <TextField error variant={Variant.LINK} type={Type.DEFAULT} placeholder={"Textfield"} />
+                </ShowcaseRow>
+                <TextField variant={Variant.SOLID} type={Type.DEFAULT} value={"Init Value"}/>
+                <TextField variant={Variant.SOLID} type={Type.DEFAULT} value={"Forced Value"} forceState/>
+
+                <ShowcaseRow>
+                    <TextField variant={Variant.SOLID} type={Type.PRIMARY} iconLeft={IconType.HOME} iconRight={IconType.FOLDER}/>
+                    <TextField variant={Variant.OUTLINE} type={Type.PRIMARY} iconLeft={IconType.HOME} iconRight={IconType.FOLDER}/>
+                    <TextField variant={Variant.GHOST} type={Type.PRIMARY} iconLeft={IconType.HOME} iconRight={IconType.FOLDER}/>
+                    <TextField variant={Variant.LINK} type={Type.PRIMARY} iconLeft={IconType.HOME} iconRight={IconType.FOLDER}/>
+                </ShowcaseRow>
+
+                <div style={{ display: 'flex' }}>
+                    <Button type={Type.DEFAULT} variant={Variant.OUTLINE} groupPos={GroupPosition.START}>
+                        https://
+                    </Button>
+                    <TextField variant={Variant.OUTLINE} placeholder={"example.com"} groupPos={GroupPosition.MIDDLE}/>
+                    <Button type={Type.DEFAULT} variant={Variant.SOLID} groupPos={GroupPosition.END}>
+                        Search
+                    </Button>
+                </div>
+
             </>
         );
     }
@@ -89,7 +144,8 @@ export function ComponentShowcaseView(): any {
                     Checkbox Force State
                 </Checkbox>
             </>
-        );
+        )
+            ;
     }
 
 
@@ -345,8 +401,8 @@ export function ComponentShowcaseView(): any {
             );
         }
     }
-    
-    
+
+
     function renderButtons() {
         return (
             <>

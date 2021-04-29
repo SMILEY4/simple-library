@@ -163,6 +163,40 @@
 
 
 
+## ToggleButton
+
+#### Examples
+
+```jsx
+<ToggleButton selected>
+    Toggle Button
+</ToggleButton>
+
+<ToggleButton switchContent>
+    <BodyText>Switch to selected</BodyText>
+    <BodyText>Switch to not selected</BodyText>
+</ToggleButton>
+
+...see "Button"
+```
+
+#### Properties
+
+- all Properties of "Button"
+- selected?: boolean
+  - default: false
+  - whether the button is initially selected.
+  - controls only the initial state. To always force the state of the buttonto be this value, see "forceState"
+- forceState?: boolean
+  - default: false
+  - the "selected"-value always controls the state of the button, not only the initial state
+- switchContent?: boolean
+  - enables displaying different content depending on the state
+  - when true, the toggle-button must have exactly two child-elements
+- onToggle?: (selected:boolean) => void
+  - triggered when the state of the buttonchanges (and the button is not disabled).
+  - the parameter "selected" represents the new/next state
+
 
 
 ## Checkbox
@@ -213,4 +247,57 @@
 - onToggle?: (selected:boolean) => void
   - triggered when the state of the checkbox changes (and the checkbox is not disabled).
   - the parameter "selected" represents the new/next state
+
+
+
+## TextField
+
+#### Examples
+
+```jsx
+<TextField variant={Variant.SOLID} type={Type.DEFAULT} placeholder={"Placeholder"}/>
+
+<TextField variant={Variant.OUTLINE} type={Type.PRIMARY} placeholder={"Placeholder"} />
+
+<TextField variant={Variant.SOLID} type={Type.DEFAULT} value={"Init Value"}/>
+
+<TextField variant={Variant.SOLID} type={Type.DEFAULT} value={"Forced Value"} forceState/>
+
+<TextField variant={Variant.SOLID} type={Type.DEFAULT} iconLeft={IconType.HOME} iconRight={IconType.FOLDER}/>
+```
+
+#### Properties
+
+- value?: string
+  - the initial value of the textfield
+- placeholder?: string
+  - the text to display when the textfield is empty
+- forceState?: boolean
+  - default: false
+  - the "selected"-value always controls the state of the textfield, not only the initial state
+- variant?: Variant
+  - The overall style of the textfield. Solid, Outline, Ghost
+- type?: Type
+  - default: DEFAULT
+  - the (color-) style of the textfield. DEFAULT, PRIMARY, ERROR, ...
+- error?: boolean
+  - default: false
+  - whether the textfield is in an error state
+- groupPos?: GroupPosition
+  - the group position. Defines the overall shape of the textfield to seamlessly fit together with other elements
+- disabled?: boolean
+  - default: false
+  - whether the textfield is interactive
+  - displays the textfield as "grayed-out" / disabled
+- autoFocus?: boolean
+  - default: false
+  - whether to automatically focus the textfield
+- iconLeft?: IconType
+  - the icon to show on the left side inside the text field 
+- iconRight?: IconType
+  - the icon to show on the right side inside the text field 
+- onChange?:  (value:string) => void
+  - function called when the value of the textfield changes.
+- onAccept?:  (value:string) => void
+  - function called when the user presses enter or unfocuses the textfield
 
