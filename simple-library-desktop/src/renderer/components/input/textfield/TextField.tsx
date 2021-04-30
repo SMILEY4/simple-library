@@ -55,6 +55,7 @@ export function TextField(props: React.PropsWithChildren<TextFieldProps>): React
               fillActive={getFillActive(STATIC_PANE_CONFIG, variant, type, props.disabled)}
               groupPos={props.groupPos}
               className={"text-field"}
+              forwardRef={props.forwardRef}
         >
             <HBox fill={Fill.TRUE}>
                 {props.iconLeft && (

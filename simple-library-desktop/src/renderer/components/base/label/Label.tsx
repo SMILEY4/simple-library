@@ -16,7 +16,7 @@ interface LabelProps extends BaseProps {
 export function Label(props: React.PropsWithChildren<LabelProps>): ReactElement {
 
     return (
-        <HBox spacing={Size.S_0_25} className={getClassName()} style={props.style}>
+        <HBox spacing={Size.S_0_25} className={getClassName()} style={props.style} forwardRef={props.forwardRef}>
             {getModifiedChildren()}
         </HBox>
     );

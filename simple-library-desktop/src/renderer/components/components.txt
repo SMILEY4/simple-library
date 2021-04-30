@@ -16,7 +16,7 @@ INPUT COMPONENTS
 - button ✔
 - toggle button ✔
 - checkbox ✔
-- input field
+- input field ✔
 - choicebox
 
 

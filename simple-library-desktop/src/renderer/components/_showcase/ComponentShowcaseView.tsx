@@ -11,6 +11,7 @@ import { Checkbox } from '../input/checkbox/Checkbox';
 import { ToggleButton } from '../input/togglebutton/ToggleButton';
 import { TextField } from '../input/textfield/TextField';
 import { LabelBox } from '../base/labelbox/LabelBox';
+import { ChoiceBox } from '../input/choicebox/Choicebox';
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0");
@@ -37,6 +38,7 @@ export function ComponentShowcaseView(): any {
     function renderContent() {
         return (
             <>
+                {renderChoiceBox()}
                 {renderTextFields()}
                 {renderCheckboxes()}
                 {renderLabels()}
@@ -45,6 +47,16 @@ export function ComponentShowcaseView(): any {
                 {renderButtons()}
                 {renderPanesInteractive()}
                 {renderText()}
+            </>
+        );
+    }
+
+
+    function renderChoiceBox() {
+        return (
+            <>
+                <h3>ChoiceBox</h3>
+                <ChoiceBox/>
             </>
         );
     }

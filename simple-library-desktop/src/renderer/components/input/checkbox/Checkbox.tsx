@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { ReactElement, useState } from 'react';
-import { ColorType, Size, Variant } from '../../common/common';
+import { BaseProps, ColorType, concatClasses, Size, Variant } from '../../common/common';
 import "./checkbox.css";
 import { Button } from "../button/Button";
 import { Label } from '../../base/label/Label';
 import { Icon, IconType } from '../../base/icon/Icon';
 import { HBox } from '../../layout/box/Box';
 
-export interface CheckboxProps {
+export interface CheckboxProps extends BaseProps{
     selected?: boolean,
     forceState?: boolean
     variant: Variant,
@@ -22,7 +22,11 @@ export function Checkbox(props: React.PropsWithChildren<CheckboxProps>): ReactEl
     const [isSelected, setSelected] = useState(props.selected === true);
 
     return (
-        <HBox spacing={Size.S_0_25} className={"checkbox"}>
+        <HBox spacing={Size.S_0_25}
+              className={concatClasses("checkbox", props.className)}
+              style={props.style}
+              forwardRef={props.forwardRef}
+        >
             <Button
                 variant={props.variant}
                 disabled={props.disabled}

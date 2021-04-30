@@ -33,6 +33,7 @@ export function LabelBox(props: React.PropsWithChildren<LabelBoxProps>): ReactEl
               fillActive={getFillActive(STATIC_PANE_CONFIG, variant, type, props.disabled)}
               groupPos={props.groupPos}
               className={"label-box"}
+              forwardRef={props.forwardRef}
         >
             <Label color={getContentColor()} style={{ width: "100%", height: "100%" }}>
                 {props.children}

@@ -25,7 +25,7 @@ export interface PaneProps extends BaseProps, ClickableProps {
  */
 export function Pane(props: React.PropsWithChildren<PaneProps>): ReactElement {
     return (
-        <div className={getClassName()} style={props.style} onClick={props.onClick}>
+        <div className={getClassName()} style={props.style} onClick={props.onClick} ref={props.forwardRef}>
             {props.children}
         </div>
     );

@@ -19,7 +19,7 @@ interface BoxProps extends React.HTMLAttributes<HTMLDivElement>, BaseProps {
 export function Box(props: React.PropsWithChildren<BoxProps>): ReactElement {
 
     return (
-        <div {...props} className={getClassNames()} style={getStyle()}>
+        <div {...props} className={getClassNames()} style={getStyle()} ref={props.forwardRef}>
             {props.children}
         </div>
     );

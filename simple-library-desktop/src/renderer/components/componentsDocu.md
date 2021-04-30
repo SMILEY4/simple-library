@@ -76,10 +76,12 @@
   - default: DEFAULT
   - the (color-) style of the Labelbox. DEFAULT, PRIMARY, ERROR, ...
 - groupPos?: GroupPosition
+  
   - the group position. Defines the overall shape of the pane to seamlessly fit together with other elements
 - error?: boolean
-  - whether the Labelbox is in an error state, forcing an error-outline
-
+  
+- whether the Labelbox is in an error state, forcing an error-outline
+  
 - disabled?: boolean
   - displays the labelbox as "grayed-out" / disabled
 

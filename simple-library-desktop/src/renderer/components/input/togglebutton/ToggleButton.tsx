@@ -19,6 +19,7 @@ export function ToggleButton(props: React.PropsWithChildren<ToggleButtonProps>):
     return (
         <Button
             {...props}
+            forwardRef={props.forwardRef}
             className={concatClasses("toggle-button", props.className)}
             forcedPaneState={shouldForceActiveState() ? PaneState.ACTIVE : undefined}
             onAction={handleToggle}

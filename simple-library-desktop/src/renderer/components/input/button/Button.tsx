@@ -50,6 +50,7 @@ export function Button(props: React.PropsWithChildren<ButtonProps>): ReactElemen
               groupPos={props.groupPos}
               onClick={handleOnClick}
               className={getClassNames()}
+              forwardRef={props.forwardRef}
         >
             <Label color={getContentColor()}
                    style={{ width: "100%", height: "100%" }}

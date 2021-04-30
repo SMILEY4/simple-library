@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Ref } from 'react';
 
 export enum GroupPosition {
     START = "start",
@@ -115,6 +116,7 @@ export enum Size {
 export interface BaseProps {
     className?: string,
     style?: React.CSSProperties,
+    forwardRef?: any;
 }
 
 export interface ClickableProps {
