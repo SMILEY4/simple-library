@@ -1,13 +1,15 @@
 import * as React from 'react';
 import { ReactElement, useState } from 'react';
-import { concatClasses } from '../../common/common';
+import { concatClasses, getIf } from '../../common/common';
 import { Button, ButtonProps } from '../button/Button';
 import { PaneState } from '../../base/pane/Pane';
+import "./togglebutton.css"
 
 export interface ToggleButtonProps extends Omit<ButtonProps, 'onAction'> {
     selected?: boolean,
     forceState?: boolean
     switchContent?: boolean,
+    keepSize?: boolean,
     onToggle?: (selected: boolean) => void,
 }
 
@@ -20,7 +22,7 @@ export function ToggleButton(props: React.PropsWithChildren<ToggleButtonProps>):
         <Button
             {...props}
             forwardRef={props.forwardRef}
-            className={concatClasses("toggle-button", props.className)}
+            className={concatClasses("toggle-button", getIf(props.keepSize, "toggle-button-keep-size"), props.className)}
             forcedPaneState={shouldForceActiveState() ? PaneState.ACTIVE : undefined}
             onAction={handleToggle}
         >
@@ -37,7 +39,20 @@ export function ToggleButton(props: React.PropsWithChildren<ToggleButtonProps>):
                 const childIndex = props.forceState === true
                     ? (props.selected ? 1 : 0)
                     : (isSelected ? 1 : 0);
-                return arrChildren[childIndex];
+                if (props.keepSize === true) {
+                    return (
+                        <>
+                            {arrChildren[childIndex]}
+                            <div className={"toggle-btn-hidden-child"}>
+                                {childIndex === 0
+                                    ? arrChildren[1]
+                                    : arrChildren[0]}
+                            </div>
+                        </>
+                    );
+                } else {
+                    return arrChildren[childIndex];
+                }
             }
         } else {
             return props.children;

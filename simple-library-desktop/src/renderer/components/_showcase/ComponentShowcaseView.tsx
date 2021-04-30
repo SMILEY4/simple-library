@@ -368,7 +368,7 @@ export function ComponentShowcaseView(): any {
                     </div>
                 </ShowcaseRow>
 
-                <ToggleButton switchContent>
+                <ToggleButton switchContent keepSize>
                     <BodyText>Switch to selected</BodyText>
                     <BodyText>Switch to not selected</BodyText>
                 </ToggleButton>
