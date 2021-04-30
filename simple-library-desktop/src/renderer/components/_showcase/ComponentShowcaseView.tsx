@@ -10,6 +10,7 @@ import { Label } from '../base/label/Label';
 import { Checkbox } from '../input/checkbox/Checkbox';
 import { ToggleButton } from '../input/togglebutton/ToggleButton';
 import { TextField } from '../input/textfield/TextField';
+import { LabelBox } from '../base/labelbox/LabelBox';
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0");
@@ -88,9 +89,9 @@ export function ComponentShowcaseView(): any {
                 </ShowcaseRow>
 
                 <div style={{ display: 'flex' }}>
-                    <Button type={Type.DEFAULT} variant={Variant.OUTLINE} groupPos={GroupPosition.START}>
+                    <LabelBox type={Type.DEFAULT} variant={Variant.OUTLINE} groupPos={GroupPosition.START}>
                         https://
-                    </Button>
+                    </LabelBox>
                     <TextField variant={Variant.OUTLINE} placeholder={"example.com"} groupPos={GroupPosition.MIDDLE}/>
                     <Button type={Type.DEFAULT} variant={Variant.SOLID} groupPos={GroupPosition.END}>
                         Search
@@ -152,6 +153,24 @@ export function ComponentShowcaseView(): any {
     function renderLabels() {
         return (
             <>
+
+                <h3>Label Box</h3>
+
+                <LabelBox variant={Variant.OUTLINE} type={Type.DEFAULT}>
+                    Label Box
+                </LabelBox>
+                <LabelBox variant={Variant.OUTLINE} type={Type.PRIMARY}>
+                    <Icon type={IconType.HOME} />
+                    Label Box
+                </LabelBox>
+                <LabelBox variant={Variant.SOLID} type={Type.PRIMARY}>
+                    <Icon type={IconType.HOME} />
+                    Label Box
+                </LabelBox>
+                <LabelBox variant={Variant.OUTLINE} type={Type.DEFAULT} error>
+                    Label Box
+                </LabelBox>
+
                 <h3>Labels</h3>
                 <Label>
                     Label

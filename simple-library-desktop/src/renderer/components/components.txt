@@ -5,7 +5,7 @@ BASE COMPONENTS
 - pane ✔
 - icon ✔
 - label ✔
-- labelBox (label inside Pane)
+- labelBox ✔
 
 LAYOUT COMPONENTS
 - box / hbox / vbox ✔
