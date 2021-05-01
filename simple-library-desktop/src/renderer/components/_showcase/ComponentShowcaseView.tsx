@@ -12,7 +12,9 @@ import { ToggleButton } from '../input/togglebutton/ToggleButton';
 import { TextField } from '../input/textfield/TextField';
 import { LabelBox } from '../base/labelbox/LabelBox';
 import { MenuButton, SLOT_BUTTON, SLOT_MENU } from '../input/menubutton/MenuButton';
-import { ElementWithSlots, Slot } from '../base/slot/Slot';
+import { Slot } from '../base/slot/Slot';
+import { Menu } from '../popup/menu/Menu';
+import { MenuItem } from '../popup/menuitem/MenuItem';
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0");
@@ -39,8 +41,7 @@ export function ComponentShowcaseView(): any {
     function renderContent() {
         return (
             <>
-                {renderSlotTest()}
-                {renderChoiceBox()}
+                {renderMenuButton()}
                 {renderTextFields()}
                 {renderCheckboxes()}
                 {renderLabels()}
@@ -54,34 +55,29 @@ export function ComponentShowcaseView(): any {
     }
 
 
-    function renderSlotTest() {
+    function renderMenuButton() {
         return (
             <>
-                <ElementWithSlots>
-                    <Slot name='slot 1'>
-                        Content of Slot 1
-                    </Slot>
-                    <Slot name='slot 2'>
-                        Content of Slot 2
-                    </Slot>
-                </ElementWithSlots>
-            </>
-        );
-    }
-
-    function renderChoiceBox() {
-        return (
-            <>
-                <h3>ChoiceBox</h3>
-                <MenuButton>
+                <h3>MenuButton</h3>
+                <MenuButton onAction={(itemId: string) => console.log("ITEM: " + itemId)}>
                     <Slot name={SLOT_BUTTON}>
                         Button
                     </Slot>
                     <Slot name={SLOT_MENU}>
-                        <div style={{ height: "100px", backgroundColor: "gray", border: "1px solid red" }}>
-                            Menu
-                            <div style={{ width: "300px", height: "10px", backgroundColor: "blue" }} />
-                        </div>
+                        <Menu>
+                            <MenuItem itemId={"home"}>
+                                <Icon type={IconType.HOME} />
+                                Home
+                            </MenuItem>
+                            <MenuItem itemId={"folder"}>
+                                <Icon type={IconType.FOLDER} />
+                                Folder
+                            </MenuItem>
+                            <MenuItem itemId={"checkmark"}>
+                                <Icon type={IconType.CHECKMARK} />
+                                Checkmark
+                            </MenuItem>
+                        </Menu>
                     </Slot>
                 </MenuButton>
             </>

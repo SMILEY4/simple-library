@@ -1,12 +1,13 @@
 import * as React from 'react';
 import { MutableRefObject, ReactElement } from 'react';
-import { BaseProps } from '../../common/common';
+import { addPropsToChildren, BaseProps } from '../../common/common';
 import { Manager, Popper, Reference } from 'react-popper';
 import "./menubutton.css";
 import { ToggleButton } from '../togglebutton/ToggleButton';
 import { sameWidthModifier } from '../../common/popperUtils';
 import { useClickOutside, useStateRef } from '../../common/commonHooks';
-import { getFirstSlot } from '../../base/slot/Slot';
+import { getChildrenOfSlot, getFirstSlot } from '../../base/slot/Slot';
+import { Menu } from '../../popup/menu/Menu';
 
 
 export const SLOT_BUTTON = "button";
@@ -15,6 +16,7 @@ export const SLOT_MENU = "menu";
 export interface MenuButtonProps extends BaseProps {
     switchContent?: boolean,
     keepSize?: boolean,
+    onAction?: (itemId: string) => void;
 }
 
 export function MenuButton(props: React.PropsWithChildren<MenuButtonProps>): ReactElement {
@@ -34,7 +36,7 @@ export function MenuButton(props: React.PropsWithChildren<MenuButtonProps>): Rea
                         selected={open}
                         forceState
                     >
-                        {getFirstSlot(props.children, SLOT_BUTTON)}
+                        {getButtonChildren()}
                     </ToggleButton>
                 )}
             </Reference>
@@ -43,7 +45,7 @@ export function MenuButton(props: React.PropsWithChildren<MenuButtonProps>): Rea
                     {({ ref, style, placement }) => (
                         <div ref={ref} style={{ ...style, zIndex: 10 }} data-placement={placement}>
                             <div ref={menuRef} style={{ display: 'inline-block', minWidth: "100%" }}>
-                                {getFirstSlot(props.children, SLOT_MENU)}
+                                {getMenuChildren()}
                             </div>
                         </div>
                     )}
@@ -51,6 +53,25 @@ export function MenuButton(props: React.PropsWithChildren<MenuButtonProps>): Rea
             )}
         </Manager>
     );
+
+    function getButtonChildren(): any {
+        return getFirstSlot(props.children, SLOT_BUTTON);
+    }
+
+    function getMenuChildren(): any {
+        return addPropsToChildren(
+            getChildrenOfSlot(props.children, SLOT_MENU),
+            { onAction: handleMenuItemAction },
+            (child: ReactElement) => child.type === Menu,
+        );
+    }
+
+    function handleMenuItemAction(itemId: string) {
+        setOpen(false);
+        if (props.onAction) {
+            props.onAction(itemId);
+        }
+    }
 
     function handleClickOutside() {
         if (refOpen.current) {

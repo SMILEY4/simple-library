@@ -10,6 +10,11 @@
 
 /* OUTLINE */
 
+/* background */
+
+.pane-outline-background-0 { border-color: var(--background-color-0)}
+.pane-outline-background-1 { border-color: var(--background-color-1)}
+
 /* base */
 
 .pane-outline-base-0 { border-color: var(--base-color-0)}
@@ -63,6 +68,11 @@
 
 /* FILL DEFAULT */
 
+/* background */
+
+.pane-fill-default-background-0 { background-color: var(--background-color-0)}
+.pane-fill-default-background-1 { background-color: var(--background-color-1)}
+
 /* base */
 
 .pane-fill-default-base-0 { background-color: var(--base-color-0)}
@@ -114,6 +124,11 @@
 
 
 /* FILL READY */
+
+/* background */
+
+.pane-fill-ready-background-0 { background-color: var(--background-color-0)}
+.pane-fill-ready-background-1 { background-color: var(--background-color-1)}
 
 /* base */
 
@@ -167,6 +182,11 @@
 
 
 /* FILL ACTIVE */
+
+/* background */
+
+.pane-fill-active-background-0 { background-color: var(--background-color-0)}
+.pane-fill-active-background-1 { background-color: var(--background-color-1)}
 
 /* base */
 

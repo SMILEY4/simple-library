@@ -10,39 +10,34 @@ export function Slot(props: React.PropsWithChildren<SlotProps>): ReactElement {
     return <>{props.children}</>;
 }
 
-export function getAllSlots(children: ReactNode | ReactNode[], slotName: string): any[] {
-    return React.Children
-        .toArray(children)
-        .filter(child => isSlot(child, slotName));
+
+export function getAllSlots(children: ReactNode | ReactNode[], slotName: string): ReactElement[] {
+    return getReactElements(children)
+        .filter(child => child.props.name === slotName);
 }
 
-export function getFirstSlot(children: ReactNode | ReactNode[], slotName: string): any {
-    return React.Children
-        .toArray(children)
-        .find(child => isSlot(child, slotName));
+export function getFirstSlot(children: ReactNode | ReactNode[], slotName: string): ReactElement {
+    return getReactElements(children)
+        .find(child => child.props.name === slotName);
 }
 
-export function isSlot(child: any, slotName: string): boolean {
-    return React.isValidElement(child) && (child as React.ReactElement).props.name === slotName;
+export function getChildrenOfSlots(children: ReactNode | ReactNode[], slotName: string): ReactElement[] {
+    return getAllSlots(children, slotName)
+        .map(childSlot => childSlot.props.children);
 }
 
-export function ElementWithSlots(props: React.PropsWithChildren<any>): ReactElement {
-    print();
-    return (
-        <div>
-            {props.children}
-        </div>
-    );
-
-
-    function print() {
-        React.Children
-            .toArray(props.children)
-            .filter(child => React.isValidElement(child) && (child as React.ReactElement).props.name !== undefined)
-            .forEach((child, i) => {
-                console.log("CHILD " + i + ": " + (child as React.ReactElement).props.name);
-            });
-
+export function getChildrenOfSlot(children: ReactNode | ReactNode[], slotName: string): ReactElement[] {
+    const slot: ReactElement | undefined = getFirstSlot(children, slotName);
+    if (slot) {
+        return slot.props.children;
+    } else {
+        return [];
     }
+}
 
+function getReactElements(children: ReactNode | ReactNode[]): ReactElement[] {
+    return React.Children
+        .toArray(children)
+        .filter(child => React.isValidElement(child))
+        .map(child => child as React.ReactElement);
 }

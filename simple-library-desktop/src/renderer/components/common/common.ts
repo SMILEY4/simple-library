@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Ref } from 'react';
+import { ReactNode } from 'react';
 
 export enum GroupPosition {
     START = "start",
@@ -25,6 +25,9 @@ export enum Type {
 }
 
 export enum ColorType {
+
+    BACKGROUND_0 = "background-0",
+    BACKGROUND_1 = "background-1",
 
     BASE_0 = "base-0",
     BASE_1 = "base-1",
@@ -120,7 +123,7 @@ export interface BaseProps {
 }
 
 export interface ClickableProps {
-    onClick?: (event:React.MouseEvent) => void
+    onClick?: (event: React.MouseEvent) => void
 }
 
 
@@ -214,4 +217,24 @@ export function callSafe(func: any) {
     if (func) {
         func();
     }
+}
+
+/**
+ * Adds the given properties to the clones of the given children
+ * @param children the children
+ * @param props the properties to add
+ * @param filter add the props only to the children that pass this filter
+ */
+export function addPropsToChildren(children: ReactNode | ReactNode[], props: any, filter?: (child: React.ReactElement) => boolean): any[] {
+    return React.Children.map(children, (child: any) => {
+        if (React.isValidElement(child)) {
+            if (filter && filter(child)) {
+                return React.cloneElement(child, { ...props });
+            } else {
+                return child;
+            }
+        } else {
+            return child;
+        }
+    });
 }

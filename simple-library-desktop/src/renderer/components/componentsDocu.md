@@ -130,6 +130,43 @@
 
 
 
+## Slots / Slot-System
+
+Slots are used to group and label children of a component.
+
+```jsx
+<MyComponent>
+    <Slot name={"main"}>
+        Main
+    </Slot>
+    <Slot name={"body"}>
+        Body 1
+    </Slot>
+    <Slot name={"body"}>
+        Body 2
+    </Slot>
+</MyComponent>
+```
+
+Inside the component, they can then be filtered by slot-name via the provided utility methods:
+
+```jsx
+import { getFirstSlot, getAllSlots } from '../../base/slot/Slot';
+
+export function MyComponent(...): ReactElement {
+	//...
+	return (
+    	//...
+        <div>{getFirstSlot("main")}</div>
+        <div>{getAllSlots("body")}</div>
+    );
+}
+```
+
+
+
+
+
 # Input
 
 

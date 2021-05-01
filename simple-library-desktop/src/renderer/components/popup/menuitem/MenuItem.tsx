@@ -1,0 +1,23 @@
+import { BaseProps } from '../../common/common';
+import * as React from 'react';
+import { ReactElement } from 'react';
+import "./menuitem.css";
+
+export interface MenuItemProps extends BaseProps {
+    itemId?: string,
+    onAction?: (itemId: string) => void;
+}
+
+export function MenuItem(props: React.PropsWithChildren<MenuItemProps>): ReactElement {
+    return (
+        <div className={"menu-item behaviour-no-select"} key={props.itemId} onClick={handleClick}>
+            {props.children}
+        </div>
+    );
+
+    function handleClick() {
+        if (props.onAction) {
+            props.onAction(props.itemId);
+        }
+    }
+}

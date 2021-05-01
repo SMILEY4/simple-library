@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ReactElement } from 'react';
 import { HBox } from '../../layout/box/Box';
-import { BaseProps, ColorType, concatClasses, map, orDefault, Size } from '../../common/common';
+import { addPropsToChildren, BaseProps, ColorType, concatClasses, map, orDefault, Size } from '../../common/common';
 import { Icon } from '../icon/Icon';
 
 interface LabelProps extends BaseProps {
@@ -34,13 +34,11 @@ export function Label(props: React.PropsWithChildren<LabelProps>): ReactElement 
     }
 
     function getModifiedChildren() {
-        return React.Children.map(props.children, child => {
-            if (React.isValidElement(child) && (child as React.ReactElement<any>).type === Icon) {
-                return React.cloneElement(child, { color: getContentColor() });
-            } else {
-                return child;
-            }
-        });
+        return addPropsToChildren(
+            props.children,
+            { color: getContentColor() },
+            (child: ReactElement) => child.type === Icon,
+        );
     }
 
 }

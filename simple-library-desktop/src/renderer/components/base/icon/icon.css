@@ -1,5 +1,8 @@
 
 /* COLOR FILL */
+.icon-color-fill-background-0 {fill: var(--background-color-0)}
+.icon-color-fill-background-1 {fill: var(--background-color-1)}
+
 .icon-color-fill-base-0 {fill: var(--base-color-0)}
 .icon-color-fill-base-1 {fill: var(--base-color-1)}
 .icon-color-fill-base-2 {fill: var(--base-color-2)}
@@ -38,6 +41,9 @@
 
 
 /* COLOR OUTLINED */
+.icon-color-outline-background-0 {stroke: var(--background-color-0)}
+.icon-color-outline-background-1 {stroke: var(--background-color-1)}
+
 .icon-color-outline-base-0 {stroke: var(--base-color-0)}
 .icon-color-outline-base-1 {stroke: var(--base-color-1)}
 .icon-color-outline-base-2 {stroke: var(--base-color-2)}
