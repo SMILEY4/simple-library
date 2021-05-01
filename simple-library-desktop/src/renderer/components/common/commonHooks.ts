@@ -3,24 +3,31 @@ import { componentLifecycle } from '../../app/common/utils/functionalReactLifecy
 
 export function useStateRef<S>(initialValue: S): [S, Dispatch<SetStateAction<S>>, MutableRefObject<S>] {
     const [value, setValue] = useState(initialValue);
+
     const ref = useRef(value);
-    useEffect(() => {
-        ref.current = value;
-    }, [value]);
+
+    useEffect(
+        () => {
+            ref.current = value;
+        },
+        [value]);
+
     return [value, setValue, ref];
 }
 
 
-export function useClickOutside(action: () => void): MutableRefObject<any> {
-    const targetRef: MutableRefObject<any> = useRef(null);
+export function useClickOutside(action: () => void, targetRef?: MutableRefObject<any>): MutableRefObject<any> {
+    const targetElementRef: MutableRefObject<any> = useRef(targetRef ? targetRef : null);
     componentLifecycle(
         () => document.addEventListener('mousedown', handleClick),
         () => document.removeEventListener('mousedown', handleClick),
     );
+
     function handleClick(event: any) {
-        if (targetRef && targetRef.current && !targetRef.current.contains(event.target)) {
+        if (targetElementRef && targetElementRef.current && !targetElementRef.current.contains(event.target)) {
             action();
         }
     }
-    return targetRef;
+
+    return targetElementRef;
 }

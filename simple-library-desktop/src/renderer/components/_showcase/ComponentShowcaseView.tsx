@@ -16,6 +16,7 @@ import { Slot } from '../base/slot/Slot';
 import { Menu } from '../popup/menu/Menu';
 import { MenuItem } from '../popup/menuitem/MenuItem';
 import { SubMenuItem } from '../popup/submenu/SubMenuItem';
+import { ContextMenuWrapper } from '../popup/contextmenu/ContextMenuWrapper';
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0");
@@ -60,7 +61,32 @@ export function ComponentShowcaseView(): any {
         return (
             <>
                 <h3>MenuButton</h3>
-                <MenuButton onAction={(itemId: string) => console.log("ITEM: " + itemId)}>
+
+                <ContextMenuWrapper onAction={(itemId: string) => console.log("CONTEXT_MENU: " + itemId)}>
+                    <Slot name={"target"}>
+                        <LabelBox>
+                            Open Context Menu Here
+                        </LabelBox>
+                    </Slot>
+                    <Slot name={"menu"}>
+                        <Menu>
+                            <MenuItem itemId={"home"}><Icon type={IconType.HOME} />Home</MenuItem>
+                            <MenuItem itemId={"folder"}><Icon type={IconType.FOLDER} />Folder</MenuItem>
+                            <SubMenuItem itemId={"submenu"}>
+                                <Slot name={"item"}>
+                                    Submenu
+                                </Slot>
+                                <Slot name={"menu"}>
+                                    <MenuItem itemId={"home-sub"}><Icon type={IconType.HOME} />More Home</MenuItem>
+                                    <MenuItem itemId={"checkmark-sub"}><Icon type={IconType.CHECKMARK} />More Checkmark</MenuItem>
+                                </Slot>
+                            </SubMenuItem>
+                            <MenuItem itemId={"checkmark"}><Icon type={IconType.CHECKMARK} />Checkmark</MenuItem>
+                        </Menu>
+                    </Slot>
+                </ContextMenuWrapper>
+
+                <MenuButton onAction={(itemId: string) => console.log("MENU_BUTTON: " + itemId)}>
                     <Slot name={"button"}>
                         Button
                     </Slot>
