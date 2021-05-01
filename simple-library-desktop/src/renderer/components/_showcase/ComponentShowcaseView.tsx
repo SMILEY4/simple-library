@@ -11,7 +11,8 @@ import { Checkbox } from '../input/checkbox/Checkbox';
 import { ToggleButton } from '../input/togglebutton/ToggleButton';
 import { TextField } from '../input/textfield/TextField';
 import { LabelBox } from '../base/labelbox/LabelBox';
-import { MenuButton } from '../input/menubutton/MenuButton';
+import { MenuButton, SLOT_BUTTON, SLOT_MENU } from '../input/menubutton/MenuButton';
+import { ElementWithSlots, Slot } from '../base/slot/Slot';
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0");
@@ -38,6 +39,7 @@ export function ComponentShowcaseView(): any {
     function renderContent() {
         return (
             <>
+                {renderSlotTest()}
                 {renderChoiceBox()}
                 {renderTextFields()}
                 {renderCheckboxes()}
@@ -52,20 +54,35 @@ export function ComponentShowcaseView(): any {
     }
 
 
+    function renderSlotTest() {
+        return (
+            <>
+                <ElementWithSlots>
+                    <Slot name='slot 1'>
+                        Content of Slot 1
+                    </Slot>
+                    <Slot name='slot 2'>
+                        Content of Slot 2
+                    </Slot>
+                </ElementWithSlots>
+            </>
+        );
+    }
+
     function renderChoiceBox() {
         return (
             <>
                 <h3>ChoiceBox</h3>
                 <MenuButton>
-                    <MenuButton.ButtonSlot>
+                    <Slot name={SLOT_BUTTON}>
                         Button
-                    </MenuButton.ButtonSlot>
-                    <MenuButton.MenuSlot>
+                    </Slot>
+                    <Slot name={SLOT_MENU}>
                         <div style={{ height: "100px", backgroundColor: "gray", border: "1px solid red" }}>
                             Menu
                             <div style={{ width: "300px", height: "10px", backgroundColor: "blue" }} />
                         </div>
-                    </MenuButton.MenuSlot>
+                    </Slot>
                 </MenuButton>
             </>
         );

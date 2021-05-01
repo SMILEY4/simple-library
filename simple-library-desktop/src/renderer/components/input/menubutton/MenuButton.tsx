@@ -6,11 +6,16 @@ import "./menubutton.css";
 import { ToggleButton } from '../togglebutton/ToggleButton';
 import { sameWidthModifier } from '../../common/popperUtils';
 import { useClickOutside, useStateRef } from '../../common/commonHooks';
+import { getFirstSlot } from '../../base/slot/Slot';
 
+
+export const SLOT_BUTTON = "button";
+export const SLOT_MENU = "menu";
 
 export interface MenuButtonProps extends BaseProps {
+    switchContent?: boolean,
+    keepSize?: boolean,
 }
-
 
 export function MenuButton(props: React.PropsWithChildren<MenuButtonProps>): ReactElement {
 
@@ -19,41 +24,33 @@ export function MenuButton(props: React.PropsWithChildren<MenuButtonProps>): Rea
 
     return (
         <Manager>
-
             <Reference>
                 {({ ref }) => (
-                    <ToggleButton forwardRef={ref} onToggle={setOpen} selected={open} forceState>
-                        {getChildrenButton()}
+                    <ToggleButton
+                        switchContent={props.switchContent}
+                        keepSize={props.keepSize}
+                        forwardRef={ref}
+                        onToggle={setOpen}
+                        selected={open}
+                        forceState
+                    >
+                        {getFirstSlot(props.children, SLOT_BUTTON)}
                     </ToggleButton>
                 )}
             </Reference>
-
             {open && (
                 <Popper placement={"bottom"} modifiers={[sameWidthModifier]}>
                     {({ ref, style, placement }) => (
                         <div ref={ref} style={{ ...style, zIndex: 10 }} data-placement={placement}>
                             <div ref={menuRef} style={{ display: 'inline-block', minWidth: "100%" }}>
-                                {getChildrenMenu()}
+                                {getFirstSlot(props.children, SLOT_MENU)}
                             </div>
                         </div>
                     )}
                 </Popper>
             )}
-
         </Manager>
     );
-
-    function getChildrenButton() {
-        return React.Children
-            .toArray(props.children)
-            .find(child => React.isValidElement(child) && (child as React.ReactElement).props.__TYPE === "ButtonSlot");
-    }
-
-    function getChildrenMenu() {
-        return React.Children
-            .toArray(props.children)
-            .find(child => React.isValidElement(child) && (child as React.ReactElement).props.__TYPE === "MenuSlot");
-    }
 
     function handleClickOutside() {
         if (refOpen.current) {
@@ -62,29 +59,3 @@ export function MenuButton(props: React.PropsWithChildren<MenuButtonProps>): Rea
     }
 
 }
-
-
-interface MenuButtonChildrenMarkerProps {
-    __TYPE?: string
-}
-
-function ButtonSlot(props: React.PropsWithChildren<MenuButtonChildrenMarkerProps>): ReactElement {
-    return <>{props.children}</>;
-}
-
-ButtonSlot.defaultProps = {
-    __TYPE: "ButtonSlot",
-};
-
-
-function MenuSlot(props: React.PropsWithChildren<MenuButtonChildrenMarkerProps>): ReactElement {
-    return <>{props.children}</>;
-}
-
-MenuSlot.defaultProps = {
-    __TYPE: "MenuSlot",
-};
-
-
-MenuButton.ButtonSlot = ButtonSlot;
-MenuButton.MenuSlot = MenuSlot;
