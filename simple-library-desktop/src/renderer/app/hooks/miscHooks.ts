@@ -18,7 +18,7 @@ export function useGlobalState() {
     }
 }
 
-
+// TODO: deprecated
 export function useStateRef<S>(initialValue: S): [S, Dispatch<SetStateAction<S>>, MutableRefObject<S>] {
     const [value, setValue] = useState(initialValue);
 

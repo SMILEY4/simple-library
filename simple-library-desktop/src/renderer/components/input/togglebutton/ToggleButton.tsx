@@ -60,7 +60,7 @@ export function ToggleButton(props: React.PropsWithChildren<ToggleButtonProps>):
     }
 
     function shouldForceActiveState() {
-        if (props.forcedPaneState) {
+        if (props.forceState) {
             return props.selected;
         } else {
             return isSelected === true;
