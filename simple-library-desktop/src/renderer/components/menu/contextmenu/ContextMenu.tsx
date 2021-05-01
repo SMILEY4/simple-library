@@ -29,11 +29,11 @@ export function ContextMenu(props: React.PropsWithChildren<ContextMenuProps>): R
             }}
             ref={cmMenuRef}
         >
-            {getMenuChildren()}
+            {getModifiedChildren()}
         </div>
     );
 
-    function getMenuChildren(): ReactElement[] {
+    function getModifiedChildren(): ReactElement[] {
         return addPropsToChildren(
             props.children,
             (prevProps: any) => ({ ...prevProps, __onActionInternal: handleMenuItemAction }),

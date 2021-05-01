@@ -5,7 +5,7 @@ import { componentLifecycle } from '../../../app/common/utils/functionalReactLif
 export function useContextMenu(refTarget?: MutableRefObject<any>) {
 
     const menuRef: MutableRefObject<any> = useClickOutside(handleClickOutside);
-    const targetRef: MutableRefObject<any> = useRef(refTarget ? refTarget : null);
+    const targetRef: MutableRefObject<any> = refTarget ? refTarget : useRef(null);
     const [x, setX] = useState(0);
     const [y, setY] = useState(0);
     const [show, setShow] = useState(false);
