@@ -4,6 +4,8 @@
 
 ## Icon
 
+Displays a simple svg-icon from a selection of available icons
+
 #### Examples
 
 ```jsx
@@ -32,6 +34,8 @@
 
 ## Label
 
+Usually displays a small piece of text, sometimes with additional icon(s) 
+
 #### Examples
 
 ```jsx
@@ -53,6 +57,8 @@
 
 
 ## LabelBox
+
+Displays a label in a box.
 
 #### Examples
 
@@ -88,6 +94,8 @@
   
 
 ## Pane
+
+An element that provides a unified style for background and border. Can be interactive, i.e. react to mouse-over and mouse-click.
 
 #### Examples
 
@@ -436,6 +444,8 @@ An element/button that opens a menu
 
 ## ContextMenuWrapper
 
+A wrapper around an element that, when right-clicked, opens the provided menu as a context-menu.
+
 #### Examples
 
 ```jsx
@@ -468,7 +478,39 @@ An element/button that opens a menu
 
 
 
+## ContextMenu
+
+A menu that can be opened when right-clicking the element of the provided reference  
+
+#### Examples
+
+```jsx
+const refTarget = useRef(null);
+
+<div ref={refTarget}>
+    Right-Click Me!
+</div>
+
+<ContextMenu refTarget={refTarget} onAction={itemId => console.log(itemId)}>
+    <Menu>
+        <MenuItem itemId={"item-1"}>Item 1</MenuItem>
+        <MenuItem itemId={"item-2"}>Item 2</MenuItem>
+    </Menu>
+</ContextMenu>
+```
+
+#### Properties
+
+- refTarget: MutableRefObject
+  - the reference to the target object, that should open the menu on a right-click on it
+- onAction?: (itemId: string) => void
+  - called when any menu item (in any submenu) is clicked. The itemId is the itemId of the clicked menu item
+
+
+
 ## Menu
+
+A menu holding a list of menu items
 
 #### Examples
 
@@ -497,6 +539,8 @@ An element/button that opens a menu
 
 ## Menu Item
 
+A single menu item in a menu
+
 #### Examples
 
 ```jsx
@@ -522,6 +566,8 @@ An element/button that opens a menu
 
 
 ## SubMenuItem
+
+A menu item that, when hovered over, opens another sub-menu next to it
 
 #### Examples
 

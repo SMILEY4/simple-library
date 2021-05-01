@@ -22,7 +22,7 @@ INPUT COMPONENTS
 
 
 MENU COMPONENTS (hint: https://popper.js.org/)
-- menu + items
+- menu + items ✔
 - menubutton ✔
-- context-menu
+- context-menu ✔
 - context-menu-wrapper ✔

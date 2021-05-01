@@ -6,7 +6,3 @@
 .menu > .box {
 	border: unset;
 }
-
-.menu-with-submenu > .box > .menu-item:not(.sub-menu) {
-	padding-right: var(--s-1-5);
-}

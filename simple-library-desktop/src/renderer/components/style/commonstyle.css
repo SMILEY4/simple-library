@@ -43,10 +43,10 @@
 .padding-s-0 { padding: var(--s-0); }
 .padding-s-0-15 { padding: var(--s-0-15); }
 .padding-s-0-25 { padding: var(--s-0-25); }
-.padding-s-0-5  { padding: var(--s-0-5); }
+.padding-s-0-5 { padding: var(--s-0-5); }
 .padding-s-0-75 { padding: var(--s-0-75); }
-.padding-s-1    { padding: var(--s-1); }
-.padding-s-1-5  { padding: var(--s-1-5); }
+.padding-s-1 { padding: var(--s-1); }
+.padding-s-1-5 { padding: var(--s-1-5); }
 .padding-s-2 { padding: var(--s-2); }
 .padding-s-3 { padding: var(--s-3); }
 .padding-s-4 { padding: var(--s-4); }
@@ -63,10 +63,10 @@
 .margin-s-0 { margin: var(--s-0); }
 .margin-s-0-15 { margin: var(--s-0-15); }
 .margin-s-0-25 { margin: var(--s-0-25); }
-.margin-s-0-5  { margin: var(--s-0-5); }
+.margin-s-0-5 { margin: var(--s-0-5); }
 .margin-s-0-75 { margin: var(--s-0-75); }
-.margin-s-1    { margin: var(--s-1); }
-.margin-s-1-5  { margin: var(--s-1-5); }
+.margin-s-1 { margin: var(--s-1); }
+.margin-s-1-5 { margin: var(--s-1-5); }
 .margin-s-2 { margin: var(--s-2); }
 .margin-s-3 { margin: var(--s-3); }
 .margin-s-4 { margin: var(--s-4); }
@@ -230,6 +230,7 @@
 	color: var(--text-color-3)
 }
 
-.text-color-text-on-color {
+.text-color-text-on-color,
+.text-color-text-on-color * {
 	color: var(--text-on-color)
 }

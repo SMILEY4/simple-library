@@ -17,6 +17,7 @@ import { ContextMenuWrapper } from '../menu/contextmenu/ContextMenuWrapper';
 import { Menu } from '../menu/menu/Menu';
 import { MenuItem } from '../menu/menuitem/MenuItem';
 import { SubMenuItem } from '../menu/submenu/SubMenuItem';
+import { ChoiceBox } from '../input/choicebox/ChoiceBox';
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0");
@@ -43,7 +44,8 @@ export function ComponentShowcaseView(): any {
     function renderContent() {
         return (
             <>
-                {renderMenuButton()}
+                {renderChoiceBox()}
+                {renderMenu()}
                 {renderTextFields()}
                 {renderCheckboxes()}
                 {renderLabels()}
@@ -57,14 +59,48 @@ export function ComponentShowcaseView(): any {
     }
 
 
-    function renderMenuButton() {
+    function renderChoiceBox() {
+        return (
+            <Section title={"ChoiceBox"}>
+
+                <ChoiceBox
+                    items={[
+                        { id: "greece", value: "Greece" },
+                        { id: "faroe-islands", value: "Faroe Islands" },
+                        { id: "netherlands", value: "Netherlands" },
+                        { id: "hungary", value: "Hungary" },
+                    ]}
+                />
+
+                <ChoiceBox
+                    variant={Variant.SOLID}
+                    type={Type.PRIMARY}
+                    maxVisibleItems={5}
+                    items={[
+                        { id: "greece", value: "Greece" },
+                        { id: "faroe-islands", value: "Faroe Islands" },
+                        { id: "netherlands", value: "Netherlands" },
+                        { id: "hungary", value: "Hungary" },
+                        { id: "iceland", value: "Iceland" },
+                        { id: "austria", value: "Austria" },
+                        { id: "france", value: "France" },
+                        { id: "belgium", value: "Belgium" },
+                    ]}
+                />
+
+            </Section>
+        );
+    }
+
+
+    function renderMenu() {
         return (
             <>
-                <h3>MenuButton</h3>
+                <h3>Menu</h3>
 
                 <ContextMenuWrapper onAction={(itemId: string) => console.log("CONTEXT_MENU: " + itemId)}>
                     <Slot name={"target"}>
-                        <LabelBox style={{width: "300px", height: "300px"}}>
+                        <LabelBox style={{ width: "300px", height: "300px" }}>
                             Open Context Menu Here
                         </LabelBox>
                     </Slot>
@@ -103,7 +139,7 @@ export function ComponentShowcaseView(): any {
                                     <MenuItem itemId={"checkmark-sub"}><Icon type={IconType.CHECKMARK} />More Checkmark</MenuItem>
                                 </Slot>
                             </SubMenuItem>
-                            <MenuItem itemId={"checkmark"}><Icon type={IconType.CHECKMARK} />Checkmark</MenuItem>
+                            <MenuItem itemId={"checkmark"} icon={IconType.CHECKMARK}><Icon type={IconType.CHECKMARK}/>Checkmark</MenuItem>
                         </Menu>
                     </Slot>
                 </MenuButton>
@@ -900,6 +936,23 @@ function StatefulComponent(props: React.PropsWithChildren<any>): any {
         <div>
             <button onClick={() => setData(props.onAction(data))}>{props.title}</button>
             {props.renderContent(data)}
+        </div>
+    );
+}
+
+
+function Section(props: React.PropsWithChildren<any>): any {
+    return (
+        <div>
+            <h3 style={{ marginTop: "50px" }}>{props.title}</h3>
+            <div style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "15px",
+                padding: "20px",
+            }}>
+                {props.children}
+            </div>
         </div>
     );
 }

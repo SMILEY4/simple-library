@@ -1,13 +1,4 @@
-import {
-    addPropsToChildren,
-    AlignCross,
-    AlignMain,
-    BaseProps,
-    ColorType,
-    concatClasses,
-    getIf,
-    hasChildrenOfType,
-} from '../../common/common';
+import { addPropsToChildren, AlignCross, AlignMain, BaseProps, ColorType, concatClasses } from '../../common/common';
 import * as React from 'react';
 import { ReactElement } from 'react';
 import "./menu.css";
@@ -27,17 +18,15 @@ export function Menu(props: React.PropsWithChildren<MenuProps>): ReactElement {
         <Pane
             outline={ColorType.BASE_1}
             fillDefault={ColorType.BACKGROUND_1}
-            className={concatClasses("menu", "with-shadow-1", getIf(hasSubmenu(), "menu-with-submenu"))}
+            className={concatClasses("menu", "with-shadow-1", props.className)}
+            style={props.style}
+            forwardRef={props.forwardRef}
         >
             <VBox alignMain={AlignMain.START} alignCross={AlignCross.START}>
                 {getModifiedChildren()}
             </VBox>
         </Pane>
     );
-
-    function hasSubmenu(): boolean {
-        return hasChildrenOfType(props.children, SubMenuItem);
-    }
 
     function getModifiedChildren() {
         return addPropsToChildren(

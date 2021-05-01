@@ -40,7 +40,7 @@ export function MenuButton(props: React.PropsWithChildren<MenuButtonProps>): Rea
                 )}
             </Reference>
             {open && (
-                <Popper placement={"bottom"} modifiers={[sameWidthModifier]}>
+                <Popper placement={"bottom"} modifiers={[sameWidthModifier()]}>
                     {({ ref, style, placement }) => (
                         <div ref={ref} style={{ ...style, zIndex: 10 }} data-placement={placement}>
                             <div ref={menuRef} style={{ display: 'inline-block', minWidth: "100%" }}>

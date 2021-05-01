@@ -30,10 +30,10 @@ export function SubMenuItem(props: React.PropsWithChildren<SubMenuItemProps>): R
                         className={concatClasses("sub-menu", getIf(isOpen, "sub-menu-open"))}
                         onMouseEnter={handleEnterItem}
                         onMouseExit={handleExitItem}
+                        icon={IconType.CARET_RIGHT}
                         forwardRef={ref}
                     >
                         {getChildrenItem()}
-                        <Icon type={IconType.CHARET_RIGHT} className={"sub-menu-arrow"} />
                     </MenuItem>
                 )}
             </Reference>

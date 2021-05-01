@@ -1,7 +1,16 @@
 import React from "react";
 import "./icon.css";
 import { BaseProps, ColorType, concatClasses, getIf, map, Size } from "../../common/common";
-import { AiFillCaretRight, AiFillHome, FaCheck, HiOutlineFolder } from 'react-icons/all';
+import {
+    AiFillCaretRight,
+    AiFillHome,
+    BsChevronDown,
+    BsChevronLeft,
+    BsChevronRight,
+    BsChevronUp,
+    FaCheck,
+    HiOutlineFolder,
+} from 'react-icons/all';
 
 export enum IconType {
     CHEVRON_UP,
@@ -12,7 +21,7 @@ export enum IconType {
     CHEVRON_DOUBLE_DOWN,
     CHEVRON_DOUBLE_LEFT,
     CHEVRON_DOUBLE_RIGHT,
-    CHARET_RIGHT,
+    CARET_RIGHT,
     PLUS,
     MINUS,
     CROSS,
@@ -36,7 +45,13 @@ const ICON_COLOR_TYPE = new Map<IconType, string>([
     [IconType.FOLDER, SVG_OUTLINED],
     [IconType.HOME, SVG_FILLED],
     [IconType.CHECKMARK, SVG_FILLED],
-    [IconType.CHARET_RIGHT, SVG_FILLED],
+    [IconType.CARET_RIGHT, SVG_FILLED],
+
+    [IconType.CHEVRON_UP, SVG_FILLED],
+    [IconType.CHEVRON_DOWN, SVG_FILLED],
+    [IconType.CHEVRON_LEFT, SVG_FILLED],
+    [IconType.CHEVRON_RIGHT, SVG_FILLED],
+
 ]);
 
 export interface IconProps extends BaseProps {
@@ -54,7 +69,6 @@ export function Icon(props: React.PropsWithChildren<IconProps>): React.ReactElem
         className: getClassName(),
         style: props.style,
     };
-
     switch (props.type) {
         case IconType.FOLDER:
             return <HiOutlineFolder {...iconProps} />;
@@ -62,8 +76,16 @@ export function Icon(props: React.PropsWithChildren<IconProps>): React.ReactElem
             return <AiFillHome {...iconProps} />;
         case IconType.CHECKMARK:
             return <FaCheck {...iconProps} />;
-        case IconType.CHARET_RIGHT:
+        case IconType.CARET_RIGHT:
             return <AiFillCaretRight {...iconProps} />;
+        case IconType.CHEVRON_UP:
+            return <BsChevronUp {...iconProps} />;
+        case IconType.CHEVRON_DOWN:
+            return <BsChevronDown {...iconProps} />;
+        case IconType.CHEVRON_LEFT:
+            return <BsChevronLeft {...iconProps} />;
+        case IconType.CHEVRON_RIGHT:
+            return <BsChevronRight {...iconProps} />;
         default:
             return null;
     }

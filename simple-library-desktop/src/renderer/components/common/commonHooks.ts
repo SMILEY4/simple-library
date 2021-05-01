@@ -16,7 +16,7 @@ export function useStateRef<S>(initialValue: S): [S, Dispatch<SetStateAction<S>>
 }
 
 
-export function useClickOutside(action: () => void, targetRef?: MutableRefObject<any>): MutableRefObject<any> {
+export function useClickOutside(action: (target:any) => void, targetRef?: MutableRefObject<any>): MutableRefObject<any> {
     const targetElementRef: MutableRefObject<any> = useRef(targetRef ? targetRef : null);
     componentLifecycle(
         () => document.addEventListener('mousedown', handleClick),
@@ -25,7 +25,7 @@ export function useClickOutside(action: () => void, targetRef?: MutableRefObject
 
     function handleClick(event: any) {
         if (targetElementRef && targetElementRef.current && !targetElementRef.current.contains(event.target)) {
-            action();
+            action(event.target);
         }
     }
 
