@@ -61,7 +61,7 @@ export function MenuButton(props: React.PropsWithChildren<MenuButtonProps>): Rea
     function getMenuChildren(): any {
         return addPropsToChildren(
             getChildrenOfSlot(props.children, SLOT_MENU),
-            { onAction: handleMenuItemAction },
+            (prevProps: any) => ({ ...prevProps, onAction: handleMenuItemAction }),
             (child: ReactElement) => child.type === Menu,
         );
     }

@@ -36,7 +36,7 @@ export function Label(props: React.PropsWithChildren<LabelProps>): ReactElement 
     function getModifiedChildren() {
         return addPropsToChildren(
             props.children,
-            { color: getContentColor() },
+            (prevProps: any) => ({ ...prevProps, color: getContentColor() }),
             (child: ReactElement) => child.type === Icon,
         );
     }

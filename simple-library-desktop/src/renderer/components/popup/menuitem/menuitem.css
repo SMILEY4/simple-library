@@ -10,6 +10,7 @@
 	padding-left:    var(--s-0-25);
 	padding-right:   var(--s-0-25);
 	box-sizing:      border-box;
+	white-space:     nowrap;
 }
 
 

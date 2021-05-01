@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ReactNode } from 'react';
+import { ReactElement, ReactNode } from 'react';
 
 export enum GroupPosition {
     START = "start",
@@ -126,6 +126,11 @@ export interface ClickableProps {
     onClick?: (event: React.MouseEvent) => void
 }
 
+export interface MouseOverProps {
+    onMouseEnter?: (event: React.MouseEvent) => void,
+    onMouseExit?: (event: React.MouseEvent) => void
+}
+
 
 /**
  * Safely combines the given class names into a single one. Ignores undefined.
@@ -225,11 +230,11 @@ export function callSafe(func: any) {
  * @param props the properties to add
  * @param filter add the props only to the children that pass this filter
  */
-export function addPropsToChildren(children: ReactNode | ReactNode[], props: any, filter?: (child: React.ReactElement) => boolean): any[] {
+export function addPropsToChildren(children: ReactNode | ReactNode[], props: (prevProps: any) => any, filter?: (child: React.ReactElement) => boolean): any[] {
     return React.Children.map(children, (child: any) => {
         if (React.isValidElement(child)) {
             if (filter && filter(child)) {
-                return React.cloneElement(child, { ...props });
+                return React.cloneElement(child, props(child.props));
             } else {
                 return child;
             }
@@ -237,4 +242,11 @@ export function addPropsToChildren(children: ReactNode | ReactNode[], props: any
             return child;
         }
     });
+}
+
+export function hasChildrenOfType(children: ReactNode | ReactNode[], type: any): boolean {
+    return React.Children.toArray(children)
+        .filter(child => React.isValidElement(child))
+        .map(child => child as ReactElement)
+        .some(child => child.type === type);
 }

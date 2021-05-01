@@ -1,7 +1,7 @@
 import React from "react";
 import "./icon.css";
 import { BaseProps, ColorType, concatClasses, getIf, map, Size } from "../../common/common";
-import { AiFillHome, FaCheck, HiOutlineFolder } from 'react-icons/all';
+import { AiFillCaretRight, AiFillHome, FaCheck, HiOutlineFolder } from 'react-icons/all';
 
 export enum IconType {
     CHEVRON_UP,
@@ -12,6 +12,7 @@ export enum IconType {
     CHEVRON_DOUBLE_DOWN,
     CHEVRON_DOUBLE_LEFT,
     CHEVRON_DOUBLE_RIGHT,
+    CHARET_RIGHT,
     PLUS,
     MINUS,
     CROSS,
@@ -26,6 +27,7 @@ export enum IconType {
     FOLDER,
 }
 
+
 const SVG_OUTLINED = "outlined";
 const SVG_FILLED = "filled";
 
@@ -34,6 +36,7 @@ const ICON_COLOR_TYPE = new Map<IconType, string>([
     [IconType.FOLDER, SVG_OUTLINED],
     [IconType.HOME, SVG_FILLED],
     [IconType.CHECKMARK, SVG_FILLED],
+    [IconType.CHARET_RIGHT, SVG_FILLED],
 ]);
 
 export interface IconProps extends BaseProps {
@@ -47,13 +50,20 @@ export interface IconProps extends BaseProps {
  */
 export function Icon(props: React.PropsWithChildren<IconProps>): React.ReactElement {
 
+    const iconProps: any = {
+        className: getClassName(),
+        style: props.style,
+    };
+
     switch (props.type) {
         case IconType.FOLDER:
-            return <HiOutlineFolder className={getClassName()} style={props.style}/>;
+            return <HiOutlineFolder {...iconProps} />;
         case IconType.HOME:
-            return <AiFillHome className={getClassName()} style={props.style}/>;
+            return <AiFillHome {...iconProps} />;
         case IconType.CHECKMARK:
-            return <FaCheck className={getClassName()} style={props.style}/>;
+            return <FaCheck {...iconProps} />;
+        case IconType.CHARET_RIGHT:
+            return <AiFillCaretRight {...iconProps} />;
         default:
             return null;
     }

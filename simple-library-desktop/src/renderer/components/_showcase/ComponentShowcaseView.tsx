@@ -11,10 +11,11 @@ import { Checkbox } from '../input/checkbox/Checkbox';
 import { ToggleButton } from '../input/togglebutton/ToggleButton';
 import { TextField } from '../input/textfield/TextField';
 import { LabelBox } from '../base/labelbox/LabelBox';
-import { MenuButton, SLOT_BUTTON, SLOT_MENU } from '../input/menubutton/MenuButton';
+import { MenuButton } from '../input/menubutton/MenuButton';
 import { Slot } from '../base/slot/Slot';
 import { Menu } from '../popup/menu/Menu';
 import { MenuItem } from '../popup/menuitem/MenuItem';
+import { SubMenuItem } from '../popup/submenu/SubMenuItem';
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0");
@@ -60,23 +61,23 @@ export function ComponentShowcaseView(): any {
             <>
                 <h3>MenuButton</h3>
                 <MenuButton onAction={(itemId: string) => console.log("ITEM: " + itemId)}>
-                    <Slot name={SLOT_BUTTON}>
+                    <Slot name={"button"}>
                         Button
                     </Slot>
-                    <Slot name={SLOT_MENU}>
+                    <Slot name={"menu"}>
                         <Menu>
-                            <MenuItem itemId={"home"}>
-                                <Icon type={IconType.HOME} />
-                                Home
-                            </MenuItem>
-                            <MenuItem itemId={"folder"}>
-                                <Icon type={IconType.FOLDER} />
-                                Folder
-                            </MenuItem>
-                            <MenuItem itemId={"checkmark"}>
-                                <Icon type={IconType.CHECKMARK} />
-                                Checkmark
-                            </MenuItem>
+                            <MenuItem itemId={"home"}><Icon type={IconType.HOME} />Home</MenuItem>
+                            <MenuItem itemId={"folder"}><Icon type={IconType.FOLDER} />Folder</MenuItem>
+                            <SubMenuItem itemId={"submenu"}>
+                                <Slot name={"item"}>
+                                    Submenu
+                                </Slot>
+                                <Slot name={"menu"}>
+                                    <MenuItem itemId={"home-sub"}><Icon type={IconType.HOME} />More Home</MenuItem>
+                                    <MenuItem itemId={"checkmark-sub"}><Icon type={IconType.CHECKMARK} />More Checkmark</MenuItem>
+                                </Slot>
+                            </SubMenuItem>
+                            <MenuItem itemId={"checkmark"}><Icon type={IconType.CHECKMARK} />Checkmark</MenuItem>
                         </Menu>
                     </Slot>
                 </MenuButton>
