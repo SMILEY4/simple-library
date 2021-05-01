@@ -34,6 +34,7 @@ export function LabelBox(props: React.PropsWithChildren<LabelBoxProps>): ReactEl
               groupPos={props.groupPos}
               className={"label-box"}
               forwardRef={props.forwardRef}
+              style={props.style}
         >
             <Label color={getContentColor()} style={{ width: "100%", height: "100%" }}>
                 {props.children}

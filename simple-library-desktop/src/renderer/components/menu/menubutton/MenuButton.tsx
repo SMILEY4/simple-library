@@ -2,12 +2,11 @@ import * as React from 'react';
 import { MutableRefObject, ReactElement } from 'react';
 import { addPropsToChildren, BaseProps } from '../../common/common';
 import { Manager, Popper, Reference } from 'react-popper';
-import "./menubutton.css";
-import { ToggleButton } from '../togglebutton/ToggleButton';
+import { ToggleButton } from '../../input/togglebutton/ToggleButton';
 import { sameWidthModifier } from '../../common/popperUtils';
 import { useClickOutside, useStateRef } from '../../common/commonHooks';
 import { getChildrenOfSlot, getFirstSlot } from '../../base/slot/Slot';
-import { Menu } from '../../popup/menu/Menu';
+import { Menu } from '../menu/Menu';
 
 
 export const SLOT_BUTTON = "button";

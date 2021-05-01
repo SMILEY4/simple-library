@@ -5,7 +5,8 @@ import "./menuitem.css";
 
 export interface MenuItemProps extends BaseProps, MouseOverProps {
     itemId?: string,
-    onAction?: (itemId: string) => void;
+    onAction?: () => void;
+    __onActionInternal?: (itemId: string) => void;
 }
 
 export function MenuItem(props: React.PropsWithChildren<MenuItemProps>): ReactElement {
@@ -25,7 +26,10 @@ export function MenuItem(props: React.PropsWithChildren<MenuItemProps>): ReactEl
 
     function handleClick() {
         if (props.onAction) {
-            props.onAction(props.itemId);
+            props.onAction();
+        }
+        if (props.__onActionInternal) {
+            props.__onActionInternal(props.itemId);
         }
     }
 }

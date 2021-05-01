@@ -13,7 +13,8 @@ export const SLOT_MENU = "menu";
 
 export interface SubMenuItemProps extends BaseProps {
     itemId?: string,
-    onAction?: (itemId: string) => void
+    __onActionInternal?: (itemId: string) => void,
+    onAction?: (itemId: string) => void,
 }
 
 export function SubMenuItem(props: React.PropsWithChildren<SubMenuItemProps>): ReactElement {
@@ -69,6 +70,9 @@ export function SubMenuItem(props: React.PropsWithChildren<SubMenuItemProps>): R
         setOpen(false);
         if (props.onAction) {
             props.onAction(itemId);
+        }
+        if (props.__onActionInternal) {
+            props.__onActionInternal(itemId);
         }
     }
 

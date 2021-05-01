@@ -132,7 +132,7 @@
 
 ## Slots / Slot-System
 
-Slots are used to group and label children of a component.
+Slots are used to group and label children of a component. Slots are identified by the name property.
 
 ```jsx
 <MyComponent>
@@ -172,6 +172,8 @@ export function MyComponent(...): ReactElement {
 
 
 ## Button
+
+An element used to trigger an action on click.
 
 #### Examples
 
@@ -237,6 +239,8 @@ export function MyComponent(...): ReactElement {
 
 ## ToggleButton
 
+An element/button to switch between two states
+
 #### Examples
 
 ```jsx
@@ -265,6 +269,9 @@ export function MyComponent(...): ReactElement {
 - switchContent?: boolean
   - enables displaying different content depending on the state
   - when true, the toggle-button must have exactly two child-elements
+- keepSize?: boolean
+  - used in combination with "switchContent"
+  - true = the button does not  change width when switching between the two child-elements
 - onToggle?: (selected:boolean) => void
   - triggered when the state of the buttonchanges (and the button is not disabled).
   - the parameter "selected" represents the new/next state
@@ -272,6 +279,8 @@ export function MyComponent(...): ReactElement {
 
 
 ## Checkbox
+
+An element to switch between "selected" and "not selected"
 
 #### Examples
 
@@ -324,6 +333,8 @@ export function MyComponent(...): ReactElement {
 
 ## TextField
 
+A field to enter a single line of text
+
 #### Examples
 
 ```jsx
@@ -372,4 +383,181 @@ export function MyComponent(...): ReactElement {
   - function called when the value of the textfield changes.
 - onAccept?:  (value:string) => void
   - function called when the user presses enter or unfocuses the textfield
+
+
+
+
+
+# Menu
+
+
+
+## MenuButton
+
+An element/button that opens a menu
+
+#### Examples
+
+```jsx
+<MenuButton onAction={(itemId: string) => console.log("MENU_BUTTON: " + itemId)}>
+    <Slot name={"button"}>
+        <Icon type={IconType.HOME} />
+        Menu Button
+    </Slot>
+    <Slot name={"menu"}>
+        <Menu>
+            <MenuItem itemId={"item-1"}>Item 1</MenuItem>
+            <MenuItem itemId={"item-2"}>Item 2</MenuItem>
+        </Menu>
+    </Slot>
+</MenuButton>
+```
+
+#### Slots
+
+- button
+  - used as the content/children for the button
+- menu
+  - used as the menu to show. Child should be of type "Menu" 
+
+#### Properties
+
+- onAction?: (itemId: string) => void
+  - called when any menu item (in any submenu) is clicked. The itemId is the itemId of the menu item.  
+
+- switchContent?: boolean
+  - see ToggleButton#switchContent
+  - whether to switch between the two child elements in the "button"-slot based on whether the menu is open
+- keepSize?: boolean
+  - see ToggleButton#keepSize
+  - true= the button does not  change width when switching between the two child-elements
+
+
+
+## ContextMenuWrapper
+
+#### Examples
+
+```jsx
+<ContextMenuWrapper onAction={(itemId: string) => console.log("Clicked " + itemId)}>
+    <Slot name={"target"}>
+        <LabelBox style={{width: "300px", height: "300px"}}>
+            Right-Click here to open menu
+        </LabelBox>
+    </Slot>
+    <Slot name={"menu"}>
+        <Menu>
+            <MenuItem itemId={"item-1"}>Item 1</MenuItem>
+            <MenuItem itemId={"item-2"}>Item 2</MenuItem>
+        </Menu>
+    </Slot>
+</ContextMenuWrapper>
+```
+
+#### Slots
+
+- target
+  - provides the target element that, when right-clicked, opens the menu
+- menu
+  - provided the menu that is opened on interaction with the target-element
+
+#### Properties
+
+- onAction?: (itemId: string) => void
+  - called when any menu item (in any submenu) is clicked. The itemId is the itemId of the clicked menu item
+
+
+
+## Menu
+
+#### Examples
+
+```jsx
+<Menu onAction={(itemId:string) => console.log(itemId) }>
+    <MenuItem itemId={"item-1"}>Item 1</MenuItem>
+    <MenuItem itemId={"item-2"}>Item 2</MenuItem>
+    <SubMenuItem itemId={"item-3"}>
+        <Slot name={"item"}>
+            Submenu
+        </Slot>
+        <Slot name={"menu"}>
+            <MenuItem itemId={"item-3a"}>Item 3a</MenuItem>
+            <MenuItem itemId={"item-3b"}>Item 3b</MenuItem>
+        </Slot>
+    </SubMenuItem>
+</Menu>
+```
+
+#### Properties
+
+- onAction?: (itemId:string) => void
+  - called when any menu item (in any submenu) is clicked. The itemId is the itemId of the clicked menu item.  
+
+
+
+## Menu Item
+
+#### Examples
+
+```jsx
+<MenuItem itemId={"item"}>
+    Menu Item
+</MenuItem>
+
+<MenuItem itemId={"item"}>
+    <Icon type={IconType.HOME} />
+    Menu Item
+</MenuItem>
+```
+
+#### Properties
+
+- itemId?: string
+  - unique id of the item in the menu and submenues
+- also used as keys for the react-elements
+  
+- onAction?: () => void
+  - called when the menu item is clicked.
+
+
+
+## SubMenuItem
+
+#### Examples
+
+```jsx
+<SubMenuItem itemId={"submenu"}>
+    <Slot name={"item"}>
+        <Icon type={IconType.HOME} />
+        Submenu
+    </Slot>
+    <Slot name={"menu"}>
+         <MenuItem itemId={"item-1"}>Item 1</MenuItem>
+         <MenuItem itemId={"item-2"}>Item 2</MenuItem>
+    </Slot>
+</SubMenuItem>
+```
+
+#### Slots
+
+- item
+
+  - used as the content/children for themenu-item
+
+- menu
+
+  - used as the content/children of the menu. 
+
+#### Properties
+
+- itemId?: string
+  - unique id of the item in the menu and submenues
+  - also used as keys for the react-elements
+
+- onAction?: (itemId:string) => void
+  - called when any menu item (in any submenu) is clicked. The itemId is the itemId of the clicked menu item.  
+
+
+
+
 

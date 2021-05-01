@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-export function componentWillMount(action: () => void): void {
+export function componentDidMount(action: () => void): void {
     useEffect(() => {
         action();
     }, []);

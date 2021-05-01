@@ -11,12 +11,12 @@ import { Checkbox } from '../input/checkbox/Checkbox';
 import { ToggleButton } from '../input/togglebutton/ToggleButton';
 import { TextField } from '../input/textfield/TextField';
 import { LabelBox } from '../base/labelbox/LabelBox';
-import { MenuButton } from '../input/menubutton/MenuButton';
+import { MenuButton } from '../menu/menubutton/MenuButton';
 import { Slot } from '../base/slot/Slot';
-import { Menu } from '../popup/menu/Menu';
-import { MenuItem } from '../popup/menuitem/MenuItem';
-import { SubMenuItem } from '../popup/submenu/SubMenuItem';
-import { ContextMenuWrapper } from '../popup/contextmenu/ContextMenuWrapper';
+import { ContextMenuWrapper } from '../menu/contextmenu/ContextMenuWrapper';
+import { Menu } from '../menu/menu/Menu';
+import { MenuItem } from '../menu/menuitem/MenuItem';
+import { SubMenuItem } from '../menu/submenu/SubMenuItem';
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0");
@@ -64,7 +64,7 @@ export function ComponentShowcaseView(): any {
 
                 <ContextMenuWrapper onAction={(itemId: string) => console.log("CONTEXT_MENU: " + itemId)}>
                     <Slot name={"target"}>
-                        <LabelBox>
+                        <LabelBox style={{width: "300px", height: "300px"}}>
                             Open Context Menu Here
                         </LabelBox>
                     </Slot>
@@ -88,7 +88,7 @@ export function ComponentShowcaseView(): any {
 
                 <MenuButton onAction={(itemId: string) => console.log("MENU_BUTTON: " + itemId)}>
                     <Slot name={"button"}>
-                        Button
+                        Menu Button
                     </Slot>
                     <Slot name={"menu"}>
                         <Menu>
