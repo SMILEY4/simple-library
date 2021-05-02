@@ -77,7 +77,11 @@ export function ComponentShowcaseView(): any {
                     <SplitPane style={{
                         width: "100%",
                         height: "100%",
-                    }}/>
+                    }}>
+                        <div style={{backgroundColor: "#ff8585", width: "100%", height: "100%"}}>A</div>
+                        <div style={{backgroundColor: "#91ff85", width: "100%", height: "100%"}}>B</div>
+                        <div style={{backgroundColor: "#8595ff", width: "100%", height: "100%"}}>C</div>
+                    </SplitPane>
 
                 </div>
 

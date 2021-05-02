@@ -5,4 +5,5 @@
 }
 
 .split-pane-panel {
+	position: relative;
 }
