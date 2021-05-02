@@ -7,22 +7,35 @@ BASE COMPONENTS
 - label ✔
 - labelBox ✔
 
+MISC COMPONENTS
+- image
+- sidebar
+
+DIALOG COMPONENTS
+- modalbase
+- dialog
+- notification
+- notificationStack
 
 LAYOUT COMPONENTS
 - box / hbox / vbox ✔
 - grid
+- splitpane
+    * vert
+    * horz
 
 
 INPUT COMPONENTS
 - button ✔
 - toggle button ✔
 - checkbox ✔
-- input field ✔
+- text field ✔
+- text area
 - choicebox
     * with multiselect (supply renderer for multiple items)
 
 
-MENU COMPONENTS (hint: https://popper.js.org/)
+MENU COMPONENTS
 - menu + items + separators + titles ✔
 - menubutton ✔
 - context-menu ✔

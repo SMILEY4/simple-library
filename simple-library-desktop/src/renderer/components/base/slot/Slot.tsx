@@ -16,7 +16,7 @@ export function getAllSlots(children: ReactNode | ReactNode[], slotName: string)
         .filter(child => child.props.name === slotName);
 }
 
-export function getFirstSlot(children: ReactNode | ReactNode[], slotName: string): ReactElement {
+export function getFirstSlot(children: ReactNode | ReactNode[], slotName: string): ReactElement | undefined {
     return getReactElements(children)
         .find(child => child.props.name === slotName);
 }
@@ -35,7 +35,16 @@ export function getChildrenOfSlot(children: ReactNode | ReactNode[], slotName: s
     }
 }
 
-function getReactElements(children: ReactNode | ReactNode[]): ReactElement[] {
+export function getChildOfSlot(children: ReactNode | ReactNode[], slotName: string): ReactElement | undefined {
+    const slotChildren: ReactElement[] = getChildrenOfSlot(children, slotName);
+    if (slotChildren.length > 0) {
+        return slotChildren[0];
+    } else {
+        return undefined;
+    }
+}
+
+export function getReactElements(children: ReactNode | ReactNode[]): ReactElement[] {
     return React.Children
         .toArray(children)
         .filter(child => React.isValidElement(child))

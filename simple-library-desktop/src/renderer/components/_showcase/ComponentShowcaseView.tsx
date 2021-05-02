@@ -20,6 +20,7 @@ import { SubMenuItem } from '../menu/submenu/SubMenuItem';
 import { ChoiceBox } from '../input/choicebox/ChoiceBox';
 import { SeparatorMenuItem } from '../menu/seperatormenuitem/SeparatorMenuItem';
 import { TitleMenuItem } from '../menu/titlemenuitem/TitleMenuItem';
+import { SplitPane } from '../layout/splitpane/SplitPane';
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0");
@@ -46,6 +47,7 @@ export function ComponentShowcaseView(): any {
     function renderContent() {
         return (
             <>
+                {renderSplitPane()}
                 {renderChoiceBox()}
                 {renderMenu()}
                 {renderTextFields()}
@@ -57,6 +59,30 @@ export function ComponentShowcaseView(): any {
                 {renderPanesInteractive()}
                 {renderText()}
             </>
+        );
+    }
+
+
+    function renderSplitPane() {
+        return (
+            <Section title={"SplitPane"}>
+
+                <div style={{
+                    width: "400px",
+                    height: "400px",
+                    border: "1px solid black",
+                    position: "relative"
+                }}>
+
+                    <SplitPane style={{
+                        width: "100%",
+                        height: "100%",
+                    }}/>
+
+                </div>
+
+
+            </Section>
         );
     }
 
@@ -130,12 +156,12 @@ export function ComponentShowcaseView(): any {
                     </Slot>
                     <Slot name={"menu"}>
                         <Menu>
-                            <TitleMenuItem title={"Actions"}/>
+                            <TitleMenuItem title={"Actions"} />
                             <MenuItem itemId={"home"}><Icon type={IconType.HOME} />Home</MenuItem>
                             <MenuItem itemId={"folder"}><Icon type={IconType.FOLDER} />Folder</MenuItem>
-                            <MenuItem itemId={"checkmark"} icon={IconType.CHECKMARK}><Icon type={IconType.CHECKMARK}/>Checkmark</MenuItem>
-                            <SeparatorMenuItem/>
-                            <TitleMenuItem title={"Submenus"}/>
+                            <MenuItem itemId={"checkmark"} icon={IconType.CHECKMARK}><Icon type={IconType.CHECKMARK} />Checkmark</MenuItem>
+                            <SeparatorMenuItem />
+                            <TitleMenuItem title={"Submenus"} />
                             <SubMenuItem itemId={"submenu"}>
                                 <Slot name={"item"}>
                                     Submenu
