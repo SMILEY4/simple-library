@@ -251,7 +251,6 @@ export function hasChildrenOfType(children: ReactNode | ReactNode[], type: any):
         .some(child => child.type === type);
 }
 
-
 export function mergeRefs(...refs: any[]) {
     const filteredRefs = refs.filter(Boolean);
     if (!filteredRefs.length) {
@@ -269,4 +268,11 @@ export function mergeRefs(...refs: any[]) {
             }
         }
     };
+}
+
+export function getReactElements(children: ReactNode | ReactNode[]): ReactElement[] {
+    return React.Children
+        .toArray(children)
+        .filter(child => React.isValidElement(child))
+        .map(child => child as React.ReactElement);
 }

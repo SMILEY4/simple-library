@@ -21,6 +21,8 @@ import { ChoiceBox } from '../input/choicebox/ChoiceBox';
 import { SeparatorMenuItem } from '../menu/seperatormenuitem/SeparatorMenuItem';
 import { TitleMenuItem } from '../menu/titlemenuitem/TitleMenuItem';
 import { SplitPane } from '../layout/splitpane/SplitPane';
+import { SplitPanePanel } from '../layout/splitpane/SplitPanePanel';
+import { Splitter } from '../layout/splitpane/Splitter';
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0");
@@ -71,16 +73,24 @@ export function ComponentShowcaseView(): any {
                     width: "400px",
                     height: "400px",
                     border: "1px solid black",
-                    position: "relative"
+                    position: "relative",
                 }}>
 
                     <SplitPane style={{
                         width: "100%",
                         height: "100%",
                     }}>
-                        <div style={{backgroundColor: "#ff8585", width: "100%", height: "100%"}}>A</div>
-                        <div style={{backgroundColor: "#91ff85", width: "100%", height: "100%"}}>B</div>
-                        <div style={{backgroundColor: "#8595ff", width: "100%", height: "100%"}}>C</div>
+                        <SplitPanePanel size={"100px"}>
+                            <div style={{ backgroundColor: "#ff8585", width: "100%", height: "100%" }}>A</div>
+                        </SplitPanePanel>
+                        <Splitter />
+                        <SplitPanePanel size={"50%"}>
+                            <div style={{ backgroundColor: "#91ff85", width: "100%", height: "100%" }}>B</div>
+                        </SplitPanePanel>
+                        <Splitter />
+                        <SplitPanePanel size={"50%"}>
+                            <div style={{ backgroundColor: "#8595ff", width: "100%", height: "100%" }}>C</div>
+                        </SplitPanePanel>
                     </SplitPane>
 
                 </div>

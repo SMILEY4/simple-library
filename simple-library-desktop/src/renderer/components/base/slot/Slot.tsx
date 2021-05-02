@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { ReactElement, ReactNode } from 'react';
+import { getReactElements } from '../../common/common';
 
 export interface SlotProps {
     name: string,
@@ -42,11 +43,4 @@ export function getChildOfSlot(children: ReactNode | ReactNode[], slotName: stri
     } else {
         return undefined;
     }
-}
-
-export function getReactElements(children: ReactNode | ReactNode[]): ReactElement[] {
-    return React.Children
-        .toArray(children)
-        .filter(child => React.isValidElement(child))
-        .map(child => child as React.ReactElement);
 }

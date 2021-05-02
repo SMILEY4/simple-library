@@ -1,9 +1,9 @@
 import "./splitpane.css";
 import * as React from 'react';
 import { MutableRefObject, ReactElement, useRef } from 'react';
-import { BaseProps } from '../../common/common';
+import { BaseProps, getReactElements } from '../../common/common';
 import { Splitter } from './Splitter';
-import { getReactElements } from '../../base/slot/Slot';
+import { SplitPanePanel } from './SplitPanePanel';
 
 interface SplitPaneProps extends BaseProps {
 }
@@ -21,53 +21,53 @@ export function SplitPane(props: React.PropsWithChildren<SplitPaneProps>): React
     );
 
     function renderContent() {
+        let indexSplitter: number = 0;
+        return getReactElements(props.children)
+            .map((child: ReactElement) => {
 
-        const elements: ReactElement[] = getReactElements(props.children);
+                if (child.type === Splitter) {
+                    const splitterProps = {
+                        ...child.props,
+                        __splitterId: indexSplitter,
+                        __onDrag: handleDragSplitter,
+                    };
+                    indexSplitter++;
+                    return React.cloneElement(child, splitterProps);
+                }
 
-        const panels: ReactElement[] = [];
-        for (let i = 0; i < elements.length; i++) {
-            const elementRef = useRef(null);
-            panelRefs.push(elementRef);
-            panels.push(
-                <div
-                    className={"split-pane-panel"}
-                    ref={elementRef}
-                    style={{
-                        flexBasis: (100 / elements.length) + "%",
-                    }}>
-                    {elements[i]}
-                </div>,
-            );
-        }
+                if (child.type === SplitPanePanel) {
 
-        const content: ReactElement[] = [];
-        for (let i = 0; i < panels.length - 1; i++) {
-            const panel: ReactElement = panels[i];
-            content.push(panel);
-            content.push(<Splitter splitterId={i} onDrag={handleDragSplitter} />);
-        }
-        content.push(panels[panels.length - 1]);
+                    const refPanel = useRef(null);
+                    panelRefs.push(refPanel);
 
-        return content;
+                    const panelProps = {
+                        ...child.props,
+                        forwardRef: refPanel,
+                    };
+                    return React.cloneElement(child, panelProps);
+                }
+
+                return null;
+            });
     }
 
     function handleDragSplitter(splitterId: number, diff: number): void {
 
-        const splitterSize = 5;
-        const totalSize: number = refSplitPane.current.clientWidth - (splitterSize * (panelRefs.length - 1));
+        const totalSize: number = panelRefs
+            .map(refPanel => refPanel.current.clientWidth)
+            .reduce((a, b) => a + b, 0);
 
-        const refPanel0 = panelRefs[splitterId];
-        const refPanel1 = panelRefs[splitterId + 1];
+        const panelSizes: number[] = panelRefs.map(refPanel => refPanel.current.clientWidth);
+        panelSizes[splitterId] += diff;
+        panelSizes[splitterId + 1] -= diff;
 
-        const nextSizePanel0 = refPanel0.current.clientWidth + diff;
-        const nextSizePanel1 = refPanel1.current.clientWidth - diff;
-
-        const nextPercentagePanel0 = nextSizePanel0 / totalSize;
-        const nextPercentagePanel1 = nextSizePanel1 / totalSize;
-
-        refPanel0.current.style.flexBasis = (nextPercentagePanel0 * 100) + "%";
-        refPanel1.current.style.flexBasis = (nextPercentagePanel1 * 100) + "%";
-
+        panelSizes
+            .map(size => size / totalSize)
+            .map(p => p * 100)
+            .map(p => p + "%")
+            .forEach((percentage, index) => {
+                panelRefs[index].current.style.flexBasis = percentage;
+            });
     }
 
 

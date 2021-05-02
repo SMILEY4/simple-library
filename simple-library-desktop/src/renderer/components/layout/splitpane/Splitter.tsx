@@ -6,8 +6,8 @@ import { componentLifecycle } from '../../../app/common/utils/functionalReactLif
 import { useStateRef } from '../../common/commonHooks';
 
 interface SplitterProps extends BaseProps {
-    splitterId: number,
-    onDrag: (splitterId:number, diff: number) => void
+    __splitterId?: number,
+    __onDrag?: (splitterId:number, diff: number) => void
 }
 
 
@@ -51,7 +51,7 @@ export function Splitter(props: React.PropsWithChildren<SplitterProps>): ReactEl
             const splitterPageX = refSplitter.current.getBoundingClientRect().x;
             const mousePageX = event.pageX;
             const diff = mousePageX - splitterPageX;
-            props.onDrag(props.splitterId, diff);
+            props.__onDrag(props.__splitterId, diff);
         }
     }
 
