@@ -552,14 +552,19 @@ A single menu item in a menu
     <Icon type={IconType.HOME} />
     Menu Item
 </MenuItem>
+
+<MenuItem itemId={"item"} icon={IconType.CHECKMARK}>
+    Selected Item
+</MenuItem>
 ```
 
 #### Properties
 
 - itemId?: string
   - unique id of the item in the menu and submenues
-- also used as keys for the react-elements
-  
+  - also used as keys for the react-elements
+- icon?: IconType
+  - an icon shown on the right side of the menu item
 - onAction?: () => void
   - called when the menu item is clicked.
 
@@ -580,6 +585,7 @@ A menu item that, when hovered over, opens another sub-menu next to it
     <Slot name={"menu"}>
          <MenuItem itemId={"item-1"}>Item 1</MenuItem>
          <MenuItem itemId={"item-2"}>Item 2</MenuItem>
+        <MenuItem itemId={"item-2"}>Item 2</MenuItem>
     </Slot>
 </SubMenuItem>
 ```
@@ -605,5 +611,42 @@ A menu item that, when hovered over, opens another sub-menu next to it
 
 
 
+## SeparatorMenuItem
+
+Adds a thin line to the menu as separation between items/sections.
+
+#### Example
+
+```jsx
+<Menu>
+	<MenuItem itemId={"item-1a"}>Item 1a</MenuItem>
+    <MenuItem itemId={"item-1b"}>Item 1b</MenuItem>
+    <SeparatorMenuItem/>
+    <MenuItem itemId={"item-2a"}>Item 2a</MenuItem>
+    <MenuItem itemId={"item-2b"}>Item 2b</MenuItem>
+</Menu>
+```
 
 
+
+## TitleMenuItem
+
+Adds a title to the menu as headline of a group of items or a sections.
+
+#### Example
+
+```jsx
+<Menu>
+    <TitleMenuItem title={"Items 1"}/>
+	<MenuItem itemId={"item-1a"}>Item 1a</MenuItem>
+    <MenuItem itemId={"item-1b"}>Item 1b</MenuItem>
+    <TitleMenuItem title={"Items 2"}/>
+    <MenuItem itemId={"item-2a"}>Item 2a</MenuItem>
+    <MenuItem itemId={"item-2b"}>Item 2b</MenuItem>
+</Menu>
+```
+
+#### Properties
+
+- title: string
+  - the text to display

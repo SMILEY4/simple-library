@@ -19,10 +19,11 @@ INPUT COMPONENTS
 - checkbox ✔
 - input field ✔
 - choicebox
+    * with multiselect (supply renderer for multiple items)
 
 
 MENU COMPONENTS (hint: https://popper.js.org/)
-- menu + items ✔
+- menu + items + separators + titles ✔
 - menubutton ✔
 - context-menu ✔
 - context-menu-wrapper ✔

@@ -22,7 +22,7 @@ export function Menu(props: React.PropsWithChildren<MenuProps>): ReactElement {
             style={props.style}
             forwardRef={props.forwardRef}
         >
-            <VBox alignMain={AlignMain.START} alignCross={AlignCross.START}>
+            <VBox alignMain={AlignMain.START} alignCross={AlignCross.STRETCH}>
                 {getModifiedChildren()}
             </VBox>
         </Pane>

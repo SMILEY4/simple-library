@@ -18,6 +18,8 @@ import { Menu } from '../menu/menu/Menu';
 import { MenuItem } from '../menu/menuitem/MenuItem';
 import { SubMenuItem } from '../menu/submenu/SubMenuItem';
 import { ChoiceBox } from '../input/choicebox/ChoiceBox';
+import { SeparatorMenuItem } from '../menu/seperatormenuitem/SeparatorMenuItem';
+import { TitleMenuItem } from '../menu/titlemenuitem/TitleMenuItem';
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0");
@@ -128,8 +130,12 @@ export function ComponentShowcaseView(): any {
                     </Slot>
                     <Slot name={"menu"}>
                         <Menu>
+                            <TitleMenuItem title={"Actions"}/>
                             <MenuItem itemId={"home"}><Icon type={IconType.HOME} />Home</MenuItem>
                             <MenuItem itemId={"folder"}><Icon type={IconType.FOLDER} />Folder</MenuItem>
+                            <MenuItem itemId={"checkmark"} icon={IconType.CHECKMARK}><Icon type={IconType.CHECKMARK}/>Checkmark</MenuItem>
+                            <SeparatorMenuItem/>
+                            <TitleMenuItem title={"Submenus"}/>
                             <SubMenuItem itemId={"submenu"}>
                                 <Slot name={"item"}>
                                     Submenu
@@ -139,7 +145,6 @@ export function ComponentShowcaseView(): any {
                                     <MenuItem itemId={"checkmark-sub"}><Icon type={IconType.CHECKMARK} />More Checkmark</MenuItem>
                                 </Slot>
                             </SubMenuItem>
-                            <MenuItem itemId={"checkmark"} icon={IconType.CHECKMARK}><Icon type={IconType.CHECKMARK}/>Checkmark</MenuItem>
                         </Menu>
                     </Slot>
                 </MenuButton>
