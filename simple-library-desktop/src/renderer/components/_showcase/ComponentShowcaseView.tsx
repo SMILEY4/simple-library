@@ -66,8 +66,15 @@ export function ComponentShowcaseView(): any {
 
 
     function renderSplitPane() {
+
+        const [collapsed, setCollapsed] = useState(false);
+
         return (
             <Section title={"SplitPane"}>
+
+                <Button onAction={() => setCollapsed(!collapsed)}>
+                    Toggle Collapse
+                </Button>
 
                 <div style={{
                     width: "400px",
@@ -80,15 +87,15 @@ export function ComponentShowcaseView(): any {
                         width: "100%",
                         height: "100%",
                     }}>
-                        <SplitPanePanel size={"100px"}>
+                        <SplitPanePanel initialSize={"100px"} minSize={20} collapsed={collapsed}>
                             <div style={{ backgroundColor: "#ff8585", width: "100%", height: "100%" }}>A</div>
                         </SplitPanePanel>
                         <Splitter />
-                        <SplitPanePanel size={"50%"}>
+                        <SplitPanePanel initialSize={"50%"} minSize={50}>
                             <div style={{ backgroundColor: "#91ff85", width: "100%", height: "100%" }}>B</div>
                         </SplitPanePanel>
                         <Splitter />
-                        <SplitPanePanel size={"50%"}>
+                        <SplitPanePanel initialSize={"50%"} minSize={20}>
                             <div style={{ backgroundColor: "#8595ff", width: "100%", height: "100%" }}>C</div>
                         </SplitPanePanel>
                     </SplitPane>

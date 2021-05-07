@@ -20,7 +20,7 @@ DIALOG COMPONENTS
 LAYOUT COMPONENTS
 - box / hbox / vbox ✔
 - grid
-- splitpane
+- splitpane (see https://greggman.github.io/react-split-it)
     * vert
     * horz
 
