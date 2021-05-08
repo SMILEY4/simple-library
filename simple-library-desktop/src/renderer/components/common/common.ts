@@ -276,3 +276,11 @@ export function getReactElements(children: ReactNode | ReactNode[]): ReactElemen
         .filter(child => React.isValidElement(child))
         .map(child => child as React.ReactElement);
 }
+
+export function fillArray<T>(value: T, len: number) {
+    const arr: T[] = [];
+    for (let i = 0; i < len; i++) {
+        arr.push(value);
+    }
+    return arr;
+}

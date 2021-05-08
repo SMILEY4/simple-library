@@ -5,11 +5,7 @@ import "./splitpanepanel.css";
 
 interface SplitPanePanelProps extends BaseProps {
     initialSize: string,
-
     minSize?: number,
-    maxSize?: number,
-    prefSize?: number,
-
     collapsed?: boolean,
 }
 

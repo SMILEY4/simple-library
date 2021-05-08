@@ -22,7 +22,6 @@ import { SeparatorMenuItem } from '../menu/seperatormenuitem/SeparatorMenuItem';
 import { TitleMenuItem } from '../menu/titlemenuitem/TitleMenuItem';
 import { SplitPane } from '../layout/splitpane/SplitPane';
 import { SplitPanePanel } from '../layout/splitpane/SplitPanePanel';
-import { Splitter } from '../layout/splitpane/Splitter';
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0");
@@ -77,27 +76,32 @@ export function ComponentShowcaseView(): any {
                 </Button>
 
                 <div style={{
-                    width: "400px",
+                    width: "100%",
                     height: "400px",
                     border: "1px solid black",
                     position: "relative",
                 }}>
 
-                    <SplitPane style={{
-                        width: "100%",
-                        height: "100%",
-                    }}>
-                        <SplitPanePanel initialSize={"100px"} minSize={20} collapsed={collapsed}>
+                    <SplitPane
+                        style={{
+                            width: "100%",
+                            height: "100%",
+                        }}
+                        collapseTest={collapsed}
+                    >
+
+                        <SplitPanePanel initialSize={"100px"} minSize={20}>
                             <div style={{ backgroundColor: "#ff8585", width: "100%", height: "100%" }}>A</div>
                         </SplitPanePanel>
-                        <Splitter />
+
                         <SplitPanePanel initialSize={"50%"} minSize={50}>
                             <div style={{ backgroundColor: "#91ff85", width: "100%", height: "100%" }}>B</div>
                         </SplitPanePanel>
-                        <Splitter />
+
                         <SplitPanePanel initialSize={"50%"} minSize={20}>
                             <div style={{ backgroundColor: "#8595ff", width: "100%", height: "100%" }}>C</div>
                         </SplitPanePanel>
+
                     </SplitPane>
 
                 </div>
@@ -995,7 +999,7 @@ function StatefulComponent(props: React.PropsWithChildren<any>): any {
 
 function Section(props: React.PropsWithChildren<any>): any {
     return (
-        <div>
+        <div style={{ width: "100%" }}>
             <h3 style={{ marginTop: "50px" }}>{props.title}</h3>
             <div style={{
                 display: "flex",
