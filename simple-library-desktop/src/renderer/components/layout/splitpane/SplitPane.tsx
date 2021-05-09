@@ -1,47 +1,22 @@
 import "./splitpane.css";
 import * as React from 'react';
-import { MutableRefObject, ReactElement, useEffect, useRef } from 'react';
-import { BaseProps, getReactElements } from '../../common/common';
-import { Splitter } from './Splitter';
-import { useSplitPane } from './splitPaneHooks';
+import {MutableRefObject, ReactElement, useEffect, useRef} from 'react';
+import {BaseProps, getReactElements} from '../../common/common';
+import {Splitter} from './Splitter';
+import {PanelData, useSplitPane} from './splitPaneHooks';
 
-
-// TODO
-//  - inspiration: https://greggman.github.io/react-split-it
-//  - improve function to recalc sizes:
-//      - https://github.com/greggman/react-split-it/blob/main/src/stable-gutters-compute-new-sizes.js
-//      - https://github.com/greggman/react-split-it/blob/main/src/move-gutters-compute-new-sizes.js
-//  - collapse function for splitter
-//      - props:
-//          * collapseDir = direction in which to collapse
-//          * canCollapse = collapse on click
-//          * forceCollapse = overwrite internal collapse logic (canCollapse is ignored) -> listen to change via useEffect(), listener in Splitter-Component ?
-
-/*
-
-FEATURES
-- any number of panels
-- sizes
-    - min-size for panels (in px)
-    - max-size for panels (in px)
-    - pref-size for panels (in px)
-- collapse/expand
-    - collapse panels to min-size
-    - expand panels to pref-size
-*/
 
 interface SplitPaneProps extends BaseProps {
     collapseTest: boolean
 }
 
-
 export function SplitPane(props: React.PropsWithChildren<SplitPaneProps>): ReactElement {
 
     const children = buildChildren();
-    const { dragSplitter, collapse } = useSplitPane(children.panelRefs);
+    const {dragSplitter, collapse} = useSplitPane(children.panelData);
 
     useEffect(() => { // temp: test collapse
-        collapse(0, props.collapseTest, "against");
+        collapse(0, props.collapseTest, "in");
     }, [props.collapseTest]);
 
 
@@ -52,10 +27,10 @@ export function SplitPane(props: React.PropsWithChildren<SplitPaneProps>): React
     );
 
 
-    function buildChildren(): { elements: ReactElement[], panelRefs: MutableRefObject<any>[] } {
+    function buildChildren(): { elements: ReactElement[], panelData: PanelData[] } {
 
         const outChildren: ReactElement[] = [];
-        const panelRefs: MutableRefObject<any>[] = [];
+        const panelData: PanelData[] = [];
 
         const inChildren: ReactElement[] = getReactElements(props.children);
 
@@ -67,7 +42,11 @@ export function SplitPane(props: React.PropsWithChildren<SplitPaneProps>): React
             const isLastChild: boolean = index == inChildren.length - 1;
 
             const panelRef: MutableRefObject<any> = useRef(null);
-            panelRefs.push(panelRef);
+            panelData.push({
+                refPanel: panelRef,
+                minSize: child.props.minSize ? child.props.minSize : 0,
+                maxSize: child.props.maxSize ? child.props.maxSize : Number.MAX_VALUE,
+            });
 
             const newProps = {
                 ...child.props,
@@ -88,7 +67,7 @@ export function SplitPane(props: React.PropsWithChildren<SplitPaneProps>): React
 
         return {
             elements: outChildren,
-            panelRefs: panelRefs,
+            panelData: panelData,
         };
     }
 

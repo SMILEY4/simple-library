@@ -90,11 +90,11 @@ export function ComponentShowcaseView(): any {
                         collapseTest={collapsed}
                     >
 
-                        <SplitPanePanel initialSize={"100px"} minSize={20}>
+                        <SplitPanePanel initialSize={"100px"} minSize={40}>
                             <div style={{ backgroundColor: "#ff8585", width: "100%", height: "100%" }}>A</div>
                         </SplitPanePanel>
 
-                        <SplitPanePanel initialSize={"50%"} minSize={50}>
+                        <SplitPanePanel initialSize={"50%"} minSize={10}>
                             <div style={{ backgroundColor: "#91ff85", width: "100%", height: "100%" }}>B</div>
                         </SplitPanePanel>
 

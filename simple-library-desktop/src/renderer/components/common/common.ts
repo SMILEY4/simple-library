@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ReactElement, ReactNode } from 'react';
+import {ReactElement, ReactNode} from 'react';
 
 export enum GroupPosition {
     START = "start",
@@ -283,4 +283,9 @@ export function fillArray<T>(value: T, len: number) {
         arr.push(value);
     }
     return arr;
+}
+
+
+export function clamp(min: number, value: number, max: number): number {
+    return Math.max(min, Math.min(value, max));
 }

@@ -8,7 +8,6 @@ interface SplitPanePanelProps extends BaseProps {
 
     minSize?: number,
     maxSize?: number,
-    prefSize?: number,
 
     collapsed?: boolean,
 }
