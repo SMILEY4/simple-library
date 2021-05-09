@@ -1,27 +1,28 @@
 import * as React from 'react';
-import { ReactElement, useState } from 'react';
+import {ReactElement, useState} from 'react';
 import "./showcase.css";
-import { BodyText, H2Text, Text, TextVariant } from '../base/text/Text';
-import { ColorType, GroupPosition, Size, Type, Variant } from '../common/common';
-import { Button } from '../input/button/Button';
-import { Pane, PaneState } from '../base/pane/Pane';
-import { Icon, IconType } from "../base/icon/Icon";
-import { Label } from '../base/label/Label';
-import { Checkbox } from '../input/checkbox/Checkbox';
-import { ToggleButton } from '../input/togglebutton/ToggleButton';
-import { TextField } from '../input/textfield/TextField';
-import { LabelBox } from '../base/labelbox/LabelBox';
-import { MenuButton } from '../menu/menubutton/MenuButton';
-import { Slot } from '../base/slot/Slot';
-import { ContextMenuWrapper } from '../menu/contextmenu/ContextMenuWrapper';
-import { Menu } from '../menu/menu/Menu';
-import { MenuItem } from '../menu/menuitem/MenuItem';
-import { SubMenuItem } from '../menu/submenu/SubMenuItem';
-import { ChoiceBox } from '../input/choicebox/ChoiceBox';
-import { SeparatorMenuItem } from '../menu/seperatormenuitem/SeparatorMenuItem';
-import { TitleMenuItem } from '../menu/titlemenuitem/TitleMenuItem';
-import { SplitPane } from '../layout/splitpane/SplitPane';
-import { SplitPanePanel } from '../layout/splitpane/SplitPanePanel';
+import {BodyText, H2Text, Text, TextVariant} from '../base/text/Text';
+import {ColorType, GroupPosition, Size, Type, Variant} from '../common/common';
+import {Button} from '../input/button/Button';
+import {Pane, PaneState} from '../base/pane/Pane';
+import {Icon, IconType} from "../base/icon/Icon";
+import {Label} from '../base/label/Label';
+import {Checkbox} from '../input/checkbox/Checkbox';
+import {ToggleButton} from '../input/togglebutton/ToggleButton';
+import {TextField} from '../input/textfield/TextField';
+import {LabelBox} from '../base/labelbox/LabelBox';
+import {MenuButton} from '../menu/menubutton/MenuButton';
+import {Slot} from '../base/slot/Slot';
+import {ContextMenuWrapper} from '../menu/contextmenu/ContextMenuWrapper';
+import {Menu} from '../menu/menu/Menu';
+import {MenuItem} from '../menu/menuitem/MenuItem';
+import {SubMenuItem} from '../menu/submenu/SubMenuItem';
+import {ChoiceBox} from '../input/choicebox/ChoiceBox';
+import {SeparatorMenuItem} from '../menu/seperatormenuitem/SeparatorMenuItem';
+import {TitleMenuItem} from '../menu/titlemenuitem/TitleMenuItem';
+import {SplitPane} from '../layout/splitpane/SplitPane';
+import {SplitPanePanel} from '../layout/splitpane/SplitPanePanel';
+import {HBox} from "../layout/box/Box";
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0");
@@ -66,14 +67,24 @@ export function ComponentShowcaseView(): any {
 
     function renderSplitPane() {
 
-        const [collapsed, setCollapsed] = useState(false);
+        const [collapsedA, setCollapsedA] = useState(false);
+        const [collapsedB, setCollapsedB] = useState(false);
+        const [collapsedC, setCollapsedC] = useState(false);
 
         return (
             <Section title={"SplitPane"}>
 
-                <Button onAction={() => setCollapsed(!collapsed)}>
-                    Toggle Collapse
-                </Button>
+                <HBox spacing={Size.S_1}>
+                    <Button onAction={() => setCollapsedA(!collapsedA)}>
+                        {collapsedA ? "Expand A" : "Collapse A"}
+                    </Button>
+                    <Button onAction={() => setCollapsedB(!collapsedB)}>
+                        {collapsedB ? "Expand B" : "Collapse B"}
+                    </Button>
+                    <Button onAction={() => setCollapsedC(!collapsedC)}>
+                        {collapsedC ? "Expand C" : "Collapse C"}
+                    </Button>
+                </HBox>
 
                 <div style={{
                     width: "100%",
@@ -87,19 +98,21 @@ export function ComponentShowcaseView(): any {
                             width: "100%",
                             height: "100%",
                         }}
-                        collapseTest={collapsed}
+                        collapseA={collapsedA}
+                        collapseB={collapsedB}
+                        collapseC={collapsedC}
                     >
 
-                        <SplitPanePanel initialSize={"100px"} minSize={40}>
-                            <div style={{ backgroundColor: "#ff8585", width: "100%", height: "100%" }}>A</div>
+                        <SplitPanePanel initialSize={"100px"} minSize={40} collapseDir={"against"} collapsed={collapsedA}> // TODO: "collapsedA" => breaks; remove/"false"/"true" => works - idk
+                            <div style={{backgroundColor: "#ff8585", width: "100%", height: "100%"}}>A</div>
                         </SplitPanePanel>
 
-                        <SplitPanePanel initialSize={"50%"} minSize={10}>
-                            <div style={{ backgroundColor: "#91ff85", width: "100%", height: "100%" }}>B</div>
+                        <SplitPanePanel initialSize={"50%"} minSize={10} collapseDir={"in"} collapsed={collapsedB}>
+                            <div style={{backgroundColor: "#91ff85", width: "100%", height: "100%"}}>B</div>
                         </SplitPanePanel>
 
-                        <SplitPanePanel initialSize={"50%"} minSize={20}>
-                            <div style={{ backgroundColor: "#8595ff", width: "100%", height: "100%" }}>C</div>
+                        <SplitPanePanel initialSize={"50%"} minSize={20} collapseDir={"in"} collapsed={collapsedC}>
+                            <div style={{backgroundColor: "#8595ff", width: "100%", height: "100%"}}>C</div>
                         </SplitPanePanel>
 
                     </SplitPane>
@@ -118,10 +131,10 @@ export function ComponentShowcaseView(): any {
 
                 <ChoiceBox
                     items={[
-                        { id: "greece", value: "Greece" },
-                        { id: "faroe-islands", value: "Faroe Islands" },
-                        { id: "netherlands", value: "Netherlands" },
-                        { id: "hungary", value: "Hungary" },
+                        {id: "greece", value: "Greece"},
+                        {id: "faroe-islands", value: "Faroe Islands"},
+                        {id: "netherlands", value: "Netherlands"},
+                        {id: "hungary", value: "Hungary"},
                     ]}
                 />
 
@@ -130,14 +143,14 @@ export function ComponentShowcaseView(): any {
                     type={Type.PRIMARY}
                     maxVisibleItems={5}
                     items={[
-                        { id: "greece", value: "Greece" },
-                        { id: "faroe-islands", value: "Faroe Islands" },
-                        { id: "netherlands", value: "Netherlands" },
-                        { id: "hungary", value: "Hungary" },
-                        { id: "iceland", value: "Iceland" },
-                        { id: "austria", value: "Austria" },
-                        { id: "france", value: "France" },
-                        { id: "belgium", value: "Belgium" },
+                        {id: "greece", value: "Greece"},
+                        {id: "faroe-islands", value: "Faroe Islands"},
+                        {id: "netherlands", value: "Netherlands"},
+                        {id: "hungary", value: "Hungary"},
+                        {id: "iceland", value: "Iceland"},
+                        {id: "austria", value: "Austria"},
+                        {id: "france", value: "France"},
+                        {id: "belgium", value: "Belgium"},
                     ]}
                 />
 
@@ -153,24 +166,25 @@ export function ComponentShowcaseView(): any {
 
                 <ContextMenuWrapper onAction={(itemId: string) => console.log("CONTEXT_MENU: " + itemId)}>
                     <Slot name={"target"}>
-                        <LabelBox style={{ width: "300px", height: "300px" }}>
+                        <LabelBox style={{width: "300px", height: "300px"}}>
                             Open Context Menu Here
                         </LabelBox>
                     </Slot>
                     <Slot name={"menu"}>
                         <Menu>
-                            <MenuItem itemId={"home"}><Icon type={IconType.HOME} />Home</MenuItem>
-                            <MenuItem itemId={"folder"}><Icon type={IconType.FOLDER} />Folder</MenuItem>
+                            <MenuItem itemId={"home"}><Icon type={IconType.HOME}/>Home</MenuItem>
+                            <MenuItem itemId={"folder"}><Icon type={IconType.FOLDER}/>Folder</MenuItem>
                             <SubMenuItem itemId={"submenu"}>
                                 <Slot name={"item"}>
                                     Submenu
                                 </Slot>
                                 <Slot name={"menu"}>
-                                    <MenuItem itemId={"home-sub"}><Icon type={IconType.HOME} />More Home</MenuItem>
-                                    <MenuItem itemId={"checkmark-sub"}><Icon type={IconType.CHECKMARK} />More Checkmark</MenuItem>
+                                    <MenuItem itemId={"home-sub"}><Icon type={IconType.HOME}/>More Home</MenuItem>
+                                    <MenuItem itemId={"checkmark-sub"}><Icon type={IconType.CHECKMARK}/>More
+                                        Checkmark</MenuItem>
                                 </Slot>
                             </SubMenuItem>
-                            <MenuItem itemId={"checkmark"}><Icon type={IconType.CHECKMARK} />Checkmark</MenuItem>
+                            <MenuItem itemId={"checkmark"}><Icon type={IconType.CHECKMARK}/>Checkmark</MenuItem>
                         </Menu>
                     </Slot>
                 </ContextMenuWrapper>
@@ -181,19 +195,20 @@ export function ComponentShowcaseView(): any {
                     </Slot>
                     <Slot name={"menu"}>
                         <Menu>
-                            <TitleMenuItem title={"Actions"} />
-                            <MenuItem itemId={"home"}><Icon type={IconType.HOME} />Home</MenuItem>
-                            <MenuItem itemId={"folder"}><Icon type={IconType.FOLDER} />Folder</MenuItem>
-                            <MenuItem itemId={"checkmark"} icon={IconType.CHECKMARK}><Icon type={IconType.CHECKMARK} />Checkmark</MenuItem>
-                            <SeparatorMenuItem />
-                            <TitleMenuItem title={"Submenus"} />
+                            <TitleMenuItem title={"Actions"}/>
+                            <MenuItem itemId={"home"}><Icon type={IconType.HOME}/>Home</MenuItem>
+                            <MenuItem itemId={"folder"}><Icon type={IconType.FOLDER}/>Folder</MenuItem>
+                            <MenuItem itemId={"checkmark"} icon={IconType.CHECKMARK}><Icon type={IconType.CHECKMARK}/>Checkmark</MenuItem>
+                            <SeparatorMenuItem/>
+                            <TitleMenuItem title={"Submenus"}/>
                             <SubMenuItem itemId={"submenu"}>
                                 <Slot name={"item"}>
                                     Submenu
                                 </Slot>
                                 <Slot name={"menu"}>
-                                    <MenuItem itemId={"home-sub"}><Icon type={IconType.HOME} />More Home</MenuItem>
-                                    <MenuItem itemId={"checkmark-sub"}><Icon type={IconType.CHECKMARK} />More Checkmark</MenuItem>
+                                    <MenuItem itemId={"home-sub"}><Icon type={IconType.HOME}/>More Home</MenuItem>
+                                    <MenuItem itemId={"checkmark-sub"}><Icon type={IconType.CHECKMARK}/>More
+                                        Checkmark</MenuItem>
                                 </Slot>
                             </SubMenuItem>
                         </Menu>
@@ -209,44 +224,44 @@ export function ComponentShowcaseView(): any {
             <>
                 <h3>TextFields</h3>
                 <ShowcaseRow>
-                    <TextField variant={Variant.SOLID} type={Type.DEFAULT} placeholder={"Textfield"} />
-                    <TextField variant={Variant.OUTLINE} type={Type.DEFAULT} placeholder={"Textfield"} />
-                    <TextField variant={Variant.GHOST} type={Type.DEFAULT} placeholder={"Textfield"} />
-                    <TextField variant={Variant.LINK} type={Type.DEFAULT} placeholder={"Textfield"} />
+                    <TextField variant={Variant.SOLID} type={Type.DEFAULT} placeholder={"Textfield"}/>
+                    <TextField variant={Variant.OUTLINE} type={Type.DEFAULT} placeholder={"Textfield"}/>
+                    <TextField variant={Variant.GHOST} type={Type.DEFAULT} placeholder={"Textfield"}/>
+                    <TextField variant={Variant.LINK} type={Type.DEFAULT} placeholder={"Textfield"}/>
                 </ShowcaseRow>
                 <ShowcaseRow>
-                    <TextField disabled variant={Variant.SOLID} type={Type.DEFAULT} placeholder={"Disabled"} />
-                    <TextField disabled variant={Variant.OUTLINE} type={Type.DEFAULT} placeholder={"Disabled"} />
-                    <TextField disabled variant={Variant.GHOST} type={Type.DEFAULT} placeholder={"Disabled"} />
-                    <TextField disabled variant={Variant.LINK} type={Type.DEFAULT} placeholder={"Disabled"} />
+                    <TextField disabled variant={Variant.SOLID} type={Type.DEFAULT} placeholder={"Disabled"}/>
+                    <TextField disabled variant={Variant.OUTLINE} type={Type.DEFAULT} placeholder={"Disabled"}/>
+                    <TextField disabled variant={Variant.GHOST} type={Type.DEFAULT} placeholder={"Disabled"}/>
+                    <TextField disabled variant={Variant.LINK} type={Type.DEFAULT} placeholder={"Disabled"}/>
                 </ShowcaseRow>
                 <ShowcaseRow>
-                    <TextField variant={Variant.SOLID} type={Type.PRIMARY} placeholder={"Textfield"} />
-                    <TextField variant={Variant.OUTLINE} type={Type.PRIMARY} placeholder={"Textfield"} />
-                    <TextField variant={Variant.GHOST} type={Type.PRIMARY} placeholder={"Textfield"} />
-                    <TextField variant={Variant.LINK} type={Type.PRIMARY} placeholder={"Textfield"} />
+                    <TextField variant={Variant.SOLID} type={Type.PRIMARY} placeholder={"Textfield"}/>
+                    <TextField variant={Variant.OUTLINE} type={Type.PRIMARY} placeholder={"Textfield"}/>
+                    <TextField variant={Variant.GHOST} type={Type.PRIMARY} placeholder={"Textfield"}/>
+                    <TextField variant={Variant.LINK} type={Type.PRIMARY} placeholder={"Textfield"}/>
                 </ShowcaseRow>
                 <ShowcaseRow>
-                    <TextField error variant={Variant.SOLID} type={Type.DEFAULT} placeholder={"Textfield"} />
-                    <TextField error variant={Variant.OUTLINE} type={Type.DEFAULT} placeholder={"Textfield"} />
-                    <TextField error variant={Variant.GHOST} type={Type.DEFAULT} placeholder={"Textfield"} />
-                    <TextField error variant={Variant.LINK} type={Type.DEFAULT} placeholder={"Textfield"} />
+                    <TextField error variant={Variant.SOLID} type={Type.DEFAULT} placeholder={"Textfield"}/>
+                    <TextField error variant={Variant.OUTLINE} type={Type.DEFAULT} placeholder={"Textfield"}/>
+                    <TextField error variant={Variant.GHOST} type={Type.DEFAULT} placeholder={"Textfield"}/>
+                    <TextField error variant={Variant.LINK} type={Type.DEFAULT} placeholder={"Textfield"}/>
                 </ShowcaseRow>
-                <TextField variant={Variant.SOLID} type={Type.DEFAULT} value={"Init Value"} />
-                <TextField variant={Variant.SOLID} type={Type.DEFAULT} value={"Forced Value"} forceState />
+                <TextField variant={Variant.SOLID} type={Type.DEFAULT} value={"Init Value"}/>
+                <TextField variant={Variant.SOLID} type={Type.DEFAULT} value={"Forced Value"} forceState/>
 
                 <ShowcaseRow>
-                    <TextField variant={Variant.SOLID} type={Type.PRIMARY} iconLeft={IconType.HOME} iconRight={IconType.FOLDER} />
-                    <TextField variant={Variant.OUTLINE} type={Type.PRIMARY} iconLeft={IconType.HOME} iconRight={IconType.FOLDER} />
-                    <TextField variant={Variant.GHOST} type={Type.PRIMARY} iconLeft={IconType.HOME} iconRight={IconType.FOLDER} />
-                    <TextField variant={Variant.LINK} type={Type.PRIMARY} iconLeft={IconType.HOME} iconRight={IconType.FOLDER} />
+                    <TextField variant={Variant.SOLID} type={Type.PRIMARY} iconLeft={IconType.HOME} iconRight={IconType.FOLDER}/>
+                    <TextField variant={Variant.OUTLINE} type={Type.PRIMARY} iconLeft={IconType.HOME} iconRight={IconType.FOLDER}/>
+                    <TextField variant={Variant.GHOST} type={Type.PRIMARY} iconLeft={IconType.HOME} iconRight={IconType.FOLDER}/>
+                    <TextField variant={Variant.LINK} type={Type.PRIMARY} iconLeft={IconType.HOME} iconRight={IconType.FOLDER}/>
                 </ShowcaseRow>
 
-                <div style={{ display: 'flex' }}>
+                <div style={{display: 'flex'}}>
                     <LabelBox type={Type.DEFAULT} variant={Variant.OUTLINE} groupPos={GroupPosition.START}>
                         https://
                     </LabelBox>
-                    <TextField variant={Variant.OUTLINE} placeholder={"example.com"} groupPos={GroupPosition.MIDDLE} />
+                    <TextField variant={Variant.OUTLINE} placeholder={"example.com"} groupPos={GroupPosition.MIDDLE}/>
                     <Button type={Type.DEFAULT} variant={Variant.SOLID} groupPos={GroupPosition.END}>
                         Search
                     </Button>
@@ -291,7 +306,7 @@ export function ComponentShowcaseView(): any {
                 </Checkbox>
 
                 <Checkbox variant={Variant.OUTLINE}>
-                    <Icon type={IconType.HOME} />
+                    <Icon type={IconType.HOME}/>
                     With Icon
                 </Checkbox>
 
@@ -314,11 +329,11 @@ export function ComponentShowcaseView(): any {
                     Label Box
                 </LabelBox>
                 <LabelBox variant={Variant.OUTLINE} type={Type.PRIMARY}>
-                    <Icon type={IconType.HOME} />
+                    <Icon type={IconType.HOME}/>
                     Label Box
                 </LabelBox>
                 <LabelBox variant={Variant.SOLID} type={Type.PRIMARY}>
-                    <Icon type={IconType.HOME} />
+                    <Icon type={IconType.HOME}/>
                     Label Box
                 </LabelBox>
                 <LabelBox variant={Variant.OUTLINE} type={Type.DEFAULT} error>
@@ -330,25 +345,25 @@ export function ComponentShowcaseView(): any {
                     Label
                 </Label>
                 <Label color={ColorType.PRIMARY_2}>
-                    <Icon type={IconType.HOME} />
+                    <Icon type={IconType.HOME}/>
                     Label
                 </Label>
                 <Label>
                     Label
-                    <Icon type={IconType.HOME} />
+                    <Icon type={IconType.HOME}/>
                 </Label>
                 <Label>
-                    <Icon type={IconType.HOME} />
+                    <Icon type={IconType.HOME}/>
                     Label
-                    <Icon type={IconType.HOME} />
+                    <Icon type={IconType.HOME}/>
                 </Label>
                 <Label>
                     Before
-                    <Icon type={IconType.HOME} />
+                    <Icon type={IconType.HOME}/>
                     After
                 </Label>
                 <Label>
-                    <Icon type={IconType.HOME} size={Size.S_1} />
+                    <Icon type={IconType.HOME} size={Size.S_1}/>
                     <H2Text bold>Header 2</H2Text>
                 </Label>
             </>
@@ -360,19 +375,19 @@ export function ComponentShowcaseView(): any {
             <>
                 <h3>Icons</h3>
                 <ShowcaseRow>
-                    <Icon type={IconType.FOLDER} color={ColorType.BASE_4} />
-                    <Icon type={IconType.FOLDER} color={ColorType.PRIMARY_2} />
-                    <Icon type={IconType.FOLDER} color={ColorType.SUCCESS_2} />
-                    <Icon type={IconType.FOLDER} color={ColorType.ERROR_2} />
-                    <Icon type={IconType.FOLDER} color={ColorType.WARN_2} />
+                    <Icon type={IconType.FOLDER} color={ColorType.BASE_4}/>
+                    <Icon type={IconType.FOLDER} color={ColorType.PRIMARY_2}/>
+                    <Icon type={IconType.FOLDER} color={ColorType.SUCCESS_2}/>
+                    <Icon type={IconType.FOLDER} color={ColorType.ERROR_2}/>
+                    <Icon type={IconType.FOLDER} color={ColorType.WARN_2}/>
                 </ShowcaseRow>
                 <ShowcaseRow>
-                    <Icon type={IconType.FOLDER} size={Size.S_0_5} />
-                    <Icon type={IconType.FOLDER} size={Size.S_0_75} />
-                    <Icon type={IconType.FOLDER} size={Size.S_1} />
-                    <Icon type={IconType.FOLDER} size={Size.S_1_5} />
-                    <Icon type={IconType.FOLDER} size={Size.S_2} />
-                    <Icon type={IconType.FOLDER} size={Size.S_3} />
+                    <Icon type={IconType.FOLDER} size={Size.S_0_5}/>
+                    <Icon type={IconType.FOLDER} size={Size.S_0_75}/>
+                    <Icon type={IconType.FOLDER} size={Size.S_1}/>
+                    <Icon type={IconType.FOLDER} size={Size.S_1_5}/>
+                    <Icon type={IconType.FOLDER} size={Size.S_2}/>
+                    <Icon type={IconType.FOLDER} size={Size.S_3}/>
                 </ShowcaseRow>
             </>
         );
@@ -391,95 +406,95 @@ export function ComponentShowcaseView(): any {
 
                 <ShowcaseRow>
                     <ToggleButton type={Type.PRIMARY} variant={Variant.SOLID}>
-                        <Icon type={IconType.HOME} />
+                        <Icon type={IconType.HOME}/>
                         <BodyText onType type={Type.PRIMARY}>With Icon</BodyText>
                     </ToggleButton>
                     <ToggleButton type={Type.DEFAULT} variant={Variant.SOLID}>
-                        <Icon type={IconType.HOME} />
+                        <Icon type={IconType.HOME}/>
                         <BodyText>With Icon</BodyText>
                     </ToggleButton>
                     <ToggleButton type={Type.DEFAULT} variant={Variant.OUTLINE}>
-                        <Icon type={IconType.HOME} />
+                        <Icon type={IconType.HOME}/>
                         <BodyText>With Icon</BodyText>
                     </ToggleButton>
                     <ToggleButton type={Type.DEFAULT} variant={Variant.GHOST}>
-                        <Icon type={IconType.HOME} />
+                        <Icon type={IconType.HOME}/>
                         <BodyText>With Icon</BodyText>
                     </ToggleButton>
                     <ToggleButton type={Type.DEFAULT} variant={Variant.LINK}>
-                        <Icon type={IconType.HOME} />
+                        <Icon type={IconType.HOME}/>
                         <BodyText>With Icon</BodyText>
                     </ToggleButton>
                 </ShowcaseRow>
 
                 <ShowcaseRow>
                     <ToggleButton type={Type.PRIMARY} variant={Variant.SOLID} disabled>
-                        <Icon type={IconType.HOME} />
+                        <Icon type={IconType.HOME}/>
                         <BodyText onType type={Type.PRIMARY} disabled>With Icon</BodyText>
                     </ToggleButton>
                     <ToggleButton type={Type.DEFAULT} variant={Variant.SOLID} disabled>
-                        <Icon type={IconType.HOME} />
+                        <Icon type={IconType.HOME}/>
                         <BodyText disabled>With Icon</BodyText>
                     </ToggleButton>
                     <ToggleButton type={Type.DEFAULT} variant={Variant.OUTLINE} disabled>
-                        <Icon type={IconType.HOME} />
+                        <Icon type={IconType.HOME}/>
                         <BodyText disabled>With Icon</BodyText>
                     </ToggleButton>
                     <ToggleButton type={Type.DEFAULT} variant={Variant.GHOST} disabled>
-                        <Icon type={IconType.HOME} />
+                        <Icon type={IconType.HOME}/>
                         <BodyText disabled>With Icon</BodyText>
                     </ToggleButton>
                     <ToggleButton type={Type.DEFAULT} variant={Variant.LINK} disabled>
-                        <Icon type={IconType.HOME} />
+                        <Icon type={IconType.HOME}/>
                         <BodyText disabled>With Icon</BodyText>
                     </ToggleButton>
                 </ShowcaseRow>
 
                 <ToggleButton type={Type.DEFAULT} variant={Variant.SOLID}>
-                    <Icon type={IconType.HOME} />
+                    <Icon type={IconType.HOME}/>
                     <BodyText>Two Icons</BodyText>
-                    <Icon type={IconType.HOME} />
+                    <Icon type={IconType.HOME}/>
                 </ToggleButton>
 
                 <ShowcaseRow>
                     <ToggleButton type={Type.PRIMARY} variant={Variant.SOLID}>
-                        <Icon type={IconType.HOME} />
+                        <Icon type={IconType.HOME}/>
                     </ToggleButton>
                     <ToggleButton type={Type.DEFAULT} variant={Variant.SOLID}>
-                        <Icon type={IconType.HOME} />
+                        <Icon type={IconType.HOME}/>
                     </ToggleButton>
                     <ToggleButton type={Type.DEFAULT} variant={Variant.OUTLINE}>
-                        <Icon type={IconType.HOME} />
+                        <Icon type={IconType.HOME}/>
                     </ToggleButton>
                     <ToggleButton type={Type.DEFAULT} variant={Variant.GHOST}>
-                        <Icon type={IconType.HOME} />
+                        <Icon type={IconType.HOME}/>
                     </ToggleButton>
                     <ToggleButton type={Type.DEFAULT} variant={Variant.LINK}>
-                        <Icon type={IconType.HOME} />
+                        <Icon type={IconType.HOME}/>
                     </ToggleButton>
                 </ShowcaseRow>
 
                 <ShowcaseRow>
                     <ToggleButton square type={Type.PRIMARY} variant={Variant.SOLID}>
-                        <Icon type={IconType.HOME} />
+                        <Icon type={IconType.HOME}/>
                     </ToggleButton>
                     <ToggleButton square type={Type.DEFAULT} variant={Variant.SOLID}>
-                        <Icon type={IconType.HOME} />
+                        <Icon type={IconType.HOME}/>
                     </ToggleButton>
                     <ToggleButton square type={Type.DEFAULT} variant={Variant.OUTLINE}>
-                        <Icon type={IconType.HOME} />
+                        <Icon type={IconType.HOME}/>
                     </ToggleButton>
                     <ToggleButton square type={Type.DEFAULT} variant={Variant.GHOST}>
-                        <Icon type={IconType.HOME} />
+                        <Icon type={IconType.HOME}/>
                     </ToggleButton>
                     <ToggleButton square type={Type.DEFAULT} variant={Variant.LINK}>
-                        <Icon type={IconType.HOME} />
+                        <Icon type={IconType.HOME}/>
                     </ToggleButton>
                 </ShowcaseRow>
 
                 <ShowcaseRow>
 
-                    <div style={{ display: 'flex' }}>
+                    <div style={{display: 'flex'}}>
                         <ToggleButton type={Type.DEFAULT} variant={Variant.SOLID} groupPos={GroupPosition.START}>
                             Start
                         </ToggleButton>
@@ -494,7 +509,7 @@ export function ComponentShowcaseView(): any {
                         </ToggleButton>
                     </div>
 
-                    <div style={{ display: 'flex' }}>
+                    <div style={{display: 'flex'}}>
                         <ToggleButton type={Type.DEFAULT} variant={Variant.OUTLINE} groupPos={GroupPosition.START}>
                             Start
                         </ToggleButton>
@@ -588,94 +603,94 @@ export function ComponentShowcaseView(): any {
 
                 <ShowcaseRow>
                     <Button type={Type.PRIMARY} variant={Variant.SOLID}>
-                        <Icon type={IconType.HOME} />
+                        <Icon type={IconType.HOME}/>
                         <BodyText onType type={Type.PRIMARY}>With Icon</BodyText>
                     </Button>
                     <Button type={Type.DEFAULT} variant={Variant.SOLID}>
-                        <Icon type={IconType.HOME} />
+                        <Icon type={IconType.HOME}/>
                         <BodyText>With Icon</BodyText>
                     </Button>
                     <Button type={Type.DEFAULT} variant={Variant.OUTLINE}>
-                        <Icon type={IconType.HOME} />
+                        <Icon type={IconType.HOME}/>
                         <BodyText>With Icon</BodyText>
                     </Button>
                     <Button type={Type.DEFAULT} variant={Variant.GHOST}>
-                        <Icon type={IconType.HOME} />
+                        <Icon type={IconType.HOME}/>
                         <BodyText>With Icon</BodyText>
                     </Button>
                     <Button type={Type.DEFAULT} variant={Variant.LINK}>
-                        <Icon type={IconType.HOME} />
+                        <Icon type={IconType.HOME}/>
                         <BodyText>With Icon</BodyText>
                     </Button>
                 </ShowcaseRow>
 
                 <ShowcaseRow>
                     <Button type={Type.PRIMARY} variant={Variant.SOLID} disabled>
-                        <Icon type={IconType.HOME} />
+                        <Icon type={IconType.HOME}/>
                         <BodyText onType type={Type.PRIMARY} disabled>With Icon</BodyText>
                     </Button>
                     <Button type={Type.DEFAULT} variant={Variant.SOLID} disabled>
-                        <Icon type={IconType.HOME} />
+                        <Icon type={IconType.HOME}/>
                         <BodyText disabled>With Icon</BodyText>
                     </Button>
                     <Button type={Type.DEFAULT} variant={Variant.OUTLINE} disabled>
-                        <Icon type={IconType.HOME} />
+                        <Icon type={IconType.HOME}/>
                         <BodyText disabled>With Icon</BodyText>
                     </Button>
                     <Button type={Type.DEFAULT} variant={Variant.GHOST} disabled>
-                        <Icon type={IconType.HOME} />
+                        <Icon type={IconType.HOME}/>
                         <BodyText disabled>With Icon</BodyText>
                     </Button>
                     <Button type={Type.DEFAULT} variant={Variant.LINK} disabled>
-                        <Icon type={IconType.HOME} />
+                        <Icon type={IconType.HOME}/>
                         <BodyText disabled>With Icon</BodyText>
                     </Button>
                 </ShowcaseRow>
 
                 <Button type={Type.DEFAULT} variant={Variant.SOLID}>
-                    <Icon type={IconType.HOME} />
+                    <Icon type={IconType.HOME}/>
                     <BodyText>Two Icons</BodyText>
-                    <Icon type={IconType.HOME} />
+                    <Icon type={IconType.HOME}/>
                 </Button>
 
                 <ShowcaseRow>
                     <Button type={Type.PRIMARY} variant={Variant.SOLID}>
-                        <Icon type={IconType.HOME} />
+                        <Icon type={IconType.HOME}/>
                     </Button>
                     <Button type={Type.DEFAULT} variant={Variant.SOLID}>
-                        <Icon type={IconType.HOME} />
+                        <Icon type={IconType.HOME}/>
                     </Button>
                     <Button type={Type.DEFAULT} variant={Variant.OUTLINE}>
-                        <Icon type={IconType.HOME} />
+                        <Icon type={IconType.HOME}/>
                     </Button>
                     <Button type={Type.DEFAULT} variant={Variant.GHOST}>
-                        <Icon type={IconType.HOME} />
+                        <Icon type={IconType.HOME}/>
                     </Button>
                     <Button type={Type.DEFAULT} variant={Variant.LINK}>
-                        <Icon type={IconType.HOME} />
+                        <Icon type={IconType.HOME}/>
                     </Button>
                 </ShowcaseRow>
 
                 <ShowcaseRow>
                     <Button square type={Type.PRIMARY} variant={Variant.SOLID}>
-                        <Icon type={IconType.HOME} />
+                        <Icon type={IconType.HOME}/>
                     </Button>
                     <Button square type={Type.DEFAULT} variant={Variant.SOLID}>
-                        <Icon type={IconType.HOME} />
+                        <Icon type={IconType.HOME}/>
                     </Button>
                     <Button square type={Type.DEFAULT} variant={Variant.OUTLINE}>
-                        <Icon type={IconType.HOME} />
+                        <Icon type={IconType.HOME}/>
                     </Button>
                     <Button square type={Type.DEFAULT} variant={Variant.GHOST}>
-                        <Icon type={IconType.HOME} />
+                        <Icon type={IconType.HOME}/>
                     </Button>
                     <Button square type={Type.DEFAULT} variant={Variant.LINK}>
-                        <Icon type={IconType.HOME} />
+                        <Icon type={IconType.HOME}/>
                     </Button>
                 </ShowcaseRow>
 
                 <ShowcaseRow>
-                    <div style={{ display: 'flex' }}>
+                    <div style={{display: 'flex'}}>
                         <Button type={Type.DEFAULT} variant={Variant.SOLID} groupPos={GroupPosition.START}>
                             Start
                         </Button>
@@ -689,7 +704,7 @@ export function ComponentShowcaseView(): any {
                             End
                         </Button>
                     </div>
-                    <div style={{ display: 'flex' }}>
+                    <div style={{display: 'flex'}}>
                         <Button type={Type.DEFAULT} variant={Variant.OUTLINE} groupPos={GroupPosition.START}>
                             Start
                         </Button>
@@ -999,8 +1014,8 @@ function StatefulComponent(props: React.PropsWithChildren<any>): any {
 
 function Section(props: React.PropsWithChildren<any>): any {
     return (
-        <div style={{ width: "100%" }}>
-            <h3 style={{ marginTop: "50px" }}>{props.title}</h3>
+        <div style={{width: "100%"}}>
+            <h3 style={{marginTop: "50px"}}>{props.title}</h3>
             <div style={{
                 display: "flex",
                 flexDirection: "column",

@@ -7,17 +7,40 @@ import {PanelData, useSplitPane} from './splitPaneHooks';
 
 
 interface SplitPaneProps extends BaseProps {
-    collapseTest: boolean
+    collapseA: boolean,
+    collapseB: boolean,
+    collapseC: boolean
 }
+
+/*
+TODO IDEA: simplify
+ - https://github.com/tomkp/react-split-pane
+ - split pane has exactly 2 children/panels
+ - easier to calculate / update / handle / extend
+    - drag-resizer: no propagation, only update size of first, browser takes care of second panel
+    - collapse/expand: set size of panel, browser takes care of second other
+    - more flexible sizes possible: px, %
+    - one panel is "primary" = set fixed size, size of secondary is computed by browser
+    - set flex-base of primary, allow secondary to grow/shrink accordingly
+ - nest splitPane in splitPane to allow multiple columns/rows
+ */
 
 export function SplitPane(props: React.PropsWithChildren<SplitPaneProps>): ReactElement {
 
     const children = buildChildren();
     const {dragSplitter, collapse} = useSplitPane(children.panelData);
 
-    useEffect(() => { // temp: test collapse
-        collapse(0, props.collapseTest, "in");
-    }, [props.collapseTest]);
+    useEffect(() => { // temp: test collapse A
+        collapse(0, props.collapseA, "against");
+    }, [props.collapseA]);
+
+    useEffect(() => { // temp: test collapse B
+        collapse(1, props.collapseB, "against");
+    }, [props.collapseB]);
+
+    useEffect(() => { // temp: test collapse C
+        collapse(2, props.collapseC, "in");
+    }, [props.collapseC]);
 
 
     return (
@@ -51,6 +74,7 @@ export function SplitPane(props: React.PropsWithChildren<SplitPaneProps>): React
             const newProps = {
                 ...child.props,
                 forwardRef: panelRef,
+                // __onChangeCollapse: (collapsed: boolean, dir: "in" | "against") => handleOnChangeCollapse(index, collapsed, dir)
             };
             outChildren.push(React.cloneElement(child, newProps));
 
@@ -72,186 +96,9 @@ export function SplitPane(props: React.PropsWithChildren<SplitPaneProps>): React
     }
 
 
-    //
-    // function renderContent() {
-    //     let indexSplitter: number = 0;
-    //     return getReactElements(props.children).map((child: ReactElement) => {
-    //
-    //         if (child.type === Splitter) {
-    //             const splitterProps = {
-    //                 ...child.props,
-    //                 __splitterId: indexSplitter,
-    //                 __onDrag: handleDragSplitter,
-    //                 __onCollapse: handleCollapse,
-    //             };
-    //             indexSplitter++;
-    //             return React.cloneElement(child, splitterProps);
-    //         }
-    //
-    //         if (child.type === SplitPanePanel) {
-    //
-    //             const refPanel = useRef(null);
-    //             panelRefs.push(refPanel);
-    //             panelData.push({
-    //                 minSize: child.props.minSize ? child.props.minSize : 0,
-    //             });
-    //
-    //             const panelProps = {
-    //                 ...child.props,
-    //                 forwardRef: refPanel,
-    //             };
-    //             return React.cloneElement(child, panelProps);
-    //         }
-    //
-    //         return null;
-    //     });
-    // }
-    //
-    //
-    // function updateSizes(action: SplitPaneAction | null) {
-    //     const totalPanelSize = getTotalPanelSizes();
-    //     const oldPanelSizes: number[] = getCurrentPanelSizes();
-    //     const newPanelSizes: number[] = calculatePanelSizes(oldPanelSizes, action);
-    //     setSizes(sizesToPercentages(newPanelSizes, totalPanelSize));
-    // }
-    //
-    // function getTotalPanelSizes() {
-    //     return getCurrentPanelSizes().reduce((a, b) => a + b, 0);
-    // }
-    //
-    // function getCurrentPanelSizes(): number[] {
-    //     return panelRefs.map(refPanel => refPanel.current.clientWidth);
-    // }
-    //
-    // function sizesToPercentages(sizes: number[], totalSize: number): string[] {
-    //     return sizes
-    //         .map(size => size / totalSize)
-    //         .map(p => p * 100)
-    //         .map(p => p + "%");
-    // }
-    //
-    // function setSizes(sizes: string[]) {
-    //     sizes.forEach((size, index) => {
-    //         panelRefs[index].current.style.flexBasis = size;
-    //     });
-    // }
-    //
-    // /**
-    //  * @param currentSizes the sizes of the panels in pixels
-    //  * @param action the (optional) action to apply to the panels
-    //  */
-    // function calculatePanelSizes(currentSizes: number[], action: SplitPaneAction | null): number[] {
-    //
-    //     const newSizes: number[] = [...currentSizes];
-    //
-    //     if (action) {
-    //         if (action.type === "drag-splitter") {
-    //             const splitterIndex: number = action.payload.splitterIndex;
-    //             const diff: number = action.payload.diff;
-    //
-    //             const sizeSum = currentSizes[splitterIndex] + currentSizes[splitterIndex + 1];
-    //             const sizeFirst = Math.max(0, Math.min(currentSizes[splitterIndex] + diff, sizeSum));
-    //             const sizeSecond = sizeSum - sizeFirst;
-    //
-    //             newSizes[splitterIndex] = sizeFirst;
-    //             newSizes[splitterIndex + 1] = sizeSecond;
-    //         }
-    //
-    //         if (action.type === "collapse-splitter") {
-    //             const splitterIndex: number = action.payload.splitterIndex;
-    //             const collapsed: boolean = action.payload.collapsed;
-    //             const dir: string = action.payload.dir;
-    //
-    //             const sizeSum = currentSizes[splitterIndex] + currentSizes[splitterIndex + 1];
-    //             let sizeFirst, sizeSecond;
-    //
-    //             if (collapsed) {
-    //                 if (dir === "previous") {
-    //                     sizeFirst = 0;
-    //                     sizeSecond = sizeSum;
-    //                 } else {
-    //                     sizeFirst = sizeSum;
-    //                     sizeSecond = 0;
-    //                 }
-    //             } else {
-    //                 sizeFirst = sizeSum / 2;
-    //                 sizeSecond = sizeSum / 2;
-    //             }
-    //
-    //
-    //             newSizes[splitterIndex] = sizeFirst;
-    //             newSizes[splitterIndex + 1] = sizeSecond;
-    //         }
-    //
-    //     }
-    //
-    //
-    //     return newSizes;
-    // }
-    //
-    //
-    // function handleCollapse(splitterId: number, collapsed: boolean, collapseDir: string) {
-    //
-    //     updateSizes({
-    //         type: "collapse-splitter",
-    //         payload: {
-    //             splitterIndex: splitterId,
-    //             collapsed: collapsed,
-    //             dir: collapseDir,
-    //         },
-    //     });
-    //
-    // }
-
-
-    // function handleDragSplitter(splitterId: number, diff: number): void {
-    //
-    //     updateSizes({
-    //         type: "drag-splitter",
-    //         payload: {
-    //             splitterIndex: splitterId,
-    //             diff: diff,
-    //         },
-    //     });
-
-    // const totalSize: number = panelRefs
-    //     .map(refPanel => refPanel.current.clientWidth)
-    //     .reduce((a, b) => a + b, 0);
-    //
-    // const panelSizes: number[] = panelRefs.map(refPanel => refPanel.current.clientWidth);
-    //
-    // const allowedDiff: number = calcAllowedDiff(
-    //     diff,
-    //     panelSizes[splitterId], panelSizes[splitterId + 1],
-    //     panelData[splitterId].minSize, panelData[splitterId + 1].minSize,
-    // );
-    //
-    // panelSizes[splitterId] += allowedDiff;
-    // panelSizes[splitterId + 1] -= allowedDiff;
-    //
-    // panelSizes
-    //     .map(size => size / totalSize)
-    //     .map(p => p * 100)
-    //     .map(p => p + "%")
-    //     .forEach((percentage, index) => {
-    //         panelRefs[index].current.style.flexBasis = percentage;
-    //     });
-    // }
-
-    //
-    //
-    // function calcAllowedDiff(diff: number, size0: number, size1: number, min0: number, min1: number): number {
-    //
-    //     if (size0 + diff < min0) {
-    //         return min0 - size0;
-    //
-    //     } else if (size1 - diff < min1) {
-    //         return size1 - min1;
-    //
-    //     } else {
-    //         return diff;
-    //     }
-    //
-    // }
+    function handleOnChangeCollapse(index: number, collapsed: boolean, dir: "in" | "against") {
+        // console.log("CHANGE COLLAPSED: " + index + " => " + collapsed + " " + dir)
+        // collapse(index, collapsed, dir);
+    }
 
 }
