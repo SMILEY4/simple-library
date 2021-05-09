@@ -29,7 +29,7 @@ export function useSplitPane(dataPanels: PanelData[]) {
         const sizePxAfter: number = sizesPx[splitterIndex + 1];
         const sizePxSum: number = sizePxBefore + sizePxAfter;
 
-        let possibleDiff: number = diff;
+        let possibleDiff: number;
         if (diff > 0) { // before.max, after.min
             const beforeMaxDiff: number = panelDataBefore.maxSize - sizePxBefore;
             const afterMaxDiff: number = sizePxAfter - panelDataAfter.minSize;
@@ -58,43 +58,77 @@ export function useSplitPane(dataPanels: PanelData[]) {
     function doCollapseOrExpand(panelIndex: number, collapse: boolean, collapseDir: "in" | "against") {
 
         if (collapse) {
+            console.log("REMEMBER @" + panelIndex + ": " + getCurrentSizesPx()[panelIndex] + "px")
             refSizesBC.current[panelIndex] = getCurrentSizesPx()[panelIndex];
         } else if (sizesBC[panelIndex] === null) {
             return;
         }
 
-        const panelData: PanelData = dataPanels[panelIndex];
+        const data: PanelData = dataPanels[panelIndex];
 
-        const panelTargetSize: number = collapse
-            ? dataPanels[panelIndex].minSize
-            : clamp(panelData.minSize, sizesBC[panelIndex], panelData.maxSize);
+        const targetSize: number = collapse
+            ? data.minSize
+            : clamp(data.minSize, sizesBC[panelIndex], data.maxSize);
 
-        const newSizesPx: number[] = setPanelSize(panelIndex, panelTargetSize, collapseDir)
-        const newTotalSizePx: number = calcTotalSizePx(newSizesPx);
-        const newSizesPc: number[] = sizesPxToPc(newSizesPx, newTotalSizePx);
-        applySizes(newSizesPc.map(s => s * 100), "%");
+        console.log("COLLAPSE/EXPAND TO: " + panelIndex + " => " + targetSize + "px")
+
+        const newSizesPx: number[] = setPanelSize(panelIndex, targetSize, collapseDir)
+        applySizesPxAsPc(newSizesPx);
     }
 
 
     function setPanelSize(panelIndex: number, targetSizePx: number, collapseDir: "in" | "against"): number[] {
 
-        const sizesPx: number[] = getCurrentSizesPx();
-        const oldTotalSizePx: number = calcTotalSizePx(sizesPx);
+        const sizes: number[] = getCurrentSizesPx();
+        const total: number = calcTotalSizePx(sizes);
 
-        sizesPx[panelIndex] = targetSizePx;
+        sizes[panelIndex] = targetSizePx;
 
-        const newTotalSizePx: number = calcTotalSizePx(sizesPx);
-        const diffTotalSize: number = newTotalSizePx - oldTotalSizePx;
-        propagateDiff(sizesPx, panelIndex, -diffTotalSize, collapseDir);
+        const newTotal: number = calcTotalSizePx(sizes);
+        const diffTotal: number = total - newTotal;
+        // propagateDiff(sizes, panelIndex, diffTotal, collapseDir);
 
-        return sizesPx;
+        propagateDiffV2(panelIndex, diffTotal, sizes, collapseDir === "in" ? "against" : "in");
+
+        return sizes;
+    }
+
+    function propagateDiffV2(indexStart: number, totalDiff: number, sizes: number[], dir: "in" | "against"): number {
+        if (dir === "in") {
+            const currentIndex: number = indexStart + 1;
+            if (currentIndex == sizes.length) {
+                return totalDiff;
+            } else {
+                const remainingDiff: number = applyDiff(currentIndex, totalDiff, sizes);
+                return propagateDiffV2(currentIndex, remainingDiff, sizes, dir);
+            }
+        }
+        if (dir === "against") {
+            const currentIndex: number = indexStart - 1;
+            if (currentIndex === -1) {
+                return totalDiff;
+            } else {
+                const remainingDiff: number = applyDiff(currentIndex, totalDiff, sizes);
+                return propagateDiffV2(currentIndex, remainingDiff, sizes, dir);
+            }
+        }
+
+        return 0;
+    }
+
+
+    function applyDiff(index: number, totalDiff: number, sizes: number[]) {
+        console.log("APPLY TO " + index + ": " + totalDiff)
+        const leeway = getLeeway(index);
+        const possibleDiff: number = clamp(leeway.smaller, totalDiff, leeway.larger)
+        const remainingDiff: number = totalDiff - possibleDiff;
+        sizes[index] = getCurrentSizePx(index) + possibleDiff;
+        return remainingDiff;
     }
 
 
     function propagateDiff(sizesPx: number[], indexSource: number, diffPx: number, direction: string) {
         let remainingDiffPx: number = diffPx;
-
-        console.log("PROP: " + diffPx + "  " + direction)
 
         if (direction === "against") {
             for (let i = indexSource + 1; i < sizesPx.length && Math.abs(remainingDiffPx) > 0; i++) {
@@ -111,7 +145,6 @@ export function useSplitPane(dataPanels: PanelData[]) {
             }
         }
 
-        console.log("REMAINING AFTER PROPAGATION: " + remainingDiffPx)
     }
 
 
@@ -158,6 +191,12 @@ export function useSplitPane(dataPanels: PanelData[]) {
         return sizesPx.map(s => s / sizeTotal);
     }
 
+
+    function applySizesPxAsPc(sizesPx: number[]) {
+        const totalPx: number = calcTotalSizePx(sizesPx);
+        const sizesPc: number[] = sizesPxToPc(sizesPx, totalPx);
+        applySizes(sizesPc.map(s => s * 100), "%");
+    }
 
     function applySizes(sizes: number[], unit: string) {
         sizes.forEach((size: number, index: number) => {
