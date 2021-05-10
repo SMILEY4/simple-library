@@ -5,8 +5,7 @@ import "./splitter.css";
 import { useDraggable } from '../../common/commonHooks';
 
 interface SplitterProps extends BaseProps {
-    __splitterIndex?: number,
-    __onDrag?: (splitterIndex: number, diff: number) => void,
+    __onDrag?: (diff: number) => void,
 }
 
 
@@ -27,7 +26,7 @@ export function Splitter(props: React.PropsWithChildren<SplitterProps>): ReactEl
     }
 
     function handleDrag(dx: number, dy: number) {
-        props.__onDrag(props.__splitterIndex, dx);
+        props.__onDrag(dx); // todo choose x or y
     }
 
 }

@@ -98,21 +98,14 @@ export function ComponentShowcaseView(): any {
                             width: "100%",
                             height: "100%",
                         }}
-                        collapseA={collapsedA}
-                        collapseB={collapsedB}
-                        collapseC={collapsedC}
                     >
 
-                        <SplitPanePanel initialSize={"100px"} minSize={40} collapseDir={"against"} collapsed={collapsedA}> // TODO: "collapsedA" => breaks; remove/"false"/"true" => works - idk
+                        <SplitPanePanel initialSize={"100px"} minSize={40} maxSize={300}>
                             <div style={{backgroundColor: "#ff8585", width: "100%", height: "100%"}}>A</div>
                         </SplitPanePanel>
 
-                        <SplitPanePanel initialSize={"50%"} minSize={10} collapseDir={"in"} collapsed={collapsedB}>
+                        <SplitPanePanel initialSize={"100%"} minSize={10}>
                             <div style={{backgroundColor: "#91ff85", width: "100%", height: "100%"}}>B</div>
-                        </SplitPanePanel>
-
-                        <SplitPanePanel initialSize={"50%"} minSize={20} collapseDir={"in"} collapsed={collapsedC}>
-                            <div style={{backgroundColor: "#8595ff", width: "100%", height: "100%"}}>C</div>
                         </SplitPanePanel>
 
                     </SplitPane>

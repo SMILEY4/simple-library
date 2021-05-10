@@ -1,5 +1,14 @@
-.split-pane-panel {
-	position: relative;
+.split-panel {
+	position:  relative;
 	min-width: 0;
-	overflow: hidden;
+	overflow:  hidden;
+}
+
+.split-panel-primary {
+
+}
+
+.split-panel-secondary {
+	flex-grow:   1;
+	flex-shrink: 1;
 }

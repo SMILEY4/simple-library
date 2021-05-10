@@ -1,15 +1,12 @@
 import "./splitpane.css";
 import * as React from 'react';
-import {MutableRefObject, ReactElement, useEffect, useRef} from 'react';
+import {MutableRefObject, ReactElement, useRef} from 'react';
 import {BaseProps, getReactElements} from '../../common/common';
 import {Splitter} from './Splitter';
-import {PanelData, useSplitPane} from './splitPaneHooks';
+import {useSplitPane} from './splitPaneHooks';
 
 
 interface SplitPaneProps extends BaseProps {
-    collapseA: boolean,
-    collapseB: boolean,
-    collapseC: boolean
 }
 
 /*
@@ -25,80 +22,57 @@ TODO IDEA: simplify
  - nest splitPane in splitPane to allow multiple columns/rows
  */
 
+interface SplitPaneContentData {
+    children: ReactElement[],
+    refFirstPanel: MutableRefObject<any>,
+    refSecondPanel: MutableRefObject<any>,
+}
+
 export function SplitPane(props: React.PropsWithChildren<SplitPaneProps>): ReactElement {
 
-    const children = buildChildren();
-    const {dragSplitter, collapse} = useSplitPane(children.panelData);
-
-    useEffect(() => { // temp: test collapse A
-        collapse(0, props.collapseA, "against");
-    }, [props.collapseA]);
-
-    useEffect(() => { // temp: test collapse B
-        collapse(1, props.collapseB, "against");
-    }, [props.collapseB]);
-
-    useEffect(() => { // temp: test collapse C
-        collapse(2, props.collapseC, "in");
-    }, [props.collapseC]);
+    const content = buildContent();
+    const {resize} = useSplitPane(content.refFirstPanel, content.refSecondPanel);
 
 
     return (
         <div {...props} className='split-pane'>
-            {children.elements}
+            {content.children}
         </div>
     );
 
 
-    function buildChildren(): { elements: ReactElement[], panelData: PanelData[] } {
+    function buildContent(): SplitPaneContentData {
 
-        const outChildren: ReactElement[] = [];
-        const panelData: PanelData[] = [];
+        const children: ReactElement[] = getReactElements(props.children);
 
-        const inChildren: ReactElement[] = getReactElements(props.children);
-
-        if (inChildren.length < 2) {
-            throw("SplitPane must have at least two children!");
+        if (children.length !== 2) {
+            throw("SplitPane must have exactly two children!");
         }
 
-        inChildren.forEach((child: ReactElement, index: number) => {
-            const isLastChild: boolean = index == inChildren.length - 1;
+        const content: ReactElement[] = [];
+        const refFirstPanel: MutableRefObject<any> = useRef(null);
+        const refSecondPanel: MutableRefObject<any> = useRef(null);
 
-            const panelRef: MutableRefObject<any> = useRef(null);
-            panelData.push({
-                refPanel: panelRef,
-                minSize: child.props.minSize ? child.props.minSize : 0,
-                maxSize: child.props.maxSize ? child.props.maxSize : Number.MAX_VALUE,
-            });
+        content.push(React.cloneElement(children[0], {
+            ...children[0].props,
+            forwardRef: refFirstPanel,
+            __primary: true // todo: choose primary
+        }))
 
-            const newProps = {
-                ...child.props,
-                forwardRef: panelRef,
-                // __onChangeCollapse: (collapsed: boolean, dir: "in" | "against") => handleOnChangeCollapse(index, collapsed, dir)
-            };
-            outChildren.push(React.cloneElement(child, newProps));
+        content.push(<Splitter __onDrag={(d:number) => resize(d)}/>);
 
-            if (!isLastChild) {
-                outChildren.push(
-                    <Splitter
-                        __splitterIndex={index}
-                        __onDrag={(index, diff) => dragSplitter(index, diff)}
-                    />,
-                );
-            }
-
-        });
+        content.push(React.cloneElement(children[1], {
+            ...children[1].props,
+            forwardRef: refSecondPanel,
+            __primary: false // todo: choose primary
+        }))
 
         return {
-            elements: outChildren,
-            panelData: panelData,
+            children: content,
+            refFirstPanel: refFirstPanel,
+            refSecondPanel: refSecondPanel
         };
     }
 
-
-    function handleOnChangeCollapse(index: number, collapsed: boolean, dir: "in" | "against") {
-        // console.log("CHANGE COLLAPSED: " + index + " => " + collapsed + " " + dir)
-        // collapse(index, collapsed, dir);
-    }
 
 }
