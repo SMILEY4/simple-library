@@ -1,5 +1,5 @@
-import { Dispatch, MutableRefObject, SetStateAction, useEffect, useRef, useState } from 'react';
-import { componentLifecycle } from '../../app/common/utils/functionalReactLifecycle';
+import {Dispatch, MutableRefObject, SetStateAction, useEffect, useRef, useState} from 'react';
+import {componentLifecycle} from '../../app/common/utils/functionalReactLifecycle';
 
 export function useStateRef<S>(initialValue: S): [S, Dispatch<SetStateAction<S>>, MutableRefObject<S>] {
     const [value, setValue] = useState(initialValue);
@@ -65,8 +65,8 @@ export function useDraggable(onStart: () => void, onDrag: (dx: number, dy: numbe
 
     function handleMouseMove(event: any) {
         if (refDragging.current) {
-            const targetPageX = refTarget.current.getBoundingClientRect().x;
-            const targetPageY = refTarget.current.getBoundingClientRect().y;
+            const targetPageX = refTarget.current.getBoundingClientRect().x + window.scrollX;
+            const targetPageY = refTarget.current.getBoundingClientRect().y + window.scrollY;
             const mousePageX = event.pageX;
             const mousePageY = event.pageY;
             const dx = mousePageX - targetPageX;

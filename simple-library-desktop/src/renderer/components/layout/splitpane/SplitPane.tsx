@@ -1,41 +1,38 @@
 import "./splitpane.css";
 import * as React from 'react';
-import {MutableRefObject, ReactElement, useRef} from 'react';
-import {BaseProps, getReactElements} from '../../common/common';
+import {MutableRefObject, ReactElement, useEffect, useRef} from 'react';
+import {BaseProps, concatClasses, getReactElements, map} from '../../common/common';
 import {Splitter} from './Splitter';
 import {useSplitPane} from './splitPaneHooks';
+import {SplitPanePanel} from "./SplitPanePanel";
 
 
 interface SplitPaneProps extends BaseProps {
+    mode: "vertical" | "horizontal",
+    primaryCollapsed?: boolean,
+    primaryAsPercentage?: boolean,
 }
-
-/*
-TODO IDEA: simplify
- - https://github.com/tomkp/react-split-pane
- - split pane has exactly 2 children/panels
- - easier to calculate / update / handle / extend
-    - drag-resizer: no propagation, only update size of first, browser takes care of second panel
-    - collapse/expand: set size of panel, browser takes care of second other
-    - more flexible sizes possible: px, %
-    - one panel is "primary" = set fixed size, size of secondary is computed by browser
-    - set flex-base of primary, allow secondary to grow/shrink accordingly
- - nest splitPane in splitPane to allow multiple columns/rows
- */
 
 interface SplitPaneContentData {
     children: ReactElement[],
     refFirstPanel: MutableRefObject<any>,
     refSecondPanel: MutableRefObject<any>,
+    firstIsPrimary: boolean
 }
 
 export function SplitPane(props: React.PropsWithChildren<SplitPaneProps>): ReactElement {
 
-    const content = buildContent();
-    const {resize} = useSplitPane(content.refFirstPanel, content.refSecondPanel);
+    const content: SplitPaneContentData = buildContent();
+    const {
+        resize,
+        expandOrCollapse
+    } = useSplitPane(props.mode, props.primaryAsPercentage, content.refFirstPanel, content.refSecondPanel, content.firstIsPrimary);
 
+    useEffect(() => resize(0))
+    useEffect(() => expandOrCollapse(props.primaryCollapsed), [props.primaryCollapsed])
 
     return (
-        <div {...props} className='split-pane'>
+        <div {...props} className={concatClasses('split-pane', map(props.mode, mode => "split-pane-" + mode))}>
             {content.children}
         </div>
     );
@@ -43,9 +40,10 @@ export function SplitPane(props: React.PropsWithChildren<SplitPaneProps>): React
 
     function buildContent(): SplitPaneContentData {
 
-        const children: ReactElement[] = getReactElements(props.children);
+        const childrenPanels: ReactElement[] = getReactElements(props.children)
+            .filter(child => child.type === SplitPanePanel);
 
-        if (children.length !== 2) {
+        if (childrenPanels.length !== 2) {
             throw("SplitPane must have exactly two children!");
         }
 
@@ -53,26 +51,59 @@ export function SplitPane(props: React.PropsWithChildren<SplitPaneProps>): React
         const refFirstPanel: MutableRefObject<any> = useRef(null);
         const refSecondPanel: MutableRefObject<any> = useRef(null);
 
-        content.push(React.cloneElement(children[0], {
-            ...children[0].props,
+        const firstIsPrimary: boolean = childrenPanels[1].props.primary !== true;
+
+        content.push(React.cloneElement(childrenPanels[0], {
+            ...childrenPanels[0].props,
             forwardRef: refFirstPanel,
-            __primary: true // todo: choose primary
+            primary: firstIsPrimary,
+            __mode: props.mode
         }))
 
-        content.push(<Splitter __onDrag={(d:number) => resize(d)}/>);
+        content.push(<Splitter mode={props.mode} __onDrag={(d: number) => resize(d)}/>);
 
-        content.push(React.cloneElement(children[1], {
-            ...children[1].props,
+        content.push(React.cloneElement(childrenPanels[1], {
+            ...childrenPanels[1].props,
             forwardRef: refSecondPanel,
-            __primary: false // todo: choose primary
+            primary: !firstIsPrimary,
+            __mode: props.mode
         }))
 
         return {
             children: content,
             refFirstPanel: refFirstPanel,
-            refSecondPanel: refSecondPanel
+            refSecondPanel: refSecondPanel,
+            firstIsPrimary: firstIsPrimary
         };
     }
 
+}
 
+
+interface VSplitPaneProps extends Omit<SplitPaneProps, 'mode'> {
+
+}
+
+export function VSplitPane(props: React.PropsWithChildren<VSplitPaneProps>): ReactElement {
+    const baseProps: SplitPaneProps = {
+        mode: "vertical",
+        ...props,
+    };
+    return (
+        <SplitPane {...baseProps} />
+    );
+}
+
+interface HSplitPaneProps extends Omit<SplitPaneProps, 'mode'> {
+
+}
+
+export function HSplitPane(props: React.PropsWithChildren<HSplitPaneProps>): ReactElement {
+    const baseProps: SplitPaneProps = {
+        mode: "horizontal",
+        ...props,
+    };
+    return (
+        <SplitPane {...baseProps} />
+    );
 }

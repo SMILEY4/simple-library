@@ -20,9 +20,8 @@ import {SubMenuItem} from '../menu/submenu/SubMenuItem';
 import {ChoiceBox} from '../input/choicebox/ChoiceBox';
 import {SeparatorMenuItem} from '../menu/seperatormenuitem/SeparatorMenuItem';
 import {TitleMenuItem} from '../menu/titlemenuitem/TitleMenuItem';
-import {SplitPane} from '../layout/splitpane/SplitPane';
+import {HSplitPane, SplitPane, VSplitPane} from '../layout/splitpane/SplitPane';
 import {SplitPanePanel} from '../layout/splitpane/SplitPanePanel';
-import {HBox} from "../layout/box/Box";
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0");
@@ -67,51 +66,102 @@ export function ComponentShowcaseView(): any {
 
     function renderSplitPane() {
 
-        const [collapsedA, setCollapsedA] = useState(false);
-        const [collapsedB, setCollapsedB] = useState(false);
-        const [collapsedC, setCollapsedC] = useState(false);
-
         return (
             <Section title={"SplitPane"}>
 
-                <HBox spacing={Size.S_1}>
-                    <Button onAction={() => setCollapsedA(!collapsedA)}>
-                        {collapsedA ? "Expand A" : "Collapse A"}
-                    </Button>
-                    <Button onAction={() => setCollapsedB(!collapsedB)}>
-                        {collapsedB ? "Expand B" : "Collapse B"}
-                    </Button>
-                    <Button onAction={() => setCollapsedC(!collapsedC)}>
-                        {collapsedC ? "Expand C" : "Collapse C"}
-                    </Button>
-                </HBox>
-
+                <BodyText bold>Primary in PX</BodyText>
                 <div style={{
                     width: "100%",
-                    height: "400px",
+                    height: "100px",
                     border: "1px solid black",
                     position: "relative",
                 }}>
-
-                    <SplitPane
-                        style={{
-                            width: "100%",
-                            height: "100%",
-                        }}
+                    <VSplitPane
+                        primaryAsPercentage={false}
+                        style={{width: "100%", height: "100%",}}
                     >
-
-                        <SplitPanePanel initialSize={"100px"} minSize={40} maxSize={300}>
-                            <div style={{backgroundColor: "#ff8585", width: "100%", height: "100%"}}>A</div>
+                        <SplitPanePanel initialSize={"100px"} minSize={40}>
+                            <div style={{backgroundColor: "#ff8585", width: "100%", height: "100%"}}/>
                         </SplitPanePanel>
-
-                        <SplitPanePanel initialSize={"100%"} minSize={10}>
-                            <div style={{backgroundColor: "#91ff85", width: "100%", height: "100%"}}>B</div>
+                        <SplitPanePanel initialSize={"100%"} minSize={100}>
+                            <div style={{backgroundColor: "#91ff85", width: "100%", height: "100%"}}/>
                         </SplitPanePanel>
-
-                    </SplitPane>
-
+                    </VSplitPane>
                 </div>
 
+                <BodyText bold>Primary in %</BodyText>
+                <div style={{
+                    width: "100%",
+                    height: "100px",
+                    border: "1px solid black",
+                    position: "relative",
+                }}>
+                    <VSplitPane
+                        primaryAsPercentage={true}
+                        style={{width: "100%", height: "100%",}}
+                    >
+                        <SplitPanePanel initialSize={"100px"} minSize={40}>
+                            <div style={{backgroundColor: "#ff8585", width: "100%", height: "100%"}}/>
+                        </SplitPanePanel>
+                        <SplitPanePanel initialSize={"100%"} minSize={100}>
+                            <div style={{backgroundColor: "#91ff85", width: "100%", height: "100%"}}/>
+                        </SplitPanePanel>
+                    </VSplitPane>
+                </div>
+
+                <BodyText bold>Horizontal</BodyText>
+                <div style={{
+                    width: "100%",
+                    height: "100px",
+                    border: "1px solid black",
+                    position: "relative",
+                }}>
+                    <HSplitPane
+                        primaryAsPercentage={false}
+                        style={{width: "100%", height: "100%",}}
+                    >
+                        <SplitPanePanel initialSize={"60px"} minSize={40}>
+                            <div style={{backgroundColor: "#ff8585", width: "100%", height: "100%"}}/>
+                        </SplitPanePanel>
+                        <SplitPanePanel initialSize={"100%"} minSize={10}>
+                            <div style={{backgroundColor: "#91ff85", width: "100%", height: "100%"}}/>
+                        </SplitPanePanel>
+                    </HSplitPane>
+                </div>
+
+
+                <BodyText bold>Multiple</BodyText>
+                <div style={{
+                    width: "100%",
+                    height: "100px",
+                    border: "1px solid black",
+                    position: "relative",
+                }}>
+                    <VSplitPane
+                        primaryAsPercentage={false}
+                        style={{width: "100%", height: "100%",}}
+                    >
+
+                        <SplitPanePanel initialSize={"60px"} minSize={40}>
+                            <div style={{backgroundColor: "#ff8585", width: "100%", height: "100%"}}/>
+                        </SplitPanePanel>
+
+                        <SplitPanePanel initialSize={"100%"} minSize={40}>
+                            <VSplitPane
+                                primaryAsPercentage={false}
+                                style={{width: "100%", height: "100%",}}
+                            >
+                                <SplitPanePanel initialSize={"100%"}>
+                                    <div style={{backgroundColor: "#85bcff", width: "100%", height: "100%"}}/>
+                                </SplitPanePanel>
+                                <SplitPanePanel initialSize={"60px"} minSize={40} primary>
+                                    <div style={{backgroundColor: "#91ff85", width: "100%", height: "100%"}}/>
+                                </SplitPanePanel>
+                            </VSplitPane>
+                        </SplitPanePanel>
+
+                    </VSplitPane>
+                </div>
 
             </Section>
         );

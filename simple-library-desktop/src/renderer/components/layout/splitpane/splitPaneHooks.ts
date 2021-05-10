@@ -1,28 +1,75 @@
 import {MutableRefObject} from 'react';
-
-export interface PanelData {
-    refPanel: MutableRefObject<any>,
-    minSize: number,
-    maxSize: number
-}
+import {useStateRef} from "../../common/commonHooks";
 
 export function useSplitPane(
+    mode: "vertical" | "horizontal",
+    primaryAsPercentage: boolean,
     refFirst: MutableRefObject<any>,
     refSecond: MutableRefObject<any>,
+    firstIsPrimary: boolean
 ) {
 
+    const [sizeBeforeCollapse, setSizeBeforeCollapse, refSizeBeforeCollapse] = useStateRef<string>(null)
+
     function resize(d: number): void {
-        console.log("resize " + d)
-        const sizeFirst: number = refFirst.current.clientWidth; // todo: primary can be either first or second
-        const newSizeFirst: number = sizeFirst + d;
-        refFirst.current.style.flexBasis = newSizeFirst + "px";
-        refSecond.current.style.flexBasis = undefined;
+
+        const refPrimary: MutableRefObject<any> = firstIsPrimary ? refFirst : refSecond;
+        const refSecondary: MutableRefObject<any> = firstIsPrimary ? refSecond : refFirst;
+
+        const prevSizePrimary = sizePrimary();
+        const prevSizeSecondary = sizeSecondary();
+        const prevTotalSize = prevSizePrimary + prevSizeSecondary;
+
+        const newSizePrimary: number = firstIsPrimary ? (prevSizePrimary + d) : (prevSizePrimary - d);
+
+        refPrimary.current.style.flexBasis = primaryAsPercentage
+            ? ((newSizePrimary / prevTotalSize) * 100) + "%"
+            : newSizePrimary + "px";
+        refSecondary.current.style.flexBasis = undefined;
+
+        refSizeBeforeCollapse.current = null;
     }
 
-    // todo: collapse/expand first or second
+    function expandOrCollapse(collapsePanel: boolean) {
+        if (collapsePanel) {
+            collapse();
+        } else {
+            expand();
+        }
+    }
+
+    function collapse() {
+        const refPrimary: MutableRefObject<any> = firstIsPrimary ? refFirst : refSecond;
+        setSizeBeforeCollapse(refPrimary.current.style.flexBasis);
+        refPrimary.current.style.flexBasis = "0px";
+    }
+
+    function expand() {
+        if (sizeBeforeCollapse) {
+            const refPrimary: MutableRefObject<any> = firstIsPrimary ? refFirst : refSecond;
+            refPrimary.current.style.flexBasis = sizeBeforeCollapse;
+            setSizeBeforeCollapse(null);
+        }
+    }
+
+    function sizePrimary(): number {
+        const refPrimary = firstIsPrimary ? refFirst : refSecond;
+        return mode === "vertical"
+            ? refPrimary.current.clientWidth
+            : refPrimary.current.clientHeight;
+    }
+
+
+    function sizeSecondary() {
+        const refSecondary = firstIsPrimary ? refSecond : refFirst;
+        return mode === "vertical"
+            ? refSecondary.current.clientWidth
+            : refSecondary.current.clientHeight;
+    }
 
     return {
-        resize: resize
+        resize: resize,
+        expandOrCollapse: expandOrCollapse,
     }
 
 }
