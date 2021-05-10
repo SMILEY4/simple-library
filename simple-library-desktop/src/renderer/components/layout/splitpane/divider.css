@@ -1,15 +1,15 @@
-.splitter {
+.divider {
 	background-color: black;
 }
 
 
-.splitter-vertical {
+.divider-vertical {
 	min-width: 5px;
 	max-width: 5px;
 	cursor:    col-resize;
 }
 
-.splitter-horizontal {
+.divider-horizontal {
 	min-height: 5px;
 	max-height: 5px;
 	cursor:     row-resize;

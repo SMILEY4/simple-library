@@ -1,30 +1,33 @@
 import {BaseProps, concatClasses, map} from '../../common/common';
 import * as React from 'react';
 import {ReactElement} from 'react';
-import "./splitter.css";
+import "./divider.css";
 import {useDraggable} from '../../common/commonHooks';
 
-interface SplitterProps extends BaseProps {
-    mode: "vertical" | "horizontal",
+interface DividerProps extends BaseProps {
+    __mode?: "vertical" | "horizontal",
     __onDrag?: (diff: number) => void,
 }
 
 
-export function Splitter(props: React.PropsWithChildren<SplitterProps>): ReactElement {
+export function Divider(props: React.PropsWithChildren<DividerProps>): ReactElement {
 
     const {refTarget, mouseDownHandler} = useDraggable(handleDragStart, handleDrag, handleDragStop);
 
     return (
         <div
-            className={concatClasses("splitter", map(props.mode, mode => "splitter-" + mode))}
+            className={concatClasses("divider", map(props.__mode, mode => "divider-" + mode), props.className)}
             ref={refTarget}
             onMouseDown={mouseDownHandler}
             draggable={false}
-        />
+            style={props.style}
+        >
+            {props.children}
+        </div>
     );
 
     function handleDragStart() {
-        document.body.style.cursor = props.mode === "vertical" ? "col-resize" : "row-resize";
+        document.body.style.cursor = props.__mode === "vertical" ? "col-resize" : "row-resize";
     }
 
     function handleDragStop() {
@@ -32,7 +35,7 @@ export function Splitter(props: React.PropsWithChildren<SplitterProps>): ReactEl
     }
 
     function handleDrag(dx: number, dy: number) {
-        props.__onDrag(props.mode === "vertical" ? dx : dy);
+        props.__onDrag(props.__mode === "vertical" ? dx : dy);
     }
 
 }

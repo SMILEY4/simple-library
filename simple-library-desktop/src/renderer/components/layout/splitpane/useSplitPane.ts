@@ -6,7 +6,7 @@ export function useSplitPane(
     primaryAsPercentage: boolean,
     refFirst: MutableRefObject<any>,
     refSecond: MutableRefObject<any>,
-    firstIsPrimary: boolean
+    firstIsPrimary: boolean,
 ) {
 
     const [sizeBeforeCollapse, setSizeBeforeCollapse, refSizeBeforeCollapse] = useStateRef<string>(null)

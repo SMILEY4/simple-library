@@ -2,10 +2,12 @@ import "./splitpane.css";
 import * as React from 'react';
 import {MutableRefObject, ReactElement, useEffect, useRef} from 'react';
 import {BaseProps, concatClasses, getReactElements, map} from '../../common/common';
-import {Splitter} from './Splitter';
-import {useSplitPane} from './splitPaneHooks';
+import {Divider} from './Divider';
+import {useSplitPane} from './useSplitPane';
 import {SplitPanePanel} from "./SplitPanePanel";
+import {getChildOfSlot} from "../../base/slot/Slot";
 
+export const SLOT_DIVIDER = "divider";
 
 interface SplitPaneProps extends BaseProps {
     mode: "vertical" | "horizontal",
@@ -40,34 +42,16 @@ export function SplitPane(props: React.PropsWithChildren<SplitPaneProps>): React
 
     function buildContent(): SplitPaneContentData {
 
-        const childrenPanels: ReactElement[] = getReactElements(props.children)
-            .filter(child => child.type === SplitPanePanel);
-
-        if (childrenPanels.length !== 2) {
-            throw("SplitPane must have exactly two children!");
-        }
-
         const content: ReactElement[] = [];
         const refFirstPanel: MutableRefObject<any> = useRef(null);
         const refSecondPanel: MutableRefObject<any> = useRef(null);
 
+        const childrenPanels: ReactElement[] = getPanelChildren();
         const firstIsPrimary: boolean = childrenPanels[1].props.primary !== true;
 
-        content.push(React.cloneElement(childrenPanels[0], {
-            ...childrenPanels[0].props,
-            forwardRef: refFirstPanel,
-            primary: firstIsPrimary,
-            __mode: props.mode
-        }))
-
-        content.push(<Splitter mode={props.mode} __onDrag={(d: number) => resize(d)}/>);
-
-        content.push(React.cloneElement(childrenPanels[1], {
-            ...childrenPanels[1].props,
-            forwardRef: refSecondPanel,
-            primary: !firstIsPrimary,
-            __mode: props.mode
-        }))
+        content.push(enrichPanel(childrenPanels[0], refFirstPanel, firstIsPrimary));
+        content.push(buildDivider());
+        content.push(enrichPanel(childrenPanels[1], refSecondPanel, !firstIsPrimary));
 
         return {
             children: content,
@@ -75,6 +59,41 @@ export function SplitPane(props: React.PropsWithChildren<SplitPaneProps>): React
             refSecondPanel: refSecondPanel,
             firstIsPrimary: firstIsPrimary
         };
+    }
+
+    function getPanelChildren() {
+        const childrenPanels: ReactElement[] = getReactElements(props.children)
+            .filter(child => child.type === SplitPanePanel);
+        if (childrenPanels.length !== 2) {
+            throw("SplitPane must have exactly two children!");
+        } else {
+            return childrenPanels;
+        }
+    }
+
+
+    function enrichPanel(panel: ReactElement, ref: MutableRefObject<any>, isPrimary: boolean) {
+        return React.cloneElement(panel, {
+            ...panel.props,
+            forwardRef: ref,
+            primary: isPrimary,
+            __mode: props.mode
+        });
+    }
+
+    function buildDivider() {
+        const dividerTemplate: ReactElement | undefined = getChildOfSlot(props.children, SLOT_DIVIDER)
+        if (dividerTemplate) {
+            return React.cloneElement(dividerTemplate, {
+                ...dividerTemplate.props,
+                __mode: props.mode,
+                __onDrag: (d: number) => resize(d)
+            })
+        } else {
+            return (
+                <Divider __mode={props.mode} __onDrag={(d: number) => resize(d)}/>
+            );
+        }
     }
 
 }

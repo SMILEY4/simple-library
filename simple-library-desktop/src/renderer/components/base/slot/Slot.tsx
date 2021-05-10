@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { ReactElement, ReactNode } from 'react';
-import { getReactElements } from '../../common/common';
+import {ReactElement, ReactNode} from 'react';
+import {getReactElements} from '../../common/common';
 
 export interface SlotProps {
     name: string,
@@ -30,7 +30,7 @@ export function getChildrenOfSlots(children: ReactNode | ReactNode[], slotName: 
 export function getChildrenOfSlot(children: ReactNode | ReactNode[], slotName: string): ReactElement[] {
     const slot: ReactElement | undefined = getFirstSlot(children, slotName);
     if (slot) {
-        return slot.props.children;
+        return Array.isArray(slot.props.children) ? slot.props.children : [slot.props.children];
     } else {
         return [];
     }

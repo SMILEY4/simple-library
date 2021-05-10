@@ -175,6 +175,91 @@ export function MyComponent(...): ReactElement {
 
 
 
+# Layout
+
+
+
+## SplitPane
+
+Has two sides split by a divider which can be dragged by the user, resizing the sides. A "SplitPane "must have exactly two children of type "SplitPanePanel". 
+
+#### Examples
+
+```jsx
+ <VSplitPane>
+     <SplitPanePanel initialSize={"100px"} minSize={"50%"} maxSize={"500px"}>
+         <div style={{backgroundColor: "#ff8585", width: "100%", height: "100%"}}/>
+     </SplitPanePanel>
+     <SplitPanePanel initialSize={"100%"} minSize={"100px"}>
+         <div style={{backgroundColor: "#91ff85", width: "100%", height: "100%"}}/>
+     </SplitPanePanel>
+ </VSplitPane>
+
+<VSplitPane>
+    <SplitPanePanel initialSize={"60px"} minSize={"40px"}>
+        <div style={{backgroundColor: "#ff8585", width: "100%", height: "100%"}}/>
+    </SplitPanePanel>
+    <SplitPanePanel initialSize={"100%"} minSize={"40px"}>
+        <VSplitPane style={{width: "100%", height: "100%"}}>
+            <SplitPanePanel initialSize={"100%"}>
+                <div style={{backgroundColor: "#85bcff", width: "100%", height: "100%"}}/>
+            </SplitPanePanel>
+            <SplitPanePanel initialSize={"60px"} minSize={"40px"} primary>
+                <div style={{backgroundColor: "#91ff85", width: "100%", height: "100%"}}/>
+            </SplitPanePanel>
+        </VSplitPane>
+    </SplitPanePanel>
+</VSplitPane>
+
+<VSplitPane>
+    <Slot name={SLOT_DIVIDER}>
+        <Divider style={{
+            minWidth: "10px",
+            maxWidth: "10px",
+            backgroundColor: "lightgray",
+            border: "1px solid black"
+        }}/>
+    </Slot>
+    <SplitPanePanel initialSize={"100px"} minSize={"40px"}>
+        <div style={{backgroundColor: "#ff8585", width: "100%", height: "100%"}}/>
+    </SplitPanePanel>
+    <SplitPanePanel initialSize={"100%"} minSize={"40px"}>
+        <div style={{backgroundColor: "#91ff85", width: "100%", height: "100%"}}/>
+    </SplitPanePanel>
+</VSplitPane>
+```
+
+#### Slots
+
+- divider
+  - used to provide a custom "Divider"-element
+
+#### Properties
+
+**SplitPane-Properties**
+
+- mode: "vertical" | "horizontal"
+  - whether the layout of the split-pane is vertical or horizontal 
+- primaryCollapsed?: boolean
+  - whether the panel chosen as primary is collapsed (set to its min-size)
+- primaryAsPercentage?: boolean
+  - whether the size of the panel chosen as primary uses "px" or "%", resulting in slightly different behavior when resizing the split-pane
+
+**SplitPanePanel-Properties**
+
+- initialSize: string
+  - the starting size (flex-basis) of the panel 
+- minSize?: string
+  - the min size of the panel
+- maxSize?: boolean
+  - the max size of the panel
+- primary?: boolean
+  - whether the panel is the primary panel. By default, the first one is chosen as the primary. The primary panel has the computed fixed size while the secondary just fills the remaining space. The primary panel is also the only one that can be collapsed/expanded via the "SplitPane#primaryCollapsed"-property
+
+
+
+
+
 # Input
 
 
