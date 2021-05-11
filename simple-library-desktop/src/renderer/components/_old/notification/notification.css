@@ -1,62 +1,62 @@
-.notification {
-	border-radius:    var(--radius-0);
-}
+/*.notification {*/
+/*	border-radius:    var(--radius-0);*/
+/*}*/
 
-.notification-primary {
-	border:           1px solid var(--color-primary-2);
-	background-color: var(--color-primary-0);
-}
+/*.notification-primary {*/
+/*	border:           1px solid var(--color-primary-2);*/
+/*	background-color: var(--color-primary-0);*/
+/*}*/
 
-.notification-success {
-	border:           1px solid var(--color-success-2);
-	background-color: var(--color-success-0);
-}
+/*.notification-success {*/
+/*	border:           1px solid var(--color-success-2);*/
+/*	background-color: var(--color-success-0);*/
+/*}*/
 
-.notification-error {
-	border:           1px solid var(--color-error-2);
-	background-color: var(--color-error-0);
-}
+/*.notification-error {*/
+/*	border:           1px solid var(--color-error-2);*/
+/*	background-color: var(--color-error-0);*/
+/*}*/
 
-.notification-warn {
-	border:           1px solid var(--color-warn-2);
-	background-color: var(--color-warn-0);
-}
+/*.notification-warn {*/
+/*	border:           1px solid var(--color-warn-2);*/
+/*	background-color: var(--color-warn-0);*/
+/*}*/
 
-.notification-icon {
-}
+/*.notification-icon {*/
+/*}*/
 
-.notification-body {
-}
+/*.notification-body {*/
+/*}*/
 
-.notification-title {
-}
+/*.notification-title {*/
+/*}*/
 
-.notification-content {
-}
+/*.notification-content {*/
+/*}*/
 
-.notification-caption {
-	color:      var(--text-color-0);
-	align-self: flex-end;
-	font-size:  var(--font-size-0);
-}
+/*.notification-caption {*/
+/*	color:      var(--text-color-0);*/
+/*	align-self: flex-end;*/
+/*	font-size:  var(--font-size-0);*/
+/*}*/
 
-.notification-close {
-	color:         var(--text-color-1);
-	padding:       0.3em;
-	border-radius: 5px;
-	margin-left:   1em;
-}
+/*.notification-close {*/
+/*	color:         var(--text-color-1);*/
+/*	padding:       0.3em;*/
+/*	border-radius: 5px;*/
+/*	margin-left:   1em;*/
+/*}*/
 
-.notification-close:hover,
-.notification-close:hover > * {
-	background-color: hsla(0, 0%, 40%, 0.3);
-	fill:             var(--text-color-2);
-	stroke:           var(--text-color-2);
-}
+/*.notification-close:hover,*/
+/*.notification-close:hover > * {*/
+/*	background-color: hsla(0, 0%, 40%, 0.3);*/
+/*	fill:             var(--text-color-2);*/
+/*	stroke:           var(--text-color-2);*/
+/*}*/
 
-.notification-close:active,
-.notification-close:active > * {
-	background-color: hsla(0, 0%, 20%, 0.3);
-	fill:             var(--text-color-2);
-	stroke:           var(--text-color-2);
-}
+/*.notification-close:active,*/
+/*.notification-close:active > * {*/
+/*	background-color: hsla(0, 0%, 20%, 0.3);*/
+/*	fill:             var(--text-color-2);*/
+/*	stroke:           var(--text-color-2);*/
+/*}*/

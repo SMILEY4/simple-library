@@ -209,15 +209,47 @@ export function MyComponent(...): ReactElement {
 - alignCross?: AlignCross
   - how the items are aligned along the cross-axis
   - e.g.: dir=DOWN, alignCross={AlignMain.END} => items are ordered top to bottom and grouped to the right side of the box 
-- fill?: Fill
-  - whether/how to fill the parent container of the box
 - spacing?: Size
   - the spacing between the elements
 - padding?: Size
   - the padding of the box
 - margin?: Size
   - the margin of the box
+- fill?: Fill
+  - whether/how to fill the parent container of the box
 
+
+
+## Grid
+
+#### Examples
+
+```jsx
+<Grid columns={['auto', '1fr']} rows={['100vh']}>
+    <div>Left</div>
+    <div>Right</div>
+</Grid>
+```
+
+#### Properties
+
+- columns?: string[]
+
+  - the sizes of the available columns
+
+- rows?: string[]
+
+  - the sizes of the available rows
+
+- gap?: Size
+
+  - the size of the gap between elements
+
+- fill?: Fill
+
+  - whether/how to fill the parent container of the box
+  
+  
 
 
 ## SplitPane
@@ -778,3 +810,68 @@ Adds a title to the menu as headline of a group of items or a sections.
 
 - title: string
   - the text to display
+
+
+
+
+
+# Dialogs
+
+
+
+## ModalBase
+
+The base-component for Modals/Dialogs
+
+#### Example
+
+```jsx
+<ModalBase modalRootId={"app"} position={ModalPosition.CENTER} show withOverlay withShadow >
+	Content
+</ModalBase>
+```
+
+#### Properties
+
+- show?: boolean
+  - whether to render the modal
+  - defaults to true 
+- modalRootId?: string
+  - the id of the root id of the modal. Used for the creating the portal
+- position?: ModalPosition
+  - the position of the modal on the screen
+- withOverlay?: boolean
+  - whether show an overlay over the background/elements "behind" the modal 
+- withShadow?: boolean
+  - whether to add a shadow to the element(s) of the modal
+- onClickOutside?: () => void
+  - an action performed when the user clicks outside of the modal
+
+
+
+## Notification
+
+A simple notification element.
+
+#### Example
+
+```jsx
+<Notification type={Type.PRIMARY} icon={IconType.HOME} title={"My Title"} caption={"My Caption"}>
+    Test Notification with text as its content.
+ </Notification>
+```
+
+#### Properties
+
+- type: Type
+  - the type of the notification, i.e. success, error, warn, ...
+- icon?: IconType
+  - the (optional) icon to display
+- title?: string
+  - the title of the message
+- caption?: string
+  - a smaller text below the message content for additional (meta-) information 
+- closable?: boolean
+  - whether to display a "close"-button
+- onClose?: () => void
+  - action when the "close"-button is clicked 

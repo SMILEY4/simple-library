@@ -23,6 +23,7 @@ import {TitleMenuItem} from '../menu/titlemenuitem/TitleMenuItem';
 import {HSplitPane, SLOT_DIVIDER, SplitPane, VSplitPane} from '../layout/splitpane/SplitPane';
 import {SplitPanePanel} from '../layout/splitpane/SplitPanePanel';
 import {Divider} from "../layout/splitpane/Divider";
+import {Notification} from "../dialog/notification/Notification";
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0");
@@ -49,6 +50,7 @@ export function ComponentShowcaseView(): any {
     function renderContent() {
         return (
             <>
+                {renderNotifications()}
                 {renderSplitPane()}
                 {renderChoiceBox()}
                 {renderMenu()}
@@ -62,6 +64,31 @@ export function ComponentShowcaseView(): any {
                 {renderText()}
             </>
         );
+    }
+
+
+    function renderNotifications() {
+        return (
+            <Section title={"Notifications"}>
+
+                <Notification type={Type.PRIMARY} icon={IconType.HOME} closable title={"Primary Notification"} caption={"Caption"}>
+                    Test Notification with a longer text as the content. <br/> This can be anything.
+                </Notification>
+
+                <Notification type={Type.SUCCESS} icon={IconType.HOME} closable title={"Success Notification"} caption={"Caption"}>
+                    Test Notification with a longer text as the content. <br/> This can be anything.
+                </Notification>
+
+                <Notification type={Type.ERROR} icon={IconType.HOME} closable title={"Error Notification"} caption={"Caption"}>
+                    Test Notification with a longer text as the content. <br/> This can be anything.
+                </Notification>
+
+                <Notification type={Type.WARN} icon={IconType.HOME} closable title={"Warn Notification"} caption={"Caption"}>
+                    Test Notification with a longer text as the content. <br/> This can be anything.
+                </Notification>
+
+            </Section>
+        )
     }
 
 

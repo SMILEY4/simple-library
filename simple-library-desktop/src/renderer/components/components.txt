@@ -12,9 +12,9 @@ MISC COMPONENTS
 - sidebar
 
 DIALOG COMPONENTS
-- modalbase
+- modalbase ✔
 - dialog
-- notification
+- notification ✔
 - notificationStack
 
 LAYOUT COMPONENTS
@@ -27,10 +27,9 @@ INPUT COMPONENTS
 - button ✔
 - toggle button ✔
 - checkbox ✔
+- choicebox ✔
 - text field ✔
 - text area
-- choicebox
-    * with multiselect (supply renderer for multiple items)
 
 
 MENU COMPONENTS

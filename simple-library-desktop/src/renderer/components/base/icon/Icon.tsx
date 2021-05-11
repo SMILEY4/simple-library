@@ -11,6 +11,7 @@ import {
     FaCheck,
     HiOutlineFolder,
 } from 'react-icons/all';
+import {CgClose} from "react-icons/cg";
 
 export enum IconType {
     CHEVRON_UP,
@@ -42,6 +43,7 @@ const SVG_FILLED = "filled";
 
 
 const ICON_COLOR_TYPE = new Map<IconType, string>([
+    [IconType.CLOSE, SVG_FILLED],
     [IconType.FOLDER, SVG_OUTLINED],
     [IconType.HOME, SVG_FILLED],
     [IconType.CHECKMARK, SVG_FILLED],
@@ -70,6 +72,8 @@ export function Icon(props: React.PropsWithChildren<IconProps>): React.ReactElem
         style: props.style,
     };
     switch (props.type) {
+        case IconType.CLOSE:
+            return <CgClose {...iconProps} />;
         case IconType.FOLDER:
             return <HiOutlineFolder {...iconProps} />;
         case IconType.HOME:
