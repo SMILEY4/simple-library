@@ -5,7 +5,7 @@ import { Theme } from '../../application';
 import { Fill, Type } from '../../../components/common/common';
 import imgWelcome from './imgWelcome.jpg';
 import { Box } from '../../../components/layout/box/Box';
-import { Grid } from '../../../components/_old/layout/Grid';
+import { Grid } from '../../../components/layout/grid/Grid';
 import { DialogCreateLibrary } from './DialogCreateLibrary';
 import { Image } from '../../../components/_old/image/Image';
 import { SFNotificationStack } from '../../../components/_old/notification/SFNotificationStack';

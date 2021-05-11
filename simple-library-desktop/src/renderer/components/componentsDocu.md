@@ -179,7 +179,50 @@ export function MyComponent(...): ReactElement {
 
 
 
+## Box
+
+*Box, HBox, VBox*
+
+#### Examples
+
+```jsx
+<HBox spacing={Size.S_1}>
+	<div>Left</div>
+    <div>Middle</div>
+    <div>Right</div>
+</HBox>
+
+<VBox spacing={Size.S_0_5} alignCross={AlignCross.STRETCH}>
+	<div>Top</div>
+    <div>Middle</div>
+    <div>Bottom</div>
+</VBox>
+```
+
+#### Properties
+
+- dir?: Dir
+  - the direction in which to align the items
+- alignMain?: AlignMain
+  - how the items are aligned along the main-axis
+  - e.g.: dir=DOWN, alignMain={AlignMain.END} => items are ordered top to bottom, but grouped at the bottom of the box 
+- alignCross?: AlignCross
+  - how the items are aligned along the cross-axis
+  - e.g.: dir=DOWN, alignCross={AlignMain.END} => items are ordered top to bottom and grouped to the right side of the box 
+- fill?: Fill
+  - whether/how to fill the parent container of the box
+- spacing?: Size
+  - the spacing between the elements
+- padding?: Size
+  - the padding of the box
+- margin?: Size
+  - the margin of the box
+
+
+
 ## SplitPane
+
+*SplitPane, HSplitPane, VSplitPane, SplitPanePanel, Divider*
 
 Has two sides split by a divider which can be dragged by the user, resizing the sides. A "SplitPane "must have exactly two children of type "SplitPanePanel". 
 

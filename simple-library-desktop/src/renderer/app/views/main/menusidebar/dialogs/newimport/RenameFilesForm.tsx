@@ -13,7 +13,7 @@ import { AlignCross, AlignMain, Fill, Size, Type, Variant } from '../../../../..
 import { ChoiceBox } from '../../../../../../components/_old/choicebox/ChoiceBox';
 import { InputField } from '../../../../../../components/_old/inputfield/InputField';
 import { Checkbox } from '../../../../../../components/input/checkbox/Checkbox';
-import { Grid } from '../../../../../../components/_old/layout/Grid';
+import { Grid } from '../../../../../../components/layout/grid/Grid';
 
 export interface RenameFilesFormProps {
     enabled: boolean,

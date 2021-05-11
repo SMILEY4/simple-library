@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { VBox } from '../../../components/layout/box/Box';
 import { Fill } from '../../../components/common/common';
-import { Grid } from '../../../components/_old/layout/Grid';
+import { Grid } from '../../../components/layout/grid/Grid';
 import { componentDidMount } from '../../common/utils/functionalReactLifecycle';
 import { useGroups } from '../../hooks/groupHooks';
 import { NotificationStack } from '../../../components/_old/notification/NotificationStack';

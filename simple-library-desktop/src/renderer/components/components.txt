@@ -19,7 +19,7 @@ DIALOG COMPONENTS
 
 LAYOUT COMPONENTS
 - box / hbox / vbox ✔
-- grid
+- grid ✔
 - splitpane ✔
 
 

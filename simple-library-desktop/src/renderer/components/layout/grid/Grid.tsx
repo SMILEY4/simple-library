@@ -1,20 +1,23 @@
 import * as React from 'react';
-import { ReactElement } from 'react';
+import {CSSProperties, ReactElement} from 'react';
 import './grid.css';
-import { concatClasses, Fill, map, Size } from '../../common/common';
+import {BaseProps, concatClasses, Fill, map, Size} from '../../common/common';
 
 
-interface GridProps {
+interface GridProps extends BaseProps {
     columns?: string[],
     rows?: string[],
-    fill?: Fill,
     gap?: Size,
-    className?: string,
-    style?: React.CSSProperties,
+    fill?: Fill,
 }
 
-
 export function Grid(props: React.PropsWithChildren<GridProps>): ReactElement {
+
+    return (
+        <div className={getClassNames()} style={getStyle()}>
+            {props.children}
+        </div>
+    );
 
     function getClassNames(): string {
         return concatClasses(
@@ -24,18 +27,13 @@ export function Grid(props: React.PropsWithChildren<GridProps>): ReactElement {
         );
     }
 
-    function getStyle(): any {
+    function getStyle(): CSSProperties {
         return {
             gridTemplateColumns: props.columns ? props.columns.join(' ') : undefined,
             gridTemplateRows: props.rows ? props.rows.join(' ') : undefined,
-            gridGap: props.gap ? "var(--" + props.gap+")" : undefined,
+            gridGap: props.gap ? "var(--" + props.gap + ")" : undefined,
             ...props.style
         };
     }
 
-    return (
-        <div className={getClassNames()} style={getStyle()}>
-            {props.children}
-        </div>
-    );
 }
