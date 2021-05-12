@@ -21,6 +21,7 @@ interface TextProps extends BaseProps {
     type?: Type,
     onType?: boolean,
     disabled?: boolean,
+    editable?: boolean
 }
 
 interface GenericTextProps extends Omit<TextProps, 'variant'> {
@@ -34,27 +35,34 @@ export function Text(props: React.PropsWithChildren<TextProps>): ReactElement | 
         getIf(props.bold, "text-bold"),
         getIf(props.italic, "text-italic"),
         getIf(props.disabled, "text-disabled"),
+        getIf(props.editable, "text-editable"),
         map(props.type, (type) => {
             return props.onType === true
                 ? "text-on-type-" + type
                 : "text-type-" + type;
         }),
     );
+    const commonProps = {
+        className: className,
+        style: props.style,
+        contentEditable: props.editable && props.disabled !== true
+    }
+
     switch (props.variant) {
         case TextVariant.H1:
-            return <h1 className={className} style={props.style}>{props.children}</h1>;
+            return <h1 {...commonProps}>{props.children}</h1>;
         case TextVariant.H2:
-            return <h2 className={className} style={props.style}>{props.children}</h2>;
+            return <h2 {...commonProps}>{props.children}</h2>;
         case TextVariant.H3:
-            return <h3 className={className} style={props.style}>{props.children}</h3>;
+            return <h3 {...commonProps}>{props.children}</h3>;
         case TextVariant.H4:
-            return <h4 className={className} style={props.style}>{props.children}</h4>;
+            return <h4 {...commonProps}>{props.children}</h4>;
         case TextVariant.H5:
-            return <h5 className={className} style={props.style}>{props.children}</h5>;
+            return <h5 {...commonProps}>{props.children}</h5>;
         case TextVariant.BODY:
-            return <div className={className} style={props.style}>{props.children}</div>;
+            return <div {...commonProps}>{props.children}</div>;
         case TextVariant.CAPTION:
-            return <div className={className} style={props.style}>{props.children}</div>;
+            return <div {...commonProps}>{props.children}</div>;
         default: {
             return null;
         }

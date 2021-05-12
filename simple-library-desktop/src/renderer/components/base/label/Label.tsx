@@ -1,11 +1,12 @@
 import * as React from 'react';
-import { ReactElement } from 'react';
-import { HBox } from '../../layout/box/Box';
-import { addPropsToChildren, BaseProps, ColorType, concatClasses, map, orDefault, Size } from '../../common/common';
-import { Icon } from '../icon/Icon';
+import {ReactElement} from 'react';
+import {HBox} from '../../layout/box/Box';
+import {addPropsToChildren, BaseProps, ColorType, concatClasses, map, orDefault, Size} from '../../common/common';
+import {Icon} from '../icon/Icon';
 
 interface LabelProps extends BaseProps {
     color?: ColorType,
+    spacing?: Size,
 }
 
 
@@ -16,7 +17,10 @@ interface LabelProps extends BaseProps {
 export function Label(props: React.PropsWithChildren<LabelProps>): ReactElement {
 
     return (
-        <HBox spacing={Size.S_0_25} className={getClassName()} style={props.style} forwardRef={props.forwardRef}>
+        <HBox
+            spacing={props.spacing ? props.spacing : Size.S_0_25}
+            className={getClassName()} style={props.style} forwardRef={props.forwardRef}
+        >
             {getModifiedChildren()}
         </HBox>
     );
@@ -36,7 +40,7 @@ export function Label(props: React.PropsWithChildren<LabelProps>): ReactElement 
     function getModifiedChildren() {
         return addPropsToChildren(
             props.children,
-            (prevProps: any) => ({ ...prevProps, color: getContentColor() }),
+            (prevProps: any) => ({...prevProps, color: getContentColor()}),
             (child: ReactElement) => child.type === Icon,
         );
     }

@@ -1,4 +1,117 @@
+
+
+# Slots / Slot-System
+
+Slots are used to group and label children of a component. Slots are identified by the name property.
+
+```jsx
+<MyComponent>
+    <Slot name={"main"}>
+        Main
+    </Slot>
+    <Slot name={"body"}>
+        Body 1
+    </Slot>
+    <Slot name={"body"}>
+        Body 2
+    </Slot>
+</MyComponent>
+```
+
+Inside the component, they can then be filtered by slot-name via the provided utility methods:
+
+```jsx
+import { getFirstSlot, getAllSlots } from '../../base/slot/Slot';
+
+export function MyComponent(...): ReactElement {
+	//...
+	return (
+    	//...
+        <div>{getChildOfSlot("main")}</div>
+        <div>{getChildrenOfSlots(props.children, "body")}</div>
+    );
+}
+```
+
+#### Utility-Methods for Slots
+
+- `getAllSlots(children, slotname): ReactElement[]`
+
+  - get all slot-elements with the given name
+
+- `getFirstSlot(children, slotname): ReactElement`
+
+  - get the first slot-element with the given name
+
+- `getChildrenOfSlots(children, slotname): ReactElement[]`
+
+  - get all child-elements of all slots with the given name
+
+- `getChildrenOfSlot(children, slotname): ReactElement[]`
+
+  - get all child-elements of the first slot with the given name
+
+- `getChildOfSlot(children, slotname): ReactElement`
+
+  - get the first child-element of the first slot with the given name
+
+    
+
+
+
 # Base
+
+
+
+## Text
+
+*Text, H1Text, H2Text, H3Text, H4Text, H5Text, BodyText, CaptionText*
+
+A simple element that displays only text.
+
+#### Examples
+
+```jsx
+<H2Text>
+    Heading 2
+</H2Text>
+
+<BodyText bold>
+    Bold Text
+</BodyText>
+
+<BodyText bold type={Type.ERROR}>
+    Error Text
+</BodyText>
+
+<BodyText type={Type.ERROR} onType>
+    Text on Error-Element
+</BodyText>
+
+<CaptionText disabled>
+    Disabled Text
+</CaptionText>
+```
+
+#### Properties
+
+- variant: TextVariant
+  - only available on base "Text"-elements
+  - the text variant, i.e. h1, h2, body, ...
+- bold?: boolean
+  - whether the text is bold
+- italics?: boolean
+  - whether the text is in italics
+- type?: Type
+  - the type, e.g. error, success, ...
+  - defines the color of the text
+- onType?: boolean
+  - whether the text is on an (colored) element of the type specified by the "type"-property 
+- disabled?: boolean
+  - whether the text should be displayed as disabled (grayed-out)
+- editable?: boolean
+  - whether the text can be edited like a text field
+  - the "disabled"-property also disables editing.
 
 
 
@@ -53,6 +166,9 @@ Usually displays a small piece of text, sometimes with additional icon(s)
 
 - color?: ColorType
   - the color of the text and child-icons
+- spacing?: Size
+  - the custom spacing between the elements in the label
+  - Default: 0.5
 
 
 
@@ -138,38 +254,74 @@ An element that provides a unified style for background and border. Can be inter
 
 
 
-## Slots / Slot-System
 
-Slots are used to group and label children of a component. Slots are identified by the name property.
 
-```jsx
-<MyComponent>
-    <Slot name={"main"}>
-        Main
-    </Slot>
-    <Slot name={"body"}>
-        Body 1
-    </Slot>
-    <Slot name={"body"}>
-        Body 2
-    </Slot>
-</MyComponent>
-```
+## Card
 
-Inside the component, they can then be filtered by slot-name via the provided utility methods:
+#### Examples
 
 ```jsx
-import { getFirstSlot, getAllSlots } from '../../base/slot/Slot';
+<Card icon={IconType.HOME} title={"My Card Title"}>
+    <Slot name={"body"}>
+        The main content of the card 
+    </Slot>
+    <Slot name={"footer"}>
+        <Checkbox variant={Variant.OUTLINE}>Don't show again</Checkbox>
+        <Button type={Type.DEFAULT} variant={Variant.OUTLINE}>Cancel</Button>
+        <Button type={Type.PRIMARY} variant={Variant.SOLID}>Accept</Button>
+    </Slot>
+</Card>
 
-export function MyComponent(...): ReactElement {
-	//...
-	return (
-    	//...
-        <div>{getFirstSlot("main")}</div>
-        <div>{getAllSlots("body")}</div>
-    );
-}
+
+<Card title={"Card without Footer"} closable>
+    <Slot name={"body"}>
+        This is the actual content of the card <br/>
+        Usually, this goes over multiple lines and can be anything from
+        <li>text</li>
+        <li>tables</li>
+        <li>forms</li>
+        <li>...and more</li>
+    </Slot>
+</Card>
+
+<Card>
+    <Slot name={"body"}>
+        This card does not have a title/header <br/>
+    </Slot>
+    <Slot name={"footer"}>
+        <Button type={Type.DEFAULT} variant={Variant.OUTLINE}>Cancel</Button>
+        <Button type={Type.PRIMARY} variant={Variant.SOLID}>Accept</Button>
+    </Slot>
+</Card>
 ```
+
+#### Slots
+
+- body
+  - provides the main content for the card
+  - optional 
+- footer
+  - provides the elements for the card-footer
+  - optional
+
+#### Properties
+
+- title?: string
+  - the title of the card
+  - if no title is given, no header will be added
+- icon?: IconType
+  - the card-icon next to the title
+- noBodyPadding?: boolean
+  - whether to add padding around the main content
+  - default = true
+- closable?: boolean
+  - whether to add a "close"-button in the top-right corner
+- onClose?: () => void
+  - the action when the user clicks the "close"-button (added with the "closable" property)
+- onEnter?: () => void
+  - the action triggered when the user presses the enter-key
+- onEscape?: () => void
+  - the action triggered when the user presses the escape-key
 
 
 

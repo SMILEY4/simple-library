@@ -24,6 +24,15 @@ export function useEventListener(type: string, action: (e: any) => void) {
 }
 
 
+export function useKeyListener(key: string, action: (event: KeyboardEvent) => void) {
+    useEventListener("keydown", (e) => {
+        if (e.key === key) {
+            action(e);
+        }
+    })
+}
+
+
 export function useClickOutside(action: (target: any) => void, targetRef?: MutableRefObject<any>): MutableRefObject<any> {
     const targetElementRef: MutableRefObject<any> = useRef(targetRef ? targetRef : null);
 

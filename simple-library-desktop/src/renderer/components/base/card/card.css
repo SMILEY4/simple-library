@@ -1,0 +1,7 @@
+.card-header {
+	border-bottom: 2px solid var(--base-color-0);
+}
+
+.card-footer {
+	border-top: 2px solid var(--base-color-0);
+}

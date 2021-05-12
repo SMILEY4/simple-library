@@ -2,7 +2,7 @@ import * as React from 'react';
 import {ReactElement, useState} from 'react';
 import "./showcase.css";
 import {BodyText, H2Text, Text, TextVariant} from '../base/text/Text';
-import {ColorType, GroupPosition, Size, Type, Variant} from '../common/common';
+import {AlignCross, ColorType, GroupPosition, Size, Type, Variant} from '../common/common';
 import {Button} from '../input/button/Button';
 import {Pane, PaneState} from '../base/pane/Pane';
 import {Icon, IconType} from "../base/icon/Icon";
@@ -12,7 +12,7 @@ import {ToggleButton} from '../input/togglebutton/ToggleButton';
 import {TextField} from '../input/textfield/TextField';
 import {LabelBox} from '../base/labelbox/LabelBox';
 import {MenuButton} from '../menu/menubutton/MenuButton';
-import {Slot} from '../base/slot/Slot';
+import {getChildOfSlot, getChildrenOfSlots, Slot} from '../base/slot/Slot';
 import {ContextMenuWrapper} from '../menu/contextmenu/ContextMenuWrapper';
 import {Menu} from '../menu/menu/Menu';
 import {MenuItem} from '../menu/menuitem/MenuItem';
@@ -24,6 +24,8 @@ import {HSplitPane, SLOT_DIVIDER, SplitPane, VSplitPane} from '../layout/splitpa
 import {SplitPanePanel} from '../layout/splitpane/SplitPanePanel';
 import {Divider} from "../layout/splitpane/Divider";
 import {Notification} from "../dialog/notification/Notification";
+import {VBox} from "../layout/box/Box";
+import {Card} from "../base/card/Card";
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0");
@@ -50,6 +52,7 @@ export function ComponentShowcaseView(): any {
     function renderContent() {
         return (
             <>
+                {renderCards()}
                 {renderNotifications()}
                 {renderSplitPane()}
                 {renderChoiceBox()}
@@ -61,9 +64,72 @@ export function ComponentShowcaseView(): any {
                 {renderToggleButtons()}
                 {renderButtons()}
                 {renderPanesInteractive()}
+                {renderColors()}
                 {renderText()}
             </>
         );
+    }
+
+
+    function renderCards() {
+        return (
+            <Section title={"Cards"}>
+
+                <Card
+                    icon={IconType.HOME}
+                    title={"My Card Title"}
+                    closable
+                    onEnter={() => console.log("CARD: Enter")}
+                    onEscape={() => console.log("CARD: Escape")}
+                >
+                    <Slot name={"body"}>
+                        This is the actual content of the card <br/>
+                        Usually, this goes over multiple lines and can be anything from
+                        <li>text</li>
+                        <li>tables</li>
+                        <li>forms</li>
+                        <li>...and more</li>
+                    </Slot>
+                    <Slot name={"footer"}>
+                        <Checkbox variant={Variant.OUTLINE}>Don't show again</Checkbox>
+                        <Button type={Type.DEFAULT} variant={Variant.OUTLINE}>Cancel</Button>
+                        <Button type={Type.PRIMARY} variant={Variant.SOLID}>Accept</Button>
+                    </Slot>
+                </Card>
+
+
+                <Card
+                    title={"Card without Footer"}
+                    closable
+                >
+                    <Slot name={"body"}>
+                        This is the actual content of the card <br/>
+                        Usually, this goes over multiple lines and can be anything from
+                        <li>text</li>
+                        <li>tables</li>
+                        <li>forms</li>
+                        <li>...and more</li>
+                    </Slot>
+                </Card>
+
+                <Card>
+                    <Slot name={"body"}>
+                        This card does not have a title/header <br/>
+                        This is the actual content of the card <br/>
+                        Usually, this goes over multiple lines and can be anything from
+                        <li>text</li>
+                        <li>tables</li>
+                        <li>forms</li>
+                        <li>...and more</li>
+                    </Slot>
+                    <Slot name={"footer"}>
+                        <Button type={Type.DEFAULT} variant={Variant.OUTLINE}>Cancel</Button>
+                        <Button type={Type.PRIMARY} variant={Variant.SOLID}>Accept</Button>
+                    </Slot>
+                </Card>
+
+            </Section>
+        )
     }
 
 
@@ -1048,6 +1114,116 @@ export function ComponentShowcaseView(): any {
             </>
         );
 
+    }
+
+
+    function renderColors() {
+        return (
+            <Section title={"Colors"}>
+
+                <VBox alignCross={AlignCross.STRETCH}>
+
+                    <div style={{height: "20px", backgroundColor: "var(--background-color-0)"}}>
+                        --background-color-0
+                    </div>
+                    <div style={{height: "20px", backgroundColor: "var(--background-color-1)"}}>
+                        --background-color-1
+                    </div>
+
+                    <div style={{height: "5px"}}/>
+
+                    <div style={{height: "20px", backgroundColor: "var(--base-color-0)"}}>
+                        --base-color-0
+                    </div>
+                    <div style={{height: "20px", backgroundColor: "var(--base-color-1)"}}>
+                        --base-color-1
+                    </div>
+                    <div style={{height: "20px", backgroundColor: "var(--base-color-2)"}}>
+                        --base-color-2
+                    </div>
+                    <div style={{height: "20px", backgroundColor: "var(--base-color-3)"}}>
+                        --base-color-3
+                    </div>
+                    <div style={{height: "20px", backgroundColor: "var(--base-color-4)"}}>
+                        --base-color-4
+                    </div>
+
+                    <div style={{height: "5px"}}/>
+
+                    <div style={{height: "20px", backgroundColor: "var(--color-primary-0)"}}>
+                        --color-primary-0
+                    </div>
+                    <div style={{height: "20px", backgroundColor: "var(--color-primary-1)"}}>
+                        --color-primary-1
+                    </div>
+                    <div style={{height: "20px", backgroundColor: "var(--color-primary-2)"}}>
+                        --color-primary-2
+                    </div>
+                    <div style={{height: "20px", backgroundColor: "var(--color-primary-3)"}}>
+                        --color-primary-3
+                    </div>
+                    <div style={{height: "20px", backgroundColor: "var(--color-primary-3)"}}>
+                        --color-primary-4
+                    </div>
+
+                    <div style={{height: "5px"}}/>
+
+                    <div style={{height: "20px", backgroundColor: "var(--color-success-0)"}}>
+                        --color-success-0
+                    </div>
+                    <div style={{height: "20px", backgroundColor: "var(--color-success-1)"}}>
+                        --color-success-1
+                    </div>
+                    <div style={{height: "20px", backgroundColor: "var(--color-success-2)"}}>
+                        --color-success-2
+                    </div>
+                    <div style={{height: "20px", backgroundColor: "var(--color-success-3)"}}>
+                        --color-success-3
+                    </div>
+                    <div style={{height: "20px", backgroundColor: "var(--color-success-3)"}}>
+                        --color-success-4
+                    </div>
+
+                    <div style={{height: "5px"}}/>
+
+                    <div style={{height: "20px", backgroundColor: "var(--color-error-0)"}}>
+                        --color-error-0
+                    </div>
+                    <div style={{height: "20px", backgroundColor: "var(--color-error-1)"}}>
+                        --color-error-1
+                    </div>
+                    <div style={{height: "20px", backgroundColor: "var(--color-error-2)"}}>
+                        --color-error-2
+                    </div>
+                    <div style={{height: "20px", backgroundColor: "var(--color-error-3)"}}>
+                        --color-error-3
+                    </div>
+                    <div style={{height: "20px", backgroundColor: "var(--color-error-3)"}}>
+                        --color-error-4
+                    </div>
+
+                    <div style={{height: "5px"}}/>
+
+                    <div style={{height: "20px", backgroundColor: "var(--color-warn-0)"}}>
+                        --color-warn-0
+                    </div>
+                    <div style={{height: "20px", backgroundColor: "var(--color-warn-1)"}}>
+                        --color-warn-1
+                    </div>
+                    <div style={{height: "20px", backgroundColor: "var(--color-warn-2)"}}>
+                        --color-warn-2
+                    </div>
+                    <div style={{height: "20px", backgroundColor: "var(--color-warn-3)"}}>
+                        --color-warn-3
+                    </div>
+                    <div style={{height: "20px", backgroundColor: "var(--color-warn-3)"}}>
+                        --color-warn-4
+                    </div>
+
+                </VBox>
+
+            </Section>
+        );
     }
 
 

@@ -62,6 +62,11 @@ h5 {
 	color: var(--text-color-0);
 }
 
+.text-editable:focus {
+	box-shadow: none;
+	outline:    none;
+}
+
 /* types */
 
 .text-on-type-primary,

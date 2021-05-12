@@ -19,10 +19,7 @@ export interface ModalBaseProps extends BaseProps {
     onClickOutside?: () => void
 }
 
-type ModalBaseReactProps = React.PropsWithChildren<ModalBaseProps>;
-
-
-export function ModalBase(props: ModalBaseReactProps) {
+export function ModalBase(props: React.PropsWithChildren<ModalBaseProps>) {
 
     const targetRef: MutableRefObject<any> = useClickOutside(handleClickOutside);
 
@@ -37,30 +34,30 @@ export function ModalBase(props: ModalBaseReactProps) {
                 }, 0);
             }
             const modalRootElement = document.getElementById(props.modalRootId);
-            return modalRootElement ? ReactDOM.createPortal(renderElement(props), modalRootElement) : null;
+            return modalRootElement ? ReactDOM.createPortal(renderElement(), modalRootElement) : null;
         } else {
-            return renderElement(props);
+            return renderElement();
         }
     }
 
-    function renderElement(props: ModalBaseReactProps): ReactElement {
+    function renderElement(): ReactElement {
         return (
-            <div className={getOverlayClassNames(props)}>
-                <div className={getClassNames(props)} style={props.style} ref={mergeRefs(targetRef, props.forwardRef)}>
+            <div className={getOverlayClassNames()}>
+                <div className={getClassNames()} style={props.style} ref={mergeRefs(targetRef, props.forwardRef)}>
                     {props.children}
                 </div>
             </div>
         );
     }
 
-    function getOverlayClassNames(props: ModalBaseReactProps): string {
+    function getOverlayClassNames(): string {
         return concatClasses(
             (props.withOverlay === true ? "modal-overlay" : "modal-hidden-overlay"),
             (props.position ? " modal-overlay-" + props.position : " modal-overlay-" + ModalPosition.CENTER),
         );
     }
 
-    function getClassNames(props: ModalBaseReactProps): string {
+    function getClassNames(): string {
         return concatClasses(
             "modal",
             (props.withShadow === true ? " with-shadow-2" : ""),

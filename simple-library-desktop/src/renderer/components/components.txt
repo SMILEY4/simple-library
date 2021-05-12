@@ -6,6 +6,7 @@ BASE COMPONENTS
 - icon ✔
 - label ✔
 - labelBox ✔
+- card ✔
 
 MISC COMPONENTS
 - image
