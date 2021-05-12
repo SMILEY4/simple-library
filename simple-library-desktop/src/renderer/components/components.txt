@@ -14,7 +14,7 @@ MISC COMPONENTS
 
 DIALOG COMPONENTS
 - modalbase ✔
-- dialog
+- dialog ✔
 - notification ✔
 - notificationStack
 

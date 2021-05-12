@@ -12,17 +12,18 @@ import {Label} from "../label/Label";
 import {useKeyListener} from "../../common/commonHooks";
 
 
-export interface CardBaseProps extends BaseProps {
+export interface CardProps extends BaseProps {
     title?: string,
     icon?: IconType,
     noBodyPadding?: boolean,
+    fitHeight?: boolean,
     closable?: boolean,
     onClose?: () => void
     onEnter?: () => void,
     onEscape?: () => void,
 }
 
-export function Card(props: React.PropsWithChildren<CardBaseProps>) {
+export function Card(props: React.PropsWithChildren<CardProps>) {
 
     useKeyListener("Enter", (event: KeyboardEvent) => {
         event.preventDefault();
@@ -89,7 +90,11 @@ export function Card(props: React.PropsWithChildren<CardBaseProps>) {
             return (
                 <div
                     className={"card-body"}
-                    style={{padding: props.noBodyPadding === true ? undefined : "var(--s-0-75)"}}
+                    style={{
+                        padding: props.noBodyPadding === true ? undefined : "var(--s-0-75)",
+                        flexShrink: props.fitHeight ? 1 : undefined,
+                        overflowY: props.fitHeight ? "auto" : undefined
+                    }}
                 >
                     {elements}
                 </div>

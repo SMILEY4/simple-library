@@ -12,10 +12,10 @@ export enum ModalPosition {
 
 export interface ModalBaseProps extends BaseProps {
     show?: boolean,
+    modalRootId?: string,
     position?: ModalPosition,
     withOverlay?: boolean,
     withShadow?: boolean,
-    modalRootId?: string,
     onClickOutside?: () => void
 }
 
@@ -43,7 +43,11 @@ export function ModalBase(props: React.PropsWithChildren<ModalBaseProps>) {
     function renderElement(): ReactElement {
         return (
             <div className={getOverlayClassNames()}>
-                <div className={getClassNames()} style={props.style} ref={mergeRefs(targetRef, props.forwardRef)}>
+                <div
+                    className={getClassNames()}
+                    style={props.style}
+                    ref={mergeRefs(targetRef, props.forwardRef)}
+                >
                     {props.children}
                 </div>
             </div>

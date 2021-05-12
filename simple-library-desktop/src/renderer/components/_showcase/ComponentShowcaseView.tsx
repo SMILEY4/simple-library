@@ -12,7 +12,7 @@ import {ToggleButton} from '../input/togglebutton/ToggleButton';
 import {TextField} from '../input/textfield/TextField';
 import {LabelBox} from '../base/labelbox/LabelBox';
 import {MenuButton} from '../menu/menubutton/MenuButton';
-import {getChildOfSlot, getChildrenOfSlots, Slot} from '../base/slot/Slot';
+import {Slot} from '../base/slot/Slot';
 import {ContextMenuWrapper} from '../menu/contextmenu/ContextMenuWrapper';
 import {Menu} from '../menu/menu/Menu';
 import {MenuItem} from '../menu/menuitem/MenuItem';
@@ -26,6 +26,8 @@ import {Divider} from "../layout/splitpane/Divider";
 import {Notification} from "../dialog/notification/Notification";
 import {VBox} from "../layout/box/Box";
 import {Card} from "../base/card/Card";
+import {Dialog} from "../dialog/dialog/Dialog";
+import {useStateRef} from "../common/commonHooks";
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0");
@@ -52,6 +54,7 @@ export function ComponentShowcaseView(): any {
     function renderContent() {
         return (
             <>
+                {renderDialogs()}
                 {renderCards()}
                 {renderNotifications()}
                 {renderSplitPane()}
@@ -67,6 +70,99 @@ export function ComponentShowcaseView(): any {
                 {renderColors()}
                 {renderText()}
             </>
+        );
+    }
+
+
+    function renderDialogs() {
+
+        const [show, setShow, refShow] = useStateRef(false);
+
+        return (
+            <Section title={"Dialogs"}>
+
+                <Button onAction={() => setShow(true)}>
+                    Open
+                </Button>
+
+                <Dialog
+                    show={show}
+                    icon={IconType.HOME}
+                    title={"My Dialog Title"}
+                    onClose={() => setShow(false)}
+                    onEscape={() => setShow(false)}
+                    closable
+                    withOverlay
+                >
+                    <Slot name={"body"}>
+                        This is the actual content of the dialog <br/>
+                        Usually, this goes over multiple lines and can be anything from
+                        <li>text</li>
+                        <li>tables</li>
+                        <li>forms</li>
+                        <li>text</li>
+                        <li>tables</li>
+                        <li>forms</li>
+                        <li>text</li>
+                        <li>tables</li>
+                        <li>forms</li>
+                        <li>text</li>
+                        <li>tables</li>
+                        <li>forms</li>
+                        <li>text</li>
+                        <li>tables</li>
+                        <li>forms</li>
+                        <li>text</li>
+                        <li>tables</li>
+                        <li>forms</li>
+                        <li>text</li>
+                        <li>tables</li>
+                        <li>forms</li>
+                        <li>text</li>
+                        <li>tables</li>
+                        <li>forms</li>
+                        <li>text</li>
+                        <li>tables</li>
+                        <li>forms</li>
+                        <li>text</li>
+                        <li>tables</li>
+                        <li>forms</li>
+                        <li>text</li>
+                        <li>tables</li>
+                        <li>forms</li>
+                        <li>text</li>
+                        <li>tables</li>
+                        <li>forms</li>
+                        <li>text</li>
+                        <li>tables</li>
+                        <li>forms</li>
+                        <li>text</li>
+                        <li>tables</li>
+                        <li>forms</li>
+                        <li>text</li>
+                        <li>tables</li>
+                        <li>forms</li>
+                        <li>text</li>
+                        <li>tables</li>
+                        <li>forms</li>
+                        <li>text</li>
+                        <li>tables</li>
+                        <li>forms</li>
+                        <li>text</li>
+                        <li>tables</li>
+                        <li>forms</li>
+                        <li>text</li>
+                        <li>tables</li>
+                        <li>forms</li>
+                        <li>...and more</li>
+                    </Slot>
+                    <Slot name={"footer"}>
+                        <Button type={Type.DEFAULT} variant={Variant.OUTLINE}>Cancel</Button>
+                        <Button type={Type.PRIMARY} variant={Variant.SOLID}>Accept</Button>
+                    </Slot>
+                </Dialog>
+
+            </Section>
         );
     }
 

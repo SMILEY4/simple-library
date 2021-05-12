@@ -1027,3 +1027,68 @@ A simple notification element.
   - whether to display a "close"-button
 - onClose?: () => void
   - action when the "close"-button is clicked 
+
+
+
+## Dialog
+
+#### Example
+
+```jsx
+<Dialog
+    show={show}
+    icon={IconType.HOME}
+    title={"My Dialog Title"}
+    onClose={() => setShow(false)}
+    onEscape={() => setShow(false)}
+    closable
+    withOverlay
+>
+    <Slot name={"body"}>
+		The actual content of the dialog.
+    </Slot>
+    <Slot name={"footer"}>
+        <Button type={Type.DEFAULT} variant={Variant.OUTLINE} onAction={() => setShow(false)}>Cancel</Button>
+        <Button type={Type.PRIMARY} variant={Variant.SOLID} onAction={() => setShow(false)}>Accept</Button>
+    </Slot>
+</Dialog>
+```
+
+- #### Slots
+
+  - body
+    - provides the main content for the dialog
+    - optional 
+  - footer
+    - provides the elements for the dialog-footer
+    - optional
+
+  #### Properties
+
+  - show?: boolean
+    - whether to render the dialog
+    - defaults to true 
+  - modalRootId?: string
+    - the id of the root id of the dialog. Used for the creating the portal
+  - withOverlay?: boolean
+    - whether show an overlay over the background/elements "behind" the dialog
+
+  - title?: string
+    - the title of the dialog
+    - if no title is given, no header will be added
+  - icon?: IconType
+    - the dialog-icon next to the title
+  - noBodyPadding?: boolean
+    - whether to add padding around the main content
+    - default = true
+  - closable?: boolean
+    - whether to add a "close"-button in the top-right corner
+  - onClose?: () => void
+    - the action when the user clicks the "close"-button (added with the "closable" property)
+  - onEnter?: () => void
+    - the action triggered when the user presses the enter-key
+  - onEscape?: () => void
+    - the action triggered when the user presses the escape-key
+
+  
+

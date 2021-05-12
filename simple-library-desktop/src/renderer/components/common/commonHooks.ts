@@ -24,6 +24,11 @@ export function useEventListener(type: string, action: (e: any) => void) {
 }
 
 
+export function useEventListeners(types: string[], action: (e: any) => void) {
+    types.forEach((type:string) => useEventListener(type, action));
+}
+
+
 export function useKeyListener(key: string, action: (event: KeyboardEvent) => void) {
     useEventListener("keydown", (e) => {
         if (e.key === key) {
