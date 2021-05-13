@@ -36,6 +36,7 @@ export function NotificationStack(props: React.PropsWithChildren<NotificationSta
             position={ModalPosition.BOTTOM}
             className={"notification-stack-modal"}
             ignorePointerEvents
+            showOverflow
         >
             <Box
                 dir={Dir.UP}

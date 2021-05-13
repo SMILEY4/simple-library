@@ -2,7 +2,7 @@ import * as React from 'react';
 import {ReactElement, useState} from 'react';
 import "./showcase.css";
 import {BodyText, H2Text, Text, TextVariant} from '../base/text/Text';
-import {AlignCross, ColorType, GroupPosition, Size, Type, Variant} from '../common/common';
+import {AlignCross, chooseRandom, ColorType, GroupPosition, Size, Type, Variant} from '../common/common';
 import {Button} from '../input/button/Button';
 import {Pane, PaneState} from '../base/pane/Pane';
 import {Icon, IconType} from "../base/icon/Icon";
@@ -77,22 +77,41 @@ export function ComponentShowcaseView(): any {
 
 
     function renderNotificationStack() {
+
+        const [notifications, setNotifications] = useState([])
+        const [notificationIdCounter, setNotificationIdCounter] = useState(0)
+
         return (
             <Section title={"Notification-Stack"}>
 
+                <Button onAction={() => {
+                    setNotifications([...notifications, {
+                        id: notificationIdCounter,
+                        type: chooseRandom([Type.PRIMARY, Type.SUCCESS, Type.ERROR, Type.WARN]),
+                    }])
+                    setNotificationIdCounter(notificationIdCounter + 1)
+                }}>
+                    Add Notification
+                </Button>
+
                 <NotificationStack>
-                    <Notification type={Type.PRIMARY} icon={IconType.HOME} closable title={"1 Primary Notification"} caption={"Caption"}>
-                        Test Notification with a longer text as the content. <br/> This can be anything.
-                    </Notification>
-                    <Notification type={Type.SUCCESS} icon={IconType.HOME} closable title={"2 Success Notification"} caption={"Caption"}>
-                        Test Notification. <br/> This can be anything.
-                    </Notification>
-                    <Notification type={Type.ERROR} icon={IconType.HOME} closable title={"3 Error Notification"} caption={"Caption"}>
-                        Test Notification with a longer text as the content.
-                    </Notification>
-                    <Notification type={Type.WARN} icon={IconType.HOME} closable title={"4 Warn Notification"} caption={"Caption"}>
-                        Test Notification
-                    </Notification>
+                    {
+                        notifications.map(notification => {
+                            return (
+                                <Notification
+                                    type={notification.type}
+                                    icon={IconType.HOME}
+                                    title={"Notification " + notification.id}
+                                    caption={"Caption"}
+                                    closable
+                                    onClose={() => setNotifications(notifications.filter(n => n.id !== notification.id))}
+                                >
+                                    Test Notification with a longer text as the content. <br/> This can be anything.
+                                </Notification>
+                            );
+                        })
+                    }
+
                 </NotificationStack>
 
             </Section>
@@ -104,19 +123,23 @@ export function ComponentShowcaseView(): any {
         return (
             <Section title={"Notifications"}>
 
-                <Notification type={Type.PRIMARY} icon={IconType.HOME} closable title={"Primary Notification"} caption={"Caption"}>
+                <Notification type={Type.PRIMARY} icon={IconType.HOME} closable title={"Primary Notification"}
+                              caption={"Caption"}>
                     Test Notification with a longer text as the content. <br/> This can be anything.
                 </Notification>
 
-                <Notification type={Type.SUCCESS} icon={IconType.HOME} closable title={"Success Notification"} caption={"Caption"}>
+                <Notification type={Type.SUCCESS} icon={IconType.HOME} closable title={"Success Notification"}
+                              caption={"Caption"}>
                     Test Notification with a longer text as the content. <br/> This can be anything.
                 </Notification>
 
-                <Notification type={Type.ERROR} icon={IconType.HOME} closable title={"Error Notification"} caption={"Caption"}>
+                <Notification type={Type.ERROR} icon={IconType.HOME} closable title={"Error Notification"}
+                              caption={"Caption"}>
                     Test Notification with a longer text as the content. <br/> This can be anything.
                 </Notification>
 
-                <Notification type={Type.WARN} icon={IconType.HOME} closable title={"Warn Notification"} caption={"Caption"}>
+                <Notification type={Type.WARN} icon={IconType.HOME} closable title={"Warn Notification"}
+                              caption={"Caption"}>
                     Test Notification with a longer text as the content. <br/> This can be anything.
                 </Notification>
 
@@ -536,10 +559,14 @@ export function ComponentShowcaseView(): any {
                 <TextField variant={Variant.SOLID} type={Type.DEFAULT} value={"Forced Value"} forceState/>
 
                 <ShowcaseRow>
-                    <TextField variant={Variant.SOLID} type={Type.PRIMARY} iconLeft={IconType.HOME} iconRight={IconType.FOLDER}/>
-                    <TextField variant={Variant.OUTLINE} type={Type.PRIMARY} iconLeft={IconType.HOME} iconRight={IconType.FOLDER}/>
-                    <TextField variant={Variant.GHOST} type={Type.PRIMARY} iconLeft={IconType.HOME} iconRight={IconType.FOLDER}/>
-                    <TextField variant={Variant.LINK} type={Type.PRIMARY} iconLeft={IconType.HOME} iconRight={IconType.FOLDER}/>
+                    <TextField variant={Variant.SOLID} type={Type.PRIMARY} iconLeft={IconType.HOME}
+                               iconRight={IconType.FOLDER}/>
+                    <TextField variant={Variant.OUTLINE} type={Type.PRIMARY} iconLeft={IconType.HOME}
+                               iconRight={IconType.FOLDER}/>
+                    <TextField variant={Variant.GHOST} type={Type.PRIMARY} iconLeft={IconType.HOME}
+                               iconRight={IconType.FOLDER}/>
+                    <TextField variant={Variant.LINK} type={Type.PRIMARY} iconLeft={IconType.HOME}
+                               iconRight={IconType.FOLDER}/>
                 </ShowcaseRow>
 
                 <div style={{display: 'flex'}}>

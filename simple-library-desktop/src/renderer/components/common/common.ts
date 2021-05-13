@@ -285,7 +285,10 @@ export function fillArray<T>(value: T, len: number) {
     return arr;
 }
 
-
 export function clamp(min: number, value: number, max: number): number {
     return Math.max(min, Math.min(value, max));
+}
+
+export function chooseRandom<T>(values: T[]): T {
+    return values[Math.floor(Math.random() * values.length)];
 }

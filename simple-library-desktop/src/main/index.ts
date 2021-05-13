@@ -1,4 +1,4 @@
-import { app } from 'electron';
+import { app,session } from 'electron';
 import { LibraryService } from './service/libraryService';
 import DataAccess from './persistence/dataAccess';
 import { WindowService } from './service/windowService';
@@ -71,7 +71,12 @@ if (RUN_TESTS) {
     new GroupMessageHandler(groupService).initialize();
 
 
-    app.whenReady().then(() => windowService.whenReady());
+    const reactDevToolPath = "C:\\Users\\LukasRuegner\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\Extensions\\fmkadmapgofadopljbjfkapdkoienihi\\4.13.2_0"
+
+    app.whenReady().then(async () => {
+        await session.defaultSession.loadExtension(reactDevToolPath)
+        windowService.whenReady()
+    });
     app.on('window-all-closed', () => windowService.allWindowsClosed());
     app.on('activate', () => windowService.activate());
 

@@ -16,6 +16,7 @@ export interface ModalBaseProps extends BaseProps {
     position?: ModalPosition,
     withOverlay?: boolean,
     withShadow?: boolean,
+    showOverflow?: boolean,
     ignorePointerEvents?: boolean,
     onClickOutside?: () => void
 }
@@ -46,7 +47,11 @@ export function ModalBase(props: React.PropsWithChildren<ModalBaseProps>) {
             <div className={getOverlayClassNames()}>
                 <div
                     className={getClassNames()}
-                    style={{...props.style, pointerEvents: props.ignorePointerEvents ? "none": undefined}}
+                    style={{
+                        ...props.style,
+                        pointerEvents: props.ignorePointerEvents ? "none": undefined,
+                        overflow: props.showOverflow === true ? "visible" : undefined
+                    }}
                     ref={mergeRefs(targetRef, props.forwardRef)}
                 >
                     {props.children}
