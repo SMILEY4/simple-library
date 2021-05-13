@@ -1030,6 +1030,28 @@ A simple notification element.
 
 
 
+## NotificationStack
+
+#### Example
+
+```jsx
+<NotificationStack modalRootId={"app"}>
+    <Notification type={Type.PRIMARY} title={"First Notification"}>
+        Test Notification.
+     </Notification>
+     <Notification type={Type.PRIMARY} title={"Second Notification"}>
+        Test Notification.
+     </Notification>
+</NotificationStack>
+```
+
+#### Properties
+
+- modalRootId?: boolean
+  - the id of the root id of the modal. Used for the creating the portal
+
+
+
 ## Dialog
 
 #### Example
