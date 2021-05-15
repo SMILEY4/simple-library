@@ -7,7 +7,7 @@ import imgWelcome from './imgWelcome.jpg';
 import { Box } from '../../../components/layout/box/Box';
 import { Grid } from '../../../components/layout/grid/Grid';
 import { DialogCreateLibrary } from './DialogCreateLibrary';
-import { Image } from '../../../components/_old/image/Image';
+import { Image } from '../../../components/base/image/Image';
 import { SFNotificationStack } from '../../../components/_old/notification/SFNotificationStack';
 import { SidebarMenu } from '../../../components/_old/sidebarmenu/SidebarMenu';
 import { SidebarMenuSection } from '../../../components/_old/sidebarmenu/SidebarMenuSection';

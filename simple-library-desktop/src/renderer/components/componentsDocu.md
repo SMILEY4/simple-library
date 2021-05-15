@@ -1174,3 +1174,34 @@ A simple notification element.
 
   
 
+
+
+## Image
+
+#### Examples
+
+```jsx
+<Image url="path/to/image.png" mode={ImageMode.CONTAIN}>
+    Overlay Text
+</Image>
+
+<Image url="path/to/image.png" mode={ImageMode.CONTAIN} posX={"50%"} posY={"20px"}/>
+```
+
+#### Properties
+
+- url: string
+  - the path the to the image file/source
+- mode?: ImageMode
+  - specifies the size/coverage behaviour of the image inside the element
+    - auto: display in original size
+    - cover: cover the entire element, can cut of parts of the image
+    - contain: cover the entire element without cutting of the image
+- posX?: string
+  - specifies the x-position of the image inside the element
+  - see https://www.w3schools.com/cssref/pr_background-position.asp
+- posY?: string
+  - specifies the y-position of the image inside the element
+  - see https://www.w3schools.com/cssref/pr_background-position.asp
+- color?: string
+  - defines the background color when the image does not cover the entire element

@@ -9,7 +9,7 @@ BASE COMPONENTS
 - card ✔
 
 MISC COMPONENTS
-- image
+- image ✔
 - sidebar
 - badge (see vuetify)
 
