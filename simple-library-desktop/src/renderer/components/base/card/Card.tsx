@@ -26,15 +26,19 @@ export interface CardProps extends BaseProps {
 export function Card(props: React.PropsWithChildren<CardProps>) {
 
     useKeyListener("Enter", (event: KeyboardEvent) => {
-        event.preventDefault();
-        event.stopPropagation();
-        props.onEnter && props.onEnter();
+        // @ts-ignore
+        if (props.onEnter && event.target.tagName === "BODY") {
+            event.preventDefault();
+            props.onEnter();
+        }
     })
 
     useKeyListener("Escape", (event: KeyboardEvent) => {
-        event.preventDefault();
-        event.stopPropagation();
-        props.onEscape && props.onEscape();
+        // @ts-ignore
+        if (props.onEscape && event.target.tagName === "BODY") {
+            event.preventDefault();
+            props.onEscape();
+        }
     })
 
 

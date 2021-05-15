@@ -29,6 +29,7 @@ import {Card} from "../base/card/Card";
 import {Dialog} from "../dialog/dialog/Dialog";
 import {useStateRef} from "../common/commonHooks";
 import {NotificationStack} from "../dialog/notificationStack/NotificationStack";
+import {TextArea} from "../input/textarea/TextArea";
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0");
@@ -55,6 +56,7 @@ export function ComponentShowcaseView(): any {
     function renderContent() {
         return (
             <>
+                {renderTextArea()}
                 {renderNotificationStack()}
                 {renderNotifications()}
                 {renderDialogs()}
@@ -73,6 +75,25 @@ export function ComponentShowcaseView(): any {
                 {renderText()}
             </>
         );
+    }
+
+
+    function renderTextArea() {
+
+        return (
+            <Section title={"TextArea"}>
+
+                <TextArea type={Type.DEFAULT} variant={Variant.SOLID} placeholder={"solid"}/>
+                <TextArea type={Type.DEFAULT} variant={Variant.OUTLINE} placeholder={"outline"}/>
+                <TextArea type={Type.DEFAULT} variant={Variant.GHOST} placeholder={"ghost"}/>
+
+                <TextArea resize={"none"} placeholder={"resize none"}/>
+                <TextArea resize={"horizontal"} placeholder={"resize horizontal"}/>
+                <TextArea resize={"vertical"} placeholder={"resize vertical"}/>
+
+            </Section>
+        );
+
     }
 
 
@@ -111,7 +132,6 @@ export function ComponentShowcaseView(): any {
                             );
                         })
                     }
-
                 </NotificationStack>
 
             </Section>

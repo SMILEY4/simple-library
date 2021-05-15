@@ -708,6 +708,66 @@ A field to enter a single line of text
 
 
 
+### TextArea
+
+#### Examples
+
+```jsx
+<TextArea variant={Variant.SOLID} type={Type.DEFAULT} placeholder={"Placeholder"}/>
+
+<TextArea variant={Variant.OUTLINE} type={Type.PRIMARY} placeholder={"Placeholder"} />
+
+<TextArea variant={Variant.SOLID} type={Type.DEFAULT} value={"Init Value"}/>
+
+<TextArea variant={Variant.SOLID} type={Type.DEFAULT} value={"Forced Value"} forceState/>
+```
+
+#### Properties
+
+- value?: string
+  - the initial value of the textarea
+- placeholder?: string
+  - the text to display when the textarea is empty
+- cols?: number
+  - the number of initially visible columns (not a hard limit)
+- rows?: number
+  - the number of initially visible rows (not a hard limit)
+- wrap?: string
+  - "hard", "soft"
+  - specifies how the text is wrapped
+- resize:? string
+  - "none", "horizontal", "vertical"
+  - defines in what way the text area can be resized
+  - resizable in all directions by default
+- forceState?: boolean
+  - default: false
+  - the "selected"-value always controls the state of the textarea, not only the initial state
+- variant?: Variant
+  - The overall style of the textarea. Solid, Outline, Ghost
+- type?: Type
+  - default: DEFAULT
+  - the (color-) style of the textarea. DEFAULT, PRIMARY, ERROR, ...
+- error?: boolean
+  - default: false
+  - whether the textarea is in an error state
+- disabled?: boolean
+  - default: false
+  - whether the textarea is interactive
+  - displays the textarea as "grayed-out" / disabled
+- autoFocus?: boolean
+  - default: false
+  - whether to automatically focus the textarea
+- onChange?:  (value:string) => void
+  - function called when the value of the textfield changes.
+- onAccept?:  (value:string) => void
+  - function called when the user presses enter or unfocuses the textfield
+
+
+
+
+
+
+
 # Menu
 
 

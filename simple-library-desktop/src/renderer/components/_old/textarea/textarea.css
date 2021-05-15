@@ -1,49 +1,49 @@
-.text-area {
-	display:         flex;
-	justify-content: center;
-	align-items:     center;
-	position:        relative;
-	flex-grow:       1;
+/*.text-area {*/
+/*	display:         flex;*/
+/*	justify-content: center;*/
+/*	align-items:     center;*/
+/*	position:        relative;*/
+/*	flex-grow:       1;*/
 
-	box-sizing:      border-box;
-	min-height:      var(--s-1-5);
-	color:           var(--text-color-1);
-	border-radius:   var(--radius-0);
-	border:          1px solid var(--base-color-4);
-}
+/*	box-sizing:      border-box;*/
+/*	min-height:      var(--s-1-5);*/
+/*	color:           var(--text-color-1);*/
+/*	border-radius:   var(--radius-0);*/
+/*	border:          1px solid var(--base-color-4);*/
+/*}*/
 
-.text-area-invalid {
-	border-color: var(--color-error-3);
-}
+/*.text-area-invalid {*/
+/*	border-color: var(--color-error-3);*/
+/*}*/
 
 
-/*INPUT*/
+/*!*INPUT*!*/
 
-.text-area > textarea {
-	border:        none;
-	background:    none;
-	margin:        0;
-	color:         var(--text-color-1);
-	padding-left:  var(--s-0-5);
-	padding-right: var(--s-0-5);
-	width:         100%;
-}
+/*.text-area > textarea {*/
+/*	border:        none;*/
+/*	background:    none;*/
+/*	margin:        0;*/
+/*	color:         var(--text-color-1);*/
+/*	padding-left:  var(--s-0-5);*/
+/*	padding-right: var(--s-0-5);*/
+/*	width:         100%;*/
+/*}*/
 
-.text-area > textarea::placeholder {
-	color: var(--text-color-0);
-}
+/*.text-area > textarea::placeholder {*/
+/*	color: var(--text-color-0);*/
+/*}*/
 
-textarea:required,
-textarea:focus,
-textarea:invalid {
-	box-shadow: none;
-	outline:    none;
-}
+/*textarea:required,*/
+/*textarea:focus,*/
+/*textarea:invalid {*/
+/*	box-shadow: none;*/
+/*	outline:    none;*/
+/*}*/
 
-.text-area-disabled {
-	border: 1px solid var(--base-color-1);
-}
+/*.text-area-disabled {*/
+/*	border: 1px solid var(--base-color-1);*/
+/*}*/
 
-.text-area-disabled > textarea {
-	color: var(--text-color-0);
-}
+/*.text-area-disabled > textarea {*/
+/*	color: var(--text-color-0);*/
+/*}*/
