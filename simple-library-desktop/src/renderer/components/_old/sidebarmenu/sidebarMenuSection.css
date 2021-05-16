@@ -1,11 +1,11 @@
-.sidebar-menu-minimized * .sidebar-menu-section > .sidebar-menu-section-title {
-	visibility: hidden;
-}
+/*.sidebar-menu-minimized * .sidebar-menu-section > .sidebar-menu-section-title {*/
+/*	visibility: hidden;*/
+/*}*/
 
 
-.sidebar-menu-section > .sidebar-menu-section-title > .sidebar-menu-section-title-content {
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	align-items: center;
-}
+/*.sidebar-menu-section > .sidebar-menu-section-title > .sidebar-menu-section-title-content {*/
+/*	display: flex;*/
+/*	flex-direction: row;*/
+/*	justify-content: space-between;*/
+/*	align-items: center;*/
+/*}*/

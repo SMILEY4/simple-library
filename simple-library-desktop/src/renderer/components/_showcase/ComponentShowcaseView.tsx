@@ -30,6 +30,8 @@ import {Dialog} from "../dialog/dialog/Dialog";
 import {useStateRef} from "../common/commonHooks";
 import {NotificationStack} from "../dialog/notificationStack/NotificationStack";
 import {TextArea} from "../input/textarea/TextArea";
+import {Sidebar} from "../misc/sidebar/Sidebar";
+import {SidebarItem} from "../misc/item/SidebarItem";
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0");
@@ -56,6 +58,7 @@ export function ComponentShowcaseView(): any {
     function renderContent() {
         return (
             <>
+                {renderSidebar()}
                 {renderTextArea()}
                 {renderNotificationStack()}
                 {renderNotifications()}
@@ -75,6 +78,30 @@ export function ComponentShowcaseView(): any {
                 {renderText()}
             </>
         );
+    }
+
+
+    function renderSidebar() {
+
+        return (
+            <Section title={"Sidebar"}>
+                <div style={{
+                    width: "200px",
+                    height: "80vh",
+                    border: "1px solid black"
+                }}>
+
+                    <Sidebar>
+                        <SidebarItem icon={IconType.HOME} title={"Home 1"} label={"1"}/>
+                        <SidebarItem title={"Home 2"} label={"2"}/>
+                        <SidebarItem icon={IconType.HOME} title={"Home 3"} label={"13"}/>
+                        <SidebarItem icon={IconType.HOME} title={"Home 4"} label={""}/>
+                    </Sidebar>
+
+                </div>
+            </Section>
+        );
+
     }
 
 

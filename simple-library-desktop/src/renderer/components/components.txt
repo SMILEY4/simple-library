@@ -7,11 +7,29 @@ BASE COMPONENTS
 - label ✔
 - labelBox ✔
 - card ✔
+- image ✔
 
 MISC COMPONENTS
-- image ✔
-- sidebar
 - badge (see vuetify)
+- sidebar
+    * base
+        * minimizable
+        * header
+    * items
+        - section title
+            * title
+            * action button (optional)
+            * children
+        - separators (single line or line with text in middle)
+        - search field
+        - menu item
+            * icon
+            * name
+            * label/tag
+        - menu group item
+            * same as menu item
+            * expandable to show more sub-items
+
 
 DIALOG COMPONENTS
 - modalbase ✔

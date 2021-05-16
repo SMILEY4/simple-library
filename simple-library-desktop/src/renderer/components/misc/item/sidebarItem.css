@@ -1,0 +1,22 @@
+.sidebar-item {
+	min-height: var(--s-1);
+	max-height: var(--s-1);
+	border-radius: var(--radius-0);
+}
+
+.sidebar-item:hover {
+	background-color: var(--base-color-0);
+}
+
+
+.sidebar-item-icon {
+	min-width: var(--s-1);
+}
+
+.sidebar-item-title {
+	flex-grow: 1;
+}
+
+.sidebar-item-label {
+	min-width: var(--s-1);
+}
