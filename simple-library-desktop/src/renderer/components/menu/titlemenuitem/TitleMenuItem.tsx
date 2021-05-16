@@ -10,7 +10,7 @@ export interface TitleMenuItemProps extends BaseProps {
 
 export function TitleMenuItem(props: React.PropsWithChildren<TitleMenuItemProps>): ReactElement {
     return (
-        <div className={"title-menu-item"}>
+        <div className={"header-menu-item"}>
             <CaptionText bold>{props.title}</CaptionText>
         </div>
     );

@@ -31,7 +31,10 @@ import {useStateRef} from "../common/commonHooks";
 import {NotificationStack} from "../dialog/notificationStack/NotificationStack";
 import {TextArea} from "../input/textarea/TextArea";
 import {Sidebar} from "../misc/sidebar/Sidebar";
-import {SidebarItem} from "../misc/item/SidebarItem";
+import {SidebarItem} from "../misc/sidebar/item/SidebarItem";
+import {SidebarGroupItem} from "../misc/sidebar/groupItem/SidebarGroupItem";
+import {SidebarSeparator} from "../misc/sidebar/separator/SidebarSeparator";
+import {SidebarHeader} from "../misc/sidebar/header/SidebarHeader";
 
 export function ComponentShowcaseView(): any {
     const [theme, setTheme] = useState("light-0");
@@ -94,8 +97,35 @@ export function ComponentShowcaseView(): any {
                     <Sidebar>
                         <SidebarItem icon={IconType.HOME} title={"Home 1"} label={"1"}/>
                         <SidebarItem title={"Home 2"} label={"2"}/>
-                        <SidebarItem icon={IconType.HOME} title={"Home 3"} label={"13"}/>
-                        <SidebarItem icon={IconType.HOME} title={"Home 4"} label={""}/>
+                        <SidebarSeparator/>
+                        <SidebarHeader title={"First Actions"}/>
+                        <SidebarItem icon={IconType.HOME} title={"Home 1"} label={"1"}/>
+                        <SidebarItem title={"Home 2"} label={"2"}/>
+                        <SidebarHeader title={"Second Actions"}/>
+                        <SidebarItem icon={IconType.HOME} title={"Home 1"} label={"1"}/>
+                        <SidebarItem title={"Home 2"} label={"2"}/>
+                        <SidebarSeparator title={"NESTED"}/>
+                        <SidebarItem icon={IconType.HOME} title={"Home 3"}/>
+                        <SidebarItem icon={IconType.HOME} title={"Home 4"} label={"14"}/>
+                        <SidebarGroupItem icon={IconType.FOLDER} title={"Group"}>
+                            <SidebarItem icon={IconType.HOME} title={"Home 1"} label={"1"}/>
+                            <SidebarItem title={"Home 2"} label={"2"}/>
+                            <SidebarItem icon={IconType.HOME} title={"Home 3"}/>
+                            <SidebarItem icon={IconType.HOME} title={"Home 4"} label={"14"}/>
+                            <SidebarGroupItem icon={IconType.FOLDER} title={"Group A"}>
+                                <SidebarItem icon={IconType.HOME} title={"Home 1"} label={"1"}/>
+                                <SidebarItem title={"Home 2"} label={"2"}/>
+                                <SidebarItem icon={IconType.HOME} title={"Home 3"}/>
+                                <SidebarItem icon={IconType.HOME} title={"Home 4"} label={"14"}/>
+                            </SidebarGroupItem>
+                            <SidebarGroupItem icon={IconType.FOLDER} title={"Group B"}>
+                                <SidebarItem icon={IconType.HOME} title={"Home 1"} label={"1"}/>
+                                <SidebarItem title={"Home 2"} label={"2"}/>
+                                <SidebarItem icon={IconType.HOME} title={"Home 3"}/>
+                                <SidebarItem icon={IconType.HOME} title={"Home 4"} label={"14"}/>
+                            </SidebarGroupItem>
+                        </SidebarGroupItem>
+
                     </Sidebar>
 
                 </div>

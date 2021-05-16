@@ -1,8 +1,12 @@
 .box {
 	display:       flex;
 	position:      relative;
+	box-sizing: unset;
 }
 
+.box-border-box {
+	box-sizing: border-box;
+}
 
 /* DIRECTION */
 

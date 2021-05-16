@@ -46,7 +46,7 @@ export function Dialog(props: DialogReactProps) {
     function renderHeader(props: DialogReactProps): ReactElement {
         return (
             <HBox className={"dialog-header"} alignMain={AlignMain.SPACE_BETWEEN} alignCross={AlignCross.CENTER} spacing={Size.S_1_5}>
-                <H3Text className={"dialog-header-title"}>
+                <H3Text className={"dialog-header-header"}>
                     {props.title}
                 </H3Text>
                 {

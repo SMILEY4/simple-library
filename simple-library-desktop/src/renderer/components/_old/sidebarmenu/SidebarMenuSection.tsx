@@ -21,8 +21,8 @@ export function SidebarMenuSection(props: React.PropsWithChildren<SidebarMenuSec
         >
 
             {props.title && (
-                <div className={"sidebar-menu-section-title"}>
-                    <div className={"sidebar-menu-section-title-content"}>
+                <div className={"sidebar-menu-section-header"}>
+                    <div className={"sidebar-menu-section-header-content"}>
                         <H5Text>{props.title}</H5Text>
                         {props.actionButton}
                     </div>

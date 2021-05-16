@@ -1,0 +1,17 @@
+.sidebar-separator {
+	margin-top: var(--s-0-75);
+	margin-bottom: var(--s-0-5);
+}
+
+.sidebar-titled-separator {
+}
+
+.sidebar-separator-line {
+	min-height: 1px;
+	max-height: 1px;
+	background-color: var(--text-color-0);
+	flex-grow: 1;
+}
+
+.sidebar-separator-title {
+}

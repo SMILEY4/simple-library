@@ -1,0 +1,16 @@
+.sidebar-group-item-wrapper {
+
+}
+
+.sidebar-group-item {
+	border-radius: var(--radius-0);
+	padding-left: var(--s-0-15);
+}
+
+.sidebar-group-item:hover {
+	background-color: var(--base-color-0);
+}
+
+.sidebar-group-item-list {
+	padding-left: var(--s-1);
+}

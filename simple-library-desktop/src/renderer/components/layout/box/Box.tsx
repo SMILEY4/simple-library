@@ -1,6 +1,17 @@
 import * as React from 'react';
 import { ReactElement } from 'react';
-import { AlignCross, AlignMain, BaseProps, concatClasses, Dir, Fill, map, orDefault, Size } from '../../common/common';
+import {
+    AlignCross,
+    AlignMain,
+    BaseProps,
+    concatClasses,
+    Dir,
+    Fill,
+    getIf,
+    map,
+    orDefault,
+    Size
+} from '../../common/common';
 import "./box.css";
 
 interface BoxProps extends React.HTMLAttributes<HTMLDivElement>, BaseProps {
@@ -11,6 +22,7 @@ interface BoxProps extends React.HTMLAttributes<HTMLDivElement>, BaseProps {
     spacing?: Size,
     padding?: Size,
     margin?: Size,
+    borderBox?: boolean,
 
     outlined?: any, //todo: deprecated -> remove
     type?: any, //todo: deprecated -> remove
@@ -36,6 +48,7 @@ export function Box(props: React.PropsWithChildren<BoxProps>): ReactElement {
             map(props.spacing, (spacing) => 'gap-' + spacing),
             map(props.padding, (padding) => 'padding-' + padding),
             map(props.margin, (margin) => 'margin-' + margin),
+            getIf(props.borderBox, "box-border-box"),
 
             props.className,
         );

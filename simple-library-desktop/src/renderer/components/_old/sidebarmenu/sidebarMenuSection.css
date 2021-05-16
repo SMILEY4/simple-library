@@ -1,9 +1,9 @@
-/*.sidebar-menu-minimized * .sidebar-menu-section > .sidebar-menu-section-title {*/
+/*.sidebar-menu-minimized * .sidebar-menu-section > .sidebar-menu-section-header {*/
 /*	visibility: hidden;*/
 /*}*/
 
 
-/*.sidebar-menu-section > .sidebar-menu-section-title > .sidebar-menu-section-title-content {*/
+/*.sidebar-menu-section > .sidebar-menu-section-header > .sidebar-menu-section-header-content {*/
 /*	display: flex;*/
 /*	flex-direction: row;*/
 /*	justify-content: space-between;*/

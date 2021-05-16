@@ -98,9 +98,9 @@ export function SidebarMenuItem(props: React.PropsWithChildren<SidebarMenuItemPr
              onDragEnter={handleDragOverStart}
              onDragLeave={handleDragOverEnd}
         >
-            <div className={"sidebar-menu-item-title"}>
+            <div className={"sidebar-menu-item-header"}>
                 {props.icon ? props.icon : null}
-                <div className={"sidebar-menu-item-title-text"}>{props.title}</div>
+                <div className={"sidebar-menu-item-header-text"}>{props.title}</div>
             </div>
             <CaptionText className={"sidebar-menu-item-label"}>{props.label}</CaptionText>
         </div>

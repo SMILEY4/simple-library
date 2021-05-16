@@ -96,22 +96,22 @@
 //                 <DropdownButton buttonTitle={"Button"} variant={Variant.OUTLINE} items={[
 //                     {
 //                         type: DropdownItemType.ACTION,
-//                         title: "Create",
+//                         header: "Create",
 //                         onAction: () => console.log("on create"),
 //                     },
 //                     {
 //                         type: DropdownItemType.ACTION,
-//                         title: "Read",
+//                         header: "Read",
 //                         onAction: () => console.log("on read"),
 //                     },
 //                     {
 //                         type: DropdownItemType.ACTION,
-//                         title: "Update",
+//                         header: "Update",
 //                         onAction: () => console.log("on update"),
 //                     },
 //                     {
 //                         type: DropdownItemType.ACTION,
-//                         title: "Delete",
+//                         header: "Delete",
 //                         onAction: () => console.log("on delete"),
 //                     },
 //                 ]} />
@@ -127,7 +127,7 @@
 //
 //                 <Notification type={Type.PRIMARY}
 //                               icon={<AiFillHome />}
-//                               title={"Notification Title"}
+//                               header={"Notification Title"}
 //                               caption={"18.02.2021"}
 //                               withCloseButton={true}>
 //                     This is an example info/primary notification.
@@ -135,7 +135,7 @@
 //
 //                 <Notification type={Type.SUCCESS}
 //                               icon={<AiFillHome />}
-//                               title={"Notification Title"}
+//                               header={"Notification Title"}
 //                               caption={"18.02.2021"}
 //                               withCloseButton={true}>
 //                     This is an example success notification.
@@ -143,7 +143,7 @@
 //
 //                 <Notification type={Type.ERROR}
 //                               icon={<AiFillHome />}
-//                               title={"Notification Title"}
+//                               header={"Notification Title"}
 //                               caption={"18.02.2021"}
 //                               withCloseButton={true}>
 //                     This is an example error notification.
@@ -151,7 +151,7 @@
 //
 //                 <Notification type={Type.WARN}
 //                               icon={<AiFillHome />}
-//                               title={"Notification Title"}
+//                               header={"Notification Title"}
 //                               caption={"18.02.2021"}
 //                               withCloseButton={true}>
 //                     This is an example warn notification.
@@ -410,7 +410,7 @@
 //                 <h3>Dialogs</h3>
 //                 <ToggleableShowcase text='Open'>
 //                     <Dialog show={true}
-//                             title={"Some rather or lets say very long title"}
+//                             header={"Some rather or lets say very long header"}
 //                             closeButton={true}
 //                             onClose={() => console.log("DialogAction: Close")}
 //                             actions={[
@@ -682,7 +682,7 @@
 //     const [data, setData] = useState(props.initialState);
 //     return (
 //         <div>
-//             <button onClick={() => setData(props.onAction(data))}>{props.title}</button>
+//             <button onClick={() => setData(props.onAction(data))}>{props.header}</button>
 //             {props.renderContent(data)}
 //         </div>
 //     );
