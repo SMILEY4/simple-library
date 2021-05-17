@@ -1,0 +1,121 @@
+* {
+	--shadow-out:      0 2px 2px 0 rgba(0, 0, 0, 0.07),
+					   0 3px 1px -2px rgba(0, 0, 0, 0.06);
+
+	--shadow-out-down: 0 2px 2px 0 rgba(0, 0, 0, 0.07);
+
+	--shadow-in:       inset 0 2px 2px 0 rgba(0, 0, 0, 0.07),
+					   inset 0 3px 1px -2px rgba(0, 0, 0, 0.06),
+					   inset 0 1px 5px 0 rgba(0, 0, 0, 0.10);
+
+}
+
+.test {
+	border-radius: 5px;
+	overflow: hidden;
+}
+
+.test-body {
+	display:          flex;
+	flex-direction:   column;
+	gap:              20px;
+	padding:          20px;
+	background-color: #3d3c40;
+}
+
+.test-footer {
+	display:          flex;
+	flex-direction:   row;
+	justify-content:  flex-end;
+	gap:              8px;
+	padding:          20px;
+	background-color: #313033;
+}
+
+
+.test-header {
+	font-size:   14px;
+	color:       #fefefe;
+	font-weight: 400;
+}
+
+.test-button {
+	background-color:    #4d4b52;
+	border-radius:       5px;
+	height:              16px;
+	padding:             4px 8px;
+
+	display:             flex;
+	justify-content:     center;
+	align-items:         center;
+
+	font-size:           12px;
+	color:               #fefefe;
+	font-weight:         400;
+
+	-webkit-user-select: none;
+	-moz-user-select:    none;
+	-ms-user-select:     none;
+	user-select:         none;
+	cursor:              pointer;
+	box-shadow:          var(--shadow-out)
+}
+
+
+.test-button:hover {
+}
+
+.test-button:active {
+	background-color: #535157;
+	box-shadow:       var(--shadow-out-down);
+}
+
+.test-button-secondary {
+	/*background-color: #3e3d40;*/
+	/*color: #918e9a*/
+}
+
+.test-button-primary {
+	background-color: #5f5ff5;
+}
+
+.test-button-primary:active {
+	background-color: #6363ff;
+}
+
+
+.info-label {
+	font-size:      10px;
+	color:          #928f9b;
+	font-weight:    400;
+
+	display:        flex;
+	flex-direction: column;
+	gap:            4px;
+}
+
+
+.test-input {
+
+	background-color: #313033;
+	border-radius:    5px;
+	height:           16px;
+	padding:          4px 8px;
+
+	display:          flex;
+	justify-content:  flex-start;
+	align-items:      center;
+
+	font-size:        12px;
+	color:            #fefefe;
+	font-weight:      400;
+	cursor:           text;
+
+	box-shadow:       var(--shadow-in);
+	border:           1px solid transparent
+}
+
+
+.test-input:hover {
+	border: 1px solid #6562fc
+}
