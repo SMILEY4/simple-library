@@ -29,7 +29,7 @@ export function ComponentShowcaseView(): any {
         return (
             <div style={{
                 height: "100vh",
-                backgroundColor: "#1d1d1f",
+                backgroundColor: "#d7d5de",
                 position: "relative",
                 padding: "60px"
             }}>
