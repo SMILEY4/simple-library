@@ -1,0 +1,11 @@
+.base-elem {
+	position:      relative;
+	box-sizing:    border-box;
+	border:        1px solid transparent;
+	border-radius: var(--radius-0);
+	color:         var(--color-text-primary)
+}
+
+.base-elem.base-elem-disabled {
+	color:            var(--color-text-disabled);
+}

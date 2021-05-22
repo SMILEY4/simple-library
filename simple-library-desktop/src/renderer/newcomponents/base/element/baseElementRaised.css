@@ -1,0 +1,124 @@
+.base-elem-raised {
+	background-color: var(--color-bg-raised);
+	border-color:     var(--color-border);
+}
+
+.base-elem-raised.base-elem-interactive:not(.base-elem-disabled):hover {
+	background-color: var(--color-bg-raised-hover);
+	border-color:     var(--color-border-hover);
+}
+
+.base-elem-raised.base-elem-interactive:not(.base-elem-disabled):active {
+	background-color: var(--color-bg-raised-active);
+	border-color:     var(--color-border-active);
+}
+
+.base-elem-raised.base-elem-disabled {
+	background-color: var(--color-bg-raised-disabled);
+	border-color:     var(--color-border-disabled);
+}
+
+
+.base-elem-primary,
+.base-elem-success,
+.base-elem-warn,
+.base-elem-error {
+	color: var(--color-text-on-variant)
+}
+
+.base-elem-primary.base-elem.base-elem-disabled,
+.base-elem-success.base-elem.base-elem-disabled,
+.base-elem-warn.base-elem.base-elem-disabled,
+.base-elem-error.base-elem.base-elem-disabled {
+	color: var(--color-text-on-variant-disabled)
+}
+
+.base-elem-primary.base-elem-raised {
+	background-color: var(--color-bg-primary);
+	border-color:     var(--color-border-primary);
+}
+
+.base-elem-primary.base-elem-raised.base-elem-interactive:not(.base-elem-disabled):hover {
+	background-color: var(--color-bg-primary-hover);
+	border-color:     var(--color-border-primary-hover);
+}
+
+.base-elem-primary.base-elem-raised.base-elem-interactive:not(.base-elem-disabled):active {
+	background-color: var(--color-bg-primary-active);
+	border-color:     var(--color-border-primary-active);
+}
+
+.base-elem-primary.base-elem-raised.base-elem-disabled {
+	background-color: var(--color-bg-primary-disabled);
+	border-color:     var(--color-border-primary-disabled);
+}
+
+
+
+.base-elem-success.base-elem-raised {
+	background-color: var(--color-bg-success);
+	border-color:     var(--color-border-success);
+}
+
+.base-elem-success.base-elem-raised.base-elem-interactive:not(.base-elem-disabled):hover {
+	background-color: var(--color-bg-success-hover);
+	border-color:     var(--color-border-success-hover);
+}
+
+.base-elem-success.base-elem-raised.base-elem-interactive:not(.base-elem-disabled):active {
+	background-color: var(--color-bg-success-active);
+	border-color:     var(--color-border-success-active);
+}
+
+.base-elem-success.base-elem-raised.base-elem-disabled {
+	background-color: var(--color-bg-success-disabled);
+	border-color:     var(--color-border-success-disabled);
+}
+
+
+.base-elem-error.base-elem-raised {
+	background-color: var(--color-bg-error);
+	border-color:     var(--color-border-error);
+}
+
+.base-elem-error.base-elem-raised.base-elem-interactive:not(.base-elem-disabled):hover {
+	background-color: var(--color-bg-error-hover);
+	border-color:     var(--color-border-error-hover);
+}
+
+.base-elem-error.base-elem-raised.base-elem-interactive:not(.base-elem-disabled):active {
+	background-color: var(--color-bg-error-active);
+	border-color:     var(--color-border-error-active);
+}
+
+.base-elem-error.base-elem-raised.base-elem-disabled {
+	background-color: var(--color-bg-error-disabled);
+	border-color:     var(--color-border-error-disabled);
+}
+
+
+.base-elem-warn.base-elem-raised {
+	background-color: var(--color-bg-warn);
+	border-color:     var(--color-border-warn);
+}
+
+.base-elem-warn.base-elem-raised.base-elem-interactive:not(.base-elem-disabled):hover {
+	background-color: var(--color-bg-warn-hover);
+	border-color:     var(--color-border-warn-hover);
+}
+
+.base-elem-warn.base-elem-raised.base-elem-interactive:not(.base-elem-disabled):active {
+	background-color: var(--color-bg-warn-active);
+	border-color:     var(--color-border-warn-active);
+}
+
+.base-elem-warn.base-elem-raised.base-elem-disabled {
+	background-color: var(--color-bg-warn-disabled);
+	border-color:     var(--color-border-warn-disabled);
+}
+
+.base-elem-raised.base-elem-state-error,
+.base-elem-raised.base-elem-state-error:hover,
+.base-elem-raised.base-elem-state-error:active {
+	border-color: var(--color-border-error) !important;
+}
