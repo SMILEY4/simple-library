@@ -1,4 +1,5 @@
-import { app, BrowserWindow } from 'electron';
+import {app, BrowserWindow} from 'electron';
+import installExtension, {REACT_DEVELOPER_TOOLS} from 'electron-devtools-installer';
 
 const isDev: boolean = !app.isPackaged;
 
@@ -6,11 +7,22 @@ export class WindowService {
 
     window: BrowserWindow;
 
+
     /**
      * initializes the window (trigger the application is ready)
      */
     public whenReady() {
-        this.createWindow();
+        if (isDev) {
+            installExtension(REACT_DEVELOPER_TOOLS, {
+                loadExtensionOptions: {allowFileAccess: true},
+                forceDownload: false
+            })
+                .then((name) => console.log(`Added Extension:  ${name}`))
+                .catch((err) => console.log('An error occurred when adding extension: ', err))
+                .then(() => this.createWindow())
+        } else {
+            this.createWindow();
+        }
     }
 
 
@@ -77,7 +89,12 @@ export class WindowService {
         this.window.setAlwaysOnTop(true); // todo wip: only for testing (normally = false)
         if (isDev) {
             this.window.loadURL('http://localhost:8080');
-            this.window.webContents.openDevTools();
+            this.window.webContents.on("did-frame-finish-load", () => {
+                this.window.webContents.once("devtools-opened", () => {
+                    this.window.focus();
+                });
+                this.window.webContents.openDevTools();
+            });
         } else {
             this.window.loadFile('./.webpack/renderer/index.html');
         }
