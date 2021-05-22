@@ -1,17 +1,14 @@
-import React, {CSSProperties, MutableRefObject, ReactElement} from "react";
+import React, {ReactElement} from "react";
 import {concatClasses, getIf, map} from "../../../components/common/common";
 import "./baseElement.css"
 import "./baseElementRaised.css"
+import {BaseProps} from "../common";
 
-interface BaseElementRaisedProps {
+interface BaseElementRaisedProps extends BaseProps {
 	interactive?: boolean,
 	disabled?: boolean,
 	variant?: "primary" | "success" | "error" | "warn"
 	error?: boolean,
-
-	className?: string,
-	forwardRef?: MutableRefObject<any>,
-	style?: CSSProperties,
 }
 
 export function BaseElementRaised(props: React.PropsWithChildren<BaseElementRaisedProps>): ReactElement {

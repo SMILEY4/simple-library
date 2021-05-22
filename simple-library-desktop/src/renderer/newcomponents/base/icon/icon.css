@@ -1,0 +1,135 @@
+/* COLOR FILL */
+.icon-color-fill-primary {
+	fill: var(--color-text-primary)
+}
+
+.icon-color-fill-secondary {
+	fill: var(--color-text-secondary)
+}
+
+.icon-color-fill-disabled {
+	fill: var(--color-text-disabled)
+}
+
+.icon-color-fill-on-variant {
+	fill: var(--color-text-on-variant)
+}
+
+.icon-color-fill-on-variant-disabled {
+	fill: var(--color-text-on-variant-disabled)
+}
+
+
+/* COLOR OUTLINED */
+.icon-color-outline-primary {
+	stroke: var(--color-text-primary)
+}
+
+.icon-color-outline-secondary {
+	stroke: var(--color-text-secondary)
+}
+
+.icon-color-outline-disabled {
+	stroke: var(--color-text-disabled)
+}
+
+.icon-color-outline-on-variant {
+	stroke: var(--color-text-on-variant)
+}
+
+.icon-color-outline-on-variant-disabled {
+	stroke: var(--color-text-on-variant-disabled)
+}
+
+
+/* ICON SIZE */
+.icon-size-0 {
+	width:  var(--s-0);
+	height: var(--s-0)
+}
+
+.icon-size-0-15 {
+	width:  var(--s-0-15);
+	height: var(--s-0-15)
+}
+
+.icon-size-0-25 {
+	width:  var(--s-0-25);
+	height: var(--s-0-25)
+}
+
+.icon-size-0-5 {
+	width:  var(--s-0-5);
+	height: var(--s-0-5)
+}
+
+.icon-size-0-75 {
+	width:  var(--s-0-75);
+	height: var(--s-0-75)
+}
+
+.icon-size-1 {
+	width:  var(--s-1);
+	height: var(--s-1)
+}
+
+.icon-size-1-5 {
+	width:  var(--s-1-5);
+	height: var(--s-1-5)
+}
+
+
+.icon-size-2 {
+	width:  var(--s-2);
+	height: var(--s-2)
+}
+
+.icon-size-3 {
+	width:  var(--s-3);
+	height: var(--s-3)
+}
+
+.icon-size-4 {
+	width:  var(--s-4);
+	height: var(--s-4)
+}
+
+.icon-size-6 {
+	width:  var(--s-6);
+	height: var(--s-6)
+}
+
+.icon-size-8 {
+	width:  var(--s-8);
+	height: var(--s-8)
+}
+
+.icon-size-12 {
+	width:  var(--s-12);
+	height: var(--s-12)
+}
+
+.icon-size-16 {
+	width:  var(--s-16);
+	height: var(--s-16)
+}
+
+.icon-size-24 {
+	width:  var(--s-24);
+	height: var(--s-24)
+}
+
+.icon-size-32 {
+	width:  var(--s-32);
+	height: var(--s-32)
+}
+
+.icon-size-40 {
+	width:  var(--s-40);
+	height: var(--s-40)
+}
+
+.icon-size-48 {
+	width:  var(--s-48);
+	height: var(--s-48)
+}

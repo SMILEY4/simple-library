@@ -1,13 +1,11 @@
-import React, {CSSProperties, MutableRefObject, ReactElement} from "react";
+import React, {ReactElement} from "react";
 import {concatClasses, getIf} from "../../../components/common/common";
 import "./baseElement.css"
 import "./baseElementFlat.css"
+import {BaseProps} from "../common";
 
-interface BaseElementFlatProps {
+interface BaseElementFlatProps extends BaseProps {
     error?: boolean,
-    className?: string,
-    forwardRef?: MutableRefObject<any>,
-    style?: CSSProperties,
 }
 
 export function BaseElementFlat(props: React.PropsWithChildren<BaseElementFlatProps>): ReactElement {

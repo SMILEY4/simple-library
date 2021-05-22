@@ -1,14 +1,12 @@
-import React, {CSSProperties, MutableRefObject, ReactElement} from "react";
+import React, {ReactElement} from "react";
 import {concatClasses, getIf} from "../../../components/common/common";
 import "./baseElement.css"
 import "./baseElementInset.css"
+import {BaseProps} from "../common";
 
-interface BaseElementInsetProps {
+interface BaseElementInsetProps extends BaseProps {
 	disabled?: boolean,
 	error?: boolean
-	className?: string,
-	forwardRef?: MutableRefObject<any>,
-	style?: CSSProperties,
 }
 
 export function BaseElementInset(props: React.PropsWithChildren<BaseElementInsetProps>): ReactElement {

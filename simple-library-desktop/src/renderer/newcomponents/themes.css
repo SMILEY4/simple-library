@@ -8,19 +8,19 @@
 	--color-bg-raised-hover:          hsl(210, 9%, 96%);
 	--color-bg-raised-active:         hsl(220, 8%, 93%);
 	--color-bg-raised-disabled:       hsl(210, 25%, 98%);
-
 	--color-bg-inset:                 hsl(210, 20%, 95%);
 
 	--color-border:                   hsl(210, 3%, 85%);
 	--color-border-hover:             hsl(210, 2%, 83%);
 	--color-border-active:            hsl(210, 5%, 84%);
 	--color-border-disabled:          hsl(220, 4%, 86%);
-
 	--color-border-flat:              hsl(210, 3%, 83%);
 
 	--color-text-primary:             hsl(0, 0%, 8%);
 	--color-text-secondary:           hsl(212, 3%, 38%);
 	--color-text-disabled:            hsl(212, 3%, 62%);
+	--color-text-on-variant:          hsl(0, 0%, 95%);
+	--color-text-on-variant-disabled: hsla(0, 0%, 100%, 0.9);
 
 	--color-bg-primary:               hsl(204, 62%, 45%);
 	--color-bg-primary-hover:         hsl(204, 62%, 48%);
@@ -65,8 +65,6 @@
 	--color-border-error-active:      hsl(6, 75%, 43%);
 	--color-border-error-disabled:    hsl(6, 75%, 65%);
 
-	--color-text-on-variant:          hsl(0, 0%, 95%);
-	--color-text-on-variant-disabled: hsla(0, 0%, 100%, 0.9);
 }
 
 .theme-dark {
@@ -78,19 +76,19 @@
 	--color-bg-raised-hover:          hsl(215, 8%, 30%);
 	--color-bg-raised-active:         hsl(216, 7%, 27%);
 	--color-bg-raised-disabled:       hsl(216, 8%, 25%);
-
 	--color-bg-inset:                 hsl(220, 6%, 15%);
 
 	--color-border:                   hsl(215, 8%, 30%);
 	--color-border-hover:             hsl(210, 6%, 51%);
 	--color-border-active:            hsl(212, 7%, 43%);
 	--color-border-disabled:          hsl(213, 7%, 30%);
-
 	--color-border-flat:              hsl(213, 6%, 30%);
 
 	--color-text-primary:             hsl(210, 5%, 80%);
 	--color-text-secondary:           hsl(210, 5%, 60%);
 	--color-text-disabled:            hsl(213, 5%, 37%);
+	--color-text-on-variant:          hsl(0, 0%, 95%);
+	--color-text-on-variant-disabled: hsla(0, 0%, 95%, 0.6);
 
 	--color-bg-primary:               hsl(204, 62%, 35%);
 	--color-bg-primary-hover:         hsl(204, 62%, 38%);
@@ -134,6 +132,4 @@
 	--color-border-error-active:      hsl(6, 75%, 33%);
 	--color-border-error-disabled:    hsl(6, 75%, 15%);
 
-	--color-text-on-variant:          hsl(0, 0%, 95%);
-	--color-text-on-variant-disabled: hsla(0, 0%, 95%, 0.6);
 }

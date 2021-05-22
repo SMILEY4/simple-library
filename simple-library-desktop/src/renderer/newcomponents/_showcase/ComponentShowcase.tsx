@@ -6,6 +6,7 @@ import {ShowcaseSection} from "./ShowcaseSection";
 import {BaseElementRaised} from "../base/element/BaseElementRaised";
 import {BaseElementFlat} from "../base/element/BaseElementFlat";
 import {BaseElementInset} from "../base/element/BaseElementInset";
+import {Icon, IconType} from "../base/icon/Icon";
 
 interface ComponentShowcaseProps {
 	theme: Theme,
@@ -95,6 +96,29 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 					<BaseElementFlat style={{padding: "7px"}} error >Flat Error State</BaseElementFlat>
 					<BaseElementInset style={{padding: "7px"}} error>Inset Error State</BaseElementInset>
 
+				</div>
+			</ShowcaseSection>
+
+			<ShowcaseSection title={"Icons"}>
+				<div style={{display: "flex", gap: "5px"}}>
+					<Icon type={IconType.HOME} color="primary"/>
+					<Icon type={IconType.HOME} color="secondary"/>
+					<Icon type={IconType.HOME} color="disabled"/>
+					<BaseElementRaised style={{padding: "4px"}} variant="primary" interactive>
+						<Icon type={IconType.HOME} color="on-variant"/>
+					</BaseElementRaised>
+					<BaseElementRaised style={{padding: "4px"}} variant="primary" disabled>
+						<Icon type={IconType.HOME} color="on-variant-disabled"/>
+					</BaseElementRaised>
+				</div>
+				<div style={{display: "flex", gap: "5px"}}>
+					<Icon type={IconType.HOME} size="0-25"/>
+					<Icon type={IconType.HOME} size="0-5"/>
+					<Icon type={IconType.HOME} size="0-75"/>
+					<Icon type={IconType.HOME} size="1"/>
+					<Icon type={IconType.HOME} size="1-5"/>
+					<Icon type={IconType.HOME} size="2"/>
+					<Icon type={IconType.HOME} size="3"/>
 				</div>
 			</ShowcaseSection>
 
