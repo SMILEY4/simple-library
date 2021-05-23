@@ -10,6 +10,7 @@ import {Icon, IconType} from "../base/icon/Icon";
 import {Label} from "../base/label/Label";
 import {LabelBox} from "../base/labelbox/LabelBox";
 import {Button} from "../buttons/button/Button";
+import {CheckBox} from "../buttons/checkbox/CheckBox";
 
 interface ComponentShowcaseProps {
 	theme: Theme,
@@ -242,21 +243,24 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 			<ShowcaseSection title={"Buttons"}>
 
 				<div style={{display: "flex", gap: "20px"}}>
-					<Button onClick={() => console.log("click")}>
+					<Button onAction={() => console.log("click")}>
 						Button
 					</Button>
-					<Button onClick={() => console.log("click")}>
+					<Button onAction={() => console.log("click")}>
 						<Icon type={IconType.HOME}/>
 						Button with icon
 					</Button>
-					<Button variant="info" onClick={() => console.log("click")}>
+					<Button variant="info" onAction={() => console.log("click")}>
 						<Icon type={IconType.HOME}/>
 						Info Button
 					</Button>
-					<Button error onClick={() => console.log("click")}>
+					<Button square onAction={() => console.log("click")}>
+						<Icon type={IconType.HOME}/>
+					</Button>
+					<Button error onAction={() => console.log("click")}>
 						Invalid
 					</Button>
-					<Button disabled onClick={() => console.log("click")}>
+					<Button disabled onAction={() => console.log("click")}>
 						Disabled
 					</Button>
 				</div>
@@ -274,6 +278,35 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 					<Button disabled variant="success"><Icon type={IconType.HOME}/>Success</Button>
 					<Button disabled variant="warn"><Icon type={IconType.HOME}/>Warn</Button>
 					<Button disabled variant="error"><Icon type={IconType.HOME}/>Error</Button>
+				</div>
+
+			</ShowcaseSection>
+
+			<ShowcaseSection title={"CheckBox"}>
+
+				<div style={{display: "flex", gap: "20px"}}>
+					<CheckBox>Checkbox</CheckBox>
+					<CheckBox disabled>Checkbox</CheckBox>
+				</div>
+
+				<div style={{display: "flex", gap: "20px"}}>
+					<CheckBox selected>Checkbox</CheckBox>
+					<CheckBox selected disabled>Checkbox</CheckBox>
+				</div>
+
+				<div style={{display: "flex", gap: "20px"}}>
+					<CheckBox variant="info">Checkbox</CheckBox>
+					<CheckBox variant="info" disabled>Checkbox</CheckBox>
+				</div>
+
+				<div style={{display: "flex", gap: "20px"}}>
+					<CheckBox variant="info" selected>Checkbox</CheckBox>
+					<CheckBox variant="info" selected disabled>Checkbox</CheckBox>
+				</div>
+
+				<div style={{display: "flex", gap: "20px"}}>
+					<CheckBox forceState>Forced Checkbox</CheckBox>
+					<CheckBox forceState selected>Forced Checkbox</CheckBox>
 				</div>
 
 			</ShowcaseSection>

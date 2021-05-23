@@ -2,7 +2,7 @@ import {BaseProps} from "../../common";
 import React from "react";
 import {BaseElementRaised} from "../../base/element/BaseElementRaised";
 import {Label} from "../../base/label/Label";
-import {concatClasses} from "../../../components/common/common";
+import {concatClasses, getIf} from "../../../components/common/common";
 import "./button.css"
 
 export interface ButtonProps extends BaseProps {
@@ -10,19 +10,20 @@ export interface ButtonProps extends BaseProps {
 	error?: boolean,
 	variant?: "info" | "success" | "error" | "warn",
 	groupPos?: "left" | "right" | "center"
-	onClick?: () => void
+	square?: boolean,
+	onAction?: () => void
 }
 
 export function Button(props: React.PropsWithChildren<ButtonProps>): React.ReactElement {
 
 	return (
 		<BaseElementRaised
-			className={concatClasses("button", props.className)}
+			className={concatClasses("button", getIf(props.square, "button-square"), props.className)}
 			disabled={props.disabled}
 			error={props.error}
 			variant={props.variant}
 			groupPos={props.groupPos}
-			onClick={props.onClick}
+			onClick={props.onAction}
 			style={props.style}
 			forwardRef={props.forwardRef}
 			interactive
