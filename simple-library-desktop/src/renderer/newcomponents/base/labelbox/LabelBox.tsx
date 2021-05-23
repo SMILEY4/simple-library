@@ -2,7 +2,7 @@ import React from "react";
 import "./labelbox.css"
 import {Label} from "../label/Label";
 import {BaseElementFlat} from "../element/BaseElementFlat";
-import {BaseProps} from "../common";
+import {BaseProps} from "../../common";
 import {concatClasses} from "../../../components/common/common";
 
 export interface LabelBoxProps extends BaseProps {

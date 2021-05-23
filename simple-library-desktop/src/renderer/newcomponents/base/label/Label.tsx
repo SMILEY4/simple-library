@@ -1,4 +1,4 @@
-import {BaseProps, Size} from "../common";
+import {BaseProps, Size} from "../../common";
 import React, {ReactElement} from "react";
 import "./label.css"
 import {addPropsToChildren, concatClasses, getIf, mapOrDefault} from "../../../components/common/common";

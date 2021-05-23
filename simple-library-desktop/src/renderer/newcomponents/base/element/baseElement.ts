@@ -1,4 +1,4 @@
-import {BaseProps} from "../common";
+import {BaseProps} from "../../common";
 
 export interface BaseElementProps extends BaseProps {
 	error?: boolean,

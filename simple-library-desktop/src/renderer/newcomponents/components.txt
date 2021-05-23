@@ -3,7 +3,7 @@ BASE
 - icon ✔
 - label ✔
 - labelBox ✔
-- image
+- image ✔
 
 BUTTONS
 - button
