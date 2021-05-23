@@ -19,38 +19,38 @@
 }
 
 
-.base-elem-primary,
+.base-elem-info,
 .base-elem-success,
 .base-elem-warn,
 .base-elem-error {
 	color: var(--color-text-on-variant)
 }
 
-.base-elem-primary.base-elem.base-elem-disabled,
+.base-elem-info.base-elem.base-elem-disabled,
 .base-elem-success.base-elem.base-elem-disabled,
 .base-elem-warn.base-elem.base-elem-disabled,
 .base-elem-error.base-elem.base-elem-disabled {
 	color: var(--color-text-on-variant-disabled)
 }
 
-.base-elem-primary.base-elem-raised {
-	background-color: var(--color-bg-primary);
-	border-color:     var(--color-border-primary);
+.base-elem-info.base-elem-raised {
+	background-color: var(--color-bg-info);
+	border-color:     var(--color-border-info);
 }
 
-.base-elem-primary.base-elem-raised.base-elem-interactive:not(.base-elem-disabled):hover {
-	background-color: var(--color-bg-primary-hover);
-	border-color:     var(--color-border-primary-hover);
+.base-elem-info.base-elem-raised.base-elem-interactive:not(.base-elem-disabled):hover {
+	background-color: var(--color-bg-info-hover);
+	border-color:     var(--color-border-info-hover);
 }
 
-.base-elem-primary.base-elem-raised.base-elem-interactive:not(.base-elem-disabled):active {
-	background-color: var(--color-bg-primary-active);
-	border-color:     var(--color-border-primary-active);
+.base-elem-info.base-elem-raised.base-elem-interactive:not(.base-elem-disabled):active {
+	background-color: var(--color-bg-info-active);
+	border-color:     var(--color-border-info-active);
 }
 
-.base-elem-primary.base-elem-raised.base-elem-disabled {
-	background-color: var(--color-bg-primary-disabled);
-	border-color:     var(--color-border-primary-disabled);
+.base-elem-info.base-elem-raised.base-elem-disabled {
+	background-color: var(--color-bg-info-disabled);
+	border-color:     var(--color-border-info-disabled);
 }
 
 

@@ -1,7 +1,7 @@
 BASE
 - baseElements ✔
-- icon
-- label
+- icon ✔
+- label ✔
 - labelBox
 - image
 

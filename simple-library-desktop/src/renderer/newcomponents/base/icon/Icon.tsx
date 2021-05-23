@@ -59,13 +59,11 @@ const ICON_COLOR_TYPE = new Map<IconType, string>([
 
 export interface IconProps extends BaseProps {
     type: IconType,
-    color?: "primary" | "secondary" | "disabled" | "on-variant" | "on-variant-disabled",
     size?: Size,
+    color?: "primary" | "secondary" | "info" | "success" | "error" | "warn" | "on-variant"
+    disabled?: boolean,
 }
 
-/**
- * Displays and handles an svg icon with a given color and size.
- */
 export function Icon(props: React.PropsWithChildren<IconProps>): React.ReactElement {
 
     const iconProps: any = {
@@ -103,6 +101,7 @@ export function Icon(props: React.PropsWithChildren<IconProps>): React.ReactElem
             "icon",
             getIf(isOutlined, "icon-color-outline-" + color),
             getIf(isFilled, "icon-color-fill-" + color),
+            getIf(props.disabled, "icon-disabled"),
             map(props.size, size => "icon-size-" + size),
             props.className,
         );

@@ -22,15 +22,15 @@
 	--color-text-on-variant:          hsl(0, 0%, 95%);
 	--color-text-on-variant-disabled: hsla(0, 0%, 100%, 0.9);
 
-	--color-bg-primary:               hsl(204, 62%, 45%);
-	--color-bg-primary-hover:         hsl(204, 62%, 48%);
-	--color-bg-primary-active:        hsl(204, 62%, 46%);
-	--color-bg-primary-disabled:      hsl(204, 50%, 70%);
+	--color-bg-info:               hsl(204, 62%, 45%);
+	--color-bg-info-hover:         hsl(204, 62%, 48%);
+	--color-bg-info-active:        hsl(204, 62%, 46%);
+	--color-bg-info-disabled:      hsl(204, 50%, 70%);
 
-	--color-border-primary:           hsl(204, 62%, 47%);
-	--color-border-primary-hover:     hsl(204, 62%, 44%);
-	--color-border-primary-active:    hsl(204, 62%, 43%);
-	--color-border-primary-disabled:  hsl(204, 50%, 65%);
+	--color-border-info:           hsl(204, 62%, 47%);
+	--color-border-info-hover:     hsl(204, 62%, 44%);
+	--color-border-info-active:    hsl(204, 62%, 43%);
+	--color-border-info-disabled:  hsl(204, 50%, 65%);
 
 
 	--color-bg-success:               hsl(145, 64%, 45%);
@@ -90,15 +90,15 @@
 	--color-text-on-variant:          hsl(0, 0%, 95%);
 	--color-text-on-variant-disabled: hsla(0, 0%, 95%, 0.6);
 
-	--color-bg-primary:               hsl(204, 62%, 35%);
-	--color-bg-primary-hover:         hsl(204, 62%, 38%);
-	--color-bg-primary-active:        hsl(204, 62%, 36%);
-	--color-bg-primary-disabled:      hsl(204, 50%, 25%);
+	--color-bg-info:               hsl(204, 62%, 35%);
+	--color-bg-info-hover:         hsl(204, 62%, 38%);
+	--color-bg-info-active:        hsl(204, 62%, 36%);
+	--color-bg-info-disabled:      hsl(204, 50%, 25%);
 
-	--color-border-primary:           hsl(204, 62%, 37%);
-	--color-border-primary-hover:     hsl(204, 62%, 34%);
-	--color-border-primary-active:    hsl(204, 62%, 33%);
-	--color-border-primary-disabled:  hsl(204, 50%, 15%);
+	--color-border-info:           hsl(204, 62%, 37%);
+	--color-border-info-hover:     hsl(204, 62%, 34%);
+	--color-border-info-active:    hsl(204, 62%, 33%);
+	--color-border-info-disabled:  hsl(204, 50%, 15%);
 
 	--color-bg-success:               hsl(145, 64%, 35%);
 	--color-bg-success-hover:         hsl(145, 64%, 38%);

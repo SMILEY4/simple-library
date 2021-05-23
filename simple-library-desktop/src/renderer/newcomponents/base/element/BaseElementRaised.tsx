@@ -7,7 +7,7 @@ import {BaseProps} from "../common";
 interface BaseElementRaisedProps extends BaseProps {
 	interactive?: boolean,
 	disabled?: boolean,
-	variant?: "primary" | "success" | "error" | "warn"
+	variant?: "info" | "success" | "error" | "warn"
 	error?: boolean,
 }
 

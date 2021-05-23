@@ -7,6 +7,7 @@ import {BaseElementRaised} from "../base/element/BaseElementRaised";
 import {BaseElementFlat} from "../base/element/BaseElementFlat";
 import {BaseElementInset} from "../base/element/BaseElementInset";
 import {Icon, IconType} from "../base/icon/Icon";
+import {Label} from "../base/label/Label";
 
 interface ComponentShowcaseProps {
 	theme: Theme,
@@ -36,10 +37,10 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 					{colorElement("--color-bg-raised-disabled", "--color-border-disabled")}
 				</div>
 				<div style={{display: "flex", gap: "5px"}}>
-					{colorElement("--color-bg-primary", "--color-border-primary")}
-					{colorElement("--color-bg-primary-hover", "--color-border-primary-hover")}
-					{colorElement("--color-bg-primary-active", "--color-border-primary-active")}
-					{colorElement("--color-bg-primary-disabled", "--color-border-primary-disabled")}
+					{colorElement("--color-bg-info", "--color-border-info")}
+					{colorElement("--color-bg-info-hover", "--color-border-info-hover")}
+					{colorElement("--color-bg-info-active", "--color-border-info-active")}
+					{colorElement("--color-bg-info-disabled", "--color-border-info-disabled")}
 				</div>
 				<div style={{display: "flex", gap: "5px"}}>
 					{colorElement("--color-bg-success", "--color-border-success")}
@@ -71,31 +72,41 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 					<BaseElementRaised style={{padding: "7px"}} interactive disabled>Raised Disabled</BaseElementRaised>
 					<BaseElementInset style={{padding: "7px"}} disabled>Inset Disabled</BaseElementInset>
 				</div>
-				<h4 style={{color:"var(--color-text-primary)"}}>Variants of Raised</h4>
+				<h4 style={{color: "var(--color-text-primary)"}}>Variants of Raised</h4>
 				<div style={{display: "flex", gap: "5px"}}>
-					<BaseElementRaised style={{padding: "7px"}} variant="primary" interactive>Raised Primary</BaseElementRaised>
-					<BaseElementRaised style={{padding: "7px"}} variant="primary" interactive disabled>Raised Primary Disabled</BaseElementRaised>
+					<BaseElementRaised style={{padding: "7px"}} variant="info" interactive>Raised
+						Primary</BaseElementRaised>
+					<BaseElementRaised style={{padding: "7px"}} variant="info" interactive disabled>Raised Primary
+						Disabled</BaseElementRaised>
 				</div>
 				<div style={{display: "flex", gap: "5px"}}>
-					<BaseElementRaised style={{padding: "7px"}} variant="success" interactive>Raised Success</BaseElementRaised>
-					<BaseElementRaised style={{padding: "7px"}} variant="success" interactive disabled>Raised Success Disabled</BaseElementRaised>
+					<BaseElementRaised style={{padding: "7px"}} variant="success" interactive>Raised
+						Success</BaseElementRaised>
+					<BaseElementRaised style={{padding: "7px"}} variant="success" interactive disabled>Raised Success
+						Disabled</BaseElementRaised>
 				</div>
 				<div style={{display: "flex", gap: "5px"}}>
-					<BaseElementRaised style={{padding: "7px"}} variant="warn" interactive>Raised Warn</BaseElementRaised>
-					<BaseElementRaised style={{padding: "7px"}} variant="warn" interactive disabled>Raised Warn Disabled</BaseElementRaised>
+					<BaseElementRaised style={{padding: "7px"}} variant="warn" interactive>Raised
+						Warn</BaseElementRaised>
+					<BaseElementRaised style={{padding: "7px"}} variant="warn" interactive disabled>Raised Warn
+						Disabled</BaseElementRaised>
 				</div>
 				<div style={{display: "flex", gap: "5px"}}>
-					<BaseElementRaised style={{padding: "7px"}} variant="error" interactive>Raised error</BaseElementRaised>
-					<BaseElementRaised style={{padding: "7px"}} variant="error" interactive disabled>Raised error Disabled</BaseElementRaised>
+					<BaseElementRaised style={{padding: "7px"}} variant="error" interactive>Raised
+						error</BaseElementRaised>
+					<BaseElementRaised style={{padding: "7px"}} variant="error" interactive disabled>Raised error
+						Disabled</BaseElementRaised>
 				</div>
 				<div style={{display: "flex", gap: "5px"}}>
 					<BaseElementRaised style={{padding: "7px"}} error interactive>Raised Error State</BaseElementRaised>
-					<BaseElementRaised style={{padding: "7px"}} error variant="primary" interactive>Raised Error State</BaseElementRaised>
-					<BaseElementRaised style={{padding: "7px"}} error variant="success" interactive>Raised Error State</BaseElementRaised>
-					<BaseElementRaised style={{padding: "7px"}} error variant="warn" interactive>Raised Error State</BaseElementRaised>
-					<BaseElementFlat style={{padding: "7px"}} error >Flat Error State</BaseElementFlat>
+					<BaseElementRaised style={{padding: "7px"}} error variant="info" interactive>Raised Error
+						State</BaseElementRaised>
+					<BaseElementRaised style={{padding: "7px"}} error variant="success" interactive>Raised Error
+						State</BaseElementRaised>
+					<BaseElementRaised style={{padding: "7px"}} error variant="warn" interactive>Raised Error
+						State</BaseElementRaised>
+					<BaseElementFlat style={{padding: "7px"}} error>Flat Error State</BaseElementFlat>
 					<BaseElementInset style={{padding: "7px"}} error>Inset Error State</BaseElementInset>
-
 				</div>
 			</ShowcaseSection>
 
@@ -103,12 +114,23 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 				<div style={{display: "flex", gap: "5px"}}>
 					<Icon type={IconType.HOME} color="primary"/>
 					<Icon type={IconType.HOME} color="secondary"/>
-					<Icon type={IconType.HOME} color="disabled"/>
-					<BaseElementRaised style={{padding: "4px"}} variant="primary" interactive>
+					<Icon type={IconType.HOME} color="info"/>
+					<Icon type={IconType.HOME} color="success"/>
+					<Icon type={IconType.HOME} color="warn"/>
+					<Icon type={IconType.HOME} color="error"/>
+					<BaseElementRaised style={{padding: "4px"}} variant="info" interactive>
 						<Icon type={IconType.HOME} color="on-variant"/>
 					</BaseElementRaised>
-					<BaseElementRaised style={{padding: "4px"}} variant="primary" disabled>
-						<Icon type={IconType.HOME} color="on-variant-disabled"/>
+				</div>
+				<div style={{display: "flex", gap: "5px"}}>
+					<Icon type={IconType.HOME} disabled color="primary"/>
+					<Icon type={IconType.HOME} disabled color="secondary"/>
+					<Icon type={IconType.HOME} disabled color="info"/>
+					<Icon type={IconType.HOME} disabled color="success"/>
+					<Icon type={IconType.HOME} disabled color="warn"/>
+					<Icon type={IconType.HOME} disabled color="error"/>
+					<BaseElementRaised style={{padding: "4px"}} variant="info" interactive disabled>
+						<Icon type={IconType.HOME} disabled color="on-variant"/>
 					</BaseElementRaised>
 				</div>
 				<div style={{display: "flex", gap: "5px"}}>
@@ -120,6 +142,76 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 					<Icon type={IconType.HOME} size="2"/>
 					<Icon type={IconType.HOME} size="3"/>
 				</div>
+			</ShowcaseSection>
+
+			<ShowcaseSection title={"Labels"}>
+				<div style={{display: "flex", gap: "20px"}}>
+					<Label>
+						Label without Icon
+					</Label>
+					<Label>
+						<Icon type={IconType.HOME}/>
+						Label with 2 Icons
+						<Icon type={IconType.HOME}/>
+					</Label>
+					<Label noSelect>
+						<Icon type={IconType.HOME}/>
+						Label not selectable
+					</Label>
+				</div>
+				<div style={{display: "flex", gap: "20px"}}>
+					<Label variant="primary"><Icon type={IconType.HOME}/>Primary</Label>
+					<Label variant="secondary"><Icon type={IconType.HOME}/>Secondary</Label>
+					<Label variant="info"><Icon type={IconType.HOME}/>Info</Label>
+					<Label variant="success"><Icon type={IconType.HOME}/>Success</Label>
+					<Label variant="warn"><Icon type={IconType.HOME}/>Warn</Label>
+					<Label variant="error"><Icon type={IconType.HOME}/>Error</Label>
+					<BaseElementRaised style={{padding: "4px"}} variant="info" interactive>
+						<Label variant="on-variant"><Icon type={IconType.HOME}/>On Variant</Label>
+					</BaseElementRaised>
+				</div>
+				<div style={{display: "flex", gap: "20px"}}>
+					<Label disabled variant="primary"><Icon type={IconType.HOME}/>Primary</Label>
+					<Label disabled variant="secondary"><Icon type={IconType.HOME}/>Secondary</Label>
+					<Label disabled variant="info"><Icon type={IconType.HOME}/>Info</Label>
+					<Label disabled variant="success"><Icon type={IconType.HOME}/>Success</Label>
+					<Label disabled variant="warn"><Icon type={IconType.HOME}/>Warn</Label>
+					<Label disabled variant="error"><Icon type={IconType.HOME}/>Error</Label>
+					<BaseElementRaised style={{padding: "4px"}} variant="info" disabled>
+						<Label variant="on-variant" disabled><Icon type={IconType.HOME}/>On Variant</Label>
+					</BaseElementRaised>
+				</div>
+
+				<Label type="header-1"><Icon type={IconType.HOME}/>Header 1</Label>
+				<Label type="header-2"><Icon type={IconType.HOME}/>Header 2</Label>
+				<Label type="header-3"><Icon type={IconType.HOME}/>Header 3</Label>
+				<Label type="header-4"><Icon type={IconType.HOME}/>Header 4</Label>
+				<div style={{display: "flex", gap: "20px"}}>
+					<Label type="body"><Icon type={IconType.HOME}/>Body</Label>
+					<Label italic type="body"><Icon type={IconType.HOME}/>Body</Label>
+				</div>
+				<div style={{display: "flex", gap: "20px"}}>
+					<Label type="caption"><Icon type={IconType.HOME}/>Caption</Label>
+					<Label italic type="caption"><Icon type={IconType.HOME}/>Caption</Label>
+				</div>
+
+				<BaseElementFlat style={{padding: "4px", maxWidth: "80px"}}>
+					<Label overflow="wrap"><Icon type={IconType.HOME}/>Default i.e. wrap long text</Label>
+				</BaseElementFlat>
+
+				<BaseElementFlat style={{padding: "4px", maxWidth: "80px"}}>
+					<Label overflow="nowrap"><Icon type={IconType.HOME}/>Dont wrap long text</Label>
+				</BaseElementFlat>
+
+				<BaseElementFlat style={{padding: "4px", maxWidth: "80px"}}>
+					<Label overflow="nowrap-hidden"><Icon type={IconType.HOME}/>Dont wrap long text, hide
+						overflow</Label>
+				</BaseElementFlat>
+
+				<BaseElementFlat style={{padding: "4px", maxWidth: "80px"}}>
+					<Label overflow="cutoff"><Icon type={IconType.HOME}/>Dont wrap long text, cut off overflow</Label>
+				</BaseElementFlat>
+
 			</ShowcaseSection>
 
 		</div>
