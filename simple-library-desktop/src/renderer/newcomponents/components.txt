@@ -7,9 +7,9 @@ BASE
 
 BUTTONS
 - button ✔
-- menubutton
+- checkbox ✔
 - choicebox
-- checkbox
+- menubutton
 
 INPUT
 - textfield

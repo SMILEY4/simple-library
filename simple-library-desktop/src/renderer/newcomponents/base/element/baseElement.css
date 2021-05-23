@@ -3,7 +3,12 @@
 	box-sizing:    border-box;
 	border:        1px solid transparent;
 	border-radius: var(--radius-0);
-	color:         var(--color-text-primary)
+	color:         var(--color-text-primary);
+	overflow: hidden;
+}
+
+.base-elem-allow-overflow {
+	overflow: unset;
 }
 
 .base-elem.base-elem-disabled {

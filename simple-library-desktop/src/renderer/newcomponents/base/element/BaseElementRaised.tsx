@@ -2,7 +2,7 @@ import React, {ReactElement} from "react";
 import {concatClasses, getIf, map} from "../../../components/common/common";
 import "./baseElement.css"
 import "./baseElementRaised.css"
-import {BaseElementProps} from "./baseElement";
+import {BaseElementProps, getBaseElementClasses} from "./baseElement";
 
 interface BaseElementRaisedProps extends BaseElementProps {
 	interactive?: boolean,
@@ -26,13 +26,11 @@ export function BaseElementRaised(props: React.PropsWithChildren<BaseElementRais
 
 	function getClassName() {
 		return concatClasses(
-			"base-elem",
 			"base-elem-raised",
+			getBaseElementClasses(props),
 			getIf(props.interactive, "base-elem-interactive"),
 			getIf(props.disabled, "base-elem-disabled"),
-			getIf(props.error, "base-elem-state-error"),
 			map(props.variant, variant => "base-elem-" + variant),
-			map(props.groupPos, groupPos => "base-elem-" + groupPos),
 			props.className
 		)
 	}
