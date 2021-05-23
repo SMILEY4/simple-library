@@ -16,8 +16,8 @@
 	user-select:         none;
 }
 
+.label,
 .label-overflow-wrap {
-
 }
 
 .label-overflow-nowrap {
@@ -39,6 +39,11 @@
 }
 
 /*type*/
+.label,
+.label-body {
+	font-size: var(--font-size-1);
+}
+
 .label-header-1 {
 	font-weight: bold;
 	font-size:   var(--font-size-5);
@@ -60,16 +65,13 @@
 	text-transform: uppercase;
 }
 
-.label-body {
-	font-size: var(--font-size-1);
-}
-
 .label-caption {
 	font-size: var(--font-size-0);
 }
 
 
 /*colors / variant*/
+.label,
 .label-primary:not(.label-disabled) {
 	color: var(--color-text-primary);
 }

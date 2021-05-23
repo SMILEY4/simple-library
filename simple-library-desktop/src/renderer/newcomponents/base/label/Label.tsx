@@ -1,7 +1,7 @@
 import {BaseProps, Size} from "../../common";
 import React, {ReactElement} from "react";
 import "./label.css"
-import {addPropsToChildren, concatClasses, getIf, mapOrDefault} from "../../../components/common/common";
+import {addPropsToChildren, concatClasses, getIf, map, mapOrDefault} from "../../../components/common/common";
 import {Icon, IconProps} from "../icon/Icon";
 
 export interface LabelProps extends BaseProps {
@@ -16,7 +16,11 @@ export interface LabelProps extends BaseProps {
 export function Label(props: React.PropsWithChildren<LabelProps>): React.ReactElement {
 
 	return (
-		<div className={getClassName()} style={props.style} ref={props.forwardRef}>
+		<div
+			className={getClassName()}
+			style={props.style}
+			ref={props.forwardRef}
+		>
 			{getModifiedChildren()}
 		</div>
 	)
@@ -24,9 +28,9 @@ export function Label(props: React.PropsWithChildren<LabelProps>): React.ReactEl
 	function getClassName(): string {
 		return concatClasses(
 			"label",
-			mapOrDefault(props.type, "body", type => "label-" + type),
-			mapOrDefault(props.variant, "primary", variant => "label-" + variant),
-			mapOrDefault(props.overflow, "wrap", overflow => "label-overflow-" + overflow),
+			map(props.type, type => "label-" + type),
+			map(props.variant, variant => "label-" + variant),
+			map(props.overflow, overflow => "label-overflow-" + overflow),
 			getIf(props.disabled, "label-disabled"),
 			getIf(props.italic, "label-italic"),
 			getIf(props.noSelect, "label-no-select"),
