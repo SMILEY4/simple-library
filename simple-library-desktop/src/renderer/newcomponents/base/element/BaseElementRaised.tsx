@@ -2,13 +2,12 @@ import React, {ReactElement} from "react";
 import {concatClasses, getIf, map} from "../../../components/common/common";
 import "./baseElement.css"
 import "./baseElementRaised.css"
-import {BaseProps} from "../common";
+import {BaseElementProps} from "./baseElement";
 
-interface BaseElementRaisedProps extends BaseProps {
+interface BaseElementRaisedProps extends BaseElementProps {
 	interactive?: boolean,
 	disabled?: boolean,
 	variant?: "info" | "success" | "error" | "warn"
-	error?: boolean,
 }
 
 export function BaseElementRaised(props: React.PropsWithChildren<BaseElementRaisedProps>): ReactElement {
@@ -25,8 +24,10 @@ export function BaseElementRaised(props: React.PropsWithChildren<BaseElementRais
 			"base-elem-raised",
 			getIf(props.interactive, "base-elem-interactive"),
 			getIf(props.disabled, "base-elem-disabled"),
+			getIf(props.error, "base-elem-state-error"),
 			map(props.variant, variant => "base-elem-" + variant),
-			getIf(props.error, "base-elem-state-error")
+			map(props.groupPos, groupPos => "base-elem-" + groupPos),
+			props.className
 		)
 	}
 

@@ -2,7 +2,3 @@
 	background-color: transparent;
 	border-color:     var(--color-border-flat);
 }
-
-.base-elem-flat.base-elem-state-error {
-	border-color: var(--color-border-error);
-}

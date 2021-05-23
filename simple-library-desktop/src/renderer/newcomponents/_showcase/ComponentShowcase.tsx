@@ -8,6 +8,7 @@ import {BaseElementFlat} from "../base/element/BaseElementFlat";
 import {BaseElementInset} from "../base/element/BaseElementInset";
 import {Icon, IconType} from "../base/icon/Icon";
 import {Label} from "../base/label/Label";
+import {LabelBox} from "../base/labelbox/LabelBox";
 
 interface ComponentShowcaseProps {
 	theme: Theme,
@@ -108,6 +109,14 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 					<BaseElementFlat style={{padding: "7px"}} error>Flat Error State</BaseElementFlat>
 					<BaseElementInset style={{padding: "7px"}} error>Inset Error State</BaseElementInset>
 				</div>
+
+				<div style={{display: "flex"}}>
+					<BaseElementRaised interactive groupPos="left" style={{padding: "7px"}}>Left</BaseElementRaised>
+					<BaseElementRaised interactive groupPos="center" style={{padding: "7px"}}>Center</BaseElementRaised>
+					<BaseElementRaised interactive groupPos="center" style={{padding: "7px"}}>Center</BaseElementRaised>
+					<BaseElementRaised interactive groupPos="right" style={{padding: "7px"}}>Right</BaseElementRaised>
+				</div>
+
 			</ShowcaseSection>
 
 			<ShowcaseSection title={"Icons"}>
@@ -211,6 +220,25 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 				<BaseElementFlat style={{padding: "4px", maxWidth: "80px"}}>
 					<Label overflow="cutoff"><Icon type={IconType.HOME}/>Dont wrap long text, cut off overflow</Label>
 				</BaseElementFlat>
+
+			</ShowcaseSection>
+
+			<ShowcaseSection title={"LabelBox"}>
+
+				<LabelBox>
+					<Icon type={IconType.HOME}/>
+					Label Box
+				</LabelBox>
+
+				<LabelBox disabled>
+					<Icon type={IconType.HOME}/>
+					Disabled Label Box
+				</LabelBox>
+
+				<LabelBox error>
+					<Icon type={IconType.HOME}/>
+					Invalid Label Box
+				</LabelBox>
 
 			</ShowcaseSection>
 

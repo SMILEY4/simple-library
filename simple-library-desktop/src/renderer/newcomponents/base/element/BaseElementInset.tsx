@@ -1,12 +1,11 @@
 import React, {ReactElement} from "react";
-import {concatClasses, getIf} from "../../../components/common/common";
+import {concatClasses, getIf, map} from "../../../components/common/common";
 import "./baseElement.css"
 import "./baseElementInset.css"
-import {BaseProps} from "../common";
+import {BaseElementProps} from "./baseElement";
 
-interface BaseElementInsetProps extends BaseProps {
+interface BaseElementInsetProps extends BaseElementProps {
 	disabled?: boolean,
-	error?: boolean
 }
 
 export function BaseElementInset(props: React.PropsWithChildren<BaseElementInsetProps>): ReactElement {
@@ -22,7 +21,9 @@ export function BaseElementInset(props: React.PropsWithChildren<BaseElementInset
 			"base-elem",
 			"base-elem-inset",
 			getIf(props.disabled, "base-elem-disabled"),
-			getIf(props.error, "base-elem-state-error")
+			getIf(props.error, "base-elem-state-error"),
+			map(props.groupPos, groupPos => "base-elem-" + groupPos),
+			props.className
 		)
 	}
 

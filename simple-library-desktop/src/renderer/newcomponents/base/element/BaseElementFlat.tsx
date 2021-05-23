@@ -1,11 +1,10 @@
 import React, {ReactElement} from "react";
-import {concatClasses, getIf} from "../../../components/common/common";
+import {concatClasses, getIf, map} from "../../../components/common/common";
 import "./baseElement.css"
 import "./baseElementFlat.css"
-import {BaseProps} from "../common";
+import {BaseElementProps} from "./baseElement";
 
-interface BaseElementFlatProps extends BaseProps {
-    error?: boolean,
+interface BaseElementFlatProps extends BaseElementProps {
 }
 
 export function BaseElementFlat(props: React.PropsWithChildren<BaseElementFlatProps>): ReactElement {
@@ -20,7 +19,9 @@ export function BaseElementFlat(props: React.PropsWithChildren<BaseElementFlatPr
         return concatClasses(
             "base-elem",
             "base-elem-flat",
-            getIf(props.error, "base-elem-state-error")
+            getIf(props.error, "base-elem-state-error"),
+            map(props.groupPos, groupPos => "base-elem-" + groupPos),
+            props.className
         )
     }
 

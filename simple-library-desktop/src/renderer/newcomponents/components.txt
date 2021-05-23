@@ -2,7 +2,7 @@ BASE
 - baseElements ✔
 - icon ✔
 - label ✔
-- labelBox
+- labelBox ✔
 - image
 
 BUTTONS

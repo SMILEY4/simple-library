@@ -7,7 +7,3 @@
 	background-color: var(--color-bg-inset);
 	border-color:     var(--color-border-disabled);
 }
-
-.base-elem-inset.base-elem-state-error {
-	border-color: var(--color-border-error);
-}
