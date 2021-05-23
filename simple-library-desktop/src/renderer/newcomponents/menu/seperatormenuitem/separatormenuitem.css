@@ -1,0 +1,6 @@
+.separator-menu-item {
+	background-color: var(--color-border-flat);
+	height:           1px;
+	margin-top:       var(--s-0-15);
+	margin-bottom:    var(--s-0-15);
+}

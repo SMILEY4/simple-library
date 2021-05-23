@@ -2,7 +2,7 @@ import {CSSProperties, MutableRefObject} from "react";
 
 export interface BaseProps {
 	className?: string,
-	forwardRef?: MutableRefObject<any>,
+	forwardRef?: any,
 	style?: CSSProperties,
 }
 

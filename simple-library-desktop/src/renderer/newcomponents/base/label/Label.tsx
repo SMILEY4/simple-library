@@ -9,7 +9,9 @@ export interface LabelProps extends BaseProps {
 	variant?: "primary" | "secondary" | "info" | "success" | "error" | "warn" | "on-variant"
 	disabled?: boolean,
 	italic?: boolean,
+	bold?: boolean,
 	noSelect?: boolean,
+	smallIcon?: boolean,
 	overflow?: "wrap" | "nowrap" | "nowrap-hidden" | "cutoff"
 }
 
@@ -33,6 +35,7 @@ export function Label(props: React.PropsWithChildren<LabelProps>): React.ReactEl
 			map(props.overflow, overflow => "label-overflow-" + overflow),
 			getIf(props.disabled, "label-disabled"),
 			getIf(props.italic, "label-italic"),
+			getIf(props.bold, "label-bold"),
 			getIf(props.noSelect, "label-no-select"),
 			props.className
 		)
@@ -68,19 +71,19 @@ export function Label(props: React.PropsWithChildren<LabelProps>): React.ReactEl
 	function getIconSize(): Size {
 		switch (props.type) {
 			case "header-1":
-				return "1-5"
+				return props.smallIcon ? "1" : "1-5"
 			case "header-2":
-				return "1"
+				return props.smallIcon ? "0-75" : "1"
 			case "header-3":
-				return "1"
+				return props.smallIcon ? "0-75" : "1"
 			case "header-4":
-				return "1"
+				return props.smallIcon ? "0-75" : "1"
 			case "body":
-				return "1"
+				return props.smallIcon ? "0-75" : "1"
 			case "caption":
 				return "0-75"
 			default:
-				return "1"
+				return props.smallIcon ? "0-75" : "1"
 		}
 	}
 

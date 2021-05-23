@@ -12,10 +12,16 @@ import {LabelBox} from "../base/labelbox/LabelBox";
 import {Button} from "../buttons/button/Button";
 import {CheckBox} from "../buttons/checkbox/CheckBox";
 import {Box, HBox, VBox} from "../layout/box/Box";
-import {HSplitPane, SLOT_DIVIDER, VSplitPane} from "../../components/layout/splitpane/SplitPane";
-import {SplitPanePanel} from "../../components/layout/splitpane/SplitPanePanel";
-import {Slot} from "../../components/base/slot/Slot";
-import {Divider} from "../../components/layout/splitpane/Divider";
+import {HSplitPane, SLOT_DIVIDER, VSplitPane} from "../layout/splitpane/SplitPane";
+import {SplitPanePanel} from "../layout/splitpane/SplitPanePanel";
+import {Slot} from "../slot/Slot";
+import {Divider} from "../layout/splitpane/Divider";
+import {MenuButton} from "../buttons/menubutton/MenuButton"
+import {Menu} from "../menu/menu/Menu";
+import {MenuItem} from "../menu/menuitem/MenuItem";
+import {SubMenuItem} from "../menu/submenu/SubMenuItem";
+import {SeparatorMenuItem} from "../menu/seperatormenuitem/SeparatorMenuItem";
+import {TitleMenuItem} from "../menu/titlemenuitem/TitleMenuItem";
 
 interface ComponentShowcaseProps {
 	theme: Theme,
@@ -37,6 +43,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 				<div onClick={() => setBackground("2")}>BG-2</div>
 			</div>
 
+			{renderMenuButton()}
 			{renderSplitPane()}
 			{renderBox()}
 			{renderCheckBox()}
@@ -48,6 +55,41 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 
 		</div>
 	);
+
+
+	function renderMenuButton() {
+
+		return <ShowcaseSection title={"MenuButton"}>
+
+			<MenuButton onAction={(itemId: string) => console.log("Menu Action", itemId)}>
+				<Slot name={"button"}>
+					Menu Button
+				</Slot>
+				<Slot name={"menu"}>
+					<Menu>
+						<TitleMenuItem title={"Actions"}/>
+						<MenuItem itemId={"home"} appendIcon={IconType.CHECKMARK}><Icon type={IconType.HOME}/>Home</MenuItem>
+						<MenuItem itemId={"folder"}><Icon type={IconType.FOLDER}/>Folder</MenuItem>
+						<MenuItem itemId={"checkmark"} appendIcon={IconType.CHECKMARK}><Icon type={IconType.CHECKMARK}/>Checkmark</MenuItem>
+						<SeparatorMenuItem/>
+						<TitleMenuItem title={"Submenu"}/>
+						<SubMenuItem itemId={"submenu"}>
+							<Slot name={"item"}>
+								Submenu
+							</Slot>
+							<Slot name={"menu"}>
+								<MenuItem itemId={"home-sub"}><Icon type={IconType.HOME}/>More Home</MenuItem>
+								<MenuItem itemId={"checkmark-sub"}><Icon type={IconType.CHECKMARK}/>More
+									Checkmark</MenuItem>
+							</Slot>
+						</SubMenuItem>
+					</Menu>
+				</Slot>
+			</MenuButton>
+
+		</ShowcaseSection>
+
+	}
 
 
 	function renderSplitPane() {
@@ -62,7 +104,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 					primaryAsPercentage={false}
 					style={{width: "100%", height: "100%",}}
 				>
-					<SplitPanePanel initialSize={"100px"} minSize={"50%"}>
+					<SplitPanePanel initialSize={"100px"} minSize={"30%"}>
 						<div style={{backgroundColor: "#ff8585", width: "100%", height: "100%"}}/>
 					</SplitPanePanel>
 					<SplitPanePanel initialSize={"100%"} minSize={"100px"}>

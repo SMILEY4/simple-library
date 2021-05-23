@@ -4,9 +4,12 @@
 	gap:         var(--s-0-25)
 }
 
-
 .label-italic {
 	font-style: italic;
+}
+
+.label-bold {
+	font-weight: bolder;
 }
 
 .label-no-select {
