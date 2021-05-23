@@ -9,15 +9,15 @@ BUTTONS
 ✔ button
 ✔ checkbox
 - choicebox
-- menubutton
+✔ menubutton
 
 INPUT
 - textfield
 - textarea
 
 MENU
-- menu (items, submenues, separators, titles)
-- contextmenu
+✔ menu (items, submenus, separators, titles)
+✔ contextmenu
 
 MODALS
 - modalbase

@@ -22,6 +22,7 @@ import {MenuItem} from "../menu/menuitem/MenuItem";
 import {SubMenuItem} from "../menu/submenu/SubMenuItem";
 import {SeparatorMenuItem} from "../menu/seperatormenuitem/SeparatorMenuItem";
 import {TitleMenuItem} from "../menu/titlemenuitem/TitleMenuItem";
+import {ContextMenuWrapper} from "../menu/contextmenu/ContextMenuWrapper";
 
 interface ComponentShowcaseProps {
 	theme: Theme,
@@ -43,6 +44,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 				<div onClick={() => setBackground("2")}>BG-2</div>
 			</div>
 
+			{renderContextMenu()}
 			{renderMenuButton()}
 			{renderSplitPane()}
 			{renderBox()}
@@ -55,6 +57,36 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 
 		</div>
 	);
+
+
+	function renderContextMenu() {
+		return <ShowcaseSection title={"ContextMenu"}>
+			<ContextMenuWrapper onAction={(itemId: string) => console.log("CONTEXT_MENU: " + itemId)}>
+				<Slot name={"target"}>
+					<LabelBox style={{width: "300px", height: "300px"}}>
+						Open Context Menu Here
+					</LabelBox>
+				</Slot>
+				<Slot name={"menu"}>
+					<Menu>
+						<MenuItem itemId={"home"}><Icon type={IconType.HOME}/>Home</MenuItem>
+						<MenuItem itemId={"folder"}><Icon type={IconType.FOLDER}/>Folder</MenuItem>
+						<SubMenuItem itemId={"submenu"}>
+							<Slot name={"item"}>
+								Submenu
+							</Slot>
+							<Slot name={"menu"}>
+								<MenuItem itemId={"home-sub"}><Icon type={IconType.HOME}/>More Home</MenuItem>
+								<MenuItem itemId={"checkmark-sub"}><Icon type={IconType.CHECKMARK}/>More
+									Checkmark</MenuItem>
+							</Slot>
+						</SubMenuItem>
+						<MenuItem itemId={"checkmark"}><Icon type={IconType.CHECKMARK}/>Checkmark</MenuItem>
+					</Menu>
+				</Slot>
+			</ContextMenuWrapper>
+		</ShowcaseSection>
+	}
 
 
 	function renderMenuButton() {
