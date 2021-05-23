@@ -7,13 +7,19 @@ import {BaseElementProps} from "./baseElement";
 interface BaseElementRaisedProps extends BaseElementProps {
 	interactive?: boolean,
 	disabled?: boolean,
-	variant?: "info" | "success" | "error" | "warn"
+	variant?: "info" | "success" | "error" | "warn",
+	onClick?: () => void
 }
 
 export function BaseElementRaised(props: React.PropsWithChildren<BaseElementRaisedProps>): ReactElement {
 
 	return (
-		<div className={getClassName()} style={props.style} ref={props.forwardRef}>
+		<div
+			className={getClassName()}
+			style={props.style}
+			ref={props.forwardRef}
+			onClick={props.disabled ? undefined : props.onClick}
+		>
 			{props.children}
 		</div>
 	)

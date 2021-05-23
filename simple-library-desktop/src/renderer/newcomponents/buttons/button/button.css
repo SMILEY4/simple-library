@@ -1,0 +1,10 @@
+.button {
+	display:       flex;
+	min-height:    var(--s-1-5);
+	padding-left:  var(--s-0-75);
+	padding-right: var(--s-0-75);
+}
+
+.button:not(.base-elem-disabled) {
+	cursor: pointer;
+}

@@ -9,6 +9,7 @@ import {BaseElementInset} from "../base/element/BaseElementInset";
 import {Icon, IconType} from "../base/icon/Icon";
 import {Label} from "../base/label/Label";
 import {LabelBox} from "../base/labelbox/LabelBox";
+import {Button} from "../buttons/button/Button";
 
 interface ComponentShowcaseProps {
 	theme: Theme,
@@ -224,21 +225,56 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 			</ShowcaseSection>
 
 			<ShowcaseSection title={"LabelBox"}>
-
 				<LabelBox>
 					<Icon type={IconType.HOME}/>
 					Label Box
 				</LabelBox>
-
 				<LabelBox disabled>
 					<Icon type={IconType.HOME}/>
 					Disabled Label Box
 				</LabelBox>
-
 				<LabelBox error>
 					<Icon type={IconType.HOME}/>
 					Invalid Label Box
 				</LabelBox>
+			</ShowcaseSection>
+
+			<ShowcaseSection title={"Buttons"}>
+
+				<div style={{display: "flex", gap: "20px"}}>
+					<Button onClick={() => console.log("click")}>
+						Button
+					</Button>
+					<Button onClick={() => console.log("click")}>
+						<Icon type={IconType.HOME}/>
+						Button with icon
+					</Button>
+					<Button variant="info" onClick={() => console.log("click")}>
+						<Icon type={IconType.HOME}/>
+						Info Button
+					</Button>
+					<Button error onClick={() => console.log("click")}>
+						Invalid
+					</Button>
+					<Button disabled onClick={() => console.log("click")}>
+						Disabled
+					</Button>
+				</div>
+
+				<div style={{display: "flex", gap: "20px"}}>
+					<Button><Icon type={IconType.HOME}/>Default</Button>
+					<Button variant="info"><Icon type={IconType.HOME}/>Info</Button>
+					<Button variant="success"><Icon type={IconType.HOME}/>Success</Button>
+					<Button variant="warn"><Icon type={IconType.HOME}/>Warn</Button>
+					<Button variant="error"><Icon type={IconType.HOME}/>Error</Button>
+				</div>
+				<div style={{display: "flex", gap: "20px"}}>
+					<Button disabled><Icon type={IconType.HOME}/>Default</Button>
+					<Button disabled variant="info"><Icon type={IconType.HOME}/>Info</Button>
+					<Button disabled variant="success"><Icon type={IconType.HOME}/>Success</Button>
+					<Button disabled variant="warn"><Icon type={IconType.HOME}/>Warn</Button>
+					<Button disabled variant="error"><Icon type={IconType.HOME}/>Error</Button>
+				</div>
 
 			</ShowcaseSection>
 
