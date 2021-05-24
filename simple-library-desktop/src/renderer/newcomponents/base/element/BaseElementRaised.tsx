@@ -26,12 +26,12 @@ export function BaseElementRaised(props: React.PropsWithChildren<BaseElementRais
 
 	function getClassName() {
 		return concatClasses(
+			props.className,
 			"base-elem-raised",
 			getBaseElementClasses(props),
 			getIf(props.interactive, "base-elem-interactive"),
 			getIf(props.disabled, "base-elem-disabled"),
 			map(props.variant, variant => "base-elem-" + variant),
-			props.className
 		)
 	}
 

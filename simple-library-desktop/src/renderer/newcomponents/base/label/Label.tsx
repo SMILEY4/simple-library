@@ -29,6 +29,7 @@ export function Label(props: React.PropsWithChildren<LabelProps>): React.ReactEl
 
 	function getClassName(): string {
 		return concatClasses(
+			props.className,
 			"label",
 			map(props.type, type => "label-" + type),
 			map(props.variant, variant => "label-" + variant),
@@ -37,7 +38,6 @@ export function Label(props: React.PropsWithChildren<LabelProps>): React.ReactEl
 			getIf(props.italic, "label-italic"),
 			getIf(props.bold, "label-bold"),
 			getIf(props.noSelect, "label-no-select"),
-			props.className
 		)
 	}
 

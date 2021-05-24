@@ -15,7 +15,7 @@ export function TitleMenuItem(props: React.PropsWithChildren<TitleMenuItemProps>
             variant="secondary"
             type="caption"
             bold
-            className={concatClasses("title-menu-item", props.className)}
+            className={concatClasses(props.className, "title-menu-item")}
             forwardRef={props.forwardRef}
             style={props.style}
         >

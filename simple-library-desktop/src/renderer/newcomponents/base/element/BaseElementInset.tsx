@@ -18,10 +18,10 @@ export function BaseElementInset(props: React.PropsWithChildren<BaseElementInset
 
 	function getClassName() {
 		return concatClasses(
+			props.className,
 			"base-elem-inset",
 			getBaseElementClasses(props),
-			getIf(props.disabled, "base-elem-disabled"),
-			props.className
+			getIf(props.disabled, "base-elem-disabled")
 		)
 	}
 

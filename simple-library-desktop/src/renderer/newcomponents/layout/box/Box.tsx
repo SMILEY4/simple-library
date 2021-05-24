@@ -27,6 +27,7 @@ export function Box(props: React.PropsWithChildren<BoxProps>): ReactElement {
 
     function getClassNames(): string {
         return concatClasses(
+            props.className,
             "box",
             map(props.dir, (dir) => "box-" + dir),
             mapOrDefault(props.alignMain, "center", (align) => "box-main-" + align),
@@ -34,7 +35,6 @@ export function Box(props: React.PropsWithChildren<BoxProps>): ReactElement {
             map(props.spacing, (spacing) => "gap-" + spacing),
             map(props.padding, (padding) => "padding-" + padding),
             map(props.margin, (margin) => "margin-" + margin),
-            props.className,
         );
     }
 }

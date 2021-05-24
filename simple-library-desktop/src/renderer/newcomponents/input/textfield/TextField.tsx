@@ -30,7 +30,7 @@ export function TextField(props: React.PropsWithChildren<TextFieldProps>): React
 			disabled={props.disabled}
 			error={props.error}
 			groupPos={props.groupPos}
-			className={concatClasses("text-field", props.className)}
+			className={concatClasses(props.className, "text-field")}
 			style={props.style}
 			forwardRef={props.forwardRef}
 		>

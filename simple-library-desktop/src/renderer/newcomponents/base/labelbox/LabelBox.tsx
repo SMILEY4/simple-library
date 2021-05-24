@@ -22,7 +22,7 @@ export function LabelBox(props: React.PropsWithChildren<LabelBoxProps>): React.R
 		<BaseElementFlat
 			error={props.error}
 			groupPos={props.groupPos}
-			className={concatClasses("label-box", props.className)}
+			className={concatClasses(props.className, "label-box")}
 			style={props.style}
 			forwardRef={props.forwardRef}
 		>

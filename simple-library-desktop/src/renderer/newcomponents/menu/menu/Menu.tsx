@@ -16,7 +16,7 @@ export function Menu(props: React.PropsWithChildren<MenuProps>): ReactElement {
 
     return (
         <div
-            className={concatClasses("menu", "with-shadow-1", props.className)}
+            className={concatClasses(props.className, "menu", "with-shadow-1")}
             style={props.style}
             ref={props.forwardRef}
         >

@@ -24,9 +24,9 @@ export function Image(props: React.PropsWithChildren<ImageProps>): React.ReactEl
 
     function getClassNames(props: ImageProps): string {
         return concatClasses(
+            props.className,
             "image",
             mapOrDefault(props.mode, "cover", mode => "image-mode-" + mode),
-            props.className,
         )
     }
 

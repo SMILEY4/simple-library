@@ -21,7 +21,7 @@ export function CheckBox(props: React.PropsWithChildren<CheckBoxProps>): React.R
 
 	return (
 		<div
-			className={concatClasses("checkbox", props.className)}
+			className={concatClasses(props.className, "checkbox")}
 			style={props.style}
 			ref={props.forwardRef}
 		>

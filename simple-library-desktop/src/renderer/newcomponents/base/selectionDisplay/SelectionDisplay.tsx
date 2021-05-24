@@ -12,9 +12,9 @@ export function SelectionDisplay(props: React.PropsWithChildren<SelectionDisplay
 	return (
 		<div
 			className={concatClasses(
+				props.className,
 				"selection-display",
 				map(props.align, align => "selection-display-"+align),
-				props.className
 			)}
 			style={props.style}
 			ref={props.forwardRef}

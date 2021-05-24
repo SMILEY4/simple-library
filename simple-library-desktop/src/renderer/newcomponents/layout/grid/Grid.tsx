@@ -25,8 +25,8 @@ export function Grid(props: React.PropsWithChildren<GridProps>): ReactElement {
 
     function getClassNames(): string {
         return concatClasses(
-            'grid',
             props.className,
+            'grid',
         );
     }
 

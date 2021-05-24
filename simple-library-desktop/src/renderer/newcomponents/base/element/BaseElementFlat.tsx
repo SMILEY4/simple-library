@@ -17,9 +17,9 @@ export function BaseElementFlat(props: React.PropsWithChildren<BaseElementFlatPr
 
     function getClassName() {
         return concatClasses(
+            props.className,
             "base-elem-flat",
-            getBaseElementClasses(props),
-            props.className
+            getBaseElementClasses(props)
         )
     }
 

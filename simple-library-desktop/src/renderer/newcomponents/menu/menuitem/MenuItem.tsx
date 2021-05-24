@@ -19,7 +19,7 @@ export function MenuItem(props: React.PropsWithChildren<MenuItemProps>): ReactEl
 
     return (
         <div
-            className={concatClasses("menu-item", "behaviour-no-select", getIf(props.appendIcon !== undefined, "menu-item-with-icon"), props.className)}
+            className={concatClasses(props.className, "menu-item", "behaviour-no-select", getIf(props.appendIcon !== undefined, "menu-item-with-icon"))}
             onClick={handleClick}
             ref={props.forwardRef}
             key={props.itemId}

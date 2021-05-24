@@ -98,12 +98,12 @@ export function Icon(props: React.PropsWithChildren<IconProps>): React.ReactElem
         const isOutlined = ICON_COLOR_TYPE.get(props.type) === SVG_OUTLINED;
         const color: string = props.color ? props.color : "primary";
         return concatClasses(
+            props.className,
             "icon",
             getIf(isOutlined, "icon-color-outline-" + color),
             getIf(isFilled, "icon-color-fill-" + color),
             getIf(props.disabled, "icon-disabled"),
             map(props.size, size => "icon-size-" + size),
-            props.className,
         );
     }
 

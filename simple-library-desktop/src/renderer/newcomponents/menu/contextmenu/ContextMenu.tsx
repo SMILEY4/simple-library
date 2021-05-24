@@ -22,7 +22,7 @@ export function ContextMenu(props: React.PropsWithChildren<ContextMenuProps>): R
 
     return isShowContextMenu && (
         <div
-            className={concatClasses("context-menu", props.className)}
+            className={concatClasses(props.className, "context-menu")}
             style={{
                 top: cmPos.y,
                 left: cmPos.x,

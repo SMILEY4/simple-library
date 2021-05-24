@@ -8,7 +8,7 @@ import {concatClasses} from "../../../components/common/common";
 export function SeparatorMenuItem(props: React.PropsWithChildren<BaseProps>): ReactElement {
     return (
         <div
-            className={concatClasses("separator-menu-item", props.className)}
+            className={concatClasses(props.className, "separator-menu-item")}
             style={props.style}
             ref={props.forwardRef}
         />

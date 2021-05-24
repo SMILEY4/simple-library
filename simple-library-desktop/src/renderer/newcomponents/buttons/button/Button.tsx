@@ -18,7 +18,7 @@ export function Button(props: React.PropsWithChildren<ButtonProps>): React.React
 
 	return (
 		<BaseElementRaised
-			className={concatClasses("button", getIf(props.square, "button-square"), props.className)}
+			className={concatClasses(props.className, "button", getIf(props.square, "button-square"))}
 			disabled={props.disabled}
 			error={props.error}
 			variant={props.variant}

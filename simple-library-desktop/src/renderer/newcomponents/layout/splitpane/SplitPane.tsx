@@ -35,7 +35,7 @@ export function SplitPane(props: React.PropsWithChildren<SplitPaneProps>): React
     useEffect(() => expandOrCollapse(props.primaryCollapsed), [props.primaryCollapsed])
 
     return (
-        <div {...props} className={concatClasses('split-pane', map(props.mode, mode => "split-pane-" + mode))}>
+        <div {...props} className={concatClasses(props.className, 'split-pane', map(props.mode, mode => "split-pane-" + mode))}>
             {content.children}
         </div>
     );
