@@ -23,6 +23,8 @@ import {SubMenuItem} from "../menu/submenu/SubMenuItem";
 import {SeparatorMenuItem} from "../menu/seperatormenuitem/SeparatorMenuItem";
 import {TitleMenuItem} from "../menu/titlemenuitem/TitleMenuItem";
 import {ContextMenuWrapper} from "../menu/contextmenu/ContextMenuWrapper";
+import {SelectionDisplay} from "../base/selectionDisplay/SelectionDisplay";
+import {ChoiceBox, ChoiceBoxItem} from "../buttons/choicebox/ChoiceBox";
 
 interface ComponentShowcaseProps {
 	theme: Theme,
@@ -44,6 +46,8 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 				<div onClick={() => setBackground("2")}>BG-2</div>
 			</div>
 
+			{renderChoiceBox()}
+			{renderSelectionDisplay()}
 			{renderContextMenu()}
 			{renderMenuButton()}
 			{renderSplitPane()}
@@ -57,6 +61,84 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 
 		</div>
 	);
+
+
+	function renderChoiceBox() {
+
+		const items: ChoiceBoxItem[] = [
+			{
+				id: "hello",
+				text: "Hello!"
+			},
+			{
+				id: "hello-world",
+				text: "Hello World"
+			},
+			{
+				id: "hi",
+				text: "Hi"
+			}
+		];
+
+		return <ShowcaseSection title={"ChoiceBox"}>
+
+			<ChoiceBox
+				items={items}
+				selectedItemId={"hello-world"}
+				onAction={itemId => console.log("select item", itemId)}
+			/>
+
+			<div style={{display: "flex", gap: "20px"}}>
+				<ChoiceBox items={items}/>
+				<ChoiceBox items={items} variant="info"/>
+				<ChoiceBox items={items} variant="success"/>
+				<ChoiceBox items={items} variant="warn"/>
+				<ChoiceBox items={items} variant="error"/>
+			</div>
+
+			<div style={{display: "flex", gap: "20px"}}>
+				<ChoiceBox items={items} disabled/>
+				<ChoiceBox items={items} disabled variant="info"/>
+				<ChoiceBox items={items} disabled variant="success"/>
+				<ChoiceBox items={items} disabled variant="warn"/>
+				<ChoiceBox items={items} disabled variant="error"/>
+			</div>
+
+			<ChoiceBox items={items} dynamicSize/>
+
+		</ShowcaseSection>
+	}
+
+
+	function renderSelectionDisplay() {
+		return <ShowcaseSection title={"SelectionDisplay"}>
+
+			<BaseElementFlat>
+				<SelectionDisplay align="center">
+					<Label>Hello!</Label>
+					<Label>Hello World</Label>
+					<Label>Hi</Label>
+				</SelectionDisplay>
+			</BaseElementFlat>
+
+			<BaseElementFlat>
+				<SelectionDisplay align="center">
+					<Label>Hello World</Label>
+					<Label>Hello!</Label>
+					<Label>Hi</Label>
+				</SelectionDisplay>
+			</BaseElementFlat>
+
+			<BaseElementFlat>
+				<SelectionDisplay align="center">
+					<Label>Hi</Label>
+					<Label>Hello!</Label>
+					<Label>Hello World</Label>
+				</SelectionDisplay>
+			</BaseElementFlat>
+
+		</ShowcaseSection>
+	}
 
 
 	function renderContextMenu() {

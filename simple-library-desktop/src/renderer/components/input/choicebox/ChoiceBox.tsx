@@ -72,7 +72,6 @@ export function ChoiceBox(props: React.PropsWithChildren<ChoiceBoxProps>): React
                 </Popper>
             )}
         </Manager>
-
     );
 
     function getValueById(itemId: string): string | undefined {
