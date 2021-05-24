@@ -25,6 +25,7 @@ import {TitleMenuItem} from "../menu/titlemenuitem/TitleMenuItem";
 import {ContextMenuWrapper} from "../menu/contextmenu/ContextMenuWrapper";
 import {SelectionDisplay} from "../base/selectionDisplay/SelectionDisplay";
 import {ChoiceBox, ChoiceBoxItem} from "../buttons/choicebox/ChoiceBox";
+import {TextField} from "../input/textfield/TextField";
 
 interface ComponentShowcaseProps {
 	theme: Theme,
@@ -46,6 +47,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 				<div onClick={() => setBackground("2")}>BG-2</div>
 			</div>
 
+			{renderTextField()}
 			{renderChoiceBox()}
 			{renderSelectionDisplay()}
 			{renderContextMenu()}
@@ -61,6 +63,24 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 
 		</div>
 	);
+
+
+	function renderTextField() {
+		return <ShowcaseSection title={"TextField"}>
+
+			<TextField
+				placeholder={"Placeholder"}
+				prependIcon={IconType.HOME}
+				appendIcon={IconType.CLOSE}
+			/>
+
+			<TextField prependIcon={IconType.HOME} disabled placeholder={"Disabled Placeholder"}/>
+			<TextField prependIcon={IconType.HOME} disabled value={"Disabled Placeholder"}/>
+
+			<TextField value={"Fixed Value"} forceState/>
+
+		</ShowcaseSection>
+	}
 
 
 	function renderChoiceBox() {
