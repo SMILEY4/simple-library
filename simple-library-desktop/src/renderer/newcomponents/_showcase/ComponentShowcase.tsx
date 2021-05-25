@@ -28,6 +28,7 @@ import {ChoiceBox, ChoiceBoxItem} from "../buttons/choicebox/ChoiceBox";
 import {TextField} from "../input/textfield/TextField";
 import {TextArea} from "../input/textarea/TextArea";
 import {Card} from "../layout/card/Card";
+import {Badge} from "../misc/badge/Badge";
 
 interface ComponentShowcaseProps {
 	theme: Theme,
@@ -49,6 +50,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 				<div onClick={() => setBackground("2")}>BG-2</div>
 			</div>
 
+			{renderBadge()}
 			{renderCard()}
 			{renderTextArea()}
 			{renderTextField()}
@@ -67,6 +69,72 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 
 		</div>
 	);
+
+
+	function renderBadge() {
+		return <ShowcaseSection title={"Badge"}>
+
+			<div style={{display: "flex", gap: "20px"}}>
+
+				<Badge variant="info">
+					<Button>Button</Button>
+				</Badge>
+
+				<Badge variant="success">
+					<Button>Button</Button>
+				</Badge>
+
+				<Badge variant="warn">
+					<Button>Button</Button>
+				</Badge>
+
+				<Badge variant="error">
+					<Button>Button</Button>
+				</Badge>
+
+			</div>
+
+			<div style={{display: "flex", gap: "20px"}}>
+
+				<Badge variant="info" text="1235">
+					<Button>Button</Button>
+				</Badge>
+
+				<Badge variant="success" text="1235">
+					<Button>Button</Button>
+				</Badge>
+
+				<Badge variant="warn" text="1235">
+					<Button>Button</Button>
+				</Badge>
+
+				<Badge variant="error" text="1235">
+					<Button>Button</Button>
+				</Badge>
+
+			</div>
+
+			<div style={{display: "flex", gap: "20px"}}>
+
+				<Badge variant="info" icon={IconType.HOME}>
+					<Button>Button</Button>
+				</Badge>
+
+				<Badge variant="success" icon={IconType.HOME}>
+					<Button>Button</Button>
+				</Badge>
+
+				<Badge variant="warn" icon={IconType.HOME}>
+					<Button>Button</Button>
+				</Badge>
+
+				<Badge variant="error" icon={IconType.HOME}>
+					<Button>Button</Button>
+				</Badge>
+			</div>
+
+		</ShowcaseSection>
+	}
 
 
 	function renderCard() {
