@@ -1,4 +1,4 @@
-.base-elem-raised {
+.base-elem-raised:not(.base-elem-ghost) {
 	background-color: var(--color-bg-raised);
 	border-color:     var(--color-border);
 }
@@ -13,7 +13,7 @@
 	border-color:     var(--color-border-active);
 }
 
-.base-elem-raised.base-elem-disabled {
+.base-elem-raised.base-elem-disabled:not(.base-elem-ghost) {
 	background-color: var(--color-bg-raised-disabled);
 	border-color:     var(--color-border-disabled);
 }

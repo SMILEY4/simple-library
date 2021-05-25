@@ -11,6 +11,7 @@ export interface ButtonProps extends BaseProps {
 	variant?: "info" | "success" | "error" | "warn",
 	groupPos?: "left" | "right" | "center"
 	square?: boolean,
+	ghost?: boolean,
 	onAction?: () => void
 }
 
@@ -22,6 +23,7 @@ export function Button(props: React.PropsWithChildren<ButtonProps>): React.React
 			disabled={props.disabled}
 			error={props.error}
 			variant={props.variant}
+			ghost={props.ghost}
 			groupPos={props.groupPos}
 			onClick={props.onAction}
 			style={props.style}

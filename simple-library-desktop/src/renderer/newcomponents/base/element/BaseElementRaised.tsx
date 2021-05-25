@@ -8,6 +8,7 @@ interface BaseElementRaisedProps extends BaseElementProps {
 	interactive?: boolean,
 	disabled?: boolean,
 	variant?: "info" | "success" | "error" | "warn",
+	ghost?: boolean,
 	onClick?: () => void
 }
 
@@ -31,6 +32,7 @@ export function BaseElementRaised(props: React.PropsWithChildren<BaseElementRais
 			getBaseElementClasses(props),
 			getIf(props.interactive, "base-elem-interactive"),
 			getIf(props.disabled, "base-elem-disabled"),
+			getIf(props.ghost, "base-elem-ghost"),
 			map(props.variant, variant => "base-elem-" + variant),
 		)
 	}

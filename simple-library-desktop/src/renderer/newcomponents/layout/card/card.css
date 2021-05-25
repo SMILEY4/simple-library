@@ -1,0 +1,16 @@
+.card {
+	background-color: var(--color-background-0);
+	position:   relative;
+	display:    flex;
+	max-height: 100vh;
+	border-radius: var(--radius-0);
+	border: 1px solid var(--color-border);
+}
+
+.card-header {
+	border-bottom: 1px solid var(--color-border);
+}
+
+.card-footer {
+	border-top: 1px solid var(--color-border);
+}

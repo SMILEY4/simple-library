@@ -27,6 +27,7 @@ import {SelectionDisplay} from "../base/selectionDisplay/SelectionDisplay";
 import {ChoiceBox, ChoiceBoxItem} from "../buttons/choicebox/ChoiceBox";
 import {TextField} from "../input/textfield/TextField";
 import {TextArea} from "../input/textarea/TextArea";
+import {Card} from "../layout/card/Card";
 
 interface ComponentShowcaseProps {
 	theme: Theme,
@@ -48,6 +49,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 				<div onClick={() => setBackground("2")}>BG-2</div>
 			</div>
 
+			{renderCard()}
 			{renderTextArea()}
 			{renderTextField()}
 			{renderChoiceBox()}
@@ -67,13 +69,36 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 	);
 
 
+	function renderCard() {
+		return <ShowcaseSection title={"Card"}>
+
+			<Card
+				icon={IconType.HOME}
+				title="My Card Title"
+				closable
+			>
+				<Slot name={"body"}>
+					This is the actual content of the card <br/>
+					Usually, this goes over multiple lines and can be anything from
+					<li>text</li>
+					<li>tables</li>
+					<li>forms</li>
+					<li>...and more</li>
+				</Slot>
+				<Slot name={"footer"}>
+					<CheckBox>Don't show again</CheckBox>
+					<Button>Cancel</Button>
+					<Button variant="info">Accept</Button>
+				</Slot>
+			</Card>
+
+		</ShowcaseSection>
+	}
+
+
 	function renderTextArea() {
 		return <ShowcaseSection title={"TextArea"}>
-
-			<TextArea
-				placeholder={"TextArea"}
-			/>
-
+			<TextArea placeholder={"TextArea"}/>
 		</ShowcaseSection>
 	}
 
@@ -519,6 +544,14 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 				<Button disabled variant="warn"><Icon type={IconType.HOME}/>Warn</Button>
 				<Button disabled variant="error"><Icon type={IconType.HOME}/>Error</Button>
 			</div>
+
+			<div style={{display: "flex", gap: "20px"}}>
+				<Button ghost><Icon type={IconType.HOME}/>Ghost Default</Button>
+				<Button ghost disabled><Icon type={IconType.HOME}/>Ghost Default</Button>
+				<Button ghost variant="info"><Icon type={IconType.HOME}/>Ghost Info</Button>
+				<Button ghost disabled variant="info"><Icon type={IconType.HOME}/>Ghost Info</Button>
+			</div>
+
 
 		</ShowcaseSection>
 	}
