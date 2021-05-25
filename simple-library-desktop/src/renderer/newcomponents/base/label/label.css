@@ -75,59 +75,73 @@
 
 /*colors / variant*/
 .label,
-.label-primary:not(.label-disabled) {
+.label-primary:not(.label-disabled),
+.label-primary:not(.label-disabled) > .label-text-wrapper {
 	color: var(--color-text-primary);
 }
 
-.label-secondary:not(.label-disabled) {
+.label-secondary:not(.label-disabled),
+.label-secondary:not(.label-disabled) > .label-text-wrapper {
 	color: var(--color-text-secondary);
 }
 
-.label-info:not(.label-disabled) {
+.label-info:not(.label-disabled),
+.label-info:not(.label-disabled) > .label-text-wrapper {
 	color: var(--color-bg-info);
 }
 
-.label-success:not(.label-disabled) {
+.label-success:not(.label-disabled),
+.label-success:not(.label-disabled) > .label-text-wrapper {
 	color: var(--color-bg-success);
 }
 
-.label-warn:not(.label-disabled) {
+.label-warn:not(.label-disabled),
+.label-warn:not(.label-disabled) > .label-text-wrapper {
 	color: var(--color-bg-warn);
 }
 
-.label-error:not(.label-disabled) {
+.label-error:not(.label-disabled),
+.label-error:not(.label-disabled) > .label-text-wrapper {
 	color: var(--color-bg-error);
 }
 
-.label-on-variant:not(.label-disabled) {
+.label-on-variant:not(.label-disabled),
+.label-on-variant:not(.label-disabled) > .label-text-wrapper {
 	color: var(--color-text-on-variant);
 }
 
-.label-primary.label-disabled {
+.label-primary.label-disabled,
+.label-primary.label-disabled > .label-text-wrapper {
 	color: var(--color-text-disabled);
 }
 
-.label-secondary.label-disabled {
+.label-secondary.label-disabled,
+.label-secondary.label-disabled > .label-text-wrapper {
 	color: var(--color-text-disabled);
 }
 
-.label-info.label-disabled {
+.label-info.label-disabled,
+.label-info.label-disabled > .label-text-wrapper {
 	color: var(--color-bg-info-disabled);
 }
 
-.label-success.label-disabled {
+.label-success.label-disabled,
+.label-success.label-disabled > .label-text-wrapper {
 	color: var(--color-bg-success-disabled);
 }
 
-.label-warn.label-disabled {
+.label-warn.label-disabled,
+.label-warn.label-disabled > .label-text-wrapper {
 	color: var(--color-bg-warn-disabled);
 }
 
-.label-error.label-disabled {
+.label-error.label-disabled,
+.label-error.label-disabled > .label-text-wrapper {
 	color: var(--color-bg-error-disabled);
 }
 
-.label-on-variant.label-disabled {
+.label-on-variant.label-disabled,
+.label-on-variant.label-disabled > .label-text-wrapper {
 	color: var(--color-text-on-variant-disabled);
 }
 
