@@ -26,6 +26,7 @@ import {ContextMenuWrapper} from "../menu/contextmenu/ContextMenuWrapper";
 import {SelectionDisplay} from "../base/selectionDisplay/SelectionDisplay";
 import {ChoiceBox, ChoiceBoxItem} from "../buttons/choicebox/ChoiceBox";
 import {TextField} from "../input/textfield/TextField";
+import {TextArea} from "../input/textarea/TextArea";
 
 interface ComponentShowcaseProps {
 	theme: Theme,
@@ -47,6 +48,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 				<div onClick={() => setBackground("2")}>BG-2</div>
 			</div>
 
+			{renderTextArea()}
 			{renderTextField()}
 			{renderChoiceBox()}
 			{renderSelectionDisplay()}
@@ -65,6 +67,17 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 	);
 
 
+	function renderTextArea() {
+		return <ShowcaseSection title={"TextArea"}>
+
+			<TextArea
+				placeholder={"TextArea"}
+			/>
+
+		</ShowcaseSection>
+	}
+
+
 	function renderTextField() {
 		return <ShowcaseSection title={"TextField"}>
 
@@ -78,6 +91,16 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 			<TextField prependIcon={IconType.HOME} disabled value={"Disabled Placeholder"}/>
 
 			<TextField value={"Fixed Value"} forceState/>
+
+			<HBox>
+				<LabelBox groupPos="left">www.</LabelBox>
+				<TextField value={"example"} groupPos="center"/>
+				<ChoiceBox items={[{id: "de", text: ".de"}, {id: "com", text: ".com"}, {
+					id: "org",
+					text: ".org"
+				}]} selectedItemId={"de"} groupPos="right"/>
+			</HBox>
+
 
 		</ShowcaseSection>
 	}

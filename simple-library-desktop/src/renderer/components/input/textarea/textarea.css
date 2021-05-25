@@ -27,13 +27,13 @@
 }
 
 .text-area textarea {
-	border:        none;
-	background:    none;
-	margin:        0;
-	color:         var(--text-color-1);
-	padding:  var(--s-0-5);
-	width:         100%;
-	flex-grow: 1;
+	border:     none;
+	background: none;
+	margin:     0;
+	color:      var(--text-color-1);
+	padding:    var(--s-0-5);
+	width:      100%;
+	flex-grow:  1;
 }
 
 .text-area .input-on-colored::placeholder {

@@ -12,8 +12,8 @@ BUTTONS
 ✔ menubutton
 
 INPUT
-- textfield
-- textarea
+✔ textfield
+✔ textarea
 
 MENU
 ✔ menu (items, submenus, separators, titles)
