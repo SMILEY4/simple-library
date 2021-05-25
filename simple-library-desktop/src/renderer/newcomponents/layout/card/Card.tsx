@@ -8,6 +8,7 @@ import {HBox, VBox} from "../box/Box";
 import {getChildrenOfSlot} from "../../slot/Slot";
 import {Label} from "../../base/label/Label";
 import {Button} from "../../buttons/button/Button";
+import {useKeyListener} from "../../../components/common/commonHooks";
 
 
 export interface CardProps extends BaseProps {
@@ -23,21 +24,21 @@ export interface CardProps extends BaseProps {
 
 export function Card(props: React.PropsWithChildren<CardProps>) {
 
-    // useKeyListener("Enter", (event: KeyboardEvent) => {
-    //     // @ts-ignore
-    //     if (props.onEnter && event.target.tagName === "BODY") {
-    //         event.preventDefault();
-    //         props.onEnter();
-    //     }
-    // })
-    //
-    // useKeyListener("Escape", (event: KeyboardEvent) => {
-    //     // @ts-ignore
-    //     if (props.onEscape && event.target.tagName === "BODY") {
-    //         event.preventDefault();
-    //         props.onEscape();
-    //     }
-    // })
+    useKeyListener("Enter", (event: KeyboardEvent) => {
+        // @ts-ignore
+        if (props.onEnter && event.target.tagName === "BODY") {
+            event.preventDefault();
+            props.onEnter();
+        }
+    })
+
+    useKeyListener("Escape", (event: KeyboardEvent) => {
+        // @ts-ignore
+        if (props.onEscape && event.target.tagName === "BODY") {
+            event.preventDefault();
+            props.onEscape();
+        }
+    })
 
     return (
         <div
@@ -91,7 +92,7 @@ export function Card(props: React.PropsWithChildren<CardProps>) {
                     style={{
                         padding: props.noBodyPadding === true ? undefined : "var(--s-0-75)",
                         flexShrink: props.fitHeight ? 1 : undefined,
-                        overflowY: props.fitHeight ? "auto" : undefined
+                        overflowY: props.fitHeight ? "auto" : undefined,
                     }}
                 >
                     {elements}

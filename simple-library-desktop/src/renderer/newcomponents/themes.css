@@ -67,6 +67,7 @@
 	--color-border-error-active:      hsl(6, 75%, 43%);
 	--color-border-error-disabled:    hsl(6, 75%, 65%);
 
+	--overlay-color:                  hsla(0, 0%, 0%, 0.3)
 }
 
 .theme-dark {
@@ -134,5 +135,7 @@
 	--color-border-error-hover:       hsl(6, 75%, 34%);
 	--color-border-error-active:      hsl(6, 75%, 33%);
 	--color-border-error-disabled:    hsl(6, 75%, 15%);
+
+	--overlay-color:                  hsla(0, 0%, 35%, 0.6);
 
 }

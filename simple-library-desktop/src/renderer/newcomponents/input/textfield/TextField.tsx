@@ -61,8 +61,9 @@ export function TextField(props: React.PropsWithChildren<TextFieldProps>): React
 
 	function handleOnKeyDown(event: any) {
 		if (event.key === 'Enter') {
-			handleChange(event.target.value, props.onAccept);
+			event.stopPropagation();
 			event.target.blur();
+			handleChange(event.target.value, props.onAccept);
 		}
 	}
 

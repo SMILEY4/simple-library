@@ -20,8 +20,8 @@ MENU
 ✔ contextmenu
 
 MODALS
-- modalbase
-- dialog
+✔ modalbase
+✔ dialog
 - notification-stack + notifications
 
 LAYOUT

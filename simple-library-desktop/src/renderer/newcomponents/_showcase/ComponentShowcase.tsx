@@ -29,6 +29,8 @@ import {TextField} from "../input/textfield/TextField";
 import {TextArea} from "../input/textarea/TextArea";
 import {Card} from "../layout/card/Card";
 import {Badge} from "../misc/badge/Badge";
+import {useStateRef} from "../../components/common/commonHooks";
+import {Dialog} from "../modals/dialog/Dialog";
 
 interface ComponentShowcaseProps {
 	theme: Theme,
@@ -50,6 +52,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 				<div onClick={() => setBackground("2")}>BG-2</div>
 			</div>
 
+			{renderDialogs()}
 			{renderBadge()}
 			{renderCard()}
 			{renderTextArea()}
@@ -69,6 +72,45 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 
 		</div>
 	);
+
+
+	function renderDialogs() {
+
+		const [show, setShow, refShow] = useStateRef(false);
+
+		return <ShowcaseSection title={"Dialogs"}>
+
+			<Button onAction={() => setShow(true)}>
+				Open
+			</Button>
+
+			<Dialog
+				show={show}
+				icon={IconType.HOME}
+				title={"My Dialog Title"}
+				onClose={() => setShow(false)}
+				onEscape={() => setShow(false)}
+				onEnter={() => setShow(false)}
+				withOverlay
+				closable
+				closeOnClickOutside
+			>
+				<Slot name={"body"}>
+					<TextField onAccept={(value: string) => console.log("accept text", value)}/>
+					This is the actual content of the dialog <br/>
+					Usually, this goes over multiple lines and can be anything from
+					{[0,1,2,3].map(i => [<li>text</li>, <li>tables</li>, <li>forms</li>])}
+					<li>...and more</li>
+					To close, press the x-button, click outside, press escape or enter
+				</Slot>
+				<Slot name={"footer"}>
+					<Button>Cancel</Button>
+					<Button variant="info">Accept</Button>
+				</Slot>
+			</Dialog>
+
+		</ShowcaseSection>
+	}
 
 
 	function renderBadge() {
