@@ -14,7 +14,7 @@ import {CheckBox} from "../buttons/checkbox/CheckBox";
 import {Box, HBox, VBox} from "../layout/box/Box";
 import {HSplitPane, SLOT_DIVIDER, VSplitPane} from "../layout/splitpane/SplitPane";
 import {SplitPanePanel} from "../layout/splitpane/SplitPanePanel";
-import {Slot} from "../slot/Slot";
+import {Slot} from "../base/slot/Slot";
 import {Divider} from "../layout/splitpane/Divider";
 import {MenuButton} from "../buttons/menubutton/MenuButton"
 import {Menu} from "../menu/menu/Menu";

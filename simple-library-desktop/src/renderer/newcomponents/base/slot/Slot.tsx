@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {ReactElement, ReactNode} from 'react';
-import {getReactElements} from "../../components/common/common";
+import {getReactElements} from "../../../components/common/common";
 
 export interface SlotProps {
     name: string,

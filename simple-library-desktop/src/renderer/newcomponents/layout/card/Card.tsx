@@ -5,7 +5,7 @@ import {BaseProps} from "../../common";
 import {Icon, IconType} from "../../base/icon/Icon";
 import {concatClasses} from "../../../components/common/common";
 import {HBox, VBox} from "../box/Box";
-import {getChildrenOfSlot} from "../../slot/Slot";
+import {getChildrenOfSlot} from "../../base/slot/Slot";
 import {Label} from "../../base/label/Label";
 import {Button} from "../../buttons/button/Button";
 import {useKeyListener} from "../../../components/common/commonHooks";

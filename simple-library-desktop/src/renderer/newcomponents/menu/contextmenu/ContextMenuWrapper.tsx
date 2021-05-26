@@ -3,7 +3,7 @@ import { ReactElement, useRef } from 'react';
 import "./contextmenu.css";
 import { ContextMenu } from './ContextMenu';
 import {BaseProps} from "../../common";
-import {getChildrenOfSlot} from "../../slot/Slot";
+import {getChildrenOfSlot} from "../../base/slot/Slot";
 
 export interface ContextMenuWrapperProps extends BaseProps {
     onAction?: (itemId: string) => void;

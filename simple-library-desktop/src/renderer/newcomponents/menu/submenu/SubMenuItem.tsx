@@ -7,7 +7,7 @@ import { Icon, IconType } from '../../base/icon/Icon';
 import "./submenuitem.css";
 import {BaseProps} from "../../common";
 import {concatClasses, getIf} from "../../../components/common/common";
-import {getChildrenOfSlot} from "../../slot/Slot";
+import {getChildrenOfSlot} from "../../base/slot/Slot";
 
 export const SLOT_ITEM = "item";
 export const SLOT_MENU = "menu";
