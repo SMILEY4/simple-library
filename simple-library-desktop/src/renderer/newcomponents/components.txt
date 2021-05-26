@@ -22,7 +22,7 @@ MENU
 MODALS
 ✔ modalbase
 ✔ dialog
-- notification-stack + notifications
+✔ notification-stack + notifications
 
 LAYOUT
 ✔ box, hbox, vbox

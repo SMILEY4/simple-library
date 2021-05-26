@@ -1,0 +1,32 @@
+.notification {
+	position:      relative;
+	border-radius: var(--radius-0);
+}
+
+.notification-info {
+	background-color: var(--color-bg-info-faded);
+	border:       1px solid var(--color-border-info);
+}
+
+.notification-success {
+	background-color: var(--color-bg-success-faded);
+	border:           1px solid var(--color-border-success);
+}
+
+.notification-warn {
+	background-color: var(--color-bg-warn-faded);
+	border:           1px solid var(--color-border-warn);
+}
+
+.notification-error {
+	background-color: var(--color-bg-error-faded);
+	border:           1px solid var(--color-border-error);
+}
+
+.notification-caption {
+	align-self: flex-end;
+}
+
+.notification-close {
+	align-self: flex-start;
+}

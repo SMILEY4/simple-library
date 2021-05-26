@@ -31,6 +31,9 @@ import {Card} from "../layout/card/Card";
 import {Badge} from "../misc/badge/Badge";
 import {useStateRef} from "../../components/common/commonHooks";
 import {Dialog} from "../modals/dialog/Dialog";
+import {Notification} from "../modals/notification/Notification";
+import {chooseRandom} from "../../components/common/common";
+import {NotificationStack} from "../modals/notification/NotificationStack";
 
 interface ComponentShowcaseProps {
 	theme: Theme,
@@ -52,6 +55,8 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 				<div onClick={() => setBackground("2")}>BG-2</div>
 			</div>
 
+			{renderNotificationStack()}
+			{renderNotification()}
 			{renderDialogs()}
 			{renderBadge()}
 			{renderCard()}
@@ -72,6 +77,85 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 
 		</div>
 	);
+
+
+	function renderNotificationStack() {
+
+		const [notifications, setNotifications] = useState([])
+		const [notificationIdCounter, setNotificationIdCounter] = useState(0)
+
+		return <ShowcaseSection title={"NotificationStack"}>
+
+			<Button onAction={() => {
+				setNotifications([...notifications, {
+					id: notificationIdCounter,
+					type: chooseRandom(["info", "success", "warn", "error"]),
+				}])
+				setNotificationIdCounter(notificationIdCounter + 1)
+			}}>
+				Add Notification
+			</Button>
+
+			<NotificationStack>
+				{
+					notifications.map(notification => {
+						return (
+							<Notification
+								type={notification.type}
+								icon={IconType.HOME}
+								title={"Notification " + notification.id}
+								caption={"Caption"}
+								closable
+								onClose={() => setNotifications(notifications.filter(n => n.id !== notification.id))}
+							>
+								Test Notification with a longer text as the content. <br/> This can be anything.
+							</Notification>
+						);
+					})
+				}
+			</NotificationStack>
+
+		</ShowcaseSection>
+	}
+
+
+	function renderNotification() {
+		return <ShowcaseSection title={"Notifications"}>
+
+			<Notification type="info" icon={IconType.HOME} closable>
+				This is a smaller Notification
+			</Notification>
+
+			<Notification type="info" icon={IconType.HOME} title="My Notification" caption="26.05.2021 - 16:34" closable>
+				This is a notification. Content can be anything
+				<li>Text</li>
+				<li>Components</li>
+				<li>...and more</li>
+			</Notification>
+
+			<Notification type="success" icon={IconType.HOME} title="My Notification" caption="26.05.2021 - 16:34" closable>
+				This is a notification. Content can be anything
+				<li>Text</li>
+				<li>Components</li>
+				<li>...and more</li>
+			</Notification>
+
+			<Notification type="warn" icon={IconType.HOME} title="My Notification" caption="26.05.2021 - 16:34" closable>
+				This is a notification. Content can be anything
+				<li>Text</li>
+				<li>Components</li>
+				<li>...and more</li>
+			</Notification>
+
+			<Notification type="error" icon={IconType.HOME} title="My Notification" caption="26.05.2021 - 16:34" closable>
+				This is a notification. Content can be anything
+				<li>Text</li>
+				<li>Components</li>
+				<li>...and more</li>
+			</Notification>
+
+		</ShowcaseSection>
+	}
 
 
 	function renderDialogs() {
@@ -99,7 +183,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 					<TextField onAccept={(value: string) => console.log("accept text", value)}/>
 					This is the actual content of the dialog <br/>
 					Usually, this goes over multiple lines and can be anything from
-					{[0,1,2,3].map(i => [<li>text</li>, <li>tables</li>, <li>forms</li>])}
+					{[0, 1, 2, 3].map(i => [<li>text</li>, <li>tables</li>, <li>forms</li>])}
 					<li>...and more</li>
 					To close, press the x-button, click outside, press escape or enter
 				</Slot>
