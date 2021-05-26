@@ -237,7 +237,7 @@ export function callSafe(func: any) {
 export function addPropsToChildren(children: ReactNode | ReactNode[], props: (prevProps: any) => any, filter?: (child: React.ReactElement) => boolean): any[] {
 	return React.Children.map(children, (child: any) => {
 		if (React.isValidElement(child)) {
-			if (filter && filter(child)) {
+			if (!filter || (filter && filter(child))) {
 				return React.cloneElement(child, props(child.props));
 			} else {
 				return child;

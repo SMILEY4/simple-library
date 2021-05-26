@@ -42,18 +42,8 @@ export function Label(props: React.PropsWithChildren<LabelProps>): React.ReactEl
 	}
 
 	function getModifiedChildren() {
-		let elements = props.children;
-		if (props.overflow === "cutoff") {
-			elements = React.Children.map(elements, (child: any) => {
-				if (typeof child === "string") {
-					return <div className="label-text-wrapper">{child}</div>;
-				} else {
-					return child;
-				}
-			});
-		}
 		return addPropsToChildren(
-			elements,
+			props.children,
 			(prevProps: any) => getModifiedIconProps(prevProps),
 			(child: ReactElement) => child.type === Icon,
 		);

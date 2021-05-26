@@ -1,0 +1,16 @@
+.sidebar-title {
+	width:          100%;
+	min-height:     var(--s-0-75);
+	max-height:     var(--s-0-75);
+
+	display:        block;
+	overflow:       hidden;
+	white-space:    nowrap;
+	text-overflow:  ellipsis;
+	user-select:      none;
+
+	font-size:      var(--font-size-0);
+	font-weight:    bolder;
+	text-transform: capitalize;
+	color:          var(--color-text-secondary);
+}

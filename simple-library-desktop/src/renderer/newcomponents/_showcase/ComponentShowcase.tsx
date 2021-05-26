@@ -34,6 +34,12 @@ import {Dialog} from "../modals/dialog/Dialog";
 import {Notification} from "../modals/notification/Notification";
 import {chooseRandom} from "../../components/common/common";
 import {NotificationStack} from "../modals/notification/NotificationStack";
+import {Sidebar} from "../misc/sidebar/Sidebar";
+import {SidebarItem} from "../misc/sidebar/item/SidebarItem";
+import {SidebarSeparator} from "../misc/sidebar/separator/SidebarSeparator";
+import {SidebarTitle} from "../misc/sidebar/title/SidebarTitle";
+import {SidebarGroup} from "../misc/sidebar/group/SidebarGroup";
+import {SidebarTextField} from "../misc/sidebar/textfield/SidebarTextField";
 
 interface ComponentShowcaseProps {
 	theme: Theme,
@@ -55,6 +61,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 				<div onClick={() => setBackground("2")}>BG-2</div>
 			</div>
 
+			{renderSidebar()}
 			{renderNotificationStack()}
 			{renderNotification()}
 			{renderDialogs()}
@@ -77,6 +84,81 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 
 		</div>
 	);
+
+
+	function renderSidebar() {
+
+		const [size, setSize] = useState(null);
+
+		return <ShowcaseSection title={"Sidebar"}>
+
+			<div style={{
+				width: "100%",
+				height: "400px",
+				border: "1px solid black",
+				position: "relative",
+			}}>
+				<VSplitPane
+					primaryAsPercentage={false}
+					style={{width: "100%", height: "100%",}}
+					onResize={setSize}
+				>
+					<SplitPanePanel initialSize={"100px"} minSize={"42px"}>
+
+						<Sidebar mini={size && size <= 60}>
+
+							<SidebarTitle text={"Items"}/>
+							<SidebarItem icon={IconType.FOLDER} title="Open"/>
+							<SidebarItem icon={IconType.CHECKMARK} title="Verify" label="13421"/>
+
+							<SidebarSeparator/>
+							<SidebarTitle text={"Application"}/>
+							<SidebarItem icon={IconType.CLOSE} title="Close"/>
+
+							<SidebarSeparator/>
+							<SidebarTitle text={"Groups"}/>
+							<SidebarTextField
+								placeholder={"Search..."}
+								onChange={value => console.log("Search for", value)}
+							/>
+							<SidebarGroup icon={IconType.FOLDER} title={"All Items"}>
+								<SidebarItem icon={IconType.HOME} title="Collection 1"/>
+								<SidebarItem icon={IconType.HOME} title="Collection 1"/>
+								<SidebarItem icon={IconType.HOME} title="Collection 2"/>
+								<SidebarItem icon={IconType.HOME} title="Collection 3"/>
+								<SidebarItem icon={IconType.HOME} title="Collection 4"/>
+							</SidebarGroup>
+							<SidebarGroup icon={IconType.FOLDER} title={"Holiday 2019"}>
+								<SidebarItem icon={IconType.HOME} title="Collection 1"/>
+								<SidebarItem icon={IconType.HOME} title="Collection 1"/>
+								<SidebarItem icon={IconType.HOME} title="Collection 2"/>
+								<SidebarItem icon={IconType.HOME} title="Collection 3"/>
+								<SidebarItem icon={IconType.HOME} title="Collection 4"/>
+								<SidebarGroup icon={IconType.FOLDER} title={"In Progress"}>
+									<SidebarItem icon={IconType.HOME} title="Collection 1"/>
+									<SidebarItem icon={IconType.HOME} title="Collection 1"/>
+									<SidebarItem icon={IconType.HOME} title="Collection 2"/>
+								</SidebarGroup>
+							</SidebarGroup>
+							<SidebarGroup icon={IconType.FOLDER} title={"Travel 2018"}>
+								<SidebarItem icon={IconType.HOME} title="Collection 1"/>
+								<SidebarItem icon={IconType.HOME} title="Collection 1"/>
+								<SidebarItem icon={IconType.HOME} title="Collection 2"/>
+								<SidebarItem icon={IconType.HOME} title="Collection 3"/>
+								<SidebarItem icon={IconType.HOME} title="Collection 4"/>
+							</SidebarGroup>
+						</Sidebar>
+
+					</SplitPanePanel>
+					<SplitPanePanel initialSize={"100%"} minSize={"100px"}>
+						<div style={{backgroundColor: "var(--color-background-2)", width: "100%", height: "100%"}}/>
+					</SplitPanePanel>
+				</VSplitPane>
+			</div>
+
+
+		</ShowcaseSection>
+	}
 
 
 	function renderNotificationStack() {

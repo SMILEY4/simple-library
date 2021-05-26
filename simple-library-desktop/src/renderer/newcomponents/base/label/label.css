@@ -32,10 +32,8 @@
 	overflow:    hidden;
 }
 
-.label-overflow-cutoff > .label-text-wrapper {
-	min-width:     0;
-	flex-shrink:   1;
-	flex-grow:     1;
+.label-overflow-cutoff {
+	display: block;
 	white-space:   nowrap;
 	overflow:      hidden;
 	text-overflow: ellipsis;
