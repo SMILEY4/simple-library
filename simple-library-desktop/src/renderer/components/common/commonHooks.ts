@@ -85,6 +85,8 @@ export function useDraggable(onStart: () => void, onDrag: (dx: number, dy: numbe
 				onStop();
 				return;
 			}
+			event.preventDefault();
+			event.stopPropagation();
 			const targetPageX = refTarget.current.getBoundingClientRect().x + window.scrollX;
 			const targetPageY = refTarget.current.getBoundingClientRect().y + window.scrollY;
 			const mousePageX = event.pageX;

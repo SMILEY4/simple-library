@@ -40,6 +40,9 @@ import {SidebarSeparator} from "../misc/sidebar/separator/SidebarSeparator";
 import {SidebarTitle} from "../misc/sidebar/title/SidebarTitle";
 import {SidebarGroup} from "../misc/sidebar/group/SidebarGroup";
 import {SidebarTextField} from "../misc/sidebar/textfield/SidebarTextField";
+import {SetApplicationTheme} from "../../../common/messaging/messagesWindow";
+
+const {ipcRenderer} = window.require('electron');
 
 interface ComponentShowcaseProps {
 	theme: Theme,
@@ -54,8 +57,18 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 		<div className={"showcase theme-" + props.theme + " showcase-background-" + background}>
 
 			<div className={"showcase-header"}>
-				<div onClick={() => props.onChangeTheme(Theme.DARK)}>Dark</div>
-				<div onClick={() => props.onChangeTheme(Theme.LIGHT)}>Light</div>
+				<div onClick={() => {
+					SetApplicationTheme.request(ipcRenderer, "dark").then(() => {
+						props.onChangeTheme(Theme.DARK);
+					})
+				}}>Dark
+				</div>
+				<div onClick={() => {
+					SetApplicationTheme.request(ipcRenderer, "light").then(() => {
+						props.onChangeTheme(Theme.LIGHT);
+					})
+				}}>Light
+				</div>
 				<div onClick={() => setBackground("0")}>BG-0</div>
 				<div onClick={() => setBackground("1")}>BG-1</div>
 				<div onClick={() => setBackground("2")}>BG-2</div>

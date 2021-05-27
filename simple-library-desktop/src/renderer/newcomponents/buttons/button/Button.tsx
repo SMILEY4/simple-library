@@ -35,7 +35,7 @@ export function Button(props: React.PropsWithChildren<ButtonProps>): React.React
 				variant={getLabelVariant()}
 				disabled={props.disabled}
 				noSelect
-				overflow="cutoff"
+				overflow="nowrap-hidden"
 			>
 				{props.children}
 			</Label>
