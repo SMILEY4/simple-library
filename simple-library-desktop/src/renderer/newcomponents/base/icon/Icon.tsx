@@ -2,7 +2,7 @@ import React from "react";
 import "./icon.css";
 import {
     AiFillCaretRight,
-    AiFillHome,
+    AiFillHome, BsChevronDoubleLeft, BsChevronDoubleRight,
     BsChevronDown,
     BsChevronLeft,
     BsChevronRight,
@@ -21,8 +21,8 @@ export enum IconType {
     CHEVRON_RIGHT,
     // CHEVRON_DOUBLE_UP,
     // CHEVRON_DOUBLE_DOWN,
-    // CHEVRON_DOUBLE_LEFT,
-    // CHEVRON_DOUBLE_RIGHT,
+    CHEVRON_DOUBLE_LEFT,
+    CHEVRON_DOUBLE_RIGHT,
     CARET_RIGHT,
     // PLUS,
     // MINUS,
@@ -54,6 +54,8 @@ const ICON_COLOR_TYPE = new Map<IconType, string>([
     [IconType.CHEVRON_DOWN, SVG_FILLED],
     [IconType.CHEVRON_LEFT, SVG_FILLED],
     [IconType.CHEVRON_RIGHT, SVG_FILLED],
+    [IconType.CHEVRON_DOUBLE_LEFT, SVG_FILLED],
+    [IconType.CHEVRON_DOUBLE_RIGHT, SVG_FILLED],
 
 ]);
 
@@ -89,6 +91,10 @@ export function Icon(props: React.PropsWithChildren<IconProps>): React.ReactElem
             return <BsChevronLeft {...iconProps} />;
         case IconType.CHEVRON_RIGHT:
             return <BsChevronRight {...iconProps} />;
+        case IconType.CHEVRON_DOUBLE_LEFT:
+            return <BsChevronDoubleLeft {...iconProps} />;
+        case IconType.CHEVRON_DOUBLE_RIGHT:
+            return <BsChevronDoubleRight {...iconProps} />;
         default:
             return null;
     }

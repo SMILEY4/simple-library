@@ -37,10 +37,11 @@ import {NotificationStack} from "../modals/notification/NotificationStack";
 import {Sidebar} from "../misc/sidebar/Sidebar";
 import {SidebarItem} from "../misc/sidebar/item/SidebarItem";
 import {SidebarSeparator} from "../misc/sidebar/separator/SidebarSeparator";
-import {SidebarTitle} from "../misc/sidebar/title/SidebarTitle";
 import {SidebarGroup} from "../misc/sidebar/group/SidebarGroup";
 import {SidebarTextField} from "../misc/sidebar/textfield/SidebarTextField";
 import {SetApplicationTheme} from "../../../common/messaging/messagesWindow";
+import {SidebarSection} from "../misc/sidebar/section/SidebarSection";
+import {SidebarFooter} from "../misc/sidebar/footer/SidebarFooter";
 
 const {ipcRenderer} = window.require('electron');
 
@@ -101,7 +102,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 
 	function renderSidebar() {
 
-		const [size, setSize] = useState(null);
+		const [isMini, setMini] = useState(false);
 
 		return <ShowcaseSection title={"Sidebar"}>
 
@@ -113,53 +114,62 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 			}}>
 				<VSplitPane
 					primaryAsPercentage={false}
+					primaryCollapsed={isMini}
+					onResize={(size: number) => setMini(size && size <= 60)}
 					style={{width: "100%", height: "100%",}}
-					onResize={setSize}
 				>
 					<SplitPanePanel initialSize={"100px"} minSize={"42px"}>
 
-						<Sidebar mini={size && size <= 60}>
+						<Sidebar mini={isMini}>
 
-							<SidebarTitle text={"Items"}/>
-							<SidebarItem icon={IconType.FOLDER} title="Open"/>
-							<SidebarItem icon={IconType.CHECKMARK} title="Verify" label="13421"/>
-
-							<SidebarSeparator/>
-							<SidebarTitle text={"Application"}/>
-							<SidebarItem icon={IconType.CLOSE} title="Close"/>
+							<SidebarSection title={"Items"}>
+								<SidebarItem icon={IconType.FOLDER} title="Open"/>
+								<SidebarItem icon={IconType.CHECKMARK} title="Verify" label="13421"/>
+							</SidebarSection>
 
 							<SidebarSeparator/>
-							<SidebarTitle text={"Groups"}/>
-							<SidebarTextField
-								placeholder={"Search..."}
-								onChange={value => console.log("Search for", value)}
-							/>
-							<SidebarGroup icon={IconType.FOLDER} title={"All Items"}>
-								<SidebarItem icon={IconType.HOME} title="Collection 1"/>
-								<SidebarItem icon={IconType.HOME} title="Collection 1"/>
-								<SidebarItem icon={IconType.HOME} title="Collection 2"/>
-								<SidebarItem icon={IconType.HOME} title="Collection 3"/>
-								<SidebarItem icon={IconType.HOME} title="Collection 4"/>
-							</SidebarGroup>
-							<SidebarGroup icon={IconType.FOLDER} title={"Holiday 2019"}>
-								<SidebarItem icon={IconType.HOME} title="Collection 1"/>
-								<SidebarItem icon={IconType.HOME} title="Collection 1"/>
-								<SidebarItem icon={IconType.HOME} title="Collection 2"/>
-								<SidebarItem icon={IconType.HOME} title="Collection 3"/>
-								<SidebarItem icon={IconType.HOME} title="Collection 4"/>
-								<SidebarGroup icon={IconType.FOLDER} title={"In Progress"}>
+
+							<SidebarSection title={"Application"}>
+								<SidebarItem icon={IconType.CLOSE} title="Close"/>
+							</SidebarSection>
+
+							<SidebarSeparator/>
+
+							<SidebarSection scrollable title={"Groups"}>
+								<SidebarTextField
+									placeholder={"Search..."}
+									onChange={value => console.log("Search for", value)}
+								/>
+								<SidebarGroup icon={IconType.FOLDER} title={"All Items"}>
 									<SidebarItem icon={IconType.HOME} title="Collection 1"/>
 									<SidebarItem icon={IconType.HOME} title="Collection 1"/>
 									<SidebarItem icon={IconType.HOME} title="Collection 2"/>
+									<SidebarItem icon={IconType.HOME} title="Collection 3"/>
+									<SidebarItem icon={IconType.HOME} title="Collection 4"/>
 								</SidebarGroup>
-							</SidebarGroup>
-							<SidebarGroup icon={IconType.FOLDER} title={"Travel 2018"}>
-								<SidebarItem icon={IconType.HOME} title="Collection 1"/>
-								<SidebarItem icon={IconType.HOME} title="Collection 1"/>
-								<SidebarItem icon={IconType.HOME} title="Collection 2"/>
-								<SidebarItem icon={IconType.HOME} title="Collection 3"/>
-								<SidebarItem icon={IconType.HOME} title="Collection 4"/>
-							</SidebarGroup>
+								<SidebarGroup icon={IconType.FOLDER} title={"Holiday 2019"}>
+									<SidebarItem icon={IconType.HOME} title="Collection 1"/>
+									<SidebarItem icon={IconType.HOME} title="Collection 1"/>
+									<SidebarItem icon={IconType.HOME} title="Collection 2"/>
+									<SidebarItem icon={IconType.HOME} title="Collection 3"/>
+									<SidebarItem icon={IconType.HOME} title="Collection 4"/>
+									<SidebarGroup icon={IconType.FOLDER} title={"In Progress"}>
+										<SidebarItem icon={IconType.HOME} title="Collection 1"/>
+										<SidebarItem icon={IconType.HOME} title="Collection 1"/>
+										<SidebarItem icon={IconType.HOME} title="Collection 2"/>
+									</SidebarGroup>
+								</SidebarGroup>
+								<SidebarGroup icon={IconType.FOLDER} title={"Travel 2018"}>
+									<SidebarItem icon={IconType.HOME} title="Collection 1"/>
+									<SidebarItem icon={IconType.HOME} title="Collection 1"/>
+									<SidebarItem icon={IconType.HOME} title="Collection 2"/>
+									<SidebarItem icon={IconType.HOME} title="Collection 3"/>
+									<SidebarItem icon={IconType.HOME} title="Collection 4"/>
+								</SidebarGroup>
+							</SidebarSection>
+
+							<SidebarFooter onToggleMini={() => setMini(!isMini)}/>
+
 						</Sidebar>
 
 					</SplitPanePanel>

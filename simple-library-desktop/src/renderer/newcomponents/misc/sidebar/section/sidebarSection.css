@@ -1,0 +1,8 @@
+.sidebar-section {
+	overflow-x: visible;
+	width:      100%;
+}
+
+.sidebar-section-scrollable {
+	overflow-y: auto;
+}
