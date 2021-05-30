@@ -1,0 +1,7 @@
+.tree-leaf {
+	padding-left: var(--s-0-5);
+}
+
+.tree-leaf-selected {
+	background-color: var(--color-bg-raised-active);
+}

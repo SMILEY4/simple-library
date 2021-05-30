@@ -1,0 +1,24 @@
+.tree-node-wrapper {
+	width:           100%;
+	display:         flex;
+	flex-direction:  column;
+	justify-content: stretch;
+	gap:             var(--s-0-15);
+	overflow:        auto;
+}
+
+.tree-node {
+	height:          var(--s-1);
+	display:         flex;
+	flex-direction:  row;
+	justify-content: flex-start;
+	align-items:     stretch;
+}
+
+.tree-node-icon-wrapper {
+	width:           var(--s-1);
+	display:         flex;
+	justify-content: flex-start;
+	align-items:     center;
+}
+

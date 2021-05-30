@@ -44,6 +44,8 @@ import {SidebarFooter} from "../misc/sidebar/footer/SidebarFooter";
 import {AppLayout} from "../misc/app/AppLayout";
 import {DynamicSlot} from "../base/slot/DynamicSlot";
 import {Slot} from "../base/slot/Slot";
+import {TreeNode} from "../misc/tree/TreeNode";
+import {TreeLeaf} from "../misc/tree/TreeLeaf";
 
 const {ipcRenderer} = window.require('electron');
 
@@ -77,6 +79,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
                 <div onClick={() => setBackground("2")}>BG-2</div>
             </div>
 
+            {renderTreeView()}
             {renderAppLayout()}
             {renderSidebar()}
             {renderNotificationStack()}
@@ -101,6 +104,103 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 
         </div>
     );
+
+
+    function renderTreeView() {
+        return <ShowcaseSection title={"Tree"}>
+
+            <div style={{
+                width: "200px",
+                height: "300px",
+                border: "1px solid black",
+                position: "relative",
+                display: "flex"
+            }}>
+
+                <TreeNode title="Project" icon={IconType.FOLDER} root>
+                    <TreeNode title="Base" icon={IconType.FOLDER}>
+                        <TreeNode title="Element" icon={IconType.FOLDER}>
+                            <TreeLeaf title="component" icon={IconType.FILE}/>
+                            <TreeLeaf title="style" icon={IconType.FILE}/>
+                        </TreeNode>
+                        <TreeNode title="Icon" icon={IconType.FOLDER}>
+                            <TreeLeaf title="component" icon={IconType.FILE}/>
+                            <TreeLeaf title="style" icon={IconType.FILE}/>
+                        </TreeNode>
+                        <TreeNode title="Label" icon={IconType.FOLDER}>
+                            <TreeLeaf title="component" icon={IconType.FILE}/>
+                            <TreeLeaf title="style" icon={IconType.FILE}/>
+                        </TreeNode>
+                        <TreeNode title="Slot" icon={IconType.FOLDER}>
+                            <TreeLeaf title="component" icon={IconType.FILE}/>
+                            <TreeLeaf title="style" icon={IconType.FILE}/>
+                        </TreeNode>
+                    </TreeNode>
+                    <TreeNode title="Buttons" icon={IconType.FOLDER}>
+                        <TreeNode title="Button" icon={IconType.FOLDER}>
+                            <TreeLeaf title="component" icon={IconType.FILE}/>
+                            <TreeLeaf title="style" icon={IconType.FILE}/>
+                        </TreeNode>
+                        <TreeNode title="CheckBox" icon={IconType.FOLDER}>
+                            <TreeLeaf title="component" icon={IconType.FILE}/>
+                            <TreeLeaf title="style" icon={IconType.FILE}/>
+                        </TreeNode>
+                        <TreeNode title="ChoiceBox" icon={IconType.FOLDER}>
+                            <TreeLeaf title="component" icon={IconType.FILE}/>
+                            <TreeLeaf title="style" icon={IconType.FILE}/>
+                        </TreeNode>
+                        <TreeNode title="MenuButton" icon={IconType.FOLDER}>
+                            <TreeLeaf title="component" icon={IconType.FILE}/>
+                            <TreeLeaf title="style" icon={IconType.FILE}/>
+                        </TreeNode>
+                    </TreeNode>
+                    <TreeNode title="Input" icon={IconType.FOLDER}>
+                        <TreeNode title="TextField" icon={IconType.FOLDER}>
+                            <TreeLeaf title="component" icon={IconType.FILE}/>
+                            <TreeLeaf title="style" icon={IconType.FILE}/>
+                        </TreeNode>
+                        <TreeNode title="TextArea" icon={IconType.FOLDER}>
+                            <TreeLeaf title="component" icon={IconType.FILE}/>
+                            <TreeLeaf title="style" icon={IconType.FILE}/>
+                        </TreeNode>
+                    </TreeNode>
+                    <TreeNode title="Layout" icon={IconType.FOLDER}>
+                        <TreeNode title="Box" icon={IconType.FOLDER}>
+                            <TreeNode title="VBox" icon={IconType.FOLDER}>
+                                <TreeLeaf title="component" icon={IconType.FILE}/>
+                                <TreeLeaf title="style" icon={IconType.FILE}/>
+                            </TreeNode>
+                            <TreeNode title="HBox" icon={IconType.FOLDER}>
+                                <TreeLeaf title="component" icon={IconType.FILE}/>
+                                <TreeLeaf title="style" icon={IconType.FILE}/>
+                            </TreeNode>
+                        </TreeNode>
+                        <TreeNode title="Grid" icon={IconType.FOLDER}>
+                            <TreeLeaf title="component" icon={IconType.FILE}/>
+                            <TreeLeaf title="style" icon={IconType.FILE}/>
+                        </TreeNode>
+                        <TreeNode title="SplitPane" icon={IconType.FOLDER}>
+                            <TreeLeaf title="component" icon={IconType.FILE}/>
+                            <TreeLeaf title="style" icon={IconType.FILE}/>
+                        </TreeNode>
+                    </TreeNode>
+                    <TreeNode title="Misc" icon={IconType.FOLDER}>
+                        <TreeNode title="Sidebar" icon={IconType.FOLDER}>
+                            <TreeLeaf title="component" icon={IconType.FILE}/>
+                            <TreeLeaf title="style" icon={IconType.FILE}/>
+                        </TreeNode>
+                        <TreeNode title="AppLayout" icon={IconType.FOLDER}>
+                            <TreeLeaf title="component" icon={IconType.FILE}/>
+                            <TreeLeaf title="style" icon={IconType.FILE}/>
+                        </TreeNode>
+                    </TreeNode>
+                </TreeNode>
+
+            </div>
+
+
+        </ShowcaseSection>
+    }
 
 
     function renderAppLayout() {

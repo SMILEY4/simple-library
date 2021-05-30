@@ -2,7 +2,7 @@ import React from "react";
 import "./icon.css";
 import {
     AiFillCaretRight,
-    AiFillHome, BsChevronDoubleLeft, BsChevronDoubleRight,
+    AiFillHome, AiOutlineFileText, AiOutlineFolder, BsChevronDoubleLeft, BsChevronDoubleRight,
     BsChevronDown,
     BsChevronLeft,
     BsChevronRight,
@@ -33,7 +33,7 @@ export enum IconType {
     HOME,
     CHECKMARK,
     // DIRECTORY,
-    // FILE,
+    FILE,
     // IMAGES,
     FOLDER,
 }
@@ -46,6 +46,7 @@ const SVG_FILLED = "filled";
 const ICON_COLOR_TYPE = new Map<IconType, string>([
     [IconType.CLOSE, SVG_FILLED],
     [IconType.FOLDER, SVG_OUTLINED],
+    [IconType.FILE, SVG_OUTLINED],
     [IconType.HOME, SVG_FILLED],
     [IconType.CHECKMARK, SVG_FILLED],
     [IconType.CARET_RIGHT, SVG_FILLED],
@@ -75,8 +76,6 @@ export function Icon(props: React.PropsWithChildren<IconProps>): React.ReactElem
     switch (props.type) {
         case IconType.CLOSE:
             return <CgClose {...iconProps} />;
-        case IconType.FOLDER:
-            return <HiOutlineFolder {...iconProps} />;
         case IconType.HOME:
             return <AiFillHome {...iconProps} />;
         case IconType.CHECKMARK:
@@ -95,6 +94,10 @@ export function Icon(props: React.PropsWithChildren<IconProps>): React.ReactElem
             return <BsChevronDoubleLeft {...iconProps} />;
         case IconType.CHEVRON_DOUBLE_RIGHT:
             return <BsChevronDoubleRight {...iconProps} />;
+        case IconType.FILE:
+            return <AiOutlineFileText {...iconProps} />;
+        case IconType.FOLDER:
+            return <AiOutlineFolder {...iconProps} />;
         default:
             return null;
     }
