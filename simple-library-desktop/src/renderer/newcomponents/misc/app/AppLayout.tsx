@@ -89,7 +89,7 @@ export function AppLayout(props: React.PropsWithChildren<AppLayoutProps>): React
     }
 
     function getSidebarContentRight(): ReactElement {
-        return getChildOfDynamicSlot(props.children, "sidebar-left", selectedRight)
+        return getChildOfDynamicSlot(props.children, "sidebar-right", selectedRight)
     }
 
     function getMainContent(): ReactElement {

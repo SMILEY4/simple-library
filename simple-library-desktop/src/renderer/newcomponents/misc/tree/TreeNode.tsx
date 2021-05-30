@@ -11,6 +11,7 @@ export interface TreeNodeProps extends BaseProps {
     icon?: IconType,
     root?: boolean,
     __depth?: number
+    // todo: onSelect, onContextMenu, onDropOn, handle drag start -> bubble events with node-id up to root
 }
 
 export function TreeNode(props: React.PropsWithChildren<TreeNodeProps>): ReactElement {
@@ -36,7 +37,7 @@ export function TreeNode(props: React.PropsWithChildren<TreeNodeProps>): ReactEl
     function renderNode(): ReactElement {
         return (
             <div
-                className={"tree-node"}
+                className={"tree-node tree-element"}
                 onClick={onToggle}
                 style={{
                     paddingLeft: "calc(var(--s-1) * " + props.__depth + ")"
@@ -47,7 +48,7 @@ export function TreeNode(props: React.PropsWithChildren<TreeNodeProps>): ReactEl
                         <Icon type={show ? IconType.CHEVRON_DOWN : IconType.CHEVRON_RIGHT} size="0-75"/>
                     )}
                 </div>
-                <Label noSelect overflow="nowrap-hidden">
+                <Label noSelect overflow="nowrap">
                     {props.icon && <Icon type={props.icon}/>}
                     {props.title}
                 </Label>

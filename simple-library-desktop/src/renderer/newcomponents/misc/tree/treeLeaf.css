@@ -1,5 +1,8 @@
 .tree-leaf {
 	padding-left: var(--s-0-5);
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
 }
 
 .tree-leaf-selected {
