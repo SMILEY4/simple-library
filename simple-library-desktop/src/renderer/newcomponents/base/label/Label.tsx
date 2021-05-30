@@ -1,10 +1,10 @@
-import {BaseProps, Size} from "../../common";
+import {BaseProps, ClickableProps, Size} from "../../common";
 import React, {ReactElement} from "react";
 import "./label.css"
 import {addPropsToChildren, concatClasses, getIf, map, mapOrDefault} from "../../../components/common/common";
 import {Icon, IconProps} from "../icon/Icon";
 
-export interface LabelProps extends BaseProps {
+export interface LabelProps extends BaseProps, ClickableProps {
 	type?: "header-1" | "header-2" | "header-3" | "header-4" | "body" | "caption"
 	variant?: "primary" | "secondary" | "info" | "success" | "error" | "warn" | "on-variant"
 	disabled?: boolean,
@@ -22,6 +22,7 @@ export function Label(props: React.PropsWithChildren<LabelProps>): React.ReactEl
 			className={getClassName()}
 			style={props.style}
 			ref={props.forwardRef}
+			onClick={props.onClick}
 		>
 			{getModifiedChildren()}
 		</div>

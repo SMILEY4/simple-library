@@ -6,6 +6,10 @@ export interface BaseProps {
 	style?: CSSProperties,
 }
 
+export interface ClickableProps {
+	onClick?: () => void
+}
+
 export type Size = "0"
 	| "0-15"
 	| "0-25"

@@ -14,11 +14,13 @@ export function Slot(props: React.PropsWithChildren<SlotProps>): ReactElement {
 
 export function getAllSlots(children: ReactNode | ReactNode[], slotName: string): ReactElement[] {
     return getReactElements(children)
+        .filter(child => child.type === Slot)
         .filter(child => child.props.name === slotName);
 }
 
 export function getFirstSlot(children: ReactNode | ReactNode[], slotName: string): ReactElement | undefined {
     return getReactElements(children)
+        .filter(child => child.type === Slot)
         .find(child => child.props.name === slotName);
 }
 
