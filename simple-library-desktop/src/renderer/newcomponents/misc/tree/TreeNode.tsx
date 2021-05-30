@@ -1,78 +1,51 @@
 import {BaseProps} from "../../common";
-import React, {ReactElement, useState} from "react";
+import React, {ReactElement} from "react";
 import {Icon, IconType} from "../../base/icon/Icon";
 import {Label} from "../../base/label/Label";
 import "./treeNode.css"
-import {addPropsToChildren, orDefault} from "../../../components/common/common";
-import {TreeLeaf} from "./TreeLeaf";
+import {TreeElementProps} from "./TreeView";
+import {concatClasses, getIf} from "../../../components/common/common";
 
-export interface TreeNodeProps extends BaseProps {
-    title: string,
-    icon?: IconType,
-    root?: boolean,
-    __depth?: number
-    // todo: onSelect, onContextMenu, onDropOn, handle drag start -> bubble events with node-id up to root
+export interface TreeNodeProps extends TreeElementProps, BaseProps {
+    expandable?: boolean,
+    expanded: boolean,
+    onToggle: () => void
 }
 
 export function TreeNode(props: React.PropsWithChildren<TreeNodeProps>): ReactElement {
 
-    const [show, setShow] = useState(false);
-
-    if (props.root) {
-        return (
-            <div className="tree-node-wrapper">
-                {renderNode()}
-                {show && getModifiedChildren()}
-            </div>
-        )
-    } else {
-        return (
-            <>
-                {renderNode()}
-                {show && getModifiedChildren()}
-            </>
-        )
-    }
-
-    function renderNode(): ReactElement {
-        return (
+    return (
+        <>
             <div
-                className={"tree-node tree-element"}
-                onClick={onToggle}
-                style={{
-                    paddingLeft: "calc(var(--s-1) * " + props.__depth + ")"
-                }}
+                className={concatClasses("tree-node", getIf(props.selected, "tree-node-selected"))}
+                style={{paddingLeft: calculateInset()}}
             >
-                <div className={"tree-node-icon-wrapper"}>
-                    {hasContent() && (
-                        <Icon type={show ? IconType.CHEVRON_DOWN : IconType.CHEVRON_RIGHT} size="0-75"/>
+                <div
+                    className={"tree-node-icon-wrapper"}
+                    onClick={props.onToggle}
+                >
+                    {props.expandable && (
+                        <Icon type={props.expanded ? IconType.CHEVRON_DOWN : IconType.CHEVRON_RIGHT} size="0-75"/>
                     )}
                 </div>
-                <Label noSelect overflow="nowrap">
-                    {props.icon && <Icon type={props.icon}/>}
-                    {props.title}
-                </Label>
+                <div
+                    className={"tree-node-label-wrapper"}
+                    onClick={props.onSelect}
+                    onDoubleClick={props.onDoubleClick}
+                    onContextMenu={props.onContextMenu}
+                >
+                    <Label noSelect overflow="nowrap">
+                        {props.icon && <Icon type={props.icon}/>}
+                        {props.value}
+                    </Label>
+                </div>
             </div>
-        );
-    }
+            {props.expanded && props.expandable && props.children}
+        </>
+    )
 
-    function hasContent(): boolean {
-        return !!props.children;
-    }
-
-    function getModifiedChildren(): ReactElement[] {
-        const depthChildren = orDefault(props.__depth, 0) + 1
-        return addPropsToChildren(
-            props.children,
-            prevProps => ({...prevProps, __depth: depthChildren}),
-            child => child.type === TreeNode || child.type === TreeLeaf
-        )
-    }
-
-    function onToggle() {
-        if (hasContent()) {
-            setShow(!show);
-        }
+    function calculateInset(): string {
+        return "calc(var(--s-1) * " + props.depth + " + var(--s-0-25))";
     }
 
 }

@@ -6,7 +6,6 @@
 	background-color: var(--color-background-0);
 }
 
-
 .app-layout-tab-bar {
 	width:          var(--s-1);
 	display:        flex;
@@ -20,7 +19,6 @@
 .app-layout-tab-bar-right {
 	border-left: 1px solid var(--color-border);
 }
-
 
 .app-layout-tab {
 	writing-mode:   vertical-lr;
@@ -42,16 +40,15 @@
 	transform: rotate(90deg);
 }
 
-
 .app-layout-area-resizeable {
 	display:   flex;
 	flex-grow: 1;
 }
 
-
 .app-layout-sidebar {
+	flex-basis: 150px;
+	overflow: auto;
 }
-
 
 .app-layout-main {
 	flex-grow:        1;

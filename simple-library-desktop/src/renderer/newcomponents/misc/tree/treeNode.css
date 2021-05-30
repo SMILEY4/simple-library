@@ -1,21 +1,14 @@
-.tree-element {
-	flex-shrink: 0;
-}
-
-.tree-node-wrapper {
-	width:           100%;
-	display:         flex;
-	flex-direction:  column;
-	justify-content: stretch;
-	gap:             var(--s-0-15);
-}
-
 .tree-node {
 	height:          var(--s-1);
 	display:         flex;
 	flex-direction:  row;
 	justify-content: flex-start;
 	align-items:     stretch;
+	padding-right:   var(--s-0-25);
+}
+
+.tree-node-selected {
+	background-color: var(--color-bg-raised-active);
 }
 
 .tree-node-icon-wrapper {
@@ -23,6 +16,9 @@
 	display:         flex;
 	justify-content: flex-start;
 	align-items:     center;
-	flex-shrink: 0;
+	flex-shrink:     0;
 }
 
+.tree-node-label-wrapper {
+	flex-grow: 1;
+}
