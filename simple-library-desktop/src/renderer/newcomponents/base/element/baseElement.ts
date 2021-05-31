@@ -1,4 +1,4 @@
-import {BaseProps} from "../../common";
+import {BaseProps} from "../../utils/common";
 import {concatClasses, getIf, map} from "../../../components/common/common";
 
 export interface BaseElementProps extends BaseProps {

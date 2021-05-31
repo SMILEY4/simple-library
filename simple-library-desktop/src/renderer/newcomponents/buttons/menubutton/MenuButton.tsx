@@ -1,4 +1,4 @@
-import {BaseProps} from "../../common";
+import {BaseProps} from "../../utils/common";
 import React, {MutableRefObject, ReactElement} from "react";
 import "./menubutton.css"
 import {Button} from "../button/Button";

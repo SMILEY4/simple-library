@@ -1,7 +1,7 @@
-import {BaseProps} from "../../common";
+import {BaseProps} from "../../utils/common";
 import React, {ReactElement} from "react";
 import {Label} from "../../base/label/Label";
-import {Icon, IconType} from "../../base/icon/Icon";
+import {Icon} from "../../base/icon/Icon";
 import "./treeLeaf.css"
 import {concatClasses, getIf} from "../../../components/common/common";
 import {TreeElementProps} from "./TreeView";
@@ -18,7 +18,11 @@ export function TreeLeaf(props: React.PropsWithChildren<TreeLeafProps>): ReactEl
             style={{paddingLeft: calculateInset()}}
             onClick={props.onSelect}
             onDoubleClick={props.onDoubleClick}
-            onContextMenu={props.onContextMenu}
+            draggable={props.draggable}
+            onDragStart={props.draggable && props.onDrag}
+            onDragOver={props.dropTarget && props.onDragOver}
+            onDrop={props.dropTarget && props.onDrop}
+            onContextMenu={e => props.onContextMenu(e.pageX, e.pageY)}
         >
             <Label noSelect overflow="nowrap">
                 {props.icon && <Icon type={props.icon}/>}

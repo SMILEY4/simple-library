@@ -1,6 +1,6 @@
 import * as React from "react";
 import {ReactElement} from "react";
-import {BaseProps} from "../../common";
+import {BaseProps} from "../../utils/common";
 import {concatClasses, getIf, mapOrDefault} from "../../../components/common/common";
 import "./badge.css"
 import {Icon, IconType} from "../../base/icon/Icon";

@@ -1,4 +1,4 @@
-import {BaseProps, ClickableProps, Size} from "../../common";
+import {BaseProps, ClickableProps, Size} from "../../utils/common";
 import React, {ReactElement} from "react";
 import "./label.css"
 import {addPropsToChildren, concatClasses, getIf, map, mapOrDefault} from "../../../components/common/common";

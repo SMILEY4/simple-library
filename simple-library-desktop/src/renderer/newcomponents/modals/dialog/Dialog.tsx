@@ -1,6 +1,6 @@
 import * as React from "react";
 import "./dialog.css"
-import {BaseProps} from "../../common";
+import {BaseProps} from "../../utils/common";
 import {IconType} from "../../base/icon/Icon";
 import {ModalBase} from "../modalbase/ModalBase";
 import {Card} from "../../layout/card/Card";

@@ -1,24 +1,18 @@
-import { MutableRefObject, useEffect, useRef, useState } from 'react';
-import { componentLifecycle } from '../../../app/common/utils/functionalReactLifecycle';
+import React, {MutableRefObject, useEffect, useRef, useState} from 'react';
+import {componentLifecycle} from '../../../app/common/utils/functionalReactLifecycle';
 import {useClickOutside} from "../../../components/common/commonHooks";
 
-export function useContextMenu(refTarget?: MutableRefObject<any>) {
+export function useContextMenu() {
 
-    const menuRef: MutableRefObject<any> = useClickOutside(handleClickOutside);
-    const targetRef: MutableRefObject<any> = refTarget ? refTarget : useRef(null);
+    const menuRef: MutableRefObject<any> = useClickOutside(close);
     const [x, setX] = useState(0);
     const [y, setY] = useState(0);
     const [show, setShow] = useState(false);
 
-    componentLifecycle(
-        () => document.addEventListener("contextmenu", handleContextMenu),
-        () => document.removeEventListener("contextmenu", handleContextMenu),
-    );
-
     useEffect(() => {
-        if (menuRef && menuRef.current) {
+        if (show && menuRef && menuRef.current) {
             const overflowSide: string = elementOverflowSide(menuRef.current);
-            if (overflowSide && targetRef && targetRef.current) {
+            if (overflowSide) {
                 const offsets: number[] = elementOverflowOffset(menuRef.current, overflowSide);
                 setX(x + offsets[0]);
                 setY(y + offsets[1]);
@@ -26,20 +20,20 @@ export function useContextMenu(refTarget?: MutableRefObject<any>) {
         }
     });
 
-    function handleClickOutside() {
-        if (targetRef.current) {
-            setShow(false);
-        }
+    function openWithEvent(event: React.MouseEvent) {
+        event.preventDefault();
+        event.stopPropagation();
+        open(event.pageX, event.pageY);
     }
 
-    function handleContextMenu(event: any): void {
-        if (targetRef && targetRef.current && targetRef.current.contains(event.target)) {
-            event.preventDefault();
-            event.stopPropagation();
-            setX(event.pageX);
-            setY(event.pageY);
-            setShow(true);
-        }
+    function open(pageX: number, pageY: number) {
+        setX(pageX);
+        setY(pageY);
+        setShow(true);
+    }
+
+    function close() {
+        setShow(false);
     }
 
     function elementOverflowOffset(el: any, overflowSide: string): number[] {
@@ -56,7 +50,6 @@ export function useContextMenu(refTarget?: MutableRefObject<any>) {
         }
         return [0, 0];
     }
-
 
     function elementOverflowSide(el: any): string {
         let minX = el.offsetLeft;
@@ -92,10 +85,12 @@ export function useContextMenu(refTarget?: MutableRefObject<any>) {
     }
 
     return {
-        cmTargetRef: targetRef,
-        cmMenuRef: menuRef,
-        cmPos: { x: x + "px", y: y + "px" },
-        isShowContextMenu: show,
-        closeContextMenu: () => setShow(false),
+        showContextMenu: show,
+        contextMenuX: x,
+        contextMenuY: y,
+        contextMenuRef: menuRef,
+        openContextMenu: open,
+        openContextMenuWithEvent: openWithEvent,
+        closeContextMenu: close
     };
 }

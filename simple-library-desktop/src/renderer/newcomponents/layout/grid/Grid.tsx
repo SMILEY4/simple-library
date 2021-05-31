@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {CSSProperties, ReactElement} from 'react';
 import './grid.css';
-import {BaseProps, Size} from "../../common";
+import {BaseProps, Size} from "../../utils/common";
 import {concatClasses} from "../../../components/common/common";
 
 

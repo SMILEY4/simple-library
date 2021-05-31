@@ -1,7 +1,7 @@
 import * as React from "react";
 import {ReactElement} from "react";
 import {IconType} from "../../base/icon/Icon";
-import {BaseProps} from "../../common";
+import {BaseProps} from "../../utils/common";
 import {ModalBase} from "../modalbase/ModalBase";
 import {Box} from "../../layout/box/Box";
 import {addPropsToChildren, concatClasses} from "../../../components/common/common";

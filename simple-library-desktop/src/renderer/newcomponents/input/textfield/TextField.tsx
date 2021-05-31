@@ -1,7 +1,7 @@
 import * as React from "react";
 import {ReactElement, useState} from "react";
 import {BaseElementInset} from "../../base/element/BaseElementInset";
-import {BaseProps} from "../../common";
+import {BaseProps} from "../../utils/common";
 import {concatClasses} from "../../../components/common/common";
 import {Icon, IconType} from "../../base/icon/Icon";
 import "./textfield.css"

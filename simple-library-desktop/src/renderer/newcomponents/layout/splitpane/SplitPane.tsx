@@ -4,7 +4,7 @@ import {MutableRefObject, ReactElement, useEffect, useRef} from 'react';
 import {Divider} from './Divider';
 import {useSplitPane} from './useSplitPane';
 import {SplitPanePanel} from "./SplitPanePanel";
-import {BaseProps} from "../../common";
+import {BaseProps} from "../../utils/common";
 import {concatClasses, getReactElements, map} from "../../../components/common/common";
 import {getChildOfSlot} from "../../../components/base/slot/Slot";
 

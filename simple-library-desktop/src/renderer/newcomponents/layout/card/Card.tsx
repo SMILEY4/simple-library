@@ -1,7 +1,7 @@
 import * as React from "react";
 import {ReactElement} from "react";
 import "./card.css"
-import {BaseProps} from "../../common";
+import {BaseProps} from "../../utils/common";
 import {Icon, IconType} from "../../base/icon/Icon";
 import {concatClasses} from "../../../components/common/common";
 import {HBox, VBox} from "../box/Box";

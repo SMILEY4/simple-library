@@ -1,7 +1,7 @@
 import {concatClasses, mapOrDefault,} from "../../../components/common/common";
 import * as React from "react";
 import {ReactElement} from "react";
-import {BaseProps} from "../../common";
+import {BaseProps} from "../../utils/common";
 import {Icon, IconType} from "../../base/icon/Icon";
 import {HBox, VBox} from "../../layout/box/Box";
 import {Label} from "../../base/label/Label";

@@ -1,4 +1,4 @@
-import {BaseProps} from "../../../common";
+import {BaseProps} from "../../../utils/common";
 import {IconType} from "../../../base/icon/Icon";
 import React, {ReactElement} from "react";
 import {TextField, TextFieldProps} from "../../../input/textfield/TextField";

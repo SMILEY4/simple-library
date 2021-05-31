@@ -1,6 +1,6 @@
 import * as React from "react";
 import {ReactElement} from "react";
-import {BaseProps} from "../../common";
+import {BaseProps} from "../../utils/common";
 import {VBox} from "../../layout/box/Box";
 import {addPropsToChildren, concatClasses, getIf} from "../../../components/common/common";
 import "./sidebar.css"

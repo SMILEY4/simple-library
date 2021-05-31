@@ -1,6 +1,6 @@
 import React from "react";
 import "./image.css"
-import {BaseProps} from "../../common";
+import {BaseProps} from "../../utils/common";
 import {concatClasses, mapOrDefault} from "../../../components/common/common";
 
 export interface ImageProps extends BaseProps {

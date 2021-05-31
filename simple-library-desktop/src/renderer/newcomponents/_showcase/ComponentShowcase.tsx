@@ -46,6 +46,7 @@ import {DynamicSlot} from "../base/slot/DynamicSlot";
 import {Slot} from "../base/slot/Slot";
 import {TreeView} from "../misc/tree/TreeView";
 import {getTreeData} from "./sampleData";
+import {setDragData} from "../utils/dragAndDropUtils";
 
 const {ipcRenderer} = window.require('electron');
 
@@ -59,7 +60,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
     const [background, setBackground] = useState("2");
 
     return (
-        <div className={"showcase theme-" + props.theme + " showcase-background-" + background}>
+        <div className={"showcase theme-" + props.theme + " showcase-background-" + background} id={"showcase-root"}>
 
             <div className={"showcase-header"}>
                 <div onClick={() => {
@@ -116,7 +117,36 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
                 display: "flex",
                 overflow: "auto"
             }}>
-                <TreeView rootNode={getTreeData()}/>
+
+                <TreeView
+                    rootNode={getTreeData()}
+                    modalRootId={"showcase-root"}
+                    onDragStart={(nodeId: string, dataTransfer: DataTransfer) => {
+                        setDragData("showcase", {id: nodeId}, {id: nodeId}, "move", dataTransfer);
+                    }}
+                >
+                    <DynamicSlot name={"context-menu"}>
+                        {(nodeId: string) => (
+                            <Menu>
+                                <TitleMenuItem title={"Node " + nodeId}/>
+                                <MenuItem itemId={"home"}><Icon type={IconType.HOME}/>Home</MenuItem>
+                                <MenuItem itemId={"folder"}><Icon type={IconType.FOLDER}/>Folder</MenuItem>
+                                <SubMenuItem itemId={"submenu"}>
+                                    <Slot name={"item"}>
+                                        Submenu
+                                    </Slot>
+                                    <Slot name={"menu"}>
+                                        <MenuItem itemId={"home-sub"}><Icon type={IconType.HOME}/>More Home</MenuItem>
+                                        <MenuItem itemId={"checkmark-sub"}><Icon type={IconType.CHECKMARK}/>More
+                                            Checkmark</MenuItem>
+                                    </Slot>
+                                </SubMenuItem>
+                                <MenuItem itemId={"checkmark"}><Icon type={IconType.CHECKMARK}/>Checkmark</MenuItem>
+                            </Menu>
+                        )}
+                    </DynamicSlot>
+                </TreeView>
+
             </div>
         </ShowcaseSection>
     }
@@ -173,6 +203,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
                         {(tabId: string) => (
                             <TreeView
                                 rootNode={getTreeData()}
+                                modalRootId={"showcase-root"}
                                 forceExpanded={expanded}
                                 onToggleExpand={handleToggleExpand}
                             />

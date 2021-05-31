@@ -2,7 +2,7 @@ import * as React from 'react';
 import {ReactElement} from 'react';
 import "./menuitem.css";
 import {Icon, IconType} from '../../base/icon/Icon';
-import {BaseProps} from "../../common";
+import {BaseProps} from "../../utils/common";
 import {concatClasses, getIf} from "../../../components/common/common";
 import {Label} from "../../base/label/Label";
 

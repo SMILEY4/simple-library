@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {ReactElement} from 'react';
 import "./splitpanepanel.css";
-import {BaseProps} from "../../common";
+import {BaseProps} from "../../utils/common";
 import {concatClasses, getIf} from "../../../components/common/common";
 
 interface SplitPanePanelProps extends BaseProps {

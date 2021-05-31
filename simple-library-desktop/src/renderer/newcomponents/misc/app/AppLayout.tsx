@@ -1,4 +1,4 @@
-import {BaseProps} from "../../common";
+import {BaseProps} from "../../utils/common";
 import * as React from "react";
 import {MutableRefObject, ReactElement, useRef, useState} from "react";
 import {Icon, IconType} from "../../base/icon/Icon";

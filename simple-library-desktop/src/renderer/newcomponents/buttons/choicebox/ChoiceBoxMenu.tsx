@@ -1,6 +1,6 @@
 import React, {CSSProperties, PropsWithChildren, ReactElement} from "react";
 import {ChoiceBoxItem} from "./ChoiceBox";
-import {BaseProps} from "../../common";
+import {BaseProps} from "../../utils/common";
 import {Menu} from "../../menu/menu/Menu";
 import {MenuItem} from "../../menu/menuitem/MenuItem";
 import {IconType} from "../../base/icon/Icon";

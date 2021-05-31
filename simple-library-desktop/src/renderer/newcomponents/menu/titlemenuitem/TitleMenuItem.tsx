@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ReactElement } from 'react';
 import "./titlemenuitem.css";
-import {BaseProps} from "../../common";
+import {BaseProps} from "../../utils/common";
 import {Label} from "../../base/label/Label";
 import {concatClasses} from "../../../components/common/common";
 

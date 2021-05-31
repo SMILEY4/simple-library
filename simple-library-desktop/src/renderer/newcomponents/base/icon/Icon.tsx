@@ -11,7 +11,7 @@ import {
     HiOutlineFolder,
 } from 'react-icons/all';
 import {CgClose} from "react-icons/cg";
-import {BaseProps, Size} from "../../common";
+import {BaseProps, Size} from "../../utils/common";
 import {concatClasses, getIf, map} from "../../../components/common/common";
 
 export enum IconType {

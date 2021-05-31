@@ -4,6 +4,7 @@
 	flex-direction:  row;
 	justify-content: space-between;
 	padding-right:   var(--s-0-25);
+	position: relative;
 }
 
 .tree-leaf-selected {

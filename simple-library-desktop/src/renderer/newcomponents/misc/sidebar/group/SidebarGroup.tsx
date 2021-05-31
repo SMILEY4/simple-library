@@ -1,4 +1,4 @@
-import {BaseProps} from "../../../common";
+import {BaseProps} from "../../../utils/common";
 import React, {ReactElement, useState} from "react";
 import {addPropsToChildren, concatClasses} from "../../../../components/common/common";
 import "./sidebarGroup.css"

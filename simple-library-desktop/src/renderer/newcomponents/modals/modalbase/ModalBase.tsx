@@ -2,8 +2,8 @@ import * as React from "react";
 import {MutableRefObject, ReactElement} from "react";
 import * as ReactDOM from 'react-dom';
 import "./modalBase.css";
-import {BaseProps} from "../../common";
-import {useClickOutside, useEventListener} from "../../../components/common/commonHooks";
+import {BaseProps} from "../../utils/common";
+import {useClickOutside} from "../../../components/common/commonHooks";
 import {concatClasses, mapOrDefault, mergeRefs} from "../../../components/common/common";
 
 export interface ModalBaseProps extends BaseProps {

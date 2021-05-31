@@ -1,4 +1,4 @@
-import {BaseProps} from "../../common";
+import {BaseProps} from "../../utils/common";
 import React from "react";
 import {concatClasses, map} from "../../../components/common/common";
 import "./selectionDisplay.css"

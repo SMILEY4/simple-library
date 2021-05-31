@@ -1,4 +1,4 @@
-import {BaseProps} from "../../common";
+import {BaseProps} from "../../utils/common";
 import * as React from "react";
 import {ReactElement, useState} from "react";
 import {concatClasses, map} from "../../../components/common/common";

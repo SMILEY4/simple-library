@@ -2,7 +2,7 @@ import * as React from 'react';
 import { ReactElement } from 'react';
 import "./menu.css";
 import { VBox } from '../../layout/box/Box';
-import {BaseProps} from "../../common";
+import {BaseProps} from "../../utils/common";
 import {addPropsToChildren, concatClasses} from "../../../components/common/common";
 import {MenuItem} from "../menuitem/MenuItem";
 import {SubMenuItem} from "../submenu/SubMenuItem";

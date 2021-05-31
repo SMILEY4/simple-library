@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {ReactElement} from 'react';
 import "./box.css";
-import {BaseProps, Size} from "../../common";
+import {BaseProps, Size} from "../../utils/common";
 import {concatClasses, map, mapOrDefault} from "../../../components/common/common";
 
 interface BoxProps extends BaseProps {

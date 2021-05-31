@@ -5,7 +5,7 @@ import { Manager, Popper, Reference } from 'react-popper';
 import { Menu } from '../menu/Menu';
 import { Icon, IconType } from '../../base/icon/Icon';
 import "./submenuitem.css";
-import {BaseProps} from "../../common";
+import {BaseProps} from "../../utils/common";
 import {concatClasses, getIf} from "../../../components/common/common";
 import {getChildrenOfSlot} from "../../base/slot/Slot";
 

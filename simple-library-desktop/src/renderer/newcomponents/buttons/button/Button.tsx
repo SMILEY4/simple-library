@@ -1,4 +1,4 @@
-import {BaseProps} from "../../common";
+import {BaseProps} from "../../utils/common";
 import React from "react";
 import {BaseElementRaised} from "../../base/element/BaseElementRaised";
 import {Label} from "../../base/label/Label";

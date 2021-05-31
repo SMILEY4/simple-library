@@ -1,10 +1,13 @@
-import {BaseProps} from "../../common";
+import {BaseProps} from "../../utils/common";
 import React, {ReactElement, useState} from "react";
 import {IconType} from "../../base/icon/Icon";
 import {TreeNode} from "./TreeNode";
 import {orDefault} from "../../../components/common/common";
 import {TreeLeaf} from "./TreeLeaf";
 import "./treeView.css"
+import {ContextMenuBase} from "../../menu/contextmenu/ContextMenuBase";
+import {useContextMenu} from "../../menu/contextmenu/contextMenuHook";
+import {getChildOfDynamicSlot} from "../../base/slot/DynamicSlot";
 
 export interface TreeViewNode {
     id: string,
@@ -22,17 +25,32 @@ export interface TreeElementProps {
 
     selected?: boolean,
     depth: number,
+    modalRootId: string,
 
     onSelect?: () => void,
     onDoubleClick?: () => void,
-    onContextMenu?: () => void
+    onContextMenu?: (pageX: number, pageY: number) => void,
+
+    draggable?: boolean,
+    onDrag?: (event: React.DragEvent) => void,
+
+    dropTarget?: boolean,
+    onDragOver?: (event: React.DragEvent) => void,
+    onDrop?: (event: React.DragEvent) => void,
+
 }
 
 
 export interface TreeViewProps extends BaseProps {
     rootNode: TreeViewNode,
+    modalRootId: string,
+
     forceExpanded?: string[],
     onToggleExpand?: (nodeId: string, expanded: boolean) => void
+
+    onDragStart?: (nodeId: string, dataTransfer: DataTransfer) => void;
+    onDragOver?: (nodeId: string, metaId: string, metadata: any) => void; // todo
+    onDrop?: (nodeId: string, metadata: any, data: any) => void; // todo
 }
 
 
@@ -41,9 +59,31 @@ export function TreeView(props: React.PropsWithChildren<TreeViewProps>): ReactEl
     const [expanded, setExpanded] = useState<string[]>(props.forceExpanded ? props.forceExpanded : []);
     const [selected, setSelected] = useState<string[]>([]);
 
+    const {
+        showContextMenu,
+        contextMenuX,
+        contextMenuY,
+        contextMenuRef,
+        openContextMenu,
+        closeContextMenu
+    } = useContextMenu();
+
     return (
         <div className={"tree-view"}>
             {renderNode(props.rootNode, 0)}
+
+            <ContextMenuBase
+                modalRootId={"showcase-root"}
+                show={showContextMenu}
+                pageX={contextMenuX}
+                pageY={contextMenuY}
+                menuRef={contextMenuRef}
+                onAction={(itemId: string) => closeContextMenu()}
+            >
+                {getChildOfDynamicSlot(props.children, "context-menu", selected)}
+            </ContextMenuBase>
+
+
         </div>
     );
 
@@ -61,12 +101,18 @@ export function TreeView(props: React.PropsWithChildren<TreeViewProps>): ReactEl
                 icon={node.icon}
                 selected={isSelected(node.id)}
                 depth={depth}
+                modalRootId={props.modalRootId}
                 expanded={isExpandable(node) && isExpanded(node.id)}
                 expandable={isExpandable(node)}
                 onToggle={() => isExpandable(node) && handleToggleExpand(node.id)}
                 onSelect={() => handleSelect(node.id)}
                 onDoubleClick={() => isExpandable(node) && handleToggleExpand(node.id)}
-                onContextMenu={() => console.log("context-menu", node.id)}
+                onContextMenu={(pageX: number, pageY: number) => handleContextMenu(node.id, pageX, pageY)}
+                draggable
+                dropTarget
+                onDrag={(e: React.DragEvent) => handleDrag(node.id, e)}
+                onDragOver={(e: React.DragEvent) => handleDragOver(node.id, e)}
+                onDrop={(e: React.DragEvent) => handleDrop(node.id, e)}
             >
                 {orDefault(node.children, []).map(child => renderNode(child, depth + 1))}
             </TreeNode>
@@ -82,9 +128,15 @@ export function TreeView(props: React.PropsWithChildren<TreeViewProps>): ReactEl
                 label={node.label}
                 selected={isSelected(node.id)}
                 depth={depth}
+                modalRootId={props.modalRootId}
                 onSelect={() => handleSelect(node.id)}
-                onDoubleClick={() => console.log("double-click", node.id)}
-                onContextMenu={() => console.log("context-menu", node.id)}
+                onDoubleClick={() => handleDoubleClick(node.id)}
+                onContextMenu={(pageX: number, pageY: number) => handleContextMenu(node.id, pageX, pageY)}
+                draggable
+                dropTarget
+                onDrag={(e: React.DragEvent) => handleDrag(node.id, e)}
+                onDragOver={(e: React.DragEvent) => handleDragOver(node.id, e)}
+                onDrop={(e: React.DragEvent) => handleDrop(node.id, e)}
             />
         );
     }
@@ -113,7 +165,6 @@ export function TreeView(props: React.PropsWithChildren<TreeViewProps>): ReactEl
             : expanded.indexOf(nodeId) !== -1;
     }
 
-
     function handleSelect(nodeId: string) {
         setSelected([nodeId])
     }
@@ -121,5 +172,32 @@ export function TreeView(props: React.PropsWithChildren<TreeViewProps>): ReactEl
     function isSelected(nodeId: string): boolean {
         return selected.indexOf(nodeId) !== -1;
     }
+
+    function handleDoubleClick(nodeId: string) {
+        handleSelect(nodeId);
+        // todo
+        console.log("double-click", nodeId)
+    }
+
+    function handleContextMenu(nodeId: string, pageX: number, pageY: number) {
+        handleSelect(nodeId);
+        openContextMenu(pageX, pageY)
+    }
+
+    function handleDrag(nodeId: string, event: React.DragEvent) {
+        handleSelect(nodeId);
+        props.onDragStart && props.onDragStart(nodeId, event.dataTransfer)
+    }
+
+    function handleDragOver(nodeId: string, event: React.DragEvent) {
+        // todo
+        console.log("drag-over", nodeId)
+    }
+
+    function handleDrop(nodeId: string, event: React.DragEvent) {
+        // todo
+        console.log("drop", nodeId)
+    }
+
 
 }

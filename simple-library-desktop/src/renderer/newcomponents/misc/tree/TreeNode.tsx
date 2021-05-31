@@ -1,4 +1,4 @@
-import {BaseProps} from "../../common";
+import {BaseProps} from "../../utils/common";
 import React, {ReactElement} from "react";
 import {Icon, IconType} from "../../base/icon/Icon";
 import {Label} from "../../base/label/Label";
@@ -19,6 +19,10 @@ export function TreeNode(props: React.PropsWithChildren<TreeNodeProps>): ReactEl
             <div
                 className={concatClasses("tree-node", getIf(props.selected, "tree-node-selected"))}
                 style={{paddingLeft: calculateInset()}}
+                draggable={props.draggable}
+                onDragStart={props.draggable && props.onDrag}
+                onDragOver={props.dropTarget && props.onDragOver}
+                onDrop={props.dropTarget && props.onDrop}
             >
                 <div
                     className={"tree-node-icon-wrapper"}
@@ -32,7 +36,7 @@ export function TreeNode(props: React.PropsWithChildren<TreeNodeProps>): ReactEl
                     className={"tree-node-label-wrapper"}
                     onClick={props.onSelect}
                     onDoubleClick={props.onDoubleClick}
-                    onContextMenu={props.onContextMenu}
+                    onContextMenu={(e: React.MouseEvent) => props.onContextMenu(e.pageX, e.pageY)}
                 >
                     <Label noSelect overflow="nowrap">
                         {props.icon && <Icon type={props.icon}/>}

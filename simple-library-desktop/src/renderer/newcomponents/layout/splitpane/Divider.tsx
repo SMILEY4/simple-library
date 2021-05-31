@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {MutableRefObject, ReactElement} from 'react';
 import "./divider.css";
-import {BaseProps} from "../../common";
+import {BaseProps} from "../../utils/common";
 import {useDraggable} from "../../../components/common/commonHooks";
 import {concatClasses, map} from "../../../components/common/common";
 

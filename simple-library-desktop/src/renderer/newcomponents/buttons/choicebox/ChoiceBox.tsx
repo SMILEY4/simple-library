@@ -1,4 +1,4 @@
-import {BaseProps} from "../../common";
+import {BaseProps} from "../../utils/common";
 import React, {MutableRefObject, useRef, useState} from "react";
 import "./choicebox.css"
 import {useClickOutside, useStateRef} from "../../../components/common/commonHooks";
