@@ -8,196 +8,193 @@ import "./treeView.css"
 import {ContextMenuBase} from "../../menu/contextmenu/ContextMenuBase";
 import {useContextMenu} from "../../menu/contextmenu/contextMenuHook";
 import {getChildOfDynamicSlot} from "../../base/slot/DynamicSlot";
+import {
+	DragDataContainer,
+	DragOpType,
+	extractMimeTypeProvidedMetadata,
+	getMetadataMimeType,
+	setDragData
+} from "../../utils/dragAndDropUtils";
 
 export interface TreeViewNode {
-    id: string,
-    value: string,
-    icon?: IconType,
-    label?: string,
-    children?: TreeViewNode[],
-    isLeaf?: boolean,
-}
+	id: string,
+	children?: TreeViewNode[],
+	isLeaf?: boolean,
 
-export interface TreeElementProps {
+	value: string,
+	icon?: IconType,
+	label?: string,
 
-    value: string,
-    icon?: IconType,
-
-    selected?: boolean,
-    depth: number,
-    modalRootId: string,
-
-    onSelect?: () => void,
-    onDoubleClick?: () => void,
-    onContextMenu?: (pageX: number, pageY: number) => void,
-
-    draggable?: boolean,
-    onDrag?: (event: React.DragEvent) => void,
-
-    dropTarget?: boolean,
-    onDragOver?: (event: React.DragEvent) => void,
-    onDrop?: (event: React.DragEvent) => void,
-
+	draggable?: boolean,
+	droppable?: boolean
 }
 
 
 export interface TreeViewProps extends BaseProps {
-    rootNode: TreeViewNode,
-    modalRootId: string,
+	modalRootId: string,
+	rootNode: TreeViewNode,
 
-    forceExpanded?: string[],
-    onToggleExpand?: (nodeId: string, expanded: boolean) => void
+	forceExpanded?: string[],
+	onToggleExpand?: (nodeId: string, expanded: boolean) => void
 
-    onDragStart?: (nodeId: string, dataTransfer: DataTransfer) => void;
-    onDragOver?: (nodeId: string, metaId: string, metadata: any) => void; // todo
-    onDrop?: (nodeId: string, metadata: any, data: any) => void; // todo
+	onDragStart?: (nodeId: string) => DragDataContainer;
+	onDragOver?: (nodeId: string, metaId: string | null, metadata: any | null) => DragOpType;
+	onDrop?: (nodeId: string, metaId: string | null, metadata: any | null, data: any) => void;
 }
 
 
 export function TreeView(props: React.PropsWithChildren<TreeViewProps>): ReactElement {
 
-    const [expanded, setExpanded] = useState<string[]>(props.forceExpanded ? props.forceExpanded : []);
-    const [selected, setSelected] = useState<string[]>([]);
+	const [expanded, setExpanded] = useState<string[]>(props.forceExpanded ? props.forceExpanded : []);
+	const [selected, setSelected] = useState<string[]>([]);
 
-    const {
-        showContextMenu,
-        contextMenuX,
-        contextMenuY,
-        contextMenuRef,
-        openContextMenu,
-        closeContextMenu
-    } = useContextMenu();
+	const {
+		showContextMenu,
+		contextMenuX,
+		contextMenuY,
+		contextMenuRef,
+		openContextMenu,
+		closeContextMenu
+	} = useContextMenu();
 
-    return (
-        <div className={"tree-view"}>
-            {renderNode(props.rootNode, 0)}
+	return (
+		<div className={"tree-view"}>
+			{renderNode(props.rootNode, 0)}
 
-            <ContextMenuBase
-                modalRootId={"showcase-root"}
-                show={showContextMenu}
-                pageX={contextMenuX}
-                pageY={contextMenuY}
-                menuRef={contextMenuRef}
-                onAction={(itemId: string) => closeContextMenu()}
-            >
-                {getChildOfDynamicSlot(props.children, "context-menu", selected)}
-            </ContextMenuBase>
+			<ContextMenuBase
+				modalRootId={"showcase-root"}
+				show={showContextMenu}
+				pageX={contextMenuX}
+				pageY={contextMenuY}
+				menuRef={contextMenuRef}
+				onAction={(itemId: string) => closeContextMenu()}
+			>
+				{getChildOfDynamicSlot(props.children, "context-menu", selected)}
+			</ContextMenuBase>
 
 
-        </div>
-    );
+		</div>
+	);
 
-    function renderNode(node: TreeViewNode, depth: number): ReactElement {
-        return node.isLeaf
-            ? renderLeaf(node, depth)
-            : renderGroup(node, depth)
-    }
+	function renderNode(node: TreeViewNode, depth: number): ReactElement {
+		return node.isLeaf
+			? renderLeaf(node, depth)
+			: renderGroup(node, depth)
+	}
 
-    function renderGroup(node: TreeViewNode, depth: number): ReactElement {
-        return (
-            <TreeNode
-                key={node.id}
-                value={node.value}
-                icon={node.icon}
-                selected={isSelected(node.id)}
-                depth={depth}
-                modalRootId={props.modalRootId}
-                expanded={isExpandable(node) && isExpanded(node.id)}
-                expandable={isExpandable(node)}
-                onToggle={() => isExpandable(node) && handleToggleExpand(node.id)}
-                onSelect={() => handleSelect(node.id)}
-                onDoubleClick={() => isExpandable(node) && handleToggleExpand(node.id)}
-                onContextMenu={(pageX: number, pageY: number) => handleContextMenu(node.id, pageX, pageY)}
-                draggable
-                dropTarget
-                onDrag={(e: React.DragEvent) => handleDrag(node.id, e)}
-                onDragOver={(e: React.DragEvent) => handleDragOver(node.id, e)}
-                onDrop={(e: React.DragEvent) => handleDrop(node.id, e)}
-            >
-                {orDefault(node.children, []).map(child => renderNode(child, depth + 1))}
-            </TreeNode>
-        );
-    }
+	function renderGroup(node: TreeViewNode, depth: number): ReactElement {
+		return (
+			<TreeNode
+				key={node.id}
+				value={node.value}
+				icon={node.icon}
+				selected={isSelected(node.id)}
+				depth={depth}
+				modalRootId={props.modalRootId}
+				expanded={isExpandable(node) && isExpanded(node.id)}
+				expandable={isExpandable(node)}
+				onToggle={() => isExpandable(node) && handleToggleExpand(node.id)}
+				onSelect={() => handleSelect(node.id)}
+				onDoubleClick={() => isExpandable(node) && handleToggleExpand(node.id)}
+				onContextMenu={(pageX: number, pageY: number) => handleContextMenu(node.id, pageX, pageY)}
+				draggable={node.draggable}
+				onDrag={(e: React.DragEvent) => handleDrag(node.id, e)}
+				dropTarget={node.droppable}
+				onDragOver={(e: React.DragEvent) => handleDragOver(node.id, e)}
+				onDrop={(e: React.DragEvent) => handleDrop(node.id, e)}
+			>
+				{orDefault(node.children, []).map(child => renderNode(child, depth + 1))}
+			</TreeNode>
+		);
+	}
 
-    function renderLeaf(node: TreeViewNode, depth: number): ReactElement {
-        return (
-            <TreeLeaf
-                key={node.id}
-                value={node.value}
-                icon={node.icon}
-                label={node.label}
-                selected={isSelected(node.id)}
-                depth={depth}
-                modalRootId={props.modalRootId}
-                onSelect={() => handleSelect(node.id)}
-                onDoubleClick={() => handleDoubleClick(node.id)}
-                onContextMenu={(pageX: number, pageY: number) => handleContextMenu(node.id, pageX, pageY)}
-                draggable
-                dropTarget
-                onDrag={(e: React.DragEvent) => handleDrag(node.id, e)}
-                onDragOver={(e: React.DragEvent) => handleDragOver(node.id, e)}
-                onDrop={(e: React.DragEvent) => handleDrop(node.id, e)}
-            />
-        );
-    }
+	function renderLeaf(node: TreeViewNode, depth: number): ReactElement {
+		return (
+			<TreeLeaf
+				key={node.id}
+				value={node.value}
+				icon={node.icon}
+				label={node.label}
+				selected={isSelected(node.id)}
+				depth={depth}
+				modalRootId={props.modalRootId}
+				onSelect={() => handleSelect(node.id)}
+				onDoubleClick={() => handleDoubleClick(node.id)}
+				onContextMenu={(pageX: number, pageY: number) => handleContextMenu(node.id, pageX, pageY)}
+				draggable={node.draggable}
+				onDrag={(e: React.DragEvent) => handleDrag(node.id, e)}
+				dropTarget={node.droppable}
+				onDragOver={(e: React.DragEvent) => handleDragOver(node.id, e)}
+				onDrop={(e: React.DragEvent) => handleDrop(node.id, e)}
+			/>
+		);
+	}
 
-    function handleToggleExpand(nodeId: string) {
-        if (props.forceExpanded) {
-            props.onToggleExpand(nodeId, !isExpanded(nodeId))
-        } else {
-            if (isExpanded(nodeId)) {
-                setExpanded(expanded.filter(expandedId => expandedId !== nodeId))
-                props.onToggleExpand && props.onToggleExpand(nodeId, false)
-            } else {
-                setExpanded([...expanded, nodeId])
-                props.onToggleExpand && props.onToggleExpand(nodeId, true)
-            }
-        }
-    }
+	function handleToggleExpand(nodeId: string) {
+		if (props.forceExpanded) {
+			props.onToggleExpand(nodeId, !isExpanded(nodeId))
+		} else {
+			if (isExpanded(nodeId)) {
+				setExpanded(expanded.filter(expandedId => expandedId !== nodeId))
+				props.onToggleExpand && props.onToggleExpand(nodeId, false)
+			} else {
+				setExpanded([...expanded, nodeId])
+				props.onToggleExpand && props.onToggleExpand(nodeId, true)
+			}
+		}
+	}
 
-    function isExpandable(node: TreeViewNode): boolean {
-        return !node.isLeaf && node.children && node.children.length > 0
-    }
+	function isExpandable(node: TreeViewNode): boolean {
+		return !node.isLeaf && node.children && node.children.length > 0
+	}
 
-    function isExpanded(nodeId: string): boolean {
-        return props.forceExpanded
-            ? props.forceExpanded.indexOf(nodeId) !== -1
-            : expanded.indexOf(nodeId) !== -1;
-    }
+	function isExpanded(nodeId: string): boolean {
+		return props.forceExpanded
+			? props.forceExpanded.indexOf(nodeId) !== -1
+			: expanded.indexOf(nodeId) !== -1;
+	}
 
-    function handleSelect(nodeId: string) {
-        setSelected([nodeId])
-    }
+	function handleSelect(nodeId: string) {
+		setSelected([nodeId])
+	}
 
-    function isSelected(nodeId: string): boolean {
-        return selected.indexOf(nodeId) !== -1;
-    }
+	function isSelected(nodeId: string): boolean {
+		return selected.indexOf(nodeId) !== -1;
+	}
 
-    function handleDoubleClick(nodeId: string) {
-        handleSelect(nodeId);
-        // todo
-        console.log("double-click", nodeId)
-    }
+	function handleDoubleClick(nodeId: string) {
+		handleSelect(nodeId);
+		console.log("double-click", nodeId) // todo
+	}
 
-    function handleContextMenu(nodeId: string, pageX: number, pageY: number) {
-        handleSelect(nodeId);
-        openContextMenu(pageX, pageY)
-    }
+	function handleContextMenu(nodeId: string, pageX: number, pageY: number) {
+		handleSelect(nodeId);
+		openContextMenu(pageX, pageY)
+	}
 
-    function handleDrag(nodeId: string, event: React.DragEvent) {
-        handleSelect(nodeId);
-        props.onDragStart && props.onDragStart(nodeId, event.dataTransfer)
-    }
+	function handleDrag(nodeId: string, event: React.DragEvent) {
+		handleSelect(nodeId);
+		if (props.onDragStart) {
+			const dragDataContainer: DragDataContainer = props.onDragStart(nodeId)
+			setDragData(dragDataContainer.metaId, dragDataContainer.metaData, dragDataContainer.data, event.dataTransfer)
+			event.dataTransfer.effectAllowed = dragDataContainer.allowedOps
+		}
+	}
 
-    function handleDragOver(nodeId: string, event: React.DragEvent) {
-        // todo
-        console.log("drag-over", nodeId)
-    }
+	function handleDragOver(nodeId: string, event: React.DragEvent) {
+		if (props.onDragOver) {
+			const metaId: string | null = getMetadataMimeType(event.dataTransfer);
+			const metadata: any | null = metaId ? extractMimeTypeProvidedMetadata(event.dataTransfer, metaId) : null;
+			event.dataTransfer.dropEffect = props.onDragOver(nodeId, metaId.replace("custom/", ""), metadata);
+		}
+	}
 
-    function handleDrop(nodeId: string, event: React.DragEvent) {
-        // todo
-        console.log("drop", nodeId)
-    }
-
+	function handleDrop(nodeId: string, event: React.DragEvent) {
+		if(props.onDrop) {
+			const metaId: string | null = getMetadataMimeType(event.dataTransfer);
+			const metadata: any | null = metaId ? extractMimeTypeProvidedMetadata(event.dataTransfer, metaId) : null;
+			props.onDrop(nodeId, metaId.replace("custom/", ""), metadata, event.dataTransfer.getData("application/json"))
+		}
+	}
 
 }

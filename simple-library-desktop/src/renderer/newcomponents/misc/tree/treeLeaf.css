@@ -1,14 +1,5 @@
 .tree-leaf {
-	padding-left:    var(--s-0-5);
-	display:         flex;
-	flex-direction:  row;
 	justify-content: space-between;
-	padding-right:   var(--s-0-25);
-	position: relative;
-}
-
-.tree-leaf-selected {
-	background-color: var(--color-bg-raised-active);
 }
 
 .tree-leaf > .tree-label {
