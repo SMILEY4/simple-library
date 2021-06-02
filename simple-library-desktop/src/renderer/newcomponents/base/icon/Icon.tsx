@@ -2,13 +2,13 @@ import React from "react";
 import "./icon.css";
 import {
     AiFillCaretRight,
-    AiFillHome, AiOutlineFileText, AiOutlineFolder, BsChevronDoubleLeft, BsChevronDoubleRight,
+    AiFillHome, AiOutlineClose, AiOutlineFileText, AiOutlineFolder, BsChevronDoubleLeft, BsChevronDoubleRight,
     BsChevronDown,
     BsChevronLeft,
     BsChevronRight,
     BsChevronUp,
     FaCheck,
-    HiOutlineFolder,
+    HiOutlineFolder, VscClose,
 } from 'react-icons/all';
 import {CgClose} from "react-icons/cg";
 import {BaseProps, Size} from "../../utils/common";
@@ -75,7 +75,7 @@ export function Icon(props: React.PropsWithChildren<IconProps>): React.ReactElem
     };
     switch (props.type) {
         case IconType.CLOSE:
-            return <CgClose {...iconProps} />;
+            return <VscClose {...iconProps} />;
         case IconType.HOME:
             return <AiFillHome {...iconProps} />;
         case IconType.CHECKMARK:

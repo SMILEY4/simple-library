@@ -47,6 +47,7 @@ import {Slot} from "../base/slot/Slot";
 import {TreeView} from "../misc/tree/TreeView";
 import {getTreeData} from "./sampleData";
 import {DragDataContainer, DragOpType} from "../utils/dragAndDropUtils";
+import {IconButton} from "../buttons/iconbutton/IconButton";
 
 const {ipcRenderer} = window.require('electron');
 
@@ -80,6 +81,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 				<div onClick={() => setBackground("2")}>BG-2</div>
 			</div>
 
+			{renderIconButton()}
 			{renderTreeView()}
 			{renderAppLayout()}
 			{renderSidebar()}
@@ -106,6 +108,44 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 		</div>
 	);
 
+
+	function renderIconButton() {
+		return <ShowcaseSection title={"Icon Button"}>
+
+			<div style={{display: "flex", gap: "20px"}}>
+				<IconButton icon={IconType.HOME}/>
+				<IconButton icon={IconType.HOME} large/>
+			</div>
+
+			<p>Ghost</p>
+			<div style={{display: "flex", gap: "20px"}}>
+				<IconButton ghost icon={IconType.HOME}/>
+				<IconButton ghost icon={IconType.HOME} large/>
+			</div>
+
+			<p>Disabled</p>
+			<div style={{display: "flex", gap: "20px"}}>
+				<IconButton disabled icon={IconType.HOME}/>
+				<IconButton disabled ghost icon={IconType.HOME}/>
+			</div>
+
+			<p>Variants</p>
+			<div style={{display: "flex", gap: "20px"}}>
+				<IconButton icon={IconType.HOME} variant="info"/>
+				<IconButton icon={IconType.HOME} variant="success"/>
+				<IconButton icon={IconType.HOME} variant="warn"/>
+				<IconButton icon={IconType.HOME} variant="error"/>
+			</div>
+
+			<p>With Label</p>
+			<div style={{display: "flex", gap: "20px"}}>
+				<IconButton label="Home" icon={IconType.HOME} large/>
+				<IconButton label="Directories" icon={IconType.FOLDER} large/>
+				<IconButton label="Exit" icon={IconType.CLOSE} large variant="warn"/>
+			</div>
+
+		</ShowcaseSection>
+	}
 
 	function renderTreeView() {
 		return <ShowcaseSection title={"Tree"}>
