@@ -28,7 +28,6 @@ export class LibraryMessageHandler {
         OpenLibraryMessage.handle(ipcMain, payload => this.handleOpen(payload));
         CloseLibraryMessage.handle(ipcMain, payload => this.handleClose(payload));
         GetLibraryMetadataMessage.handle(ipcMain, payload => this.handleGetMetadata(payload));
-
     }
 
     private async handleGetLastOpened(payload: GetLastOpenedLibrariesMessage.RequestPayload): Promise<GetLastOpenedLibrariesMessage.ResponsePayload | ErrorResponse> {

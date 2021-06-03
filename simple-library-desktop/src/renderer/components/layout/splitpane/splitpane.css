@@ -1,0 +1,12 @@
+.split-pane {
+	display:  flex;
+	overflow: hidden;
+}
+
+.split-pane-vertical {
+	flex-direction: row;
+}
+
+.split-pane-horizontal {
+	flex-direction: column;
+}

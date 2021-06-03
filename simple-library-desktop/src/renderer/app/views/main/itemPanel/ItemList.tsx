@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { VBox } from '../../../../components/layout/Box';
-import { AlignCross, Size } from '../../../../components/common';
+import { VBox } from '../../../../components/layout/box/Box';
+import { AlignCross, Size } from '../../../../components/common/common';
 import { useGroups } from '../../../hooks/groupHooks';
 import { ItemData } from '../../../../../common/commonModels';
 import { ItemEntry } from './ItemEntry';

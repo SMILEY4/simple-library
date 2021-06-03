@@ -1,0 +1,49 @@
+.text-field {
+	height:     var(--s-1-5);
+	min-height: var(--s-1-5);
+}
+
+/*INPUT*/
+
+.text-field .input-on-colored {
+	color: var(--text-on-color);
+}
+
+.text-field input {
+	border:        none;
+	background:    none;
+	margin:        0;
+	color:         var(--text-color-1);
+	padding-left:  var(--s-0-5);
+	padding-right: var(--s-0-5);
+	width:         100%;
+}
+
+.text-field .input-on-colored::placeholder {
+	color:   var(--text-on-color);
+	opacity: 70%;
+}
+
+.text-field input::placeholder {
+	color: var(--text-color-0);
+}
+
+input:required,
+input:focus,
+input:invalid {
+	box-shadow: none;
+	outline:    none;
+}
+
+.text-field-disabled input {
+	color: var(--text-color-0);
+}
+
+
+.text-field .icon-left {
+	padding-left: var(--s-0-25);
+}
+
+.text-field .icon-right {
+	padding-right: var(--s-0-25);
+}

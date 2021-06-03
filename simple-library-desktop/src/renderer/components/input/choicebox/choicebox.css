@@ -1,0 +1,10 @@
+.choice-box-selector-values {
+	display:        flex;
+	flex-direction: column;
+	gap:            0;
+}
+
+.choice-box-selector-values > *:not(:first-child) {
+	max-height: 0;
+	overflow:   hidden;
+}

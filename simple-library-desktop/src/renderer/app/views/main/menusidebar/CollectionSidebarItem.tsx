@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { SidebarMenuItem } from '../../../../components/sidebarmenu/SidebarMenuItem';
+import { SidebarMenuItem } from '../../../../components/_old/sidebarmenu/SidebarMenuItem';
 import { Collection, CollectionType } from '../../../../../common/commonModels';
-import { BiImagesSmart } from '../../../../components/icons/BiImagesSmart';
+import { BiImagesSmart } from '../../../../components/base/icon/BiImagesSmart';
 import { BiImages } from 'react-icons/all';
 import { useContextMenu } from 'react-contexify';
 import { COLLECTION_CONTEXT_MENU_ID } from './contextmenues/CollectionContextMenu';

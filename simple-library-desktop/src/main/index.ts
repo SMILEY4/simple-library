@@ -1,4 +1,4 @@
-import { app } from 'electron';
+import {app, nativeTheme} from 'electron';
 import { LibraryService } from './service/libraryService';
 import DataAccess from './persistence/dataAccess';
 import { WindowService } from './service/windowService';
@@ -22,6 +22,7 @@ import { GroupMessageHandler } from './messagehandler/groupMessageHandler';
 import { LibraryMessageHandler } from './messagehandler/libraryMessageHandler';
 import { GroupService } from './service/groupService';
 import { GroupDataAccess } from './persistence/groupDataAccess';
+import {WindowMessageHandler} from "./messagehandler/windowMessageHandler";
 
 const RUN_TESTS = false;
 
@@ -69,7 +70,7 @@ if (RUN_TESTS) {
     new ItemMessageHandler(itemService).initialize();
     new CollectionMessageHandler(collectionService).initialize();
     new GroupMessageHandler(groupService).initialize();
-
+    new WindowMessageHandler(windowService).initialize();
 
     app.whenReady().then(() => windowService.whenReady());
     app.on('window-all-closed', () => windowService.allWindowsClosed());

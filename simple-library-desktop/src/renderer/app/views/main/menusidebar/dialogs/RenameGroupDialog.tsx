@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { Group } from '../../../../../../common/commonModels';
-import { Dialog } from '../../../../../components/modal/Dialog';
-import { AlignCross, AlignMain, Size, Type, Variant } from '../../../../../components/common';
-import { VBox } from '../../../../../components/layout/Box';
-import { InputField } from '../../../../../components/inputfield/InputField';
+import { Dialog } from '../../../../../components/_old/modal/Dialog';
+import { AlignCross, AlignMain, Size, Type, Variant } from '../../../../../components/common/common';
+import { VBox } from '../../../../../components/layout/box/Box';
+import { InputField } from '../../../../../components/_old/inputfield/InputField';
 import { useGroupName } from '../../../../hooks/groupHooks';
 
 interface RenameGroupDialogProps {

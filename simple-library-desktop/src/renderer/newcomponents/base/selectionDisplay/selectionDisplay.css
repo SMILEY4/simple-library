@@ -1,0 +1,22 @@
+.selection-display {
+	display: flex;
+	flex-direction: column;
+}
+
+.selection-display > :not(:first-child) {
+	max-height: 0;
+	overflow: hidden;
+	flex-grow: 0;
+}
+
+.selection-display-left {
+	align-items: flex-start;
+}
+
+.selection-display-center {
+	align-items: center;
+}
+
+.selection-display-right {
+	align-items: flex-end;
+}

@@ -1,0 +1,10 @@
+.toggle-button-keep-size > .box {
+	display: flex;
+	flex-direction: column;
+	gap: 0;
+}
+
+.toggle-button-keep-size > .box > *:last-child{
+	max-height: 0;
+	overflow: hidden;
+}

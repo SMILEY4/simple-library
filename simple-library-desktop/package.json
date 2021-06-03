@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@hot-loader/react-dom": "^16.13.0",
+    "@popperjs/core": "^2.9.2",
     "@types/sqlite3": "^3.1.6",
     "dist-exiftool": "^10.53.0",
     "electron-log": "^4.3.1",
@@ -27,10 +28,11 @@
     "react-dom": "^16.13.1",
     "react-hot-loader": "^4.12.20",
     "react-icons": "^4.2.0",
+    "react-popper": "^2.2.5",
     "reflect-metadata": "^0.1.13",
     "sharp": "^0.27.1",
     "sqlite3": "^4.1.1",
-    "typeorm": "^0.2.24"
+    "typeorm": "^0.2.32"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
@@ -46,7 +48,8 @@
     "concurrently": "^5.1.0",
     "css-loader": "^3.4.2",
     "electron": "^11.1.1",
-    "electron-builder": "^22.4.1",
+    "electron-builder": "^22.11.3",
+    "electron-devtools-installer": "^3.2.0",
     "file-loader": "^6.0.0",
     "html-webpack-plugin": "^4.0.4",
     "prettier": "^2.0.2",

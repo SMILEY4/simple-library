@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { DropdownButton } from '../../../../components/button/dropdownbutton/DropdownButton';
+import { DropdownButton } from '../../../../components/_old/dropdownbutton/DropdownButton';
 import { HiPlus } from 'react-icons/all';
-import { Variant } from '../../../../components/common';
-import { DropdownItemType } from '../../../../components/dropdown/Dropdown';
+import { Variant } from '../../../../components/common/common';
+import { DropdownItemType } from '../../../../components/_old/dropdown/Dropdown';
 
 interface CollectionSectionActionProps {
     onCreateCollection: () => void,

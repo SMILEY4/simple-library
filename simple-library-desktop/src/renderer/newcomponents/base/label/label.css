@@ -1,0 +1,146 @@
+.label {
+	display:     flex;
+	align-items: center;
+	gap:         var(--s-0-25)
+}
+
+.label-italic {
+	font-style: italic;
+}
+
+.label-bold {
+	font-weight: bolder;
+}
+
+.label-no-select {
+	-webkit-user-select: none;
+	-moz-user-select:    none;
+	-ms-user-select:     none;
+	user-select:         none;
+}
+
+.label,
+.label-overflow-wrap {
+}
+
+.label-overflow-nowrap {
+	white-space: nowrap;
+}
+
+.label-overflow-nowrap-hidden {
+	white-space: nowrap;
+	overflow:    hidden;
+}
+
+.label-overflow-cutoff {
+	display: block;
+	white-space:   nowrap;
+	overflow:      hidden;
+	text-overflow: ellipsis;
+}
+
+/*type*/
+.label,
+.label-body {
+	font-size: var(--font-size-1);
+}
+
+.label-header-1 {
+	font-weight: bold;
+	font-size:   var(--font-size-5);
+}
+
+.label-header-2 {
+	font-weight: bold;
+	font-size:   var(--font-size-4);
+}
+
+.label-header-3 {
+	font-weight: bolder;
+	font-size:   var(--font-size-3);
+}
+
+.label-header-4 {
+	font-weight:    bolder;
+	font-size:      var(--font-size-1);
+	text-transform: uppercase;
+}
+
+.label-caption {
+	font-size: var(--font-size-0);
+}
+
+
+/*colors / variant*/
+.label,
+.label-primary:not(.label-disabled),
+.label-primary:not(.label-disabled) > .label-text-wrapper {
+	color: var(--color-text-primary);
+}
+
+.label-secondary:not(.label-disabled),
+.label-secondary:not(.label-disabled) > .label-text-wrapper {
+	color: var(--color-text-secondary);
+}
+
+.label-info:not(.label-disabled),
+.label-info:not(.label-disabled) > .label-text-wrapper {
+	color: var(--color-bg-info);
+}
+
+.label-success:not(.label-disabled),
+.label-success:not(.label-disabled) > .label-text-wrapper {
+	color: var(--color-bg-success);
+}
+
+.label-warn:not(.label-disabled),
+.label-warn:not(.label-disabled) > .label-text-wrapper {
+	color: var(--color-bg-warn);
+}
+
+.label-error:not(.label-disabled),
+.label-error:not(.label-disabled) > .label-text-wrapper {
+	color: var(--color-bg-error);
+}
+
+.label-on-variant:not(.label-disabled),
+.label-on-variant:not(.label-disabled) > .label-text-wrapper {
+	color: var(--color-text-on-variant);
+}
+
+.label-primary.label-disabled,
+.label-primary.label-disabled > .label-text-wrapper {
+	color: var(--color-text-disabled);
+}
+
+.label-secondary.label-disabled,
+.label-secondary.label-disabled > .label-text-wrapper {
+	color: var(--color-text-disabled);
+}
+
+.label-info.label-disabled,
+.label-info.label-disabled > .label-text-wrapper {
+	color: var(--color-bg-info-disabled);
+}
+
+.label-success.label-disabled,
+.label-success.label-disabled > .label-text-wrapper {
+	color: var(--color-bg-success-disabled);
+}
+
+.label-warn.label-disabled,
+.label-warn.label-disabled > .label-text-wrapper {
+	color: var(--color-bg-warn-disabled);
+}
+
+.label-error.label-disabled,
+.label-error.label-disabled > .label-text-wrapper {
+	color: var(--color-bg-error-disabled);
+}
+
+.label-on-variant.label-disabled,
+.label-on-variant.label-disabled > .label-text-wrapper {
+	color: var(--color-text-on-variant-disabled);
+}
+
+

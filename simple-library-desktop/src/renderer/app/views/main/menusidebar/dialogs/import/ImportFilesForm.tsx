@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { ReactElement } from 'react';
-import { VBox } from '../../../../../../components/layout/Box';
-import { AlignCross, AlignMain, Size } from '../../../../../../components/common';
-import { Separator, SeparatorDirection } from '../../../../../../components/separator/Separator';
+import { VBox } from '../../../../../../components/layout/box/Box';
+import { AlignCross, AlignMain, Size } from '../../../../../../components/common/common';
+import { Separator, SeparatorDirection } from '../../../../../../components/_old/separator/Separator';
 import { ImportProcessData, ImportTargetAction, RenamePartType } from '../../../../../../../common/commonModels';
 import { SelectFilesForm } from '../newimport/SelectFilesForm';
 import { ImportTargetForm } from '../newimport/ImportTargetForm';

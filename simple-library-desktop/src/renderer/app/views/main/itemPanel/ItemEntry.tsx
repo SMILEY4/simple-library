@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ItemData } from '../../../../../common/commonModels';
-import { HBox, VBox } from '../../../../components/layout/Box';
-import { concatClasses, Size } from '../../../../components/common';
+import { HBox, VBox } from '../../../../components/layout/box/Box';
+import { concatClasses, Size } from '../../../../components/common/common';
 import { getSelectionMode, isCopyMode, SelectMode } from '../../../common/utils/utils';
 import "./itemEntry.css";
 import { useContextMenu } from 'react-contexify';
@@ -30,7 +30,7 @@ export function ItemEntry(props: React.PropsWithChildren<ItemEntryProps>): React
             onDragStart={handleDragStart}
             draggable={true}
         >
-            <HBox withBorder
+            <HBox outlined
                   spacing={Size.S_0}
                   className={itemClassNames()}
             >

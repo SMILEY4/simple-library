@@ -1,0 +1,4 @@
+.sidebar {
+	background-color: var(--background-color-0);
+	overflow-y: auto;
+}

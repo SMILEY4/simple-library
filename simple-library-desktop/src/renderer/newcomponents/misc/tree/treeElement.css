@@ -1,0 +1,17 @@
+.tree-element {
+	display:         flex;
+	flex-direction:  row;
+	align-items:     stretch;
+	padding-right:   var(--s-0-25);
+	height:          var(--s-1);
+	position: relative;
+	border: 1px solid transparent;
+}
+
+.tree-element-selected {
+	background-color: var(--color-bg-raised-active);
+}
+
+.tree-element-drop {
+	border:  1px solid var(--color-border);
+}

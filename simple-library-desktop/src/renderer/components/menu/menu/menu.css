@@ -1,0 +1,8 @@
+.menu {
+	padding-top:    var(--radius-0);
+	padding-bottom: var(--radius-0);
+}
+
+.menu > .box {
+	border: unset;
+}

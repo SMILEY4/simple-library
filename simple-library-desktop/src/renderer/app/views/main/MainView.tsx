@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { VBox } from '../../../components/layout/Box';
-import { Fill } from '../../../components/common';
-import { Grid } from '../../../components/layout/Grid';
-import { componentWillMount } from '../../common/utils/functionalReactLifecycle';
+import { VBox } from '../../../components/layout/box/Box';
+import { Fill } from '../../../components/common/common';
+import { Grid } from '../../../components/layout/grid/Grid';
+import { componentDidMount } from '../../common/utils/functionalReactLifecycle';
 import { useGroups } from '../../hooks/groupHooks';
-import { NotificationStack } from '../../../components/notification/NotificationStack';
+import { NotificationStack } from '../../../components/_old/notification/NotificationStack';
 import { genNotificationId, toNotificationEntries } from '../../common/utils/notificationUtils';
 import { AppNotificationType } from '../../store/state';
 import { ItemList } from './itemPanel/ItemList';
@@ -21,7 +21,7 @@ export function MainView(props: React.PropsWithChildren<NewMainViewProps>): Reac
     const { notifications, addNotification, removeNotification } = useNotifications();
     const { setRootGroup } = useGroups();
 
-    componentWillMount(() => {
+    componentDidMount(() => {
         fetchRootGroup()
             .then(setRootGroup)
             .catch(error => addNotification(genNotificationId(), AppNotificationType.ROOT_GROUP_FETCH_FAILED, error));

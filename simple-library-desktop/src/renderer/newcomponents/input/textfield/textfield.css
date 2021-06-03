@@ -1,0 +1,32 @@
+.text-field {
+	display:       flex;
+	min-height:    var(--s-1-5);
+	align-items:   center;
+	padding-left:  var(--s-0-15);
+	padding-right: var(--s-0-15);
+}
+
+.text-field > input {
+	border:        none;
+	background:    none;
+	margin:        0;
+	color:         var(--color-text-primary);
+	padding-left:  var(--s-0-25);
+	padding-right: var(--s-0-25);
+	width:         100%;
+}
+
+.text-field.base-elem-disabled > input {
+	color: var(--color-text-disabled);
+}
+
+.text-field input::placeholder {
+	color: var(--color-text-placeholder)
+}
+
+.text-field > input:required,
+.text-field > input:focus,
+.text-field > input:invalid {
+	box-shadow: none;
+	outline:    none;
+}

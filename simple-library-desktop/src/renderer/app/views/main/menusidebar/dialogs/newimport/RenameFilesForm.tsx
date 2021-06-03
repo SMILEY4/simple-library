@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ReactElement } from 'react';
-import { BodyText } from '../../../../../../components/text/Text';
+import { BodyText } from '../../../../../../components/base/text/Text';
 import {
     displayStringToRenamePartType,
     RENAME_PART_TYPES,
@@ -8,12 +8,12 @@ import {
     RenamePartType,
     renamePartTypeToDisplayString,
 } from '../../../../../../../common/commonModels';
-import { HBox, VBox } from '../../../../../../components/layout/Box';
-import { AlignCross, AlignMain, Fill, Size, Variant } from '../../../../../../components/common';
-import { ChoiceBox } from '../../../../../../components/choicebox/ChoiceBox';
-import { InputField } from '../../../../../../components/inputfield/InputField';
-import { Checkbox } from '../../../../../../components/checkbox/Checkbox';
-import { Grid } from '../../../../../../components/layout/Grid';
+import { HBox, VBox } from '../../../../../../components/layout/box/Box';
+import { AlignCross, AlignMain, Fill, Size, Type, Variant } from '../../../../../../components/common/common';
+import { ChoiceBox } from '../../../../../../components/_old/choicebox/ChoiceBox';
+import { InputField } from '../../../../../../components/_old/inputfield/InputField';
+import { Checkbox } from '../../../../../../components/input/checkbox/Checkbox';
+import { Grid } from '../../../../../../components/layout/grid/Grid';
 
 export interface RenameFilesFormProps {
     enabled: boolean,
@@ -39,8 +39,8 @@ export function RenameFilesForm(props: React.PropsWithChildren<RenameFilesFormPr
                   alignCross={AlignCross.STRETCH}
                   spacing={Size.S_0_75}
                   padding={Size.S_1}
-                  withBorder
-                  invalid={props.renameDataInvalid}
+                  outlined
+                  type={props.renameDataInvalid ? Type.ERROR : undefined}
             >
 
                 <Grid columns={['1fr', '1fr', '1fr']} rows={['1fr']} fill={Fill.TRUE} gap={Size.S_0_5}>

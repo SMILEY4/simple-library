@@ -1,0 +1,27 @@
+.menu-item {
+	position:        relative;
+	display:         flex;
+	flex-direction:  row;
+	justify-content: flex-start;
+	align-items:     center;
+	min-height:      var(--s-1-5);
+	width:           100%;
+	gap:             var(--s-0-25);
+	padding-left:    var(--s-0-5);
+	padding-right:   var(--s-0-5);
+	box-sizing:      border-box;
+	white-space:     nowrap;
+	color: var(--color-text-primary)
+}
+
+.menu-item:hover {
+	background-color: var(--color-bg-raised-hover)
+}
+
+.menu-item-icon {
+	margin-left:     auto;
+	width:           var(--s-1);
+	display:         flex;
+	justify-content: center;
+	align-items:     center;
+}

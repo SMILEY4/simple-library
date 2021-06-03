@@ -1,0 +1,8 @@
+.sub-menu > .sub-menu-arrow {
+	margin-left: auto;
+	padding-left: var(--s-0-25);
+}
+
+.sub-menu-open {
+	background-color: var(--base-color-0)
+}

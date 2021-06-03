@@ -1,0 +1,9 @@
+.base-elem-inset {
+	background-color: var(--color-bg-inset);
+	border-color:     var(--color-border);
+}
+
+.base-elem-inset.base-elem-disabled {
+	background-color: var(--color-bg-inset);
+	border-color:     var(--color-border-disabled);
+}

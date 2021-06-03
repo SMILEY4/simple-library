@@ -1,0 +1,59 @@
+https://react.semantic-ui.com
+
+
+BASE COMPONENTS
+- pane ✔
+- icon ✔
+- label ✔
+- labelBox ✔
+- card ✔
+- image ✔
+
+MISC COMPONENTS
+- badge (see vuetify)
+- sidebar
+    * base
+        * minimizable
+        * header
+    * items
+        - section title
+            * title
+            * action button (optional)
+            * children
+        - separators (single line or line with text in middle)
+        - search field
+        - menu item
+            * icon
+            * name
+            * label/tag
+        - menu group item
+            * same as menu item
+            * expandable to show more sub-items
+
+
+DIALOG COMPONENTS
+- modalbase ✔
+- dialog ✔
+- notification ✔
+- notificationStack ✔
+
+LAYOUT COMPONENTS
+- box / hbox / vbox ✔
+- grid ✔
+- splitpane ✔
+
+
+INPUT COMPONENTS
+- button ✔
+- toggle button ✔
+- checkbox ✔
+- choicebox ✔
+- text field ✔
+- text area ✔
+
+
+MENU COMPONENTS
+- menu + items + separators + titles ✔
+- menubutton ✔
+- context-menu ✔
+- context-menu-wrapper ✔

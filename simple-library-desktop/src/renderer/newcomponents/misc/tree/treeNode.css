@@ -1,0 +1,15 @@
+.tree-node {
+	justify-content: flex-start;
+}
+
+.tree-node-icon-wrapper {
+	width:           var(--s-1);
+	display:         flex;
+	justify-content: flex-start;
+	align-items:     center;
+	flex-shrink:     0;
+}
+
+.tree-node-label-wrapper {
+	flex-grow: 1;
+}

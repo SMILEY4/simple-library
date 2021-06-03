@@ -1,14 +1,14 @@
 import * as React from 'react';
 import { ReactElement } from 'react';
-import { VBox } from '../../../../../../components/layout/Box';
-import { AlignCross, AlignMain, Size, Type, Variant } from '../../../../../../components/common';
-import { Separator, SeparatorDirection } from '../../../../../../components/separator/Separator';
+import { VBox } from '../../../../../../components/layout/box/Box';
+import { AlignCross, AlignMain, Size, Type, Variant } from '../../../../../../components/common/common';
+import { Separator, SeparatorDirection } from '../../../../../../components/_old/separator/Separator';
 import { ImportProcessData } from '../../../../../../../common/commonModels';
 import { SelectFilesForm } from './SelectFilesForm';
 import { ImportTargetForm } from './ImportTargetForm';
 import { useFilesToImport, useImportTarget, useRenameImportFiles } from '../../../../../hooks/importHooks';
 import * as electron from 'electron';
-import { Dialog } from '../../../../../../components/modal/Dialog';
+import { Dialog } from '../../../../../../components/_old/modal/Dialog';
 import { RenameFilesForm } from './RenameFilesForm';
 
 export interface ImportFilesDialogProps {

@@ -1,0 +1,26 @@
+.icon-button {
+	display:         flex;
+	align-items:     center;
+	justify-content: center;
+
+	min-width:       var(--s-1-5);
+	min-height:      var(--s-1-5);
+	max-height:      var(--s-1-5);
+}
+
+.icon-button-large {
+	min-width:  var(--s-2-5);
+	min-height: var(--s-2-5);
+	max-height: var(--s-2-5);
+}
+
+.icon-button-labeled {
+	display:        flex;
+	flex-direction: column;
+	padding-left:   var(--s-0-15);
+	padding-right:  var(--s-0-15);
+}
+
+.icon-button:not(.base-elem-disabled) {
+	cursor: pointer;
+}

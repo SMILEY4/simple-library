@@ -1,0 +1,13 @@
+.checkbox {
+	display: flex;
+	flex-direction: row;
+	gap: var(--s-0-25);
+}
+
+.checkbox > .button {
+	max-height: var(--s-1);
+	max-width: var(--s-1);
+
+	min-height: var(--s-1);
+	min-width: var(--s-1);
+}
