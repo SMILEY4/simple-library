@@ -16,7 +16,7 @@ export function TreeLeaf(props: React.PropsWithChildren<TreeLeafProps>): ReactEl
 			{...props}
 			className={concatClasses(props.className, "tree-leaf")}
 			onClick={props.onSelect}
-			additionalInset="var(--s-0-5)"
+			additionalInset="var(--s-1)"
 		>
 			<Label noSelect overflow="nowrap">
 				{props.icon && <Icon type={props.icon}/>}

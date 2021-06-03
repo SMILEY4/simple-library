@@ -1,5 +1,5 @@
-import { AppNotification, GlobalApplicationState } from './state';
-import { unique } from '../common/utils/arrayUtils';
+import {AppNotification, GlobalApplicationState} from './state';
+import {unique} from '../common/utils/arrayUtils';
 
 export enum ActionType {
     SET_CURRENT_COLLECTION_ID = "collection.set",
@@ -13,7 +13,9 @@ export enum ActionType {
     ITEM_SELECTION_SET = "items.selection.set",
     ITEM_SELECTION_ADD = "items.selection.add",
     ITEM_SELECTION_REMOVE = "items.selection.remove",
-    ITEM_SELECTION_SET_LAST = "item.selection.set-last"
+    ITEM_SELECTION_SET_LAST = "item.selection.set-last",
+
+    COLLECTION_SIDEBAR_SET_EXPANDED = "ui.sidebar.collections.expanded.set"
 
 }
 
@@ -79,6 +81,15 @@ export function Reducer(state: GlobalApplicationState, action: Action): GlobalAp
                         return notification;
                     }
                 }),
+            };
+        }
+
+        // COLLECTION SIDEBAR
+
+        case ActionType.COLLECTION_SIDEBAR_SET_EXPANDED: {
+            return {
+                ...state,
+                collectionSidebarExpanded: action.payload,
             };
         }
 

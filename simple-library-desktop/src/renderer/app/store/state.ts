@@ -4,6 +4,7 @@ import { Group, ItemData } from '../../../common/commonModels';
 export interface GlobalApplicationState {
 
     notifications: AppNotification[]
+    collectionSidebarExpanded: string[]
 
     rootGroup: Group | null,
     activeCollectionId: number | null,
@@ -44,6 +45,7 @@ export enum AppNotificationType {
 
 export const initialState: GlobalApplicationState = {
     notifications: [],
+    collectionSidebarExpanded: [],
     rootGroup: null,
     activeCollectionId: null,
 

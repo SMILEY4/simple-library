@@ -88,7 +88,6 @@ export function WelcomeView(props: React.PropsWithChildren<WelcomeViewProps>): R
 				return "error";
 			case Type.WARN:
 				return "warn";
-
 		}
 	}
 

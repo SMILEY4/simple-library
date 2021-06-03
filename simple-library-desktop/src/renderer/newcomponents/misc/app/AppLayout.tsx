@@ -121,7 +121,9 @@ function AppTabBar(props: React.PropsWithChildren<AppTabBarProps>): ReactElement
     function buildTabs(): ReactElement[] {
         return orDefault(props.tabs, []).map((tab: SidebarTab) => {
             return (
-                <Label className={concatClasses(
+                <Label
+                    key={tab.id}
+                    className={concatClasses(
                     "app-layout-tab",
                     getIf(tab.id === props.selectedTabId, "app-layout-tab-selected")
                 )}
