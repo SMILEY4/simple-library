@@ -5,7 +5,7 @@ import {Divider} from './Divider';
 import {useSplitPane} from './useSplitPane';
 import {SplitPanePanel} from "./SplitPanePanel";
 import {BaseProps} from "../../utils/common";
-import {concatClasses, getReactElements, map} from "../../../components/common/common";
+import {concatClasses, getIf, getReactElements, map} from "../../../components/common/common";
 import {getChildOfSlot} from "../../../components/base/slot/Slot";
 
 export const SLOT_DIVIDER = "divider";
@@ -15,6 +15,7 @@ interface SplitPaneProps extends BaseProps {
 	primaryCollapsed?: boolean,
 	primaryAsPercentage?: boolean,
 	onResize?: (size: number) => void;
+	fill?: boolean,
 }
 
 interface SplitPaneContentData {
@@ -42,7 +43,8 @@ export function SplitPane(props: React.PropsWithChildren<SplitPaneProps>): React
 			className={concatClasses(
 				props.className,
 				'split-pane',
-				map(props.mode, mode => "split-pane-" + mode)
+				map(props.mode, mode => "split-pane-" + mode),
+				getIf(props.fill, "fill-parent")
 			)}
 			ref={splitPaneRef}
 		>

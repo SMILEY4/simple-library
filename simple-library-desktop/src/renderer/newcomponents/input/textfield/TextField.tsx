@@ -2,7 +2,7 @@ import * as React from "react";
 import {ReactElement, useState} from "react";
 import {BaseElementInset} from "../../base/element/BaseElementInset";
 import {BaseProps} from "../../utils/common";
-import {concatClasses} from "../../../components/common/common";
+import {concatClasses, getIf} from "../../../components/common/common";
 import {Icon, IconType} from "../../base/icon/Icon";
 import "./textfield.css"
 
@@ -16,6 +16,8 @@ export interface TextFieldProps extends BaseProps {
 	groupPos?: "left" | "right" | "center",
 	prependIcon?: IconType,
 	appendIcon?: IconType,
+	dir?: "rtl"
+	fixed?: boolean,
 	onChange?: (value: string) => void,
 	onAccept?: (value: string) => void
 }
@@ -37,10 +39,11 @@ export function TextField(props: React.PropsWithChildren<TextFieldProps>): React
 			{props.prependIcon && (<Icon type={props.prependIcon} size="1" color="primary" disabled={props.disabled}/>)}
 			<input
 				type="text"
-				value={value}
+				value={props.forceState ? props.value : value}
 				autoFocus={props.autofocus}
-				disabled={props.disabled}
+				disabled={props.disabled || props.fixed}
 				placeholder={props.placeholder}
+				dir={props.dir}
 				onChange={handleOnChange}
 				onBlur={handleOnBlur}
 				onKeyDown={handleOnKeyDown}
@@ -55,7 +58,7 @@ export function TextField(props: React.PropsWithChildren<TextFieldProps>): React
 
 
 	function handleOnBlur(event: any) {
-		handleChange(event.target.value, props.onChange);
+		handleChange(event.target.value, props.onAccept);
 	}
 
 
@@ -63,7 +66,8 @@ export function TextField(props: React.PropsWithChildren<TextFieldProps>): React
 		if (event.key === 'Enter') {
 			event.stopPropagation();
 			event.target.blur();
-			handleChange(event.target.value, props.onAccept);
+			// onAccept triggered by blur
+			handleChange(event.target.value, () => undefined);
 		}
 	}
 

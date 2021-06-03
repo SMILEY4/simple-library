@@ -4,6 +4,18 @@
 	gap:         var(--s-0-25)
 }
 
+.label-left {
+	justify-content: flex-start;
+}
+
+.label-center {
+	justify-content: center;
+}
+
+.label-right {
+	justify-content: flex-end;
+}
+
 .label-italic {
 	font-style: italic;
 }
@@ -19,6 +31,7 @@
 	user-select:         none;
 }
 
+
 .label,
 .label-overflow-wrap {
 }
@@ -33,7 +46,7 @@
 }
 
 .label-overflow-cutoff {
-	display: block;
+	display:       block;
 	white-space:   nowrap;
 	overflow:      hidden;
 	text-overflow: ellipsis;
@@ -108,6 +121,7 @@
 	color: var(--color-text-on-variant);
 }
 
+.label-disabled,
 .label-primary.label-disabled,
 .label-primary.label-disabled > .label-text-wrapper {
 	color: var(--color-text-disabled);

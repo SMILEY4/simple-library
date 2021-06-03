@@ -12,7 +12,7 @@ import {
 import { genNotificationId } from '../common/utils/notificationUtils';
 import { AppNotificationType } from '../store/state';
 import { onImportStatusCommands, requestImport } from '../common/messaging/messagingInterface';
-import { useNotifications, useStateRef } from './miscHooks';
+import { useNotifications, useStateRef } from './miscAppHooks';
 
 export function useImport() {
 

@@ -1,18 +1,14 @@
-import { Dispatch, MutableRefObject, SetStateAction, useContext, useEffect, useRef, useState } from 'react';
-import { GlobalStateContext } from '../store/provider';
-import { AppNotificationType } from '../store/state';
-import { ActionType } from '../store/reducer';
-import { genNotificationId } from '../common/utils/notificationUtils';
-import { ImportProcessData, ImportResult, ImportStatus } from '../../../common/commonModels';
-import { onImportStatusCommands, requestImport } from '../common/messaging/messagingInterface';
-import { useGroups } from './groupHooks';
-import { useItems } from './itemHooks';
+import {Dispatch, MutableRefObject, SetStateAction, useContext, useEffect, useRef, useState} from 'react';
+import {GlobalStateContext} from '../store/provider';
+import {AppNotificationType} from '../store/state';
+import {ActionType} from '../store/reducer';
+import {genNotificationId} from '../common/utils/notificationUtils';
 
 
 export function useGlobalState() {
-    const { state, dispatch } = useContext(GlobalStateContext);
+    const {state, dispatch} = useContext(GlobalStateContext);
     if (state) {
-        return { state, dispatch };
+        return {state, dispatch};
     } else {
         console.error("Error: No global state found.");
     }
@@ -32,9 +28,35 @@ export function useStateRef<S>(initialValue: S): [S, Dispatch<SetStateAction<S>>
 }
 
 
+export function useValidatedState<S>(
+    initialState: S | (() => S),
+    initialValid: boolean,
+    validate: (value: S) => boolean
+): [S, Dispatch<SetStateAction<S>>, boolean, () => boolean] {
+
+    const [value, setValue] = useState(initialState);
+    const [valid, setValid] = useState(initialValid)
+
+    function setValueAndValidate(value: S): void {
+        setValue(value);
+        setValid(validate(value))
+    }
+
+    return [
+        value,
+        setValueAndValidate,
+        valid,
+        () => {
+            const valid = validate(value)
+            setValid(valid)
+            return valid;
+        },
+    ];
+}
+
 export function useNotifications() {
 
-    const { state, dispatch } = useGlobalState();
+    const {state, dispatch} = useGlobalState();
 
     const add = (notificationId: string, type: AppNotificationType, data: any) => {
         dispatch({

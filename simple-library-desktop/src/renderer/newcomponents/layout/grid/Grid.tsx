@@ -2,13 +2,14 @@ import * as React from 'react';
 import {CSSProperties, ReactElement} from 'react';
 import './grid.css';
 import {BaseProps, Size} from "../../utils/common";
-import {concatClasses} from "../../../components/common/common";
+import {concatClasses, getIf} from "../../../components/common/common";
 
 
 interface GridProps extends BaseProps {
     columns?: string[],
     rows?: string[],
     gap?: Size,
+    fill?: boolean,
 }
 
 export function Grid(props: React.PropsWithChildren<GridProps>): ReactElement {
@@ -27,6 +28,7 @@ export function Grid(props: React.PropsWithChildren<GridProps>): ReactElement {
         return concatClasses(
             props.className,
             'grid',
+            getIf(props.fill, "fill-parent")
         );
     }
 

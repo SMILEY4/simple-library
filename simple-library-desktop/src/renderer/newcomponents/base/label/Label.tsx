@@ -7,6 +7,7 @@ import {Icon, IconProps} from "../icon/Icon";
 export interface LabelProps extends BaseProps, ClickableProps {
 	type?: "header-1" | "header-2" | "header-3" | "header-4" | "body" | "caption"
 	variant?: "primary" | "secondary" | "info" | "success" | "error" | "warn" | "on-variant"
+	align?: "left" | "center" | "right"
 	disabled?: boolean,
 	italic?: boolean,
 	bold?: boolean,
@@ -35,6 +36,7 @@ export function Label(props: React.PropsWithChildren<LabelProps>): React.ReactEl
 			map(props.type, type => "label-" + type),
 			map(props.variant, variant => "label-" + variant),
 			map(props.overflow, overflow => "label-overflow-" + overflow),
+			map(props.align, align => "label-" + align),
 			getIf(props.disabled, "label-disabled"),
 			getIf(props.italic, "label-italic"),
 			getIf(props.bold, "label-bold"),

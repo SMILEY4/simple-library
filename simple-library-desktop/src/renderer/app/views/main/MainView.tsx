@@ -10,7 +10,7 @@ import { AppNotificationType } from '../../store/state';
 import { ItemList } from './itemPanel/ItemList';
 import { fetchRootGroup } from '../../common/messaging/messagingInterface';
 import { MenuSidebar } from './menusidebar/MenuSidebar';
-import { useNotifications } from '../../hooks/miscHooks';
+import { useNotifications } from '../../hooks/miscAppHooks';
 
 interface NewMainViewProps {
     onActionClose: () => void

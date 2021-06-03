@@ -234,11 +234,11 @@ export function callSafe(func: any) {
  * @param props the properties to add
  * @param filter add the props only to the children that pass this filter
  */
-export function addPropsToChildren(children: ReactNode | ReactNode[], props: (prevProps: any) => any, filter?: (child: React.ReactElement) => boolean): any[] {
-	return React.Children.map(children, (child: any) => {
+export function addPropsToChildren(children: ReactNode | ReactNode[], props: (prevProps: any, index: number) => any, filter?: (child: React.ReactElement) => boolean): any[] {
+	return React.Children.map(children, (child: any, index: number) => {
 		if (React.isValidElement(child)) {
 			if (!filter || (filter && filter(child))) {
-				return React.cloneElement(child, props(child.props));
+				return React.cloneElement(child, props(child.props, index));
 			} else {
 				return child;
 			}
@@ -272,6 +272,10 @@ export function mergeRefs(...refs: any[]) {
 			}
 		}
 	};
+}
+
+export function childrenCount(children: ReactNode | ReactNode[]): number {
+	return React.Children.count(children);
 }
 
 export function getReactElements(children: ReactNode | ReactNode[]): ReactElement[] {

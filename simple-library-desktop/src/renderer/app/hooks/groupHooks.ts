@@ -10,7 +10,7 @@ import {
     requestMoveGroup,
     requestRenameGroup,
 } from '../common/messaging/messagingInterface';
-import { useDialogHook, useGlobalState, useNotifications, useStateRef } from './miscHooks';
+import { useDialogHook, useGlobalState, useNotifications, useStateRef } from './miscAppHooks';
 import { validateNotBlank } from '../../components/common/validations';
 
 

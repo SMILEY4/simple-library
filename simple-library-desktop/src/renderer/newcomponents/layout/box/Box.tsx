@@ -2,7 +2,7 @@ import * as React from 'react';
 import {ReactElement} from 'react';
 import "./box.css";
 import {BaseProps, Size} from "../../utils/common";
-import {concatClasses, map, mapOrDefault} from "../../../components/common/common";
+import {concatClasses, getIf, map, mapOrDefault} from "../../../components/common/common";
 
 interface BoxProps extends BaseProps {
     dir?: "up" | "down" | "left" | "right"
@@ -11,6 +11,7 @@ interface BoxProps extends BaseProps {
     spacing?: Size,
     padding?: Size,
     margin?: Size,
+    fill?: boolean,
 }
 
 export function Box(props: React.PropsWithChildren<BoxProps>): ReactElement {
@@ -35,6 +36,7 @@ export function Box(props: React.PropsWithChildren<BoxProps>): ReactElement {
             map(props.spacing, (spacing) => "gap-" + spacing),
             map(props.padding, (padding) => "padding-" + padding),
             map(props.margin, (margin) => "margin-" + margin),
+            getIf(props.fill, "fill-parent")
         );
     }
 }

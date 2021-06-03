@@ -1,4 +1,4 @@
-import { useDialogHook, useGlobalState, useNotifications, useStateRef } from './miscHooks';
+import { useDialogHook, useGlobalState, useNotifications, useStateRef } from './miscAppHooks';
 import { ActionType } from '../store/reducer';
 import {
     fetchItems,

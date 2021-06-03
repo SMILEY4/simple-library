@@ -17,6 +17,24 @@ export function toNotificationEntries(notificationData: AppNotification[], onClo
 export function toNotificationEntry(notificationData: AppNotification, onClose: () => void): NotificationEntry {
 
     switch (notificationData.type) {
+        case AppNotificationType.OPEN_LIBRARY_FAILED: {
+            return {
+                type: Type.ERROR,
+                title: "Error while trying to open Library",
+                content: errorToString(notificationData.data),
+                withCloseButton: true,
+                onClose: () => onClose(),
+            };
+        }
+        case AppNotificationType.CREATE_LIBRARY_FAILED: {
+            return {
+                type: Type.ERROR,
+                title: "Error while trying to create Library",
+                content: errorToString(notificationData.data),
+                withCloseButton: true,
+                onClose: () => onClose(),
+            };
+        }
         case AppNotificationType.ROOT_GROUP_FETCH_FAILED: {
             return {
                 type: Type.ERROR,
