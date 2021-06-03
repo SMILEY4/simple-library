@@ -1,9 +1,9 @@
 import {hot} from 'react-hot-loader/root';
 import React, {Component} from 'react';
 import {GlobalStateProvider} from './store/provider';
-import {MainView} from './views/main/MainView';
 import {ComponentShowcase} from "../newcomponents/_showcase/ComponentShowcase";
 import {WelcomeViewController} from "./views/welcome/WelcomeViewController";
+import {MainView} from "./views/main/MainView";
 
 export enum Theme {
 	LIGHT = 'light',
@@ -80,26 +80,7 @@ export class Application extends Component<any, AppState> {
 					style={{width: '100%', height: '100%'}}
 					id='root'
 				>
-					<WelcomeViewController
-						theme={this.state.theme}
-						onChangeTheme={() => {
-							const nextTheme: Theme = this.state.theme === Theme.LIGHT ? Theme.DARK : Theme.LIGHT;
-							this.setState({theme: nextTheme});
-						}}
-						onLoadProject={() => {
-							this.setState({currentView: View.MAIN});
-						}}
-					/>
-					{/*<WelcomeViewOLD*/}
-					{/*    theme={this.state.theme}*/}
-					{/*    onChangeTheme={() => {*/}
-					{/*        const nextTheme: Theme = this.state.theme === Theme.LIGHT ? Theme.DARK : Theme.LIGHT;*/}
-					{/*        this.setState({theme: nextTheme});*/}
-					{/*    }}*/}
-					{/*    onLoadProject={() => {*/}
-					{/*        this.setState({currentView: View.MAIN});*/}
-					{/*    }}*/}
-					{/*/>*/}
+					<WelcomeViewController onLoadProject={() => this.setState({currentView: View.MAIN})}/>
 				</div>
 			</GlobalStateProvider>
 		);
@@ -109,11 +90,12 @@ export class Application extends Component<any, AppState> {
 	renderMainView() {
 		return (
 			<GlobalStateProvider>
-				<div className={'root-view theme-' + this.state.theme}
-					 style={{width: '100%', height: '100%'}}
-					 id='root'>
-					<MainView
-						onActionClose={() => this.setState({currentView: View.WELCOME})}/>
+				<div
+					className={'root-view theme-' + this.state.theme}
+					style={{width: '100%', height: '100%'}}
+					id='root'
+				>
+					<MainView onClose={() => this.setState({currentView: View.WELCOME})}/>
 				</div>
 			</GlobalStateProvider>
 		);

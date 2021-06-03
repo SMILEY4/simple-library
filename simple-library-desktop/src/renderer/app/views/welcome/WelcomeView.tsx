@@ -41,8 +41,8 @@ export function WelcomeView(props: React.PropsWithChildren<WelcomeViewProps>): R
 					<Spacer size="0-5" dir="horizontal" line/>
 
 					<Label type="header-4" align="center">Recently Used</Label>
-					{props.recentlyUsed.map(entry =>
-						<Button ghost onAction={entry.onAction}>{entry.name}</Button>
+					{props.recentlyUsed.map((entry: RecentlyUsedEntry, index: number) =>
+						<Button key={index} ghost onAction={entry.onAction}>{entry.name}</Button>
 					)}
 					{props.recentlyUsed.length === 0 && (
 						<Label type="body" disabled align="center">Empty</Label>

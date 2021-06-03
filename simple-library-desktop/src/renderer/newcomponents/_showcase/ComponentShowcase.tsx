@@ -48,6 +48,8 @@ import {TreeView} from "../misc/tree/TreeView";
 import {getTreeData} from "./sampleData";
 import {DragDataContainer, DragOpType} from "../utils/dragAndDropUtils";
 import {IconButton} from "../buttons/iconbutton/IconButton";
+import {Toolbar} from "../misc/toolbar/Toolbar";
+import {Spacer} from "../base/spacer/Spacer";
 
 const {ipcRenderer} = window.require('electron');
 
@@ -81,6 +83,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 				<div onClick={() => setBackground("2")}>BG-2</div>
 			</div>
 
+			{renderToolbar()}
 			{renderIconButton()}
 			{renderTreeView()}
 			{renderAppLayout()}
@@ -107,6 +110,31 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 
 		</div>
 	);
+
+
+	function renderToolbar() {
+		return <ShowcaseSection title={"Toolbar"}>
+
+			<div style={{
+				width: "100%",
+				height: "400px",
+				border: "1px solid black",
+				position: "relative",
+				display: "flex"
+			}}>
+
+				<Toolbar>
+					<IconButton ghost label="Home" icon={IconType.HOME} large/>
+					<IconButton ghost label="Directories" icon={IconType.FOLDER} large/>
+					<IconButton ghost label="Exit" icon={IconType.CLOSE} large/>
+					<Spacer size="max" dir="vertical"/>
+					<TextField placeholder={"search"}/>
+				</Toolbar>
+
+			</div>
+
+		</ShowcaseSection>
+	}
 
 
 	function renderIconButton() {

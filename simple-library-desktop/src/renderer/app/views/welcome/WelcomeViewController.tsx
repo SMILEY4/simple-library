@@ -1,17 +1,13 @@
 import React, {useState} from "react";
-import {Theme} from "../../application";
 import {WelcomeView} from "./WelcomeView";
-import {
-	CreateLibraryMessage,
-	GetLastOpenedLibrariesMessage,
-	OpenLibraryMessage
-} from "../../../../common/messaging/messagesLibrary";
+import {CreateLibraryMessage, OpenLibraryMessage} from "../../../../common/messaging/messagesLibrary";
 import {useNotifications} from "../../hooks/miscAppHooks";
 import {AppNotificationType} from "../../store/state";
 import {genNotificationId} from "../../common/utils/notificationUtils";
 import {componentDidMount} from "../../common/utils/functionalReactLifecycle";
 import {LastOpenedLibraryEntry} from "../../../../common/commonModels";
 import {DialogCreateLibrary} from "./DialogCreateLibrary";
+import {fetchLastOpenedLibraries, requestOpenLibrary} from "../../common/messaging/messagingInterface";
 
 const electron = window.require('electron');
 const {ipcRenderer} = window.require('electron');
@@ -23,8 +19,6 @@ export interface RecentlyUsedEntry {
 }
 
 interface WelcomeViewControllerProps {
-	theme: Theme,
-	onChangeTheme: () => void,
 	onLoadProject: () => void
 }
 
@@ -35,14 +29,12 @@ export function WelcomeViewController(props: React.PropsWithChildren<WelcomeView
 	const [recentlyUsed, setRecentlyUsed] = useState<RecentlyUsedEntry[]>([]);
 
 	componentDidMount(() => {
-		GetLastOpenedLibrariesMessage.request(ipcRenderer)
-			.then((response: GetLastOpenedLibrariesMessage.ResponsePayload) => {
-				setRecentlyUsed(response.lastOpened.map((entry: LastOpenedLibraryEntry) => ({
-					name: entry.name,
-					filePath: entry.path,
-					onAction: () => openLibrary(entry.path)
-				})))
-			});
+		fetchLastOpenedLibraries()
+			.then(lastOpened => lastOpened.map((entry: LastOpenedLibraryEntry) => ({
+				name: entry.name,
+				filePath: entry.path,
+				onAction: () => openLibrary(entry.path)
+			}))).then(setRecentlyUsed);
 	});
 
 	return (
@@ -103,9 +95,15 @@ export function WelcomeViewController(props: React.PropsWithChildren<WelcomeView
 	}
 
 	function openLibrary(filepath: string): void {
-		OpenLibraryMessage.request(ipcRenderer, {path: filepath})
-			.then(() => props.onLoadProject())
-			.catch(error => addNotification(genNotificationId(), AppNotificationType.OPEN_LIBRARY_FAILED, error));
+		requestOpenLibrary(filepath)
+			.then(() => {
+				console.log("opened library", filepath)
+				props.onLoadProject()
+			})
+			.catch(error => {
+				console.log("error opening library", filepath, error)
+				addNotification(genNotificationId(), AppNotificationType.OPEN_LIBRARY_FAILED, error)
+			});
 	}
 
 }

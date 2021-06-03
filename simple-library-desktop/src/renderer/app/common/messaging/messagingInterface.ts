@@ -5,6 +5,7 @@ import {
     ImportResult,
     ImportStatus,
     ItemData,
+    LastOpenedLibraryEntry,
 } from '../../../../common/commonModels';
 import {
     CreateGroupMessage,
@@ -26,9 +27,23 @@ import {
     MoveItemsToCollectionsMessage,
     RemoveItemsFromCollectionsMessage,
 } from '../../../../common/messaging/messagesCollections';
-import { CloseLibraryMessage } from '../../../../common/messaging/messagesLibrary';
+import {
+    CloseLibraryMessage,
+    GetLastOpenedLibrariesMessage,
+    OpenLibraryMessage
+} from '../../../../common/messaging/messagesLibrary';
 
-const { ipcRenderer } = window.require('electron');
+const {ipcRenderer} = window.require('electron');
+
+export function fetchLastOpenedLibraries(): Promise<LastOpenedLibraryEntry[]> {
+    return GetLastOpenedLibrariesMessage.request(ipcRenderer)
+        .then((response: GetLastOpenedLibrariesMessage.ResponsePayload) => response.lastOpened);
+}
+
+
+export function requestOpenLibrary(filepath: string): Promise<void> {
+    return OpenLibraryMessage.request(ipcRenderer, {path: filepath}).then();
+}
 
 
 export function fetchRootGroup(): Promise<Group> {

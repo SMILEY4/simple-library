@@ -2,7 +2,7 @@ import React from "react";
 import "./icon.css";
 import {
     AiFillCaretRight,
-    AiFillHome, AiOutlineClose, AiOutlineFileText, AiOutlineFolder, BsChevronDoubleLeft, BsChevronDoubleRight,
+    AiFillHome, AiOutlineClose, AiOutlineFileText, AiOutlineFolder, BiImport, BsChevronDoubleLeft, BsChevronDoubleRight,
     BsChevronDown,
     BsChevronLeft,
     BsChevronRight,
@@ -29,7 +29,7 @@ export enum IconType {
     // CROSS,
     CLOSE,
     // REFRESH,
-    // IMPORT,
+    IMPORT,
     HOME,
     CHECKMARK,
     // DIRECTORY,
@@ -50,6 +50,7 @@ const ICON_COLOR_TYPE = new Map<IconType, string>([
     [IconType.HOME, SVG_FILLED],
     [IconType.CHECKMARK, SVG_FILLED],
     [IconType.CARET_RIGHT, SVG_FILLED],
+    [IconType.IMPORT, SVG_FILLED],
 
     [IconType.CHEVRON_UP, SVG_FILLED],
     [IconType.CHEVRON_DOWN, SVG_FILLED],
@@ -98,6 +99,8 @@ export function Icon(props: React.PropsWithChildren<IconProps>): React.ReactElem
             return <AiOutlineFileText {...iconProps} />;
         case IconType.FOLDER:
             return <AiOutlineFolder {...iconProps} />;
+        case IconType.IMPORT:
+            return <BiImport {...iconProps} />;
         default:
             return null;
     }

@@ -4,7 +4,7 @@ import {concatClasses, getIf, map} from "../../../components/common/common";
 import "./spacer.css"
 
 interface SpacerProps extends BaseProps {
-	size: Size,
+	size: Size | "max",
 	dir: "vertical" | "horizontal",
 	line?: boolean
 }
@@ -12,12 +12,12 @@ interface SpacerProps extends BaseProps {
 export function Spacer(props: React.PropsWithChildren<SpacerProps>): React.ReactElement {
 
 	const styleVertical: CSSProperties = {
-		marginLeft: "calc( var(--s-" + props.size + ") / 2 )",
+		marginLeft: props.size === "max" ? "auto" : "calc( var(--s-" + props.size + ") / 2 )",
 		marginRight: "calc( var(--s-" + props.size + ") / 2 )"
 	}
 
 	const styleHorizontal: CSSProperties = {
-		marginTop: "calc( var(--s-" + props.size + ") / 2 )",
+		marginTop: props.size === "max" ? "auto" : "calc( var(--s-" + props.size + ") / 2 )",
 		marginBottom: "calc( var(--s-" + props.size + ") / 2 )"
 	}
 
