@@ -4,7 +4,7 @@ import { Dialog } from '../../../../../components/_old/modal/Dialog';
 import { AlignCross, AlignMain, Size, Type, Variant } from '../../../../../components/common/common';
 import { VBox } from '../../../../../components/layout/box/Box';
 import { BodyText } from '../../../../../components/base/text/Text';
-import { useCreateGroupDialog } from '../../../../hooks/groupHooks';
+import { useCreateGroupDialog } from '../../../../hooks/old/groupHooks';
 import { NewInputField } from '../../../../../components/_old/newinputfield/NewInputField';
 
 interface CreateGroupDialogProps {

@@ -2,7 +2,7 @@ import {hot} from 'react-hot-loader/root';
 import React, {Component} from 'react';
 import {GlobalStateProvider} from './store/provider';
 import {ComponentShowcase} from "../newcomponents/_showcase/ComponentShowcase";
-import {WelcomeViewController} from "./views/welcome/WelcomeViewController";
+import {WelcomeView} from "./views/welcome/WelcomeView";
 import {MainView} from "./views/main/MainView";
 
 export enum Theme {
@@ -80,7 +80,7 @@ export class Application extends Component<any, AppState> {
 					style={{width: '100%', height: '100%'}}
 					id='root'
 				>
-					<WelcomeViewController onLoadProject={() => this.setState({currentView: View.MAIN})}/>
+					<WelcomeView onLoadProject={() => this.setState({currentView: View.MAIN})}/>
 				</div>
 			</GlobalStateProvider>
 		);

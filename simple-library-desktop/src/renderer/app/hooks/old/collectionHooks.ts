@@ -1,15 +1,15 @@
-import { useDialogHook, useGlobalState, useNotifications, useStateRef } from './miscAppHooks';
-import { ActionType } from '../store/reducer';
+import { useDialogHook, useGlobalState, useNotificationsOld, useStateRef } from './miscAppHooks';
+import { ActionType } from '../../store/reducer';
 import {
     fetchItems,
     requestCreateCollection,
     requestDeleteCollection,
     requestEditCollection,
     requestMoveCollection,
-} from '../common/messaging/messagingInterface';
-import { CollectionType, Group, ItemData } from '../../../common/commonModels';
-import { genNotificationId } from '../common/utils/notificationUtils';
-import { AppNotificationType } from '../store/state';
+} from '../../common/messaging/messagingInterface';
+import { CollectionType, Group, ItemData } from '../../../../common/commonModels';
+import { genNotificationId } from '../../common/utils/notificationUtils';
+import { AppNotificationType } from '../../store/state';
 import { useState } from 'react';
 import { useGroups } from './groupHooks';
 
@@ -17,7 +17,7 @@ import { useGroups } from './groupHooks';
 export function useCollections() {
 
     const { state, dispatch } = useGlobalState();
-    const { addNotification } = useNotifications();
+    const { addNotification } = useNotificationsOld();
     const { reloadRootGroup } = useGroups();
 
     const setActive = (collectionId: number | null) => {
@@ -61,7 +61,7 @@ export function useCreateCollection() {
     const { showDialog, openDialog, closeDialog, acceptDialog } = useDialogHook();
     const [parentGroupId, setParentGroupId] = useState(null);
     const { findGroup } = useGroups();
-    const { addNotification } = useNotifications();
+    const { addNotification } = useNotificationsOld();
     const { reloadRootGroup } = useGroups();
 
     const parentGroup: Group | null = findGroup(parentGroupId);
@@ -91,7 +91,7 @@ export function useCreateCollection() {
 export function useEditCollection() {
 
     const { showDialog, openDialog, closeDialog, acceptDialog } = useDialogHook();
-    const { addNotification } = useNotifications();
+    const { addNotification } = useNotificationsOld();
     const { reloadRootGroup } = useGroups();
     const [collectionId, setCollectionId] = useState<number>();
 
@@ -122,7 +122,7 @@ export function useDeleteCollection() {
 
     const { showDialog, openDialog, closeDialog, acceptDialog } = useDialogHook();
     const [collectionId, setCollectionId] = useState<number>();
-    const { addNotification } = useNotifications();
+    const { addNotification } = useNotificationsOld();
     const { reloadRootGroup } = useGroups();
     const { activeCollectionId, setActiveCollection } = useCollections();
 

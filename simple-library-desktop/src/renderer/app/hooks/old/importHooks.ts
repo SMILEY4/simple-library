@@ -8,16 +8,16 @@ import {
     ImportTargetAction,
     RenamePart,
     RenamePartType,
-} from '../../../common/commonModels';
-import { genNotificationId } from '../common/utils/notificationUtils';
-import { AppNotificationType } from '../store/state';
-import { onImportStatusCommands, requestImport } from '../common/messaging/messagingInterface';
-import { useNotifications, useStateRef } from './miscAppHooks';
+} from '../../../../common/commonModels';
+import { genNotificationId } from '../../common/utils/notificationUtils';
+import { AppNotificationType } from '../../store/state';
+import { onImportStatusCommands, requestImport } from '../../common/messaging/messagingInterface';
+import { useNotificationsOld, useStateRef } from './miscAppHooks';
 
 export function useImport() {
 
     const [showDialog, setShowDialog] = useState(false);
-    const { addNotification, updateNotification, removeNotification } = useNotifications();
+    const { addNotification, updateNotification, removeNotification } = useNotificationsOld();
     const { reloadRootGroup } = useGroups();
     const { reloadItems } = useItems();
 

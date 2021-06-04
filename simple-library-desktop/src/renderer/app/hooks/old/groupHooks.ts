@@ -1,7 +1,7 @@
-import { ActionType } from '../store/reducer';
-import { Collection, extractCollections, extractGroups, Group } from '../../../common/commonModels';
-import { genNotificationId } from '../common/utils/notificationUtils';
-import { AppNotificationType } from '../store/state';
+import { ActionType } from '../../store/reducer';
+import { Collection, extractCollections, extractGroups, Group } from '../../../../common/commonModels';
+import { genNotificationId } from '../../common/utils/notificationUtils';
+import { AppNotificationType } from '../../store/state';
 import { useState } from 'react';
 import {
     fetchRootGroup,
@@ -9,15 +9,15 @@ import {
     requestDeleteGroup,
     requestMoveGroup,
     requestRenameGroup,
-} from '../common/messaging/messagingInterface';
-import { useDialogHook, useGlobalState, useNotifications, useStateRef } from './miscAppHooks';
-import { validateNotBlank } from '../../components/common/validations';
+} from '../../common/messaging/messagingInterface';
+import { useDialogHook, useGlobalState, useNotificationsOld, useStateRef } from './miscAppHooks';
+import { validateNotBlank } from '../../../components/common/validations';
 
 
 export function useGroups() {
 
     const { state, dispatch } = useGlobalState();
-    const { addNotification } = useNotifications();
+    const { addNotification } = useNotificationsOld();
 
     const setRootGroup = (group: Group) => {
         dispatch({
@@ -64,7 +64,7 @@ export function useCreateGroup() {
     const [showDialog, setShowDialog] = useState(false);
     const [parentGroupId, setParentGroupId] = useState(null);
     const { findGroup } = useGroups();
-    const { addNotification } = useNotifications();
+    const { addNotification } = useNotificationsOld();
     const { reloadRootGroup } = useGroups();
 
     const parentGroup: Group | null = findGroup(parentGroupId);
@@ -102,7 +102,7 @@ export function useRenameGroup() {
     const [groupId, setGroupId] = useState(null);
 
     const { findGroup } = useGroups();
-    const { addNotification } = useNotifications();
+    const { addNotification } = useNotificationsOld();
     const { reloadRootGroup } = useGroups();
 
 
@@ -135,7 +135,7 @@ export function useDeleteGroup() {
     const [groupId, setGroupId] = useState(null);
 
     const { findGroup } = useGroups();
-    const { addNotification } = useNotifications();
+    const { addNotification } = useNotificationsOld();
     const { reloadRootGroup } = useGroups();
 
 

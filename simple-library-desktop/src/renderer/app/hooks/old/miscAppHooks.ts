@@ -1,8 +1,8 @@
 import {Dispatch, MutableRefObject, SetStateAction, useContext, useEffect, useRef, useState} from 'react';
-import {GlobalStateContext} from '../store/provider';
-import {AppNotificationType} from '../store/state';
-import {ActionType} from '../store/reducer';
-import {genNotificationId} from '../common/utils/notificationUtils';
+import {GlobalStateContext} from '../../store/provider';
+import {AppNotificationType} from '../../store/state';
+import {ActionType} from '../../store/reducer';
+import {genNotificationId} from '../../common/utils/notificationUtils';
 
 
 export function useGlobalState() {
@@ -27,34 +27,7 @@ export function useStateRef<S>(initialValue: S): [S, Dispatch<SetStateAction<S>>
     return [value, setValue, ref];
 }
 
-
-export function useValidatedState<S>(
-    initialState: S | (() => S),
-    initialValid: boolean,
-    validate: (value: S) => boolean
-): [S, Dispatch<SetStateAction<S>>, boolean, () => boolean] {
-
-    const [value, setValue] = useState(initialState);
-    const [valid, setValid] = useState(initialValid)
-
-    function setValueAndValidate(value: S): void {
-        setValue(value);
-        setValid(validate(value))
-    }
-
-    return [
-        value,
-        setValueAndValidate,
-        valid,
-        () => {
-            const valid = validate(value)
-            setValid(valid)
-            return valid;
-        },
-    ];
-}
-
-export function useNotifications() {
+export function useNotificationsOld() {
 
     const {state, dispatch} = useGlobalState();
 

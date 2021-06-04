@@ -29,6 +29,7 @@ import {
 } from '../../../../common/messaging/messagesCollections';
 import {
     CloseLibraryMessage,
+    CreateLibraryMessage,
     GetLastOpenedLibrariesMessage,
     OpenLibraryMessage
 } from '../../../../common/messaging/messagesLibrary';
@@ -40,11 +41,13 @@ export function fetchLastOpenedLibraries(): Promise<LastOpenedLibraryEntry[]> {
         .then((response: GetLastOpenedLibrariesMessage.ResponsePayload) => response.lastOpened);
 }
 
-
 export function requestOpenLibrary(filepath: string): Promise<void> {
     return OpenLibraryMessage.request(ipcRenderer, {path: filepath}).then();
 }
 
+export function requestCreateLibrary(name: string, targetDir: string): Promise<void> {
+    return CreateLibraryMessage.request(ipcRenderer, {targetDir: targetDir, name: name}).then()
+}
 
 export function fetchRootGroup(): Promise<Group> {
     return GetGroupsMessage.request(ipcRenderer, {

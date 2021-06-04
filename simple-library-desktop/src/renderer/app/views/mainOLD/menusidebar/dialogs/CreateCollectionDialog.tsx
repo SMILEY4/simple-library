@@ -8,7 +8,7 @@ import { Separator, SeparatorDirection } from '../../../../../components/_old/se
 import { BodyText } from '../../../../../components/base/text/Text';
 import { ChoiceBox } from '../../../../../components/_old/choicebox/ChoiceBox';
 import { TextArea } from '../../../../../components/_old/textarea/TextArea';
-import { useCollectionName, useCollectionQuery, useCollectionType } from '../../../../hooks/collectionHooks';
+import { useCollectionName, useCollectionQuery, useCollectionType } from '../../../../hooks/old/collectionHooks';
 
 interface CreateCollectionDialogProps {
     parentGroup: Group,

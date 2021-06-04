@@ -5,11 +5,11 @@ import {Slot} from "../../../newcomponents/base/slot/Slot";
 import {AppLayout} from "../../../newcomponents/misc/app/AppLayout";
 import {MainToolbar} from "./MainToolbar";
 import {requestCloseLibrary} from "../../common/messaging/messagingInterface";
-import {CollectionSidebar, TAB_DATA_COLLECTIONS} from "./CollectionSidebar";
+import {CollectionSidebar, TAB_DATA_COLLECTIONS} from "./sidebarmenu/CollectionSidebar";
 import {NotificationStack} from "../../../newcomponents/modals/notification/NotificationStack";
 import {toNotificationEntry} from "../../common/utils/notificationUtils";
 import {Notification} from "../../../newcomponents/modals/notification/Notification";
-import {useNotifications} from "../../hooks/miscAppHooks";
+import {useNotificationsOld} from "../../hooks/old/miscAppHooks";
 import {Type} from "../../../components/common/common";
 
 interface MainViewProps {
@@ -18,7 +18,7 @@ interface MainViewProps {
 
 export function MainView(props: React.PropsWithChildren<MainViewProps>): React.ReactElement {
 
-	const {notifications, removeNotification} = useNotifications();
+	const {notifications, removeNotification} = useNotificationsOld();
 
 	return (
 		<>
@@ -33,14 +33,20 @@ export function MainView(props: React.PropsWithChildren<MainViewProps>): React.R
 					<DynamicSlot name="sidebar-left">
 						{(tabId: string) => {
 							if (tabId === TAB_DATA_COLLECTIONS.id) {
-								return (<CollectionSidebar/>);
+								return (
+									<CollectionSidebar
+										onCreateGroup={undefined}
+										onCreateCollection={undefined}
+										onEditGroup={undefined}
+										onEditCollection={undefined}
+										onDeleteGroup={undefined}
+										onDeleteCollection={undefined}
+									/>
+								);
 							} else {
 								return null;
 							}
 						}}
-					</DynamicSlot>
-					<DynamicSlot name="sidebar-right">
-						{(tabId: string) => null}
 					</DynamicSlot>
 					<Slot name={"main"}>
 						Main Area

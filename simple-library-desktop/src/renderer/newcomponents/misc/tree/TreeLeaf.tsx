@@ -16,6 +16,7 @@ export function TreeLeaf(props: React.PropsWithChildren<TreeLeafProps>): ReactEl
 			{...props}
 			className={concatClasses(props.className, "tree-leaf")}
 			onClick={props.onSelect}
+			__onContextMenu={(e: React.MouseEvent) => props.onContextMenu(e.pageX, e.pageY)}
 			additionalInset="var(--s-1)"
 		>
 			<Label noSelect overflow="nowrap">

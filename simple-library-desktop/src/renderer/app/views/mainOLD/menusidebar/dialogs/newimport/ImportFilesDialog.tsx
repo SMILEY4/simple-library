@@ -6,7 +6,7 @@ import { Separator, SeparatorDirection } from '../../../../../../components/_old
 import { ImportProcessData } from '../../../../../../../common/commonModels';
 import { SelectFilesForm } from './SelectFilesForm';
 import { ImportTargetForm } from './ImportTargetForm';
-import { useFilesToImport, useImportTarget, useRenameImportFiles } from '../../../../../hooks/importHooks';
+import { useFilesToImport, useImportTarget, useRenameImportFiles } from '../../../../../hooks/old/importHooks';
 import * as electron from 'electron';
 import { Dialog } from '../../../../../../components/_old/modal/Dialog';
 import { RenameFilesForm } from './RenameFilesForm';

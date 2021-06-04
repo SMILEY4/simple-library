@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { SidebarMenu } from '../../../../components/_old/sidebarmenu/SidebarMenu';
 import { SidebarMenuSection } from '../../../../components/_old/sidebarmenu/SidebarMenuSection';
 import { MenuActionClose, MenuActionImport } from './sidebarEntries';
-import { useCreateGroup, useDeleteGroup, useGroups, useRenameGroup } from '../../../hooks/groupHooks';
+import { useCreateGroup, useDeleteGroup, useGroups, useRenameGroup } from '../../../hooks/old/groupHooks';
 import { requestCloseLibrary } from '../../../common/messaging/messagingInterface';
 import { CollectionSectionAction } from './CollectionSectionAction';
 import { compareCollections, compareGroups } from '../../../common/utils/utils';
@@ -18,12 +18,12 @@ import {
     useCreateCollection,
     useDeleteCollection,
     useEditCollection,
-} from '../../../hooks/collectionHooks';
+} from '../../../hooks/old/collectionHooks';
 import { EditCollectionDialog } from './dialogs/EditCollectionDialog';
 import { DeleteCollectionDialog } from './dialogs/DeleteCollectionDialog';
 import { RenameGroupDialog } from './dialogs/RenameGroupDialog';
 import { DeleteGroupDialog } from './dialogs/DeleteGroupDialog';
-import { useImport } from '../../../hooks/importHooks';
+import { useImport } from '../../../hooks/old/importHooks';
 import { ImportFilesDialog } from './dialogs/newimport/ImportFilesDialog';
 
 interface MenuSidebarProps {

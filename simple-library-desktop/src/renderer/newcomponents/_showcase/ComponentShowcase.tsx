@@ -283,7 +283,29 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 								modalRootId={"showcase-root"}
 								forceExpanded={expanded}
 								onToggleExpand={handleToggleExpand}
-							/>
+							>
+								<DynamicSlot name={"context-menu"}>
+									{(nodeId: string) => (
+										<Menu>
+											<TitleMenuItem title={"Node " + nodeId}/>
+											<MenuItem itemId={"home"}><Icon type={IconType.HOME}/>Home</MenuItem>
+											<MenuItem itemId={"folder"}><Icon type={IconType.FOLDER}/>Folder</MenuItem>
+											<SubMenuItem itemId={"submenu"}>
+												<Slot name={"item"}>
+													Submenu
+												</Slot>
+												<Slot name={"menu"}>
+													<MenuItem itemId={"home-sub"}><Icon type={IconType.HOME}/>More Home</MenuItem>
+													<MenuItem itemId={"checkmark-sub"}><Icon type={IconType.CHECKMARK}/>More
+														Checkmark</MenuItem>
+												</Slot>
+											</SubMenuItem>
+											<MenuItem itemId={"checkmark"}><Icon type={IconType.CHECKMARK}/>Checkmark</MenuItem>
+										</Menu>
+									)}
+								</DynamicSlot>
+
+							</TreeView>
 						)}
 					</DynamicSlot>
 					<DynamicSlot name="sidebar-right">

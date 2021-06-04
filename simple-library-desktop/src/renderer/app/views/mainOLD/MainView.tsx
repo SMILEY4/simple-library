@@ -3,14 +3,14 @@ import { VBox } from '../../../components/layout/box/Box';
 import { Fill } from '../../../components/common/common';
 import { Grid } from '../../../components/layout/grid/Grid';
 import { componentDidMount } from '../../common/utils/functionalReactLifecycle';
-import { useGroups } from '../../hooks/groupHooks';
+import { useGroups } from '../../hooks/old/groupHooks';
 import { NotificationStack } from '../../../components/_old/notification/NotificationStack';
 import { genNotificationId, toNotificationEntries } from '../../common/utils/notificationUtils';
 import { AppNotificationType } from '../../store/state';
 import { ItemList } from './itemPanel/ItemList';
 import { fetchRootGroup } from '../../common/messaging/messagingInterface';
 import { MenuSidebar } from './menusidebar/MenuSidebar';
-import { useNotifications } from '../../hooks/miscAppHooks';
+import { useNotificationsOld } from '../../hooks/old/miscAppHooks';
 
 interface NewMainViewProps {
     onActionClose: () => void
@@ -18,7 +18,7 @@ interface NewMainViewProps {
 
 export function MainView(props: React.PropsWithChildren<NewMainViewProps>): React.ReactElement {
 
-    const { notifications, addNotification, removeNotification } = useNotifications();
+    const { notifications, addNotification, removeNotification } = useNotificationsOld();
     const { setRootGroup } = useGroups();
 
     componentDidMount(() => {

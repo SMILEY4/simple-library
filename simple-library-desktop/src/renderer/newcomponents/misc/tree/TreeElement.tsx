@@ -12,7 +12,6 @@ export interface TreeElementProps extends BaseProps {
 
 	selected?: boolean,
 	depth: number,
-	modalRootId: string,
 
 	onSelect?: () => void,
 	onDoubleClick?: () => void,
@@ -25,8 +24,10 @@ export interface TreeElementProps extends BaseProps {
 	onDragOver?: (event: React.DragEvent) => void,
 	onDrop?: (event: React.DragEvent) => void,
 
-	onClick?: () => void,
 	additionalInset?: string,
+
+	onClick?: () => void,
+	__onContextMenu?: (e: React.MouseEvent) => void
 }
 
 export function TreeElement(props: React.PropsWithChildren<TreeElementProps>): ReactElement {
@@ -44,6 +45,7 @@ export function TreeElement(props: React.PropsWithChildren<TreeElementProps>): R
 			onDragLeave={handleDragExit}
 			onDrop={handleDrop}
 			onClick={props.onClick}
+			onContextMenu={props.__onContextMenu}
 			ref={refDropTarget}
 		>
 			{props.children}

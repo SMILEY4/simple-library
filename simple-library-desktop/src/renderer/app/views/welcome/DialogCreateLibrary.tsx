@@ -5,7 +5,8 @@ import {Button} from "../../../newcomponents/buttons/button/Button";
 import {TextField} from "../../../newcomponents/input/textfield/TextField";
 import {VBox} from "../../../newcomponents/layout/box/Box";
 import {DirectoryField} from "../../../newcomponents/input/directoryinputfield/DirectoryField";
-import {useValidatedState} from "../../hooks/miscAppHooks";
+import {useValidatedState} from "../../hooks/miscHooks";
+import {useCreateLibrary} from "../../hooks/libraryHooks";
 
 const electron = window.require('electron');
 
@@ -15,6 +16,8 @@ interface DialogCreateLibraryProps {
 }
 
 export function DialogCreateLibrary(props: React.PropsWithChildren<DialogCreateLibraryProps>): React.ReactElement {
+
+	const {browseTargetDir} = useCreateLibrary()
 
 	const [
 		name,
@@ -53,7 +56,7 @@ export function DialogCreateLibrary(props: React.PropsWithChildren<DialogCreateL
 					<DirectoryField
 						placeholder={"Target Directory"}
 						error={!targetDirValid}
-						onBrowse={handleBrowseTarget}
+						onBrowse={browseTargetDir}
 						onSelect={setTargetDir}
 					/>
 				</VBox>
@@ -64,25 +67,6 @@ export function DialogCreateLibrary(props: React.PropsWithChildren<DialogCreateL
 			</Slot>
 		</Dialog>
 	);
-
-	function handleBrowseTarget(): Promise<string | null> {
-		return electron.remote.dialog
-			.showOpenDialog({
-				title: 'Select target directory',
-				buttonLabel: 'Select',
-				properties: [
-					'openDirectory',
-					'createDirectory',
-				],
-			})
-			.then((result: any) => {
-				if (result.canceled) {
-					return null;
-				} else {
-					return result.filePaths[0];
-				}
-			});
-	}
 
 	function handleCancel(): void {
 		props.onCancel()

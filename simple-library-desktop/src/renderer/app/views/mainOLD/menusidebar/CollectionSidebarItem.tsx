@@ -5,10 +5,10 @@ import { BiImagesSmart } from '../../../../components/base/icon/BiImagesSmart';
 import { BiImages } from 'react-icons/all';
 import { useContextMenu } from 'react-contexify';
 import { COLLECTION_CONTEXT_MENU_ID } from './contextmenues/CollectionContextMenu';
-import { useCollections } from '../../../hooks/collectionHooks';
+import { useCollections } from '../../../hooks/old/collectionHooks';
 import { DragAndDropCollections, DragAndDropItems, DragAndDropUtils } from '../../../common/dragAndDrop';
 import { isCopyMode } from '../../../common/utils/utils';
-import { useItems } from '../../../hooks/itemHooks';
+import { useItems } from '../../../hooks/old/itemHooks';
 
 interface CollectionSidebarItemProps {
     collection: Collection,

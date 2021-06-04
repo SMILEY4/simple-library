@@ -1,10 +1,10 @@
 import { useCollections } from './collectionHooks';
-import { useGlobalState, useNotifications } from './miscAppHooks';
-import { fetchItems, requestMoveItems, requestRemoveItems } from '../common/messaging/messagingInterface';
-import { genNotificationId } from '../common/utils/notificationUtils';
-import { AppNotificationType } from '../store/state';
-import { ItemData } from '../../../common/commonModels';
-import { ActionType } from '../store/reducer';
+import { useGlobalState, useNotificationsOld } from './miscAppHooks';
+import { fetchItems, requestMoveItems, requestRemoveItems } from '../../common/messaging/messagingInterface';
+import { genNotificationId } from '../../common/utils/notificationUtils';
+import { AppNotificationType } from '../../store/state';
+import { ItemData } from '../../../../common/commonModels';
+import { ActionType } from '../../store/reducer';
 import { useGroups } from './groupHooks';
 
 
@@ -12,7 +12,7 @@ export function useItems() {
     const { state, dispatch } = useGlobalState();
     const { reloadRootGroup } = useGroups();
     const { activeCollectionId } = useCollections();
-    const { addNotification } = useNotifications();
+    const { addNotification } = useNotificationsOld();
 
     const setItems = (collectionId: number) => {
         fetchItems(collectionId)

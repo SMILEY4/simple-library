@@ -62,7 +62,7 @@ export function TreeView(props: React.PropsWithChildren<TreeViewProps>): ReactEl
 			{renderNode(props.rootNode, 0)}
 
 			<ContextMenuBase
-				modalRootId={"showcase-root"}
+				modalRootId={props.modalRootId}
 				show={showContextMenu}
 				pageX={contextMenuX}
 				pageY={contextMenuY}
@@ -90,7 +90,6 @@ export function TreeView(props: React.PropsWithChildren<TreeViewProps>): ReactEl
 				icon={node.icon}
 				selected={isSelected(node.id)}
 				depth={depth}
-				modalRootId={props.modalRootId}
 				expanded={isExpandable(node) && isExpanded(node.id)}
 				expandable={isExpandable(node)}
 				onToggle={() => isExpandable(node) && handleToggleExpand(node.id)}
@@ -117,7 +116,6 @@ export function TreeView(props: React.PropsWithChildren<TreeViewProps>): ReactEl
 				label={node.label}
 				selected={isSelected(node.id)}
 				depth={depth}
-				modalRootId={props.modalRootId}
 				onSelect={() => handleSelect(node.id)}
 				onDoubleClick={() => handleDoubleClick(node.id)}
 				onContextMenu={(pageX: number, pageY: number) => handleContextMenu(node.id, pageX, pageY)}
