@@ -83,6 +83,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 				<div onClick={() => setBackground("2")}>BG-2</div>
 			</div>
 
+			{renderDragAndDrop()}
 			{renderToolbar()}
 			{renderIconButton()}
 			{renderTreeView()}
@@ -110,6 +111,51 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 
 		</div>
 	);
+
+
+	function renderDragAndDrop() {
+		return <ShowcaseSection title={"Drag and Drop"}>
+
+			<div
+				style={{
+					width: "200px",
+					height: "40px",
+					border: "1px solid black",
+					display: "flex",
+					justifyContent: "center",
+					alignItems: "center"
+				}}
+				draggable
+				onDragStart={(e: React.DragEvent) => {
+					e.dataTransfer.setData("application/json", JSON.stringify({value: "Hello"}))
+				}}
+			>
+				Drag Me!
+			</div>
+
+			<div
+				style={{
+				width: "200px",
+				height: "200px",
+				border: "1px solid black",
+				display: "flex",
+				justifyContent: "center",
+				alignItems: "center"
+			}}
+				onDragOver={(e: React.DragEvent) => {
+					e.preventDefault()
+					e.dataTransfer.dropEffect = "copy"
+				}}
+				onDrop={(e: React.DragEvent) => {
+					e.preventDefault()
+					console.log("drop", e.dataTransfer.getData("application/json"))
+				}}
+			>
+				Drag Here!
+			</div>
+
+		</ShowcaseSection>
+	}
 
 
 	function renderToolbar() {

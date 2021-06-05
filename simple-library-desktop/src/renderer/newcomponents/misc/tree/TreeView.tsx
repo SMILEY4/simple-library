@@ -67,9 +67,9 @@ export function TreeView(props: React.PropsWithChildren<TreeViewProps>): ReactEl
 				pageX={contextMenuX}
 				pageY={contextMenuY}
 				menuRef={contextMenuRef}
-				onAction={(itemId: string) => closeContextMenu()}
+				onAction={() => closeContextMenu()}
 			>
-				{getChildOfDynamicSlot(props.children, "context-menu", selected)}
+				{selected.length === 1 && getChildOfDynamicSlot(props.children, "context-menu", selected[0])}
 			</ContextMenuBase>
 
 

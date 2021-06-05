@@ -1,5 +1,6 @@
 import {
 	fetchLastOpenedLibraries,
+	requestCloseLibrary,
 	requestCreateLibrary,
 	requestOpenLibrary
 } from "../common/messaging/messagingInterface";
@@ -130,6 +131,19 @@ export function useOpenLibrary(onLoadLibrary: () => void) {
 	return {
 		browseLibraries: browse,
 		openLibrary: open
+	}
+}
+
+
+export function useCloseLibrary(onClose: () => void) {
+
+	function close(): void {
+		requestCloseLibrary()
+			.then(() => onClose())
+	}
+
+	return {
+		closeLibrary: close
 	}
 }
 

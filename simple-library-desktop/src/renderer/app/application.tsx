@@ -21,6 +21,8 @@ interface AppState {
 	displayComponentShowcase: boolean
 }
 
+export const APP_ROOT_ID = "root";
+
 export class Application extends Component<any, AppState> {
 
 	constructor(props: any) {
@@ -62,7 +64,7 @@ export class Application extends Component<any, AppState> {
 
 	renderComponentShowcase() {
 		return (
-			<div className='root-view' style={{width: '100%', height: '100%'}} id='root'>
+			<div className='root-view' style={{width: '100%', height: '100%'}} id={APP_ROOT_ID}>
 				<ComponentShowcase
 					theme={this.state.theme}
 					onChangeTheme={(nextTheme: Theme) => this.setState({theme: nextTheme})}
@@ -78,7 +80,7 @@ export class Application extends Component<any, AppState> {
 				<div
 					className={'root-view theme-' + this.state.theme}
 					style={{width: '100%', height: '100%'}}
-					id='root'
+					id={APP_ROOT_ID}
 				>
 					<WelcomeView onLoadProject={() => this.setState({currentView: View.MAIN})}/>
 				</div>
@@ -93,7 +95,7 @@ export class Application extends Component<any, AppState> {
 				<div
 					className={'root-view theme-' + this.state.theme}
 					style={{width: '100%', height: '100%'}}
-					id='root'
+					id={APP_ROOT_ID}
 				>
 					<MainView onClose={() => this.setState({currentView: View.WELCOME})}/>
 				</div>

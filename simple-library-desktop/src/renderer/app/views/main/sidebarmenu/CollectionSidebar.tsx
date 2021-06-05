@@ -13,6 +13,9 @@ import {Collection, Group} from "../../../../../common/commonModels";
 import {DynamicSlot} from "../../../../newcomponents/base/slot/DynamicSlot";
 import {CollectionContextMenu} from "./CollectionContextMenu";
 import {GroupContextMenu} from "./GroupContextMenu";
+import {DragDataContainer, DragOpType} from "../../../../newcomponents/utils/dragAndDropUtils";
+import {APP_ROOT_ID} from "../../../application";
+import {handleDragOver, handleDragStart, handleDropOn} from "./sidebarMenuDragAndDrop";
 
 export const TAB_DATA_COLLECTIONS: SidebarTab = {
 	id: "tab-collections",
@@ -21,12 +24,6 @@ export const TAB_DATA_COLLECTIONS: SidebarTab = {
 }
 
 interface CollectionSidebarProps {
-	onCreateGroup: (triggerGroupId: string) => void,
-	onCreateCollection: (triggerGroupId: string) => void,
-	onEditGroup: (triggerGroupId: string) => void
-	onEditCollection: (triggerCollectionId: string) => void
-	onDeleteGroup: (triggerGroupId: string) => void
-	onDeleteCollection: (triggerCollectionId: string) => void
 }
 
 export function CollectionSidebar(props: React.PropsWithChildren<CollectionSidebarProps>): React.ReactElement {
@@ -44,9 +41,12 @@ export function CollectionSidebar(props: React.PropsWithChildren<CollectionSideb
 	return rootGroup && (
 		<TreeView
 			rootNode={buildTree(rootGroup)}
-			modalRootId={"root"}
+			modalRootId={APP_ROOT_ID}
 			forceExpanded={state.collectionSidebarExpanded}
 			onToggleExpand={handleToggleExpandNode}
+			onDragStart={handleDragStart}
+			onDragOver={handleDragOver}
+			onDrop={handleDropOn}
 		>
 			<DynamicSlot name={"context-menu"}>
 				{(nodeId: string) => {
@@ -55,18 +55,18 @@ export function CollectionSidebar(props: React.PropsWithChildren<CollectionSideb
 						return (
 							<CollectionContextMenu
 								collectionId={objectId}
-								onEdit={() => props.onEditCollection(objectId)}
-								onDelete={() => props.onDeleteCollection(objectId)}
+								onEdit={undefined}
+								onDelete={undefined}
 							/>
 						)
 					} else {
 						return (
 							<GroupContextMenu
 								groupId={objectId}
-								onCreateGroup={() => props.onCreateGroup(objectId)}
-								onCreateCollection={() => props.onCreateCollection(objectId)}
-								onEdit={() => props.onEditGroup(objectId)}
-								onDelete={() => props.onDeleteGroup(objectId)}
+								onCreateGroup={undefined}
+								onCreateCollection={undefined}
+								onEdit={undefined}
+								onDelete={undefined}
 							/>
 						)
 					}
@@ -74,6 +74,21 @@ export function CollectionSidebar(props: React.PropsWithChildren<CollectionSideb
 			</DynamicSlot>
 		</TreeView>
 	)
+
+	function handleToggleExpandNode(nodeId: string, expanded: boolean): void {
+		if (expanded) {
+			dispatch({
+				type: ActionType.COLLECTION_SIDEBAR_SET_EXPANDED,
+				payload: [...state.collectionSidebarExpanded, nodeId],
+			});
+		} else {
+			dispatch({
+				type: ActionType.COLLECTION_SIDEBAR_SET_EXPANDED,
+				payload: state.collectionSidebarExpanded.filter(id => id !== nodeId)
+			});
+		}
+	}
+
 
 	function buildTree(group: Group): TreeViewNode {
 		return buildGroupTreeNode(group);
@@ -110,18 +125,5 @@ export function CollectionSidebar(props: React.PropsWithChildren<CollectionSideb
 		}
 	}
 
-	function handleToggleExpandNode(nodeId: string, expanded: boolean): void {
-		if (expanded) {
-			dispatch({
-				type: ActionType.COLLECTION_SIDEBAR_SET_EXPANDED,
-				payload: [...state.collectionSidebarExpanded, nodeId],
-			});
-		} else {
-			dispatch({
-				type: ActionType.COLLECTION_SIDEBAR_SET_EXPANDED,
-				payload: state.collectionSidebarExpanded.filter(id => id !== nodeId)
-			});
-		}
-	}
 
 }

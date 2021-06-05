@@ -7,6 +7,7 @@ import {VBox} from "../../../newcomponents/layout/box/Box";
 import {DirectoryField} from "../../../newcomponents/input/directoryinputfield/DirectoryField";
 import {useValidatedState} from "../../hooks/miscHooks";
 import {useCreateLibrary} from "../../hooks/libraryHooks";
+import {APP_ROOT_ID} from "../../application";
 
 const electron = window.require('electron');
 
@@ -36,6 +37,7 @@ export function DialogCreateLibrary(props: React.PropsWithChildren<DialogCreateL
 	return (
 		<Dialog
 			show={true}
+			modalRootId={APP_ROOT_ID}
 			icon={undefined}
 			title={"Create New Library"}
 			onClose={handleCancel}

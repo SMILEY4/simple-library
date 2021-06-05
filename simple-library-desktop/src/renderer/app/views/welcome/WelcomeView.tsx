@@ -12,6 +12,7 @@ import imgWelcome from "./imgWelcome.jpg";
 import {NotificationStack} from "../../../newcomponents/modals/notification/NotificationStack";
 import {Notification, NotificationProps} from "../../../newcomponents/modals/notification/Notification";
 import "./welcome.css"
+import {APP_ROOT_ID} from "../../application";
 
 interface WelcomeViewControllerProps {
 	onLoadProject: () => void
@@ -62,7 +63,7 @@ export function WelcomeView(props: React.PropsWithChildren<WelcomeViewController
 				</Grid>
 			</div>
 
-			<NotificationStack modalRootId='root'>
+			<NotificationStack modalRootId={APP_ROOT_ID}>
 				{getNotificationProps().map((n: NotificationProps) => <Notification {...n} />)}
 			</NotificationStack>
 

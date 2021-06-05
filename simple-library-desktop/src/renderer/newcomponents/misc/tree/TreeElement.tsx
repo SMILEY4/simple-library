@@ -27,7 +27,7 @@ export interface TreeElementProps extends BaseProps {
 	additionalInset?: string,
 
 	onClick?: () => void,
-	__onContextMenu?: (e: React.MouseEvent) => void
+	__onContextMenu?: (e: React.MouseEvent) => void,
 }
 
 export function TreeElement(props: React.PropsWithChildren<TreeElementProps>): ReactElement {
@@ -40,10 +40,10 @@ export function TreeElement(props: React.PropsWithChildren<TreeElementProps>): R
 			style={{...props.style, paddingLeft: calculateInset()}}
 			draggable={props.draggable}
 			onDragStart={handleDragStart}
-			onDragEnter={handleDragEnter}
-			onDragOver={handleDragOver}
-			onDragLeave={handleDragExit}
-			onDrop={handleDrop}
+			onDragEnter={props.dropTarget && handleDragEnter}
+			onDragLeave={props.dropTarget && handleDragExit}
+			onDragOver={props.dropTarget && handleDragOver}
+			onDrop={props.dropTarget && handleDrop}
 			onClick={props.onClick}
 			onContextMenu={props.__onContextMenu}
 			ref={refDropTarget}
@@ -67,7 +67,7 @@ export function TreeElement(props: React.PropsWithChildren<TreeElementProps>): R
 
 	function handleDragEnter(event: React.DragEvent): void {
 		if (props.dropTarget) {
-			props.onDragOver && props.onDragOver(event)
+			event.preventDefault();
 			refDropTarget.current.className += " tree-element-drop"
 		} else {
 			event.dataTransfer.dropEffect = "none"
@@ -76,13 +76,18 @@ export function TreeElement(props: React.PropsWithChildren<TreeElementProps>): R
 
 	function handleDragExit(event: React.DragEvent): void {
 		if (props.dropTarget) {
+			event.preventDefault();
 			refDropTarget.current.className = refDropTarget.current.className.replace(" tree-element-drop", "")
 		}
 	}
 
 	function handleDragOver(event: React.DragEvent): void {
-		event.preventDefault();
-		// without this, the drag-and-drop wont work (for some reason)
+		if (props.dropTarget) {
+			event.preventDefault();
+			props.onDragOver && props.onDragOver(event)
+		} else {
+			event.dataTransfer.dropEffect = "none"
+		}
 	}
 
 	function handleDrop(event: React.DragEvent): void {
