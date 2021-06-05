@@ -1,9 +1,7 @@
 import {BaseProps} from "../../utils/common";
 import React, {ReactElement, useState} from "react";
 import {IconType} from "../../base/icon/Icon";
-import {TreeNode} from "./TreeNode";
 import {orDefault} from "../../../components/common/common";
-import {TreeLeaf} from "./TreeLeaf";
 import "./treeView.css"
 import {ContextMenuBase} from "../../menu/contextmenu/ContextMenuBase";
 import {useContextMenu} from "../../menu/contextmenu/contextMenuHook";
@@ -15,6 +13,8 @@ import {
 	getMetadataMimeType,
 	setDragData
 } from "../../utils/dragAndDropUtils";
+import {TreeElementLeaf} from "./TreeElementLeaf";
+import {TreeElementNode} from "./TreeElementNode";
 
 export interface TreeViewNode {
 	id: string,
@@ -29,6 +29,26 @@ export interface TreeViewNode {
 	droppable?: boolean
 }
 
+
+export interface TreeElementProps extends BaseProps {
+
+	value: string,
+	icon?: IconType,
+
+	selected?: boolean,
+	depth: number,
+
+	onSelect?: () => void,
+	onDoubleClick?: () => void,
+	onContextMenu?: (pageX: number, pageY: number) => void,
+
+	draggable?: boolean,
+	onDrag?: (event: React.DragEvent) => void,
+
+	dropTarget?: boolean,
+	onDragOver?: (event: React.DragEvent) => void,
+	onDrop?: (event: React.DragEvent) => void,
+}
 
 export interface TreeViewProps extends BaseProps {
 	modalRootId: string,
@@ -84,7 +104,7 @@ export function TreeView(props: React.PropsWithChildren<TreeViewProps>): ReactEl
 
 	function renderGroup(node: TreeViewNode, depth: number): ReactElement {
 		return (
-			<TreeNode
+			<TreeElementNode
 				key={node.id}
 				value={node.value}
 				icon={node.icon}
@@ -103,13 +123,13 @@ export function TreeView(props: React.PropsWithChildren<TreeViewProps>): ReactEl
 				onDrop={(e: React.DragEvent) => handleDrop(node.id, e)}
 			>
 				{orDefault(node.children, []).map(child => renderNode(child, depth + 1))}
-			</TreeNode>
+			</TreeElementNode>
 		);
 	}
 
 	function renderLeaf(node: TreeViewNode, depth: number): ReactElement {
 		return (
-			<TreeLeaf
+			<TreeElementLeaf
 				key={node.id}
 				value={node.value}
 				icon={node.icon}
@@ -188,7 +208,7 @@ export function TreeView(props: React.PropsWithChildren<TreeViewProps>): ReactEl
 	}
 
 	function handleDrop(nodeId: string, event: React.DragEvent) {
-		if(props.onDrop) {
+		if (props.onDrop) {
 			const metaId: string | null = getMetadataMimeType(event.dataTransfer);
 			const metadata: any | null = metaId ? extractMimeTypeProvidedMetadata(event.dataTransfer, metaId) : null;
 			props.onDrop(nodeId, metaId.replace("custom/", ""), metadata, event.dataTransfer.getData("application/json"))
