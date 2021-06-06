@@ -5,27 +5,28 @@ import {Slot} from "../../../../newcomponents/base/slot/Slot";
 import {MenuItem} from "../../../../newcomponents/menu/menuitem/MenuItem";
 
 interface ContextMenuGroupProps {
-	groupId: string,
-	onCreateGroup: () => void,
-	onCreateCollection: () => void,
-	onEdit: () => void
-	onDelete: () => void
+	groupId: number | null,
+	onDelete: () => void,
+	__onActionInternal?: (itemId: string) => void,
 }
 
 export function ContextMenuGroup(props: React.PropsWithChildren<ContextMenuGroupProps>): React.ReactElement {
+
 	return (
-		<Menu>
+		<Menu __onActionInternal={props.__onActionInternal}>
 			<SubMenuItem itemId={"new"}>
 				<Slot name={"item"}>
 					New
 				</Slot>
 				<Slot name={"menu"}>
-					<MenuItem itemId={"new.collection"} onAction={props.onCreateCollection}>Collection</MenuItem>
-					<MenuItem itemId={"new.group"} onAction={props.onCreateGroup}>Group</MenuItem>
+					<MenuItem itemId={"new.collection"} onAction={undefined}>Collection</MenuItem>
+					<MenuItem itemId={"new.group"} onAction={undefined}>Group</MenuItem>
 				</Slot>
 			</SubMenuItem>
-			<MenuItem itemId={"edit"} onAction={props.onEdit}>Edit</MenuItem>
-			<MenuItem itemId={"delete"} onAction={props.onDelete}>Delete</MenuItem>
+			<MenuItem itemId={"edit"} disabled={props.groupId === null} onAction={undefined}>Edit</MenuItem>
+			<MenuItem itemId={"delete"} disabled={props.groupId === null} onAction={props.onDelete}>Delete</MenuItem>
 		</Menu>
 	);
+
+
 }

@@ -9,6 +9,7 @@ import {Label} from "../../base/label/Label";
 export interface MenuItemProps extends BaseProps {
     itemId?: string,
     appendIcon?: IconType,
+    disabled?: boolean,
     onAction?: () => void;
     onMouseEnter?: (event: React.MouseEvent) => void,
     onMouseExit?: (event: React.MouseEvent) => void
@@ -26,20 +27,20 @@ export function MenuItem(props: React.PropsWithChildren<MenuItemProps>): ReactEl
             onMouseEnter={props.onMouseEnter}
             onMouseLeave={props.onMouseExit}
         >
-            <Label noSelect smallIcon>
+            <Label noSelect smallIcon disabled={props.disabled}>
                 {props.children}
             </Label>
             <div className={"menu-item-icon"}>
-                {props.appendIcon ? <Icon type={props.appendIcon} size={"0-75"}/> : null}
+                {props.appendIcon ? <Icon type={props.appendIcon} size={"0-75"} disabled={props.disabled}/> : null}
             </div>
         </div>
     );
 
     function handleClick() {
-        if (props.onAction) {
+        if (props.disabled !== true && props.onAction) {
             props.onAction();
         }
-        if (props.__onActionInternal) {
+        if (props.disabled !== true && props.__onActionInternal) {
             props.__onActionInternal(props.itemId);
         }
     }

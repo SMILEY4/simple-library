@@ -1,11 +1,14 @@
-import {requestMoveCollection} from "../common/messaging/messagingInterface";
+import {requestDeleteCollection, requestMoveCollection} from "../common/messaging/messagingInterface";
 import {genNotificationId} from "../common/utils/notificationUtils";
 import {AppNotificationType} from "../store/state";
 import {useNotifications} from "./notificationHooks";
 import {useGroups} from "./groupHooks";
+import {Collection, extractCollections} from "../../../common/commonModels";
+import {useGlobalState} from "./old/miscAppHooks";
 
 export function useCollections() {
 
+	const {state} = useGlobalState();
 	const {addNotification} = useNotifications()
 	const {loadGroups} = useGroups()
 
@@ -15,8 +18,21 @@ export function useCollections() {
 			.then(() => loadGroups());
 	}
 
+	function find(collectionId: number): Collection | null {
+		const result: Collection | undefined = extractCollections(state.rootGroup).find(collection => collection.id === collectionId);
+		return result ? result : null;
+	}
+
+	function deleteCollection(collectionId: number): void {
+		requestDeleteCollection(collectionId)
+			.catch(error => addNotification(genNotificationId(), AppNotificationType.COLLECTION_DELETE_FAILED, error))
+			.then(() => loadGroups())
+	}
+
 	return {
-		moveCollection: move
+		moveCollection: move,
+		findCollection: find,
+		deleteCollection: deleteCollection
 	}
 
 }

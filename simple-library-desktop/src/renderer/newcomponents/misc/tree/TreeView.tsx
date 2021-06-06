@@ -85,7 +85,6 @@ export function TreeView(props: React.PropsWithChildren<TreeViewProps>): ReactEl
 				{selected.length === 1 && getChildOfDynamicSlot(props.children, "context-menu", selected[0])}
 			</ContextMenuBase>
 
-
 		</div>
 	);
 
@@ -175,7 +174,7 @@ export function TreeView(props: React.PropsWithChildren<TreeViewProps>): ReactEl
 
 	function handleDoubleClick(nodeId: string) {
 		handleSelect(nodeId);
-		console.log("double-click", nodeId) // todo
+		console.log("NOT IMPLEMENTED: double-click", nodeId) // todo
 	}
 
 	function handleContextMenu(nodeId: string, pageX: number, pageY: number) {

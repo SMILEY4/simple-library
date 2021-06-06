@@ -9,8 +9,6 @@ import {useValidatedState} from "../../hooks/miscHooks";
 import {useCreateLibrary} from "../../hooks/libraryHooks";
 import {APP_ROOT_ID} from "../../application";
 
-const electron = window.require('electron');
-
 interface DialogCreateLibraryProps {
 	onCancel: () => void,
 	onCreate: (name: string, targetDir: string) => void

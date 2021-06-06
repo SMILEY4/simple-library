@@ -1,4 +1,4 @@
-import {CSSProperties} from "react";
+import {CSSProperties, useState} from "react";
 
 export interface BaseProps {
 	className?: string,

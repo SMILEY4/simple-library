@@ -36,21 +36,23 @@ export function ContextMenu(props: React.PropsWithChildren<ContextMenuProps>): R
             pageY={contextMenuY}
             menuRef={contextMenuRef}
             onOpenMenu={props.onOpenMenu}
-            onAction={(itemId: string) => {
-                closeContextMenu();
-                props.onAction && props.onAction(itemId)
-            }}
+            onAction={handleMenuAction}
         >
             {props.children}
         </ContextMenuBase>
     );
 
-    function handleOnContextMenu(event: any) {
+    function handleOnContextMenu(event: any): void {
         if (props.refTarget && props.refTarget.current && props.refTarget.current.contains(event.target)) {
             event.preventDefault;
             event.stopPropagation();
             openContextMenu(event.pageX, event.pageY);
         }
+    }
+
+    function handleMenuAction(itemId: string): void {
+        closeContextMenu();
+        props.onAction && props.onAction(itemId)
     }
 
 }

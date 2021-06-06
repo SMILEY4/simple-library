@@ -1,10 +1,10 @@
 import {useMount} from "./miscHooks";
-import {fetchRootGroup, requestMoveGroup} from "../common/messaging/messagingInterface";
+import {fetchRootGroup, requestDeleteGroup, requestMoveGroup} from "../common/messaging/messagingInterface";
 import {genNotificationId} from "../common/utils/notificationUtils";
 import {AppNotificationType} from "../store/state";
 import {useGlobalState} from "./old/miscAppHooks";
 import {ActionType} from "../store/reducer";
-import {Group} from "../../../common/commonModels";
+import {extractGroups, Group} from "../../../common/commonModels";
 import {useNotifications} from "./notificationHooks";
 
 export function useGroups() {
@@ -25,16 +25,29 @@ export function useGroups() {
 			.catch(error => addNotification(genNotificationId(), AppNotificationType.ROOT_GROUP_FETCH_FAILED, error));
 	}
 
+	function find(groupId: number): Group | null {
+		const result: Group | undefined = extractGroups(state.rootGroup).find(group => group.id === groupId);
+		return result ? result : null;
+	}
+
 	function move(groupId: number, targetGroupId: number | null): void {
 		requestMoveGroup(groupId, targetGroupId)
 			.catch(error => addNotification(genNotificationId(), AppNotificationType.GROUP_MOVE_FAILED, error))
 			.then(() => load());
 	}
 
+	function deleteGroup(groupId: number, keepContent: boolean): void {
+		requestDeleteGroup(groupId, !keepContent)
+			.catch(error => addNotification(genNotificationId(), AppNotificationType.GROUP_DELETE_FAILED, error))
+			.then(() => load())
+	}
+
 	return {
 		rootGroup: state.rootGroup,
 		loadGroups: load,
-		moveGroup: move
+		findGroup: find,
+		moveGroup: move,
+		deleteGroup: deleteGroup
 	}
 
 }

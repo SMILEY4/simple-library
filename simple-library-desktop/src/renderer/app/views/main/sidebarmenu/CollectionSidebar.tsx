@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {SidebarTab} from "../../../../newcomponents/misc/app/AppLayout";
 import {IconType} from "../../../../newcomponents/base/icon/Icon";
 import {TreeView, TreeViewNode} from "../../../../newcomponents/misc/tree/TreeView";
@@ -8,9 +8,9 @@ import {ContextMenuCollection} from "./ContextMenuCollection";
 import {ContextMenuGroup} from "./ContextMenuGroup";
 import {APP_ROOT_ID} from "../../../application";
 import {useGroups} from "../../../hooks/groupHooks";
-import {useCollectionSidebar} from "../../../hooks/miscHooks";
-import {DragAndDropCollections, DragAndDropGroups, DragAndDropUtils,} from "../../../common/dragAndDrop";
-import {useCollections} from "../../../hooks/collectionHooks";
+import {DialogDeleteCollection} from "./DialogDeleteCollection";
+import {useCollectionSidebar, useCollectionSidebarDialogs} from "./useCollectionSidebar";
+import {DialogDeleteGroup} from "./DialogDeleteGroup";
 
 export const TAB_DATA_COLLECTIONS: SidebarTab = {
 	id: "tab-collections",
@@ -23,148 +23,85 @@ interface CollectionSidebarProps {
 
 export function CollectionSidebar(props: React.PropsWithChildren<CollectionSidebarProps>): React.ReactElement {
 
-	const NODE_TYPE_COLLECTION = "collection"
-	const NODE_TYPE_GROUP = "group"
-
 	const {
-		rootGroup,
-		moveGroup
+		rootGroup
 	} = useGroups();
 
 	const {
-		moveCollection
-	} = useCollections();
-
-	const {
-		collectionSidebarExpandedNodes,
-		collectionSidebarToggleExpandedNode
+		NODE_TYPE_COLLECTION,
+		NODE_TYPE_GROUP,
+		expandedNodes,
+		toggleExpandNode,
+		dragStart,
+		dragOver,
+		drop,
+		getNodeId,
+		getNodeType,
+		getNodeObjectId
 	} = useCollectionSidebar();
 
+	const {
+		collectionIdDelete,
+		openDeleteCollection,
+		closeDeleteCollection,
+		groupIdDelete,
+		openDeleteGroup,
+		closeDeleteGroup
+	} = useCollectionSidebarDialogs();
+
 	return rootGroup && (
-		<TreeView
-			rootNode={buildTree(rootGroup)}
-			modalRootId={APP_ROOT_ID}
-			forceExpanded={collectionSidebarExpandedNodes}
-			onToggleExpand={collectionSidebarToggleExpandedNode}
-			onDragStart={handleDragStart}
-			onDragOver={handleDragOver}
-			onDrop={handleDrop}
-		>
-			<DynamicSlot name={"context-menu"}>
-				{(nodeId: string) => {
-					const objectId: string = nodeId.substring(nodeId.indexOf(".") + 1, nodeId.length)
-					if (nodeId.startsWith("collection")) {
-						return (
-							<ContextMenuCollection
-								collectionId={objectId}
-								onEdit={undefined}
-								onDelete={undefined}
-							/>
-						)
-					} else {
-						return (
-							<ContextMenuGroup
-								groupId={objectId}
-								onCreateGroup={undefined}
-								onCreateCollection={undefined}
-								onEdit={undefined}
-								onDelete={undefined}
-							/>
-						)
-					}
-				}}
-			</DynamicSlot>
-		</TreeView>
+		<>
+			<TreeView
+				rootNode={buildTree(rootGroup)}
+				modalRootId={APP_ROOT_ID}
+				forceExpanded={expandedNodes}
+				onToggleExpand={toggleExpandNode}
+				onDragStart={dragStart}
+				onDragOver={dragOver}
+				onDrop={drop}
+			>
+				<DynamicSlot name={"context-menu"}>
+					{(nodeId: string) => {
+						const objectId: number | null = getNodeObjectId(nodeId)
+						switch (getNodeType(nodeId)) {
+							case NODE_TYPE_COLLECTION: {
+								return <ContextMenuCollection
+									collectionId={objectId}
+									onDelete={() => openDeleteCollection(objectId)}
+									onEdit={undefined}
+								/>
+							}
+							case NODE_TYPE_GROUP: {
+								return <ContextMenuGroup
+									groupId={objectId}
+									onDelete={() => openDeleteGroup(objectId)}
+								/>
+							}
+							default: {
+								console.error("Cant open context menu - unexpected node type: ", nodeId);
+								return null;
+							}
+						}
+					}}
+				</DynamicSlot>
+			</TreeView>
+
+			{collectionIdDelete && (
+				<DialogDeleteCollection
+					collectionId={collectionIdDelete}
+					onClose={closeDeleteCollection}
+				/>
+			)}
+
+			{groupIdDelete && (
+				<DialogDeleteGroup
+					groupId={groupIdDelete}
+					onClose={closeDeleteGroup}
+				/>
+			)}
+
+		</>
 	)
-
-	function handleDragStart(nodeId: string, event: React.DragEvent): void {
-		switch (getNodeType(nodeId)) {
-			case NODE_TYPE_GROUP: {
-				DragAndDropGroups.setDragData(event.dataTransfer, getNodeObjectId(nodeId))
-				break;
-			}
-			case NODE_TYPE_COLLECTION: {
-				DragAndDropCollections.setDragData(event.dataTransfer, getNodeObjectId(nodeId))
-				break;
-			}
-		}
-	}
-
-	function handleDragOver(nodeId: string, event: React.DragEvent): void {
-		const targetType: string = getNodeType(nodeId);
-		const targetId: number | null = getNodeObjectId(nodeId)
-		const sourceMetadataMimeType: string = DragAndDropUtils.getMetadataMimeType(event.dataTransfer);
-
-		switch (targetType) {
-			case NODE_TYPE_GROUP: {
-				switch (sourceMetadataMimeType) {
-					case DragAndDropGroups.META_MIME_TYPE: {
-						// drag a 'group' over a 'group'
-						DragAndDropGroups.setDropEffect(event.dataTransfer, targetId, rootGroup);
-						break;
-					}
-					case DragAndDropCollections.META_MIME_TYPE: {
-						// drag a 'collection' over a 'group'
-						DragAndDropCollections.setDropEffect(event.dataTransfer);
-						break;
-					}
-					default: {
-						// drag a 'something' over a 'group'
-						DragAndDropUtils.setDropEffectForbidden(event.dataTransfer);
-						break;
-					}
-				}
-				break;
-			}
-			case NODE_TYPE_COLLECTION: {
-				// drag 'something' over a 'collection'
-				DragAndDropUtils.setDropEffectForbidden(event.dataTransfer)
-				break;
-			}
-			default: {
-				DragAndDropUtils.setDropEffectForbidden(event.dataTransfer)
-			}
-		}
-	}
-
-	function handleDrop(nodeId: string, event: React.DragEvent): void {
-		const targetType: string = getNodeType(nodeId);
-		const targetId: number | null = getNodeObjectId(nodeId)
-		const sourceMetadataMimeType: string = DragAndDropUtils.getMetadataMimeType(event.dataTransfer);
-
-		switch (targetType) {
-			case NODE_TYPE_GROUP: {
-				switch (sourceMetadataMimeType) {
-					case DragAndDropGroups.META_MIME_TYPE: {
-						// drop a 'group' on a 'group'
-						const dropData: DragAndDropGroups.Data = DragAndDropGroups.getDragData(event.dataTransfer);
-						moveGroup(dropData.groupId, targetId)
-						break;
-					}
-					case DragAndDropCollections.META_MIME_TYPE: {
-						// drop a 'collection' on a 'group'
-						const dropData: DragAndDropCollections.Data = DragAndDropCollections.getDragData(event.dataTransfer);
-						moveCollection(dropData.collectionId, targetId);
-						break;
-					}
-					default: {
-						// drop a 'something' on a 'group'
-						DragAndDropUtils.setDropEffectForbidden(event.dataTransfer);
-						break;
-					}
-				}
-				break;
-			}
-			case NODE_TYPE_COLLECTION: {
-				// drop 'something' on a 'collection'
-				DragAndDropUtils.setDropEffectForbidden(event.dataTransfer)
-				break;
-			}
-			default: {
-				DragAndDropUtils.setDropEffectForbidden(event.dataTransfer)
-			}
-		}
-	}
 
 	function buildTree(group: Group): TreeViewNode {
 		return buildGroupTreeNode(group, true);
@@ -199,19 +136,6 @@ export function CollectionSidebar(props: React.PropsWithChildren<CollectionSideb
 			droppable: true,
 			isLeaf: true
 		}
-	}
-
-	function getNodeId(type: string, id: number): string {
-		return type + "." + id
-	}
-
-	function getNodeType(nodeId: string): string {
-		return nodeId.substring(0, nodeId.indexOf("."))
-	}
-
-	function getNodeObjectId(nodeId: string): number | null {
-		const id = Number.parseInt(nodeId.substring(nodeId.indexOf(".") + 1, nodeId.length));
-		return Number.isNaN(id) ? null : id
 	}
 
 }

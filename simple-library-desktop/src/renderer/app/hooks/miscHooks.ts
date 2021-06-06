@@ -45,29 +45,3 @@ export function useValidatedState<S>(
 		},
 	];
 }
-
-
-export function useCollectionSidebar() {
-
-	const { state, dispatch } = useGlobalState();
-
-	function toggleExpandNode(nodeId: string, expanded: boolean) {
-		if (expanded) {
-			dispatch({
-				type: ActionType.COLLECTION_SIDEBAR_SET_EXPANDED,
-				payload: [...state.collectionSidebarExpandedNodes, nodeId],
-			});
-		} else {
-			dispatch({
-				type: ActionType.COLLECTION_SIDEBAR_SET_EXPANDED,
-				payload: state.collectionSidebarExpandedNodes.filter(id => id !== nodeId)
-			});
-		}
-	}
-
-	return {
-		collectionSidebarExpandedNodes: state.collectionSidebarExpandedNodes,
-		collectionSidebarToggleExpandedNode: toggleExpandNode
-	}
-
-}

@@ -21,11 +21,11 @@ export function TreeElementLeaf(props: React.PropsWithChildren<TreeElementLeafPr
 			className={concatClasses(props.className, "tree-leaf", "tree-element", getIf(props.selected, "tree-element-selected"))}
 			style={{...props.style, paddingLeft: calculateInset(props.depth, "var(--s-1)")}}
 			draggable={props.draggable}
-			onDragStart={props.draggable && handleDragStart}
-			onDragEnter={props.dropTarget && handleDragEnter}
-			onDragLeave={props.dropTarget && handleDragLeave}
-			onDragOver={props.dropTarget && handleDragOver}
-			onDrop={props.dropTarget && handleDrop}
+			onDragStart={props.draggable ? handleDragStart : undefined}
+			onDragEnter={props.dropTarget ? handleDragEnter : undefined}
+			onDragLeave={props.dropTarget ? handleDragLeave : undefined}
+			onDragOver={props.dropTarget ? handleDragOver : undefined}
+			onDrop={props.dropTarget ? handleDrop : undefined}
 			onClick={props.onSelect}
 			onContextMenu={handleContextMenu}
 			ref={refDropTarget}
