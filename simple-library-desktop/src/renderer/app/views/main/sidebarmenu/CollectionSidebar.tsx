@@ -14,6 +14,7 @@ import {DialogDeleteGroup} from "./DialogDeleteGroup";
 import {DialogEditGroup} from "./DialogEditGroup";
 import {DialogEditCollection} from "./DialogEditCollection";
 import {DialogCreateGroup} from "./DialogCreateGroup";
+import {DialogCreateCollection} from "./DialogCreateCollection";
 
 export const TAB_DATA_COLLECTIONS: SidebarTab = {
 	id: "tab-collections",
@@ -61,9 +62,15 @@ export function CollectionSidebar(props: React.PropsWithChildren<CollectionSideb
 		closeEditGroup,
 
 		showCreateGroup,
-		parentGroupIdCreate,
+		parentGroupIdCreateGroup,
 		openCreateGroup,
-		closeCreateGroup
+		closeCreateGroup,
+
+		showCreateCollection,
+		parentGroupIdCreateCollection,
+		openCreateCollection,
+		closeCreateCollection
+
 	} = useCollectionSidebarDialogs();
 
 	return rootGroup && (
@@ -89,12 +96,11 @@ export function CollectionSidebar(props: React.PropsWithChildren<CollectionSideb
 								/>
 							}
 							case NODE_TYPE_GROUP: {
-									{/*TODO: create actions*/}
 								return <ContextMenuGroup
 									groupId={objectId}
 									onDelete={() => openDeleteGroup(objectId)}
 									onEdit={() => openEditGroup(objectId)}
-									onCreateCollection={undefined}
+									onCreateCollection={() => openCreateCollection(objectId)}
 									onCreateGroup={() => openCreateGroup(objectId)}/>
 							}
 							default: {
@@ -136,10 +142,18 @@ export function CollectionSidebar(props: React.PropsWithChildren<CollectionSideb
 
 			{showCreateGroup && (
 				<DialogCreateGroup
-					parentGroupId={parentGroupIdCreate}
+					parentGroupId={parentGroupIdCreateGroup}
 					onClose={closeCreateGroup}
 				/>
 			)}
+
+			{showCreateCollection && (
+				<DialogCreateCollection
+					parentGroupId={parentGroupIdCreateCollection}
+					onClose={closeCreateCollection}
+				/>
+			)}
+
 		</>
 	)
 

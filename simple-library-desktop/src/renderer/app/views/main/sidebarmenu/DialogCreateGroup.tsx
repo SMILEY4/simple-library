@@ -40,6 +40,7 @@ export function DialogCreateGroup(props: React.PropsWithChildren<DialogCreateGro
 			modalRootId={APP_ROOT_ID}
 			icon={undefined}
 			title={"Create Group"}
+			subtitle={props.parentGroupId ? "Create in '" + parentGroup.name + "'" : undefined}
 			onClose={handleCancel}
 			onEscape={handleCancel}
 			onEnter={handleCreate}
@@ -60,15 +61,11 @@ export function DialogCreateGroup(props: React.PropsWithChildren<DialogCreateGro
 					/>
 					{props.parentGroupId !== null && (
 						<>
-							<Spacer size="0-25" dir="horizontal"/>
+							<Spacer size="0-5" dir="horizontal" line/>
 							<Label type="body" variant="primary">{"Create in '" + parentGroup.name + "'"}</Label>
 						</>
 					)}
 				</VBox>
-			</Slot>
-			<Slot name={"footer"}>
-				<Button onAction={handleCancel}>Cancel</Button>
-				<Button variant="info" disabled={!nameValid} onAction={handleCreate}>Create</Button>
 			</Slot>
 		</Dialog>
 	);

@@ -176,13 +176,21 @@ export function useCollectionSidebarDialogs() {
 	] = useState(null);
 
 	const [
-		parentGroupIdCreate,
-		setParentGroupIdCreate
+		parentGroupIdCreateGroup,
+		setParentGroupIdCreateGroup
 	] = useState(null);
-
 	const [
 		showCreateGroup,
 		setShowCreateGroup
+	] = useState(false);
+
+	const [
+		parentGroupIdCreateCollection,
+		setParentGroupIdCreateCollection
+	] = useState(null);
+	const [
+		showCreateCollection,
+		setShowCreateCollection
 	] = useState(false);
 
 	return {
@@ -203,14 +211,25 @@ export function useCollectionSidebarDialogs() {
 		closeEditGroup: () => setGroupIdEdit(null),
 
 		showCreateGroup: showCreateGroup,
-		parentGroupIdCreate: parentGroupIdCreate,
+		parentGroupIdCreateGroup: parentGroupIdCreateGroup,
 		openCreateGroup: (groupId: number) => {
 			setShowCreateGroup(true)
-			setParentGroupIdCreate(groupId)
+			setParentGroupIdCreateGroup(groupId)
 		},
 		closeCreateGroup: () => {
-			setParentGroupIdCreate(null)
+			setParentGroupIdCreateGroup(null)
 			setShowCreateGroup(false)
+		},
+
+		showCreateCollection: showCreateCollection,
+		parentGroupIdCreateCollection: parentGroupIdCreateCollection,
+		openCreateCollection: (groupId: number) => {
+			setShowCreateCollection(true)
+			setParentGroupIdCreateCollection(groupId)
+		},
+		closeCreateCollection: () => {
+			setParentGroupIdCreateCollection(null)
+			setShowCreateCollection(false)
 		}
 	}
 

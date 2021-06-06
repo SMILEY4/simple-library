@@ -14,6 +14,7 @@ import {useKeyListener} from "../../../components/common/commonHooks";
 export interface CardProps extends BaseProps {
     title?: string,
     icon?: IconType,
+    subtitle?: string,
     noBodyPadding?: boolean,
     fitHeight?: boolean,
     closable?: boolean,
@@ -65,10 +66,17 @@ export function Card(props: React.PropsWithChildren<CardProps>) {
                     spacing="1-5"
                     padding="0-75"
                 >
-                    <Label type="header-3">
-                        {props.icon && (<Icon type={props.icon}/>)}
-                        {props.title}
-                    </Label>
+                    <VBox alignCross="stretch" spacing="0-15">
+                        <Label type="header-3">
+                            {props.icon && (<Icon type={props.icon}/>)}
+                            {props.title}
+                        </Label>
+                        {props.subtitle && (
+                        <Label type="caption" variant="secondary" style={props.icon ? {marginLeft: "var(--s-1)"} : undefined}>
+                            {props.subtitle}
+                        </Label>
+                        )}
+                    </VBox>
                     {props.closable === true
                         ? (
                             <Button square ghost onAction={props.onClose}>

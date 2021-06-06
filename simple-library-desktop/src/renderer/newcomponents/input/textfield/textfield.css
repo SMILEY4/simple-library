@@ -24,6 +24,10 @@
 	color: var(--color-text-placeholder)
 }
 
+.text-field:focus-within {
+	border-color: var(--color-focus);
+}
+
 .text-field > input:required,
 .text-field > input:focus,
 .text-field > input:invalid {

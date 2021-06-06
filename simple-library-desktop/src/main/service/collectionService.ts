@@ -43,8 +43,14 @@ export class CollectionService {
 	 * @param parentGroupId the id of the parent group or undefined
 	 * @return a promise that resolves with the created {@link Collection}
 	 */
-	public createSmartCollection(name: string, query: string, parentGroupId: number | null): Promise<Collection> {
-		return this.collectionDataAccess.createCollection(name.trim(), CollectionType.SMART, query.trim(), parentGroupId);
+	public async createSmartCollection(name: string, query: string, parentGroupId: number | null): Promise<Collection> {
+		const createdCollection: Collection = await this.collectionDataAccess.createCollection(name.trim(), CollectionType.SMART, query.trim(), parentGroupId);
+		return this.itemService.getAllItems(createdCollection.id)
+			.then(() => createdCollection)
+			.catch(error => {
+				this.collectionDataAccess.deleteCollection(createdCollection.id);
+				throw error;
+			});
 	}
 
 
@@ -71,10 +77,10 @@ export class CollectionService {
 			return failedAsync("Could not edit collection. Collection does not exist.");
 		}
 		if (newName) {
-			await this.collectionDataAccess.renameCollection(collectionId, newName);
+			await this.collectionDataAccess.renameCollection(collectionId, newName.trim());
 		}
 		if (collection.type === CollectionType.SMART) {
-			await this.collectionDataAccess.editCollectionSmartQuery(collectionId, newSmartQuery)
+			await this.collectionDataAccess.editCollectionSmartQuery(collectionId, newSmartQuery.trim())
 				.then(() => this.itemService.getAllItems(collectionId))
 				.catch(error => {
 					this.collectionDataAccess.editCollectionSmartQuery(collectionId, collection.smartQuery);

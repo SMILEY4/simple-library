@@ -12,6 +12,7 @@ export interface DialogProps extends BaseProps {
     withOverlay?: boolean,
     title?: string,
     icon?: IconType,
+    subtitle?: string,
     noBodyPadding?: boolean,
     closable?: boolean,
     closeOnClickOutside?: boolean,
@@ -35,6 +36,7 @@ export function Dialog(props: React.PropsWithChildren<DialogProps>) {
             <Card
                 title={props.title}
                 icon={props.icon}
+                subtitle={props.subtitle}
                 noBodyPadding={props.noBodyPadding}
                 closable={props.closable}
                 onClose={props.onClose}

@@ -1,4 +1,5 @@
 import {
+	requestCreateCollection,
 	requestDeleteCollection,
 	requestEditCollection,
 	requestMoveCollection
@@ -7,7 +8,7 @@ import {genNotificationId} from "../common/utils/notificationUtils";
 import {AppNotificationType} from "../store/state";
 import {useNotifications} from "./notificationHooks";
 import {useGroups} from "./groupHooks";
-import {Collection, extractCollections} from "../../../common/commonModels";
+import {Collection, CollectionType, extractCollections} from "../../../common/commonModels";
 import {useGlobalState} from "./old/miscAppHooks";
 
 export function useCollections() {
@@ -33,6 +34,12 @@ export function useCollections() {
 			.then(() => loadGroups())
 	}
 
+	function create(parentGroupId: number | null, name: string, type: CollectionType, query: string | null): void {
+		requestCreateCollection(name, type, type === CollectionType.SMART ? query : null, parentGroupId)
+			.catch(error => addNotification(genNotificationId(), AppNotificationType.COLLECTION_CREATE_FAILED, error))
+			.then(() => loadGroups())
+	}
+
 	function edit(collectionId: number, name: string, query: string | null): void {
 		requestEditCollection(collectionId, name, query)
 			.catch(error => addNotification(genNotificationId(), AppNotificationType.COLLECTION_EDIT_FAILED, error))
@@ -43,6 +50,7 @@ export function useCollections() {
 		moveCollection: move,
 		findCollection: find,
 		deleteCollection: deleteCollection,
+		createCollection: create,
 		editCollection: edit
 	}
 

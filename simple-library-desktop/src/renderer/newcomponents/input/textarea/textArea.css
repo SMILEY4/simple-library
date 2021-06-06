@@ -30,6 +30,10 @@
 	color: var(--color-text-placeholder)
 }
 
+.text-area:focus-within {
+	border-color: var(--color-focus);
+}
+
 .text-area-none > textarea {resize: none;}
 .text-area-horizontal > textarea {resize: horizontal;}
 .text-area-vertical > textarea {resize: vertical;}

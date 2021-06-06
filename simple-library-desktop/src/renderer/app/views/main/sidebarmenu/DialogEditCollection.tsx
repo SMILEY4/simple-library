@@ -74,7 +74,7 @@ export function DialogEditCollection(props: React.PropsWithChildren<DialogEditCo
 					{collection.type === CollectionType.SMART && (
 						<>
 							<Spacer size="0-5" dir="horizontal" line/>
-							<VBox alignMain="center" alignCross="stretch" spacing="0-25" style={{cursor: ""}}>
+							<VBox alignMain="center" alignCross="stretch" spacing="0-25">
 								<Label
 									type="caption"
 									variant="secondary"
