@@ -165,6 +165,10 @@ export function useCollectionSidebarDialogs() {
 		setGroupIdDelete
 	] = useState(null);
 
+	const [
+		groupIdEdit,
+		setGroupIdEdit
+	] = useState(null);
 
 	return {
 		collectionIdDelete: collectionIdDelete,
@@ -173,7 +177,11 @@ export function useCollectionSidebarDialogs() {
 
 		groupIdDelete: groupIdDelete,
 		openDeleteGroup: (groupId: number) => setGroupIdDelete(groupId),
-		closeDeleteGroup: () => setGroupIdDelete(null)
+		closeDeleteGroup: () => setGroupIdDelete(null),
+
+		groupIdEdit: groupIdEdit,
+		openEditGroup: (groupId: number) => setGroupIdEdit(groupId),
+		closeEditGroup: () => setGroupIdEdit(null)
 	}
 
 }

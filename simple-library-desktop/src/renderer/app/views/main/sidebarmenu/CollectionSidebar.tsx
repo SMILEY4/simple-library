@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import {SidebarTab} from "../../../../newcomponents/misc/app/AppLayout";
 import {IconType} from "../../../../newcomponents/base/icon/Icon";
 import {TreeView, TreeViewNode} from "../../../../newcomponents/misc/tree/TreeView";
@@ -11,6 +11,7 @@ import {useGroups} from "../../../hooks/groupHooks";
 import {DialogDeleteCollection} from "./DialogDeleteCollection";
 import {useCollectionSidebar, useCollectionSidebarDialogs} from "./useCollectionSidebar";
 import {DialogDeleteGroup} from "./DialogDeleteGroup";
+import {DialogEditGroup} from "./DialogEditGroup";
 
 export const TAB_DATA_COLLECTIONS: SidebarTab = {
 	id: "tab-collections",
@@ -44,9 +45,14 @@ export function CollectionSidebar(props: React.PropsWithChildren<CollectionSideb
 		collectionIdDelete,
 		openDeleteCollection,
 		closeDeleteCollection,
+
 		groupIdDelete,
 		openDeleteGroup,
-		closeDeleteGroup
+		closeDeleteGroup,
+
+		groupIdEdit,
+		openEditGroup,
+		closeEditGroup
 	} = useCollectionSidebarDialogs();
 
 	return rootGroup && (
@@ -75,6 +81,7 @@ export function CollectionSidebar(props: React.PropsWithChildren<CollectionSideb
 								return <ContextMenuGroup
 									groupId={objectId}
 									onDelete={() => openDeleteGroup(objectId)}
+									onEdit={() => openEditGroup(objectId)}
 								/>
 							}
 							default: {
@@ -97,6 +104,13 @@ export function CollectionSidebar(props: React.PropsWithChildren<CollectionSideb
 				<DialogDeleteGroup
 					groupId={groupIdDelete}
 					onClose={closeDeleteGroup}
+				/>
+			)}
+
+			{groupIdEdit && (
+				<DialogEditGroup
+					groupId={groupIdEdit}
+					onClose={closeEditGroup}
 				/>
 			)}
 

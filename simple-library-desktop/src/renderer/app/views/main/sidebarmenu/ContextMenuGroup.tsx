@@ -7,6 +7,7 @@ import {MenuItem} from "../../../../newcomponents/menu/menuitem/MenuItem";
 interface ContextMenuGroupProps {
 	groupId: number | null,
 	onDelete: () => void,
+	onEdit: () => void,
 	__onActionInternal?: (itemId: string) => void,
 }
 
@@ -23,7 +24,7 @@ export function ContextMenuGroup(props: React.PropsWithChildren<ContextMenuGroup
 					<MenuItem itemId={"new.group"} onAction={undefined}>Group</MenuItem>
 				</Slot>
 			</SubMenuItem>
-			<MenuItem itemId={"edit"} disabled={props.groupId === null} onAction={undefined}>Edit</MenuItem>
+			<MenuItem itemId={"edit"} disabled={props.groupId === null} onAction={props.onEdit}>Rename</MenuItem>
 			<MenuItem itemId={"delete"} disabled={props.groupId === null} onAction={props.onDelete}>Delete</MenuItem>
 		</Menu>
 	);

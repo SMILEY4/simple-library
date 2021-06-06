@@ -1,5 +1,9 @@
-import {useMount} from "./miscHooks";
-import {fetchRootGroup, requestDeleteGroup, requestMoveGroup} from "../common/messaging/messagingInterface";
+import {
+	fetchRootGroup,
+	requestDeleteGroup,
+	requestMoveGroup,
+	requestRenameGroup
+} from "../common/messaging/messagingInterface";
 import {genNotificationId} from "../common/utils/notificationUtils";
 import {AppNotificationType} from "../store/state";
 import {useGlobalState} from "./old/miscAppHooks";
@@ -11,8 +15,6 @@ export function useGroups() {
 
 	const {state, dispatch} = useGlobalState();
 	const {addNotification} = useNotifications()
-
-	useMount(() => load())
 
 	function load(): void {
 		fetchRootGroup()
@@ -42,12 +44,19 @@ export function useGroups() {
 			.then(() => load())
 	}
 
+	function rename(groupId: number, newName: string): void {
+		requestRenameGroup(groupId, newName)
+			.catch(error => addNotification(genNotificationId(), AppNotificationType.GROUP_RENAME_FAILED, error))
+			.then(() => load())
+	}
+
 	return {
 		rootGroup: state.rootGroup,
 		loadGroups: load,
 		findGroup: find,
 		moveGroup: move,
-		deleteGroup: deleteGroup
+		deleteGroup: deleteGroup,
+		renameGroup: rename
 	}
 
 }
