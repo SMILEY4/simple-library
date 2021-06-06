@@ -111,7 +111,7 @@ export class CollectionDataAccess {
      * @param query the new smart-query of the collection
      * @return a promise that resolves when the collection was modified
      */
-    public editCollectionSmartQuery(collectionId: number, query: string): Promise<void> {
+    public editCollectionSmartQuery(collectionId: number, query: string | null): Promise<void> {
         return this.dataAccess.executeRun(sqlUpdateCollectionSmartQuery(collectionId, query)).then();
     }
 

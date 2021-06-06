@@ -58,7 +58,7 @@ export function TextArea(props: React.PropsWithChildren<TextAreaProps>): ReactEl
 
 
 	function handleOnBlur(event: any) {
-		handleChange(event.target.value, props.onChange);
+		handleChange(event.target.value, props.onAccept);
 	}
 
 

@@ -1,6 +1,5 @@
-import {Dispatch, SetStateAction, useEffect, useState} from "react";
-import {useGlobalState} from "./old/miscAppHooks";
-import {ActionType} from "../store/reducer";
+import {Dispatch, MutableRefObject, SetStateAction, useEffect} from "react";
+import {useStateRef} from "../../components/common/commonHooks";
 
 export function useMount(action: () => void) {
 	useEffect(action, []);
@@ -24,10 +23,17 @@ export function useValidatedState<S>(
 	initialState: S | (() => S),
 	initialValid: boolean,
 	validate: (value: S) => boolean
-): [S, Dispatch<SetStateAction<S>>, boolean, () => boolean] {
+): [
+	S,
+	Dispatch<SetStateAction<S>>,
+	boolean,
+	() => boolean,
+	MutableRefObject<S>,
+	MutableRefObject<boolean>
+] {
 
-	const [value, setValue] = useState(initialState);
-	const [valid, setValid] = useState(initialValid)
+	const [value, setValue, refValue] = useStateRef(initialState)
+	const [valid, setValid, refValid] = useStateRef(initialValid)
 
 	function setValueAndValidate(value: S): void {
 		setValue(value);
@@ -39,9 +45,11 @@ export function useValidatedState<S>(
 		setValueAndValidate,
 		valid,
 		() => {
-			const valid = validate(value)
+			const valid = validate(refValue.current)
 			setValid(valid)
 			return valid;
 		},
+		refValue,
+		refValid,
 	];
 }

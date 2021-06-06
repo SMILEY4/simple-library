@@ -12,6 +12,7 @@ import {DialogDeleteCollection} from "./DialogDeleteCollection";
 import {useCollectionSidebar, useCollectionSidebarDialogs} from "./useCollectionSidebar";
 import {DialogDeleteGroup} from "./DialogDeleteGroup";
 import {DialogEditGroup} from "./DialogEditGroup";
+import {DialogEditCollection} from "./DialogEditCollection";
 
 export const TAB_DATA_COLLECTIONS: SidebarTab = {
 	id: "tab-collections",
@@ -46,6 +47,10 @@ export function CollectionSidebar(props: React.PropsWithChildren<CollectionSideb
 		openDeleteCollection,
 		closeDeleteCollection,
 
+		collectionIdEdit,
+		openEditCollection,
+		closeEditCollection,
+
 		groupIdDelete,
 		openDeleteGroup,
 		closeDeleteGroup,
@@ -74,7 +79,7 @@ export function CollectionSidebar(props: React.PropsWithChildren<CollectionSideb
 								return <ContextMenuCollection
 									collectionId={objectId}
 									onDelete={() => openDeleteCollection(objectId)}
-									onEdit={undefined}
+									onEdit={() => openEditCollection(objectId)}
 								/>
 							}
 							case NODE_TYPE_GROUP: {
@@ -97,6 +102,13 @@ export function CollectionSidebar(props: React.PropsWithChildren<CollectionSideb
 				<DialogDeleteCollection
 					collectionId={collectionIdDelete}
 					onClose={closeDeleteCollection}
+				/>
+			)}
+
+			{collectionIdEdit && (
+				<DialogEditCollection
+					collectionId={collectionIdEdit}
+					onClose={closeEditCollection}
 				/>
 			)}
 

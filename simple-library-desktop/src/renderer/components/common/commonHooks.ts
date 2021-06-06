@@ -1,7 +1,7 @@
 import {Dispatch, MutableRefObject, SetStateAction, useEffect, useRef, useState} from 'react';
 import {componentLifecycle} from '../../app/common/utils/functionalReactLifecycle';
 
-export function useStateRef<S>(initialValue: S): [S, Dispatch<SetStateAction<S>>, MutableRefObject<S>] {
+export function useStateRef<S>(initialValue: S | (() => S),): [S, Dispatch<SetStateAction<S>>, MutableRefObject<S>] {
 	const [value, setValue] = useState(initialValue);
 
 	const ref = useRef(value);

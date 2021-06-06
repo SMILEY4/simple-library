@@ -27,7 +27,9 @@ export function DialogEditGroup(props: React.PropsWithChildren<DialogEditGroupPr
 		name,
 		setName,
 		nameValid,
-		triggerNameValidation
+		triggerNameValidation,
+		refName,
+		refNameValid,
 	] = useValidatedState(prevName, true, validateName)
 
 	return (
@@ -45,7 +47,7 @@ export function DialogEditGroup(props: React.PropsWithChildren<DialogEditGroupPr
 		>
 			<Slot name={"body"}>
 				<VBox alignMain="center" alignCross="stretch" spacing="0-25">
-					<Label type="caption" variant="secondary">New Name:</Label>
+					<Label type="caption" variant="secondary">Group Name:</Label>
 					<TextField
 						placeholder={"Group Name"}
 						value={name}
@@ -68,9 +70,9 @@ export function DialogEditGroup(props: React.PropsWithChildren<DialogEditGroupPr
 
 	function handleEdit() {
 		triggerNameValidation();
-		if (nameValid) {
-			if (name !== prevName) {
-				renameGroup(props.groupId, name);
+		if (refNameValid.current) {
+			if (refName.current !== prevName) {
+				renameGroup(props.groupId, refName.current);
 			}
 			props.onClose();
 		}

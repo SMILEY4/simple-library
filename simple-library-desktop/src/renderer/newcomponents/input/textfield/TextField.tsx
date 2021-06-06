@@ -58,6 +58,7 @@ export function TextField(props: React.PropsWithChildren<TextFieldProps>): React
 
 
 	function handleOnBlur(event: any) {
+		console.log("on blur", event.target.value)
 		handleChange(event.target.value, props.onAccept);
 	}
 
@@ -66,6 +67,7 @@ export function TextField(props: React.PropsWithChildren<TextFieldProps>): React
 		if (event.key === 'Enter') {
 			event.stopPropagation();
 			event.target.blur();
+			console.log("On enter", event.target.value)
 			// onAccept triggered by blur
 			handleChange(event.target.value, () => undefined);
 		}

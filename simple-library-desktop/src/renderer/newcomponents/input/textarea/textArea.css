@@ -30,7 +30,7 @@
 	color: var(--color-text-placeholder)
 }
 
-.text-area-none {resize: none;}
-.text-area-horizontal {resize: horizontal;}
-.text-area-vertical {resize: vertical;}
+.text-area-none > textarea {resize: none;}
+.text-area-horizontal > textarea {resize: horizontal;}
+.text-area-vertical > textarea {resize: vertical;}
 

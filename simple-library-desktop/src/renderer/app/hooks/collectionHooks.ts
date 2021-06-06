@@ -1,4 +1,8 @@
-import {requestDeleteCollection, requestMoveCollection} from "../common/messaging/messagingInterface";
+import {
+	requestDeleteCollection,
+	requestEditCollection,
+	requestMoveCollection
+} from "../common/messaging/messagingInterface";
 import {genNotificationId} from "../common/utils/notificationUtils";
 import {AppNotificationType} from "../store/state";
 import {useNotifications} from "./notificationHooks";
@@ -29,10 +33,17 @@ export function useCollections() {
 			.then(() => loadGroups())
 	}
 
+	function edit(collectionId: number, name: string, query: string | null): void {
+		requestEditCollection(collectionId, name, query)
+			.catch(error => addNotification(genNotificationId(), AppNotificationType.COLLECTION_EDIT_FAILED, error))
+			.then(() => loadGroups())
+	}
+
 	return {
 		moveCollection: move,
 		findCollection: find,
-		deleteCollection: deleteCollection
+		deleteCollection: deleteCollection,
+		editCollection: edit
 	}
 
 }
