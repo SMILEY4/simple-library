@@ -6,13 +6,6 @@ import "./treeView.css"
 import {ContextMenuBase} from "../../menu/contextmenu/ContextMenuBase";
 import {useContextMenu} from "../../menu/contextmenu/contextMenuHook";
 import {getChildOfDynamicSlot} from "../../base/slot/DynamicSlot";
-import {
-	DragDataContainer,
-	DragOpType,
-	extractMimeTypeProvidedMetadata,
-	getMetadataMimeType,
-	setDragData
-} from "../../utils/dragAndDropUtils";
 import {TreeElementLeaf} from "./TreeElementLeaf";
 import {TreeElementNode} from "./TreeElementNode";
 
@@ -57,9 +50,9 @@ export interface TreeViewProps extends BaseProps {
 	forceExpanded?: string[],
 	onToggleExpand?: (nodeId: string, expanded: boolean) => void
 
-	onDragStart?: (nodeId: string) => DragDataContainer;
-	onDragOver?: (nodeId: string, metaId: string | null, metadata: any | null) => DragOpType;
-	onDrop?: (nodeId: string, metaId: string | null, metadata: any | null, data: any) => void;
+	onDragStart?: (nodeId: string, event: React.DragEvent) => void;
+	onDragOver?: (nodeId: string, event: React.DragEvent) => void;
+	onDrop?: (nodeId: string, event: React.DragEvent) => void;
 }
 
 
@@ -117,10 +110,10 @@ export function TreeView(props: React.PropsWithChildren<TreeViewProps>): ReactEl
 				onDoubleClick={() => isExpandable(node) && handleToggleExpand(node.id)}
 				onContextMenu={(pageX: number, pageY: number) => handleContextMenu(node.id, pageX, pageY)}
 				draggable={node.draggable}
-				onDrag={(e: React.DragEvent) => handleDrag(node.id, e)}
 				dropTarget={node.droppable}
-				onDragOver={(e: React.DragEvent) => handleDragOver(node.id, e)}
-				onDrop={(e: React.DragEvent) => handleDrop(node.id, e)}
+				onDrag={(e: React.DragEvent) => props.onDragStart && props.onDragStart(node.id, e)}
+				onDragOver={(e: React.DragEvent) => props.onDragOver && props.onDragOver(node.id, e)}
+				onDrop={(e: React.DragEvent) => props.onDrop && props.onDrop(node.id, e)}
 			>
 				{orDefault(node.children, []).map(child => renderNode(child, depth + 1))}
 			</TreeElementNode>
@@ -140,10 +133,10 @@ export function TreeView(props: React.PropsWithChildren<TreeViewProps>): ReactEl
 				onDoubleClick={() => handleDoubleClick(node.id)}
 				onContextMenu={(pageX: number, pageY: number) => handleContextMenu(node.id, pageX, pageY)}
 				draggable={node.draggable}
-				onDrag={(e: React.DragEvent) => handleDrag(node.id, e)}
 				dropTarget={node.droppable}
-				onDragOver={(e: React.DragEvent) => handleDragOver(node.id, e)}
-				onDrop={(e: React.DragEvent) => handleDrop(node.id, e)}
+				onDrag={(e: React.DragEvent) => props.onDragStart && props.onDragStart(node.id, e)}
+				onDragOver={(e: React.DragEvent) => props.onDragOver && props.onDragOver(node.id, e)}
+				onDrop={(e: React.DragEvent) => props.onDrop && props.onDrop(node.id, e)}
 			/>
 		);
 	}
@@ -188,31 +181,6 @@ export function TreeView(props: React.PropsWithChildren<TreeViewProps>): ReactEl
 	function handleContextMenu(nodeId: string, pageX: number, pageY: number) {
 		handleSelect(nodeId);
 		openContextMenu(pageX, pageY)
-	}
-
-	function handleDrag(nodeId: string, event: React.DragEvent) {
-		handleSelect(nodeId);
-		if (props.onDragStart) {
-			const dragDataContainer: DragDataContainer = props.onDragStart(nodeId)
-			setDragData(dragDataContainer.metaId, dragDataContainer.metaData, dragDataContainer.data, event.dataTransfer)
-			event.dataTransfer.effectAllowed = dragDataContainer.allowedOps
-		}
-	}
-
-	function handleDragOver(nodeId: string, event: React.DragEvent) {
-		if (props.onDragOver) {
-			const metaId: string | null = getMetadataMimeType(event.dataTransfer);
-			const metadata: any | null = metaId ? extractMimeTypeProvidedMetadata(event.dataTransfer, metaId) : null;
-			event.dataTransfer.dropEffect = props.onDragOver(nodeId, metaId.replace("custom/", ""), metadata);
-		}
-	}
-
-	function handleDrop(nodeId: string, event: React.DragEvent) {
-		if (props.onDrop) {
-			const metaId: string | null = getMetadataMimeType(event.dataTransfer);
-			const metadata: any | null = metaId ? extractMimeTypeProvidedMetadata(event.dataTransfer, metaId) : null;
-			props.onDrop(nodeId, metaId.replace("custom/", ""), metadata, event.dataTransfer.getData("application/json"))
-		}
 	}
 
 }

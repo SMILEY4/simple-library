@@ -46,7 +46,6 @@ import {DynamicSlot} from "../base/slot/DynamicSlot";
 import {Slot} from "../base/slot/Slot";
 import {TreeView} from "../misc/tree/TreeView";
 import {getTreeData} from "./sampleData";
-import {DragDataContainer, DragOpType} from "../utils/dragAndDropUtils";
 import {IconButton} from "../buttons/iconbutton/IconButton";
 import {Toolbar} from "../misc/toolbar/Toolbar";
 import {Spacer} from "../base/spacer/Spacer";
@@ -235,18 +234,6 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 				<TreeView
 					rootNode={getTreeData()}
 					modalRootId={"showcase-root"}
-					onDragStart={(nodeId: string): DragDataContainer => ({
-						metaId: "showcase",
-						metaData: {srcid: nodeId},
-						data: {srcid: nodeId},
-						allowedOps: "all"
-					})}
-					onDragOver={(): DragOpType => {
-						return "move"
-					}}
-					onDrop={(nodeId: string, metaId: string, metadata: any, data: any) => {
-						console.log("drop", metadata.srcid, "on", nodeId, "  -  ", metaId, metadata, data);
-					}}
 				>
 					<DynamicSlot name={"context-menu"}>
 						{(nodeId: string) => (

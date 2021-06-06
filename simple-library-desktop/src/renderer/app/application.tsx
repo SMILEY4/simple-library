@@ -30,7 +30,7 @@ export class Application extends Component<any, AppState> {
 		this.state = {
 			theme: Theme.LIGHT,
 			currentView: View.WELCOME,
-			displayComponentShowcase: true,
+			displayComponentShowcase: false,
 		};
 		this.renderComponentShowcase = this.renderComponentShowcase.bind(this);
 		this.renderWelcomeView = this.renderWelcomeView.bind(this);

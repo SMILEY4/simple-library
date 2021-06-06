@@ -28,3 +28,17 @@ export type Size = "0"
 	| "32"
 	| "40"
 	| "48"
+
+export function addClass(element: any, className: string): void {
+	const classNames: string[] = element.className.split(" ")
+	if (classNames.indexOf(className) === -1) {
+		element.className = [...classNames, className].join(" ")
+	}
+}
+
+export function removeClass(element: any, className: string): void {
+	const classNames: string[] = element.className.split(" ")
+	if (classNames.indexOf(className) !== -1) {
+		element.className = classNames.filter(name => name !== className).join(" ")
+	}
+}

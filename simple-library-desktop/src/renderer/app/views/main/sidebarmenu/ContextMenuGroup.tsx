@@ -4,7 +4,7 @@ import {SubMenuItem} from "../../../../newcomponents/menu/submenu/SubMenuItem";
 import {Slot} from "../../../../newcomponents/base/slot/Slot";
 import {MenuItem} from "../../../../newcomponents/menu/menuitem/MenuItem";
 
-interface GroupContextMenuProps {
+interface ContextMenuGroupProps {
 	groupId: string,
 	onCreateGroup: () => void,
 	onCreateCollection: () => void,
@@ -12,7 +12,7 @@ interface GroupContextMenuProps {
 	onDelete: () => void
 }
 
-export function GroupContextMenu(props: React.PropsWithChildren<GroupContextMenuProps>): React.ReactElement {
+export function ContextMenuGroup(props: React.PropsWithChildren<ContextMenuGroupProps>): React.ReactElement {
 	return (
 		<Menu>
 			<SubMenuItem itemId={"new"}>

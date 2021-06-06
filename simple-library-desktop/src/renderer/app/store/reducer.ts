@@ -89,7 +89,7 @@ export function Reducer(state: GlobalApplicationState, action: Action): GlobalAp
         case ActionType.COLLECTION_SIDEBAR_SET_EXPANDED: {
             return {
                 ...state,
-                collectionSidebarExpanded: action.payload,
+                collectionSidebarExpandedNodes: action.payload,
             };
         }
 

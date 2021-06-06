@@ -2,13 +2,13 @@ import React from "react";
 import {Menu} from "../../../../newcomponents/menu/menu/Menu";
 import {MenuItem} from "../../../../newcomponents/menu/menuitem/MenuItem";
 
-interface CollectionContextMenuProps {
+interface ContextMenuCollectionProps {
 	collectionId: string,
 	onEdit: () => void
 	onDelete: () => void
 }
 
-export function CollectionContextMenu(props: React.PropsWithChildren<CollectionContextMenuProps>): React.ReactElement {
+export function ContextMenuCollection(props: React.PropsWithChildren<ContextMenuCollectionProps>): React.ReactElement {
 	return (
 		<Menu>
 			<MenuItem itemId={"edit"} onAction={props.onEdit}>Edit</MenuItem>

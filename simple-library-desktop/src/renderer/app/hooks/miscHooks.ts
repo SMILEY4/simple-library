@@ -1,4 +1,6 @@
 import {Dispatch, SetStateAction, useEffect, useState} from "react";
+import {useGlobalState} from "./old/miscAppHooks";
+import {ActionType} from "../store/reducer";
 
 export function useMount(action: () => void) {
 	useEffect(action, []);
@@ -42,4 +44,30 @@ export function useValidatedState<S>(
 			return valid;
 		},
 	];
+}
+
+
+export function useCollectionSidebar() {
+
+	const { state, dispatch } = useGlobalState();
+
+	function toggleExpandNode(nodeId: string, expanded: boolean) {
+		if (expanded) {
+			dispatch({
+				type: ActionType.COLLECTION_SIDEBAR_SET_EXPANDED,
+				payload: [...state.collectionSidebarExpandedNodes, nodeId],
+			});
+		} else {
+			dispatch({
+				type: ActionType.COLLECTION_SIDEBAR_SET_EXPANDED,
+				payload: state.collectionSidebarExpandedNodes.filter(id => id !== nodeId)
+			});
+		}
+	}
+
+	return {
+		collectionSidebarExpandedNodes: state.collectionSidebarExpandedNodes,
+		collectionSidebarToggleExpandedNode: toggleExpandNode
+	}
+
 }

@@ -6,6 +6,7 @@ import "./treeLeaf.css"
 import {Label} from "../../base/label/Label";
 import {Icon} from "../../base/icon/Icon";
 import {TreeElementProps} from "./TreeView";
+import {addClass, removeClass} from "../../utils/common";
 
 export interface TreeElementLeafProps extends TreeElementProps {
 	label?: string,
@@ -43,16 +44,20 @@ export function TreeElementLeaf(props: React.PropsWithChildren<TreeElementLeafPr
 
 	function handleDragStart(event: React.DragEvent): void {
 		props.onDrag && props.onDrag(event)
+		props.onSelect()
 	}
 
 	function handleDragEnter(event: React.DragEvent): void {
 		event.preventDefault();
-		refDropTarget.current.className += " tree-element-drop"
+		props.onDragOver && props.onDragOver(event)
+		if (event.dataTransfer.dropEffect !== "none") {
+			addClass(refDropTarget.current, "tree-element-drop")
+		}
 	}
 
 	function handleDragLeave(event: React.DragEvent): void {
 		event.preventDefault();
-		refDropTarget.current.className = refDropTarget.current.className.replace(" tree-element-drop", "")
+		removeClass(refDropTarget.current, "tree-element-drop");
 	}
 
 	function handleDragOver(event: React.DragEvent): void {
@@ -61,8 +66,8 @@ export function TreeElementLeaf(props: React.PropsWithChildren<TreeElementLeafPr
 	}
 
 	function handleDrop(event: React.DragEvent): void {
-		refDropTarget.current.className = refDropTarget.current.className.replace(" tree-element-drop", "")
 		event.preventDefault();
+		removeClass(refDropTarget.current, "tree-element-drop");
 		props.onDrop && props.onDrop(event);
 	}
 

@@ -96,7 +96,7 @@ export module DragAndDropCollections {
         const strData: string = JSON.stringify(data);
         dataTransfer.setData("text/plain", strData);
         dataTransfer.setData("application/json", strData);
-        dataTransfer.setData(DragAndDropCollections.buildMimeTypeProvidedMetadata(collectionId), strData);
+        dataTransfer.setData(buildMimeTypeProvidedMetadata(collectionId), strData);
         dataTransfer.effectAllowed = "move";
     }
 
@@ -105,7 +105,7 @@ export module DragAndDropCollections {
         return JSON.parse(dataTransfer.getData("application/json"));
     }
 
-    export function buildMimeTypeProvidedMetadata(collectionId: number): string {
+    function buildMimeTypeProvidedMetadata(collectionId: number): string {
         const meta: Metadata = {
             collectionid: collectionId,
         };
