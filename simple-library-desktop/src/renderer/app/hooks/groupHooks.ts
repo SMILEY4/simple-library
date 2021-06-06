@@ -1,5 +1,6 @@
 import {
 	fetchRootGroup,
+	requestCreateGroup,
 	requestDeleteGroup,
 	requestMoveGroup,
 	requestRenameGroup
@@ -44,6 +45,12 @@ export function useGroups() {
 			.then(() => load())
 	}
 
+	function create(parentGroupId: number | null, name: string): void {
+		requestCreateGroup(name, parentGroupId)
+			.catch(error => addNotification(genNotificationId(), AppNotificationType.GROUP_CREATE_FAILED, error))
+			.then(() => load())
+	}
+
 	function rename(groupId: number, newName: string): void {
 		requestRenameGroup(groupId, newName)
 			.catch(error => addNotification(genNotificationId(), AppNotificationType.GROUP_RENAME_FAILED, error))
@@ -56,6 +63,7 @@ export function useGroups() {
 		findGroup: find,
 		moveGroup: move,
 		deleteGroup: deleteGroup,
+		createGroup: create,
 		renameGroup: rename
 	}
 

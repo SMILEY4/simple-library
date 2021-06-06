@@ -67,6 +67,10 @@ export function TextArea(props: React.PropsWithChildren<TextAreaProps>): ReactEl
 			handleChange(event.target.value, props.onAccept);
 			event.target.blur();
 		}
+		if (event.key === 'Escape') {
+			handleChange(event.target.value, props.onAccept);
+			event.target.blur();
+		}
 	}
 
 	function handleChange(newValue: string, callback: (v: string) => void) {

@@ -13,6 +13,7 @@ import {useCollectionSidebar, useCollectionSidebarDialogs} from "./useCollection
 import {DialogDeleteGroup} from "./DialogDeleteGroup";
 import {DialogEditGroup} from "./DialogEditGroup";
 import {DialogEditCollection} from "./DialogEditCollection";
+import {DialogCreateGroup} from "./DialogCreateGroup";
 
 export const TAB_DATA_COLLECTIONS: SidebarTab = {
 	id: "tab-collections",
@@ -57,7 +58,12 @@ export function CollectionSidebar(props: React.PropsWithChildren<CollectionSideb
 
 		groupIdEdit,
 		openEditGroup,
-		closeEditGroup
+		closeEditGroup,
+
+		showCreateGroup,
+		parentGroupIdCreate,
+		openCreateGroup,
+		closeCreateGroup
 	} = useCollectionSidebarDialogs();
 
 	return rootGroup && (
@@ -83,11 +89,13 @@ export function CollectionSidebar(props: React.PropsWithChildren<CollectionSideb
 								/>
 							}
 							case NODE_TYPE_GROUP: {
+									{/*TODO: create actions*/}
 								return <ContextMenuGroup
 									groupId={objectId}
 									onDelete={() => openDeleteGroup(objectId)}
 									onEdit={() => openEditGroup(objectId)}
-								/>
+									onCreateCollection={undefined}
+									onCreateGroup={() => openCreateGroup(objectId)}/>
 							}
 							default: {
 								console.error("Cant open context menu - unexpected node type: ", nodeId);
@@ -126,6 +134,12 @@ export function CollectionSidebar(props: React.PropsWithChildren<CollectionSideb
 				/>
 			)}
 
+			{showCreateGroup && (
+				<DialogCreateGroup
+					parentGroupId={parentGroupIdCreate}
+					onClose={closeCreateGroup}
+				/>
+			)}
 		</>
 	)
 

@@ -8,6 +8,8 @@ interface ContextMenuGroupProps {
 	groupId: number | null,
 	onDelete: () => void,
 	onEdit: () => void,
+	onCreateGroup: () => void,
+	onCreateCollection: () => void,
 	__onActionInternal?: (itemId: string) => void,
 }
 
@@ -20,8 +22,8 @@ export function ContextMenuGroup(props: React.PropsWithChildren<ContextMenuGroup
 					New
 				</Slot>
 				<Slot name={"menu"}>
-					<MenuItem itemId={"new.collection"} onAction={undefined}>Collection</MenuItem>
-					<MenuItem itemId={"new.group"} onAction={undefined}>Group</MenuItem>
+					<MenuItem itemId={"new.collection"} onAction={props.onCreateCollection}>Collection</MenuItem>
+					<MenuItem itemId={"new.group"} onAction={props.onCreateGroup}>Group</MenuItem>
 				</Slot>
 			</SubMenuItem>
 			<MenuItem itemId={"edit"} disabled={props.groupId === null} onAction={props.onEdit}>Rename</MenuItem>

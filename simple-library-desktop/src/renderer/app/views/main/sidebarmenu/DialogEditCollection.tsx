@@ -62,6 +62,7 @@ export function DialogEditCollection(props: React.PropsWithChildren<DialogEditCo
 					<VBox alignMain="center" alignCross="stretch" spacing="0-25">
 						<Label type="caption" variant="secondary">Collection Name:</Label>
 						<TextField
+							autofocus
 							placeholder={"Collection Name"}
 							value={name}
 							onAccept={setName}

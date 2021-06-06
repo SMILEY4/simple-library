@@ -8,20 +8,22 @@ import {Label} from "../../../../newcomponents/base/label/Label";
 import {useGroups} from "../../../hooks/groupHooks";
 import {TextField} from "../../../../newcomponents/input/textfield/TextField";
 import {useValidatedState} from "../../../hooks/miscHooks";
+import {Group} from "../../../../../common/commonModels";
+import {Spacer} from "../../../../newcomponents/base/spacer/Spacer";
 
-interface DialogEditGroupProps {
-	groupId: number,
+interface DialogCreateGroupProps {
+	parentGroupId: number | null,
 	onClose: () => void,
 }
 
-export function DialogEditGroup(props: React.PropsWithChildren<DialogEditGroupProps>): React.ReactElement {
+export function DialogCreateGroup(props: React.PropsWithChildren<DialogCreateGroupProps>): React.ReactElement {
 
 	const {
 		findGroup,
-		renameGroup
+		createGroup
 	} = useGroups();
 
-	const prevName: string = findGroup(props.groupId).name;
+	const parentGroup: Group | null = findGroup(props.parentGroupId)
 
 	const [
 		name,
@@ -30,17 +32,17 @@ export function DialogEditGroup(props: React.PropsWithChildren<DialogEditGroupPr
 		triggerNameValidation,
 		refName,
 		refNameValid,
-	] = useValidatedState(prevName, true, validateName)
+	] = useValidatedState("", true, validateName)
 
 	return (
 		<Dialog
 			show={true}
 			modalRootId={APP_ROOT_ID}
 			icon={undefined}
-			title={"Rename Group"}
+			title={"Create Group"}
 			onClose={handleCancel}
 			onEscape={handleCancel}
-			onEnter={handleEdit}
+			onEnter={handleCreate}
 			withOverlay
 			closable
 			closeOnClickOutside
@@ -56,11 +58,17 @@ export function DialogEditGroup(props: React.PropsWithChildren<DialogEditGroupPr
 						error={!nameValid}
 						onChange={(value: string) => !nameValid && setName(value)}
 					/>
+					{props.parentGroupId !== null && (
+						<>
+							<Spacer size="0-25" dir="horizontal"/>
+							<Label type="body" variant="primary">{"Create in '" + parentGroup.name + "'"}</Label>
+						</>
+					)}
 				</VBox>
 			</Slot>
 			<Slot name={"footer"}>
 				<Button onAction={handleCancel}>Cancel</Button>
-				<Button variant="info" disabled={!nameValid} onAction={handleEdit}>Save</Button>
+				<Button variant="info" disabled={!nameValid} onAction={handleCreate}>Create</Button>
 			</Slot>
 		</Dialog>
 	);
@@ -69,12 +77,10 @@ export function DialogEditGroup(props: React.PropsWithChildren<DialogEditGroupPr
 		props.onClose()
 	}
 
-	function handleEdit() {
+	function handleCreate() {
 		triggerNameValidation();
 		if (refNameValid.current) {
-			if (refName.current !== prevName) {
-				renameGroup(props.groupId, refName.current);
-			}
+			createGroup(props.parentGroupId, refName.current);
 			props.onClose();
 		}
 	}

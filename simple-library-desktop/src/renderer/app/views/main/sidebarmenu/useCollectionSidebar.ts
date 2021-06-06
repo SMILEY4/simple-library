@@ -175,6 +175,16 @@ export function useCollectionSidebarDialogs() {
 		setGroupIdEdit
 	] = useState(null);
 
+	const [
+		parentGroupIdCreate,
+		setParentGroupIdCreate
+	] = useState(null);
+
+	const [
+		showCreateGroup,
+		setShowCreateGroup
+	] = useState(false);
+
 	return {
 		collectionIdDelete: collectionIdDelete,
 		openDeleteCollection: (collectionId: number) => setCollectionIdDelete(collectionId),
@@ -190,7 +200,18 @@ export function useCollectionSidebarDialogs() {
 
 		groupIdEdit: groupIdEdit,
 		openEditGroup: (groupId: number) => setGroupIdEdit(groupId),
-		closeEditGroup: () => setGroupIdEdit(null)
+		closeEditGroup: () => setGroupIdEdit(null),
+
+		showCreateGroup: showCreateGroup,
+		parentGroupIdCreate: parentGroupIdCreate,
+		openCreateGroup: (groupId: number) => {
+			setShowCreateGroup(true)
+			setParentGroupIdCreate(groupId)
+		},
+		closeCreateGroup: () => {
+			setParentGroupIdCreate(null)
+			setShowCreateGroup(false)
+		}
 	}
 
 }
