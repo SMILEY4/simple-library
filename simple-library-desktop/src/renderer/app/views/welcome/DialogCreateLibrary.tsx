@@ -6,8 +6,8 @@ import {TextField} from "../../../newcomponents/input/textfield/TextField";
 import {VBox} from "../../../newcomponents/layout/box/Box";
 import {DirectoryField} from "../../../newcomponents/input/directoryinputfield/DirectoryField";
 import {useValidatedState} from "../../hooks/miscHooks";
-import {useCreateLibrary} from "../../hooks/libraryHooks";
 import {APP_ROOT_ID} from "../../application";
+import {useWelcome} from "./useWelcome";
 
 interface DialogCreateLibraryProps {
 	onCancel: () => void,
@@ -16,7 +16,7 @@ interface DialogCreateLibraryProps {
 
 export function DialogCreateLibrary(props: React.PropsWithChildren<DialogCreateLibraryProps>): React.ReactElement {
 
-	const {browseTargetDir} = useCreateLibrary()
+	const {browseTargetDir} = useWelcome()
 
 	const [
 		name,

@@ -34,7 +34,7 @@ export function AppLayout(props: React.PropsWithChildren<AppLayoutProps>): React
     const {resizeLeft, resizeRight} = useAppLayout(refSidebarLeft, refSidebarRight);
 
     return (
-        <div className="app-layout" ref={refMain}>
+        <div className="app-layout" ref={refMain} style={props.style}>
 
             <AppTabBar
                 side="left"

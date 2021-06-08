@@ -27,6 +27,7 @@ export function TreeElementLeaf(props: React.PropsWithChildren<TreeElementLeafPr
 			onDragOver={props.dropTarget ? handleDragOver : undefined}
 			onDrop={props.dropTarget ? handleDrop : undefined}
 			onClick={props.onSelect}
+			onDoubleClick={props.onDoubleClick}
 			onContextMenu={handleContextMenu}
 			ref={refDropTarget}
 		>

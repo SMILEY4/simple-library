@@ -4,6 +4,7 @@
 	display:          flex;
 	justify-content:  stretch;
 	background-color: var(--color-background-0);
+	overflow: hidden;
 }
 
 .app-layout-tab-bar {
@@ -47,10 +48,12 @@
 
 .app-layout-sidebar {
 	flex-basis: 150px;
+	flex-shrink: 0;
 	overflow: auto;
 }
 
 .app-layout-main {
 	flex-grow:        1;
+	min-width: 0;
 	background-color: var(--color-background-2);
 }

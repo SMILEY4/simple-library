@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import {Dialog} from "../../../../newcomponents/modals/dialog/Dialog";
 import {APP_ROOT_ID} from "../../../application";
 import {Slot} from "../../../../newcomponents/base/slot/Slot";
@@ -8,11 +8,12 @@ import {Label} from "../../../../newcomponents/base/label/Label";
 import {TextField} from "../../../../newcomponents/input/textfield/TextField";
 import {useValidatedState} from "../../../hooks/miscHooks";
 import {useCollections} from "../../../hooks/collectionHooks";
-import {ChoiceBoxItem} from "../../../../newcomponents/buttons/choicebox/ChoiceBox";
 import {Collection, CollectionType} from "../../../../../common/commonModels";
 import {Spacer} from "../../../../newcomponents/base/spacer/Spacer";
 import {TextArea} from "../../../../newcomponents/input/textarea/TextArea";
 import {useStateRef} from "../../../hooks/old/miscAppHooks";
+import {useGroups} from "../../../hooks/groupHooks";
+import {useItems} from "../../../hooks/itemHooks";
 
 interface DialogEditCollectionProps {
 	collectionId: number,
@@ -22,9 +23,18 @@ interface DialogEditCollectionProps {
 export function DialogEditCollection(props: React.PropsWithChildren<DialogEditCollectionProps>): React.ReactElement {
 
 	const {
+		activeCollectionId,
 		findCollection,
 		editCollection
 	} = useCollections()
+
+	const {
+		loadGroups
+	} = useGroups()
+
+	const {
+		loadItems
+	} = useItems();
 
 	const collection: Collection = findCollection(props.collectionId);
 
@@ -111,12 +121,14 @@ export function DialogEditCollection(props: React.PropsWithChildren<DialogEditCo
 	function handleEdit() {
 		triggerNameValidation();
 		if (refNameValid.current) {
-			editCollection(
-				props.collectionId,
-				refName.current,
-				collection.type === CollectionType.SMART ? refQuery.current : null
-			);
-			props.onClose();
+			editCollection(props.collectionId, refName.current, collection.type === CollectionType.SMART ? refQuery.current : null)
+				.then(() => loadGroups())
+				.then(() => {
+					if(activeCollectionId === props.collectionId) {
+						loadItems(props.collectionId)
+					}
+				})
+				.then(() => props.onClose())
 		}
 	}
 

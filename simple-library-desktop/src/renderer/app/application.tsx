@@ -4,6 +4,9 @@ import {GlobalStateProvider} from './store/provider';
 import {ComponentShowcase} from "../newcomponents/_showcase/ComponentShowcase";
 import {WelcomeView} from "./views/welcome/WelcomeView";
 import {MainView} from "./views/main/MainView";
+import {SetApplicationTheme} from "../../common/messaging/messagesWindow";
+
+const {ipcRenderer} = window.require('electron');
 
 export enum Theme {
 	LIGHT = 'light',
@@ -32,6 +35,7 @@ export class Application extends Component<any, AppState> {
 			currentView: View.WELCOME,
 			displayComponentShowcase: false,
 		};
+		this.handleSetTheme = this.handleSetTheme.bind(this);
 		this.renderComponentShowcase = this.renderComponentShowcase.bind(this);
 		this.renderWelcomeView = this.renderWelcomeView.bind(this);
 		this.renderMainView = this.renderMainView.bind(this);
@@ -42,11 +46,17 @@ export class Application extends Component<any, AppState> {
 		}, true);
 		window.addEventListener('keyup', e => { // shift + alt + T => toggle theme
 			if (e.key === 'T' && e.shiftKey && e.altKey) {
-				this.setState({theme: this.state.theme === Theme.LIGHT ? Theme.DARK : Theme.LIGHT});
+				this.handleSetTheme(this.state.theme === Theme.LIGHT ? Theme.DARK : Theme.LIGHT)
 			}
 		}, true);
+		this.handleSetTheme(this.state.theme)
 	}
 
+	handleSetTheme(theme: Theme) {
+		SetApplicationTheme.request(ipcRenderer, theme === Theme.DARK ? "dark" : "light").then(() => {
+			this.setState({theme: theme});
+		})
+	}
 
 	render(): any {
 		if (this.state.displayComponentShowcase) {
@@ -97,7 +107,7 @@ export class Application extends Component<any, AppState> {
 					style={{width: '100%', height: '100%'}}
 					id={APP_ROOT_ID}
 				>
-					<MainView onClose={() => this.setState({currentView: View.WELCOME})}/>
+					<MainView onClosed={() => this.setState({currentView: View.WELCOME})}/>
 				</div>
 			</GlobalStateProvider>
 		);

@@ -67,6 +67,10 @@ export function DialogCreateGroup(props: React.PropsWithChildren<DialogCreateGro
 					)}
 				</VBox>
 			</Slot>
+			<Slot name={"footer"}>
+				<Button onAction={handleCancel}>Cancel</Button>
+				<Button variant="info" disabled={!nameValid} onAction={handleCreate}>Create</Button>
+			</Slot>
 		</Dialog>
 	);
 

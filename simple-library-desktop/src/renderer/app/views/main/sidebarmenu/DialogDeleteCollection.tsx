@@ -6,6 +6,7 @@ import {VBox} from "../../../../newcomponents/layout/box/Box";
 import {Button} from "../../../../newcomponents/buttons/button/Button";
 import {Label} from "../../../../newcomponents/base/label/Label";
 import {useCollections} from "../../../hooks/collectionHooks";
+import {useGroups} from "../../../hooks/groupHooks";
 
 interface DialogDeleteCollectionProps {
 	collectionId: number,
@@ -18,6 +19,10 @@ export function DialogDeleteCollection(props: React.PropsWithChildren<DialogDele
 		findCollection,
 		deleteCollection
 	} = useCollections();
+
+	const {
+		loadGroups
+	} = useGroups()
 
 	return (
 		<Dialog
@@ -53,7 +58,8 @@ export function DialogDeleteCollection(props: React.PropsWithChildren<DialogDele
 
 	function handleDelete() {
 		deleteCollection(props.collectionId)
-		props.onClose();
+			.then(() => loadGroups())
+			.then(() => props.onClose())
 	}
 
 }

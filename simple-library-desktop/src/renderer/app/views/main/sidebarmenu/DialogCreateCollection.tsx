@@ -35,10 +35,10 @@ export function DialogCreateCollection(props: React.PropsWithChildren<DialogCrea
 
 	const {
 		findGroup,
+		loadGroups
 	} = useGroups();
 
 	const {
-		findCollection,
 		createCollection
 	} = useCollections()
 
@@ -129,7 +129,7 @@ export function DialogCreateCollection(props: React.PropsWithChildren<DialogCrea
 			</Slot>
 			<Slot name={"footer"}>
 				<Button onAction={handleCancel}>Cancel</Button>
-				<Button variant="info" disabled={!nameValid} onAction={handleCreate}>Save</Button>
+				<Button variant="info" disabled={!nameValid} onAction={handleCreate}>Create</Button>
 			</Slot>
 		</Dialog>
 	);
@@ -142,7 +142,8 @@ export function DialogCreateCollection(props: React.PropsWithChildren<DialogCrea
 		triggerNameValidation();
 		if (refNameValid.current) {
 			createCollection(props.parentGroupId, refName.current, stringToCollectionType(refType.current), refQuery.current)
-			props.onClose();
+				.then(() => loadGroups())
+				.then(() => props.onClose())
 		}
 	}
 
@@ -152,10 +153,10 @@ export function DialogCreateCollection(props: React.PropsWithChildren<DialogCrea
 
 	function stringToCollectionType(strType: string): CollectionType {
 		switch (strType) {
-			case ""+CollectionType.NORMAL: {
+			case "" + CollectionType.NORMAL: {
 				return CollectionType.NORMAL
 			}
-			case ""+CollectionType.SMART: {
+			case "" + CollectionType.SMART: {
 				return CollectionType.SMART
 			}
 		}

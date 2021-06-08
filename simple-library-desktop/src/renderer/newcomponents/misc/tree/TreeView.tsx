@@ -48,11 +48,12 @@ export interface TreeViewProps extends BaseProps {
 	rootNode: TreeViewNode,
 
 	forceExpanded?: string[],
-	onToggleExpand?: (nodeId: string, expanded: boolean) => void
+	onToggleExpand?: (nodeId: string, expanded: boolean) => void,
 
-	onDragStart?: (nodeId: string, event: React.DragEvent) => void;
-	onDragOver?: (nodeId: string, event: React.DragEvent) => void;
-	onDrop?: (nodeId: string, event: React.DragEvent) => void;
+	onDoubleClick?: (nodeId: string) => void,
+	onDragStart?: (nodeId: string, event: React.DragEvent) => void,
+	onDragOver?: (nodeId: string, event: React.DragEvent) => void,
+	onDrop?: (nodeId: string, event: React.DragEvent) => void,
 }
 
 
@@ -173,8 +174,8 @@ export function TreeView(props: React.PropsWithChildren<TreeViewProps>): ReactEl
 	}
 
 	function handleDoubleClick(nodeId: string) {
+		props.onDoubleClick && props.onDoubleClick(nodeId);
 		handleSelect(nodeId);
-		console.log("NOT IMPLEMENTED: double-click", nodeId) // todo
 	}
 
 	function handleContextMenu(nodeId: string, pageX: number, pageY: number) {

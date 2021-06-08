@@ -15,17 +15,17 @@ import {useNotifications} from "./notificationHooks";
 export function useGroups() {
 
 	const {state, dispatch} = useGlobalState();
-	const {addNotification} = useNotifications()
+	const {throwErrorNotification} = useNotifications()
 
 	function load(): void {
 		fetchRootGroup()
+			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ROOT_GROUP_FETCH_FAILED, error))
 			.then((group: Group) => {
 				dispatch({
 					type: ActionType.SET_ROOT_GROUP,
 					payload: group,
 				});
 			})
-			.catch(error => addNotification(genNotificationId(), AppNotificationType.ROOT_GROUP_FETCH_FAILED, error));
 	}
 
 	function find(groupId: number): Group | null {
@@ -35,25 +35,25 @@ export function useGroups() {
 
 	function move(groupId: number, targetGroupId: number | null): void {
 		requestMoveGroup(groupId, targetGroupId)
-			.catch(error => addNotification(genNotificationId(), AppNotificationType.GROUP_MOVE_FAILED, error))
+			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.GROUP_MOVE_FAILED, error))
 			.then(() => load());
 	}
 
 	function deleteGroup(groupId: number, keepContent: boolean): void {
 		requestDeleteGroup(groupId, !keepContent)
-			.catch(error => addNotification(genNotificationId(), AppNotificationType.GROUP_DELETE_FAILED, error))
+			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.GROUP_DELETE_FAILED, error))
 			.then(() => load())
 	}
 
 	function create(parentGroupId: number | null, name: string): void {
 		requestCreateGroup(name, parentGroupId)
-			.catch(error => addNotification(genNotificationId(), AppNotificationType.GROUP_CREATE_FAILED, error))
+			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.GROUP_CREATE_FAILED, error))
 			.then(() => load())
 	}
 
 	function rename(groupId: number, newName: string): void {
 		requestRenameGroup(groupId, newName)
-			.catch(error => addNotification(genNotificationId(), AppNotificationType.GROUP_RENAME_FAILED, error))
+			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.GROUP_RENAME_FAILED, error))
 			.then(() => load())
 	}
 

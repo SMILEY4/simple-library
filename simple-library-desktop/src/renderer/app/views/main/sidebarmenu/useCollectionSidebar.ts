@@ -4,22 +4,32 @@ import {useGlobalState} from "../../../hooks/old/miscAppHooks";
 import {ActionType} from "../../../store/reducer";
 import {useGroups} from "../../../hooks/groupHooks";
 import {useCollections} from "../../../hooks/collectionHooks";
+import {useItems} from "../../../hooks/itemHooks";
 
 export function useCollectionSidebar() {
 
 	const NODE_TYPE_COLLECTION = "collection"
 	const NODE_TYPE_GROUP = "group"
 
-	const {state, dispatch} = useGlobalState();
+	const {
+		state,
+		dispatch
+	} = useGlobalState();
 
 	const {
 		rootGroup,
+		loadGroups,
 		moveGroup
 	} = useGroups();
 
 	const {
-		moveCollection
+		moveCollection,
+		openCollection
 	} = useCollections();
+
+	const {
+		loadItems
+	} = useItems()
 
 	function toggleExpandNode(nodeId: string, expanded: boolean) {
 		if (expanded) {
@@ -102,7 +112,7 @@ export function useCollectionSidebar() {
 					case DragAndDropCollections.META_MIME_TYPE: {
 						// drop a 'collection' on a 'group'
 						const dropData: DragAndDropCollections.Data = DragAndDropCollections.getDragData(event.dataTransfer);
-						moveCollection(dropData.collectionId, targetId);
+						moveCollection(dropData.collectionId, targetId).then(() => loadGroups());
 						break;
 					}
 					default: {
@@ -121,6 +131,16 @@ export function useCollectionSidebar() {
 			default: {
 				DragAndDropUtils.setDropEffectForbidden(event.dataTransfer)
 			}
+		}
+	}
+
+	function handleDoubleClick(nodeId: string) {
+		if (getNodeType(nodeId) === NODE_TYPE_COLLECTION) {
+			const collectionId: number = getNodeObjectId(nodeId)
+			openCollection(collectionId)
+			loadItems(collectionId)
+		} else {
+			console.error("Double-Click on unexpected element:", nodeId)
 		}
 	}
 
@@ -145,6 +165,7 @@ export function useCollectionSidebar() {
 		dragStart: handleDragStart,
 		dragOver: handleDragOver,
 		drop: handleDrop,
+		handleDoubleClick: handleDoubleClick,
 		getNodeId: getNodeId,
 		getNodeType: getNodeType,
 		getNodeObjectId: getNodeObjectId

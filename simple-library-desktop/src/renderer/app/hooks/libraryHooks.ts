@@ -10,8 +10,6 @@ import {genNotificationId} from "../common/utils/notificationUtils";
 import {AppNotificationType} from "../store/state";
 import {useNotifications} from "./notificationHooks";
 
-const electron = window.require('electron');
-
 export interface LastOpenedLibrary {
 	name: string,
 	filePath: string,
@@ -38,111 +36,27 @@ export function useLastOpenedLibraries(onOpen: (path: string) => void) {
 }
 
 
-export function useCreateLibrary(onLoadLibrary?: () => void) {
+export function useLibraries() {
 
-	const {addNotification} = useNotifications();
-	const [showDialog, setShowDialog] = useState(false);
+	const {throwErrorNotification} = useNotifications();
 
-	function start(): void {
-		setShowDialog(true)
+	function create(name: string, targetDir: string): Promise<void> {
+		return requestCreateLibrary(name, targetDir)
+			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.OPEN_LIBRARY_FAILED, error));
 	}
 
-	function cancel(): void {
-		setShowDialog(false)
+	function open(filepath: string): Promise<void> {
+		return requestOpenLibrary(filepath)
+			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.OPEN_LIBRARY_FAILED, error));
 	}
 
-	function browseTargetDir(): Promise<string | null> {
-		return electron.remote.dialog
-			.showOpenDialog({
-				title: 'Select target directory',
-				buttonLabel: 'Select',
-				properties: [
-					'openDirectory',
-					'createDirectory',
-				],
-			})
-			.then((result: any) => {
-				if (result.canceled) {
-					return null;
-				} else {
-					return result.filePaths[0];
-				}
-			});
-	}
-
-	function create(name: string, targetDir: string) {
-		setShowDialog(false)
-		requestCreateLibrary(name, targetDir)
-			.then(() => onLoadLibrary && onLoadLibrary())
-			.catch(error => addNotification(genNotificationId(), AppNotificationType.OPEN_LIBRARY_FAILED, error));
+	function close(): Promise<void> {
+		return requestCloseLibrary();
 	}
 
 	return {
-		showCreateLibraryDialog: showDialog,
-		startCreateLibrary: start,
-		cancelCreateLibrary: cancel,
-		browseTargetDir: browseTargetDir,
-		createLibrary: create
-	}
-}
-
-export function useOpenLibrary(onLoadLibrary: () => void) {
-
-	const {addNotification} = useNotifications();
-
-	function browse(): void {
-		electron.remote.dialog
-			.showOpenDialog({
-				title: 'Select Library',
-				buttonLabel: 'Open',
-				properties: [
-					'openFile',
-				],
-				filters: [
-					{
-						name: 'All',
-						extensions: ['*'],
-					},
-					{
-						name: 'Libraries',
-						extensions: ['db'],
-					},
-				],
-			})
-			.then((result: any) => {
-				if (!result.canceled) {
-					open(result.filePaths[0]);
-				}
-			});
-	}
-
-	function open(filepath: string): void {
-		requestOpenLibrary(filepath)
-			.then(() => {
-				console.log("opened library", filepath)
-				onLoadLibrary()
-			})
-			.catch(error => {
-				console.log("error opening library", filepath, error)
-				addNotification(genNotificationId(), AppNotificationType.OPEN_LIBRARY_FAILED, error)
-			});
-	}
-
-	return {
-		browseLibraries: browse,
-		openLibrary: open
-	}
-}
-
-
-export function useCloseLibrary(onClose: () => void) {
-
-	function close(): void {
-		requestCloseLibrary()
-			.then(() => onClose())
-	}
-
-	return {
+		createLibrary: create,
+		openLibrary: open,
 		closeLibrary: close
 	}
 }

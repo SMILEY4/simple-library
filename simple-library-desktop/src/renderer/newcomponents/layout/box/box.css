@@ -63,3 +63,35 @@
 .box-cross-stretch {
 	align-items: stretch;
 }
+
+/* OVERFLOW */
+
+.box-up.overflow-visible,
+.box-down.overflow-visible {
+	overflow-y: visible;
+}
+
+.box-up.overflow-hidden,
+.box-down.overflow-hidden {
+	overflow-y: hidden;
+}
+
+.box-up.overflow-auto,
+.box-down.overflow-auto {
+	overflow-y: auto;
+}
+
+.box-left.overflow-visible,
+.box-right.overflow-visible {
+	overflow-x: visible;
+}
+
+.box-left.overflow-hidden,
+.box-right.overflow-hidden {
+	overflow-x: hidden;
+}
+
+.box-left.overflow-auto,
+.box-right.overflow-auto {
+	overflow-x: auto;
+}

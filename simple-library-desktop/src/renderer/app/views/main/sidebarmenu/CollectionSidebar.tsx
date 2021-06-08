@@ -39,6 +39,7 @@ export function CollectionSidebar(props: React.PropsWithChildren<CollectionSideb
 		dragStart,
 		dragOver,
 		drop,
+		handleDoubleClick,
 		getNodeId,
 		getNodeType,
 		getNodeObjectId
@@ -80,6 +81,7 @@ export function CollectionSidebar(props: React.PropsWithChildren<CollectionSideb
 				modalRootId={APP_ROOT_ID}
 				forceExpanded={expandedNodes}
 				onToggleExpand={toggleExpandNode}
+				onDoubleClick={handleDoubleClick}
 				onDragStart={dragStart}
 				onDragOver={dragOver}
 				onDrop={drop}

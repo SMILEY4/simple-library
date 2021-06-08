@@ -9,7 +9,12 @@ export function useNotifications() {
 
 	const {state, dispatch} = useGlobalState();
 
-	const add = (notificationId: string, type: AppNotificationType, data: any) => {
+	function throwError(notificationId: string, type: AppNotificationType, error: any) {
+		add(notificationId, type, error);
+		throw error
+	}
+
+	function add(notificationId: string, type: AppNotificationType, data: any) {
 		dispatch({
 			type: ActionType.NOTIFICATIONS_ADD,
 			payload: {
@@ -18,7 +23,7 @@ export function useNotifications() {
 				notificationData: data,
 			},
 		});
-	};
+	}
 
 	function remove(notificationId: string) {
 		dispatch({
@@ -71,6 +76,7 @@ export function useNotifications() {
 	return {
 		notifications: state.notifications,
 		addNotification: add,
+		throwErrorNotification: throwError,
 		removeNotification: remove,
 		updateNotification: update,
 		getNotificationProps: getNotificationProps
