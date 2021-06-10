@@ -4,7 +4,7 @@ import {useGlobalState} from "../../../hooks/old/miscAppHooks";
 import {ActionType} from "../../../store/reducer";
 import {useGroups} from "../../../hooks/groupHooks";
 import {useCollections} from "../../../hooks/collectionHooks";
-import {useItems} from "../../../hooks/itemHooks";
+import {useItems, useItemSelection} from "../../../hooks/itemHooks";
 
 export function useCollectionSidebar() {
 
@@ -30,6 +30,10 @@ export function useCollectionSidebar() {
 	const {
 		loadItems
 	} = useItems()
+
+	const {
+		clearSelection
+	} = useItemSelection();
 
 	function toggleExpandNode(nodeId: string, expanded: boolean) {
 		if (expanded) {
@@ -138,6 +142,7 @@ export function useCollectionSidebar() {
 		if (getNodeType(nodeId) === NODE_TYPE_COLLECTION) {
 			const collectionId: number = getNodeObjectId(nodeId)
 			openCollection(collectionId)
+			clearSelection();
 			loadItems(collectionId)
 		} else {
 			console.error("Double-Click on unexpected element:", nodeId)

@@ -13,7 +13,7 @@ import {Spacer} from "../../../../newcomponents/base/spacer/Spacer";
 import {TextArea} from "../../../../newcomponents/input/textarea/TextArea";
 import {useStateRef} from "../../../hooks/old/miscAppHooks";
 import {useGroups} from "../../../hooks/groupHooks";
-import {useItems} from "../../../hooks/itemHooks";
+import {useItems, useItemSelection} from "../../../hooks/itemHooks";
 
 interface DialogEditCollectionProps {
 	collectionId: number,
@@ -35,6 +35,10 @@ export function DialogEditCollection(props: React.PropsWithChildren<DialogEditCo
 	const {
 		loadItems
 	} = useItems();
+
+	const {
+		clearSelection
+	} = useItemSelection()
 
 	const collection: Collection = findCollection(props.collectionId);
 
@@ -124,8 +128,9 @@ export function DialogEditCollection(props: React.PropsWithChildren<DialogEditCo
 			editCollection(props.collectionId, refName.current, collection.type === CollectionType.SMART ? refQuery.current : null)
 				.then(() => loadGroups())
 				.then(() => {
-					if(activeCollectionId === props.collectionId) {
-						loadItems(props.collectionId)
+					if (activeCollectionId === props.collectionId) {
+						clearSelection();
+						loadItems(props.collectionId);
 					}
 				})
 				.then(() => props.onClose())

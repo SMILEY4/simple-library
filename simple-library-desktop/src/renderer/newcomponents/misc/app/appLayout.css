@@ -4,7 +4,7 @@
 	display:          flex;
 	justify-content:  stretch;
 	background-color: var(--color-background-0);
-	overflow: hidden;
+	overflow:         hidden;
 }
 
 .app-layout-tab-bar {
@@ -44,16 +44,22 @@
 .app-layout-area-resizeable {
 	display:   flex;
 	flex-grow: 1;
+	/*
+	for some reason i have to set the width=0,
+	otherwise the app-layout-area-resizeable
+	does not want to shrink past its content side
+	*/
+	width:     0;
 }
 
 .app-layout-sidebar {
-	flex-basis: 150px;
+	flex-basis:  150px;
 	flex-shrink: 0;
-	overflow: auto;
+	overflow:    auto;
 }
 
 .app-layout-main {
 	flex-grow:        1;
-	min-width: 0;
+	min-width:        0;
 	background-color: var(--color-background-2);
 }

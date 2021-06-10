@@ -22,8 +22,12 @@ export function useCollections() {
 	}
 
 	function find(collectionId: number): Collection | null {
-		const result: Collection | undefined = extractCollections(state.rootGroup).find(collection => collection.id === collectionId);
-		return result ? result : null;
+		if (collectionId) {
+			const result: Collection | undefined = extractCollections(state.rootGroup).find(collection => collection.id === collectionId);
+			return result ? result : null;
+		} else {
+			return null;
+		}
 	}
 
 	function deleteCollection(collectionId: number): Promise<void> {

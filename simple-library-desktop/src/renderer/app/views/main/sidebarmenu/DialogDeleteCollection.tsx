@@ -7,6 +7,8 @@ import {Button} from "../../../../newcomponents/buttons/button/Button";
 import {Label} from "../../../../newcomponents/base/label/Label";
 import {useCollections} from "../../../hooks/collectionHooks";
 import {useGroups} from "../../../hooks/groupHooks";
+import {useItemSelection} from "../../../hooks/itemHooks";
+import {Collection} from "../../../../../common/commonModels";
 
 interface DialogDeleteCollectionProps {
 	collectionId: number,
@@ -16,6 +18,7 @@ interface DialogDeleteCollectionProps {
 export function DialogDeleteCollection(props: React.PropsWithChildren<DialogDeleteCollectionProps>): React.ReactElement {
 
 	const {
+		activeCollectionId,
 		findCollection,
 		deleteCollection
 	} = useCollections();
@@ -24,7 +27,13 @@ export function DialogDeleteCollection(props: React.PropsWithChildren<DialogDele
 		loadGroups
 	} = useGroups()
 
-	return (
+	const {
+		clearSelection
+	} = useItemSelection()
+
+	const collection: Collection | null = findCollection(props.collectionId);
+
+	return collection && (
 		<Dialog
 			show={true}
 			modalRootId={APP_ROOT_ID}
@@ -41,7 +50,7 @@ export function DialogDeleteCollection(props: React.PropsWithChildren<DialogDele
 				<VBox alignMain="center" alignCross="stretch" spacing="0-5">
 					<Label>
 						Are you sure sure you want to delete the
-						collection <b>{findCollection(props.collectionId).name}</b>?
+						collection <b>{collection.name}</b>?
 					</Label>
 				</VBox>
 			</Slot>
@@ -59,6 +68,11 @@ export function DialogDeleteCollection(props: React.PropsWithChildren<DialogDele
 	function handleDelete() {
 		deleteCollection(props.collectionId)
 			.then(() => loadGroups())
+			.then(() => {
+				if (activeCollectionId === props.collectionId) {
+					clearSelection()
+				}
+			})
 			.then(() => props.onClose())
 	}
 

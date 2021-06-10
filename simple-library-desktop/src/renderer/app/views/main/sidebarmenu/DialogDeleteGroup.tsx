@@ -7,6 +7,8 @@ import {Button} from "../../../../newcomponents/buttons/button/Button";
 import {Label} from "../../../../newcomponents/base/label/Label";
 import {useGroups} from "../../../hooks/groupHooks";
 import {CheckBox} from "../../../../newcomponents/buttons/checkbox/CheckBox";
+import {useCollections} from "../../../hooks/collectionHooks";
+import {Group} from "../../../../../common/commonModels";
 
 interface DialogDeleteGroupProps {
 	groupId: number,
@@ -20,9 +22,16 @@ export function DialogDeleteGroup(props: React.PropsWithChildren<DialogDeleteGro
 		deleteGroup
 	} = useGroups();
 
+	const {
+		activeCollectionId,
+		findCollection
+	} = useCollections()
+
 	const [keepContent, setKeepContent] = useState(false)
 
-	return (
+	const group: Group | null = findGroup(props.groupId);
+
+	return group && (
 		<Dialog
 			show={true}
 			modalRootId={APP_ROOT_ID}
@@ -38,7 +47,7 @@ export function DialogDeleteGroup(props: React.PropsWithChildren<DialogDeleteGro
 			<Slot name={"body"}>
 				<VBox alignMain="center" alignCross="stretch" spacing="0-5">
 					<Label>
-						Are you sure sure you want to delete the group <b>{findGroup(props.groupId).name}</b>?
+						Are you sure sure you want to delete the group <b>{group.name}</b>?
 					</Label>
 					<CheckBox selected={keepContent} onToggle={setKeepContent}>Keep content of group</CheckBox>
 				</VBox>
@@ -56,7 +65,12 @@ export function DialogDeleteGroup(props: React.PropsWithChildren<DialogDeleteGro
 
 	function handleDelete() {
 		deleteGroup(props.groupId, keepContent)
-		props.onClose();
+			.then(() => props.onClose())
+			.then(() => {
+				if (!keepContent && !findCollection(activeCollectionId)) {
+
+				}
+			})
 	}
 
 }

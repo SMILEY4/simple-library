@@ -1,4 +1,4 @@
-import {CSSProperties, useState} from "react";
+import React, {CSSProperties} from "react";
 
 export interface BaseProps {
 	className?: string,
@@ -40,5 +40,27 @@ export function removeClass(element: any, className: string): void {
 	const classNames: string[] = element.className.split(" ")
 	if (classNames.indexOf(className) !== -1) {
 		element.className = classNames.filter(name => name !== className).join(" ")
+	}
+}
+
+export enum SelectModifier {
+	NONE = "none",
+	TOGGLE = "toggle",
+	RANGE = "range",
+	ADD_RANGE = "add_range"
+}
+
+export function getSelectModifier(event: React.MouseEvent): SelectModifier {
+	const toggleKey: boolean = event.ctrlKey;
+	const rangeKey: boolean = event.shiftKey;
+	switch (true) {
+		case !toggleKey && !rangeKey:
+			return SelectModifier.NONE
+		case toggleKey && !rangeKey:
+			return SelectModifier.TOGGLE
+		case !toggleKey && rangeKey:
+			return SelectModifier.RANGE
+		case toggleKey && rangeKey:
+			return SelectModifier.ADD_RANGE
 	}
 }
