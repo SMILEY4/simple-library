@@ -1,5 +1,5 @@
 import {useGlobalState} from "./old/miscAppHooks";
-import {fetchItems} from "../common/messaging/messagingInterface";
+import {fetchItems, requestMoveItems} from "../common/messaging/messagingInterface";
 import {useNotifications} from "./notificationHooks";
 import {genNotificationId} from "../common/utils/notificationUtils";
 import {AppNotificationType} from "../store/state";
@@ -27,6 +27,11 @@ export function useItems() {
 		})
 	}
 
+	function moveOrCopy(srcCollectionId: number, tgtCollectionId: number, itemIds: number[], copy: boolean): Promise<void> {
+		return requestMoveItems(srcCollectionId, tgtCollectionId, itemIds, copy)
+			.catch(error => addNotification(genNotificationId(), AppNotificationType.ITEMS_MOVE_FAILED, error))
+	}
+
 	function importItems(): void {
 		// todo
 		console.log("NOT IMPLEMENTED: import items")
@@ -36,6 +41,7 @@ export function useItems() {
 		items: state.items,
 		loadItems: load,
 		clearItems: clear,
+		moveOrCopyItems: moveOrCopy,
 		importItems: importItems
 	}
 }

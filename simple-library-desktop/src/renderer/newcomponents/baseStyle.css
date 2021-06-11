@@ -27,3 +27,8 @@ b {
 .root-view {
 	background-color: var(--background-color-0);
 }
+
+*:focus {
+	box-shadow: none;
+	outline:    none;
+}

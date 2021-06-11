@@ -16,6 +16,7 @@ export module DragAndDropItems {
     }
 
     export interface Data {
+        copy: boolean,
         sourceCollectionId: number | undefined
         itemIds: number[]
     }
@@ -25,6 +26,7 @@ export module DragAndDropItems {
 
     export function setDragData(dataTransfer: DataTransfer, sourceCollection: number | undefined, itemIds: number[], copy: boolean): void {
         const data: Data = {
+            copy: copy,
             itemIds: itemIds,
             sourceCollectionId: sourceCollection,
         };

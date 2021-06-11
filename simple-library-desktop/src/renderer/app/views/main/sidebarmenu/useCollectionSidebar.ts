@@ -1,5 +1,10 @@
 import React, {useState} from "react";
-import {DragAndDropCollections, DragAndDropGroups, DragAndDropUtils} from "../../../common/dragAndDrop";
+import {
+	DragAndDropCollections,
+	DragAndDropGroups,
+	DragAndDropItems,
+	DragAndDropUtils
+} from "../../../common/dragAndDrop";
 import {useGlobalState} from "../../../hooks/old/miscAppHooks";
 import {ActionType} from "../../../store/reducer";
 import {useGroups} from "../../../hooks/groupHooks";
@@ -23,12 +28,15 @@ export function useCollectionSidebar() {
 	} = useGroups();
 
 	const {
+		activeCollectionId,
 		moveCollection,
-		openCollection
+		openCollection,
+		findCollection,
 	} = useCollections();
 
 	const {
-		loadItems
+		loadItems,
+		moveOrCopyItems
 	} = useItems()
 
 	const {
@@ -89,12 +97,18 @@ export function useCollectionSidebar() {
 				break;
 			}
 			case NODE_TYPE_COLLECTION: {
-				// drag 'something' over a 'collection'
-				DragAndDropUtils.setDropEffectForbidden(event.dataTransfer)
-				break;
-			}
-			default: {
-				DragAndDropUtils.setDropEffectForbidden(event.dataTransfer)
+				switch (sourceMetadataMimeType) {
+					case DragAndDropItems.META_MIME_TYPE: {
+						// drag 'items' over a 'collection'
+						DragAndDropItems.setDropEffect(event.dataTransfer, findCollection(targetId))
+						break;
+					}
+					default: {
+						// drag a 'something' over a 'collection'
+						DragAndDropUtils.setDropEffectForbidden(event.dataTransfer);
+						break;
+					}
+				}
 			}
 		}
 	}
@@ -128,12 +142,21 @@ export function useCollectionSidebar() {
 				break;
 			}
 			case NODE_TYPE_COLLECTION: {
-				// drop 'something' on a 'collection'
-				DragAndDropUtils.setDropEffectForbidden(event.dataTransfer)
-				break;
-			}
-			default: {
-				DragAndDropUtils.setDropEffectForbidden(event.dataTransfer)
+				switch (sourceMetadataMimeType) {
+					case DragAndDropItems.META_MIME_TYPE: {
+						// drop 'items' on a 'collection'
+						const dropData: DragAndDropItems.Data = DragAndDropItems.getDragData(event.dataTransfer)
+						moveOrCopyItems(dropData.sourceCollectionId, targetId, dropData.itemIds, dropData.copy)
+							.then(() => loadItems(activeCollectionId))
+							.then(() => loadGroups())
+						break;
+					}
+					default: {
+						// drop 'something' on a 'collection'
+						DragAndDropUtils.setDropEffectForbidden(event.dataTransfer);
+						break;
+					}
+				}
 			}
 		}
 	}

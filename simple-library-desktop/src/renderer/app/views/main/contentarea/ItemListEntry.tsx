@@ -4,17 +4,19 @@ import {ItemData} from "../../../../../common/commonModels";
 import {concatClasses, getIf} from "../../../../components/common/common";
 import "./listItemEntry.css"
 import {getSelectModifier, SelectModifier} from "../../../../newcomponents/utils/common";
+import {DragAndDropItems} from "../../../common/dragAndDrop";
 
 interface ItemListEntryProps {
 	item: ItemData,
 	selected: boolean,
-	onSelect: (selectMod: SelectModifier) => void
+	onSelect: (selectMod: SelectModifier) => void,
+	onDragStart: (event: React.DragEvent) => void
 }
 
 export function ItemListEntry(props: React.PropsWithChildren<ItemListEntryProps>): React.ReactElement {
 
 	return (
-		<div onClick={handleClick}>
+		<div onClick={handleClick} draggable onDragStart={props.onDragStart}>
 			<HBox
 				alignMain="start"
 				alignCross="stretch"
@@ -34,10 +36,11 @@ export function ItemListEntry(props: React.PropsWithChildren<ItemListEntryProps>
 		</div>
 	);
 
-	function handleClick(event: React.MouseEvent) {
+	function handleClick(event: React.MouseEvent): void {
 		event.preventDefault();
 		event.stopPropagation();
 		props.onSelect(getSelectModifier(event))
 	}
+
 
 }

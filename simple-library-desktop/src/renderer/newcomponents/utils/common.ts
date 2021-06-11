@@ -4,6 +4,7 @@ export interface BaseProps {
 	className?: string,
 	forwardRef?: any,
 	style?: CSSProperties,
+	focusable?: boolean
 }
 
 export interface ClickableProps {
@@ -63,4 +64,8 @@ export function getSelectModifier(event: React.MouseEvent): SelectModifier {
 		case toggleKey && rangeKey:
 			return SelectModifier.ADD_RANGE
 	}
+}
+
+export function isCopyMode(event: React.DragEvent): boolean {
+	return process.platform === "darwin" ? event.metaKey : event.ctrlKey;
 }
