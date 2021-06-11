@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {MutableRefObject, ReactElement} from 'react';
+import {MutableRefObject, ReactElement, useEffect} from 'react';
 import {BaseProps} from "../../utils/common";
 import {addPropsToChildren, concatClasses} from "../../../components/common/common";
 import * as ReactDOM from "react-dom";
@@ -16,12 +16,16 @@ export interface ContextMenuBaseProps extends BaseProps {
 
 export function ContextMenuBase(props: React.PropsWithChildren<ContextMenuBaseProps>): ReactElement {
 
+	useEffect(() => {
+		if (props.show) {
+			props.onOpenMenu && props.onOpenMenu();
+		}
+	}, [props.show])
 
 	if (!props.show) {
 		return null;
 
 	} else {
-		props.onOpenMenu && props.onOpenMenu();
 		if (props.modalRootId) {
 			if (!document.getElementById(props.modalRootId)) {
 				setTimeout(() => {

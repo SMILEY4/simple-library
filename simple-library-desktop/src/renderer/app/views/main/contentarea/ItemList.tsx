@@ -6,6 +6,7 @@ import {ItemData} from "../../../../../common/commonModels";
 import {isCopyMode, SelectModifier} from "../../../../newcomponents/utils/common";
 import {DragAndDropItems} from "../../../common/dragAndDrop";
 import {useCollections} from "../../../hooks/collectionHooks";
+import {useGroups} from "../../../hooks/groupHooks";
 
 interface ItemListProps {
 }
@@ -18,7 +19,14 @@ export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.R
 
 	const {
 		items,
+		loadItems,
+		removeItems,
+		deleteItems
 	} = useItems();
+
+	const {
+		loadGroups
+	} = useGroups()
 
 	const {
 		selectedItemIds,
@@ -26,7 +34,8 @@ export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.R
 		setSelection,
 		toggleSelection,
 		selectRangeTo,
-		selectAll
+		selectAll,
+		clearSelection
 	} = useItemSelection();
 
 	return (
@@ -47,10 +56,13 @@ export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.R
 			}}
 		>
 			{items && items.map((itemData: ItemData) => <ItemListEntry
+				key={itemData.id}
 				item={itemData}
 				selected={isSelected(itemData.id)}
 				onSelect={(selectMod: SelectModifier) => handleSelectItem(itemData.id, selectMod)}
 				onDragStart={(event: React.DragEvent) => handleDragItem(itemData.id, event)}
+				onRemove={handleRemoveItems}
+				onDelete={handleDeleteItems}
 			/>)}
 		</VBox>
 	);
@@ -87,6 +99,18 @@ export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.R
 		}
 		DragAndDropItems.setDragData(event.dataTransfer, activeCollectionId, dragItemIds, copyMode);
 		DragAndDropItems.setDragLabel(event.dataTransfer, copyMode, dragItemIds.length);
+	}
+
+	function handleRemoveItems(): void {
+		removeItems(activeCollectionId, selectedItemIds)
+			.then(() => clearSelection())
+			.then(() => loadGroups())
+	}
+
+	function handleDeleteItems(): void {
+		deleteItems(selectedItemIds)
+			.then(() => clearSelection())
+			.then(() => loadGroups())
 	}
 
 }

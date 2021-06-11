@@ -1,5 +1,5 @@
 import {useGlobalState} from "./old/miscAppHooks";
-import {fetchItems, requestMoveItems} from "../common/messaging/messagingInterface";
+import {fetchItems, requestMoveItems, requestRemoveItems} from "../common/messaging/messagingInterface";
 import {useNotifications} from "./notificationHooks";
 import {genNotificationId} from "../common/utils/notificationUtils";
 import {AppNotificationType} from "../store/state";
@@ -9,11 +9,11 @@ import {ActionType} from "../store/reducer";
 export function useItems() {
 
 	const {state, dispatch} = useGlobalState();
-	const {addNotification} = useNotifications()
+	const {throwErrorNotification} = useNotifications()
 
 	function load(collectionId: number): void {
 		fetchItems(collectionId)
-			.catch(error => addNotification(genNotificationId(), AppNotificationType.ITEMS_FETCH_FAILED, error))
+			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_FETCH_FAILED, error))
 			.then((items: ItemData[]) => dispatch({
 				type: ActionType.SET_ITEMS,
 				payload: items,
@@ -29,7 +29,19 @@ export function useItems() {
 
 	function moveOrCopy(srcCollectionId: number, tgtCollectionId: number, itemIds: number[], copy: boolean): Promise<void> {
 		return requestMoveItems(srcCollectionId, tgtCollectionId, itemIds, copy)
-			.catch(error => addNotification(genNotificationId(), AppNotificationType.ITEMS_MOVE_FAILED, error))
+			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_MOVE_FAILED, error))
+	}
+
+	function remove(collectionId: number, itemIds: number[]): Promise<void> {
+		return requestRemoveItems(collectionId, itemIds)
+			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_REMOVE_FAILED, error))
+			.then(() => load(collectionId))
+	}
+
+	function deleteItems(itemIds: number[]): Promise<void> {
+		// todo
+		console.log("NOT IMPLEMENTED: delete items")
+		return new Promise((resolve, reject) => resolve())
 	}
 
 	function importItems(): void {
@@ -42,6 +54,8 @@ export function useItems() {
 		loadItems: load,
 		clearItems: clear,
 		moveOrCopyItems: moveOrCopy,
+		removeItems: remove,
+		deleteItems: deleteItems,
 		importItems: importItems
 	}
 }
