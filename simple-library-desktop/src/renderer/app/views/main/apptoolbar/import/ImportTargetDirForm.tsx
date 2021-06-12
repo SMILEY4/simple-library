@@ -25,7 +25,7 @@ const CB_ITEMS_FILE_TARGET_TYPES: ChoiceBoxItem[] = [
 
 interface ImportTargetDirFormProps {
 	error: boolean
-	targetType: string,
+	targetType: ImportTargetAction,
 	onSetTargetType: (type: ImportTargetAction) => void,
 	onSetTargetDir: (dir: string) => void
 }

@@ -5,20 +5,27 @@ import {Slot} from "../../../../../newcomponents/base/slot/Slot";
 import {Button} from "../../../../../newcomponents/buttons/button/Button";
 import {useItems} from "../../../../hooks/itemHooks";
 import {VBox} from "../../../../../newcomponents/layout/box/Box";
-import {useValidatedState} from "../../../../hooks/miscHooks";
+import {useComplexValidatedState} from "../../../../hooks/miscHooks";
 import {
 	ImportProcessData,
 	ImportTargetAction,
+	RenamePart,
 	RenamePartType,
 	renamePartTypeAllowsUserInput
 } from "../../../../../../common/commonModels";
-import {useStateRef} from "../../../../../components/common/commonHooks";
 import {ImportSelectFilesForm} from "./ImportSelectFilesForm";
 import {ImportTargetDirForm} from "./ImportTargetDirForm";
 import {ImportRenameFilesForm} from "./ImportRenameFilesForm";
 
 interface DialogImportFilesProps {
 	onClose: () => void,
+}
+
+interface ValidationData {
+	validFiles: boolean,
+	validTargetDir: boolean,
+	validRenameTypes: boolean,
+	validRenameParts: boolean[]
 }
 
 export function DialogImportFiles(props: React.PropsWithChildren<DialogImportFilesProps>): React.ReactElement {
@@ -28,56 +35,49 @@ export function DialogImportFiles(props: React.PropsWithChildren<DialogImportFil
 	} = useItems()
 
 	const [
-		files,
-		setFiles,
-		filesValid,
-		triggerFileValidation,
-		refFiles,
-		refFilesValid
-	] = useValidatedState<string[]>([], true, validateFiles)
+		data,
+		setData,
+		dataValid,
+		triggerDataValidation,
+		refData,
+		refDataValid
+	] = useComplexValidatedState<ImportProcessData, ValidationData>(getInitialData, getInitialValidationData(), validateData)
 
-	const [
-		fileTargetType,
-		setFileTargetType,
-		refFileTargetType
-	] = useStateRef<string>(ImportTargetAction.KEEP)
+	function getInitialData(): ImportProcessData {
+		return {
+			files: [],
+			importTarget: {
+				action: ImportTargetAction.KEEP,
+				targetDir: ""
+			},
+			renameInstructions: {
+				doRename: false,
+				parts: [
+					{
+						type: RenamePartType.NOTHING,
+						value: ""
+					},
+					{
+						type: RenamePartType.NOTHING,
+						value: ""
+					},
+					{
+						type: RenamePartType.ORIGINAL_FILENAME,
+						value: ""
+					},
+				]
+			}
+		}
+	}
 
-	const [
-		targetDir,
-		setTargetDir,
-		targetDirValid,
-		triggerTargetDirValidation,
-		refTargetDir,
-		refTargetDirValid
-	] = useValidatedState<string | null>(null, true, validateTargetDir)
-
-	const [
-		renameFiles,
-		setRenameFiles,
-		refRenameFiles
-	] = useStateRef(false)
-
-	const [
-		renamePartTypes,
-		setRenamePartTypes,
-		renamePartTypesValid,
-		triggerRenamePartTypesValidation,
-		refRenamePartTypes,
-		refRenamePartTypesValid
-	] = useValidatedState<RenamePartType[]>([
-		RenamePartType.NOTHING,
-		RenamePartType.NOTHING,
-		RenamePartType.ORIGINAL_FILENAME
-	], [true], validateRenameTypes)
-
-	const [
-		renamePartValues,
-		setRenamePartValues,
-		renamePartValuesValid,
-		triggerRenamePartValuesValidation,
-		refRenamePartValues,
-		refRenamePartValuesValid
-	] = useValidatedState<(string | null)[]>([null, null, null], [true, true, true], validateRenameValues)
+	function getInitialValidationData(): ValidationData {
+		return {
+			validFiles: true,
+			validTargetDir: true,
+			validRenameTypes: true,
+			validRenameParts: [true, true, true]
+		}
+	}
 
 	return (
 		<Dialog
@@ -93,157 +93,149 @@ export function DialogImportFiles(props: React.PropsWithChildren<DialogImportFil
 			closeOnClickOutside
 		>
 			<Slot name={"body"}>
-				<VBox alignMain="center" alignCross="stretch" spacing="1-5">
+				<VBox alignMain="center" alignCross="stretch" spacing="1-5" style={{
+					paddingTop: "var(--s-0-5)",
+					paddingBottom: "var(--s-0-5)"
+				}}>
 					<ImportSelectFilesForm
-						error={!filesValid}
-						onSelectFiles={setFiles}
+						error={!dataValid.validFiles}
+						onSelectFiles={handleSetFiles}
 					/>
 					<ImportTargetDirForm
-						error={!targetDirValid}
-						targetType={fileTargetType}
-						onSetTargetType={setFileTargetType}
-						onSetTargetDir={setTargetDir}
+						error={!dataValid.validTargetDir}
+						targetType={data.importTarget.action}
+						onSetTargetType={handleSetTargetType}
+						onSetTargetDir={handleSetTargetDir}
 					/>
 					<ImportRenameFilesForm
-						rename={renameFiles}
-						onRename={setRenameFiles}
-						types={renamePartTypes}
-						values={renamePartValues}
-						errorTypes={!renamePartTypesValid}
-						errorValues={(renamePartValuesValid as boolean[]).map(v => !v)}
-						onSelectType={handleSelectRenameType}
-						onSelectValue={handleSelectRenameValue}
-						onChangeValue={handleChangeRenameValue}
+						rename={data.renameInstructions.doRename}
+						onRename={handleOnRename}
+						renameParts={data.renameInstructions.parts}
+						sampleFile={data.files.length > 0 ? data.files[0] : null}
+						errorTypes={!dataValid.validRenameTypes}
+						errorValues={(dataValid.validRenameParts as boolean[]).map(v => !v)}
+						onSelectType={handleSetRenameType}
+						onSelectValue={handleSetRenameValue}
+						onChangeValue={handleSetRenameValue}
 					/>
 				</VBox>
 			</Slot>
 			<Slot name={"footer"}>
 				<Button onAction={handleCancel}>Cancel</Button>
-				<Button variant="info" disabled={!isEverythingValid()} onAction={handleImport}>Import</Button>
+				<Button variant="info" disabled={!allValid(dataValid)} onAction={handleImport}>Import</Button>
 			</Slot>
 		</Dialog>
 	);
+
+
+	function validateData(data: ImportProcessData): ValidationData {
+		return {
+			validFiles: data.files.length > 0,
+			validTargetDir: data.importTarget.action === ImportTargetAction.KEEP ? true : data.importTarget.targetDir.length > 0,
+			validRenameTypes: data.renameInstructions.doRename ? data.renameInstructions.parts.some(p => p.type !== RenamePartType.NOTHING) : true,
+			validRenameParts: data.renameInstructions.doRename ? data.renameInstructions.parts.map(p => {
+				switch (p.type) {
+					case RenamePartType.NOTHING:
+						return true;
+					case RenamePartType.TEXT:
+						return !!p.value && p.value.trim().length > 0;
+					case RenamePartType.NUMBER_FROM:
+						return !!p.value && p.value.trim().length > 0 && !isNaN(parseInt(p.value)) && parseInt(p.value) >= 0;
+					case RenamePartType.ORIGINAL_FILENAME:
+						return true;
+				}
+			}) : [true, true, true]
+		}
+	}
+
+	function allValid(data: ValidationData): boolean {
+		return data.validFiles
+			&& data.validTargetDir
+			&& data.validRenameTypes
+			&& data.validRenameParts.every(v => v)
+	}
 
 	function handleCancel() {
 		props.onClose()
 	}
 
-	function isEverythingValid() {
-		const valid =  refFilesValid.current
-			&& refTargetDirValid.current
-			&& refRenamePartTypesValid.current
-			&& (refRenamePartValuesValid.current as boolean[]).every(v => v === true);
-		console.log("all", valid)
-		console.log(refFilesValid.current)
-		console.log(refTargetDirValid.current)
-		console.log(refRenamePartTypesValid.current)
-		console.log((refRenamePartValuesValid.current as boolean[]).every(v => v === true))
-
-		return valid;
-	}
-
 	function handleImport() {
-		triggerFileValidation();
-		triggerTargetDirValidation();
-		triggerRenamePartTypesValidation();
-		triggerRenamePartValuesValidation()
-		if (isEverythingValid()) {
-
-			console.log("IMPORT", buildProcessData())
-
-			// importItems(buildProcessData());
-			// props.onClose();
+		if (triggerDataValidation()) {
+			importItems(refData.current)
+			props.onClose()
 		}
 	}
 
-	function buildProcessData(): ImportProcessData {
-		return {
-			files: refFiles.current,
+	function handleSetFiles(files: string[]): void {
+		setData({
+			files: files,
+			importTarget: data.importTarget,
+			renameInstructions: data.renameInstructions
+		})
+	}
+
+	function handleSetTargetType(type: ImportTargetAction): void {
+		setData({
+			files: data.files,
 			importTarget: {
-				action: refFileTargetType.current === "keep"
-					? ImportTargetAction.KEEP
-					: refFileTargetType.current === "move" ? ImportTargetAction.MOVE : ImportTargetAction.COPY,
-				targetDir: refTargetDir.current
+				action: type,
+				targetDir: data.importTarget.targetDir
 			},
+			renameInstructions: data.renameInstructions
+		})
+	}
+
+	function handleSetTargetDir(targetDir: string): void {
+		setData({
+			files: data.files,
+			importTarget: {
+				action: data.importTarget.action,
+				targetDir: targetDir
+			},
+			renameInstructions: data.renameInstructions
+		})
+	}
+
+	function handleOnRename(rename: boolean): void {
+		setData({
+			files: data.files,
+			importTarget: data.importTarget,
 			renameInstructions: {
-				doRename: refRenameFiles.current,
-				parts: refRenameFiles.current
-					? refRenamePartTypes.current.map((type: RenamePartType, index:number) => {
-						return {
-							type: type,
-							value: refRenamePartValues.current[index] ? refRenamePartValues.current[index] : ""
-						}
-					}) : []
-			}
-		}
-	}
-
-
-	//==================//
-	//   SELECT FILES   //
-	//==================//
-
-	function validateFiles(files: string[]): boolean {
-		console.log("files", files)
-		return files.length > 0;
-	}
-
-	//==================//
-	//    TARGET DIR    //
-	//==================//
-
-	function validateTargetDir(targetDir: string | null): boolean {
-		if (refFileTargetType.current === ImportTargetAction.KEEP) {
-			return true;
-		} else {
-			return targetDir && targetDir.trim().length > 0
-		}
-	}
-
-	//==================//
-	//   RENAME FILES   //
-	//==================//
-
-	function validateRenameTypes(types: RenamePartType[]): boolean {
-		triggerRenamePartValuesValidation()
-		return types.some((type: RenamePartType) => type !== RenamePartType.NOTHING);
-	}
-
-	function validateRenameValues(values: (string | null)[]): boolean[] {
-		return values.map((value: string, index: number) => {
-			const type: RenamePartType = refRenamePartTypes.current[index];
-			if (renamePartTypeAllowsUserInput(type)) {
-				if (!value || value.trim().length === 0) {
-					return false;
-				}
-				return !(type === RenamePartType.NUMBER_FROM && isNaN(parseInt(value)));
-			} else {
-				return true;
+				doRename: rename,
+				parts: data.renameInstructions.parts
 			}
 		})
 	}
 
-	function handleSelectRenameType(index: number, type: RenamePartType): void {
-		const types: RenamePartType[] = [...renamePartTypes]
-		types[index] = type;
-		setRenamePartTypes(types)
+	function handleSetRenameType(index: number, type: RenamePartType): void {
+		const newParts: RenamePart[] = [...data.renameInstructions.parts]
+		newParts[index].type = type;
 		if (!renamePartTypeAllowsUserInput(type)) {
-			const values: (string | null)[] = [...renamePartValues]
-			values[index] = null;
-			setRenamePartValues(values)
+			newParts[index].value = ""
 		}
+
+		setData({
+			files: data.files,
+			importTarget: data.importTarget,
+			renameInstructions: {
+				doRename: data.renameInstructions.doRename,
+				parts: newParts
+			}
+		})
 	}
 
-	function handleSelectRenameValue(index: number, value: string): void {
-		const values: (string | null)[] = [...renamePartValues]
-		values[index] = value;
-		setRenamePartValues(values)
-	}
+	function handleSetRenameValue(index: number, value: string): void {
+		const newParts: RenamePart[] = [...data.renameInstructions.parts]
+		newParts[index].value = value;
 
-	function handleChangeRenameValue(index: number, value: string): void {
-		const values: (string | null)[] = [...renamePartValues]
-		values[index] = value;
-		setRenamePartValues(values)
+		setData({
+			files: data.files,
+			importTarget: data.importTarget,
+			renameInstructions: {
+				doRename: data.renameInstructions.doRename,
+				parts: newParts
+			}
+		})
 	}
 
 }

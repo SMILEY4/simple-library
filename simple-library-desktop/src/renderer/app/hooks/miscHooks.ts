@@ -21,15 +21,15 @@ export function useLifecycle(onMount: () => void, onUnmount: () => void) {
 
 export function useValidatedState<S>(
 	initialState: S | (() => S),
-	initialValid: boolean | boolean[],
-	validate: (value: S) => boolean | boolean[]
+	initialValid: boolean,
+	validate: (value: S) => boolean
 ): [
 	S,
 	Dispatch<SetStateAction<S>>,
-	boolean | boolean[],
-	() => boolean | boolean[],
+	boolean,
+	() => boolean,
 	MutableRefObject<S>,
-	MutableRefObject<boolean | boolean[]>
+	MutableRefObject<boolean>
 ] {
 
 	const [value, setValue, refValue] = useStateRef(initialState)
@@ -45,7 +45,45 @@ export function useValidatedState<S>(
 		setValueAndValidate,
 		valid,
 		() => {
-			const valid = validate(refValue.current)
+			const valid: boolean = validate(refValue.current)
+			refValid.current = valid;
+			setValid(valid)
+			return valid;
+		},
+		refValue,
+		refValid,
+	];
+}
+
+
+
+export function useComplexValidatedState<S,V>(
+	initialState: S | (() => S),
+	initialValid: V,
+	validate: (value: S) => V
+): [
+	S,
+	Dispatch<SetStateAction<S>>,
+	V,
+	() => V,
+	MutableRefObject<S>,
+	MutableRefObject<V>
+] {
+
+	const [value, setValue, refValue] = useStateRef(initialState)
+	const [valid, setValid, refValid] = useStateRef(initialValid)
+
+	function setValueAndValidate(value: S): void {
+		setValue(value);
+		setValid(validate(value))
+	}
+
+	return [
+		value,
+		setValueAndValidate,
+		valid,
+		() => {
+			const valid: V = validate(refValue.current)
 			refValid.current = valid;
 			setValid(valid)
 			return valid;
