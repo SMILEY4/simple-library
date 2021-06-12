@@ -4,7 +4,7 @@ import {Slot} from "../../../newcomponents/base/slot/Slot";
 import {Button} from "../../../newcomponents/buttons/button/Button";
 import {TextField} from "../../../newcomponents/input/textfield/TextField";
 import {VBox} from "../../../newcomponents/layout/box/Box";
-import {DirectoryField} from "../../../newcomponents/input/directoryinputfield/DirectoryField";
+import {DirectoryInputField} from "../../../newcomponents/input/directoryinputfield/DirectoryInputField";
 import {useValidatedState} from "../../hooks/miscHooks";
 import {APP_ROOT_ID} from "../../application";
 import {useWelcome} from "./useWelcome";
@@ -53,7 +53,7 @@ export function DialogCreateLibrary(props: React.PropsWithChildren<DialogCreateL
 						error={!nameValid}
 						onAccept={setName}
 					/>
-					<DirectoryField
+					<DirectoryInputField
 						placeholder={"Target Directory"}
 						error={!targetDirValid}
 						onBrowse={browseTargetDir}

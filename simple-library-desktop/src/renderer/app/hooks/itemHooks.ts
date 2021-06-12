@@ -1,15 +1,15 @@
 import {useGlobalState} from "./old/miscAppHooks";
-import {fetchItems, requestMoveItems, requestRemoveItems} from "../common/messaging/messagingInterface";
+import {fetchItems, requestImport, requestMoveItems, requestRemoveItems} from "../common/messaging/messagingInterface";
 import {useNotifications} from "./notificationHooks";
 import {genNotificationId} from "../common/utils/notificationUtils";
 import {AppNotificationType} from "../store/state";
-import {ItemData} from "../../../common/commonModels";
+import {ImportProcessData, ItemData} from "../../../common/commonModels";
 import {ActionType} from "../store/reducer";
 
 export function useItems() {
 
 	const {state, dispatch} = useGlobalState();
-	const {throwErrorNotification} = useNotifications()
+	const {throwErrorNotification, addNotification} = useNotifications()
 
 	function load(collectionId: number): void {
 		fetchItems(collectionId)
@@ -44,9 +44,8 @@ export function useItems() {
 		return new Promise((resolve, reject) => resolve())
 	}
 
-	function importItems(): void {
-		// todo
-		console.log("NOT IMPLEMENTED: import items")
+	function importItems(data: ImportProcessData): void {
+		// TODO
 	}
 
 	return {

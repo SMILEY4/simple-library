@@ -6,18 +6,18 @@ import {IconType} from "../../base/icon/Icon";
 import {Button} from "../../buttons/button/Button";
 import {concatClasses} from "../../../components/common/common";
 
-interface DirectoryFieldProps extends BaseProps {
-	value?: string,
+interface DirectoryInputFieldProps extends BaseProps {
+	directory?: string,
 	disabled?: boolean,
 	placeholder?: string,
 	error?: boolean,
 	onBrowse?: () => Promise<string | null>
-	onSelect?: (dirPath: string) => void,
+	onSelect?: (directory: string) => void,
 }
 
-export function DirectoryField(props: React.PropsWithChildren<DirectoryFieldProps>): React.ReactElement {
+export function DirectoryInputField(props: React.PropsWithChildren<DirectoryInputFieldProps>): React.ReactElement {
 
-	const [value, setValue] = useState(props.value ? props.value : "");
+	const [value, setValue] = useState(props.directory ? props.directory : "");
 
 	return (
 		<Group
@@ -33,7 +33,7 @@ export function DirectoryField(props: React.PropsWithChildren<DirectoryFieldProp
 				disabled={props.disabled}
 				placeholder={props.placeholder}
 				prependIcon={IconType.FOLDER}
-				dir="rtl"
+				dir={value ? "rtl" : undefined}
 			/>
 			<Button
 				disabled={props.disabled}

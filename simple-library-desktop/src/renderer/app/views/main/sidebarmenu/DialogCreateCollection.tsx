@@ -14,6 +14,7 @@ import {TextArea} from "../../../../newcomponents/input/textarea/TextArea";
 import {useStateRef} from "../../../hooks/old/miscAppHooks";
 import {useGroups} from "../../../hooks/groupHooks";
 import {ChoiceBox, ChoiceBoxItem} from "../../../../newcomponents/buttons/choicebox/ChoiceBox";
+import {ElementLabel} from "../../../../newcomponents/misc/elementlabel/ElementLabel";
 
 interface DialogCreateCollectionProps {
 	parentGroupId: number | null,
@@ -82,8 +83,7 @@ export function DialogCreateCollection(props: React.PropsWithChildren<DialogCrea
 			<Slot name={"body"}>
 				<VBox alignMain="center" alignCross="stretch" spacing="0-5">
 
-					<VBox alignMain="center" alignCross="stretch" spacing="0-25">
-						<Label type="caption" variant="secondary">Collection Name:</Label>
+					<ElementLabel text="Collection Name:">
 						<TextField
 							autofocus
 							placeholder={"Collection Name"}
@@ -92,10 +92,9 @@ export function DialogCreateCollection(props: React.PropsWithChildren<DialogCrea
 							error={!nameValid}
 							onChange={(value: string) => !nameValid && setName(value)}
 						/>
-					</VBox>
+					</ElementLabel>
 
 					<Spacer size="0-5" dir="horizontal" line/>
-
 
 					<HBox alignMain="start">
 						<ChoiceBox
@@ -104,16 +103,7 @@ export function DialogCreateCollection(props: React.PropsWithChildren<DialogCrea
 							onAction={setType}
 						/>
 					</HBox>
-
-					<VBox alignMain="center" alignCross="stretch" spacing="0-25">
-
-						<Label
-							type="caption"
-							variant="secondary"
-							disabled={type !== CollectionType.SMART}
-						>
-							Smart-Collection Query:
-						</Label>
+					<ElementLabel text="Smart-Collection Query:">
 						<TextArea
 							value={query}
 							cols={30}
@@ -123,7 +113,7 @@ export function DialogCreateCollection(props: React.PropsWithChildren<DialogCrea
 							resize="none"
 							onAccept={setQuery}
 						/>
-					</VBox>
+					</ElementLabel>
 
 				</VBox>
 			</Slot>

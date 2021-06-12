@@ -46,6 +46,7 @@ export function useValidatedState<S>(
 		valid,
 		() => {
 			const valid = validate(refValue.current)
+			refValid.current = valid;
 			setValid(valid)
 			return valid;
 		},
