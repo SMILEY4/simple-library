@@ -2,15 +2,15 @@ import React from "react";
 import {DialogCreateLibrary} from "./DialogCreateLibrary";
 import {useNotifications} from "../../hooks/notificationHooks";
 import {LastOpenedLibrary, useLastOpenedLibraries} from "../../hooks/libraryHooks";
-import {Grid} from "../../../newcomponents/layout/grid/Grid";
-import {VBox} from "../../../newcomponents/layout/box/Box";
-import {Label} from "../../../newcomponents/base/label/Label";
-import {Spacer} from "../../../newcomponents/base/spacer/Spacer";
-import {Button} from "../../../newcomponents/buttons/button/Button";
-import {Image} from "../../../newcomponents/base/image/Image";
+import {Grid} from "../../../components/layout/grid/Grid";
+import {VBox} from "../../../components/layout/box/Box";
+import {Label} from "../../../components/base/label/Label";
+import {Spacer} from "../../../components/base/spacer/Spacer";
+import {Button} from "../../../components/buttons/button/Button";
+import {Image} from "../../../components/base/image/Image";
 import imgWelcome from "./imgWelcome.jpg";
-import {NotificationStack} from "../../../newcomponents/modals/notification/NotificationStack";
-import {Notification, NotificationProps} from "../../../newcomponents/modals/notification/Notification";
+import {NotificationStack} from "../../../components/modals/notification/NotificationStack";
+import {Notification, NotificationProps} from "../../../components/modals/notification/Notification";
 import "./welcome.css"
 import {APP_ROOT_ID} from "../../application";
 import {useWelcome} from "./useWelcome";
@@ -22,7 +22,7 @@ interface WelcomeViewControllerProps {
 export function WelcomeView(props: React.PropsWithChildren<WelcomeViewControllerProps>): React.ReactElement {
 
 	const {
-		getNotificationProps,
+		getNotificationStackEntries,
 	} = useNotifications();
 
 	const {
@@ -61,9 +61,10 @@ export function WelcomeView(props: React.PropsWithChildren<WelcomeViewController
 				</Grid>
 			</div>
 
-			<NotificationStack modalRootId={APP_ROOT_ID}>
-				{getNotificationProps().map((n: NotificationProps) => <Notification {...n} />)}
-			</NotificationStack>
+			<NotificationStack
+				modalRootId={APP_ROOT_ID}
+				entries={getNotificationStackEntries()}
+			/>
 
 			{showCreateLibraryDialog && (
 				<DialogCreateLibrary

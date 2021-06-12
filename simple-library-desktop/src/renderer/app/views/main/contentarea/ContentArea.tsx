@@ -1,6 +1,6 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {ItemList} from "./ItemList";
-import {VBox} from "../../../../newcomponents/layout/box/Box";
+import {VBox} from "../../../../components/layout/box/Box";
 import {useCollections} from "../../../hooks/collectionHooks";
 import {Collection} from "../../../../../common/commonModels";
 

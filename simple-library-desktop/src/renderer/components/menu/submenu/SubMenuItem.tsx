@@ -1,12 +1,13 @@
-import { BaseProps, concatClasses, getIf } from '../../common/common';
 import * as React from 'react';
 import { MutableRefObject, ReactElement, useRef, useState } from 'react';
 import { MenuItem } from '../menuitem/MenuItem';
 import { Manager, Popper, Reference } from 'react-popper';
 import { Menu } from '../menu/Menu';
-import { getChildrenOfSlot } from '../../base/slot/Slot';
 import { Icon, IconType } from '../../base/icon/Icon';
 import "./submenuitem.css";
+import {BaseProps} from "../../utils/common";
+import {concatClasses, getIf} from "../../utils/common";
+import {getChildrenOfSlot} from "../../base/slot/Slot";
 
 export const SLOT_ITEM = "item";
 export const SLOT_MENU = "menu";
@@ -30,7 +31,7 @@ export function SubMenuItem(props: React.PropsWithChildren<SubMenuItemProps>): R
                         className={concatClasses("sub-menu", getIf(isOpen, "sub-menu-open"))}
                         onMouseEnter={handleEnterItem}
                         onMouseExit={handleExitItem}
-                        icon={IconType.CARET_RIGHT}
+                        appendIcon={IconType.CARET_RIGHT}
                         forwardRef={ref}
                     >
                         {getChildrenItem()}

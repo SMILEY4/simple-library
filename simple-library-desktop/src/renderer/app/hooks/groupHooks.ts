@@ -7,7 +7,7 @@ import {
 } from "../common/messaging/messagingInterface";
 import {genNotificationId} from "../common/utils/notificationUtils";
 import {AppNotificationType} from "../store/state";
-import {useGlobalState} from "./old/miscAppHooks";
+import {useGlobalState} from "./miscAppHooks";
 import {ActionType} from "../store/reducer";
 import {extractGroups, Group} from "../../../common/commonModels";
 import {useNotifications} from "./notificationHooks";

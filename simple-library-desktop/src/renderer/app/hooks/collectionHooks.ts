@@ -8,7 +8,7 @@ import {genNotificationId} from "../common/utils/notificationUtils";
 import {AppNotificationType} from "../store/state";
 import {useNotifications} from "./notificationHooks";
 import {Collection, CollectionType, extractCollections} from "../../../common/commonModels";
-import {useGlobalState} from "./old/miscAppHooks";
+import {useGlobalState} from "./miscAppHooks";
 import {ActionType} from "../store/reducer";
 
 export function useCollections() {

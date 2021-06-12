@@ -1,7 +1,7 @@
 import {hot} from 'react-hot-loader/root';
 import React, {Component} from 'react';
 import {GlobalStateProvider} from './store/provider';
-import {ComponentShowcase} from "../newcomponents/_showcase/ComponentShowcase";
+import {ComponentShowcase} from "../components/_showcase/ComponentShowcase";
 import {WelcomeView} from "./views/welcome/WelcomeView";
 import {MainView} from "./views/main/MainView";
 import {SetApplicationTheme} from "../../common/messaging/messagesWindow";

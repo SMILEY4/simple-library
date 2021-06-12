@@ -1,11 +1,11 @@
-import { addPropsToChildren, AlignCross, AlignMain, BaseProps, ColorType, concatClasses } from '../../common/common';
 import * as React from 'react';
 import { ReactElement } from 'react';
 import "./menu.css";
-import { Pane } from '../../base/pane/Pane';
 import { VBox } from '../../layout/box/Box';
-import { MenuItem } from '../menuitem/MenuItem';
-import { SubMenuItem } from '../submenu/SubMenuItem';
+import {BaseProps} from "../../utils/common";
+import {addPropsToChildren, concatClasses} from "../../utils/common";
+import {MenuItem} from "../menuitem/MenuItem";
+import {SubMenuItem} from "../submenu/SubMenuItem";
 
 export interface MenuProps extends BaseProps {
     __onActionInternal?: (itemId: string) => void,
@@ -15,17 +15,15 @@ export interface MenuProps extends BaseProps {
 export function Menu(props: React.PropsWithChildren<MenuProps>): ReactElement {
 
     return (
-        <Pane
-            outline={ColorType.BASE_1}
-            fillDefault={ColorType.BACKGROUND_1}
-            className={concatClasses("menu", "with-shadow-1", props.className)}
+        <div
+            className={concatClasses(props.className, "menu", "with-shadow-1")}
             style={props.style}
-            forwardRef={props.forwardRef}
+            ref={props.forwardRef}
         >
-            <VBox alignMain={AlignMain.START} alignCross={AlignCross.STRETCH}>
+            <VBox alignMain="start" alignCross="stretch">
                 {getModifiedChildren()}
             </VBox>
-        </Pane>
+        </div>
     );
 
     function getModifiedChildren() {

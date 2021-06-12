@@ -1,12 +1,12 @@
 import React, {useState} from "react";
-import {Dialog} from "../../../../newcomponents/modals/dialog/Dialog";
+import {Dialog} from "../../../../components/modals/dialog/Dialog";
 import {APP_ROOT_ID} from "../../../application";
-import {Slot} from "../../../../newcomponents/base/slot/Slot";
-import {VBox} from "../../../../newcomponents/layout/box/Box";
-import {Button} from "../../../../newcomponents/buttons/button/Button";
-import {Label} from "../../../../newcomponents/base/label/Label";
+import {Slot} from "../../../../components/base/slot/Slot";
+import {VBox} from "../../../../components/layout/box/Box";
+import {Button} from "../../../../components/buttons/button/Button";
+import {Label} from "../../../../components/base/label/Label";
 import {useGroups} from "../../../hooks/groupHooks";
-import {CheckBox} from "../../../../newcomponents/buttons/checkbox/CheckBox";
+import {CheckBox} from "../../../../components/buttons/checkbox/CheckBox";
 import {useCollections} from "../../../hooks/collectionHooks";
 import {Group} from "../../../../../common/commonModels";
 

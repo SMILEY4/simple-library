@@ -1,5 +1,5 @@
 import {MutableRefObject} from 'react';
-import {useStateRef} from "../../common/commonHooks";
+import {useStateRef} from "../../utils/commonHooks";
 
 export function useSplitPane(
     mode: "vertical" | "horizontal",
@@ -11,7 +11,7 @@ export function useSplitPane(
 
     const [sizeBeforeCollapse, setSizeBeforeCollapse, refSizeBeforeCollapse] = useStateRef<string>(null)
 
-    function resize(d: number): void {
+    function resize(d: number): number {
 
         const refPrimary: MutableRefObject<any> = firstIsPrimary ? refFirst : refSecond;
         const refSecondary: MutableRefObject<any> = firstIsPrimary ? refSecond : refFirst;
@@ -28,6 +28,8 @@ export function useSplitPane(
         refSecondary.current.style.flexBasis = undefined;
 
         refSizeBeforeCollapse.current = null;
+
+        return newSizePrimary;
     }
 
     function expandOrCollapse(collapsePanel: boolean) {

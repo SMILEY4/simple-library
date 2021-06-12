@@ -1,17 +1,17 @@
 import React from "react";
-import {Dialog} from "../../../../newcomponents/modals/dialog/Dialog";
+import {Dialog} from "../../../../components/modals/dialog/Dialog";
 import {APP_ROOT_ID} from "../../../application";
-import {Slot} from "../../../../newcomponents/base/slot/Slot";
-import {VBox} from "../../../../newcomponents/layout/box/Box";
-import {Button} from "../../../../newcomponents/buttons/button/Button";
-import {Label} from "../../../../newcomponents/base/label/Label";
-import {TextField} from "../../../../newcomponents/input/textfield/TextField";
+import {Slot} from "../../../../components/base/slot/Slot";
+import {VBox} from "../../../../components/layout/box/Box";
+import {Button} from "../../../../components/buttons/button/Button";
+import {Label} from "../../../../components/base/label/Label";
+import {TextField} from "../../../../components/input/textfield/TextField";
 import {useValidatedState} from "../../../hooks/miscHooks";
 import {useCollections} from "../../../hooks/collectionHooks";
 import {Collection, CollectionType} from "../../../../../common/commonModels";
-import {Spacer} from "../../../../newcomponents/base/spacer/Spacer";
-import {TextArea} from "../../../../newcomponents/input/textarea/TextArea";
-import {useStateRef} from "../../../hooks/old/miscAppHooks";
+import {Spacer} from "../../../../components/base/spacer/Spacer";
+import {TextArea} from "../../../../components/input/textarea/TextArea";
+import {useStateRef} from "../../../hooks/miscAppHooks";
 import {useGroups} from "../../../hooks/groupHooks";
 import {useItems, useItemSelection} from "../../../hooks/itemHooks";
 

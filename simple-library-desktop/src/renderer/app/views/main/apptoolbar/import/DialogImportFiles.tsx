@@ -1,10 +1,10 @@
 import React from "react";
-import {Dialog} from "../../../../../newcomponents/modals/dialog/Dialog";
+import {Dialog} from "../../../../../components/modals/dialog/Dialog";
 import {APP_ROOT_ID} from "../../../../application";
-import {Slot} from "../../../../../newcomponents/base/slot/Slot";
-import {Button} from "../../../../../newcomponents/buttons/button/Button";
+import {Slot} from "../../../../../components/base/slot/Slot";
+import {Button} from "../../../../../components/buttons/button/Button";
 import {useItems} from "../../../../hooks/itemHooks";
-import {VBox} from "../../../../../newcomponents/layout/box/Box";
+import {VBox} from "../../../../../components/layout/box/Box";
 import {useComplexValidatedState} from "../../../../hooks/miscHooks";
 import {
 	ImportProcessData,
@@ -174,7 +174,7 @@ export function DialogImportFiles(props: React.PropsWithChildren<DialogImportFil
 		if (triggerDataValidation()) {
 			importItems(refData.current)
 			.then(() => loadGroups())
-			.then(() => loadItems(activeCollectionId))
+			.then(() => activeCollectionId && loadItems(activeCollectionId))
 			props.onClose()
 		}
 	}

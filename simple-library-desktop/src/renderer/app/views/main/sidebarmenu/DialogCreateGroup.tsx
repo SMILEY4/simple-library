@@ -1,15 +1,15 @@
 import React from "react";
-import {Dialog} from "../../../../newcomponents/modals/dialog/Dialog";
+import {Dialog} from "../../../../components/modals/dialog/Dialog";
 import {APP_ROOT_ID} from "../../../application";
-import {Slot} from "../../../../newcomponents/base/slot/Slot";
-import {VBox} from "../../../../newcomponents/layout/box/Box";
-import {Button} from "../../../../newcomponents/buttons/button/Button";
-import {Label} from "../../../../newcomponents/base/label/Label";
+import {Slot} from "../../../../components/base/slot/Slot";
+import {VBox} from "../../../../components/layout/box/Box";
+import {Button} from "../../../../components/buttons/button/Button";
+import {Label} from "../../../../components/base/label/Label";
 import {useGroups} from "../../../hooks/groupHooks";
-import {TextField} from "../../../../newcomponents/input/textfield/TextField";
+import {TextField} from "../../../../components/input/textfield/TextField";
 import {useValidatedState} from "../../../hooks/miscHooks";
 import {Group} from "../../../../../common/commonModels";
-import {Spacer} from "../../../../newcomponents/base/spacer/Spacer";
+import {Spacer} from "../../../../components/base/spacer/Spacer";
 
 interface DialogCreateGroupProps {
 	parentGroupId: number | null,

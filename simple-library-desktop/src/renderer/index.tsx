@@ -8,9 +8,9 @@ import { Application } from './app/application';
 // import './components/style/customContextify.css';
 // import "react-contexify/dist/ReactContexify.css";
 
-import "./newcomponents/baseStyle.css"
-import "./newcomponents/commonstyle.css"
-import "./newcomponents/constants.css"
-import "./newcomponents/themes.css"
+import "./components/baseStyle.css"
+import "./components/commonstyle.css"
+import "./components/constants.css"
+import "./components/themes.css"
 
 ReactDOM.render(<Application />, document.getElementById('app'));

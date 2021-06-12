@@ -1,17 +1,18 @@
 import React from "react";
 import "./icon.css";
-import { BaseProps, ColorType, concatClasses, getIf, map, Size } from "../../common/common";
 import {
     AiFillCaretRight,
-    AiFillHome,
+    AiFillHome, AiOutlineClose, AiOutlineFileText, AiOutlineFolder, BiImport, BsChevronDoubleLeft, BsChevronDoubleRight,
     BsChevronDown,
     BsChevronLeft,
     BsChevronRight,
     BsChevronUp,
     FaCheck,
-    HiOutlineFolder,
+    HiOutlineFolder, VscClose,
 } from 'react-icons/all';
 import {CgClose} from "react-icons/cg";
+import {BaseProps, Size} from "../../utils/common";
+import {concatClasses, getIf, map} from "../../utils/common";
 
 export enum IconType {
     CHEVRON_UP,
@@ -20,19 +21,19 @@ export enum IconType {
     CHEVRON_RIGHT,
     // CHEVRON_DOUBLE_UP,
     // CHEVRON_DOUBLE_DOWN,
-    // CHEVRON_DOUBLE_LEFT,
-    // CHEVRON_DOUBLE_RIGHT,
+    CHEVRON_DOUBLE_LEFT,
+    CHEVRON_DOUBLE_RIGHT,
     CARET_RIGHT,
     // PLUS,
     // MINUS,
     // CROSS,
     CLOSE,
     // REFRESH,
-    // IMPORT,
+    IMPORT,
     HOME,
     CHECKMARK,
     // DIRECTORY,
-    // FILE,
+    FILE,
     // IMAGES,
     FOLDER,
 }
@@ -44,27 +45,29 @@ const SVG_FILLED = "filled";
 
 const ICON_COLOR_TYPE = new Map<IconType, string>([
     [IconType.CLOSE, SVG_FILLED],
-    [IconType.FOLDER, SVG_OUTLINED],
+    [IconType.FOLDER, SVG_FILLED],
+    [IconType.FILE, SVG_OUTLINED],
     [IconType.HOME, SVG_FILLED],
     [IconType.CHECKMARK, SVG_FILLED],
     [IconType.CARET_RIGHT, SVG_FILLED],
+    [IconType.IMPORT, SVG_FILLED],
 
     [IconType.CHEVRON_UP, SVG_FILLED],
     [IconType.CHEVRON_DOWN, SVG_FILLED],
     [IconType.CHEVRON_LEFT, SVG_FILLED],
     [IconType.CHEVRON_RIGHT, SVG_FILLED],
+    [IconType.CHEVRON_DOUBLE_LEFT, SVG_FILLED],
+    [IconType.CHEVRON_DOUBLE_RIGHT, SVG_FILLED],
 
 ]);
 
 export interface IconProps extends BaseProps {
     type: IconType,
-    color?: ColorType,
     size?: Size,
+    color?: "primary" | "secondary" | "info" | "success" | "error" | "warn" | "on-variant"
+    disabled?: boolean,
 }
 
-/**
- * Displays and handles an svg icon with a given color and size.
- */
 export function Icon(props: React.PropsWithChildren<IconProps>): React.ReactElement {
 
     const iconProps: any = {
@@ -73,9 +76,7 @@ export function Icon(props: React.PropsWithChildren<IconProps>): React.ReactElem
     };
     switch (props.type) {
         case IconType.CLOSE:
-            return <CgClose {...iconProps} />;
-        case IconType.FOLDER:
-            return <HiOutlineFolder {...iconProps} />;
+            return <VscClose {...iconProps} />;
         case IconType.HOME:
             return <AiFillHome {...iconProps} />;
         case IconType.CHECKMARK:
@@ -90,6 +91,16 @@ export function Icon(props: React.PropsWithChildren<IconProps>): React.ReactElem
             return <BsChevronLeft {...iconProps} />;
         case IconType.CHEVRON_RIGHT:
             return <BsChevronRight {...iconProps} />;
+        case IconType.CHEVRON_DOUBLE_LEFT:
+            return <BsChevronDoubleLeft {...iconProps} />;
+        case IconType.CHEVRON_DOUBLE_RIGHT:
+            return <BsChevronDoubleRight {...iconProps} />;
+        case IconType.FILE:
+            return <AiOutlineFileText {...iconProps} />;
+        case IconType.FOLDER:
+            return <AiOutlineFolder {...iconProps} />;
+        case IconType.IMPORT:
+            return <BiImport {...iconProps} />;
         default:
             return null;
     }
@@ -97,12 +108,14 @@ export function Icon(props: React.PropsWithChildren<IconProps>): React.ReactElem
     function getClassName(): string {
         const isFilled = ICON_COLOR_TYPE.get(props.type) === SVG_FILLED;
         const isOutlined = ICON_COLOR_TYPE.get(props.type) === SVG_OUTLINED;
+        const color: string = props.color ? props.color : "primary";
         return concatClasses(
-            "icon",
-            map(props.size, size => "icon-size-" + size),
-            getIf(isOutlined, map(props.color, color => "icon-color-outline-" + color)),
-            getIf(isFilled, map(props.color, color => "icon-color-fill-" + color)),
             props.className,
+            "icon",
+            getIf(isOutlined, "icon-color-outline-" + color),
+            getIf(isFilled, "icon-color-fill-" + color),
+            getIf(props.disabled, "icon-disabled"),
+            map(props.size, size => "icon-size-" + size),
         );
     }
 

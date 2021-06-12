@@ -1,12 +1,11 @@
 import React from "react";
-import {VBox} from "../../../newcomponents/layout/box/Box";
-import {DynamicSlot} from "../../../newcomponents/base/slot/DynamicSlot";
-import {Slot} from "../../../newcomponents/base/slot/Slot";
-import {AppLayout} from "../../../newcomponents/misc/app/AppLayout";
+import {VBox} from "../../../components/layout/box/Box";
+import {DynamicSlot} from "../../../components/base/slot/DynamicSlot";
+import {Slot} from "../../../components/base/slot/Slot";
+import {AppLayout} from "../../../components/misc/app/AppLayout";
 import {AppToolbar} from "./apptoolbar/AppToolbar";
 import {CollectionSidebar, TAB_DATA_COLLECTIONS} from "./sidebarmenu/CollectionSidebar";
-import {NotificationStack} from "../../../newcomponents/modals/notification/NotificationStack";
-import {Notification, NotificationProps} from "../../../newcomponents/modals/notification/Notification";
+import {NotificationStack} from "../../../components/modals/notification/NotificationStack";
 import {useNotifications} from "../../hooks/notificationHooks";
 import {APP_ROOT_ID} from "../../application";
 import {useGroups} from "../../hooks/groupHooks";
@@ -20,7 +19,7 @@ interface MainViewProps {
 export function MainView(props: React.PropsWithChildren<MainViewProps>): React.ReactElement {
 
 	const {
-		getNotificationProps,
+		getNotificationStackEntries,
 	} = useNotifications();
 
 	const {
@@ -52,9 +51,10 @@ export function MainView(props: React.PropsWithChildren<MainViewProps>): React.R
 
 			</VBox>
 
-			<NotificationStack modalRootId={APP_ROOT_ID}>
-				{getNotificationProps().map((n: NotificationProps) => <Notification {...n} />)}
-			</NotificationStack>
+			<NotificationStack
+				modalRootId={APP_ROOT_ID}
+				entries={getNotificationStackEntries()}
+			/>
 
 		</>
 	);

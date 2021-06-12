@@ -1,61 +1,80 @@
-.showcase-view {
-	width: 100%;
-}
-
-
-.background-0 {
-	background-color: var(--background-color-0);
-}
-
-
-.background-1 {
-	background-color: var(--background-color-1);
-}
-
-
-.showcase-controls {
+.showcase {
+	min-height:     100vh;
 	display:        flex;
-	padding-bottom: 10px;
+	flex-direction: column;
+	gap:            50px;
+	padding-top:    40px;
+	padding-bottom: 200px;
+	box-sizing:     border-box;
 }
 
-.background-0 > .showcase-controls {
-	background-color: var(--background-color-1);
+.showcase-background-0 {
+	background-color: var(--color-background-0);
 }
 
-.background-1 > .showcase-controls {
-	background-color: var(--background-color-0);
+.showcase-background-1 {
+	background-color: var(--color-background-1);
 }
 
-.showcase-controls > * {
-	cursor:              pointer;
-	-webkit-user-select: none;
-	-moz-user-select:    none;
-	-ms-user-select:     none;
-	user-select:         none;
-	margin:              0.5em;
-	padding:             0.3em;
-	border:              1px solid var(--text-color-1);
-	color:               var(--text-color-1);
+.showcase-background-2 {
+	background-color: var(--color-background-2);
 }
 
+.showcase-header {
+	padding:          5px;
+	position:         fixed;
+	top:              0;
+	z-index:          1000;
+	width:            100%;
+	height:           20px;
+	background-color: var(--color-background-0);
+	display:          flex;
+	gap:              10px;
+}
 
-.showcase-content {
+.showcase-header > * {
+	padding:         3px;
+	border:          1px solid gray;
+	color:           gray;
+	border-radius:   5px;
+	cursor:          pointer;
+	user-select:     none;
+	display:         flex;
+	justify-content: center;
+	align-items:     center;
+}
+
+.showcase-section {
+	border-left:  2px solid gray;
+	padding-left: 5px;
+	margin-left:  20px;
+	margin-right: 20px;
+}
+
+.showcase-section-title {
+	font-weight: bolder;
+	font-size:   1.5em;
+	cursor:      pointer;
+	user-select: none;
+}
+
+.theme-light .showcase-section-title {
+	color: black
+}
+
+.theme-dark .showcase-section-title {
+	color: white
+}
+
+.showcase-section-content {
+	padding:        20px;
 	display:        flex;
 	flex-direction: column;
 	align-items:    flex-start;
-	gap:            20px;
-	margin:         20px;
+	gap:            25px;
 }
 
-
-.showcase-row {
-	display:        flex;
-	flex-direction: row;
-	align-items:    flex-start;
-	gap:            20px;
-	position:       relative;
-}
-
-.showcase-row-full-width {
-	width: 100%;
+.showcase-tile {
+	min-width:  20px;
+	min-height: 20px;
 }

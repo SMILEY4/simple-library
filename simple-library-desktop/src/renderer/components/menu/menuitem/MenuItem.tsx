@@ -1,13 +1,18 @@
-import { BaseProps, concatClasses, getIf, MouseOverProps, Size } from '../../common/common';
 import * as React from 'react';
-import { ReactElement } from 'react';
+import {ReactElement} from 'react';
 import "./menuitem.css";
-import { Icon, IconType } from '../../base/icon/Icon';
+import {Icon, IconType} from '../../base/icon/Icon';
+import {BaseProps} from "../../utils/common";
+import {concatClasses, getIf} from "../../utils/common";
+import {Label} from "../../base/label/Label";
 
-export interface MenuItemProps extends BaseProps, MouseOverProps {
+export interface MenuItemProps extends BaseProps {
     itemId?: string,
-    icon?: IconType,
+    appendIcon?: IconType,
+    disabled?: boolean,
     onAction?: () => void;
+    onMouseEnter?: (event: React.MouseEvent) => void,
+    onMouseExit?: (event: React.MouseEvent) => void
     __onActionInternal?: (itemId: string) => void;
 }
 
@@ -15,25 +20,27 @@ export function MenuItem(props: React.PropsWithChildren<MenuItemProps>): ReactEl
 
     return (
         <div
-            className={concatClasses("menu-item", "behaviour-no-select", getIf(props.icon !==undefined, "menu-item-with-icon"), props.className)}
+            className={concatClasses(props.className, "menu-item", "behaviour-no-select", getIf(props.appendIcon !== undefined, "menu-item-with-icon"))}
             onClick={handleClick}
             ref={props.forwardRef}
             key={props.itemId}
             onMouseEnter={props.onMouseEnter}
             onMouseLeave={props.onMouseExit}
         >
-            {props.children}
+            <Label noSelect smallIcon disabled={props.disabled}>
+                {props.children}
+            </Label>
             <div className={"menu-item-icon"}>
-                {props.icon ? <Icon type={props.icon} size={Size.S_0_75}/> : null}
+                {props.appendIcon ? <Icon type={props.appendIcon} size={"0-75"} disabled={props.disabled}/> : null}
             </div>
         </div>
     );
 
     function handleClick() {
-        if (props.onAction) {
+        if (props.disabled !== true && props.onAction) {
             props.onAction();
         }
-        if (props.__onActionInternal) {
+        if (props.disabled !== true && props.__onActionInternal) {
             props.__onActionInternal(props.itemId);
         }
     }

@@ -1,16 +1,16 @@
 import React from "react";
-import {HBox, VBox} from "../../../../newcomponents/layout/box/Box";
-import {ItemData} from "../../../../../common/commonModels";
-import {concatClasses, getIf} from "../../../../components/common/common";
+import {HBox, VBox} from "../../../../components/layout/box/Box";
+import {CollectionType, ItemData} from "../../../../../common/commonModels";
+import {concatClasses, getIf, getSelectModifier, SelectModifier} from "../../../../components/utils/common";
 import "./listItemEntry.css"
-import {getSelectModifier, SelectModifier} from "../../../../newcomponents/utils/common";
-import {ContextMenuWrapper} from "../../../../newcomponents/menu/contextmenu/ContextMenuWrapper";
-import {Slot} from "../../../../newcomponents/base/slot/Slot";
+import {ContextMenuWrapper} from "../../../../components/menu/contextmenu/ContextMenuWrapper";
+import {Slot} from "../../../../components/base/slot/Slot";
 import {ItemListEntryContextMenu} from "./ItemListEntryContextMenu";
 import {APP_ROOT_ID} from "../../../application";
 
 interface ItemListEntryProps {
 	item: ItemData,
+	activeCollectionType: CollectionType,
 	selected: boolean,
 	onSelect: (selectMod: SelectModifier) => void,
 	onDragStart: (event: React.DragEvent) => void
@@ -46,6 +46,7 @@ export function ItemListEntry(props: React.PropsWithChildren<ItemListEntryProps>
 
 			<Slot name={"menu"}>
 				<ItemListEntryContextMenu
+					canRemove={props.activeCollectionType !== CollectionType.SMART}
 					onDelete={props.onDelete}
 					onRemove={props.onRemove}
 				/>

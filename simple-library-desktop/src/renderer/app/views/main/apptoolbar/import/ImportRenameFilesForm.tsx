@@ -1,12 +1,12 @@
 import React, {ReactElement} from "react";
-import {ElementLabel} from "../../../../../newcomponents/misc/elementlabel/ElementLabel";
-import {HBox, VBox} from "../../../../../newcomponents/layout/box/Box";
-import {CheckBox} from "../../../../../newcomponents/buttons/checkbox/CheckBox";
-import {ChoiceBox, ChoiceBoxItem} from "../../../../../newcomponents/buttons/choicebox/ChoiceBox";
+import {ElementLabel} from "../../../../../components/misc/elementlabel/ElementLabel";
+import {HBox, VBox} from "../../../../../components/layout/box/Box";
+import {CheckBox} from "../../../../../components/buttons/checkbox/CheckBox";
+import {ChoiceBox, ChoiceBoxItem} from "../../../../../components/buttons/choicebox/ChoiceBox";
 import {RenamePart, RenamePartType, renamePartTypeAllowsUserInput} from "../../../../../../common/commonModels";
-import {TextField} from "../../../../../newcomponents/input/textfield/TextField";
-import {BaseElementFlat} from "../../../../../newcomponents/base/element/BaseElementFlat";
-import {Label} from "../../../../../newcomponents/base/label/Label";
+import {TextField} from "../../../../../components/input/textfield/TextField";
+import {BaseElementFlat} from "../../../../../components/base/element/BaseElementFlat";
+import {Label} from "../../../../../components/base/label/Label";
 
 const CB_ITEMS_RENAME_PART_TYPES: ChoiceBoxItem[] = [
 	{

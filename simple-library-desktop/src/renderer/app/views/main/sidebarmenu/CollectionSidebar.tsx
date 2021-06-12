@@ -1,9 +1,9 @@
 import React from "react";
-import {SidebarTab} from "../../../../newcomponents/misc/app/AppLayout";
-import {IconType} from "../../../../newcomponents/base/icon/Icon";
-import {TreeView, TreeViewNode} from "../../../../newcomponents/misc/tree/TreeView";
+import {SidebarTab} from "../../../../components/misc/app/AppLayout";
+import {IconType} from "../../../../components/base/icon/Icon";
+import {TreeView, TreeViewNode} from "../../../../components/misc/tree/TreeView";
 import {Collection, Group} from "../../../../../common/commonModels";
-import {DynamicSlot} from "../../../../newcomponents/base/slot/DynamicSlot";
+import {DynamicSlot} from "../../../../components/base/slot/DynamicSlot";
 import {ContextMenuCollection} from "./ContextMenuCollection";
 import {ContextMenuGroup} from "./ContextMenuGroup";
 import {APP_ROOT_ID} from "../../../application";

@@ -1,9 +1,9 @@
 import React from "react";
-import {HBox, VBox} from "../../../../../newcomponents/layout/box/Box";
-import {ChoiceBox, ChoiceBoxItem} from "../../../../../newcomponents/buttons/choicebox/ChoiceBox";
-import {DirectoryInputField} from "../../../../../newcomponents/input/directoryinputfield/DirectoryInputField";
+import {HBox, VBox} from "../../../../../components/layout/box/Box";
+import {ChoiceBox, ChoiceBoxItem} from "../../../../../components/buttons/choicebox/ChoiceBox";
+import {DirectoryInputField} from "../../../../../components/input/directoryinputfield/DirectoryInputField";
 import {ImportTargetAction} from "../../../../../../common/commonModels";
-import {BaseElementFlat} from "../../../../../newcomponents/base/element/BaseElementFlat";
+import {BaseElementFlat} from "../../../../../components/base/element/BaseElementFlat";
 
 const electron = window.require('electron');
 

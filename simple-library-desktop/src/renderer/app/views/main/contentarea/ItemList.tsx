@@ -1,9 +1,9 @@
 import React from "react";
-import {VBox} from "../../../../newcomponents/layout/box/Box";
+import {VBox} from "../../../../components/layout/box/Box";
 import {useItems, useItemSelection} from "../../../hooks/itemHooks";
 import {ItemListEntry} from "./ItemListEntry";
-import {ItemData} from "../../../../../common/commonModels";
-import {isCopyMode, SelectModifier} from "../../../../newcomponents/utils/common";
+import {Collection, ItemData} from "../../../../../common/commonModels";
+import {isCopyMode, SelectModifier} from "../../../../components/utils/common";
 import {DragAndDropItems} from "../../../common/dragAndDrop";
 import {useCollections} from "../../../hooks/collectionHooks";
 import {useGroups} from "../../../hooks/groupHooks";
@@ -14,12 +14,12 @@ interface ItemListProps {
 export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.ReactElement {
 
 	const {
-		activeCollectionId
+		activeCollectionId,
+		findCollection
 	} = useCollections()
 
 	const {
 		items,
-		loadItems,
 		removeItems,
 		deleteItems
 	} = useItems();
@@ -37,6 +37,8 @@ export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.R
 		selectAll,
 		clearSelection
 	} = useItemSelection();
+
+	const activeCollection: Collection | null = findCollection(activeCollectionId)
 
 	return (
 		<VBox
@@ -58,6 +60,7 @@ export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.R
 			{items && items.map((itemData: ItemData) => <ItemListEntry
 				key={itemData.id}
 				item={itemData}
+				activeCollectionType={activeCollection ? activeCollection.type : undefined}
 				selected={isSelected(itemData.id)}
 				onSelect={(selectMod: SelectModifier) => handleSelectItem(itemData.id, selectMod)}
 				onDragStart={(event: React.DragEvent) => handleDragItem(itemData.id, event)}

@@ -1,10 +1,16 @@
 import * as React from 'react';
-import { ReactElement } from 'react';
+import {ReactElement} from 'react';
 import "./separatormenuitem.css";
+import {BaseProps} from "../../utils/common";
+import {concatClasses} from "../../utils/common";
 
 
-export function SeparatorMenuItem(): ReactElement {
+export function SeparatorMenuItem(props: React.PropsWithChildren<BaseProps>): ReactElement {
     return (
-        <div className={"separator-menu-item"} />
+        <div
+            className={concatClasses(props.className, "separator-menu-item")}
+            style={props.style}
+            ref={props.forwardRef}
+        />
     );
 }

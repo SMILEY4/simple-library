@@ -1,4 +1,4 @@
-import {useGlobalState} from "./old/miscAppHooks";
+import {useGlobalState} from "./miscAppHooks";
 import {
 	fetchItems,
 	onImportStatusCommands,

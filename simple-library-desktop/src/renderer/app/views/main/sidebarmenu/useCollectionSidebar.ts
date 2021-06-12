@@ -5,7 +5,7 @@ import {
 	DragAndDropItems,
 	DragAndDropUtils
 } from "../../../common/dragAndDrop";
-import {useGlobalState} from "../../../hooks/old/miscAppHooks";
+import {useGlobalState} from "../../../hooks/miscAppHooks";
 import {ActionType} from "../../../store/reducer";
 import {useGroups} from "../../../hooks/groupHooks";
 import {useCollections} from "../../../hooks/collectionHooks";

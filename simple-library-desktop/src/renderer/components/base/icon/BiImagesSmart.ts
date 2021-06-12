@@ -1,6 +1,6 @@
 import { GenIcon } from 'react-icons';
 
-// SHORT GUID FOR CUSTOM ICONS: https://github.com/react-icons/react-icons/issues/238#issuecomment-578471117
+// SHORT GUIDE FOR CUSTOM ICONS: https://github.com/react-icons/react-icons/issues/238#issuecomment-578471117
 
 export const BiImagesSmart = (props: any) => GenIcon(BI_IMAGES_SMART_JSON)(props);
 

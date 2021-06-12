@@ -1,5 +1,5 @@
 import {Dispatch, MutableRefObject, SetStateAction, useEffect} from "react";
-import {useStateRef} from "../../components/common/commonHooks";
+import {useStateRef} from "../../components/utils/commonHooks";
 
 export function useMount(action: () => void) {
 	useEffect(action, []);
