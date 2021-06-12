@@ -1,15 +1,26 @@
 import {useGlobalState} from "./old/miscAppHooks";
-import {fetchItems, requestImport, requestMoveItems, requestRemoveItems} from "../common/messaging/messagingInterface";
+import {
+	fetchItems,
+	onImportStatusCommands,
+	requestImport,
+	requestMoveItems,
+	requestRemoveItems
+} from "../common/messaging/messagingInterface";
 import {useNotifications} from "./notificationHooks";
 import {genNotificationId} from "../common/utils/notificationUtils";
 import {AppNotificationType} from "../store/state";
-import {ImportProcessData, ItemData} from "../../../common/commonModels";
+import {ImportProcessData, ImportResult, ImportStatus, ItemData} from "../../../common/commonModels";
 import {ActionType} from "../store/reducer";
 
 export function useItems() {
 
 	const {state, dispatch} = useGlobalState();
-	const {throwErrorNotification, addNotification} = useNotifications()
+	const {
+		throwErrorNotification,
+		addNotification,
+		updateNotification,
+		removeNotification
+	} = useNotifications()
 
 	function load(collectionId: number): void {
 		fetchItems(collectionId)
@@ -44,8 +55,18 @@ export function useItems() {
 		return new Promise((resolve, reject) => resolve())
 	}
 
-	function importItems(data: ImportProcessData): void {
-		// TODO
+	function importItems(data: ImportProcessData): Promise<void> {
+		const importStatusNotificationId = genNotificationId();
+		addNotification(importStatusNotificationId, AppNotificationType.IMPORT_STATUS, null);
+		onImportStatusCommands((status: ImportStatus) => updateNotification(importStatusNotificationId, status));
+		return requestImport(
+			data,
+			(result: ImportResult) => addNotification(genNotificationId(), AppNotificationType.IMPORT_SUCCESSFUL, result),
+			(result: ImportResult) => addNotification(genNotificationId(), AppNotificationType.IMPORT_FAILED, result),
+			(result: ImportResult) => addNotification(genNotificationId(), AppNotificationType.IMPORT_WITH_ERRORS, result),
+		)
+			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.IMPORT_FAILED_UNKNOWN, error))
+			.then(() => removeNotification(importStatusNotificationId));
 	}
 
 	return {
