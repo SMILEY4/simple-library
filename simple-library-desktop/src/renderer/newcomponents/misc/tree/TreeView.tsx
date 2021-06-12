@@ -8,6 +8,7 @@ import {useContextMenu} from "../../menu/contextmenu/contextMenuHook";
 import {getChildOfDynamicSlot} from "../../base/slot/DynamicSlot";
 import {TreeElementLeaf} from "./TreeElementLeaf";
 import {TreeElementNode} from "./TreeElementNode";
+import {useClickOutside} from "../../../components/common/commonHooks";
 
 export interface TreeViewNode {
 	id: string,
@@ -29,6 +30,7 @@ export interface TreeElementProps extends BaseProps {
 	icon?: IconType,
 
 	selected?: boolean,
+	active?: boolean,
 	depth: number,
 
 	onSelect?: () => void,
@@ -49,6 +51,8 @@ export interface TreeViewProps extends BaseProps {
 
 	forceExpanded?: string[],
 	onToggleExpand?: (nodeId: string, expanded: boolean) => void,
+
+	activeNodeId?: string,
 
 	onDoubleClick?: (nodeId: string) => void,
 	onDragStart?: (nodeId: string, event: React.DragEvent) => void,
@@ -71,8 +75,10 @@ export function TreeView(props: React.PropsWithChildren<TreeViewProps>): ReactEl
 		closeContextMenu
 	} = useContextMenu();
 
+	const clickOutsideRef = useClickOutside(handleClickOutside)
+
 	return (
-		<div className={"tree-view"}>
+		<div className={"tree-view"} ref={clickOutsideRef}>
 			{renderNode(props.rootNode, 0)}
 
 			<ContextMenuBase
@@ -128,6 +134,7 @@ export function TreeView(props: React.PropsWithChildren<TreeViewProps>): ReactEl
 				icon={node.icon}
 				label={node.label}
 				selected={isSelected(node.id)}
+				active={isActive(node.id)}
 				depth={depth}
 				onSelect={() => handleSelect(node.id)}
 				onDoubleClick={() => handleDoubleClick(node.id)}
@@ -155,6 +162,10 @@ export function TreeView(props: React.PropsWithChildren<TreeViewProps>): ReactEl
 		}
 	}
 
+	function handleClickOutside() {
+		setSelected([])
+	}
+
 	function isExpandable(node: TreeViewNode): boolean {
 		return !node.isLeaf && node.children && node.children.length > 0
 	}
@@ -171,6 +182,10 @@ export function TreeView(props: React.PropsWithChildren<TreeViewProps>): ReactEl
 
 	function isSelected(nodeId: string): boolean {
 		return selected.indexOf(nodeId) !== -1;
+	}
+
+	function isActive(nodeId: string): boolean {
+		return props.activeNodeId && props.activeNodeId === nodeId;
 	}
 
 	function handleDoubleClick(nodeId: string) {

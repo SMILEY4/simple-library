@@ -18,7 +18,13 @@ export function TreeElementLeaf(props: React.PropsWithChildren<TreeElementLeafPr
 
 	return (
 		<div
-			className={concatClasses(props.className, "tree-leaf", "tree-element", getIf(props.selected, "tree-element-selected"))}
+			className={concatClasses(
+				props.className,
+				"tree-leaf",
+				"tree-element",
+				getIf(props.selected, "tree-element-selected"),
+				getIf(props.active, "tree-element-active")
+			)}
 			style={{...props.style, paddingLeft: calculateInset(props.depth, "var(--s-1)")}}
 			draggable={props.draggable}
 			onDragStart={props.draggable ? handleDragStart : undefined}

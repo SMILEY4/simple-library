@@ -9,6 +9,10 @@
 }
 
 .tree-element-selected {
+	background-color: var(--color-bg-raised);
+}
+
+.tree-element-active {
 	background-color: var(--color-bg-raised-active);
 }
 

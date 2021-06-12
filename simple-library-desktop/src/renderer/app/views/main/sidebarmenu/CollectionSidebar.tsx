@@ -15,6 +15,7 @@ import {DialogEditGroup} from "./DialogEditGroup";
 import {DialogEditCollection} from "./DialogEditCollection";
 import {DialogCreateGroup} from "./DialogCreateGroup";
 import {DialogCreateCollection} from "./DialogCreateCollection";
+import {useCollections} from "../../../hooks/collectionHooks";
 
 export const TAB_DATA_COLLECTIONS: SidebarTab = {
 	id: "tab-collections",
@@ -30,6 +31,10 @@ export function CollectionSidebar(props: React.PropsWithChildren<CollectionSideb
 	const {
 		rootGroup
 	} = useGroups();
+
+	const {
+		activeCollectionId
+	} = useCollections();
 
 	const {
 		NODE_TYPE_COLLECTION,
@@ -85,6 +90,7 @@ export function CollectionSidebar(props: React.PropsWithChildren<CollectionSideb
 				onDragStart={dragStart}
 				onDragOver={dragOver}
 				onDrop={drop}
+				activeNodeId={activeCollectionId ? getNodeId(NODE_TYPE_COLLECTION, activeCollectionId) : undefined}
 			>
 				<DynamicSlot name={"context-menu"}>
 					{(nodeId: string) => {
