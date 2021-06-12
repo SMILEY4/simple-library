@@ -21,15 +21,15 @@ export function useLifecycle(onMount: () => void, onUnmount: () => void) {
 
 export function useValidatedState<S>(
 	initialState: S | (() => S),
-	initialValid: boolean,
-	validate: (value: S) => boolean
+	initialValid: boolean | boolean[],
+	validate: (value: S) => boolean | boolean[]
 ): [
 	S,
 	Dispatch<SetStateAction<S>>,
-	boolean,
-	() => boolean,
+	boolean | boolean[],
+	() => boolean | boolean[],
 	MutableRefObject<S>,
-	MutableRefObject<boolean>
+	MutableRefObject<boolean | boolean[]>
 ] {
 
 	const [value, setValue, refValue] = useStateRef(initialState)

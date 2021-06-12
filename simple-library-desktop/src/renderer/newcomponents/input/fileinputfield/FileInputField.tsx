@@ -1,10 +1,12 @@
 import {BaseProps} from "../../utils/common";
-import React, {useState} from "react";
+import React, {useRef, useState} from "react";
 import {Group} from "../../layout/group/Group";
 import {TextField} from "../textfield/TextField";
 import {IconType} from "../../base/icon/Icon";
 import {Button} from "../../buttons/button/Button";
 import {concatClasses} from "../../../components/common/common";
+import "./fileInputField.css"
+import {useMount} from "../../../app/hooks/miscHooks";
 
 interface FileInputFieldProps extends BaseProps {
 	files?: string[],
@@ -18,6 +20,11 @@ interface FileInputFieldProps extends BaseProps {
 export function FileInputField(props: React.PropsWithChildren<FileInputFieldProps>): React.ReactElement {
 
 	const [files, setFiles] = useState(props.files ? props.files : []);
+
+	const fieldRef = useRef(null);
+	useMount(() => {
+		fieldRef.current.scrollLeft = fieldRef.current.scrollWidth
+	})
 
 	return (
 		<Group
@@ -33,7 +40,7 @@ export function FileInputField(props: React.PropsWithChildren<FileInputFieldProp
 				disabled={props.disabled}
 				placeholder={props.placeholder}
 				prependIcon={IconType.FILE}
-				dir={files && files.length !== 1 ? undefined : "rtl"}
+				refInputField={fieldRef}
 			/>
 			<Button
 				disabled={props.disabled}
@@ -49,6 +56,7 @@ export function FileInputField(props: React.PropsWithChildren<FileInputFieldProp
 			props.onBrowse().then(filePaths => {
 				if (filePaths) {
 					setFiles(filePaths)
+					fieldRef.current.scrollLeft = fieldRef.current.scrollWidth
 					props.onSelect && props.onSelect(filePaths)
 				}
 			})

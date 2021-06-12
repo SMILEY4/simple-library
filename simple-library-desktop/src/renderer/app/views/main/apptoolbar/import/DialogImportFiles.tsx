@@ -4,56 +4,18 @@ import {APP_ROOT_ID} from "../../../../application";
 import {Slot} from "../../../../../newcomponents/base/slot/Slot";
 import {Button} from "../../../../../newcomponents/buttons/button/Button";
 import {useItems} from "../../../../hooks/itemHooks";
-import {HBox, VBox} from "../../../../../newcomponents/layout/box/Box";
-import {FileInputField} from "../../../../../newcomponents/input/fileinputfield/FileInputField";
+import {VBox} from "../../../../../newcomponents/layout/box/Box";
 import {useValidatedState} from "../../../../hooks/miscHooks";
-import {Spacer} from "../../../../../newcomponents/base/spacer/Spacer";
-import {ChoiceBox, ChoiceBoxItem} from "../../../../../newcomponents/buttons/choicebox/ChoiceBox";
-import {ImportTargetAction, RenamePartType} from "../../../../../../common/commonModels";
+import {
+	ImportProcessData,
+	ImportTargetAction,
+	RenamePartType,
+	renamePartTypeAllowsUserInput
+} from "../../../../../../common/commonModels";
 import {useStateRef} from "../../../../../components/common/commonHooks";
-import {DirectoryInputField} from "../../../../../newcomponents/input/directoryinputfield/DirectoryInputField";
-import {ElementLabel} from "../../../../../newcomponents/misc/elementlabel/ElementLabel";
-import {CheckBox} from "../../../../../newcomponents/buttons/checkbox/CheckBox";
-import {Grid} from "../../../../../newcomponents/layout/grid/Grid";
-import {TextField} from "../../../../../newcomponents/input/textfield/TextField";
-import {LabelBox} from "../../../../../newcomponents/base/labelbox/LabelBox";
-
-const electron = window.require('electron');
-
-const CB_ITEMS_FILE_TARGET_TYPES: ChoiceBoxItem[] = [
-	{
-		id: ImportTargetAction.KEEP,
-		text: "Keep in directory"
-	},
-	{
-		id: ImportTargetAction.MOVE,
-		text: "Move to target directory"
-	},
-	{
-		id: ImportTargetAction.COPY,
-		text: "Copy to target directory"
-	},
-]
-
-
-const CB_ITEMS_RENAME_PART_TYPES: ChoiceBoxItem[] = [
-	{
-		id: RenamePartType.NOTHING,
-		text: "Nothing"
-	},
-	{
-		id: RenamePartType.TEXT,
-		text: "Text"
-	},
-	{
-		id: RenamePartType.NUMBER_FROM,
-		text: "Number from"
-	},
-	{
-		id: RenamePartType.ORIGINAL_FILENAME,
-		text: "Filename"
-	},
-]
+import {ImportSelectFilesForm} from "./ImportSelectFilesForm";
+import {ImportTargetDirForm} from "./ImportTargetDirForm";
+import {ImportRenameFilesForm} from "./ImportRenameFilesForm";
 
 interface DialogImportFilesProps {
 	onClose: () => void,
@@ -95,6 +57,28 @@ export function DialogImportFiles(props: React.PropsWithChildren<DialogImportFil
 		refRenameFiles
 	] = useStateRef(false)
 
+	const [
+		renamePartTypes,
+		setRenamePartTypes,
+		renamePartTypesValid,
+		triggerRenamePartTypesValidation,
+		refRenamePartTypes,
+		refRenamePartTypesValid
+	] = useValidatedState<RenamePartType[]>([
+		RenamePartType.NOTHING,
+		RenamePartType.NOTHING,
+		RenamePartType.ORIGINAL_FILENAME
+	], [true], validateRenameTypes)
+
+	const [
+		renamePartValues,
+		setRenamePartValues,
+		renamePartValuesValid,
+		triggerRenamePartValuesValidation,
+		refRenamePartValues,
+		refRenamePartValuesValid
+	] = useValidatedState<(string | null)[]>([null, null, null], [true, true, true], validateRenameValues)
+
 	return (
 		<Dialog
 			show={true}
@@ -109,96 +93,33 @@ export function DialogImportFiles(props: React.PropsWithChildren<DialogImportFil
 			closeOnClickOutside
 		>
 			<Slot name={"body"}>
-				<VBox alignMain="center" alignCross="start" spacing="0-5">
-
-					<ElementLabel text="Select files to import:">
-						<FileInputField
-							placeholder={"Files"}
-							error={!filesValid}
-							onBrowse={handleBrowseFiles}
-							onSelect={setFiles}
-						/>
-					</ElementLabel>
-
-					<Spacer size="0-5" dir="horizontal" line/>
-
-
-					<HBox alignMain="start">
-						<ChoiceBox
-							items={CB_ITEMS_FILE_TARGET_TYPES}
-							selectedItemId={fileTargetType}
-							onAction={setFileTargetType}
-						/>
-					</HBox>
-					<DirectoryInputField
-						placeholder={"Target Directory"}
-						error={!targetDirValid}
-						onBrowse={browseTargetDir}
-						onSelect={setTargetDir}
-						disabled={fileTargetType === ImportTargetAction.KEEP}
+				<VBox alignMain="center" alignCross="stretch" spacing="1-5">
+					<ImportSelectFilesForm
+						error={!filesValid}
+						onSelectFiles={setFiles}
 					/>
-
-					<Spacer size="0-5" dir="horizontal" line/>
-
-
-					<CheckBox selected={renameFiles} onToggle={setRenameFiles}>Rename Files</CheckBox>
-
-					<HBox spacing="0-25">
-
-						<VBox alignCross="stretch">
-							<ChoiceBox
-								items={CB_ITEMS_RENAME_PART_TYPES}
-								selectedItemId={RenamePartType.NOTHING}
-								onAction={undefined}
-							/>
-							<TextField
-								value={""}
-								onAccept={undefined}
-								error={undefined}
-								onChange={undefined}
-							/>
-						</VBox>
-
-						<VBox alignCross="stretch">
-							<ChoiceBox
-								items={CB_ITEMS_RENAME_PART_TYPES}
-								selectedItemId={RenamePartType.NOTHING}
-								onAction={undefined}
-							/>
-							<TextField
-								value={""}
-								onAccept={undefined}
-								error={undefined}
-								onChange={undefined}
-							/>
-						</VBox>
-
-						<VBox alignCross="stretch">
-							<ChoiceBox
-								items={CB_ITEMS_RENAME_PART_TYPES}
-								selectedItemId={RenamePartType.NOTHING}
-								onAction={undefined}
-							/>
-							<TextField
-								value={""}
-								onAccept={undefined}
-								error={undefined}
-								onChange={undefined}
-							/>
-						</VBox>
-
-					</HBox>
-
-					<ElementLabel text={"Preview:"}>
-						<LabelBox italic>img20200612.jpg</LabelBox>
-					</ElementLabel>
-
-
+					<ImportTargetDirForm
+						error={!targetDirValid}
+						targetType={fileTargetType}
+						onSetTargetType={setFileTargetType}
+						onSetTargetDir={setTargetDir}
+					/>
+					<ImportRenameFilesForm
+						rename={renameFiles}
+						onRename={setRenameFiles}
+						types={renamePartTypes}
+						values={renamePartValues}
+						errorTypes={!renamePartTypesValid}
+						errorValues={(renamePartValuesValid as boolean[]).map(v => !v)}
+						onSelectType={handleSelectRenameType}
+						onSelectValue={handleSelectRenameValue}
+						onChangeValue={handleChangeRenameValue}
+					/>
 				</VBox>
 			</Slot>
 			<Slot name={"footer"}>
 				<Button onAction={handleCancel}>Cancel</Button>
-				<Button variant="info" disabled={false} onAction={handleImport}>Import</Button>
+				<Button variant="info" disabled={!isEverythingValid()} onAction={handleImport}>Import</Button>
 			</Slot>
 		</Dialog>
 	);
@@ -207,12 +128,53 @@ export function DialogImportFiles(props: React.PropsWithChildren<DialogImportFil
 		props.onClose()
 	}
 
+	function isEverythingValid() {
+		const valid =  refFilesValid.current
+			&& refTargetDirValid.current
+			&& refRenamePartTypesValid.current
+			&& (refRenamePartValuesValid.current as boolean[]).every(v => v === true);
+		console.log("all", valid)
+		console.log(refFilesValid.current)
+		console.log(refTargetDirValid.current)
+		console.log(refRenamePartTypesValid.current)
+		console.log((refRenamePartValuesValid.current as boolean[]).every(v => v === true))
+
+		return valid;
+	}
+
 	function handleImport() {
 		triggerFileValidation();
 		triggerTargetDirValidation();
-		if (refFilesValid.current && refTargetDirValid.current) {
-			importItems(null); // todo
-			props.onClose();
+		triggerRenamePartTypesValidation();
+		triggerRenamePartValuesValidation()
+		if (isEverythingValid()) {
+
+			console.log("IMPORT", buildProcessData())
+
+			// importItems(buildProcessData());
+			// props.onClose();
+		}
+	}
+
+	function buildProcessData(): ImportProcessData {
+		return {
+			files: refFiles.current,
+			importTarget: {
+				action: refFileTargetType.current === "keep"
+					? ImportTargetAction.KEEP
+					: refFileTargetType.current === "move" ? ImportTargetAction.MOVE : ImportTargetAction.COPY,
+				targetDir: refTargetDir.current
+			},
+			renameInstructions: {
+				doRename: refRenameFiles.current,
+				parts: refRenameFiles.current
+					? refRenamePartTypes.current.map((type: RenamePartType, index:number) => {
+						return {
+							type: type,
+							value: refRenamePartValues.current[index] ? refRenamePartValues.current[index] : ""
+						}
+					}) : []
+			}
 		}
 	}
 
@@ -222,27 +184,8 @@ export function DialogImportFiles(props: React.PropsWithChildren<DialogImportFil
 	//==================//
 
 	function validateFiles(files: string[]): boolean {
+		console.log("files", files)
 		return files.length > 0;
-	}
-
-	function handleBrowseFiles(): Promise<string[] | null> {
-		return electron.remote.dialog
-			.showOpenDialog({
-				title: 'Select Files',
-				buttonLabel: 'Select',
-				properties: [
-					'openFile',
-					'multiSelections',
-					'dontAddToRecent',
-				],
-			})
-			.then((result: any) => {
-				if (result.canceled) {
-					return null;
-				} else {
-					return result.filePaths;
-				}
-			});
 	}
 
 	//==================//
@@ -250,7 +193,6 @@ export function DialogImportFiles(props: React.PropsWithChildren<DialogImportFil
 	//==================//
 
 	function validateTargetDir(targetDir: string | null): boolean {
-		console.log("validate target dir", refFileTargetType.current, targetDir)
 		if (refFileTargetType.current === ImportTargetAction.KEEP) {
 			return true;
 		} else {
@@ -258,23 +200,50 @@ export function DialogImportFiles(props: React.PropsWithChildren<DialogImportFil
 		}
 	}
 
-	function browseTargetDir(): Promise<string | null> {
-		return electron.remote.dialog
-			.showOpenDialog({
-				title: 'Select target directory',
-				buttonLabel: 'Select',
-				properties: [
-					'openDirectory',
-					'createDirectory',
-				],
-			})
-			.then((result: any) => {
-				if (result.canceled) {
-					return null;
-				} else {
-					return result.filePaths[0];
+	//==================//
+	//   RENAME FILES   //
+	//==================//
+
+	function validateRenameTypes(types: RenamePartType[]): boolean {
+		triggerRenamePartValuesValidation()
+		return types.some((type: RenamePartType) => type !== RenamePartType.NOTHING);
+	}
+
+	function validateRenameValues(values: (string | null)[]): boolean[] {
+		return values.map((value: string, index: number) => {
+			const type: RenamePartType = refRenamePartTypes.current[index];
+			if (renamePartTypeAllowsUserInput(type)) {
+				if (!value || value.trim().length === 0) {
+					return false;
 				}
-			});
+				return !(type === RenamePartType.NUMBER_FROM && isNaN(parseInt(value)));
+			} else {
+				return true;
+			}
+		})
+	}
+
+	function handleSelectRenameType(index: number, type: RenamePartType): void {
+		const types: RenamePartType[] = [...renamePartTypes]
+		types[index] = type;
+		setRenamePartTypes(types)
+		if (!renamePartTypeAllowsUserInput(type)) {
+			const values: (string | null)[] = [...renamePartValues]
+			values[index] = null;
+			setRenamePartValues(values)
+		}
+	}
+
+	function handleSelectRenameValue(index: number, value: string): void {
+		const values: (string | null)[] = [...renamePartValues]
+		values[index] = value;
+		setRenamePartValues(values)
+	}
+
+	function handleChangeRenameValue(index: number, value: string): void {
+		const values: (string | null)[] = [...renamePartValues]
+		values[index] = value;
+		setRenamePartValues(values)
 	}
 
 }

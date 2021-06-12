@@ -45,7 +45,7 @@ const SVG_FILLED = "filled";
 
 const ICON_COLOR_TYPE = new Map<IconType, string>([
     [IconType.CLOSE, SVG_FILLED],
-    [IconType.FOLDER, SVG_OUTLINED],
+    [IconType.FOLDER, SVG_FILLED],
     [IconType.FILE, SVG_OUTLINED],
     [IconType.HOME, SVG_FILLED],
     [IconType.CHECKMARK, SVG_FILLED],

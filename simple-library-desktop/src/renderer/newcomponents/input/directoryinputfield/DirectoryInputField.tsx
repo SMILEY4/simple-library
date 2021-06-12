@@ -1,10 +1,12 @@
 import {BaseProps} from "../../utils/common";
-import React, {useState} from "react";
+import React, {useRef, useState} from "react";
 import {Group} from "../../layout/group/Group";
 import {TextField} from "../textfield/TextField";
 import {IconType} from "../../base/icon/Icon";
 import {Button} from "../../buttons/button/Button";
 import {concatClasses} from "../../../components/common/common";
+import "./directoryInputField.css"
+import {useMount} from "../../../app/hooks/miscHooks";
 
 interface DirectoryInputFieldProps extends BaseProps {
 	directory?: string,
@@ -18,6 +20,11 @@ interface DirectoryInputFieldProps extends BaseProps {
 export function DirectoryInputField(props: React.PropsWithChildren<DirectoryInputFieldProps>): React.ReactElement {
 
 	const [value, setValue] = useState(props.directory ? props.directory : "");
+
+	const fieldRef = useRef(null);
+	useMount(() => {
+		fieldRef.current.scrollLeft = fieldRef.current.scrollWidth
+	})
 
 	return (
 		<Group
@@ -33,7 +40,7 @@ export function DirectoryInputField(props: React.PropsWithChildren<DirectoryInpu
 				disabled={props.disabled}
 				placeholder={props.placeholder}
 				prependIcon={IconType.FOLDER}
-				dir={value ? "rtl" : undefined}
+				refInputField={fieldRef}
 			/>
 			<Button
 				disabled={props.disabled}

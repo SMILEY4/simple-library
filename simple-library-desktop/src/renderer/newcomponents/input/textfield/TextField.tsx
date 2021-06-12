@@ -1,5 +1,5 @@
 import * as React from "react";
-import {ReactElement, useState} from "react";
+import {MutableRefObject, ReactElement, useState} from "react";
 import {BaseElementInset} from "../../base/element/BaseElementInset";
 import {BaseProps} from "../../utils/common";
 import {concatClasses, getIf} from "../../../components/common/common";
@@ -19,7 +19,8 @@ export interface TextFieldProps extends BaseProps {
 	dir?: "rtl"
 	fixed?: boolean,
 	onChange?: (value: string) => void,
-	onAccept?: (value: string) => void
+	onAccept?: (value: string) => void,
+	refInputField?: MutableRefObject<any>
 }
 
 
@@ -47,6 +48,7 @@ export function TextField(props: React.PropsWithChildren<TextFieldProps>): React
 				onChange={handleOnChange}
 				onBlur={handleOnBlur}
 				onKeyDown={handleOnKeyDown}
+				ref={props.refInputField}
 			/>
 			{props.appendIcon && (<Icon type={props.appendIcon} size="1" color="primary" disabled={props.disabled}/>)}
 		</BaseElementInset>
