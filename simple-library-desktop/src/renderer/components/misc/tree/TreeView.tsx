@@ -1,7 +1,6 @@
-import {BaseProps} from "../../utils/common";
+import {BaseProps, orDefault} from "../../utils/common";
 import React, {ReactElement, useState} from "react";
 import {IconType} from "../../base/icon/Icon";
-import {orDefault} from "../../utils/common";
 import "./treeView.css"
 import {ContextMenuBase} from "../../menu/contextmenu/ContextMenuBase";
 import {useContextMenu} from "../../menu/contextmenu/contextMenuHook";
@@ -75,10 +74,8 @@ export function TreeView(props: React.PropsWithChildren<TreeViewProps>): ReactEl
 		closeContextMenu
 	} = useContextMenu();
 
-	const clickOutsideRef = useClickOutside(handleClickOutside)
-
 	return (
-		<div className={"tree-view"} ref={clickOutsideRef}>
+		<div className={"tree-view"}>
 			{renderNode(props.rootNode, 0)}
 
 			<ContextMenuBase
@@ -160,10 +157,6 @@ export function TreeView(props: React.PropsWithChildren<TreeViewProps>): ReactEl
 				props.onToggleExpand && props.onToggleExpand(nodeId, true)
 			}
 		}
-	}
-
-	function handleClickOutside() {
-		setSelected([])
 	}
 
 	function isExpandable(node: TreeViewNode): boolean {

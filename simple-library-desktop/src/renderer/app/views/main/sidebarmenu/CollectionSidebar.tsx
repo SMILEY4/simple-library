@@ -2,7 +2,7 @@ import React from "react";
 import {SidebarTab} from "../../../../components/misc/app/AppLayout";
 import {IconType} from "../../../../components/base/icon/Icon";
 import {TreeView, TreeViewNode} from "../../../../components/misc/tree/TreeView";
-import {Collection, Group} from "../../../../../common/commonModels";
+import {Collection, CollectionType, Group} from "../../../../../common/commonModels";
 import {DynamicSlot} from "../../../../components/base/slot/DynamicSlot";
 import {ContextMenuCollection} from "./ContextMenuCollection";
 import {ContextMenuGroup} from "./ContextMenuGroup";
@@ -100,7 +100,10 @@ export function CollectionSidebar(props: React.PropsWithChildren<CollectionSideb
 								return <ContextMenuCollection
 									collectionId={objectId}
 									onDelete={() => openDeleteCollection(objectId)}
-									onEdit={() => openEditCollection(objectId)}
+									onEdit={() => {
+										console.log("on edit")
+										openEditCollection(objectId)
+									}}
 								/>
 							}
 							case NODE_TYPE_GROUP: {
@@ -192,7 +195,7 @@ export function CollectionSidebar(props: React.PropsWithChildren<CollectionSideb
 		return {
 			id: getNodeId(NODE_TYPE_COLLECTION, collection.id),
 			value: collection.name,
-			icon: IconType.FILE,
+			icon: collection.type === CollectionType.SMART ? IconType.COLLECTIONS_SMART : IconType.COLLECTION,
 			label: "" + collection.itemCount,
 			draggable: true,
 			droppable: true,

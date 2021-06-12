@@ -2,17 +2,21 @@ import React from "react";
 import "./icon.css";
 import {
     AiFillCaretRight,
-    AiFillHome, AiOutlineClose, AiOutlineFileText, AiOutlineFolder, BiImport, BsChevronDoubleLeft, BsChevronDoubleRight,
+    AiFillHome,
+    AiOutlineFileText,
+    AiOutlineFolder, BiImage, BiImages,
+    BiImport,
+    BsChevronDoubleLeft,
+    BsChevronDoubleRight,
     BsChevronDown,
     BsChevronLeft,
     BsChevronRight,
     BsChevronUp,
     FaCheck,
-    HiOutlineFolder, VscClose,
+    VscClose,
 } from 'react-icons/all';
-import {CgClose} from "react-icons/cg";
-import {BaseProps, Size} from "../../utils/common";
-import {concatClasses, getIf, map} from "../../utils/common";
+import {BaseProps, concatClasses, getIf, map, Size} from "../../utils/common";
+import {BiImagesSmart} from "./BiImagesSmart";
 
 export enum IconType {
     CHEVRON_UP,
@@ -36,6 +40,8 @@ export enum IconType {
     FILE,
     // IMAGES,
     FOLDER,
+    COLLECTION,
+    COLLECTIONS_SMART
 }
 
 
@@ -58,6 +64,10 @@ const ICON_COLOR_TYPE = new Map<IconType, string>([
     [IconType.CHEVRON_RIGHT, SVG_FILLED],
     [IconType.CHEVRON_DOUBLE_LEFT, SVG_FILLED],
     [IconType.CHEVRON_DOUBLE_RIGHT, SVG_FILLED],
+
+    [IconType.COLLECTION, SVG_FILLED],
+    [IconType.COLLECTIONS_SMART, SVG_FILLED],
+
 
 ]);
 
@@ -101,6 +111,10 @@ export function Icon(props: React.PropsWithChildren<IconProps>): React.ReactElem
             return <AiOutlineFolder {...iconProps} />;
         case IconType.IMPORT:
             return <BiImport {...iconProps} />;
+        case IconType.COLLECTION:
+            return <BiImages {...iconProps} />;
+        case IconType.COLLECTIONS_SMART:
+            return <BiImagesSmart {...iconProps} />;
         default:
             return null;
     }
