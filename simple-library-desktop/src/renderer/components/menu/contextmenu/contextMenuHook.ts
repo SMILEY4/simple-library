@@ -1,5 +1,4 @@
-import React, {MutableRefObject, useEffect, useRef, useState} from 'react';
-import {componentLifecycle} from '../../../app/common/utils/functionalReactLifecycle';
+import React, {MutableRefObject, useEffect, useState} from 'react';
 import {useClickOutside} from "../../utils/commonHooks";
 
 export function useContextMenu() {

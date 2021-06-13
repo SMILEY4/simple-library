@@ -6,14 +6,13 @@ import {VBox} from "../../../../components/layout/box/Box";
 import {Button} from "../../../../components/buttons/button/Button";
 import {Label} from "../../../../components/base/label/Label";
 import {TextField} from "../../../../components/input/textfield/TextField";
-import {useValidatedState} from "../../../hooks/miscHooks";
 import {useCollections} from "../../../hooks/collectionHooks";
 import {Collection, CollectionType} from "../../../../../common/commonModels";
 import {Spacer} from "../../../../components/base/spacer/Spacer";
 import {TextArea} from "../../../../components/input/textarea/TextArea";
-import {useStateRef} from "../../../hooks/miscAppHooks";
 import {useGroups} from "../../../hooks/groupHooks";
 import {useItems, useItemSelection} from "../../../hooks/itemHooks";
+import {useStateRef, useValidatedState} from "../../../../components/utils/commonHooks";
 
 interface DialogEditCollectionProps {
 	collectionId: number,

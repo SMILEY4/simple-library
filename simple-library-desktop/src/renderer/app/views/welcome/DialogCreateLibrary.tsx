@@ -5,9 +5,9 @@ import {Button} from "../../../components/buttons/button/Button";
 import {TextField} from "../../../components/input/textfield/TextField";
 import {VBox} from "../../../components/layout/box/Box";
 import {DirectoryInputField} from "../../../components/input/directoryinputfield/DirectoryInputField";
-import {useValidatedState} from "../../hooks/miscHooks";
 import {APP_ROOT_ID} from "../../application";
 import {useWelcome} from "./useWelcome";
+import {useValidatedState} from "../../../components/utils/commonHooks";
 
 interface DialogCreateLibraryProps {
 	onCancel: () => void,

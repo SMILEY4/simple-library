@@ -1,6 +1,6 @@
 import {AppNotificationType} from "../store/state";
 import {ActionType} from "../store/reducer";
-import {genNotificationId, toNotificationEntry} from "../common/utils/notificationUtils";
+import {genNotificationId, toNotificationEntry} from "./notificationUtils";
 import {useGlobalState} from "./miscAppHooks";
 import {NotificationProps} from "../../components/modals/notification/Notification";
 import {NotificationStackEntry} from "../../components/modals/notification/NotificationStack";
@@ -58,3 +58,4 @@ export function useNotifications() {
 		getNotificationStackEntries: getNotificationStackEntries
 	};
 }
+

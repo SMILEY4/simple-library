@@ -6,19 +6,19 @@ import {
     ImportStatus,
     ItemData,
     LastOpenedLibraryEntry,
-} from '../../../../common/commonModels';
+} from '../../../common/commonModels';
 import {
     CreateGroupMessage,
     DeleteGroupMessage,
     GetGroupsMessage,
     MoveGroupMessage,
     RenameGroupMessage,
-} from '../../../../common/messaging/messagesGroups';
+} from '../../../common/messaging/messagesGroups';
 import {
     GetItemsMessage,
     ImportItemsMessage,
     ImportStatusUpdateCommand,
-} from '../../../../common/messaging/messagesItems';
+} from '../../../common/messaging/messagesItems';
 import {
     CreateCollectionMessage,
     DeleteCollectionMessage,
@@ -26,13 +26,13 @@ import {
     MoveCollectionMessage,
     MoveItemsToCollectionsMessage,
     RemoveItemsFromCollectionsMessage,
-} from '../../../../common/messaging/messagesCollections';
+} from '../../../common/messaging/messagesCollections';
 import {
     CloseLibraryMessage,
     CreateLibraryMessage,
     GetLastOpenedLibrariesMessage,
     OpenLibraryMessage
-} from '../../../../common/messaging/messagesLibrary';
+} from '../../../common/messaging/messagesLibrary';
 
 const {ipcRenderer} = window.require('electron');
 

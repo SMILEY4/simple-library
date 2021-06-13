@@ -1,5 +1,5 @@
 import {AppNotification, GlobalApplicationState} from './state';
-import {unique} from '../common/utils/arrayUtils';
+import {unique} from '../common/arrayUtils';
 
 export enum ActionType {
     SET_CURRENT_COLLECTION_ID = "collection.set",

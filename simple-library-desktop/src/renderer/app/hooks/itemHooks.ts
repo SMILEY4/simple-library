@@ -5,9 +5,9 @@ import {
 	requestImport,
 	requestMoveItems,
 	requestRemoveItems
-} from "../common/messaging/messagingInterface";
+} from "../common/messagingInterface";
 import {useNotifications} from "./notificationHooks";
-import {genNotificationId} from "../common/utils/notificationUtils";
+import {genNotificationId} from "./notificationUtils";
 import {AppNotificationType} from "../store/state";
 import {ImportProcessData, ImportResult, ImportStatus, ItemData} from "../../../common/commonModels";
 import {ActionType} from "../store/reducer";

@@ -6,7 +6,7 @@ import {IconType} from "../../base/icon/Icon";
 import {Button} from "../../buttons/button/Button";
 import {concatClasses} from "../../utils/common";
 import "./directoryInputField.css"
-import {useMount} from "../../../app/hooks/miscHooks";
+import {useMount} from "../../utils/commonHooks";
 
 interface DirectoryInputFieldProps extends BaseProps {
 	directory?: string,

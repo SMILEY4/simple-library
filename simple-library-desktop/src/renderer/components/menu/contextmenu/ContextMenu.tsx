@@ -2,8 +2,8 @@ import * as React from 'react';
 import {MutableRefObject, ReactElement} from 'react';
 import {BaseProps} from "../../utils/common";
 import {ContextMenuBase} from "./ContextMenuBase";
-import {componentLifecycle} from "../../../app/common/utils/functionalReactLifecycle";
 import {useContextMenu} from "./contextMenuHook";
+import {useLifecycle} from "../../utils/commonHooks";
 
 export interface ContextMenuProps extends BaseProps {
     modalRootId?: string,
@@ -23,7 +23,7 @@ export function ContextMenu(props: React.PropsWithChildren<ContextMenuProps>): R
         closeContextMenu
     } = useContextMenu();
 
-    componentLifecycle(
+    useLifecycle(
         () => document.addEventListener("contextmenu", handleOnContextMenu),
         () => document.removeEventListener("contextmenu", handleOnContextMenu),
     );

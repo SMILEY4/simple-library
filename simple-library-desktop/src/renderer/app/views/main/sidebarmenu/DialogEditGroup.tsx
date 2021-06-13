@@ -7,7 +7,7 @@ import {Button} from "../../../../components/buttons/button/Button";
 import {Label} from "../../../../components/base/label/Label";
 import {useGroups} from "../../../hooks/groupHooks";
 import {TextField} from "../../../../components/input/textfield/TextField";
-import {useValidatedState} from "../../../hooks/miscHooks";
+import {useValidatedState} from "../../../../components/utils/commonHooks";
 
 interface DialogEditGroupProps {
 	groupId: number,

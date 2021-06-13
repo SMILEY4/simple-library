@@ -3,12 +3,12 @@ import {
 	requestCloseLibrary,
 	requestCreateLibrary,
 	requestOpenLibrary
-} from "../common/messaging/messagingInterface";
+} from "../common/messagingInterface";
 import {useState} from "react";
-import {useMount} from "./miscHooks";
-import {genNotificationId} from "../common/utils/notificationUtils";
+import {genNotificationId} from "./notificationUtils";
 import {AppNotificationType} from "../store/state";
 import {useNotifications} from "./notificationHooks";
+import {useMount} from "../../components/utils/commonHooks";
 
 export interface LastOpenedLibrary {
 	name: string,

@@ -5,7 +5,6 @@ import {Slot} from "../../../../../components/base/slot/Slot";
 import {Button} from "../../../../../components/buttons/button/Button";
 import {useItems} from "../../../../hooks/itemHooks";
 import {VBox} from "../../../../../components/layout/box/Box";
-import {useComplexValidatedState} from "../../../../hooks/miscHooks";
 import {
 	ImportProcessData,
 	ImportTargetAction,
@@ -18,6 +17,7 @@ import {ImportTargetDirForm} from "./ImportTargetDirForm";
 import {ImportRenameFilesForm} from "./ImportRenameFilesForm";
 import {useCollections} from "../../../../hooks/collectionHooks";
 import {useGroups} from "../../../../hooks/groupHooks";
+import {useComplexValidatedState} from "../../../../../components/utils/commonHooks";
 
 interface DialogImportFilesProps {
 	onClose: () => void,

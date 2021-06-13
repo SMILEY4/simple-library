@@ -4,8 +4,8 @@ import {
 	requestDeleteGroup,
 	requestMoveGroup,
 	requestRenameGroup
-} from "../common/messaging/messagingInterface";
-import {genNotificationId} from "../common/utils/notificationUtils";
+} from "../common/messagingInterface";
+import {genNotificationId} from "./notificationUtils";
 import {AppNotificationType} from "../store/state";
 import {useGlobalState} from "./miscAppHooks";
 import {ActionType} from "../store/reducer";

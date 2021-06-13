@@ -3,8 +3,8 @@ import {
 	requestDeleteCollection,
 	requestEditCollection,
 	requestMoveCollection
-} from "../common/messaging/messagingInterface";
-import {genNotificationId} from "../common/utils/notificationUtils";
+} from "../common/messagingInterface";
+import {genNotificationId} from "./notificationUtils";
 import {AppNotificationType} from "../store/state";
 import {useNotifications} from "./notificationHooks";
 import {Collection, CollectionType, extractCollections} from "../../../common/commonModels";
