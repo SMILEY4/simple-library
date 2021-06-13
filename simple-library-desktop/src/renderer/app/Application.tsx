@@ -1,10 +1,10 @@
 import {hot} from 'react-hot-loader/root';
 import React, {Component} from 'react';
-import {GlobalStateProvider} from './store/provider';
 import {ComponentShowcase} from "../components/_showcase/ComponentShowcase";
 import {WelcomeView} from "./views/welcome/WelcomeView";
 import {MainView} from "./views/main/MainView";
 import {SetApplicationTheme} from "../../common/messaging/messagesWindow";
+import {GlobalAppStateProvider} from "./store/globalAppState";
 
 const {ipcRenderer} = window.require('electron');
 
@@ -86,7 +86,7 @@ export class Application extends Component<any, AppState> {
 
 	renderWelcomeView() {
 		return (
-			<GlobalStateProvider>
+			<GlobalAppStateProvider>
 				<div
 					className={'root-view theme-' + this.state.theme}
 					style={{width: '100%', height: '100%'}}
@@ -94,14 +94,14 @@ export class Application extends Component<any, AppState> {
 				>
 					<WelcomeView onLoadProject={() => this.setState({currentView: View.MAIN})}/>
 				</div>
-			</GlobalStateProvider>
+			</GlobalAppStateProvider>
 		);
 	}
 
 
 	renderMainView() {
 		return (
-			<GlobalStateProvider>
+			<GlobalAppStateProvider>
 				<div
 					className={'root-view theme-' + this.state.theme}
 					style={{width: '100%', height: '100%'}}
@@ -109,7 +109,7 @@ export class Application extends Component<any, AppState> {
 				>
 					<MainView onClosed={() => this.setState({currentView: View.WELCOME})}/>
 				</div>
-			</GlobalStateProvider>
+			</GlobalAppStateProvider>
 		);
 	}
 

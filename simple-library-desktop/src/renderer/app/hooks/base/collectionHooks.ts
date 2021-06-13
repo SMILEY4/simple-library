@@ -5,11 +5,10 @@ import {
 	requestMoveCollection
 } from "../../common/messagingInterface";
 import {genNotificationId} from "./notificationUtils";
-import {AppNotificationType} from "../../store/state";
 import {useNotifications} from "./notificationHooks";
 import {Collection, CollectionType, extractCollections} from "../../../../common/commonModels";
 import {useGlobalState} from "./miscAppHooks";
-import {ActionType} from "../../store/reducer";
+import {AppActionType, AppNotificationType} from "../../store/globalAppState";
 
 export function useCollections() {
 
@@ -56,7 +55,7 @@ export function useCollections() {
 				closeCollection()
 			} else {
 				dispatch({
-					type: ActionType.SET_CURRENT_COLLECTION_ID,
+					type: AppActionType.SET_CURRENT_COLLECTION_ID,
 					payload: collectionId
 				});
 			}
@@ -65,7 +64,7 @@ export function useCollections() {
 
 	function closeCollection(): void {
 		dispatch({
-			type: ActionType.SET_CURRENT_COLLECTION_ID,
+			type: AppActionType.SET_CURRENT_COLLECTION_ID,
 			payload: null
 		});
 	}

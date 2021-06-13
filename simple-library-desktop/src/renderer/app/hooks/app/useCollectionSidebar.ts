@@ -6,10 +6,10 @@ import {
 	DragAndDropUtils
 } from "../../common/dragAndDrop";
 import {useGlobalState} from "../base/miscAppHooks";
-import {ActionType} from "../../store/reducer";
 import {useGroups} from "../base/groupHooks";
 import {useCollections} from "../base/collectionHooks";
 import {useItems, useItemSelection} from "../base/itemHooks";
+import {AppActionType} from "../../store/globalAppState";
 
 export function useCollectionSidebar() {
 
@@ -46,12 +46,12 @@ export function useCollectionSidebar() {
 	function toggleExpandNode(nodeId: string, expanded: boolean) {
 		if (expanded) {
 			dispatch({
-				type: ActionType.COLLECTION_SIDEBAR_SET_EXPANDED,
+				type: AppActionType.COLLECTION_SIDEBAR_SET_EXPANDED,
 				payload: [...state.collectionSidebarExpandedNodes, nodeId],
 			});
 		} else {
 			dispatch({
-				type: ActionType.COLLECTION_SIDEBAR_SET_EXPANDED,
+				type: AppActionType.COLLECTION_SIDEBAR_SET_EXPANDED,
 				payload: state.collectionSidebarExpandedNodes.filter(id => id !== nodeId)
 			});
 		}

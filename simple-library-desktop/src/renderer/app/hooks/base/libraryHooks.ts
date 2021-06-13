@@ -6,9 +6,9 @@ import {
 } from "../../common/messagingInterface";
 import {useState} from "react";
 import {genNotificationId} from "./notificationUtils";
-import {AppNotificationType} from "../../store/state";
 import {useNotifications} from "./notificationHooks";
 import {useMount} from "../../../components/utils/commonHooks";
+import {AppNotificationType} from "../../store/globalAppState";
 
 export interface LastOpenedLibrary {
 	name: string,

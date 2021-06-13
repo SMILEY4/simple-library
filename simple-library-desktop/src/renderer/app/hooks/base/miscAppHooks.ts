@@ -1,9 +1,9 @@
 import {useContext} from 'react';
-import {GlobalStateContext} from '../../store/provider';
+import {GlobalAppStateContext} from "../../store/globalAppState";
 
 
 export function useGlobalState() {
-    const {state, dispatch} = useContext(GlobalStateContext);
+    const {state, dispatch} = useContext(GlobalAppStateContext);
     if (state) {
         return {state, dispatch};
     } else {

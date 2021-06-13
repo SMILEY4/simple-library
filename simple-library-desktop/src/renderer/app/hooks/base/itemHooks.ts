@@ -8,9 +8,8 @@ import {
 } from "../../common/messagingInterface";
 import {useNotifications} from "./notificationHooks";
 import {genNotificationId} from "./notificationUtils";
-import {AppNotificationType} from "../../store/state";
 import {ImportProcessData, ImportResult, ImportStatus, ItemData} from "../../../../common/commonModels";
-import {ActionType} from "../../store/reducer";
+import {AppActionType, AppNotificationType} from "../../store/globalAppState";
 
 export function useItems() {
 
@@ -26,14 +25,14 @@ export function useItems() {
 		fetchItems(collectionId)
 			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_FETCH_FAILED, error))
 			.then((items: ItemData[]) => dispatch({
-				type: ActionType.SET_ITEMS,
+				type: AppActionType.SET_ITEMS,
 				payload: items,
 			}));
 	}
 
 	function clear(): void {
 		dispatch({
-			type: ActionType.SET_ITEMS,
+			type: AppActionType.SET_ITEMS,
 			payload: [],
 		})
 	}
@@ -91,33 +90,33 @@ export function useItemSelection() {
 
 	function setSelection(itemIds: number[]) {
 		dispatch({
-			type: ActionType.ITEM_SELECTION_SET,
+			type: AppActionType.ITEM_SELECTION_SET,
 			payload: itemIds,
 		});
 		dispatch({
-			type: ActionType.ITEM_SELECTION_SET_LAST,
+			type: AppActionType.ITEM_SELECTION_SET_LAST,
 			payload: itemIds.length > 0 ? itemIds[0] : null,
 		});
 	}
 
 	function addToSelection(itemIds: number[]) {
 		dispatch({
-			type: ActionType.ITEM_SELECTION_ADD,
+			type: AppActionType.ITEM_SELECTION_ADD,
 			payload: itemIds,
 		});
 		dispatch({
-			type: ActionType.ITEM_SELECTION_SET_LAST,
+			type: AppActionType.ITEM_SELECTION_SET_LAST,
 			payload: itemIds.length > 0 ? itemIds[0] : null,
 		});
 	}
 
 	function removeFromSelection(itemIds: number[]) {
 		dispatch({
-			type: ActionType.ITEM_SELECTION_REMOVE,
+			type: AppActionType.ITEM_SELECTION_REMOVE,
 			payload: itemIds,
 		});
 		dispatch({
-			type: ActionType.ITEM_SELECTION_SET_LAST,
+			type: AppActionType.ITEM_SELECTION_SET_LAST,
 			payload: itemIds.length > 0 ? itemIds[0] : null,
 		});
 	}
@@ -130,7 +129,7 @@ export function useItemSelection() {
 			}
 		});
 		dispatch({
-			type: ActionType.ITEM_SELECTION_SET_LAST,
+			type: AppActionType.ITEM_SELECTION_SET_LAST,
 			payload: itemIds.length > 0 ? itemIds[0] : null,
 		});
 		setSelection(newSelection);
@@ -149,12 +148,12 @@ export function useItemSelection() {
 				const idsInRange: number[] = allItemIds.slice(indexStart, indexEnd + 1);
 				if (additive) {
 					dispatch({
-						type: ActionType.ITEM_SELECTION_ADD,
+						type: AppActionType.ITEM_SELECTION_ADD,
 						payload: idsInRange,
 					});
 				} else {
 					dispatch({
-						type: ActionType.ITEM_SELECTION_SET,
+						type: AppActionType.ITEM_SELECTION_SET,
 						payload: idsInRange,
 					});
 				}
@@ -163,24 +162,24 @@ export function useItemSelection() {
 			if (additive) {
 				if (state.selectedItemIds.indexOf(itemId) === -1) {
 					dispatch({
-						type: ActionType.ITEM_SELECTION_ADD,
+						type: AppActionType.ITEM_SELECTION_ADD,
 						payload: [itemId],
 					});
 				} else {
 					dispatch({
-						type: ActionType.ITEM_SELECTION_REMOVE,
+						type: AppActionType.ITEM_SELECTION_REMOVE,
 						payload: [itemId],
 					});
 				}
 			} else {
 				dispatch({
-					type: ActionType.ITEM_SELECTION_SET,
+					type: AppActionType.ITEM_SELECTION_SET,
 					payload: [itemId],
 				});
 			}
 		}
 		dispatch({
-			type: ActionType.ITEM_SELECTION_SET_LAST,
+			type: AppActionType.ITEM_SELECTION_SET_LAST,
 			payload: pivotItemId,
 		});
 	}

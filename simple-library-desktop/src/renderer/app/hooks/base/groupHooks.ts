@@ -6,11 +6,10 @@ import {
 	requestRenameGroup
 } from "../../common/messagingInterface";
 import {genNotificationId} from "./notificationUtils";
-import {AppNotificationType} from "../../store/state";
 import {useGlobalState} from "./miscAppHooks";
-import {ActionType} from "../../store/reducer";
 import {extractGroups, Group} from "../../../../common/commonModels";
 import {useNotifications} from "./notificationHooks";
+import {AppActionType, AppNotificationType} from "../../store/globalAppState";
 
 export function useGroups() {
 
@@ -23,7 +22,7 @@ export function useGroups() {
 			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ROOT_GROUP_FETCH_FAILED, error))
 			.then((group: Group) => {
 				dispatch({
-					type: ActionType.SET_ROOT_GROUP,
+					type: AppActionType.SET_ROOT_GROUP,
 					payload: group,
 				});
 			})
