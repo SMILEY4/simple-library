@@ -6,7 +6,7 @@ import "./listItemEntry.css"
 import {ContextMenuWrapper} from "../../../../components/menu/contextmenu/ContextMenuWrapper";
 import {Slot} from "../../../../components/base/slot/Slot";
 import {ItemListEntryContextMenu} from "./ItemListEntryContextMenu";
-import {APP_ROOT_ID} from "../../../application";
+import {APP_ROOT_ID} from "../../../Application";
 
 interface ItemListEntryProps {
 	item: ItemData,

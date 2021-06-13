@@ -6,9 +6,9 @@ import {AppLayout} from "../../../components/misc/app/AppLayout";
 import {AppToolbar} from "./apptoolbar/AppToolbar";
 import {CollectionSidebar, TAB_DATA_COLLECTIONS} from "./sidebarmenu/CollectionSidebar";
 import {NotificationStack} from "../../../components/modals/notification/NotificationStack";
-import {useNotifications} from "../../hooks/notificationHooks";
-import {APP_ROOT_ID} from "../../application";
-import {useGroups} from "../../hooks/groupHooks";
+import {useNotifications} from "../../hooks/base/notificationHooks";
+import {APP_ROOT_ID} from "../../Application";
+import {useGroups} from "../../hooks/base/groupHooks";
 import {ContentArea} from "./contentarea/ContentArea";
 import {useMount} from "../../../components/utils/commonHooks";
 

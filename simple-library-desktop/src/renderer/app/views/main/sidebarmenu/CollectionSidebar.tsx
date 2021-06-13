@@ -6,16 +6,16 @@ import {Collection, CollectionType, Group} from "../../../../../common/commonMod
 import {DynamicSlot} from "../../../../components/base/slot/DynamicSlot";
 import {ContextMenuCollection} from "./ContextMenuCollection";
 import {ContextMenuGroup} from "./ContextMenuGroup";
-import {APP_ROOT_ID} from "../../../application";
-import {useGroups} from "../../../hooks/groupHooks";
+import {APP_ROOT_ID} from "../../../Application";
+import {useGroups} from "../../../hooks/base/groupHooks";
 import {DialogDeleteCollection} from "./DialogDeleteCollection";
-import {useCollectionSidebar, useCollectionSidebarDialogs} from "./useCollectionSidebar";
+import {useCollectionSidebar, useCollectionSidebarDialogs} from "../../../hooks/app/useCollectionSidebar";
 import {DialogDeleteGroup} from "./DialogDeleteGroup";
 import {DialogEditGroup} from "./DialogEditGroup";
 import {DialogEditCollection} from "./DialogEditCollection";
 import {DialogCreateGroup} from "./DialogCreateGroup";
 import {DialogCreateCollection} from "./DialogCreateCollection";
-import {useCollections} from "../../../hooks/collectionHooks";
+import {useCollections} from "../../../hooks/base/collectionHooks";
 
 export const TAB_DATA_COLLECTIONS: SidebarTab = {
 	id: "tab-collections",

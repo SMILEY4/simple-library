@@ -2,8 +2,8 @@ import React from "react";
 import {Toolbar} from "../../../../components/misc/toolbar/Toolbar";
 import {IconButton} from "../../../../components/buttons/iconbutton/IconButton";
 import {IconType} from "../../../../components/base/icon/Icon";
-import {useLibraries} from "../../../hooks/libraryHooks";
-import {useAppToolbar} from "./useAppToolbar";
+import {useLibraries} from "../../../hooks/base/libraryHooks";
+import {useAppToolbar} from "../../../hooks/app/useAppToolbar";
 import {DialogImportFiles} from "./import/DialogImportFiles";
 
 interface AppToolbarProps {

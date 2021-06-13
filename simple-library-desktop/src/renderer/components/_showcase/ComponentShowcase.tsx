@@ -1,6 +1,6 @@
 import * as React from "react";
 import {ReactElement, useState} from "react";
-import {Theme} from "../../app/application";
+import {Theme} from "../../app/Application";
 import "./showcase.css"
 import {ShowcaseSection} from "./ShowcaseSection";
 import {BaseElementRaised} from "../base/element/BaseElementRaised";

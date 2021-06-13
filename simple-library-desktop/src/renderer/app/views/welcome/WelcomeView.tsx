@@ -1,7 +1,7 @@
 import React from "react";
 import {DialogCreateLibrary} from "./DialogCreateLibrary";
-import {useNotifications} from "../../hooks/notificationHooks";
-import {LastOpenedLibrary, useLastOpenedLibraries} from "../../hooks/libraryHooks";
+import {useNotifications} from "../../hooks/base/notificationHooks";
+import {LastOpenedLibrary, useLastOpenedLibraries} from "../../hooks/base/libraryHooks";
 import {Grid} from "../../../components/layout/grid/Grid";
 import {VBox} from "../../../components/layout/box/Box";
 import {Label} from "../../../components/base/label/Label";
@@ -12,8 +12,8 @@ import imgWelcome from "./imgWelcome.jpg";
 import {NotificationStack} from "../../../components/modals/notification/NotificationStack";
 import {Notification, NotificationProps} from "../../../components/modals/notification/Notification";
 import "./welcome.css"
-import {APP_ROOT_ID} from "../../application";
-import {useWelcome} from "./useWelcome";
+import {APP_ROOT_ID} from "../../Application";
+import {useWelcome} from "../../hooks/app/useWelcome";
 
 interface WelcomeViewControllerProps {
 	onLoadProject: () => void
@@ -26,8 +26,8 @@ export function WelcomeView(props: React.PropsWithChildren<WelcomeViewController
 	} = useNotifications();
 
 	const {
-		showCreateLibraryDialog,
-		startCreateLibrary,
+		showDialogCreateLibrary,
+		openCreateLibrary,
 		cancelCreateLibrary,
 		createLibrary,
 		browseLibrary,
@@ -46,7 +46,7 @@ export function WelcomeView(props: React.PropsWithChildren<WelcomeViewController
 					<VBox alignMain="center" alignCross="stretch" spacing="0-5" padding="0-5">
 						<Label type="header-1" align="center">Simple Library</Label>
 						<Spacer size="1" dir="horizontal"/>
-						<Button onAction={startCreateLibrary}>New Library</Button>
+						<Button onAction={openCreateLibrary}>New Library</Button>
 						<Button onAction={handleOpenLibrary}>Open Library</Button>
 						<Spacer size="0-5" dir="horizontal" line/>
 						<Label type="header-4" align="center">Recently Used</Label>
@@ -66,7 +66,7 @@ export function WelcomeView(props: React.PropsWithChildren<WelcomeViewController
 				entries={getNotificationStackEntries()}
 			/>
 
-			{showCreateLibraryDialog && (
+			{showDialogCreateLibrary && (
 				<DialogCreateLibrary
 					onCancel={cancelCreateLibrary}
 					onCreate={handleCreateLibrary}

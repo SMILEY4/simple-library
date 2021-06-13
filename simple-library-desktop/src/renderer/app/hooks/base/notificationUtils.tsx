@@ -1,6 +1,6 @@
-import { AppNotification, AppNotificationType } from '../store/state';
+import { AppNotification, AppNotificationType } from '../../store/state';
 import React, { ReactElement } from 'react';
-import {NotificationStackEntry} from "../../components/modals/notification/NotificationStack";
+import {NotificationStackEntry} from "../../../components/modals/notification/NotificationStack";
 
 
 export function genNotificationId(): string {

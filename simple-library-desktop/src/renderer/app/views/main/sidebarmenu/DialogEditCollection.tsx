@@ -1,17 +1,17 @@
 import React from "react";
 import {Dialog} from "../../../../components/modals/dialog/Dialog";
-import {APP_ROOT_ID} from "../../../application";
+import {APP_ROOT_ID} from "../../../Application";
 import {Slot} from "../../../../components/base/slot/Slot";
 import {VBox} from "../../../../components/layout/box/Box";
 import {Button} from "../../../../components/buttons/button/Button";
 import {Label} from "../../../../components/base/label/Label";
 import {TextField} from "../../../../components/input/textfield/TextField";
-import {useCollections} from "../../../hooks/collectionHooks";
+import {useCollections} from "../../../hooks/base/collectionHooks";
 import {Collection, CollectionType} from "../../../../../common/commonModels";
 import {Spacer} from "../../../../components/base/spacer/Spacer";
 import {TextArea} from "../../../../components/input/textarea/TextArea";
-import {useGroups} from "../../../hooks/groupHooks";
-import {useItems, useItemSelection} from "../../../hooks/itemHooks";
+import {useGroups} from "../../../hooks/base/groupHooks";
+import {useItems, useItemSelection} from "../../../hooks/base/itemHooks";
 import {useStateRef, useValidatedState} from "../../../../components/utils/commonHooks";
 
 interface DialogEditCollectionProps {

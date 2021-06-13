@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Application } from './app/application';
+import { Application } from './app/Application';
 // import './components/style/commonstyle.css';
 // import './components/style/basestyle.css';
 // import './components/style/constants_theme.css';

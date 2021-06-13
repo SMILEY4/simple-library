@@ -1,9 +1,9 @@
 import React from "react";
 import {Dialog} from "../../../../../components/modals/dialog/Dialog";
-import {APP_ROOT_ID} from "../../../../application";
+import {APP_ROOT_ID} from "../../../../Application";
 import {Slot} from "../../../../../components/base/slot/Slot";
 import {Button} from "../../../../../components/buttons/button/Button";
-import {useItems} from "../../../../hooks/itemHooks";
+import {useItems} from "../../../../hooks/base/itemHooks";
 import {VBox} from "../../../../../components/layout/box/Box";
 import {
 	ImportProcessData,
@@ -15,8 +15,8 @@ import {
 import {ImportSelectFilesForm} from "./ImportSelectFilesForm";
 import {ImportTargetDirForm} from "./ImportTargetDirForm";
 import {ImportRenameFilesForm} from "./ImportRenameFilesForm";
-import {useCollections} from "../../../../hooks/collectionHooks";
-import {useGroups} from "../../../../hooks/groupHooks";
+import {useCollections} from "../../../../hooks/base/collectionHooks";
+import {useGroups} from "../../../../hooks/base/groupHooks";
 import {useComplexValidatedState} from "../../../../../components/utils/commonHooks";
 
 interface DialogImportFilesProps {

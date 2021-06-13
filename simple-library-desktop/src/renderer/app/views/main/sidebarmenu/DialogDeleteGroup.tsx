@@ -1,13 +1,13 @@
 import React, {useState} from "react";
 import {Dialog} from "../../../../components/modals/dialog/Dialog";
-import {APP_ROOT_ID} from "../../../application";
+import {APP_ROOT_ID} from "../../../Application";
 import {Slot} from "../../../../components/base/slot/Slot";
 import {VBox} from "../../../../components/layout/box/Box";
 import {Button} from "../../../../components/buttons/button/Button";
 import {Label} from "../../../../components/base/label/Label";
-import {useGroups} from "../../../hooks/groupHooks";
+import {useGroups} from "../../../hooks/base/groupHooks";
 import {CheckBox} from "../../../../components/buttons/checkbox/CheckBox";
-import {useCollections} from "../../../hooks/collectionHooks";
+import {useCollections} from "../../../hooks/base/collectionHooks";
 import {Group} from "../../../../../common/commonModels";
 
 interface DialogDeleteGroupProps {

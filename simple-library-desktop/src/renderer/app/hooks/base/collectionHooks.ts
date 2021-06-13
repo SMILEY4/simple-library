@@ -3,13 +3,13 @@ import {
 	requestDeleteCollection,
 	requestEditCollection,
 	requestMoveCollection
-} from "../common/messagingInterface";
+} from "../../common/messagingInterface";
 import {genNotificationId} from "./notificationUtils";
-import {AppNotificationType} from "../store/state";
+import {AppNotificationType} from "../../store/state";
 import {useNotifications} from "./notificationHooks";
-import {Collection, CollectionType, extractCollections} from "../../../common/commonModels";
+import {Collection, CollectionType, extractCollections} from "../../../../common/commonModels";
 import {useGlobalState} from "./miscAppHooks";
-import {ActionType} from "../store/reducer";
+import {ActionType} from "../../store/reducer";
 
 export function useCollections() {
 

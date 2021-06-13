@@ -1,5 +1,5 @@
 import {useState} from "react";
-import {useLibraries} from "../../hooks/libraryHooks";
+import {useLibraries} from "../base/libraryHooks";
 
 const electron = window.require('electron');
 
@@ -78,8 +78,8 @@ export function useWelcome() {
 	}
 
 	return {
-		showCreateLibraryDialog: showCreateLibDialog,
-		startCreateLibrary: startCreateLibrary,
+		showDialogCreateLibrary: showCreateLibDialog,
+		openCreateLibrary: startCreateLibrary,
 		cancelCreateLibrary: cancelCreateLibrary,
 		browseTargetDir: browseTargetDir,
 		createLibrary: create,

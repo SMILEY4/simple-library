@@ -5,8 +5,8 @@ import {Button} from "../../../components/buttons/button/Button";
 import {TextField} from "../../../components/input/textfield/TextField";
 import {VBox} from "../../../components/layout/box/Box";
 import {DirectoryInputField} from "../../../components/input/directoryinputfield/DirectoryInputField";
-import {APP_ROOT_ID} from "../../application";
-import {useWelcome} from "./useWelcome";
+import {APP_ROOT_ID} from "../../Application";
+import {useWelcome} from "../../hooks/app/useWelcome";
 import {useValidatedState} from "../../../components/utils/commonHooks";
 
 interface DialogCreateLibraryProps {

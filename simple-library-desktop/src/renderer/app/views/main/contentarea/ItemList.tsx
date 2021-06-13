@@ -1,12 +1,12 @@
 import React from "react";
 import {VBox} from "../../../../components/layout/box/Box";
-import {useItems, useItemSelection} from "../../../hooks/itemHooks";
+import {useItems, useItemSelection} from "../../../hooks/base/itemHooks";
 import {ItemListEntry} from "./ItemListEntry";
 import {Collection, ItemData} from "../../../../../common/commonModels";
 import {isCopyMode, SelectModifier} from "../../../../components/utils/common";
 import {DragAndDropItems} from "../../../common/dragAndDrop";
-import {useCollections} from "../../../hooks/collectionHooks";
-import {useGroups} from "../../../hooks/groupHooks";
+import {useCollections} from "../../../hooks/base/collectionHooks";
+import {useGroups} from "../../../hooks/base/groupHooks";
 
 interface ItemListProps {
 }

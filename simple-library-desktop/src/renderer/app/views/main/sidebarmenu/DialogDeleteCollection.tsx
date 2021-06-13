@@ -1,13 +1,13 @@
 import React from "react";
 import {Dialog} from "../../../../components/modals/dialog/Dialog";
-import {APP_ROOT_ID} from "../../../application";
+import {APP_ROOT_ID} from "../../../Application";
 import {Slot} from "../../../../components/base/slot/Slot";
 import {VBox} from "../../../../components/layout/box/Box";
 import {Button} from "../../../../components/buttons/button/Button";
 import {Label} from "../../../../components/base/label/Label";
-import {useCollections} from "../../../hooks/collectionHooks";
-import {useGroups} from "../../../hooks/groupHooks";
-import {useItemSelection} from "../../../hooks/itemHooks";
+import {useCollections} from "../../../hooks/base/collectionHooks";
+import {useGroups} from "../../../hooks/base/groupHooks";
+import {useItemSelection} from "../../../hooks/base/itemHooks";
 import {Collection} from "../../../../../common/commonModels";
 
 interface DialogDeleteCollectionProps {

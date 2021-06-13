@@ -1,5 +1,5 @@
 import {useContext} from 'react';
-import {GlobalStateContext} from '../store/provider';
+import {GlobalStateContext} from '../../store/provider';
 
 
 export function useGlobalState() {

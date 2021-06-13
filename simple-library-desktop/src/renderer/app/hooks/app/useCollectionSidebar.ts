@@ -4,12 +4,12 @@ import {
 	DragAndDropGroups,
 	DragAndDropItems,
 	DragAndDropUtils
-} from "../../../common/dragAndDrop";
-import {useGlobalState} from "../../../hooks/miscAppHooks";
-import {ActionType} from "../../../store/reducer";
-import {useGroups} from "../../../hooks/groupHooks";
-import {useCollections} from "../../../hooks/collectionHooks";
-import {useItems, useItemSelection} from "../../../hooks/itemHooks";
+} from "../../common/dragAndDrop";
+import {useGlobalState} from "../base/miscAppHooks";
+import {ActionType} from "../../store/reducer";
+import {useGroups} from "../base/groupHooks";
+import {useCollections} from "../base/collectionHooks";
+import {useItems, useItemSelection} from "../base/itemHooks";
 
 export function useCollectionSidebar() {
 

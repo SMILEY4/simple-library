@@ -4,12 +4,12 @@ import {
 	requestDeleteGroup,
 	requestMoveGroup,
 	requestRenameGroup
-} from "../common/messagingInterface";
+} from "../../common/messagingInterface";
 import {genNotificationId} from "./notificationUtils";
-import {AppNotificationType} from "../store/state";
+import {AppNotificationType} from "../../store/state";
 import {useGlobalState} from "./miscAppHooks";
-import {ActionType} from "../store/reducer";
-import {extractGroups, Group} from "../../../common/commonModels";
+import {ActionType} from "../../store/reducer";
+import {extractGroups, Group} from "../../../../common/commonModels";
 import {useNotifications} from "./notificationHooks";
 
 export function useGroups() {
@@ -17,7 +17,7 @@ export function useGroups() {
 	const {state, dispatch} = useGlobalState();
 	const {throwErrorNotification} = useNotifications()
 
-	// TODO: implement function "updateItemCounts", that only fetches and mofifies that count -> no need to "rebuild" the whole tree
+	// TODO: implement function "updateItemCounts", that only fetches and modifies that count -> no need to "rebuild" the whole tree
 	function load(): Promise<void> {
 		return fetchRootGroup()
 			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ROOT_GROUP_FETCH_FAILED, error))
