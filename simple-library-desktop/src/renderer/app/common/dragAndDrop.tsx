@@ -16,6 +16,7 @@ export module DragAndDropItems {
     }
 
     export interface Data {
+        copy: boolean,
         sourceCollectionId: number | undefined
         itemIds: number[]
     }
@@ -25,6 +26,7 @@ export module DragAndDropItems {
 
     export function setDragData(dataTransfer: DataTransfer, sourceCollection: number | undefined, itemIds: number[], copy: boolean): void {
         const data: Data = {
+            copy: copy,
             itemIds: itemIds,
             sourceCollectionId: sourceCollection,
         };
@@ -47,7 +49,6 @@ export module DragAndDropItems {
         } else {
             text = "Move " + nItems + (nItems === 1 ? " item" : " items");
         }
-        console.log("set drag label")
         DragAndDropUtils.setDragImageLabel(dataTransfer, "root", DOM_ELEMENT_LABEL_ID, text);
     }
 
@@ -96,7 +97,7 @@ export module DragAndDropCollections {
         const strData: string = JSON.stringify(data);
         dataTransfer.setData("text/plain", strData);
         dataTransfer.setData("application/json", strData);
-        dataTransfer.setData(DragAndDropCollections.buildMimeTypeProvidedMetadata(collectionId), strData);
+        dataTransfer.setData(buildMimeTypeProvidedMetadata(collectionId), strData);
         dataTransfer.effectAllowed = "move";
     }
 
@@ -105,7 +106,7 @@ export module DragAndDropCollections {
         return JSON.parse(dataTransfer.getData("application/json"));
     }
 
-    export function buildMimeTypeProvidedMetadata(collectionId: number): string {
+    function buildMimeTypeProvidedMetadata(collectionId: number): string {
         const meta: Metadata = {
             collectionid: collectionId,
         };

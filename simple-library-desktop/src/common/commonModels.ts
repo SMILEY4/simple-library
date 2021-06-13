@@ -60,6 +60,19 @@ export const RENAME_PART_TYPES: RenamePartType[] = [
     RenamePartType.ORIGINAL_FILENAME,
 ];
 
+export function renamePartTypeAllowsUserInput(type: RenamePartType): boolean {
+    switch (type) {
+        case RenamePartType.NOTHING:
+            return false;
+        case RenamePartType.TEXT:
+            return true;
+        case RenamePartType.NUMBER_FROM:
+            return true;
+        case RenamePartType.ORIGINAL_FILENAME:
+            return false;
+    }
+}
+
 export function renamePartTypeToDisplayString(type: RenamePartType): string {
     switch (type) {
         case RenamePartType.NOTHING:

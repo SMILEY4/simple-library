@@ -1,82 +1,50 @@
-import {AlignCross, AlignMain, BaseProps, ColorType, concatClasses, Size} from "../../../common/common";
-import * as React from "react";
-import {ReactElement} from "react";
-import {Box, HBox} from "../../../layout/box/Box";
-import "./sidebarItem.css"
+import {BaseProps} from "../../../utils/common";
+import React, {ReactElement} from "react";
 import {Icon, IconType} from "../../../base/icon/Icon";
-import {CaptionText} from "../../../base/text/Text";
+import {concatClasses} from "../../../utils/common";
+import "./sidebarItem.css"
 
 export interface SidebarItemProps extends BaseProps {
-    title?: string,
-    icon?: IconType,
-    label?: string,
-    mini?: boolean,
-    onAction?: () => void,
+	title?: string,
+	icon?: IconType,
+	label?: string,
+	mini?: boolean
+	onAction?: () => void;
 }
 
 export function SidebarItem(props: React.PropsWithChildren<SidebarItemProps>): ReactElement {
 
-    if (props.mini === true) {
-        return (
-            <HBox className={concatClasses("sidebar-item", "behaviour-no-select", props.className)}
-                  alignCross={AlignCross.STRETCH}
-                  alignMain={AlignMain.START}
-                  spacing={Size.S_0_25}
-                  padding={Size.S_0_15}
-                  style={props.style}
-                  forwardRef={props.forwardRef}
-                  onClick={props.onAction}
-            >
-                <Box className={"sidebar-item-icon"}>
-                    {props.icon && (
-                        <Icon type={props.icon} color={ColorType.TEXT_1} size={Size.S_0_75}/>
-                    )}
-                </Box>
-            </HBox>
-        );
+	if (props.mini) {
+		return (
+			<div className={concatClasses(props.className, "sidebar-item")} onClick={props.onAction}>
+				{props.icon && (
+					<div className="sidebar-item-icon">
+						<Icon type={props.icon} size="1"/>
+					</div>
+				)}
+			</div>
+		)
 
-    } else {
-        return (
-            <HBox className={"sidebar-item behaviour-no-select"}
-                  alignCross={AlignCross.STRETCH}
-                  alignMain={AlignMain.START}
-                  spacing={Size.S_0_25}
-                  padding={Size.S_0_15}
-            >
-                {renderContent()}
-            </HBox>
-        );
-    }
+	} else {
+		return (
+			<div className={concatClasses(props.className, "sidebar-item")} onClick={props.onAction}>
 
-
-    function renderContent() {
-        if (props.mini === true) {
-            return (
-                <Box className={"sidebar-item-icon"}>
-                    {props.icon && (
-                        <Icon type={props.icon} color={ColorType.TEXT_1} size={Size.S_0_75}/>
-                    )}
-                </Box>
-            );
-
-        } else {
-            return (
-                <>
-                    <Box className={"sidebar-item-icon"}>
-                        {props.icon && (
-                            <Icon type={props.icon} color={ColorType.TEXT_1} size={Size.S_0_75}/>
-                        )}
-                    </Box>
-                    <HBox className={"sidebar-item-title"} alignMain={AlignMain.START}>
-                        {props.title}
-                    </HBox>
-                    <HBox className={"sidebar-item-label"} alignMain={AlignMain.END}>
-                        <CaptionText>{props.label}</CaptionText>
-                    </HBox>
-                </>
-            );
-        }
-    }
+				{props.icon && (
+					<div className="sidebar-item-icon">
+						<Icon type={props.icon} size="1"/>
+					</div>
+				)}
+				<div className="sidebar-item-title">
+					{props.title}
+				</div>
+				{props.label && (
+					<div className="sidebar-item-label">
+						{props.label}
+					</div>
+				)}
+			</div>
+		)
+	}
 
 
 }

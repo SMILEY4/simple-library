@@ -1,18 +1,20 @@
-import {BaseProps, concatClasses, map} from '../../common/common';
 import * as React from 'react';
-import {ReactElement} from 'react';
+import {MutableRefObject, ReactElement} from 'react';
 import "./divider.css";
-import {useDraggable} from '../../common/commonHooks';
+import {BaseProps} from "../../utils/common";
+import {useDraggable} from "../../utils/commonHooks";
+import {concatClasses, map} from "../../utils/common";
 
 interface DividerProps extends BaseProps {
     __mode?: "vertical" | "horizontal",
     __onDrag?: (diff: number) => void,
+    __parentRef?: MutableRefObject<any>
 }
 
 
 export function Divider(props: React.PropsWithChildren<DividerProps>): ReactElement {
 
-    const {refTarget, mouseDownHandler} = useDraggable(handleDragStart, handleDrag, handleDragStop);
+    const {refTarget, mouseDownHandler} = useDraggable(handleDragStart, handleDrag, handleDragStop, props.__parentRef);
 
     return (
         <div

@@ -1,0 +1,152 @@
+.theme-light {
+
+	--color-background-0:             hsl(0, 0%, 100%);
+	--color-background-1:             hsl(0, 0%, 100%);
+	--color-background-2:             hsl(210, 29%, 97%);
+
+	--color-bg-raised:                hsl(210, 25%, 98%);
+	--color-bg-raised-hover:          hsl(210, 9%, 96%);
+	--color-bg-raised-active:         hsl(220, 8%, 93%);
+	--color-bg-raised-disabled:       hsl(210, 25%, 98%);
+	--color-bg-inset:                 hsl(210, 20%, 95%);
+
+	--color-border:                   hsl(210, 3%, 85%);
+	--color-border-hover:             hsl(210, 2%, 83%);
+	--color-border-active:            hsl(210, 5%, 84%);
+	--color-border-disabled:          hsl(220, 4%, 86%);
+	--color-border-flat:              hsl(210, 3%, 83%);
+
+	--color-text-primary:             hsl(0, 0%, 8%);
+	--color-text-secondary:           hsl(212, 3%, 38%);
+	--color-text-disabled:            hsl(212, 3%, 62%);
+	--color-text-on-variant:          hsl(0, 0%, 95%);
+	--color-text-on-variant-disabled: hsla(0, 0%, 100%, 0.9);
+	--color-text-placeholder:         hsl(212, 3%, 70%);
+
+	--color-focus:                    hsl(204, 40%, 60%);
+
+	--color-bg-info:                  hsl(204, 62%, 45%);
+	--color-bg-info-hover:            hsl(204, 62%, 48%);
+	--color-bg-info-active:           hsl(204, 62%, 46%);
+	--color-bg-info-disabled:         hsl(204, 50%, 70%);
+	--color-bg-info-faded:            hsl(204, 62%, 90%);
+
+	--color-border-info:              hsl(204, 62%, 47%);
+	--color-border-info-hover:        hsl(204, 62%, 44%);
+	--color-border-info-active:       hsl(204, 62%, 43%);
+	--color-border-info-disabled:     hsl(204, 50%, 65%);
+
+
+	--color-bg-success:               hsl(145, 64%, 45%);
+	--color-bg-success-hover:         hsl(145, 64%, 48%);
+	--color-bg-success-active:        hsl(145, 64%, 46%);
+	--color-bg-success-disabled:      hsl(145, 55%, 70%);
+	--color-bg-success-faded:         hsl(145, 64%, 90%);
+
+	--color-border-success:           hsl(145, 64%, 47%);
+	--color-border-success-hover:     hsl(145, 64%, 44%);
+	--color-border-success-active:    hsl(145, 64%, 43%);
+	--color-border-success-disabled:  hsl(145, 55%, 65%);
+
+
+	--color-bg-warn:                  hsl(37, 86%, 45%);
+	--color-bg-warn-hover:            hsl(37, 86%, 48%);
+	--color-bg-warn-active:           hsl(37, 86%, 46%);
+	--color-bg-warn-disabled:         hsl(37, 86%, 70%);
+	--color-bg-warn-faded:            hsl(37, 86%, 90%);
+
+	--color-border-warn:              hsl(37, 86%, 47%);
+	--color-border-warn-hover:        hsl(37, 86%, 44%);
+	--color-border-warn-active:       hsl(37, 86%, 43%);
+	--color-border-warn-disabled:     hsl(37, 86%, 65%);
+
+
+	--color-bg-error:                 hsl(6, 75%, 45%);
+	--color-bg-error-hover:           hsl(6, 75%, 48%);
+	--color-bg-error-active:          hsl(6, 75%, 46%);
+	--color-bg-error-disabled:        hsl(6, 75%, 70%);
+	--color-bg-error-faded:           hsl(6, 75%, 90%);
+
+	--color-border-error:             hsl(6, 75%, 47%);
+	--color-border-error-hover:       hsl(6, 75%, 44%);
+	--color-border-error-active:      hsl(6, 75%, 43%);
+	--color-border-error-disabled:    hsl(6, 75%, 65%);
+
+	--overlay-color:                  hsla(0, 0%, 0%, 0.3)
+}
+
+.theme-dark {
+	--color-background-0:             hsl(214, 6%, 20%);
+	--color-background-1:             hsl(215, 6%, 16%);
+	--color-background-2:             hsl(216, 6%, 13%);
+
+	--color-bg-raised:                hsl(216, 8%, 25%);
+	--color-bg-raised-hover:          hsl(215, 8%, 30%);
+	--color-bg-raised-active:         hsl(216, 7%, 27%);
+	--color-bg-raised-disabled:       hsl(216, 8%, 25%);
+	--color-bg-inset:                 hsl(220, 6%, 15%);
+
+	--color-border:                   hsl(215, 8%, 30%);
+	--color-border-hover:             hsl(210, 6%, 51%);
+	--color-border-active:            hsl(212, 7%, 43%);
+	--color-border-disabled:          hsl(213, 7%, 30%);
+	--color-border-flat:              hsl(213, 6%, 30%);
+
+	--color-text-primary:             hsl(210, 5%, 80%);
+	--color-text-secondary:           hsl(210, 5%, 60%);
+	--color-text-disabled:            hsl(213, 5%, 37%);
+	--color-text-on-variant:          hsl(0, 0%, 95%);
+	--color-text-on-variant-disabled: hsla(0, 0%, 95%, 0.6);
+	--color-text-placeholder:         hsl(213, 5%, 32%);
+
+	--color-focus:                    hsl(204, 40%, 35%);
+
+	--color-bg-info:                  hsl(204, 62%, 35%);
+	--color-bg-info-hover:            hsl(204, 62%, 38%);
+	--color-bg-info-active:           hsl(204, 62%, 36%);
+	--color-bg-info-disabled:         hsl(204, 50%, 25%);
+	--color-bg-info-faded:            hsl(204, 62%, 12%);
+
+	--color-border-info:              hsl(204, 62%, 37%);
+	--color-border-info-hover:        hsl(204, 62%, 34%);
+	--color-border-info-active:       hsl(204, 62%, 33%);
+	--color-border-info-disabled:     hsl(204, 50%, 15%);
+
+	--color-bg-success:               hsl(145, 64%, 35%);
+	--color-bg-success-hover:         hsl(145, 64%, 38%);
+	--color-bg-success-active:        hsl(145, 64%, 36%);
+	--color-bg-success-disabled:      hsl(145, 55%, 25%);
+	--color-bg-success-faded:         hsl(145, 64%, 12%);
+
+	--color-border-success:           hsl(145, 64%, 37%);
+	--color-border-success-hover:     hsl(145, 64%, 34%);
+	--color-border-success-active:    hsl(145, 64%, 33%);
+	--color-border-success-disabled:  hsl(145, 55%, 15%);
+
+
+	--color-bg-warn:                  hsl(37, 86%, 35%);
+	--color-bg-warn-hover:            hsl(37, 86%, 38%);
+	--color-bg-warn-active:           hsl(37, 86%, 36%);
+	--color-bg-warn-disabled:         hsl(37, 86%, 25%);
+	--color-bg-warn-faded:            hsl(37, 86%, 12%);
+
+	--color-border-warn:              hsl(37, 86%, 37%);
+	--color-border-warn-hover:        hsl(37, 86%, 34%);
+	--color-border-warn-active:       hsl(37, 86%, 33%);
+	--color-border-warn-disabled:     hsl(37, 86%, 15%);
+
+
+	--color-bg-error:                 hsl(6, 75%, 35%);
+	--color-bg-error-hover:           hsl(6, 75%, 38%);
+	--color-bg-error-active:          hsl(6, 75%, 36%);
+	--color-bg-error-disabled:        hsl(6, 75%, 25%);
+	--color-bg-error-faded:           hsl(6, 75%, 12%);
+
+	--color-border-error:             hsl(6, 75%, 37%);
+	--color-border-error-hover:       hsl(6, 75%, 34%);
+	--color-border-error-active:      hsl(6, 75%, 33%);
+	--color-border-error-disabled:    hsl(6, 75%, 15%);
+
+	--overlay-color:                  hsla(0, 0%, 35%, 0.6);
+
+}

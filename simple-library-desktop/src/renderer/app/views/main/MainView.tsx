@@ -1,39 +1,63 @@
-import * as React from 'react';
-import { VBox } from '../../../components/layout/box/Box';
-import { Fill } from '../../../components/common/common';
-import { Grid } from '../../../components/layout/grid/Grid';
-import { componentDidMount } from '../../common/utils/functionalReactLifecycle';
-import { useGroups } from '../../hooks/groupHooks';
-import { NotificationStack } from '../../../components/_old/notification/NotificationStack';
-import { genNotificationId, toNotificationEntries } from '../../common/utils/notificationUtils';
-import { AppNotificationType } from '../../store/state';
-import { ItemList } from './itemPanel/ItemList';
-import { fetchRootGroup } from '../../common/messaging/messagingInterface';
-import { MenuSidebar } from './menusidebar/MenuSidebar';
-import { useNotifications } from '../../hooks/miscHooks';
+import React from "react";
+import {VBox} from "../../../components/layout/box/Box";
+import {DynamicSlot} from "../../../components/base/slot/DynamicSlot";
+import {Slot} from "../../../components/base/slot/Slot";
+import {AppLayout} from "../../../components/misc/app/AppLayout";
+import {AppToolbar} from "./apptoolbar/AppToolbar";
+import {CollectionSidebar, TAB_DATA_COLLECTIONS} from "./sidebarmenu/CollectionSidebar";
+import {NotificationStack} from "../../../components/modals/notification/NotificationStack";
+import {useNotifications} from "../../hooks/base/notificationHooks";
+import {APP_ROOT_ID} from "../../Application";
+import {useGroups} from "../../hooks/base/groupHooks";
+import {ContentArea} from "./contentarea/ContentArea";
+import {useMount} from "../../../components/utils/commonHooks";
 
-interface NewMainViewProps {
-    onActionClose: () => void
+interface MainViewProps {
+	onClosed: () => void
 }
 
-export function MainView(props: React.PropsWithChildren<NewMainViewProps>): React.ReactElement {
+export function MainView(props: React.PropsWithChildren<MainViewProps>): React.ReactElement {
 
-    const { notifications, addNotification, removeNotification } = useNotifications();
-    const { setRootGroup } = useGroups();
+	const {
+		getNotificationStackEntries,
+	} = useNotifications();
 
-    componentDidMount(() => {
-        fetchRootGroup()
-            .then(setRootGroup)
-            .catch(error => addNotification(genNotificationId(), AppNotificationType.ROOT_GROUP_FETCH_FAILED, error));
-    });
+	const {
+		loadGroups
+	} = useGroups()
 
-    return (
-        <VBox>
-            <Grid columns={['auto', '1fr']} rows={['100vh']} fill={Fill.TRUE} style={{ maxHeight: "100vh" }}>
-                <MenuSidebar onActionClose={props.onActionClose} />
-                <ItemList />
-            </Grid>
-            <NotificationStack modalRootId='root' notifications={toNotificationEntries(notifications, removeNotification)} />
-        </VBox>
-    );
+	useMount(() => {
+		loadGroups()
+	})
+
+	return (
+		<>
+			<VBox fill>
+
+				<AppToolbar onClosedLibrary={props.onClosed}/>
+
+				<AppLayout tabsLeft={[TAB_DATA_COLLECTIONS]}>
+					<DynamicSlot name="sidebar-left">
+						{(tabId: string) => {
+							if (tabId === TAB_DATA_COLLECTIONS.id) {
+								return <CollectionSidebar/>;
+							} else {
+								return null;
+							}
+						}}
+					</DynamicSlot>
+					<Slot name={"main"}>
+						<ContentArea/>
+					</Slot>
+				</AppLayout>
+
+			</VBox>
+
+			<NotificationStack
+				modalRootId={APP_ROOT_ID}
+				entries={getNotificationStackEntries()}
+			/>
+
+		</>
+	);
 }

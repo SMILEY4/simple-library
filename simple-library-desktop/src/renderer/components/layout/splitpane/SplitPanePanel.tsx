@@ -1,7 +1,8 @@
-import {BaseProps, concatClasses, getIf} from '../../common/common';
 import * as React from 'react';
 import {ReactElement} from 'react';
 import "./splitpanepanel.css";
+import {BaseProps} from "../../utils/common";
+import {concatClasses, getIf} from "../../utils/common";
 
 interface SplitPanePanelProps extends BaseProps {
     initialSize: string,
@@ -10,7 +11,6 @@ interface SplitPanePanelProps extends BaseProps {
     primary?: boolean
     __mode?: "vertical" | "horizontal",
 }
-
 
 export function SplitPanePanel(props: React.PropsWithChildren<SplitPanePanelProps>): ReactElement {
     return (

@@ -1,121 +1,91 @@
-import * as React from 'react';
-import { Component, ReactElement } from 'react';
-import { Dialog } from '../../../components/_old/modal/Dialog';
-import { AlignCross, AlignMain, GroupPosition, Size, Type, Variant } from '../../../components/common/common';
-import { VBox } from '../../../components/layout/box/Box';
-import { InputField } from '../../../components/_old/inputfield/InputField';
-import { GoFileDirectory } from 'react-icons/all';
-import { Button } from '../../../components/input/button/Button';
-
-const electron = window.require('electron');
+import React from "react";
+import {Dialog} from "../../../components/modals/dialog/Dialog";
+import {Slot} from "../../../components/base/slot/Slot";
+import {Button} from "../../../components/buttons/button/Button";
+import {TextField} from "../../../components/input/textfield/TextField";
+import {VBox} from "../../../components/layout/box/Box";
+import {DirectoryInputField} from "../../../components/input/directoryinputfield/DirectoryInputField";
+import {APP_ROOT_ID} from "../../Application";
+import {useWelcome} from "../../hooks/app/useWelcome";
+import {useValidatedState} from "../../../components/utils/commonHooks";
 
 interface DialogCreateLibraryProps {
-    onClose: () => void
-    onCreate: (name: string, targetDir: string) => void
+	onCancel: () => void,
+	onCreate: (name: string, targetDir: string) => void
 }
 
-interface DialogCreateLibraryState {
-    libraryName: string,
-    libraryNameValid: boolean,
-    targetDir: string
-    targetDirValid: boolean,
-}
+export function DialogCreateLibrary(props: React.PropsWithChildren<DialogCreateLibraryProps>): React.ReactElement {
 
+	const {browseTargetDir} = useWelcome()
 
-export class DialogCreateLibrary extends Component<DialogCreateLibraryProps, DialogCreateLibraryState> {
+	const [
+		name,
+		setName,
+		nameValid,
+		triggerNameValidation
+	] = useValidatedState("", true, validateName)
 
+	const [
+		targetDir,
+		setTargetDir,
+		targetDirValid,
+		triggerTargetDirValidation
+	] = useValidatedState("", true, validateTargetDir)
 
-    constructor(props: DialogCreateLibraryProps) {
-        super(props);
-        this.state = {
-            libraryName: '',
-            libraryNameValid: true,
-            targetDir: '',
-            targetDirValid: true,
-        };
-        this.actionBrowseTargetDir = this.actionBrowseTargetDir.bind(this);
-        this.actionRequestCreateLibrary = this.actionRequestCreateLibrary.bind(this);
-    }
+	return (
+		<Dialog
+			show={true}
+			modalRootId={APP_ROOT_ID}
+			icon={undefined}
+			title={"Create New Library"}
+			onClose={handleCancel}
+			onEscape={handleCancel}
+			onEnter={handleCreate}
+			withOverlay
+			closable
+			closeOnClickOutside
+		>
+			<Slot name={"body"}>
+				<VBox alignMain="center" alignCross="stretch" spacing="0-5">
+					<TextField
+						placeholder={"Name"}
+						autofocus
+						error={!nameValid}
+						onAccept={setName}
+					/>
+					<DirectoryInputField
+						placeholder={"Target Directory"}
+						error={!targetDirValid}
+						onBrowse={browseTargetDir}
+						onSelect={setTargetDir}
+					/>
+				</VBox>
+			</Slot>
+			<Slot name={"footer"}>
+				<Button onAction={handleCancel}>Cancel</Button>
+				<Button onAction={handleCreate} variant="info">Create</Button>
+			</Slot>
+		</Dialog>
+	);
 
-    actionBrowseTargetDir(): void {
-        electron.remote.dialog
-            .showOpenDialog({
-                title: 'Select target directory',
-                buttonLabel: 'Select',
-                properties: [
-                    'openDirectory',
-                    'createDirectory',
-                ],
-            })
-            .then((result: any) => {
-                if (!result.canceled) {
-                    this.setState({ targetDir: result.filePaths[0] });
-                }
-            });
-    }
+	function handleCancel(): void {
+		props.onCancel()
+	}
 
+	function handleCreate(): void {
+		triggerNameValidation();
+		triggerTargetDirValidation();
+		if (nameValid && targetDirValid) {
+			props.onCreate(name, targetDir)
+		}
+	}
 
-    actionRequestCreateLibrary(): void {
-        const libraryNameValid: boolean = this.validateLibraryName(this.state.libraryName);
-        const targetDirValid: boolean = this.validateTargetDirectory(this.state.targetDir);
-        if (libraryNameValid && targetDirValid) {
-            this.props.onCreate(this.state.libraryName, this.state.targetDir);
-        } else {
-            this.setState({
-                libraryNameValid: libraryNameValid,
-                targetDirValid: targetDirValid,
-            });
-        }
-    }
+	function validateName(name: string): boolean {
+		return name && name.trim().length > 0
+	}
 
-
-    validateLibraryName(name: string): boolean {
-        return name.length > 0;
-    }
-
-
-    validateTargetDirectory(targetDir: string): boolean {
-        return targetDir.length > 0;
-    }
-
-
-    render(): ReactElement {
-        return (
-            <Dialog title={"Create new Library"}
-                    show={true}
-                    closeButton={true}
-                    onClose={this.props.onClose}
-                    actions={[
-                        {
-                            content: "Cancel",
-                            variant: Variant.OUTLINE,
-                            onAction: this.props.onClose,
-                        },
-                        {
-                            content: "Create",
-                            variant: Variant.SOLID,
-                            type: Type.PRIMARY,
-                            onAction: this.actionRequestCreateLibrary,
-                        },
-                    ]}>
-                <VBox alignMain={AlignMain.CENTER} alignCross={AlignCross.STRETCH} spacing={Size.S_0_75}>
-                    <InputField
-                        autoFocus
-                        placeholder='Library Name'
-                        value={this.state.libraryName}
-                        onChange={(value) => this.setState({ libraryName: value })}
-                    />
-                    <InputField
-                        placeholder='Library Directory'
-                        locked={true}
-                        icon={<GoFileDirectory />}
-                        contentTrailing={
-                            <Button variant={Variant.SOLID} groupPos={GroupPosition.END} onAction={this.actionBrowseTargetDir}>Browse</Button>}
-                        value={this.state.targetDir}
-                    />
-                </VBox>
-            </Dialog>
-        );
-    }
+	function validateTargetDir(targetDir: string): boolean {
+		return targetDir && targetDir.trim().length > 0
+	}
 
 }

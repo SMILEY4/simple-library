@@ -1,0 +1,19 @@
+.spacer {
+
+}
+
+.spacer-line {
+	background-color: var(--color-border);
+}
+
+.spacer-vertical {
+	min-width: 1px;
+	max-width: 1px;
+	height:    100%;
+}
+
+.spacer-horizontal {
+	min-height: 1px;
+	max-height: 1px;
+	width:      100%;
+}

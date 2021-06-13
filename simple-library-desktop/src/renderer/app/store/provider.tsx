@@ -1,15 +1,15 @@
-import { GlobalApplicationState, initialState } from './state';
-import React, { createContext, useCallback, useContext, useReducer } from 'react';
-import { Reducer } from './reducer';
+import {GlobalApplicationState, initialState} from './state';
+import React, {Context, createContext, useCallback, useReducer} from 'react';
+import {Reducer} from './reducer';
 
 
 interface IGlobalStateContext {
     state: GlobalApplicationState;
-    dispatch: ({ type }: { type: string; payload?: any; }) => void
+    dispatch: ({type}: { type: string; payload?: any; }) => void
 }
 
 
-export const GlobalStateContext = createContext({} as IGlobalStateContext);
+export const GlobalStateContext: Context<IGlobalStateContext> = createContext({} as IGlobalStateContext);
 
 
 interface StateProviderProps {
@@ -21,7 +21,7 @@ export function GlobalStateProvider(props: StateProviderProps) {
     const [state, dispatchBase] = useReducer(Reducer, initialState);
     const dispatch = useCallback(asyncer(dispatchBase, state), []);
     return (
-        <GlobalStateContext.Provider value={{ state, dispatch }}>
+        <GlobalStateContext.Provider value={{state, dispatch}}>
             {props.children}
         </GlobalStateContext.Provider>
     );

@@ -1,7 +1,0 @@
-.sidebar-separator {
-	max-height:    0;
-	border-top:    1px solid var(--color-border);
-	margin-bottom: var(--s-0-25);
-	margin-top:    var(--s-0-25);
-	width: 100%;
-}

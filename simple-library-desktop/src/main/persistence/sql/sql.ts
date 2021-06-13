@@ -136,7 +136,7 @@ export function sqlUpdateCollectionName(collectionId: number, name: string) {
 
 export function sqlUpdateCollectionSmartQuery(collectionId: number, smartQuery: string) {
     return collectionsUpdateSmartQuery
-        .replace("$collectionSmartQuery", "'" + smartQuery + "'")
+        .replace("$collectionSmartQuery", smartQuery ? "'" + smartQuery + "'" : "null")
         .replace("$collectionId", collectionId);
 }
 

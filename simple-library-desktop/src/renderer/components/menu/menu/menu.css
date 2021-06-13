@@ -1,8 +1,8 @@
 .menu {
-	padding-top:    var(--radius-0);
-	padding-bottom: var(--radius-0);
-}
-
-.menu > .box {
-	border: unset;
+	padding-top:      var(--radius-0);
+	padding-bottom:   var(--radius-0);
+	background-color: var(--color-background-0);
+	border:           1px solid var(--color-border-flat);
+	border-radius:    var(--radius-0);
+	z-index:          100;
 }

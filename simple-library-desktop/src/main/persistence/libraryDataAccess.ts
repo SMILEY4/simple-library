@@ -1,5 +1,5 @@
 import DataAccess from './dataAccess';
-import { CollectionType, LibraryMetadata } from '../../common/commonModels';
+import {CollectionType, LibraryMetadata} from '../../common/commonModels';
 import {
     sqlAllMetadata,
     sqlCreateTableCollectionItems,
@@ -7,7 +7,8 @@ import {
     sqlCreateTableGroups,
     sqlCreateTableItems,
     sqlCreateTableMetadata,
-    sqlGetMetadataLibraryName, sqlInsertCollection,
+    sqlGetMetadataLibraryName,
+    sqlInsertCollection,
     sqlInsertMetadataLibraryName,
     sqlInsertMetadataTimestampCreated,
     sqlInsertMetadataTimestampLastOpened,
@@ -31,23 +32,24 @@ export class LibraryDataAccess {
      * @return a promise that resolves when the library was created and initialized
      */
     public async createLibrary(url: string, libraryName: string): Promise<void> {
-        const error: string | undefined = this.dataAccess.openDatabase(url, true);
-        if (error) {
-            console.log('Failed to create library: ' + url + ' - ' + error);
-            return Promise.reject();
-        } else {
-            console.log('Created library: ' + url);
-            const timestamp = Date.now();
-            await this.dataAccess.executeRun(sqlCreateTableMetadata());
-            await this.dataAccess.executeRun(sqlCreateTableItems());
-            await this.dataAccess.executeRun(sqlCreateTableCollections());
-            await this.dataAccess.executeRun(sqlCreateTableCollectionItems());
-            await this.dataAccess.executeRun(sqlCreateTableGroups());
-            await this.dataAccess.executeRun(sqlInsertMetadataLibraryName(libraryName));
-            await this.dataAccess.executeRun(sqlInsertMetadataTimestampCreated(timestamp));
-            await this.dataAccess.executeRun(sqlInsertMetadataTimestampLastOpened(timestamp));
-            await this.dataAccess.executeRun(sqlInsertCollection("All Items", CollectionType.SMART, "", null))
-        }
+        return this.dataAccess.openDatabase(url, true)
+            .then(async () => {
+                console.log('Created library: ' + url);
+                const timestamp = Date.now();
+                await this.dataAccess.executeRun(sqlCreateTableMetadata());
+                await this.dataAccess.executeRun(sqlCreateTableItems());
+                await this.dataAccess.executeRun(sqlCreateTableCollections());
+                await this.dataAccess.executeRun(sqlCreateTableCollectionItems());
+                await this.dataAccess.executeRun(sqlCreateTableGroups());
+                await this.dataAccess.executeRun(sqlInsertMetadataLibraryName(libraryName));
+                await this.dataAccess.executeRun(sqlInsertMetadataTimestampCreated(timestamp));
+                await this.dataAccess.executeRun(sqlInsertMetadataTimestampLastOpened(timestamp));
+                await this.dataAccess.executeRun(sqlInsertCollection("All Items", CollectionType.SMART, "", null))
+            })
+            .catch(error => {
+                console.log('Failed to create library: ' + url + ' - ' + error);
+                return Promise.reject();
+            })
     }
 
     /**

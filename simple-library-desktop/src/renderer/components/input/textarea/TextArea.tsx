@@ -1,96 +1,87 @@
-import * as React from 'react';
-import {ReactElement, useState} from 'react';
-import {BaseProps, concatClasses, map, orDefault, Type, Variant,} from '../../common/common';
-import {Pane} from '../../base/pane/Pane';
-import {getFillActive, getFillDefault, getFillReady, getOutline, STATIC_PANE_CONFIG,} from '../../base/pane/paneConfig';
-import "./textarea.css";
+import {BaseProps} from "../../utils/common";
+import * as React from "react";
+import {ReactElement, useState} from "react";
+import {concatClasses, map} from "../../utils/common";
+import {BaseElementInset} from "../../base/element/BaseElementInset";
+import "./textArea.css"
 
 export interface TextAreaProps extends BaseProps {
-    value?: string,
-    placeholder?: string,
-    cols?: number,
-    rows?: number,
-    wrap?: "hard" | "soft",
-    resize?: "none" | "horizontal" | "vertical"
-    forceState?: boolean,
-    variant?: Variant,
-    type?: Type,
-    error?: boolean,
-    disabled?: boolean,
-    autoFocus?: boolean,
-    onChange?: (value: string) => void,
-    onAccept?: (value: string) => void
+	value?: string,
+	forceState?: boolean,
+	placeholder?: string
+	disabled?: boolean,
+	cols?: number,
+	rows?: number,
+	autofocus?: boolean,
+	wrap?: "hard" | "soft",
+	resize?: "none" | "horizontal" | "vertical"
+	error?: boolean,
+	onChange?: (value: string) => void,
+	onAccept?: (value: string) => void
 }
 
 
 export function TextArea(props: React.PropsWithChildren<TextAreaProps>): ReactElement {
 
-    const [value, setValue] = useState(props.value ? props.value : "");
+	const [value, setValue] = useState(props.value ? props.value : "");
 
-    const variant: Variant = orDefault(props.variant, Variant.OUTLINE);
-    const type: Type = orDefault(props.type, Type.DEFAULT);
+	return (
+		<BaseElementInset
+			disabled={props.disabled}
+			error={props.error}
+			className={concatClasses(
+				props.className,
+				"text-area",
+				map(props.resize, resize => "text-area-" + resize)
+			)}
+			style={props.style}
+			forwardRef={props.forwardRef}
+		>
+			<textarea
+				autoFocus={props.autofocus}
+				disabled={props.disabled}
+				value={value}
+				placeholder={props.placeholder}
+				wrap={props.wrap}
+				cols={props.cols}
+				rows={props.rows}
+				onChange={handleOnChange}
+				onBlur={handleOnBlur}
+				onKeyDown={handleOnKeyDown}
+			/>
+		</BaseElementInset>
+	);
 
-    return (
-        <Pane outline={getOutline(STATIC_PANE_CONFIG, variant, type, props.error)}
-              fillDefault={getFillDefault(STATIC_PANE_CONFIG, variant, type)}
-              fillReady={getFillReady(STATIC_PANE_CONFIG, variant, type, props.disabled)}
-              fillActive={getFillActive(STATIC_PANE_CONFIG, variant, type, props.disabled)}
-              className={concatClasses(
-                  "text-area",
-                  map(props.resize, (resize) => "text-area-resize-" + resize)
-              )}
-              forwardRef={props.forwardRef}
-        >
-            <textarea
-                autoFocus={props.autoFocus}
-                disabled={props.disabled}
-                value={value}
-                placeholder={props.placeholder}
-                wrap={props.wrap}
-                cols={props.cols}
-                rows={props.rows}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                onKeyDown={handleKeyDown}
-            />
-        </Pane>
-    );
+	function handleOnChange(event: any) {
+		handleChange(event.target.value, props.onChange);
+	}
 
-    function handleChange(event: any): void {
-        onChange(event.target.value);
-    }
 
-    function handleBlur(event: any): void {
-        onAccept(event.target.value);
-    }
+	function handleOnBlur(event: any) {
+		handleChange(event.target.value, props.onAccept);
+	}
 
-    function handleKeyDown(event: any) {
-        if (event.key === 'Enter' && event.ctrlKey) {
-            onAccept(event.target.value);
-            event.target.blur();
-        }
-    }
 
-    function onChange(newValue: string): void {
-        if (!props.disabled) {
-            if (!props.forceState) {
-                setValue(newValue);
-            }
-            if (props.onChange) {
-                props.onChange(newValue);
-            }
-        }
-    }
+	function handleOnKeyDown(event: any) {
+		if (event.key === 'Enter' && event.ctrlKey) {
+			handleChange(event.target.value, props.onAccept);
+			event.target.blur();
+		}
+		if (event.key === 'Escape') {
+			handleChange(event.target.value, props.onAccept);
+			event.target.blur();
+		}
+	}
 
-    function onAccept(newValue: string): void {
-        if (!props.disabled) {
-            if (!props.forceState) {
-                setValue(newValue);
-            }
-            if (props.onAccept) {
-                props.onAccept(newValue);
-            }
-        }
-    }
+	function handleChange(newValue: string, callback: (v: string) => void) {
+		if (!props.disabled) {
+			if (!props.forceState) {
+				setValue(newValue);
+			}
+			if (callback) {
+				callback(newValue);
+			}
+		}
+	}
 
 }

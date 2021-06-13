@@ -1,53 +1,58 @@
-import { addPropsToChildren, BaseProps, concatClasses } from '../../common/common';
 import * as React from 'react';
-import { MutableRefObject, ReactElement } from 'react';
-import { useContextMenu } from './contextMenuHook';
-import { Menu } from '../menu/Menu';
+import {MutableRefObject, ReactElement} from 'react';
+import {BaseProps} from "../../utils/common";
+import {ContextMenuBase} from "./ContextMenuBase";
+import {useContextMenu} from "./contextMenuHook";
+import {useLifecycle} from "../../utils/commonHooks";
 
 export interface ContextMenuProps extends BaseProps {
+    modalRootId?: string,
     refTarget: MutableRefObject<any>,
-    onAction?: (itemId: string) => void
+    onOpenMenu?: () => void,
+    onAction?: (itemId: string) => void,
 }
 
 export function ContextMenu(props: React.PropsWithChildren<ContextMenuProps>): ReactElement {
 
     const {
-        cmTargetRef,
-        cmMenuRef,
-        cmPos,
-        isShowContextMenu,
-        closeContextMenu,
-    } = useContextMenu(props.refTarget);
+        showContextMenu,
+        contextMenuX,
+        contextMenuY,
+        contextMenuRef,
+        openContextMenu,
+        closeContextMenu
+    } = useContextMenu();
 
-    return isShowContextMenu && (
-        <div
-            className={concatClasses("context-menu", props.className)}
-            style={{
-                top: cmPos.y,
-                left: cmPos.x,
-                ...props.style,
-            }}
-            ref={cmMenuRef}
-        >
-            {getModifiedChildren()}
-        </div>
+    useLifecycle(
+        () => document.addEventListener("contextmenu", handleOnContextMenu),
+        () => document.removeEventListener("contextmenu", handleOnContextMenu),
     );
 
-    function getModifiedChildren(): ReactElement[] {
-        return addPropsToChildren(
-            props.children,
-            (prevProps: any) => ({ ...prevProps, __onActionInternal: handleMenuItemAction }),
-            (child: ReactElement) => child.type === Menu,
-        );
+    return (
+        <ContextMenuBase
+            modalRootId={props.modalRootId}
+            show={showContextMenu}
+            pageX={contextMenuX}
+            pageY={contextMenuY}
+            menuRef={contextMenuRef}
+            onOpenMenu={props.onOpenMenu}
+            onAction={handleMenuAction}
+        >
+            {props.children}
+        </ContextMenuBase>
+    );
+
+    function handleOnContextMenu(event: any): void {
+        if (props.refTarget && props.refTarget.current && props.refTarget.current.contains(event.target)) {
+            event.preventDefault;
+            event.stopPropagation();
+            openContextMenu(event.pageX, event.pageY);
+        }
     }
 
-    function handleMenuItemAction(itemId: string) {
-        if (cmTargetRef.current) {
-            closeContextMenu();
-        }
-        if (props.onAction) {
-            props.onAction(itemId);
-        }
+    function handleMenuAction(itemId: string): void {
+        closeContextMenu();
+        props.onAction && props.onAction(itemId)
     }
 
 }
