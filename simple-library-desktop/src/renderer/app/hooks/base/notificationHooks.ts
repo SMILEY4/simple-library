@@ -1,11 +1,10 @@
 import {genNotificationId, toNotificationEntry} from "./notificationUtils";
-import {useGlobalState} from "./miscAppHooks";
 import {NotificationStackEntry} from "../../../components/modals/notification/NotificationStack";
-import {AppActionType, AppNotificationType} from "../../store/globalAppState";
+import {AppNotificationType, NotificationActionType, useNotificationState} from "../../store/notificationState";
 
 export function useNotifications() {
 
-	const {state, dispatch} = useGlobalState();
+	const {state, dispatch} = useNotificationState();
 
 	function throwError(notificationId: string, type: AppNotificationType, error: any) {
 		add(notificationId, type, error);
@@ -14,7 +13,7 @@ export function useNotifications() {
 
 	function add(notificationId: string, type: AppNotificationType, data: any) {
 		dispatch({
-			type: AppActionType.NOTIFICATIONS_ADD,
+			type: NotificationActionType.NOTIFICATIONS_ADD,
 			payload: {
 				notificationId: notificationId ? notificationId : genNotificationId(),
 				notificationType: type,
@@ -25,7 +24,7 @@ export function useNotifications() {
 
 	function remove(notificationId: string) {
 		dispatch({
-			type: AppActionType.NOTIFICATIONS_REMOVE,
+			type: NotificationActionType.NOTIFICATIONS_REMOVE,
 			payload: {
 				notificationId: notificationId,
 			},
@@ -34,7 +33,7 @@ export function useNotifications() {
 
 	function update(notificationId: string, data: any) {
 		dispatch({
-			type: AppActionType.NOTIFICATIONS_UPDATE,
+			type: NotificationActionType.NOTIFICATIONS_UPDATE,
 			payload: {
 				notificationId: notificationId,
 				notificationData: data,

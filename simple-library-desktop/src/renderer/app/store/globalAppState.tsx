@@ -1,20 +1,10 @@
-import {
-	applyStateAction,
-	buildAsyncer,
-	buildGlobalStateContext,
-	GenericGlobalStateContext,
-	GenericStateAction,
-	useGenericGlobalStateProvider
-} from "./storeUtils";
-import React, {Context} from "react";
+import {buildGlobalStateContext, GenericGlobalStateContext, genericStateProvider, ReducerConfigMap} from "./storeUtils";
+import React, {Context, useContext} from "react";
 import {Group, ItemData} from "../../../common/commonModels";
 import {unique} from "../common/arrayUtils";
 
 
-// STATE
-
 export interface GlobalApplicationState {
-	notifications: AppNotification[]
 	collectionSidebarExpandedNodes: string[]
 
 	rootGroup: Group | null,
@@ -25,36 +15,7 @@ export interface GlobalApplicationState {
 	lastSelectedItemId: number | null
 }
 
-export interface AppNotification {
-	id: string,
-	type: AppNotificationType,
-	data: any
-}
-
-export enum AppNotificationType {
-	OPEN_LIBRARY_FAILED,
-	CREATE_LIBRARY_FAILED,
-	ROOT_GROUP_FETCH_FAILED,
-	ITEMS_FETCH_FAILED,
-	ITEMS_MOVE_FAILED,
-	ITEMS_REMOVE_FAILED,
-	IMPORT_FAILED,
-	IMPORT_FAILED_UNKNOWN,
-	IMPORT_WITH_ERRORS,
-	IMPORT_SUCCESSFUL,
-	IMPORT_STATUS,
-	COLLECTION_CREATE_FAILED,
-	COLLECTION_MOVE_FAILED,
-	COLLECTION_EDIT_FAILED,
-	COLLECTION_DELETE_FAILED,
-	GROUP_CREATE_FAILED,
-	GROUP_MOVE_FAILED,
-	GROUP_RENAME_FAILED,
-	GROUP_DELETE_FAILED
-}
-
-export const initialGlobalAppState: GlobalApplicationState = {
-	notifications: [],
+const initialState: GlobalApplicationState = {
 	collectionSidebarExpandedNodes: [],
 	rootGroup: null,
 	activeCollectionId: null,
@@ -65,26 +26,18 @@ export const initialGlobalAppState: GlobalApplicationState = {
 };
 
 
-// REDUCER
-
 export enum AppActionType {
 	SET_CURRENT_COLLECTION_ID = "collection.set",
 	SET_ITEMS = "items.set",
 	SET_ROOT_GROUP = "rootgroup.set",
-
-	NOTIFICATIONS_ADD = "notifications.add",
-	NOTIFICATIONS_REMOVE = "notifications.remove",
-	NOTIFICATIONS_UPDATE = "notifications.update",
-
 	ITEM_SELECTION_SET = "items.selection.set",
 	ITEM_SELECTION_ADD = "items.selection.add",
 	ITEM_SELECTION_REMOVE = "items.selection.remove",
 	ITEM_SELECTION_SET_LAST = "item.selection.set-last",
-
 	COLLECTION_SIDEBAR_SET_EXPANDED = "ui.sidebar.collections.expanded.set"
 }
 
-const reducerConfigMap = new Map<AppActionType, (state: GlobalApplicationState, payload: any) => GlobalApplicationState>([
+const reducerConfigMap: ReducerConfigMap<AppActionType, GlobalApplicationState> = new ReducerConfigMap([
 
 	[AppActionType.SET_CURRENT_COLLECTION_ID, (state, payload) => ({
 		...state,
@@ -97,34 +50,6 @@ const reducerConfigMap = new Map<AppActionType, (state: GlobalApplicationState, 
 	[AppActionType.SET_ROOT_GROUP, (state, payload) => ({
 		...state,
 		rootGroup: payload,
-	})],
-
-
-	[AppActionType.NOTIFICATIONS_ADD, (state, payload) => ({
-		...state,
-		notifications: [...state.notifications, {
-			id: payload.notificationId,
-			type: payload.notificationType,
-			data: payload.notificationData,
-		}],
-	})],
-	[AppActionType.NOTIFICATIONS_REMOVE, (state, payload) => ({
-		...state,
-		notifications: state.notifications.filter((notification: AppNotification) => notification.id !== payload.notificationId),
-	})],
-	[AppActionType.NOTIFICATIONS_UPDATE, (state, payload) => ({
-		...state,
-		notifications: state.notifications.map((notification: AppNotification) => {
-			if (notification.id === payload.notificationId) {
-				return {
-					id: notification.id,
-					type: notification.type,
-					data: payload.notificationData,
-				};
-			} else {
-				return notification;
-			}
-		}),
 	})],
 
 
@@ -153,21 +78,19 @@ const reducerConfigMap = new Map<AppActionType, (state: GlobalApplicationState, 
 
 ])
 
-export function AppStateReducer(state: GlobalApplicationState, action: GenericStateAction<AppActionType>): GlobalApplicationState {
-	return applyStateAction(reducerConfigMap, action, state)
-}
 
-// CONTEXT
-
-const asyncer = buildAsyncer<GlobalApplicationState>()
-
-export const GlobalAppStateContext: Context<GenericGlobalStateContext<GlobalApplicationState>> = buildGlobalStateContext<GlobalApplicationState>()
+const globalAppStateContext: Context<GenericGlobalStateContext<GlobalApplicationState>> = buildGlobalStateContext<GlobalApplicationState>()
 
 export function GlobalAppStateProvider(props: { children: any }) {
-	const [state, dispatch] = useGenericGlobalStateProvider(initialGlobalAppState, AppStateReducer, asyncer)
-	return (
-		<GlobalAppStateContext.Provider value={{state, dispatch}}>
-			{props.children}
-		</GlobalAppStateContext.Provider>
-	);
+	return genericStateProvider(props.children, initialState, reducerConfigMap, globalAppStateContext)
 }
+
+export function useAppState() {
+	const {state, dispatch} = useContext(globalAppStateContext);
+	if (state) {
+		return {state, dispatch};
+	} else {
+		console.error("Error: No global app state found.");
+	}
+}
+

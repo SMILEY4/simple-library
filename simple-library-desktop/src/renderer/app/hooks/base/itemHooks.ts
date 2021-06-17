@@ -1,4 +1,3 @@
-import {useGlobalState} from "./miscAppHooks";
 import {
 	fetchItems,
 	onImportStatusCommands,
@@ -9,11 +8,12 @@ import {
 import {useNotifications} from "./notificationHooks";
 import {genNotificationId} from "./notificationUtils";
 import {ImportProcessData, ImportResult, ImportStatus, ItemData} from "../../../../common/commonModels";
-import {AppActionType, AppNotificationType} from "../../store/globalAppState";
+import {AppActionType, useAppState} from "../../store/globalAppState";
+import {AppNotificationType} from "../../store/notificationState";
 
 export function useItems() {
 
-	const {state, dispatch} = useGlobalState();
+	const {state, dispatch} = useAppState();
 	const {
 		throwErrorNotification,
 		addNotification,
@@ -82,7 +82,7 @@ export function useItems() {
 
 export function useItemSelection() {
 
-	const {state, dispatch} = useGlobalState();
+	const {state, dispatch} = useAppState();
 
 	function isSelected(itemId: number): boolean {
 		return state.selectedItemIds.indexOf(itemId) !== -1;

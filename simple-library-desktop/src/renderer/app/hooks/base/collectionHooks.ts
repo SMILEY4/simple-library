@@ -7,12 +7,12 @@ import {
 import {genNotificationId} from "./notificationUtils";
 import {useNotifications} from "./notificationHooks";
 import {Collection, CollectionType, extractCollections} from "../../../../common/commonModels";
-import {useGlobalState} from "./miscAppHooks";
-import {AppActionType, AppNotificationType} from "../../store/globalAppState";
+import {AppNotificationType} from "../../store/notificationState";
+import {AppActionType, useAppState} from "../../store/globalAppState";
 
 export function useCollections() {
 
-	const {state, dispatch} = useGlobalState();
+	const {state, dispatch} = useAppState();
 	const {throwErrorNotification} = useNotifications();
 
 	function move(collectionId: number, targetGroupId: number | null): Promise<void> {

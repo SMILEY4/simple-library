@@ -6,14 +6,14 @@ import {
 	requestRenameGroup
 } from "../../common/messagingInterface";
 import {genNotificationId} from "./notificationUtils";
-import {useGlobalState} from "./miscAppHooks";
 import {extractGroups, Group} from "../../../../common/commonModels";
 import {useNotifications} from "./notificationHooks";
-import {AppActionType, AppNotificationType} from "../../store/globalAppState";
+import {AppNotificationType} from "../../store/notificationState";
+import {AppActionType, useAppState} from "../../store/globalAppState";
 
 export function useGroups() {
 
-	const {state, dispatch} = useGlobalState();
+	const {state, dispatch} = useAppState();
 	const {throwErrorNotification} = useNotifications()
 
 	// TODO: implement function "updateItemCounts", that only fetches and modifies that count -> no need to "rebuild" the whole tree

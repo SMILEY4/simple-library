@@ -1,10 +1,12 @@
-import {hot} from 'react-hot-loader/root';
-import React, {Component} from 'react';
+import React, {Component, ReactElement} from 'react';
 import {ComponentShowcase} from "../components/_showcase/ComponentShowcase";
 import {WelcomeView} from "./views/welcome/WelcomeView";
 import {MainView} from "./views/main/MainView";
 import {SetApplicationTheme} from "../../common/messaging/messagesWindow";
 import {GlobalAppStateProvider} from "./store/globalAppState";
+import {hot} from 'react-hot-loader/root';
+import {GlobalNotificationStateProvider} from "./store/notificationState";
+import {Compose} from "../components/misc/compose/Compose";
 
 const {ipcRenderer} = window.require('electron');
 
@@ -63,16 +65,27 @@ export class Application extends Component<any, AppState> {
 			return this.renderComponentShowcase();
 		} else {
 			if (this.state.currentView === View.WELCOME) {
-				return this.renderWelcomeView();
+				return this.renderWithGlobalStates(this.renderWelcomeView())
 			}
 			if (this.state.currentView === View.MAIN) {
-				return this.renderMainView();
+				return this.renderWithGlobalStates(this.renderMainView())
 			}
 		}
 	}
 
+	renderWithGlobalStates(element: ReactElement): ReactElement {
+		return (
+			<Compose components={[
+				GlobalAppStateProvider,
+				GlobalNotificationStateProvider
+			]}>
+				{element}
+			</Compose>
+		);
+	}
 
-	renderComponentShowcase() {
+
+	renderComponentShowcase(): ReactElement {
 		return (
 			<div className='root-view' style={{width: '100%', height: '100%'}} id={APP_ROOT_ID}>
 				<ComponentShowcase
@@ -84,32 +97,28 @@ export class Application extends Component<any, AppState> {
 	}
 
 
-	renderWelcomeView() {
+	renderWelcomeView(): ReactElement {
 		return (
-			<GlobalAppStateProvider>
-				<div
-					className={'root-view theme-' + this.state.theme}
-					style={{width: '100%', height: '100%'}}
-					id={APP_ROOT_ID}
-				>
-					<WelcomeView onLoadProject={() => this.setState({currentView: View.MAIN})}/>
-				</div>
-			</GlobalAppStateProvider>
+			<div
+				className={'root-view theme-' + this.state.theme}
+				style={{width: '100%', height: '100%'}}
+				id={APP_ROOT_ID}
+			>
+				<WelcomeView onLoadProject={() => this.setState({currentView: View.MAIN})}/>
+			</div>
 		);
 	}
 
 
-	renderMainView() {
+	renderMainView(): ReactElement {
 		return (
-			<GlobalAppStateProvider>
-				<div
-					className={'root-view theme-' + this.state.theme}
-					style={{width: '100%', height: '100%'}}
-					id={APP_ROOT_ID}
-				>
-					<MainView onClosed={() => this.setState({currentView: View.WELCOME})}/>
-				</div>
-			</GlobalAppStateProvider>
+			<div
+				className={'root-view theme-' + this.state.theme}
+				style={{width: '100%', height: '100%'}}
+				id={APP_ROOT_ID}
+			>
+				<MainView onClosed={() => this.setState({currentView: View.WELCOME})}/>
+			</div>
 		);
 	}
 

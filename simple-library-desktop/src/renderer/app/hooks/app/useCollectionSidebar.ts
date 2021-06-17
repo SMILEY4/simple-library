@@ -5,11 +5,10 @@ import {
 	DragAndDropItems,
 	DragAndDropUtils
 } from "../../common/dragAndDrop";
-import {useGlobalState} from "../base/miscAppHooks";
 import {useGroups} from "../base/groupHooks";
 import {useCollections} from "../base/collectionHooks";
 import {useItems, useItemSelection} from "../base/itemHooks";
-import {AppActionType} from "../../store/globalAppState";
+import {AppActionType, useAppState} from "../../store/globalAppState";
 
 export function useCollectionSidebar() {
 
@@ -19,7 +18,7 @@ export function useCollectionSidebar() {
 	const {
 		state,
 		dispatch
-	} = useGlobalState();
+	} = useAppState();
 
 	const {
 		rootGroup,
