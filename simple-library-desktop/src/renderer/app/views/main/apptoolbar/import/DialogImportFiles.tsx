@@ -3,7 +3,7 @@ import {Dialog} from "../../../../../components/modals/dialog/Dialog";
 import {APP_ROOT_ID} from "../../../../Application";
 import {Slot} from "../../../../../components/base/slot/Slot";
 import {Button} from "../../../../../components/buttons/button/Button";
-import {useItems} from "../../../../hooks/base/itemHooks";
+import {useItems, useItemsStateless} from "../../../../hooks/base/itemHooks";
 import {VBox} from "../../../../../components/layout/box/Box";
 import {
 	ImportProcessData,
@@ -15,7 +15,7 @@ import {
 import {ImportSelectFilesForm} from "./ImportSelectFilesForm";
 import {ImportTargetDirForm} from "./ImportTargetDirForm";
 import {ImportRenameFilesForm} from "./ImportRenameFilesForm";
-import {useCollections} from "../../../../hooks/base/collectionHooks";
+import {useActiveCollection} from "../../../../hooks/base/collectionHooks";
 import {useGroups} from "../../../../hooks/base/groupHooks";
 import {useComplexValidatedState} from "../../../../../components/utils/commonHooks";
 
@@ -33,13 +33,16 @@ interface ValidationData {
 export function DialogImportFiles(props: React.PropsWithChildren<DialogImportFilesProps>): React.ReactElement {
 
 	const {
-		importItems,
 		loadItems
 	} = useItems()
 
 	const {
+		importItems,
+	} = useItemsStateless()
+
+	const {
 		activeCollectionId
-	} = useCollections()
+	} = useActiveCollection()
 
 	const {
 		loadGroups
@@ -173,8 +176,8 @@ export function DialogImportFiles(props: React.PropsWithChildren<DialogImportFil
 	function handleImport() {
 		if (triggerDataValidation()) {
 			importItems(refData.current)
-			.then(() => loadGroups())
-			.then(() => activeCollectionId && loadItems(activeCollectionId))
+				.then(() => loadGroups())
+				.then(() => activeCollectionId && loadItems(activeCollectionId))
 			props.onClose()
 		}
 	}

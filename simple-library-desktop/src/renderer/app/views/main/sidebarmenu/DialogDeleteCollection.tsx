@@ -5,7 +5,7 @@ import {Slot} from "../../../../components/base/slot/Slot";
 import {VBox} from "../../../../components/layout/box/Box";
 import {Button} from "../../../../components/buttons/button/Button";
 import {Label} from "../../../../components/base/label/Label";
-import {useCollections} from "../../../hooks/base/collectionHooks";
+import {useActiveCollection, useCollections, useCollectionsStateless} from "../../../hooks/base/collectionHooks";
 import {useGroups} from "../../../hooks/base/groupHooks";
 import {useItemSelection} from "../../../hooks/base/itemHooks";
 import {Collection} from "../../../../../common/commonModels";
@@ -18,10 +18,16 @@ interface DialogDeleteCollectionProps {
 export function DialogDeleteCollection(props: React.PropsWithChildren<DialogDeleteCollectionProps>): React.ReactElement {
 
 	const {
-		activeCollectionId,
 		findCollection,
-		deleteCollection
 	} = useCollections();
+
+	const {
+		activeCollectionId,
+	} = useActiveCollection();
+
+	const {
+		deleteCollection
+	} = useCollectionsStateless()
 
 	const {
 		loadGroups

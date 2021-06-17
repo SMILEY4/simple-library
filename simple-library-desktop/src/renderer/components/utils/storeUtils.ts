@@ -68,4 +68,4 @@ export function useGlobalState<STATE, ACTION_TYPE>(context: Context<GenericGloba
 	}
 }
 
-export type IStateHookResult<STATE, ACTION_TYPE> = [STATE, (({type: ACTION_TYPE}: { type: ACTION_TYPE, payload?: any }) => void)];
+export type IStateHookResult<STATE, ACTION_TYPE> = [STATE, ({type}: { type: ACTION_TYPE, payload?: any }) => void];

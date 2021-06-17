@@ -15,7 +15,7 @@ import {DialogEditGroup} from "./DialogEditGroup";
 import {DialogEditCollection} from "./DialogEditCollection";
 import {DialogCreateGroup} from "./DialogCreateGroup";
 import {DialogCreateCollection} from "./DialogCreateCollection";
-import {useCollections} from "../../../hooks/base/collectionHooks";
+import {useActiveCollection, useCollections} from "../../../hooks/base/collectionHooks";
 
 export const TAB_DATA_COLLECTIONS: SidebarTab = {
 	id: "tab-collections",
@@ -34,7 +34,7 @@ export function CollectionSidebar(props: React.PropsWithChildren<CollectionSideb
 
 	const {
 		activeCollectionId
-	} = useCollections();
+	} = useActiveCollection();
 
 	const {
 		NODE_TYPE_COLLECTION,

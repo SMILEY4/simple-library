@@ -5,7 +5,7 @@ import {Slot} from "../../../../components/base/slot/Slot";
 import {HBox, VBox} from "../../../../components/layout/box/Box";
 import {Button} from "../../../../components/buttons/button/Button";
 import {TextField} from "../../../../components/input/textfield/TextField";
-import {useCollections} from "../../../hooks/base/collectionHooks";
+import {useCollections, useCollectionsStateless} from "../../../hooks/base/collectionHooks";
 import {CollectionType, Group} from "../../../../../common/commonModels";
 import {Spacer} from "../../../../components/base/spacer/Spacer";
 import {TextArea} from "../../../../components/input/textarea/TextArea";
@@ -39,7 +39,7 @@ export function DialogCreateCollection(props: React.PropsWithChildren<DialogCrea
 
 	const {
 		createCollection
-	} = useCollections()
+	} = useCollectionsStateless()
 
 	const parentGroup: Group | null = findGroup(props.parentGroupId)
 

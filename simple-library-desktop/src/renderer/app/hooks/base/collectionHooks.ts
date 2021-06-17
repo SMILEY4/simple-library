@@ -8,19 +8,12 @@ import {genNotificationId} from "./notificationUtils";
 import {useNotifications} from "./notificationHooks";
 import {Collection, CollectionType, extractCollections} from "../../../../common/commonModels";
 import {AppNotificationType} from "../../store/notificationState";
-import {useCollectionsState} from "../../store/collectionsState";
 import {CollectionActiveActionType, useCollectionActiveState} from "../../store/collectionActiveState";
+import {useCollectionsState} from "../../store/collectionsState";
 
 export function useCollections() {
 
 	const [collectionsState] = useCollectionsState();
-	const [activeCollectionState, activeCollectionDispatch] = useCollectionActiveState();
-	const {throwErrorNotification} = useNotifications();
-
-	function move(collectionId: number, targetGroupId: number | null): Promise<void> {
-		return requestMoveCollection(collectionId, targetGroupId)
-			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.COLLECTION_MOVE_FAILED, error))
-	}
 
 	function find(collectionId: number): Collection | null {
 		if (collectionId) {
@@ -31,14 +24,48 @@ export function useCollections() {
 		}
 	}
 
-	function deleteCollection(collectionId: number): Promise<void> {
-		return requestDeleteCollection(collectionId)
-			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.COLLECTION_DELETE_FAILED, error))
-			.then(() => {
-				if (activeCollectionState.activeCollectionId === collectionId) {
-					closeCollection()
-				}
-			})
+	return {
+		findCollection: find,
+	}
+
+}
+
+
+export function useActiveCollection() {
+
+	const [activeCollectionState, activeCollectionDispatch] = useCollectionActiveState();
+
+	function open(collectionId: number): void {
+		if (activeCollectionState.activeCollectionId !== collectionId) {
+			activeCollectionDispatch({
+				type: CollectionActiveActionType.SET_CURRENT_COLLECTION_ID,
+				payload: collectionId
+			});
+		}
+	}
+
+	function close(): void {
+		activeCollectionDispatch({
+			type: CollectionActiveActionType.SET_CURRENT_COLLECTION_ID,
+			payload: null
+		});
+	}
+
+	return {
+		activeCollectionId: activeCollectionState.activeCollectionId,
+		openCollection: open,
+		closeCollection: close,
+	}
+}
+
+
+export function useCollectionsStateless() {
+
+	const {throwErrorNotification} = useNotifications();
+
+	function move(collectionId: number, targetGroupId: number | null): Promise<void> {
+		return requestMoveCollection(collectionId, targetGroupId)
+			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.COLLECTION_MOVE_FAILED, error))
 	}
 
 	function create(parentGroupId: number | null, name: string, type: CollectionType, query: string | null): Promise<void> {
@@ -51,35 +78,16 @@ export function useCollections() {
 			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.COLLECTION_EDIT_FAILED, error))
 	}
 
-	function openCollection(collectionId: number): void {
-		if (activeCollectionState.activeCollectionId !== collectionId) {
-			if (collectionId === null || find(collectionId) === null) {
-				closeCollection()
-			} else {
-				activeCollectionDispatch({
-					type: CollectionActiveActionType.SET_CURRENT_COLLECTION_ID,
-					payload: collectionId
-				});
-			}
-		}
-	}
-
-	function closeCollection(): void {
-		activeCollectionDispatch({
-			type: CollectionActiveActionType.SET_CURRENT_COLLECTION_ID,
-			payload: null
-		});
+	function deleteCollection(collectionId: number): Promise<void> {
+		return requestDeleteCollection(collectionId)
+			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.COLLECTION_DELETE_FAILED, error))
 	}
 
 	return {
-		activeCollectionId: activeCollectionState.activeCollectionId,
 		moveCollection: move,
-		findCollection: find,
-		deleteCollection: deleteCollection,
 		createCollection: create,
 		editCollection: edit,
-		openCollection: openCollection,
-		closeCollection: closeCollection
+		deleteCollection: deleteCollection
 	}
 
 }

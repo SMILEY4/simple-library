@@ -7,7 +7,7 @@ import {Button} from "../../../../components/buttons/button/Button";
 import {Label} from "../../../../components/base/label/Label";
 import {useGroups} from "../../../hooks/base/groupHooks";
 import {CheckBox} from "../../../../components/buttons/checkbox/CheckBox";
-import {useCollections} from "../../../hooks/base/collectionHooks";
+import {useActiveCollection, useCollections} from "../../../hooks/base/collectionHooks";
 import {Group} from "../../../../../common/commonModels";
 
 interface DialogDeleteGroupProps {
@@ -23,9 +23,12 @@ export function DialogDeleteGroup(props: React.PropsWithChildren<DialogDeleteGro
 	} = useGroups();
 
 	const {
-		activeCollectionId,
 		findCollection
 	} = useCollections()
+
+	const {
+		activeCollectionId,
+	} = useActiveCollection()
 
 	const [keepContent, setKeepContent] = useState(false)
 

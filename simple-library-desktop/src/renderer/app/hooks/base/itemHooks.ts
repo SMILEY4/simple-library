@@ -16,9 +16,6 @@ export function useItems() {
 
 	const {
 		throwErrorNotification,
-		addNotification,
-		updateNotification,
-		removeNotification
 	} = useNotifications()
 
 	const [
@@ -42,11 +39,6 @@ export function useItems() {
 		})
 	}
 
-	function moveOrCopy(srcCollectionId: number, tgtCollectionId: number, itemIds: number[], copy: boolean): Promise<void> {
-		return requestMoveItems(srcCollectionId, tgtCollectionId, itemIds, copy)
-			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_MOVE_FAILED, error))
-	}
-
 	function remove(collectionId: number, itemIds: number[]): Promise<void> {
 		return requestRemoveItems(collectionId, itemIds)
 			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_REMOVE_FAILED, error))
@@ -57,6 +49,31 @@ export function useItems() {
 		// todo
 		console.log("NOT IMPLEMENTED: delete items")
 		return new Promise((resolve, reject) => resolve())
+	}
+
+	return {
+		items: itemsState.items,
+		getItemsIds: () => itemsState.items.map((item: ItemData) => item.id),
+		loadItems: load,
+		clearItems: clear,
+		removeItems: remove,
+		deleteItems: deleteItems,
+	}
+}
+
+
+export function useItemsStateless() {
+
+	const {
+		throwErrorNotification,
+		addNotification,
+		updateNotification,
+		removeNotification
+	} = useNotifications()
+
+	function moveOrCopy(srcCollectionId: number, tgtCollectionId: number, itemIds: number[], copy: boolean): Promise<void> {
+		return requestMoveItems(srcCollectionId, tgtCollectionId, itemIds, copy)
+			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_MOVE_FAILED, error))
 	}
 
 	function importItems(data: ImportProcessData): Promise<void> {
@@ -74,20 +91,15 @@ export function useItems() {
 	}
 
 	return {
-		items: itemsState.items,
-		loadItems: load,
-		clearItems: clear,
 		moveOrCopyItems: moveOrCopy,
-		removeItems: remove,
-		deleteItems: deleteItems,
 		importItems: importItems
 	}
+
 }
 
 
 export function useItemSelection() {
 
-	const [itemsState] = useItemsState();
 	const [itemSelectionState, itemSelectionDispatch] = useItemSelectionState();
 
 	function isSelected(itemId: number): boolean {
@@ -141,10 +153,9 @@ export function useItemSelection() {
 		setSelection(newSelection);
 	}
 
-	function selectRangeTo(itemId: number, additive: boolean) {
+	function selectRangeTo(itemId: number, additive: boolean, allItemIds: number[]) {
 		const pivotItemId: number | null = itemSelectionState.lastSelectedItemId;
 		if (pivotItemId) {
-			const allItemIds: number[] = itemsState.items.map((item: ItemData) => item.id);
 			const indexTo: number = allItemIds.indexOf(itemId);
 			const indexLast: number = allItemIds.indexOf(pivotItemId);
 
@@ -190,10 +201,6 @@ export function useItemSelection() {
 		});
 	}
 
-	function selectAll() {
-		setSelection(itemsState.items.map((item: ItemData) => item.id));
-	}
-
 	function clearSelection() {
 		setSelection([]);
 	}
@@ -206,7 +213,6 @@ export function useItemSelection() {
 		setSelection: setSelection,
 		toggleSelection: toggleSelection,
 		selectRangeTo: selectRangeTo,
-		selectAll: selectAll,
 		clearSelection: clearSelection,
 	};
 }

@@ -5,7 +5,7 @@ import {ItemListEntry} from "./ItemListEntry";
 import {Collection, ItemData} from "../../../../../common/commonModels";
 import {isCopyMode, SelectModifier} from "../../../../components/utils/common";
 import {DragAndDropItems} from "../../../common/dragAndDrop";
-import {useCollections} from "../../../hooks/base/collectionHooks";
+import {useActiveCollection, useCollections} from "../../../hooks/base/collectionHooks";
 import {useGroups} from "../../../hooks/base/groupHooks";
 
 interface ItemListProps {
@@ -14,19 +14,23 @@ interface ItemListProps {
 export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.ReactElement {
 
 	const {
-		activeCollectionId,
 		findCollection
 	} = useCollections()
 
 	const {
-		items,
-		removeItems,
-		deleteItems
-	} = useItems();
+		activeCollectionId,
+	} = useActiveCollection()
 
 	const {
 		loadGroups
 	} = useGroups()
+
+	const {
+		items,
+		getItemsIds,
+		removeItems,
+		deleteItems
+	} = useItems();
 
 	const {
 		selectedItemIds,
@@ -34,7 +38,6 @@ export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.R
 		setSelection,
 		toggleSelection,
 		selectRangeTo,
-		selectAll,
 		clearSelection
 	} = useItemSelection();
 
@@ -53,7 +56,7 @@ export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.R
 				if (event.ctrlKey && event.keyCode === 65) {
 					event.preventDefault();
 					event.stopPropagation();
-					selectAll()
+					setSelection(getItemsIds())
 				}
 			}}
 		>
@@ -81,11 +84,11 @@ export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.R
 				break;
 			}
 			case SelectModifier.RANGE: {
-				selectRangeTo(itemId, false)
+				selectRangeTo(itemId, false, getItemsIds())
 				break;
 			}
 			case SelectModifier.ADD_RANGE: {
-				selectRangeTo(itemId, true)
+				selectRangeTo(itemId, true, getItemsIds())
 				break;
 			}
 		}

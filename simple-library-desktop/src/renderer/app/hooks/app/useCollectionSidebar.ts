@@ -1,14 +1,10 @@
 import React, {useState} from "react";
-import {
-	DragAndDropCollections,
-	DragAndDropGroups,
-	DragAndDropItems,
-	DragAndDropUtils
-} from "../../common/dragAndDrop";
+import {DragAndDropCollections, DragAndDropGroups, DragAndDropItems, DragAndDropUtils} from "../../common/dragAndDrop";
 import {useGroups} from "../base/groupHooks";
-import {useCollections} from "../base/collectionHooks";
-import {useItems, useItemSelection} from "../base/itemHooks";
+import {useActiveCollection, useCollections, useCollectionsStateless} from "../base/collectionHooks";
+import {useItems, useItemSelection, useItemsStateless} from "../base/itemHooks";
 import {CollectionSidebarActionType, useCollectionSidebarState} from "../../store/collectionSidebarState";
+import {Collection} from "../../../../common/commonModels";
 
 export function useCollectionSidebar() {
 
@@ -27,20 +23,25 @@ export function useCollectionSidebar() {
 	} = useGroups();
 
 	const {
-		activeCollectionId,
-		moveCollection,
-		openCollection,
 		findCollection,
 	} = useCollections();
 
 	const {
-		loadItems,
-		moveOrCopyItems
+		activeCollectionId,
+		openCollection
+	} = useActiveCollection();
+
+	const {
+		moveCollection
+	} = useCollectionsStateless()
+
+	const {
+		loadItems
 	} = useItems()
 
 	const {
-		clearSelection
-	} = useItemSelection();
+		moveOrCopyItems
+	} = useItemsStateless()
 
 	function toggleExpandNode(nodeId: string, expanded: boolean) {
 		if (expanded) {
@@ -164,7 +165,6 @@ export function useCollectionSidebar() {
 		if (getNodeType(nodeId) === NODE_TYPE_COLLECTION) {
 			const collectionId: number = getNodeObjectId(nodeId)
 			openCollection(collectionId)
-			clearSelection();
 			loadItems(collectionId)
 		} else {
 			console.error("Double-Click on unexpected element:", nodeId)

@@ -6,7 +6,7 @@ import {VBox} from "../../../../components/layout/box/Box";
 import {Button} from "../../../../components/buttons/button/Button";
 import {Label} from "../../../../components/base/label/Label";
 import {TextField} from "../../../../components/input/textfield/TextField";
-import {useCollections} from "../../../hooks/base/collectionHooks";
+import {useActiveCollection, useCollections, useCollectionsStateless} from "../../../hooks/base/collectionHooks";
 import {Collection, CollectionType} from "../../../../../common/commonModels";
 import {Spacer} from "../../../../components/base/spacer/Spacer";
 import {TextArea} from "../../../../components/input/textarea/TextArea";
@@ -22,10 +22,17 @@ interface DialogEditCollectionProps {
 export function DialogEditCollection(props: React.PropsWithChildren<DialogEditCollectionProps>): React.ReactElement {
 
 	const {
-		activeCollectionId,
 		findCollection,
-		editCollection
 	} = useCollections()
+
+	const {
+		activeCollectionId,
+		openCollection
+	} = useActiveCollection()
+
+	const {
+		editCollection
+	} = useCollectionsStateless()
 
 	const {
 		loadGroups

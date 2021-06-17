@@ -1,8 +1,9 @@
 import React, {useEffect} from "react";
 import {ItemList} from "./ItemList";
 import {VBox} from "../../../../components/layout/box/Box";
-import {useCollections} from "../../../hooks/base/collectionHooks";
+import {useActiveCollection, useCollections} from "../../../hooks/base/collectionHooks";
 import {Collection} from "../../../../../common/commonModels";
+import {useItemSelection} from "../../../hooks/base/itemHooks";
 
 interface ContentAreaProps {
 }
@@ -10,11 +11,22 @@ interface ContentAreaProps {
 export function ContentArea(props: React.PropsWithChildren<ContentAreaProps>): React.ReactElement {
 
 	const {
-		activeCollectionId,
 		findCollection
 	} = useCollections();
 
+	const {
+		activeCollectionId,
+	} = useActiveCollection();
+
+	const {
+		clearSelection
+	} = useItemSelection();
+
 	const activeCollection: Collection | null = findCollection(activeCollectionId);
+
+	useEffect(() => {
+		clearSelection();
+	}, [activeCollectionId])
 
 	return activeCollectionId && activeCollection && (
 		<VBox alignMain="start" alignCross="stretch" fill>

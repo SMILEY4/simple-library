@@ -3,10 +3,10 @@ import {
 	GenericGlobalStateContext,
 	genericStateProvider,
 	IStateHookResult,
-	ReducerConfigMap, useGlobalState
+	ReducerConfigMap,
+	useGlobalState
 } from "../../components/utils/storeUtils";
-import React, {Context, useContext} from "react";
-import {CollectionActiveActionType, CollectionActiveState} from "./collectionActiveState";
+import React, {Context} from "react";
 
 
 export interface CollectionSidebarState {
@@ -24,7 +24,7 @@ export enum CollectionSidebarActionType {
 const reducerConfigMap: ReducerConfigMap<CollectionSidebarActionType, CollectionSidebarState> = new ReducerConfigMap([
 	[CollectionSidebarActionType.COLLECTION_SIDEBAR_SET_EXPANDED, (state, payload) => ({
 		...state,
-		collectionSidebarExpandedNodes: payload,
+		expandedNodes: payload,
 	})],
 ])
 
