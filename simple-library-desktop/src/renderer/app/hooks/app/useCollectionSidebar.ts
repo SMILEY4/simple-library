@@ -8,17 +8,17 @@ import {
 import {useGroups} from "../base/groupHooks";
 import {useCollections} from "../base/collectionHooks";
 import {useItems, useItemSelection} from "../base/itemHooks";
-import {AppActionType, useAppState} from "../../store/globalAppState";
+import {CollectionSidebarActionType, useCollectionSidebarState} from "../../store/collectionSidebarState";
 
 export function useCollectionSidebar() {
 
 	const NODE_TYPE_COLLECTION = "collection"
 	const NODE_TYPE_GROUP = "group"
 
-	const {
-		state,
-		dispatch
-	} = useAppState();
+	const [
+		sidebarState,
+		sidebarDispatch
+	] = useCollectionSidebarState()
 
 	const {
 		rootGroup,
@@ -44,14 +44,14 @@ export function useCollectionSidebar() {
 
 	function toggleExpandNode(nodeId: string, expanded: boolean) {
 		if (expanded) {
-			dispatch({
-				type: AppActionType.COLLECTION_SIDEBAR_SET_EXPANDED,
-				payload: [...state.collectionSidebarExpandedNodes, nodeId],
+			sidebarDispatch({
+				type: CollectionSidebarActionType.COLLECTION_SIDEBAR_SET_EXPANDED,
+				payload: [...sidebarState.expandedNodes, nodeId],
 			});
 		} else {
-			dispatch({
-				type: AppActionType.COLLECTION_SIDEBAR_SET_EXPANDED,
-				payload: state.collectionSidebarExpandedNodes.filter(id => id !== nodeId)
+			sidebarDispatch({
+				type: CollectionSidebarActionType.COLLECTION_SIDEBAR_SET_EXPANDED,
+				payload: sidebarState.expandedNodes.filter(id => id !== nodeId)
 			});
 		}
 	}
@@ -187,7 +187,7 @@ export function useCollectionSidebar() {
 	return {
 		NODE_TYPE_COLLECTION: NODE_TYPE_COLLECTION,
 		NODE_TYPE_GROUP: NODE_TYPE_GROUP,
-		expandedNodes: state.collectionSidebarExpandedNodes,
+		expandedNodes: sidebarState.expandedNodes,
 		toggleExpandNode: toggleExpandNode,
 		dragStart: handleDragStart,
 		dragOver: handleDragOver,

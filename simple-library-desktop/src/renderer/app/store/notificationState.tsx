@@ -1,8 +1,15 @@
-import {buildGlobalStateContext, GenericGlobalStateContext, genericStateProvider, ReducerConfigMap} from "./storeUtils";
-import React, {Context, useContext} from "react";
+import {
+	buildGlobalStateContext,
+	GenericGlobalStateContext,
+	genericStateProvider,
+	IStateHookResult,
+	ReducerConfigMap,
+	useGlobalState
+} from "../../components/utils/storeUtils";
+import React, {Context} from "react";
 
 
-export interface GlobalNotificationState {
+export interface NotificationState {
 	notifications: AppNotification[]
 }
 
@@ -34,10 +41,9 @@ export enum AppNotificationType {
 	GROUP_DELETE_FAILED
 }
 
-const initialState: GlobalNotificationState = {
+const initialState: NotificationState = {
 	notifications: [],
 };
-
 
 export enum NotificationActionType {
 	NOTIFICATIONS_ADD = "notifications.add",
@@ -45,7 +51,7 @@ export enum NotificationActionType {
 	NOTIFICATIONS_UPDATE = "notifications.update",
 }
 
-const reducerConfigMap: ReducerConfigMap<NotificationActionType, GlobalNotificationState> = new ReducerConfigMap([
+const reducerConfigMap: ReducerConfigMap<NotificationActionType, NotificationState> = new ReducerConfigMap([
 	[NotificationActionType.NOTIFICATIONS_ADD, (state, payload) => ({
 		...state,
 		notifications: [...state.notifications, {
@@ -74,18 +80,14 @@ const reducerConfigMap: ReducerConfigMap<NotificationActionType, GlobalNotificat
 	})],
 ])
 
-const globalNotificationStateContext: Context<GenericGlobalStateContext<GlobalNotificationState>> = buildGlobalStateContext<GlobalNotificationState>()
 
-export function GlobalNotificationStateProvider(props: { children: any }) {
-	return genericStateProvider(props.children, initialState, reducerConfigMap, globalNotificationStateContext)
+const stateContext: Context<GenericGlobalStateContext<NotificationState, NotificationActionType>> = buildGlobalStateContext()
+
+export function NotificationStateProvider(props: { children: any }) {
+	return genericStateProvider(props.children, initialState, reducerConfigMap, stateContext)
 }
 
-export function useNotificationState() {
-	const {state, dispatch} = useContext(globalNotificationStateContext);
-	if (state) {
-		return {state, dispatch};
-	} else {
-		console.error("Error: No global notification state found.");
-	}
+export function useNotificationState(): IStateHookResult<NotificationState, NotificationActionType> {
+	return useGlobalState(stateContext, "notifications")
 }
 

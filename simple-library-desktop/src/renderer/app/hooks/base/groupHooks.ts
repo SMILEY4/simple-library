@@ -9,27 +9,28 @@ import {genNotificationId} from "./notificationUtils";
 import {extractGroups, Group} from "../../../../common/commonModels";
 import {useNotifications} from "./notificationHooks";
 import {AppNotificationType} from "../../store/notificationState";
-import {AppActionType, useAppState} from "../../store/globalAppState";
+import {CollectionsActionType, useCollectionsState} from "../../store/collectionsState";
 
 export function useGroups() {
 
-	const {state, dispatch} = useAppState();
 	const {throwErrorNotification} = useNotifications()
+	const [collectionsState, collectionsDispatch] = useCollectionsState();
+
 
 	// TODO: implement function "updateItemCounts", that only fetches and modifies that count -> no need to "rebuild" the whole tree
 	function load(): Promise<void> {
 		return fetchRootGroup()
 			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ROOT_GROUP_FETCH_FAILED, error))
 			.then((group: Group) => {
-				dispatch({
-					type: AppActionType.SET_ROOT_GROUP,
+				collectionsDispatch({
+					type: CollectionsActionType.SET_ROOT_GROUP,
 					payload: group,
 				});
 			})
 	}
 
 	function find(groupId: number): Group | null {
-		const result: Group | undefined = extractGroups(state.rootGroup).find(group => group.id === groupId);
+		const result: Group | undefined = extractGroups(collectionsState.rootGroup).find(group => group.id === groupId);
 		return result ? result : null;
 	}
 
@@ -58,7 +59,7 @@ export function useGroups() {
 	}
 
 	return {
-		rootGroup: state.rootGroup,
+		rootGroup: collectionsState.rootGroup,
 		loadGroups: load,
 		findGroup: find,
 		moveGroup: move,

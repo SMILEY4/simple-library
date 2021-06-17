@@ -3,10 +3,14 @@ import {ComponentShowcase} from "../components/_showcase/ComponentShowcase";
 import {WelcomeView} from "./views/welcome/WelcomeView";
 import {MainView} from "./views/main/MainView";
 import {SetApplicationTheme} from "../../common/messaging/messagesWindow";
-import {GlobalAppStateProvider} from "./store/globalAppState";
 import {hot} from 'react-hot-loader/root';
-import {GlobalNotificationStateProvider} from "./store/notificationState";
+import {NotificationStateProvider} from "./store/notificationState";
 import {Compose} from "../components/misc/compose/Compose";
+import {CollectionsStateProvider} from "./store/collectionsState";
+import {ItemSelectionStateProvider} from "./store/itemSelectionState";
+import {ItemsStateProvider} from "./store/itemsState";
+import {CollectionSidebarStateProvider} from "./store/collectionSidebarState";
+import {CollectionActiveStateProvider} from "./store/collectionActiveState";
 
 const {ipcRenderer} = window.require('electron');
 
@@ -76,8 +80,12 @@ export class Application extends Component<any, AppState> {
 	renderWithGlobalStates(element: ReactElement): ReactElement {
 		return (
 			<Compose components={[
-				GlobalAppStateProvider,
-				GlobalNotificationStateProvider
+				CollectionActiveStateProvider,
+				CollectionSidebarStateProvider,
+				CollectionsStateProvider,
+				ItemSelectionStateProvider,
+				ItemsStateProvider,
+				NotificationStateProvider,
 			]}>
 				{element}
 			</Compose>

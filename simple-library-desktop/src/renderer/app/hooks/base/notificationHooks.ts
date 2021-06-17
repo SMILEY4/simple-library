@@ -4,7 +4,7 @@ import {AppNotificationType, NotificationActionType, useNotificationState} from 
 
 export function useNotifications() {
 
-	const {state, dispatch} = useNotificationState();
+	const [state, dispatch] = useNotificationState();
 
 	function throwError(notificationId: string, type: AppNotificationType, error: any) {
 		add(notificationId, type, error);

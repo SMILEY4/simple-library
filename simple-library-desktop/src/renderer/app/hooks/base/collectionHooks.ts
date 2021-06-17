@@ -8,11 +8,13 @@ import {genNotificationId} from "./notificationUtils";
 import {useNotifications} from "./notificationHooks";
 import {Collection, CollectionType, extractCollections} from "../../../../common/commonModels";
 import {AppNotificationType} from "../../store/notificationState";
-import {AppActionType, useAppState} from "../../store/globalAppState";
+import {useCollectionsState} from "../../store/collectionsState";
+import {CollectionActiveActionType, useCollectionActiveState} from "../../store/collectionActiveState";
 
 export function useCollections() {
 
-	const {state, dispatch} = useAppState();
+	const [collectionsState] = useCollectionsState();
+	const [activeCollectionState, activeCollectionDispatch] = useCollectionActiveState();
 	const {throwErrorNotification} = useNotifications();
 
 	function move(collectionId: number, targetGroupId: number | null): Promise<void> {
@@ -22,7 +24,7 @@ export function useCollections() {
 
 	function find(collectionId: number): Collection | null {
 		if (collectionId) {
-			const result: Collection | undefined = extractCollections(state.rootGroup).find(collection => collection.id === collectionId);
+			const result: Collection | undefined = extractCollections(collectionsState.rootGroup).find(collection => collection.id === collectionId);
 			return result ? result : null;
 		} else {
 			return null;
@@ -33,7 +35,7 @@ export function useCollections() {
 		return requestDeleteCollection(collectionId)
 			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.COLLECTION_DELETE_FAILED, error))
 			.then(() => {
-				if (state.activeCollectionId === collectionId) {
+				if (activeCollectionState.activeCollectionId === collectionId) {
 					closeCollection()
 				}
 			})
@@ -50,12 +52,12 @@ export function useCollections() {
 	}
 
 	function openCollection(collectionId: number): void {
-		if (state.activeCollectionId !== collectionId) {
+		if (activeCollectionState.activeCollectionId !== collectionId) {
 			if (collectionId === null || find(collectionId) === null) {
 				closeCollection()
 			} else {
-				dispatch({
-					type: AppActionType.SET_CURRENT_COLLECTION_ID,
+				activeCollectionDispatch({
+					type: CollectionActiveActionType.SET_CURRENT_COLLECTION_ID,
 					payload: collectionId
 				});
 			}
@@ -63,14 +65,14 @@ export function useCollections() {
 	}
 
 	function closeCollection(): void {
-		dispatch({
-			type: AppActionType.SET_CURRENT_COLLECTION_ID,
+		activeCollectionDispatch({
+			type: CollectionActiveActionType.SET_CURRENT_COLLECTION_ID,
 			payload: null
 		});
 	}
 
 	return {
-		activeCollectionId: state.activeCollectionId,
+		activeCollectionId: activeCollectionState.activeCollectionId,
 		moveCollection: move,
 		findCollection: find,
 		deleteCollection: deleteCollection,

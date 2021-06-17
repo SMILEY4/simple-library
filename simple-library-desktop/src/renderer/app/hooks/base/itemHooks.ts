@@ -8,12 +8,12 @@ import {
 import {useNotifications} from "./notificationHooks";
 import {genNotificationId} from "./notificationUtils";
 import {ImportProcessData, ImportResult, ImportStatus, ItemData} from "../../../../common/commonModels";
-import {AppActionType, useAppState} from "../../store/globalAppState";
 import {AppNotificationType} from "../../store/notificationState";
+import {ItemsActionType, useItemsState} from "../../store/itemsState";
+import {ItemSelectionActionType, useItemSelectionState} from "../../store/itemSelectionState";
 
 export function useItems() {
 
-	const {state, dispatch} = useAppState();
 	const {
 		throwErrorNotification,
 		addNotification,
@@ -21,18 +21,23 @@ export function useItems() {
 		removeNotification
 	} = useNotifications()
 
+	const [
+		itemsState,
+		itemsDispatch
+	] = useItemsState();
+
 	function load(collectionId: number): void {
 		fetchItems(collectionId)
 			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_FETCH_FAILED, error))
-			.then((items: ItemData[]) => dispatch({
-				type: AppActionType.SET_ITEMS,
+			.then((items: ItemData[]) => itemsDispatch({
+				type: ItemsActionType.SET_ITEMS,
 				payload: items,
 			}));
 	}
 
 	function clear(): void {
-		dispatch({
-			type: AppActionType.SET_ITEMS,
+		itemsDispatch({
+			type: ItemsActionType.SET_ITEMS,
 			payload: [],
 		})
 	}
@@ -69,7 +74,7 @@ export function useItems() {
 	}
 
 	return {
-		items: state.items,
+		items: itemsState.items,
 		loadItems: load,
 		clearItems: clear,
 		moveOrCopyItems: moveOrCopy,
@@ -82,63 +87,64 @@ export function useItems() {
 
 export function useItemSelection() {
 
-	const {state, dispatch} = useAppState();
+	const [itemsState] = useItemsState();
+	const [itemSelectionState, itemSelectionDispatch] = useItemSelectionState();
 
 	function isSelected(itemId: number): boolean {
-		return state.selectedItemIds.indexOf(itemId) !== -1;
+		return itemSelectionState.selectedItemIds.indexOf(itemId) !== -1;
 	}
 
 	function setSelection(itemIds: number[]) {
-		dispatch({
-			type: AppActionType.ITEM_SELECTION_SET,
+		itemSelectionDispatch({
+			type: ItemSelectionActionType.ITEM_SELECTION_SET,
 			payload: itemIds,
 		});
-		dispatch({
-			type: AppActionType.ITEM_SELECTION_SET_LAST,
+		itemSelectionDispatch({
+			type: ItemSelectionActionType.ITEM_SELECTION_SET_LAST,
 			payload: itemIds.length > 0 ? itemIds[0] : null,
 		});
 	}
 
 	function addToSelection(itemIds: number[]) {
-		dispatch({
-			type: AppActionType.ITEM_SELECTION_ADD,
+		itemSelectionDispatch({
+			type: ItemSelectionActionType.ITEM_SELECTION_ADD,
 			payload: itemIds,
 		});
-		dispatch({
-			type: AppActionType.ITEM_SELECTION_SET_LAST,
+		itemSelectionDispatch({
+			type: ItemSelectionActionType.ITEM_SELECTION_SET_LAST,
 			payload: itemIds.length > 0 ? itemIds[0] : null,
 		});
 	}
 
 	function removeFromSelection(itemIds: number[]) {
-		dispatch({
-			type: AppActionType.ITEM_SELECTION_REMOVE,
+		itemSelectionDispatch({
+			type: ItemSelectionActionType.ITEM_SELECTION_REMOVE,
 			payload: itemIds,
 		});
-		dispatch({
-			type: AppActionType.ITEM_SELECTION_SET_LAST,
+		itemSelectionDispatch({
+			type: ItemSelectionActionType.ITEM_SELECTION_SET_LAST,
 			payload: itemIds.length > 0 ? itemIds[0] : null,
 		});
 	}
 
 	function toggleSelection(itemIds: number[]) {
-		const newSelection: number[] = state.selectedItemIds.filter(itemId => itemIds.indexOf(itemId) === -1);
+		const newSelection: number[] = itemSelectionState.selectedItemIds.filter(itemId => itemIds.indexOf(itemId) === -1);
 		itemIds.forEach(itemId => {
-			if (state.selectedItemIds.indexOf(itemId) === -1) {
+			if (itemSelectionState.selectedItemIds.indexOf(itemId) === -1) {
 				newSelection.push(itemId);
 			}
 		});
-		dispatch({
-			type: AppActionType.ITEM_SELECTION_SET_LAST,
+		itemSelectionDispatch({
+			type: ItemSelectionActionType.ITEM_SELECTION_SET_LAST,
 			payload: itemIds.length > 0 ? itemIds[0] : null,
 		});
 		setSelection(newSelection);
 	}
 
 	function selectRangeTo(itemId: number, additive: boolean) {
-		const pivotItemId: number | null = state.lastSelectedItemId;
+		const pivotItemId: number | null = itemSelectionState.lastSelectedItemId;
 		if (pivotItemId) {
-			const allItemIds: number[] = state.items.map((item: ItemData) => item.id);
+			const allItemIds: number[] = itemsState.items.map((item: ItemData) => item.id);
 			const indexTo: number = allItemIds.indexOf(itemId);
 			const indexLast: number = allItemIds.indexOf(pivotItemId);
 
@@ -147,45 +153,45 @@ export function useItemSelection() {
 				const indexEnd: number = Math.max(indexTo, indexLast);
 				const idsInRange: number[] = allItemIds.slice(indexStart, indexEnd + 1);
 				if (additive) {
-					dispatch({
-						type: AppActionType.ITEM_SELECTION_ADD,
+					itemSelectionDispatch({
+						type: ItemSelectionActionType.ITEM_SELECTION_ADD,
 						payload: idsInRange,
 					});
 				} else {
-					dispatch({
-						type: AppActionType.ITEM_SELECTION_SET,
+					itemSelectionDispatch({
+						type: ItemSelectionActionType.ITEM_SELECTION_SET,
 						payload: idsInRange,
 					});
 				}
 			}
 		} else {
 			if (additive) {
-				if (state.selectedItemIds.indexOf(itemId) === -1) {
-					dispatch({
-						type: AppActionType.ITEM_SELECTION_ADD,
+				if (itemSelectionState.selectedItemIds.indexOf(itemId) === -1) {
+					itemSelectionDispatch({
+						type: ItemSelectionActionType.ITEM_SELECTION_ADD,
 						payload: [itemId],
 					});
 				} else {
-					dispatch({
-						type: AppActionType.ITEM_SELECTION_REMOVE,
+					itemSelectionDispatch({
+						type: ItemSelectionActionType.ITEM_SELECTION_REMOVE,
 						payload: [itemId],
 					});
 				}
 			} else {
-				dispatch({
-					type: AppActionType.ITEM_SELECTION_SET,
+				itemSelectionDispatch({
+					type: ItemSelectionActionType.ITEM_SELECTION_SET,
 					payload: [itemId],
 				});
 			}
 		}
-		dispatch({
-			type: AppActionType.ITEM_SELECTION_SET_LAST,
+		itemSelectionDispatch({
+			type: ItemSelectionActionType.ITEM_SELECTION_SET_LAST,
 			payload: pivotItemId,
 		});
 	}
 
 	function selectAll() {
-		setSelection(state.items.map((item: ItemData) => item.id));
+		setSelection(itemsState.items.map((item: ItemData) => item.id));
 	}
 
 	function clearSelection() {
@@ -193,7 +199,7 @@ export function useItemSelection() {
 	}
 
 	return {
-		selectedItemIds: state.selectedItemIds,
+		selectedItemIds: itemSelectionState.selectedItemIds,
 		isSelected: isSelected,
 		addToSelection: addToSelection,
 		removeFromSelection: removeFromSelection,
