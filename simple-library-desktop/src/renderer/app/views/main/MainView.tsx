@@ -8,9 +8,9 @@ import {CollectionSidebar, TAB_DATA_COLLECTIONS} from "./sidebarmenu/CollectionS
 import {NotificationStack} from "../../../components/modals/notification/NotificationStack";
 import {useNotifications} from "../../hooks/base/notificationHooks";
 import {APP_ROOT_ID} from "../../Application";
-import {useGroups} from "../../hooks/base/groupHooks";
 import {ContentArea} from "./contentarea/ContentArea";
 import {useMount} from "../../../components/utils/commonHooks";
+import {useCollections} from "../../hooks/base/collectionHooks";
 
 interface MainViewProps {
 	onClosed: () => void
@@ -24,7 +24,7 @@ export function MainView(props: React.PropsWithChildren<MainViewProps>): React.R
 
 	const {
 		loadGroups
-	} = useGroups()
+	} = useCollections()
 
 	useMount(() => {
 		loadGroups()

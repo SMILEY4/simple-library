@@ -1,10 +1,8 @@
 import React, {useState} from "react";
 import {DragAndDropCollections, DragAndDropGroups, DragAndDropItems, DragAndDropUtils} from "../../common/dragAndDrop";
-import {useGroups} from "../base/groupHooks";
 import {useActiveCollection, useCollections, useCollectionsStateless} from "../base/collectionHooks";
-import {useItems, useItemSelection, useItemsStateless} from "../base/itemHooks";
+import {useItems, useItemsStateless} from "../base/itemHooks";
 import {CollectionSidebarActionType, useCollectionSidebarState} from "../../store/collectionSidebarState";
-import {Collection} from "../../../../common/commonModels";
 
 export function useCollectionSidebar() {
 
@@ -18,12 +16,9 @@ export function useCollectionSidebar() {
 
 	const {
 		rootGroup,
+		findCollection,
 		loadGroups,
 		moveGroup
-	} = useGroups();
-
-	const {
-		findCollection,
 	} = useCollections();
 
 	const {

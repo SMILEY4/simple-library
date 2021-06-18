@@ -15,8 +15,7 @@ import {
 import {ImportSelectFilesForm} from "./ImportSelectFilesForm";
 import {ImportTargetDirForm} from "./ImportTargetDirForm";
 import {ImportRenameFilesForm} from "./ImportRenameFilesForm";
-import {useActiveCollection} from "../../../../hooks/base/collectionHooks";
-import {useGroups} from "../../../../hooks/base/groupHooks";
+import {useActiveCollection, useCollections} from "../../../../hooks/base/collectionHooks";
 import {useComplexValidatedState} from "../../../../../components/utils/commonHooks";
 
 interface DialogImportFilesProps {
@@ -46,7 +45,7 @@ export function DialogImportFiles(props: React.PropsWithChildren<DialogImportFil
 
 	const {
 		loadGroups
-	} = useGroups()
+	} = useCollections()
 
 	const [
 		data,

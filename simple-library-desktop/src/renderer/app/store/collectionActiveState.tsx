@@ -12,14 +12,10 @@ import {CollectionType} from "../../../common/commonModels";
 
 export interface CollectionActiveState {
 	activeCollectionId: number | null,
-	activeCollectionName: string | null,
-	activeCollectionType: CollectionType | null
 }
 
 const initialState: CollectionActiveState = {
 	activeCollectionId: null,
-	activeCollectionName: null,
-	activeCollectionType: null
 };
 
 export enum CollectionActiveActionType {

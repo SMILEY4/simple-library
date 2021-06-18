@@ -6,7 +6,6 @@ import {Collection, ItemData} from "../../../../../common/commonModels";
 import {isCopyMode, SelectModifier} from "../../../../components/utils/common";
 import {DragAndDropItems} from "../../../common/dragAndDrop";
 import {useActiveCollection, useCollections} from "../../../hooks/base/collectionHooks";
-import {useGroups} from "../../../hooks/base/groupHooks";
 
 interface ItemListProps {
 }
@@ -14,16 +13,13 @@ interface ItemListProps {
 export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.ReactElement {
 
 	const {
-		findCollection
+		findCollection,
+		loadGroups
 	} = useCollections()
 
 	const {
 		activeCollectionId,
 	} = useActiveCollection()
-
-	const {
-		loadGroups
-	} = useGroups()
 
 	const {
 		items,
@@ -42,6 +38,7 @@ export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.R
 	} = useItemSelection();
 
 	const activeCollection: Collection | null = findCollection(activeCollectionId)
+
 
 	return (
 		<VBox

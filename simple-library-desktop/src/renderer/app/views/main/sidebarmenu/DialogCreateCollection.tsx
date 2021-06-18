@@ -9,7 +9,6 @@ import {useCollections, useCollectionsStateless} from "../../../hooks/base/colle
 import {CollectionType, Group} from "../../../../../common/commonModels";
 import {Spacer} from "../../../../components/base/spacer/Spacer";
 import {TextArea} from "../../../../components/input/textarea/TextArea";
-import {useGroups} from "../../../hooks/base/groupHooks";
 import {ChoiceBox, ChoiceBoxItem} from "../../../../components/buttons/choicebox/ChoiceBox";
 import {ElementLabel} from "../../../../components/misc/elementlabel/ElementLabel";
 import {useStateRef, useValidatedState} from "../../../../components/utils/commonHooks";
@@ -35,7 +34,7 @@ export function DialogCreateCollection(props: React.PropsWithChildren<DialogCrea
 	const {
 		findGroup,
 		loadGroups
-	} = useGroups();
+	} = useCollections();
 
 	const {
 		createCollection

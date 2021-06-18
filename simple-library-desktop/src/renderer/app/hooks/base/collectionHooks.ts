@@ -1,21 +1,27 @@
 import {
+	fetchRootGroup,
 	requestCreateCollection,
+	requestCreateGroup,
 	requestDeleteCollection,
+	requestDeleteGroup,
 	requestEditCollection,
-	requestMoveCollection
+	requestMoveCollection,
+	requestMoveGroup,
+	requestRenameGroup
 } from "../../common/messagingInterface";
 import {genNotificationId} from "./notificationUtils";
 import {useNotifications} from "./notificationHooks";
-import {Collection, CollectionType, extractCollections} from "../../../../common/commonModels";
+import {Collection, CollectionType, extractCollections, extractGroups, Group} from "../../../../common/commonModels";
 import {AppNotificationType} from "../../store/notificationState";
 import {CollectionActiveActionType, useCollectionActiveState} from "../../store/collectionActiveState";
-import {useCollectionsState} from "../../store/collectionsState";
+import {CollectionsActionType, useCollectionsState} from "../../store/collectionsState";
 
 export function useCollections() {
 
-	const [collectionsState] = useCollectionsState();
+	const [collectionsState, collectionsDispatch] = useCollectionsState();
+	const {throwErrorNotification} = useNotifications()
 
-	function find(collectionId: number): Collection | null {
+	function findCollection(collectionId: number): Collection | null {
 		if (collectionId) {
 			const result: Collection | undefined = extractCollections(collectionsState.rootGroup).find(collection => collection.id === collectionId);
 			return result ? result : null;
@@ -24,8 +30,55 @@ export function useCollections() {
 		}
 	}
 
+	function findGroup(groupId: number): Group | null {
+		const result: Group | undefined = extractGroups(collectionsState.rootGroup).find(group => group.id === groupId);
+		return result ? result : null;
+	}
+
+	function loadGroups(): Promise<void> {
+		return fetchRootGroup()
+			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ROOT_GROUP_FETCH_FAILED, error))
+			.then((group: Group) => {
+				collectionsDispatch({
+					type: CollectionsActionType.SET_ROOT_GROUP,
+					payload: group,
+				});
+			})
+	}
+
+	function moveGroup(groupId: number, targetGroupId: number | null): Promise<void> {
+		return requestMoveGroup(groupId, targetGroupId)
+			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.GROUP_MOVE_FAILED, error))
+			.then(() => loadGroups());
+	}
+
+	function deleteGroup(groupId: number, keepContent: boolean): Promise<void> {
+		return requestDeleteGroup(groupId, !keepContent)
+			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.GROUP_DELETE_FAILED, error))
+			.then(() => loadGroups())
+	}
+
+	function createGroup(parentGroupId: number | null, name: string): Promise<void> {
+		return requestCreateGroup(name, parentGroupId)
+			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.GROUP_CREATE_FAILED, error))
+			.then(() => loadGroups())
+	}
+
+	function renameGroup(groupId: number, newName: string): Promise<void> {
+		return requestRenameGroup(groupId, newName)
+			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.GROUP_RENAME_FAILED, error))
+			.then(() => loadGroups())
+	}
+
 	return {
-		findCollection: find,
+		rootGroup: collectionsState.rootGroup,
+		findCollection: findCollection,
+		findGroup: findGroup,
+		loadGroups: loadGroups,
+		moveGroup: moveGroup,
+		deleteGroup: deleteGroup,
+		createGroup: createGroup,
+		renameGroup: renameGroup
 	}
 
 }

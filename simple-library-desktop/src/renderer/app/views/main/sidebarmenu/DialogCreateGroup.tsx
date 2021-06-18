@@ -5,11 +5,11 @@ import {Slot} from "../../../../components/base/slot/Slot";
 import {VBox} from "../../../../components/layout/box/Box";
 import {Button} from "../../../../components/buttons/button/Button";
 import {Label} from "../../../../components/base/label/Label";
-import {useGroups} from "../../../hooks/base/groupHooks";
 import {TextField} from "../../../../components/input/textfield/TextField";
 import {Group} from "../../../../../common/commonModels";
 import {Spacer} from "../../../../components/base/spacer/Spacer";
 import {useValidatedState} from "../../../../components/utils/commonHooks";
+import {useCollections} from "../../../hooks/base/collectionHooks";
 
 interface DialogCreateGroupProps {
 	parentGroupId: number | null,
@@ -21,7 +21,7 @@ export function DialogCreateGroup(props: React.PropsWithChildren<DialogCreateGro
 	const {
 		findGroup,
 		createGroup
-	} = useGroups();
+	} = useCollections();
 
 	const parentGroup: Group | null = findGroup(props.parentGroupId)
 

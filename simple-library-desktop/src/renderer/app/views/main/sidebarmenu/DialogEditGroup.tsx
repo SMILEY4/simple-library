@@ -5,9 +5,9 @@ import {Slot} from "../../../../components/base/slot/Slot";
 import {VBox} from "../../../../components/layout/box/Box";
 import {Button} from "../../../../components/buttons/button/Button";
 import {Label} from "../../../../components/base/label/Label";
-import {useGroups} from "../../../hooks/base/groupHooks";
 import {TextField} from "../../../../components/input/textfield/TextField";
 import {useValidatedState} from "../../../../components/utils/commonHooks";
+import {useCollections} from "../../../hooks/base/collectionHooks";
 
 interface DialogEditGroupProps {
 	groupId: number,
@@ -19,7 +19,7 @@ export function DialogEditGroup(props: React.PropsWithChildren<DialogEditGroupPr
 	const {
 		findGroup,
 		renameGroup
-	} = useGroups();
+	} = useCollections();
 
 	const prevName: string = findGroup(props.groupId).name;
 

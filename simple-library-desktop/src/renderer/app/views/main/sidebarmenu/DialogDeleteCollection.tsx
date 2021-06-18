@@ -6,7 +6,6 @@ import {VBox} from "../../../../components/layout/box/Box";
 import {Button} from "../../../../components/buttons/button/Button";
 import {Label} from "../../../../components/base/label/Label";
 import {useActiveCollection, useCollections, useCollectionsStateless} from "../../../hooks/base/collectionHooks";
-import {useGroups} from "../../../hooks/base/groupHooks";
 import {useItemSelection} from "../../../hooks/base/itemHooks";
 import {Collection} from "../../../../../common/commonModels";
 
@@ -19,6 +18,7 @@ export function DialogDeleteCollection(props: React.PropsWithChildren<DialogDele
 
 	const {
 		findCollection,
+		loadGroups
 	} = useCollections();
 
 	const {
@@ -29,9 +29,6 @@ export function DialogDeleteCollection(props: React.PropsWithChildren<DialogDele
 		deleteCollection
 	} = useCollectionsStateless()
 
-	const {
-		loadGroups
-	} = useGroups()
 
 	const {
 		clearSelection

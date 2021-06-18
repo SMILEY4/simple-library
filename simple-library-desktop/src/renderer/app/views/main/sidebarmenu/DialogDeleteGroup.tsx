@@ -5,7 +5,6 @@ import {Slot} from "../../../../components/base/slot/Slot";
 import {VBox} from "../../../../components/layout/box/Box";
 import {Button} from "../../../../components/buttons/button/Button";
 import {Label} from "../../../../components/base/label/Label";
-import {useGroups} from "../../../hooks/base/groupHooks";
 import {CheckBox} from "../../../../components/buttons/checkbox/CheckBox";
 import {useActiveCollection, useCollections} from "../../../hooks/base/collectionHooks";
 import {Group} from "../../../../../common/commonModels";
@@ -17,13 +16,11 @@ interface DialogDeleteGroupProps {
 
 export function DialogDeleteGroup(props: React.PropsWithChildren<DialogDeleteGroupProps>): React.ReactElement {
 
-	const {
-		findGroup,
-		deleteGroup
-	} = useGroups();
 
 	const {
-		findCollection
+		findCollection,
+		findGroup,
+		deleteGroup
 	} = useCollections()
 
 	const {

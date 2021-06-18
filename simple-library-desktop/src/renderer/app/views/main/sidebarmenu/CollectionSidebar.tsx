@@ -7,7 +7,6 @@ import {DynamicSlot} from "../../../../components/base/slot/DynamicSlot";
 import {ContextMenuCollection} from "./ContextMenuCollection";
 import {ContextMenuGroup} from "./ContextMenuGroup";
 import {APP_ROOT_ID} from "../../../Application";
-import {useGroups} from "../../../hooks/base/groupHooks";
 import {DialogDeleteCollection} from "./DialogDeleteCollection";
 import {useCollectionSidebar, useCollectionSidebarDialogs} from "../../../hooks/app/useCollectionSidebar";
 import {DialogDeleteGroup} from "./DialogDeleteGroup";
@@ -30,7 +29,7 @@ export function CollectionSidebar(props: React.PropsWithChildren<CollectionSideb
 
 	const {
 		rootGroup
-	} = useGroups();
+	} = useCollections();
 
 	const {
 		activeCollectionId

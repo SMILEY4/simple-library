@@ -10,7 +10,6 @@ import {useActiveCollection, useCollections, useCollectionsStateless} from "../.
 import {Collection, CollectionType} from "../../../../../common/commonModels";
 import {Spacer} from "../../../../components/base/spacer/Spacer";
 import {TextArea} from "../../../../components/input/textarea/TextArea";
-import {useGroups} from "../../../hooks/base/groupHooks";
 import {useItems, useItemSelection} from "../../../hooks/base/itemHooks";
 import {useStateRef, useValidatedState} from "../../../../components/utils/commonHooks";
 
@@ -23,20 +22,16 @@ export function DialogEditCollection(props: React.PropsWithChildren<DialogEditCo
 
 	const {
 		findCollection,
+		loadGroups
 	} = useCollections()
 
 	const {
 		activeCollectionId,
-		openCollection
 	} = useActiveCollection()
 
 	const {
 		editCollection
 	} = useCollectionsStateless()
-
-	const {
-		loadGroups
-	} = useGroups()
 
 	const {
 		loadItems
