@@ -1,13 +1,16 @@
 import {
-	buildGlobalStateContext,
-	GenericGlobalStateContext,
-	genericStateProvider,
-	IStateHookResult,
-	ReducerConfigMap, useGlobalState
+	buildContext,
+	GenericContextProvider,
+	IStateHookResultReadWrite, IStateHookResultWriteOnly,
+	ReducerConfigMap,
+	useGlobalStateReadWrite, useGlobalStateWriteOnly
 } from "../../components/utils/storeUtils";
-import React, {Context, useContext} from "react";
+import React from "react";
 import {ItemData} from "../../../common/commonModels";
+import {ItemSelectionActionType} from "./itemSelectionState";
 
+
+// STATE
 
 export interface ItemsState {
 	items: ItemData[]
@@ -16,6 +19,9 @@ export interface ItemsState {
 const initialState: ItemsState = {
 	items: [],
 };
+
+
+// REDUCER
 
 export enum ItemsActionType {
 	SET_ITEMS = "items.set",
@@ -28,14 +34,22 @@ const reducerConfigMap: ReducerConfigMap<ItemsActionType, ItemsState> = new Redu
 	})],
 ])
 
-const stateContext: Context<GenericGlobalStateContext<ItemsState,ItemsActionType>> = buildGlobalStateContext()
+
+// CONTEXT
+
+const [
+	stateContext,
+	dispatchContext
+] = buildContext<ItemsActionType, ItemsState>()
 
 export function ItemsStateProvider(props: { children: any }) {
-	return genericStateProvider(props.children, initialState, reducerConfigMap, stateContext)
+	return GenericContextProvider(props.children, initialState, reducerConfigMap, stateContext, dispatchContext);
 }
 
-export function useItemsState(): IStateHookResult<ItemsState, ItemsActionType> {
-	return useGlobalState(stateContext, "items")
-
+export function useItemsState(): IStateHookResultReadWrite<ItemsState, ItemsActionType> {
+	return useGlobalStateReadWrite<ItemsState, ItemsActionType>(stateContext, dispatchContext)
 }
 
+export function useItemsStateDispatch(): IStateHookResultWriteOnly<ItemsActionType> {
+	return useGlobalStateWriteOnly<ItemsActionType>(dispatchContext)
+}

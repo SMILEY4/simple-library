@@ -1,13 +1,16 @@
 import {
-	buildGlobalStateContext,
-	GenericGlobalStateContext,
-	genericStateProvider,
-	IStateHookResult,
-	ReducerConfigMap, useGlobalState
+	buildContext,
+	GenericContextProvider,
+	IStateHookResultReadWrite, IStateHookResultWriteOnly,
+	ReducerConfigMap, useGlobalStateReadWrite, useGlobalStateWriteOnly
 } from "../../components/utils/storeUtils";
-import React, {Context, useContext} from "react";
+import React, {Context} from "react";
 import {Group} from "../../../common/commonModels";
+import {CollectionActiveActionType, CollectionActiveState} from "./collectionActiveState";
+import {CollectionSidebarActionType} from "./collectionSidebarState";
 
+
+// STATE
 
 export interface CollectionsState {
 	rootGroup: Group | null,
@@ -16,6 +19,9 @@ export interface CollectionsState {
 const initialState: CollectionsState = {
 	rootGroup: null,
 };
+
+
+// REDUCER
 
 export enum CollectionsActionType {
 	SET_ROOT_GROUP = "rootgroup.set",
@@ -29,14 +35,21 @@ const reducerConfigMap: ReducerConfigMap<CollectionsActionType, CollectionsState
 ])
 
 
-const stateContext: Context<GenericGlobalStateContext<CollectionsState, CollectionsActionType>> = buildGlobalStateContext()
+// CONTEXT
+
+const [
+	stateContext,
+	dispatchContext
+] = buildContext<CollectionsActionType, CollectionsState>()
 
 export function CollectionsStateProvider(props: { children: any }) {
-	return genericStateProvider(props.children, initialState, reducerConfigMap, stateContext)
+	return GenericContextProvider(props.children, initialState, reducerConfigMap, stateContext, dispatchContext);
 }
 
-export function useCollectionsState(): IStateHookResult<CollectionsState, CollectionsActionType> {
-	return useGlobalState(stateContext, "collections")
-
+export function useCollectionsState(): IStateHookResultReadWrite<CollectionsState, CollectionsActionType> {
+	return useGlobalStateReadWrite<CollectionsState, CollectionsActionType>(stateContext, dispatchContext)
 }
 
+export function useCollectionsStateDispatch(): IStateHookResultWriteOnly<CollectionsActionType> {
+	return useGlobalStateWriteOnly<CollectionsActionType>(dispatchContext)
+}

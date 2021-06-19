@@ -1,4 +1,4 @@
-import React, {Context, createContext, ReactElement, Reducer, useCallback, useContext, useReducer} from "react";
+import React, {Context, createContext, Dispatch, ReactElement, useContext, useReducer} from "react";
 
 export class ReducerConfigMap<ACTION_TYPE, STATE> extends Map<ACTION_TYPE, (state: STATE, payload: any) => STATE> {
 }
@@ -8,31 +8,16 @@ export interface GenericStateAction<ACTION_TYPE> {
 	payload: any
 }
 
-export interface GenericGlobalStateContext<STATE, ACTION_TYPE> {
-	state: STATE,
-	dispatch: ({type}: { type: ACTION_TYPE; payload?: any; }) => void
-}
+export type IStateHookResultReadWrite<STATE, ACTION_TYPE> = [STATE, ({type}: { type: ACTION_TYPE, payload?: any }) => void];
+export type IStateHookResultWriteOnly<ACTION_TYPE> = ({type}: { type: ACTION_TYPE, payload?: any }) => void;
+export type IStateHookResultReadOnly<STATE> = STATE;
 
-export function buildGlobalStateContext<STATE, ACTION_TYPE>(): Context<GenericGlobalStateContext<STATE, ACTION_TYPE>> {
-	return createContext({} as GenericGlobalStateContext<STATE, ACTION_TYPE>);
-}
 
-function buildAsyncer<STATE>(): (dispatch: any, state: STATE) => (action: any) => any {
-	return (dispatch: any, state: STATE) =>
-		(action: any) =>
-			typeof action === 'function'
-				? action(dispatch, state)
-				: dispatch(action);
-}
-
-function useGenericGlobalStateProvider<R extends Reducer<any, any>>(
-	initialState: any,
-	reducer: R,
-	asyncer: any
-) {
-	const [state, dispatchBase] = useReducer(reducer, initialState);
-	const dispatch = useCallback(asyncer(dispatchBase, state), []);
-	return [state, dispatch]
+export function buildContext<ACTION_TYPE, STATE>(): [Context<STATE>, Context<Dispatch<GenericStateAction<ACTION_TYPE>>>] {
+	const stateContext = createContext<STATE>({} as STATE);
+	const dispatchContext = createContext<Dispatch<GenericStateAction<ACTION_TYPE>>>(() => {
+	});
+	return [stateContext, dispatchContext]
 }
 
 function applyStateAction<ACTION_TYPE, STATE>(
@@ -43,29 +28,60 @@ function applyStateAction<ACTION_TYPE, STATE>(
 	if (configMap.has(action.type)) {
 		return configMap.get(action.type)(state, action.payload);
 	} else {
-		console.error("Unknown ActionType: '" + action.type + "'");
+		console.error("Unknown action-type: '" + action.type + "'");
 		return state;
 	}
 }
 
-export function genericStateProvider<STATE, ACTION_TYPE>(
+export function useReducerFromConfig<ACTION_TYPE, STATE>(initState: STATE, configMap: Map<ACTION_TYPE, (state: STATE, payload: any) => STATE>) {
+	const reducer = (state: STATE, action: GenericStateAction<ACTION_TYPE>) => applyStateAction(configMap, action, state);
+	return useReducer(reducer, initState);
+}
+
+export function GenericContextProvider<STATE, ACTION_TYPE>(
 	children: any,
 	initialState: STATE,
 	reducerConfigMap: Map<ACTION_TYPE, (state: STATE, payload: any) => STATE>,
-	context: Context<GenericGlobalStateContext<STATE, ACTION_TYPE>>
+	stateContext: Context<STATE>,
+	dispatchContext: Context<Dispatch<GenericStateAction<ACTION_TYPE>>>
 ): ReactElement {
-	const reducer = (state: STATE, action: GenericStateAction<ACTION_TYPE>) => applyStateAction(reducerConfigMap, action, state);
-	const [state, dispatch] = useGenericGlobalStateProvider(initialState, reducer, buildAsyncer<STATE>())
-	return React.createElement(context.Provider, {children: children, value: {state, dispatch}});
+	const [state, dispatch] = useReducerFromConfig(initialState, reducerConfigMap);
+
+	return React.createElement(
+		stateContext.Provider,
+		{
+			children: React.createElement(
+				dispatchContext.Provider,
+				{
+					children: children,
+					value: dispatch
+				}
+			),
+			value: state
+		}
+	);
 }
 
-export function useGlobalState<STATE, ACTION_TYPE>(context: Context<GenericGlobalStateContext<STATE, ACTION_TYPE>>, name: string): IStateHookResult<STATE, ACTION_TYPE> {
-	const {state, dispatch} = useContext(context);
+export function useGlobalStateReadWrite<STATE, ACTION_TYPE>(stateContext: Context<STATE>, dispatchContext: Context<Dispatch<GenericStateAction<ACTION_TYPE>>>): IStateHookResultReadWrite<STATE, ACTION_TYPE> {
+	const state: STATE = useGlobalStateReadOnly(stateContext)
+	const dispatch = useGlobalStateWriteOnly(dispatchContext)
+	return [state, dispatch]
+}
+
+export function useGlobalStateReadOnly<STATE>(stateContext: Context<STATE>): STATE {
+	const state = useContext(stateContext);
 	if (state) {
-		return [state, dispatch];
+		return state;
 	} else {
-		throw "Error: No global state found: " + name
+		throw "Error: No global read-only-state found"
 	}
 }
 
-export type IStateHookResult<STATE, ACTION_TYPE> = [STATE, ({type}: { type: ACTION_TYPE, payload?: any }) => void];
+export function useGlobalStateWriteOnly<ACTION_TYPE>(dispatchContext: Context<Dispatch<GenericStateAction<ACTION_TYPE>>>): ({type}: { type: ACTION_TYPE, payload?: any }) => void {
+	const dispatch = useContext(dispatchContext);
+	if (dispatch) {
+		return dispatch;
+	} else {
+		throw "Error: No global write-only-state found"
+	}
+}

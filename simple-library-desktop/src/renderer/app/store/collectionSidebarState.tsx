@@ -1,13 +1,15 @@
 import {
-	buildGlobalStateContext,
-	GenericGlobalStateContext,
-	genericStateProvider,
-	IStateHookResult,
+	buildContext,
+	GenericContextProvider,
+	IStateHookResultReadWrite, IStateHookResultWriteOnly,
 	ReducerConfigMap,
-	useGlobalState
+	useGlobalStateReadWrite, useGlobalStateWriteOnly
 } from "../../components/utils/storeUtils";
-import React, {Context} from "react";
+import React from "react";
+import {CollectionActiveActionType} from "./collectionActiveState";
 
+
+// STATE
 
 export interface CollectionSidebarState {
 	expandedNodes: string[]
@@ -16,6 +18,9 @@ export interface CollectionSidebarState {
 const initialState: CollectionSidebarState = {
 	expandedNodes: [],
 };
+
+
+// REDUCER
 
 export enum CollectionSidebarActionType {
 	COLLECTION_SIDEBAR_SET_EXPANDED = "ui.sidebar.collections.expanded.set"
@@ -29,13 +34,21 @@ const reducerConfigMap: ReducerConfigMap<CollectionSidebarActionType, Collection
 ])
 
 
-const stateContext: Context<GenericGlobalStateContext<CollectionSidebarState, CollectionSidebarActionType>> = buildGlobalStateContext()
+// CONTEXT
+
+const [
+	stateContext,
+	dispatchContext
+] = buildContext<CollectionSidebarActionType, CollectionSidebarState>()
 
 export function CollectionSidebarStateProvider(props: { children: any }) {
-	return genericStateProvider(props.children, initialState, reducerConfigMap, stateContext)
+	return GenericContextProvider(props.children, initialState, reducerConfigMap, stateContext, dispatchContext);
 }
 
-export function useCollectionSidebarState(): IStateHookResult<CollectionSidebarState, CollectionSidebarActionType> {
-	return useGlobalState(stateContext, "collection-sidebar")
+export function useCollectionSidebarState(): IStateHookResultReadWrite<CollectionSidebarState, CollectionSidebarActionType> {
+	return useGlobalStateReadWrite<CollectionSidebarState, CollectionSidebarActionType>(stateContext, dispatchContext)
 }
 
+export function useCollectionSidebarStateDispatch(): IStateHookResultWriteOnly<CollectionSidebarActionType> {
+	return useGlobalStateWriteOnly<CollectionSidebarActionType>(dispatchContext)
+}

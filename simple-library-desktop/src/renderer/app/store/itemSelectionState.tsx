@@ -1,14 +1,16 @@
 import {
-	buildGlobalStateContext,
-	GenericGlobalStateContext,
-	genericStateProvider,
-	IStateHookResult,
+	buildContext,
+	GenericContextProvider,
+	IStateHookResultReadWrite, IStateHookResultWriteOnly,
 	ReducerConfigMap,
-	useGlobalState
+	useGlobalStateReadWrite, useGlobalStateWriteOnly
 } from "../../components/utils/storeUtils";
-import React, {Context} from "react";
+import React from "react";
 import {unique} from "../common/arrayUtils";
+import {CollectionsActionType} from "./collectionsState";
 
+
+// STATE
 
 export interface ItemSelectionState {
 	selectedItemIds: number[],
@@ -19,6 +21,9 @@ const initialState: ItemSelectionState = {
 	selectedItemIds: [],
 	lastSelectedItemId: null
 };
+
+
+// REDUCER
 
 export enum ItemSelectionActionType {
 	ITEM_SELECTION_SET = "items.selection.set",
@@ -47,13 +52,21 @@ const reducerConfigMap: ReducerConfigMap<ItemSelectionActionType, ItemSelectionS
 ])
 
 
-const stateContext: Context<GenericGlobalStateContext<ItemSelectionState, ItemSelectionActionType>> = buildGlobalStateContext()
+// CONTEXT
+
+const [
+	stateContext,
+	dispatchContext
+] = buildContext<ItemSelectionActionType, ItemSelectionState>()
 
 export function ItemSelectionStateProvider(props: { children: any }) {
-	return genericStateProvider(props.children, initialState, reducerConfigMap, stateContext)
+	return GenericContextProvider(props.children, initialState, reducerConfigMap, stateContext, dispatchContext);
 }
 
-export function useItemSelectionState(): IStateHookResult<ItemSelectionState, ItemSelectionActionType> {
-	return useGlobalState(stateContext, "item-selection")
+export function useItemSelectionState(): IStateHookResultReadWrite<ItemSelectionState, ItemSelectionActionType> {
+	return useGlobalStateReadWrite<ItemSelectionState, ItemSelectionActionType>(stateContext, dispatchContext)
 }
 
+export function useItemSelectionStateDispatch(): IStateHookResultWriteOnly<ItemSelectionActionType> {
+	return useGlobalStateWriteOnly<ItemSelectionActionType>(dispatchContext)
+}

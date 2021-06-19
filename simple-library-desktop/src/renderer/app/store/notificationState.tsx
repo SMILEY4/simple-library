@@ -1,13 +1,14 @@
 import {
-	buildGlobalStateContext,
-	GenericGlobalStateContext,
-	genericStateProvider,
-	IStateHookResult,
+	buildContext,
+	GenericContextProvider,
+	IStateHookResultReadWrite, IStateHookResultWriteOnly,
 	ReducerConfigMap,
-	useGlobalState
+	useGlobalStateReadWrite, useGlobalStateWriteOnly
 } from "../../components/utils/storeUtils";
-import React, {Context} from "react";
+import React from "react";
 
+
+// STATE
 
 export interface NotificationState {
 	notifications: AppNotification[]
@@ -45,6 +46,9 @@ const initialState: NotificationState = {
 	notifications: [],
 };
 
+
+// REDUCER
+
 export enum NotificationActionType {
 	NOTIFICATIONS_ADD = "notifications.add",
 	NOTIFICATIONS_REMOVE = "notifications.remove",
@@ -81,13 +85,22 @@ const reducerConfigMap: ReducerConfigMap<NotificationActionType, NotificationSta
 ])
 
 
-const stateContext: Context<GenericGlobalStateContext<NotificationState, NotificationActionType>> = buildGlobalStateContext()
+// CONTEXT
+
+const [
+	stateContext,
+	dispatchContext
+] = buildContext<NotificationActionType, NotificationState>()
 
 export function NotificationStateProvider(props: { children: any }) {
-	return genericStateProvider(props.children, initialState, reducerConfigMap, stateContext)
+	return GenericContextProvider(props.children, initialState, reducerConfigMap, stateContext, dispatchContext);
 }
 
-export function useNotificationState(): IStateHookResult<NotificationState, NotificationActionType> {
-	return useGlobalState(stateContext, "notifications")
+export function useNotificationState(): IStateHookResultReadWrite<NotificationState, NotificationActionType> {
+	return useGlobalStateReadWrite<NotificationState, NotificationActionType>(stateContext, dispatchContext)
+}
+
+export function useNotificationStateDispatch(): IStateHookResultWriteOnly<NotificationActionType> {
+	return useGlobalStateWriteOnly<NotificationActionType>(dispatchContext)
 }
 

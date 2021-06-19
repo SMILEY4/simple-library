@@ -1,14 +1,15 @@
 import {
-	buildGlobalStateContext,
-	GenericGlobalStateContext,
-	genericStateProvider,
-	IStateHookResult,
+	buildContext,
+	GenericContextProvider,
+	IStateHookResultReadWrite, IStateHookResultWriteOnly,
 	ReducerConfigMap,
-	useGlobalState
+	useGlobalStateReadWrite, useGlobalStateWriteOnly
 } from "../../components/utils/storeUtils";
-import React, {Context} from "react";
-import {CollectionType} from "../../../common/commonModels";
+import React from "react";
+import {NotificationActionType, NotificationState} from "./notificationState";
 
+
+// STATE
 
 export interface CollectionActiveState {
 	activeCollectionId: number | null,
@@ -17,6 +18,9 @@ export interface CollectionActiveState {
 const initialState: CollectionActiveState = {
 	activeCollectionId: null,
 };
+
+
+// REDUCER
 
 export enum CollectionActiveActionType {
 	SET_CURRENT_COLLECTION_ID = "collection.set",
@@ -29,13 +33,23 @@ const reducerConfigMap: ReducerConfigMap<CollectionActiveActionType, CollectionA
 	})],
 ])
 
-const stateContext: Context<GenericGlobalStateContext<CollectionActiveState, CollectionActiveActionType>> = buildGlobalStateContext()
+
+// CONTEXT
+
+const [
+	stateContext,
+	dispatchContext
+] = buildContext<CollectionActiveActionType, CollectionActiveState>()
 
 export function CollectionActiveStateProvider(props: { children: any }) {
-	return genericStateProvider(props.children, initialState, reducerConfigMap, stateContext)
+	return GenericContextProvider(props.children, initialState, reducerConfigMap, stateContext, dispatchContext);
 }
 
-export function useCollectionActiveState(): IStateHookResult<CollectionActiveState, CollectionActiveActionType> {
-	return useGlobalState(stateContext, "collection-active")
+export function useCollectionActiveState(): IStateHookResultReadWrite<CollectionActiveState, CollectionActiveActionType> {
+	return useGlobalStateReadWrite<CollectionActiveState, CollectionActiveActionType>(stateContext, dispatchContext)
+}
+
+export function useCollectionActiveStateDispatch(): IStateHookResultWriteOnly<CollectionActiveActionType> {
+	return useGlobalStateWriteOnly<CollectionActiveActionType>(dispatchContext)
 }
 
