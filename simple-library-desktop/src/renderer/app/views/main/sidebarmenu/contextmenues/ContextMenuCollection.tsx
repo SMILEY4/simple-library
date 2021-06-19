@@ -1,6 +1,6 @@
 import React from "react";
-import {Menu} from "../../../../components/menu/menu/Menu";
-import {MenuItem} from "../../../../components/menu/menuitem/MenuItem";
+import {Menu} from "../../../../../components/menu/menu/Menu";
+import {MenuItem} from "../../../../../components/menu/menuitem/MenuItem";
 
 interface ContextMenuCollectionProps {
 	collectionId: number,

@@ -4,16 +4,22 @@ import {IconType} from "../../../../components/base/icon/Icon";
 import {TreeView, TreeViewNode} from "../../../../components/misc/tree/TreeView";
 import {Collection, CollectionType, Group} from "../../../../../common/commonModels";
 import {DynamicSlot} from "../../../../components/base/slot/DynamicSlot";
-import {ContextMenuCollection} from "./ContextMenuCollection";
-import {ContextMenuGroup} from "./ContextMenuGroup";
+import {ContextMenuCollection} from "./contextmenues/ContextMenuCollection";
+import {ContextMenuGroup} from "./contextmenues/ContextMenuGroup";
 import {APP_ROOT_ID} from "../../../Application";
-import {DialogDeleteCollection} from "./DialogDeleteCollection";
-import {useCollectionSidebar, useCollectionSidebarDialogs} from "../../../hooks/app/useCollectionSidebar";
-import {DialogDeleteGroup} from "./DialogDeleteGroup";
-import {DialogEditGroup} from "./DialogEditGroup";
-import {DialogEditCollection} from "./DialogEditCollection";
-import {DialogCreateGroup} from "./DialogCreateGroup";
-import {DialogCreateCollection} from "./DialogCreateCollection";
+import {DialogDeleteCollection} from "./dialogs/DialogDeleteCollection";
+import {useCollectionSidebar} from "../../../hooks/app/useCollectionSidebar";
+import {DialogDeleteGroup} from "./dialogs/DialogDeleteGroup";
+import {DialogEditGroup} from "./dialogs/DialogEditGroup";
+import {DialogEditCollection} from "./dialogs/DialogEditCollection";
+import {DialogCreateGroup} from "./dialogs/DialogCreateGroup";
+import {DialogCreateCollection} from "./dialogs/DialogCreateCollection";
+import {useDialogCollectionDeleteController} from "../../../hooks/app/sidebarmenu/useDialogCollectionDelete";
+import {useDialogCollectionCreateController} from "../../../hooks/app/sidebarmenu/useDialogCollectionCreate";
+import {useDialogCollectionEditController} from "../../../hooks/app/sidebarmenu/useDialogCollectionEdit";
+import {useDialogGroupDeleteController} from "../../../hooks/app/sidebarmenu/useDialogGroupDelete";
+import {useDialogGroupEditController} from "../../../hooks/app/sidebarmenu/useDialogGroupEdit";
+import {useDialogGroupCreateController} from "../../../hooks/app/sidebarmenu/useDialogGroupCreate";
 
 export const TAB_DATA_COLLECTIONS: SidebarTab = {
 	id: "tab-collections",
@@ -42,34 +48,48 @@ export function CollectionSidebar(props: React.PropsWithChildren<CollectionSideb
 		getNodeObjectId
 	} = useCollectionSidebar();
 
-	const {
-		collectionIdDelete,
+	const [
+		showDeleteCollection,
 		openDeleteCollection,
 		closeDeleteCollection,
+		idDeleteCollection
+	] = useDialogCollectionDeleteController()
 
-		collectionIdEdit,
+	const [
+		showCreateCollection,
+		openCreateCollection,
+		closeCreateCollection,
+		idCreateCollectionParent
+	] = useDialogCollectionCreateController()
+
+	const [
+		showEditCollection,
 		openEditCollection,
 		closeEditCollection,
+		idEditCollection
+	] = useDialogCollectionEditController()
 
-		groupIdDelete,
+	const [
+		showDeleteGroup,
 		openDeleteGroup,
 		closeDeleteGroup,
+		idDeleteGroup
+	] = useDialogGroupDeleteController()
 
-		groupIdEdit,
-		openEditGroup,
-		closeEditGroup,
-
+	const [
 		showCreateGroup,
-		parentGroupIdCreateGroup,
 		openCreateGroup,
 		closeCreateGroup,
+		idCreateGroupParent
+	] = useDialogGroupCreateController()
 
-		showCreateCollection,
-		parentGroupIdCreateCollection,
-		openCreateCollection,
-		closeCreateCollection
+	const [
+		showEditGroup,
+		openEditGroup,
+		closeEditGroup,
+		idEditGroup
+	] = useDialogGroupEditController()
 
-	} = useCollectionSidebarDialogs();
 
 	return rootGroup && (
 		<>
@@ -114,44 +134,44 @@ export function CollectionSidebar(props: React.PropsWithChildren<CollectionSideb
 				</DynamicSlot>
 			</TreeView>
 
-			{collectionIdDelete && (
+			{showDeleteCollection && (
 				<DialogDeleteCollection
-					collectionId={collectionIdDelete}
+					collectionId={idDeleteCollection}
 					onClose={closeDeleteCollection}
 				/>
 			)}
 
-			{collectionIdEdit && (
+			{showEditCollection && (
 				<DialogEditCollection
-					collectionId={collectionIdEdit}
+					collectionId={idEditCollection}
 					onClose={closeEditCollection}
 				/>
 			)}
 
-			{groupIdDelete && (
+			{showDeleteGroup && (
 				<DialogDeleteGroup
-					groupId={groupIdDelete}
+					groupId={idDeleteGroup}
 					onClose={closeDeleteGroup}
 				/>
 			)}
 
-			{groupIdEdit && (
+			{showEditGroup && (
 				<DialogEditGroup
-					groupId={groupIdEdit}
+					groupId={idEditGroup}
 					onClose={closeEditGroup}
 				/>
 			)}
 
 			{showCreateGroup && (
 				<DialogCreateGroup
-					parentGroupId={parentGroupIdCreateGroup}
+					parentGroupId={idCreateGroupParent}
 					onClose={closeCreateGroup}
 				/>
 			)}
 
 			{showCreateCollection && (
 				<DialogCreateCollection
-					parentGroupId={parentGroupIdCreateCollection}
+					parentGroupId={idCreateCollectionParent}
 					onClose={closeCreateCollection}
 				/>
 			)}

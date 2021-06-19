@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import {DragAndDropCollections, DragAndDropGroups, DragAndDropItems, DragAndDropUtils} from "../../common/dragAndDrop";
 import {useActiveCollection, useCollections, useCollectionsStateless} from "../base/collectionHooks";
 import {useItems, useItemsStateless} from "../base/itemHooks";
@@ -198,89 +198,6 @@ export function useCollectionSidebar() {
 		getNodeId: getNodeId,
 		getNodeType: getNodeType,
 		getNodeObjectId: getNodeObjectId
-	}
-
-}
-
-
-export function useCollectionSidebarDialogs() {
-
-	const [
-		collectionIdDelete,
-		setCollectionIdDelete,
-	] = useState(null);
-
-	const [
-		collectionIdEdit,
-		setCollectionIdEdit
-	] = useState(null);
-
-	const [
-		groupIdDelete,
-		setGroupIdDelete
-	] = useState(null);
-
-	const [
-		groupIdEdit,
-		setGroupIdEdit
-	] = useState(null);
-
-	const [
-		parentGroupIdCreateGroup,
-		setParentGroupIdCreateGroup
-	] = useState(null);
-	const [
-		showCreateGroup,
-		setShowCreateGroup
-	] = useState(false);
-
-	const [
-		parentGroupIdCreateCollection,
-		setParentGroupIdCreateCollection
-	] = useState(null);
-	const [
-		showCreateCollection,
-		setShowCreateCollection
-	] = useState(false);
-
-	return {
-		collectionIdDelete: collectionIdDelete,
-		openDeleteCollection: (collectionId: number) => setCollectionIdDelete(collectionId),
-		closeDeleteCollection: () => setCollectionIdDelete(null),
-
-		collectionIdEdit: collectionIdEdit,
-		openEditCollection: (collectionId: number) => setCollectionIdEdit(collectionId),
-		closeEditCollection: () => setCollectionIdEdit(null),
-
-		groupIdDelete: groupIdDelete,
-		openDeleteGroup: (groupId: number) => setGroupIdDelete(groupId),
-		closeDeleteGroup: () => setGroupIdDelete(null),
-
-		groupIdEdit: groupIdEdit,
-		openEditGroup: (groupId: number) => setGroupIdEdit(groupId),
-		closeEditGroup: () => setGroupIdEdit(null),
-
-		showCreateGroup: showCreateGroup,
-		parentGroupIdCreateGroup: parentGroupIdCreateGroup,
-		openCreateGroup: (groupId: number) => {
-			setShowCreateGroup(true)
-			setParentGroupIdCreateGroup(groupId)
-		},
-		closeCreateGroup: () => {
-			setParentGroupIdCreateGroup(null)
-			setShowCreateGroup(false)
-		},
-
-		showCreateCollection: showCreateCollection,
-		parentGroupIdCreateCollection: parentGroupIdCreateCollection,
-		openCreateCollection: (groupId: number) => {
-			setShowCreateCollection(true)
-			setParentGroupIdCreateCollection(groupId)
-		},
-		closeCreateCollection: () => {
-			setParentGroupIdCreateCollection(null)
-			setShowCreateCollection(false)
-		}
 	}
 
 }
