@@ -1,14 +1,47 @@
 import React from "react";
-import {DragAndDropCollections, DragAndDropGroups, DragAndDropItems, DragAndDropUtils} from "../../common/dragAndDrop";
-import {useActiveCollection, useCollections, useCollectionsStateless} from "../base/collectionHooks";
-import {useItems, useItemsStateless} from "../base/itemHooks";
-import {CollectionSidebarActionType, useCollectionSidebarState} from "../../store/collectionSidebarState";
-import {useMount} from "../../../components/utils/commonHooks";
+import {DragAndDropCollections, DragAndDropGroups, DragAndDropItems, DragAndDropUtils} from "../../../common/dragAndDrop";
+import {useActiveCollection, useCollections, useCollectionsStateless} from "../../base/collectionHooks";
+import {useItems, useItemsStateless} from "../../base/itemHooks";
+import {CollectionSidebarActionType, useCollectionSidebarState} from "../../../store/collectionSidebarState";
+import {useMount} from "../../../../components/utils/commonHooks";
 
-export function useCollectionSidebar() {
+export function useCollectionSidebarUtils() {
 
 	const NODE_TYPE_COLLECTION = "collection"
 	const NODE_TYPE_GROUP = "group"
+
+	function getNodeId(type: string, id: number): string {
+		return type + "." + id
+	}
+
+	function getNodeType(nodeId: string): string {
+		return nodeId.substring(0, nodeId.indexOf("."))
+	}
+
+	function getNodeObjectId(nodeId: string): number | null {
+		const id = Number.parseInt(nodeId.substring(nodeId.indexOf(".") + 1, nodeId.length));
+		return Number.isNaN(id) ? null : id
+	}
+
+	return {
+		NODE_TYPE_COLLECTION: NODE_TYPE_COLLECTION,
+		NODE_TYPE_GROUP: NODE_TYPE_GROUP,
+		getNodeId: getNodeId,
+		getNodeType: getNodeType,
+		getNodeObjectId: getNodeObjectId
+	}
+
+}
+
+export function useCollectionSidebar() {
+
+	const {
+		NODE_TYPE_COLLECTION,
+		NODE_TYPE_GROUP,
+		getNodeId,
+		getNodeType,
+		getNodeObjectId
+	} = useCollectionSidebarUtils();
 
 	const [
 		sidebarState,
@@ -171,22 +204,7 @@ export function useCollectionSidebar() {
 		}
 	}
 
-	function getNodeId(type: string, id: number): string {
-		return type + "." + id
-	}
-
-	function getNodeType(nodeId: string): string {
-		return nodeId.substring(0, nodeId.indexOf("."))
-	}
-
-	function getNodeObjectId(nodeId: string): number | null {
-		const id = Number.parseInt(nodeId.substring(nodeId.indexOf(".") + 1, nodeId.length));
-		return Number.isNaN(id) ? null : id
-	}
-
 	return {
-		NODE_TYPE_COLLECTION: NODE_TYPE_COLLECTION,
-		NODE_TYPE_GROUP: NODE_TYPE_GROUP,
 		activeNode: activeCollectionId ? getNodeId(NODE_TYPE_COLLECTION, activeCollectionId) : undefined,
 		expandedNodes: sidebarState.expandedNodes,
 		toggleExpandNode: toggleExpandNode,
@@ -195,9 +213,6 @@ export function useCollectionSidebar() {
 		dragOver: handleDragOver,
 		drop: handleDrop,
 		handleDoubleClick: handleDoubleClick,
-		getNodeId: getNodeId,
-		getNodeType: getNodeType,
-		getNodeObjectId: getNodeObjectId
 	}
 
 }

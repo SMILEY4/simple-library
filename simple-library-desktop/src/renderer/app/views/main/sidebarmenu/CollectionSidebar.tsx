@@ -8,7 +8,7 @@ import {ContextMenuCollection} from "./contextmenues/ContextMenuCollection";
 import {ContextMenuGroup} from "./contextmenues/ContextMenuGroup";
 import {APP_ROOT_ID} from "../../../Application";
 import {DialogDeleteCollection} from "./dialogs/DialogDeleteCollection";
-import {useCollectionSidebar} from "../../../hooks/app/useCollectionSidebar";
+import {useCollectionSidebar, useCollectionSidebarUtils} from "../../../hooks/app/sidebarmenu/useCollectionSidebar";
 import {DialogDeleteGroup} from "./dialogs/DialogDeleteGroup";
 import {DialogEditGroup} from "./dialogs/DialogEditGroup";
 import {DialogEditCollection} from "./dialogs/DialogEditCollection";
@@ -35,6 +35,12 @@ export function CollectionSidebar(props: React.PropsWithChildren<CollectionSideb
 	const {
 		NODE_TYPE_COLLECTION,
 		NODE_TYPE_GROUP,
+		getNodeId,
+		getNodeType,
+		getNodeObjectId
+	} = useCollectionSidebarUtils();
+
+	const {
 		activeNode,
 		expandedNodes,
 		toggleExpandNode,
@@ -43,9 +49,6 @@ export function CollectionSidebar(props: React.PropsWithChildren<CollectionSideb
 		dragOver,
 		drop,
 		handleDoubleClick,
-		getNodeId,
-		getNodeType,
-		getNodeObjectId
 	} = useCollectionSidebar();
 
 	const [

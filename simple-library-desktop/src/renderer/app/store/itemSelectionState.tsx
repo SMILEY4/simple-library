@@ -3,9 +3,10 @@ import {
 	GenericGlobalStateContext,
 	genericStateProvider,
 	IStateHookResult,
-	ReducerConfigMap, useGlobalState
+	ReducerConfigMap,
+	useGlobalState
 } from "../../components/utils/storeUtils";
-import React, {Context, useContext} from "react";
+import React, {Context} from "react";
 import {unique} from "../common/arrayUtils";
 
 
@@ -54,6 +55,5 @@ export function ItemSelectionStateProvider(props: { children: any }) {
 
 export function useItemSelectionState(): IStateHookResult<ItemSelectionState, ItemSelectionActionType> {
 	return useGlobalState(stateContext, "item-selection")
-
 }
 
