@@ -12,8 +12,8 @@ interface ItemListEntryProps {
 	item: ItemData,
 	activeCollectionType: CollectionType,
 	selected: boolean,
-	onSelect: (selectMod: SelectModifier) => void,
-	onDragStart: (event: React.DragEvent) => void
+	onSelect: (itemId: number, selectMod: SelectModifier) => void,
+	onDragStart: (itemId: number, event: React.DragEvent) => void
 	onRemove: () => void,
 	onDelete: () => void
 }
@@ -24,7 +24,7 @@ export function ItemListEntry(props: React.PropsWithChildren<ItemListEntryProps>
 		<ContextMenuWrapper modalRootId={APP_ROOT_ID} onOpenMenu={handleOpenContextMenu}>
 
 			<Slot name={"target"}>
-				<div onClick={handleClick} draggable onDragStart={props.onDragStart}>
+				<div onClick={handleClick} draggable onDragStart={handleOnDragStart}>
 					<HBox
 						alignMain="start"
 						alignCross="stretch"
@@ -55,15 +55,19 @@ export function ItemListEntry(props: React.PropsWithChildren<ItemListEntryProps>
 		</ContextMenuWrapper>
 	);
 
+	function handleOnDragStart(event: React.DragEvent): void {
+		props.onDragStart(props.item.id, event)
+	}
+
 	function handleClick(event: React.MouseEvent): void {
 		event.preventDefault();
 		event.stopPropagation();
-		props.onSelect(getSelectModifier(event))
+		props.onSelect(props.item.id, getSelectModifier(event))
 	}
 
 	function handleOpenContextMenu() {
 		if(!props.selected) {
-			props.onSelect(SelectModifier.NONE)
+			props.onSelect(props.item.id, SelectModifier.NONE)
 		}
 	}
 

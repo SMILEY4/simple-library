@@ -3,6 +3,7 @@ import {DragAndDropCollections, DragAndDropGroups, DragAndDropItems, DragAndDrop
 import {useActiveCollection, useCollections, useCollectionsStateless} from "../base/collectionHooks";
 import {useItems, useItemsStateless} from "../base/itemHooks";
 import {CollectionSidebarActionType, useCollectionSidebarState} from "../../store/collectionSidebarState";
+import {useMount} from "../../../components/utils/commonHooks";
 
 export function useCollectionSidebar() {
 
@@ -37,6 +38,10 @@ export function useCollectionSidebar() {
 	const {
 		moveOrCopyItems
 	} = useItemsStateless()
+
+	useMount(() => {
+		loadGroups()
+	})
 
 	function toggleExpandNode(nodeId: string, expanded: boolean) {
 		if (expanded) {
@@ -182,8 +187,10 @@ export function useCollectionSidebar() {
 	return {
 		NODE_TYPE_COLLECTION: NODE_TYPE_COLLECTION,
 		NODE_TYPE_GROUP: NODE_TYPE_GROUP,
+		activeNode: activeCollectionId ? getNodeId(NODE_TYPE_COLLECTION, activeCollectionId) : undefined,
 		expandedNodes: sidebarState.expandedNodes,
 		toggleExpandNode: toggleExpandNode,
+		rootGroup: rootGroup,
 		dragStart: handleDragStart,
 		dragOver: handleDragOver,
 		drop: handleDrop,

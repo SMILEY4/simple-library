@@ -63,7 +63,7 @@ export function useDraggable(onStart: () => void, onDrag: (dx: number, dy: numbe
 
 	function handleMouseMove(event: any) {
 		if (refDragging.current) {
-			if(onlyInsideRef && !onlyInsideRef.current.contains(event.target)) {
+			if (onlyInsideRef && !onlyInsideRef.current.contains(event.target)) {
 				setDragging(false);
 				refDragging.current = false;
 				onStop();
@@ -119,7 +119,7 @@ export function useStateRef<S>(initialValue: S | (() => S),): [S, Dispatch<SetSt
 }
 
 
-export function useValidatedState<S>(
+export function useValidatedStateOLD<S>(
 	initialState: S | (() => S),
 	initialValid: boolean,
 	validate: (value: S) => boolean
@@ -156,8 +156,56 @@ export function useValidatedState<S>(
 }
 
 
+export function useValidatedState<S>(
+	initialState: S | (() => S),
+	initialValid: boolean,
+	validate: (value: S) => boolean,
+	registerAtForm?: (triggerValidation: () => boolean, isValid: () => boolean) => void
+): [
+	() => S,
+	Dispatch<SetStateAction<S>>,
+	() => boolean,
+	() => boolean,
+] {
 
-export function useComplexValidatedState<S,V>(
+	const [value, setValue, refValue] = useStateRef(initialState)
+	const [valid, setValid, refValid] = useStateRef(initialValid)
+
+	function getValue(): S {
+		return refValue.current;
+	}
+
+	function isValid(): boolean {
+		return refValid.current
+	}
+
+	function setValueAndValidate(value: S): void {
+		const valid: boolean = validate(value);
+		refValue.current = value
+		setValue(value);
+		refValid.current = valid
+		setValid(valid)
+	}
+
+	function triggerValidation(): boolean {
+		const valid: boolean = validate(getValue())
+		refValid.current = valid;
+		setValid(valid)
+		return valid;
+	}
+
+	registerAtForm && registerAtForm(triggerValidation, isValid);
+
+	return [
+		getValue,
+		setValueAndValidate,
+		isValid,
+		triggerValidation
+	];
+}
+
+
+export function useComplexValidatedState<S, V>(
 	initialState: S | (() => S),
 	initialValid: V,
 	validate: (value: S) => V
@@ -191,4 +239,32 @@ export function useComplexValidatedState<S,V>(
 		refValue,
 		refValid,
 	];
+}
+
+export function useValidatedForm() {
+
+	const triggerFunctions: (() => boolean)[] = []
+	const getterFunctions: (() => boolean)[] = []
+
+	function register(triggerValidation: () => boolean, isValid: () => boolean): void {
+		triggerFunctions.push(triggerValidation)
+		getterFunctions.push(isValid)
+	}
+
+	function triggerValidation(): boolean {
+		const results: boolean[] = triggerFunctions.map(f => f())
+		return results.every((valid: boolean) => valid)
+	}
+
+	function isValid(): boolean {
+		const results: boolean[] = getterFunctions.map(f => f())
+		return results.every((valid: boolean) => valid)
+	}
+
+	return {
+		registerAtForm: register,
+		isFormValid: isValid,
+		triggerFormValidation: triggerValidation,
+	}
+
 }

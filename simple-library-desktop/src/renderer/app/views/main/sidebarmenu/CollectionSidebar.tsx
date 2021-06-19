@@ -14,7 +14,6 @@ import {DialogEditGroup} from "./DialogEditGroup";
 import {DialogEditCollection} from "./DialogEditCollection";
 import {DialogCreateGroup} from "./DialogCreateGroup";
 import {DialogCreateCollection} from "./DialogCreateCollection";
-import {useActiveCollection, useCollections} from "../../../hooks/base/collectionHooks";
 
 export const TAB_DATA_COLLECTIONS: SidebarTab = {
 	id: "tab-collections",
@@ -28,18 +27,12 @@ interface CollectionSidebarProps {
 export function CollectionSidebar(props: React.PropsWithChildren<CollectionSidebarProps>): React.ReactElement {
 
 	const {
-		rootGroup
-	} = useCollections();
-
-	const {
-		activeCollectionId
-	} = useActiveCollection();
-
-	const {
 		NODE_TYPE_COLLECTION,
 		NODE_TYPE_GROUP,
+		activeNode,
 		expandedNodes,
 		toggleExpandNode,
+		rootGroup,
 		dragStart,
 		dragOver,
 		drop,
@@ -89,7 +82,7 @@ export function CollectionSidebar(props: React.PropsWithChildren<CollectionSideb
 				onDragStart={dragStart}
 				onDragOver={dragOver}
 				onDrop={drop}
-				activeNodeId={activeCollectionId ? getNodeId(NODE_TYPE_COLLECTION, activeCollectionId) : undefined}
+				activeNodeId={activeNode}
 			>
 				<DynamicSlot name={"context-menu"}>
 					{(nodeId: string) => {
@@ -100,7 +93,6 @@ export function CollectionSidebar(props: React.PropsWithChildren<CollectionSideb
 									collectionId={objectId}
 									onDelete={() => openDeleteCollection(objectId)}
 									onEdit={() => {
-										console.log("on edit")
 										openEditCollection(objectId)
 									}}
 								/>

@@ -6,7 +6,7 @@ import {VBox} from "../../../../components/layout/box/Box";
 import {Button} from "../../../../components/buttons/button/Button";
 import {Label} from "../../../../components/base/label/Label";
 import {TextField} from "../../../../components/input/textfield/TextField";
-import {useValidatedState} from "../../../../components/utils/commonHooks";
+import {useValidatedStateOLD} from "../../../../components/utils/commonHooks";
 import {useCollections} from "../../../hooks/base/collectionHooks";
 
 interface DialogEditGroupProps {
@@ -30,7 +30,7 @@ export function DialogEditGroup(props: React.PropsWithChildren<DialogEditGroupPr
 		triggerNameValidation,
 		refName,
 		refNameValid,
-	] = useValidatedState(prevName, true, validateName)
+	] = useValidatedStateOLD(prevName, true, validateName)
 
 	return (
 		<Dialog

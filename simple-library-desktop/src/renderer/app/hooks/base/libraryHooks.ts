@@ -16,7 +16,7 @@ export interface LastOpenedLibrary {
 	onAction: () => void,
 }
 
-export function useLastOpenedLibraries(onOpen: (path: string) => void) {
+export function useLastOpenedLibraries(onOpen?: (path: string) => void) {
 
 	const [lastOpened, setLastOpened] = useState<LastOpenedLibrary[]>([]);
 
@@ -25,7 +25,7 @@ export function useLastOpenedLibraries(onOpen: (path: string) => void) {
 			.then(entries => entries.map(entry => ({
 				name: entry.name,
 				filePath: entry.path,
-				onAction: () => onOpen(entry.path)
+				onAction: () => onOpen && onOpen(entry.path)
 			})))
 			.then(setLastOpened)
 	});

@@ -9,8 +9,6 @@ import {NotificationStack} from "../../../components/modals/notification/Notific
 import {useNotifications} from "../../hooks/base/notificationHooks";
 import {APP_ROOT_ID} from "../../Application";
 import {ContentArea} from "./contentarea/ContentArea";
-import {useMount} from "../../../components/utils/commonHooks";
-import {useCollections} from "../../hooks/base/collectionHooks";
 
 interface MainViewProps {
 	onClosed: () => void
@@ -21,14 +19,6 @@ export function MainView(props: React.PropsWithChildren<MainViewProps>): React.R
 	const {
 		getNotificationStackEntries,
 	} = useNotifications();
-
-	const {
-		loadGroups
-	} = useCollections()
-
-	useMount(() => {
-		loadGroups()
-	})
 
 	return (
 		<>

@@ -11,7 +11,7 @@ import {Spacer} from "../../../../components/base/spacer/Spacer";
 import {TextArea} from "../../../../components/input/textarea/TextArea";
 import {ChoiceBox, ChoiceBoxItem} from "../../../../components/buttons/choicebox/ChoiceBox";
 import {ElementLabel} from "../../../../components/misc/elementlabel/ElementLabel";
-import {useStateRef, useValidatedState} from "../../../../components/utils/commonHooks";
+import {useStateRef, useValidatedStateOLD} from "../../../../components/utils/commonHooks";
 
 interface DialogCreateCollectionProps {
 	parentGroupId: number | null,
@@ -49,7 +49,7 @@ export function DialogCreateCollection(props: React.PropsWithChildren<DialogCrea
 		triggerNameValidation,
 		refName,
 		refNameValid
-	] = useValidatedState("", true, validateName)
+	] = useValidatedStateOLD("", true, validateName)
 
 	const [
 		type,

@@ -11,7 +11,7 @@ import {Collection, CollectionType} from "../../../../../common/commonModels";
 import {Spacer} from "../../../../components/base/spacer/Spacer";
 import {TextArea} from "../../../../components/input/textarea/TextArea";
 import {useItems, useItemSelection} from "../../../hooks/base/itemHooks";
-import {useStateRef, useValidatedState} from "../../../../components/utils/commonHooks";
+import {useStateRef, useValidatedStateOLD} from "../../../../components/utils/commonHooks";
 
 interface DialogEditCollectionProps {
 	collectionId: number,
@@ -50,7 +50,7 @@ export function DialogEditCollection(props: React.PropsWithChildren<DialogEditCo
 		triggerNameValidation,
 		refName,
 		refNameValid
-	] = useValidatedState(collection.name, true, validateName)
+	] = useValidatedStateOLD(collection.name, true, validateName)
 
 	const [
 		query,

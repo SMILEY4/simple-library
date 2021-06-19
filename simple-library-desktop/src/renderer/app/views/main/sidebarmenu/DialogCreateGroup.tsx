@@ -8,7 +8,7 @@ import {Label} from "../../../../components/base/label/Label";
 import {TextField} from "../../../../components/input/textfield/TextField";
 import {Group} from "../../../../../common/commonModels";
 import {Spacer} from "../../../../components/base/spacer/Spacer";
-import {useValidatedState} from "../../../../components/utils/commonHooks";
+import {useValidatedStateOLD} from "../../../../components/utils/commonHooks";
 import {useCollections} from "../../../hooks/base/collectionHooks";
 
 interface DialogCreateGroupProps {
@@ -32,7 +32,7 @@ export function DialogCreateGroup(props: React.PropsWithChildren<DialogCreateGro
 		triggerNameValidation,
 		refName,
 		refNameValid,
-	] = useValidatedState("", true, validateName)
+	] = useValidatedStateOLD("", true, validateName)
 
 	return (
 		<Dialog

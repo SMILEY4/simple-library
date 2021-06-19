@@ -1,9 +1,7 @@
-import React, {useEffect} from "react";
+import React from "react";
 import {ItemList} from "./ItemList";
 import {VBox} from "../../../../components/layout/box/Box";
-import {useActiveCollection, useCollections} from "../../../hooks/base/collectionHooks";
-import {Collection} from "../../../../../common/commonModels";
-import {useItemSelection} from "../../../hooks/base/itemHooks";
+import {useContentArea} from "../../../hooks/app/useContentArea";
 
 interface ContentAreaProps {
 }
@@ -11,24 +9,10 @@ interface ContentAreaProps {
 export function ContentArea(props: React.PropsWithChildren<ContentAreaProps>): React.ReactElement {
 
 	const {
-		findCollection
-	} = useCollections();
+		activeCollection
+	} = useContentArea()
 
-	const {
-		activeCollectionId,
-	} = useActiveCollection();
-
-	const {
-		clearSelection
-	} = useItemSelection();
-
-	const activeCollection: Collection | null = findCollection(activeCollectionId);
-
-	useEffect(() => {
-		clearSelection();
-	}, [activeCollectionId])
-
-	return activeCollectionId && activeCollection && (
+	return activeCollection && (
 		<VBox alignMain="start" alignCross="stretch" fill>
 			<div style={{
 				backgroundColor: "var(--color-background-1)",
@@ -37,7 +21,7 @@ export function ContentArea(props: React.PropsWithChildren<ContentAreaProps>): R
 			}}>
 				{activeCollection.name}
 			</div>
-			<ItemList/>
+			<ItemList activeCollection={activeCollection}/>
 		</VBox>
 	);
 
