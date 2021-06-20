@@ -1,4 +1,14 @@
-import React, {Context, createContext, Dispatch, ReactElement, useContext, useReducer} from "react";
+import React, {
+	Context,
+	createContext,
+	Dispatch,
+	ReactElement,
+	useCallback,
+	useContext,
+	useEffect,
+	useReducer,
+	useRef
+} from "react";
 
 export class ReducerConfigMap<ACTION_TYPE, STATE> extends Map<ACTION_TYPE, (state: STATE, payload: any) => STATE> {
 }
@@ -14,13 +24,13 @@ export type IStateHookResultReadOnly<STATE> = STATE;
 
 
 export function buildContext<ACTION_TYPE, STATE>(): [Context<STATE>, Context<Dispatch<GenericStateAction<ACTION_TYPE>>>] {
-	const stateContext = createContext<STATE>({} as STATE);
+	const stateContext = createContext<STATE | undefined>(undefined);
 	const dispatchContext = createContext<Dispatch<GenericStateAction<ACTION_TYPE>>>(() => {
 	});
 	return [stateContext, dispatchContext]
 }
 
-function applyStateAction<ACTION_TYPE, STATE>(
+export function applyStateAction<ACTION_TYPE, STATE>(
 	configMap: Map<ACTION_TYPE, (state: STATE, payload: any) => STATE>,
 	action: GenericStateAction<ACTION_TYPE>,
 	state: STATE
@@ -69,7 +79,7 @@ export function useGlobalStateReadWrite<STATE, ACTION_TYPE>(stateContext: Contex
 }
 
 export function useGlobalStateReadOnly<STATE>(stateContext: Context<STATE>): STATE {
-	const state = useContext(stateContext);
+	const state: STATE = useContext(stateContext);
 	if (state) {
 		return state;
 	} else {

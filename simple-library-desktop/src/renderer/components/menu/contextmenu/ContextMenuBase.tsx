@@ -18,12 +18,9 @@ export function ContextMenuBase(props: React.PropsWithChildren<ContextMenuBasePr
 
 	useEffect(() => {
 		if (props.show) {
-			console.log("ON OPEN CTX")
 			props.onOpenMenu && props.onOpenMenu();
 		}
 	}, [props.show])
-
-	console.log("RENDER CTX", props.show)
 
 	if (!props.show) {
 		return null;

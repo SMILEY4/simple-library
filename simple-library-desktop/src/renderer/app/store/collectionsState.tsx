@@ -8,6 +8,7 @@ import React, {Context} from "react";
 import {Group} from "../../../common/commonModels";
 import {CollectionActiveActionType, CollectionActiveState} from "./collectionActiveState";
 import {CollectionSidebarActionType} from "./collectionSidebarState";
+import {ItemSelectionState} from "./itemSelectionState";
 
 
 // STATE

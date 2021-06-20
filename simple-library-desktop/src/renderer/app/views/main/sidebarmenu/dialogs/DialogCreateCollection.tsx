@@ -42,8 +42,6 @@ export function DialogCreateCollection(props: React.PropsWithChildren<DialogCrea
 		handleCancel
 	} = useDialogCollectionCreate(props.parentGroupId, props.onClose);
 
-	console.log("RENDER", getType(), (getType() === CollectionType.SMART), (getType() !== CollectionType.SMART))
-
 	return (
 		<Dialog
 			show={true}

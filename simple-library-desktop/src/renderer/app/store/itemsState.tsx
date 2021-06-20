@@ -7,7 +7,7 @@ import {
 } from "../../components/utils/storeUtils";
 import React from "react";
 import {ItemData} from "../../../common/commonModels";
-import {ItemSelectionActionType} from "./itemSelectionState";
+import {ItemSelectionActionType, ItemSelectionState} from "./itemSelectionState";
 
 
 // STATE

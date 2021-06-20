@@ -147,11 +147,11 @@ export function useItemSelection() {
 				newSelection.push(itemId);
 			}
 		});
+		setSelection(newSelection);
 		itemSelectionDispatch({
 			type: ItemSelectionActionType.ITEM_SELECTION_SET_LAST,
 			payload: itemIds.length > 0 ? itemIds[0] : null,
 		});
-		setSelection(newSelection);
 	}
 
 	function selectRangeTo(itemId: number, additive: boolean, allItemIds: number[]) {

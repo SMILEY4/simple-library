@@ -6,7 +6,6 @@ import {
 	useGlobalStateReadWrite, useGlobalStateWriteOnly
 } from "../../components/utils/storeUtils";
 import React from "react";
-import {NotificationActionType, NotificationState} from "./notificationState";
 
 
 // STATE
@@ -40,6 +39,7 @@ const [
 	stateContext,
 	dispatchContext
 ] = buildContext<CollectionActiveActionType, CollectionActiveState>()
+
 
 export function CollectionActiveStateProvider(props: { children: any }) {
 	return GenericContextProvider(props.children, initialState, reducerConfigMap, stateContext, dispatchContext);

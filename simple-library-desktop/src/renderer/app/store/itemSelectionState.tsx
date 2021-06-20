@@ -1,13 +1,15 @@
 import {
+	applyStateAction,
 	buildContext,
-	GenericContextProvider,
-	IStateHookResultReadWrite, IStateHookResultWriteOnly,
+	GenericStateAction,
+	IStateHookResultReadWrite,
+	IStateHookResultWriteOnly,
 	ReducerConfigMap,
-	useGlobalStateReadWrite, useGlobalStateWriteOnly
+	useGlobalStateReadWrite,
+	useGlobalStateWriteOnly
 } from "../../components/utils/storeUtils";
-import React from "react";
+import React, {useReducer} from "react";
 import {unique} from "../common/arrayUtils";
-import {CollectionsActionType} from "./collectionsState";
 
 
 // STATE
@@ -59,14 +61,39 @@ const [
 	dispatchContext
 ] = buildContext<ItemSelectionActionType, ItemSelectionState>()
 
+const reducer = (state: ItemSelectionState, action: GenericStateAction<ItemSelectionActionType>) => applyStateAction(reducerConfigMap, action, state);
+
 export function ItemSelectionStateProvider(props: { children: any }) {
-	return GenericContextProvider(props.children, initialState, reducerConfigMap, stateContext, dispatchContext);
+	const [state, dispatch] = useReducer(reducer, {
+		selectedItemIds: [],
+		lastSelectedItemId: null
+	});
+	return (
+		<stateContext.Provider value={state}>
+			<dispatchContext.Provider value={dispatch}>
+				{props.children}
+			</dispatchContext.Provider>
+		</stateContext.Provider>
+	);
 }
 
 export function useItemSelectionState(): IStateHookResultReadWrite<ItemSelectionState, ItemSelectionActionType> {
-	return useGlobalStateReadWrite<ItemSelectionState, ItemSelectionActionType>(stateContext, dispatchContext)
+	return [useItemSelectionStateReadOnly(), useItemSelectionStateDispatch()];
 }
 
+export function useItemSelectionStateReadOnly(): ItemSelectionState {
+	const state = React.useContext(stateContext)
+	if (typeof state === 'undefined') {
+		throw new Error('state must be used within a Provider')
+	}
+	return state
+}
+
+
 export function useItemSelectionStateDispatch(): IStateHookResultWriteOnly<ItemSelectionActionType> {
-	return useGlobalStateWriteOnly<ItemSelectionActionType>(dispatchContext)
+	const dispatcher = React.useContext(dispatchContext)
+	if (typeof dispatcher === 'undefined') {
+		throw new Error('dispatcher must be used within a Provider')
+	}
+	return dispatcher
 }

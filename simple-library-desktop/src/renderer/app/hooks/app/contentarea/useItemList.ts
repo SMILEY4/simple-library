@@ -41,6 +41,7 @@ export function useItemList(activeCollectionId: number) {
 			setSelection(getItemsIds())
 		}
 	}
+
 	function handleSelectItem(itemId: number, selectMod: SelectModifier): void {
 		switch (selectMod) {
 			case SelectModifier.NONE: {
@@ -92,11 +93,11 @@ export function useItemList(activeCollectionId: number) {
 	return {
 		items: items,
 		isSelected: isSelected,
-		handleOnKeyDown: useCallback(handleOnKeyDown, []),
-		handleSelectItem: useCallback(handleSelectItem, []),
-		handleDragItem: useCallback(handleDragItem, []),
-		handleRemoveSelectedItems: useCallback(handleRemoveSelectedItems, []),
-		handleDeleteSelectedItems: useCallback(handleDeleteSelectedItems, []),
+		handleOnKeyDown: handleOnKeyDown,
+		handleSelectItem: handleSelectItem,
+		handleDragItem: handleDragItem,
+		handleRemoveSelectedItems: handleRemoveSelectedItems,
+		handleDeleteSelectedItems: handleDeleteSelectedItems,
 	}
 
 }
