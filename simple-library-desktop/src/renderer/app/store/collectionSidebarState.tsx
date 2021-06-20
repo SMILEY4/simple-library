@@ -23,13 +23,24 @@ const initialState: CollectionSidebarState = {
 // REDUCER
 
 export enum CollectionSidebarActionType {
-	COLLECTION_SIDEBAR_SET_EXPANDED = "ui.sidebar.collections.expanded.set"
+	COLLECTION_SIDEBAR_EXPANDED_SET = "ui.sidebar.collections.expanded.set",
+	COLLECTION_SIDEBAR_EXPANDED_ADD = "ui.sidebar.collections.expanded.add",
+	COLLECTION_SIDEBAR_EXPANDED_REMOVE = "ui.sidebar.collections.expanded.remove",
+
 }
 
 const reducerConfigMap: ReducerConfigMap<CollectionSidebarActionType, CollectionSidebarState> = new ReducerConfigMap([
-	[CollectionSidebarActionType.COLLECTION_SIDEBAR_SET_EXPANDED, (state, payload) => ({
+	[CollectionSidebarActionType.COLLECTION_SIDEBAR_EXPANDED_SET, (state, payload) => ({
 		...state,
 		expandedNodes: payload,
+	})],
+	[CollectionSidebarActionType.COLLECTION_SIDEBAR_EXPANDED_ADD, (state, payload) => ({
+		...state,
+		expandedNodes: [...state.expandedNodes, payload],
+	})],
+	[CollectionSidebarActionType.COLLECTION_SIDEBAR_EXPANDED_REMOVE, (state, payload) => ({
+		...state,
+		expandedNodes: state.expandedNodes.filter(id => id !== payload),
 	})],
 ])
 

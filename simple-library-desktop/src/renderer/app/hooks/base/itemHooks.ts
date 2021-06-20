@@ -5,23 +5,40 @@ import {
 	requestMoveItems,
 	requestRemoveItems
 } from "../../common/messagingInterface";
-import {useNotifications} from "./notificationHooks";
+import {useModifyNotifications} from "./notificationHooks";
 import {genNotificationId} from "./notificationUtils";
 import {ImportProcessData, ImportResult, ImportStatus, ItemData} from "../../../../common/commonModels";
 import {AppNotificationType} from "../../store/notificationState";
-import {ItemsActionType, useItemsState} from "../../store/itemsState";
+import {ItemsActionType, useItemsState, useItemsStateDispatch} from "../../store/itemsState";
 import {ItemSelectionActionType, useItemSelectionState} from "../../store/itemSelectionState";
 
 export function useItems() {
 
+	const [
+		itemsState
+	] = useItemsState();
+
+	function getItemsIds(): number[] {
+		return itemsState.items.map((item: ItemData) => item.id);
+	}
+
+	return {
+		items: itemsState.items,
+		getItemsIds: getItemsIds,
+	}
+}
+
+
+export function useItemsStateless() {
+
 	const {
 		throwErrorNotification,
-	} = useNotifications()
+		addNotification,
+		updateNotification,
+		removeNotification
+	} = useModifyNotifications()
 
-	const [
-		itemsState,
-		itemsDispatch
-	] = useItemsState();
+	const itemsDispatch = useItemsStateDispatch();
 
 	function load(collectionId: number): void {
 		fetchItems(collectionId)
@@ -51,26 +68,6 @@ export function useItems() {
 		return new Promise((resolve, reject) => resolve())
 	}
 
-	return {
-		items: itemsState.items,
-		getItemsIds: () => itemsState.items.map((item: ItemData) => item.id),
-		loadItems: load,
-		clearItems: clear,
-		removeItems: remove,
-		deleteItems: deleteItems,
-	}
-}
-
-
-export function useItemsStateless() {
-
-	const {
-		throwErrorNotification,
-		addNotification,
-		updateNotification,
-		removeNotification
-	} = useNotifications()
-
 	function moveOrCopy(srcCollectionId: number, tgtCollectionId: number, itemIds: number[], copy: boolean): Promise<void> {
 		return requestMoveItems(srcCollectionId, tgtCollectionId, itemIds, copy)
 			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_MOVE_FAILED, error))
@@ -92,7 +89,11 @@ export function useItemsStateless() {
 
 	return {
 		moveOrCopyItems: moveOrCopy,
-		importItems: importItems
+		importItems: importItems,
+		loadItems: load,
+		clearItems: clear,
+		removeItems: remove,
+		deleteItems: deleteItems,
 	}
 
 }

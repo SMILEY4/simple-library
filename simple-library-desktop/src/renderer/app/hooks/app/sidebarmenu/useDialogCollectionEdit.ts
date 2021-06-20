@@ -1,7 +1,7 @@
 import {useDialogController} from "../useDialogController";
 import {useState} from "react";
 import {useActiveCollection, useCollections, useCollectionsStateless} from "../../base/collectionHooks";
-import {useItems, useItemSelection} from "../../base/itemHooks";
+import {useItemSelection, useItemsStateless} from "../../base/itemHooks";
 import {Collection, CollectionType} from "../../../../../common/commonModels";
 import {useStateRef, useValidatedState} from "../../../../components/utils/commonHooks";
 
@@ -43,7 +43,7 @@ export function useDialogCollectionEdit(collectionId: number, onClose: () => voi
 
 	const {
 		loadItems
-	} = useItems();
+	} = useItemsStateless();
 
 	const {
 		clearSelection

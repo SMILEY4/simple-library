@@ -94,7 +94,7 @@ export function CollectionSidebar(props: React.PropsWithChildren<CollectionSideb
 	] = useDialogGroupEditController()
 
 
-	return rootGroup && (
+	return !!rootGroup ? (
 		<>
 			<TreeView
 				rootNode={buildTree(rootGroup)}
@@ -180,7 +180,7 @@ export function CollectionSidebar(props: React.PropsWithChildren<CollectionSideb
 			)}
 
 		</>
-	)
+	) : null
 
 	function buildTree(group: Group): TreeViewNode {
 		return buildGroupTreeNode(group, true);

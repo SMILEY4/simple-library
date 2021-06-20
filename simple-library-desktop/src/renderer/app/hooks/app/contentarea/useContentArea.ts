@@ -1,5 +1,5 @@
-import {useActiveCollection, useCollections} from "../base/collectionHooks";
-import {Collection} from "../../../../common/commonModels";
+import {useActiveCollection, useCollections} from "../../base/collectionHooks";
+import {Collection} from "../../../../../common/commonModels";
 
 export function useContentArea() {
 

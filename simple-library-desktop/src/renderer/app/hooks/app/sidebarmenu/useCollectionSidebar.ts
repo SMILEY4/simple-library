@@ -1,7 +1,12 @@
 import React from "react";
-import {DragAndDropCollections, DragAndDropGroups, DragAndDropItems, DragAndDropUtils} from "../../../common/dragAndDrop";
+import {
+	DragAndDropCollections,
+	DragAndDropGroups,
+	DragAndDropItems,
+	DragAndDropUtils
+} from "../../../common/dragAndDrop";
 import {useActiveCollection, useCollections, useCollectionsStateless} from "../../base/collectionHooks";
-import {useItems, useItemsStateless} from "../../base/itemHooks";
+import {useItemsStateless} from "../../base/itemHooks";
 import {CollectionSidebarActionType, useCollectionSidebarState} from "../../../store/collectionSidebarState";
 import {useMount} from "../../../../components/utils/commonHooks";
 
@@ -65,10 +70,7 @@ export function useCollectionSidebar() {
 	} = useCollectionsStateless()
 
 	const {
-		loadItems
-	} = useItems()
-
-	const {
+		loadItems,
 		moveOrCopyItems
 	} = useItemsStateless()
 
@@ -79,13 +81,13 @@ export function useCollectionSidebar() {
 	function toggleExpandNode(nodeId: string, expanded: boolean) {
 		if (expanded) {
 			sidebarDispatch({
-				type: CollectionSidebarActionType.COLLECTION_SIDEBAR_SET_EXPANDED,
-				payload: [...sidebarState.expandedNodes, nodeId],
+				type: CollectionSidebarActionType.COLLECTION_SIDEBAR_EXPANDED_ADD,
+				payload: nodeId,
 			});
 		} else {
 			sidebarDispatch({
-				type: CollectionSidebarActionType.COLLECTION_SIDEBAR_SET_EXPANDED,
-				payload: sidebarState.expandedNodes.filter(id => id !== nodeId)
+				type: CollectionSidebarActionType.COLLECTION_SIDEBAR_EXPANDED_REMOVE,
+				payload: nodeId
 			});
 		}
 	}

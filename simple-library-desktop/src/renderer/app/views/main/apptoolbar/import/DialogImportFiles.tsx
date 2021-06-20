@@ -3,7 +3,7 @@ import {Dialog} from "../../../../../components/modals/dialog/Dialog";
 import {APP_ROOT_ID} from "../../../../Application";
 import {Slot} from "../../../../../components/base/slot/Slot";
 import {Button} from "../../../../../components/buttons/button/Button";
-import {useItems, useItemsStateless} from "../../../../hooks/base/itemHooks";
+import {useItemsStateless} from "../../../../hooks/base/itemHooks";
 import {VBox} from "../../../../../components/layout/box/Box";
 import {
 	ImportProcessData,
@@ -33,7 +33,7 @@ export function DialogImportFiles(props: React.PropsWithChildren<DialogImportFil
 
 	const {
 		loadItems
-	} = useItems()
+	} = useItemsStateless()
 
 	const {
 		importItems,

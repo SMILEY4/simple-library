@@ -1,8 +1,8 @@
-import {useItems, useItemSelection} from "../base/itemHooks";
+import {useItems, useItemSelection, useItemsStateless} from "../../base/itemHooks";
 import React, {useCallback, useEffect} from "react";
-import {useCollections} from "../base/collectionHooks";
-import {isCopyMode, SelectModifier} from "../../../components/utils/common";
-import {DragAndDropItems} from "../../common/dragAndDrop";
+import {useCollections} from "../../base/collectionHooks";
+import {isCopyMode, SelectModifier} from "../../../../components/utils/common";
+import {DragAndDropItems} from "../../../common/dragAndDrop";
 
 export function useItemList(activeCollectionId: number) {
 
@@ -13,9 +13,13 @@ export function useItemList(activeCollectionId: number) {
 	const {
 		items,
 		getItemsIds,
-		removeItems,
-		deleteItems
 	} = useItems();
+
+	const {
+		removeItems,
+		deleteItems,
+		loadItems
+	} = useItemsStateless();
 
 	const {
 		selectedItemIds,
@@ -74,12 +78,14 @@ export function useItemList(activeCollectionId: number) {
 	function handleRemoveSelectedItems(): void {
 		removeItems(activeCollectionId, selectedItemIds)
 			.then(() => clearSelection())
+			.then(() => loadItems(activeCollectionId))
 			.then(() => loadGroups())
 	}
 
 	function handleDeleteSelectedItems(): void {
 		deleteItems(selectedItemIds)
 			.then(() => clearSelection())
+			.then(() => loadItems(activeCollectionId))
 			.then(() => loadGroups())
 	}
 

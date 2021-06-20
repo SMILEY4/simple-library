@@ -2,7 +2,7 @@ import React, {useMemo} from "react";
 import {VBox} from "../../../../components/layout/box/Box";
 import {ItemListEntry} from "./ItemListEntry";
 import {Collection, ItemData} from "../../../../../common/commonModels";
-import {useItemList} from "../../../hooks/app/useItemList";
+import {useItemList} from "../../../hooks/app/contentarea/useItemList";
 
 interface ItemListProps {
 	activeCollection: Collection

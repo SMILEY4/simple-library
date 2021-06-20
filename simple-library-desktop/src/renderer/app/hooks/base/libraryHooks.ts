@@ -6,7 +6,7 @@ import {
 } from "../../common/messagingInterface";
 import {useState} from "react";
 import {genNotificationId} from "./notificationUtils";
-import {useNotifications} from "./notificationHooks";
+import {useModifyNotifications} from "./notificationHooks";
 import {useMount} from "../../../components/utils/commonHooks";
 import {AppNotificationType} from "../../store/notificationState";
 
@@ -38,7 +38,7 @@ export function useLastOpenedLibraries(onOpen?: (path: string) => void) {
 
 export function useLibraries() {
 
-	const {throwErrorNotification} = useNotifications();
+	const {throwErrorNotification} = useModifyNotifications();
 
 	function create(name: string, targetDir: string): Promise<void> {
 		return requestCreateLibrary(name, targetDir)

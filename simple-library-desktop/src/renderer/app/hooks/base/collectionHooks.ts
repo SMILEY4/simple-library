@@ -10,7 +10,7 @@ import {
 	requestRenameGroup
 } from "../../common/messagingInterface";
 import {genNotificationId} from "./notificationUtils";
-import {useNotifications} from "./notificationHooks";
+import {useModifyNotifications, useNotifications} from "./notificationHooks";
 import {Collection, CollectionType, extractCollections, extractGroups, Group} from "../../../../common/commonModels";
 import {AppNotificationType} from "../../store/notificationState";
 import {CollectionActiveActionType, useCollectionActiveState} from "../../store/collectionActiveState";
@@ -19,7 +19,7 @@ import {CollectionsActionType, useCollectionsState} from "../../store/collection
 export function useCollections() {
 
 	const [collectionsState, collectionsDispatch] = useCollectionsState();
-	const {throwErrorNotification} = useNotifications()
+	const {throwErrorNotification} = useModifyNotifications()
 
 	function findCollection(collectionId: number): Collection | null {
 		if (collectionId) {
