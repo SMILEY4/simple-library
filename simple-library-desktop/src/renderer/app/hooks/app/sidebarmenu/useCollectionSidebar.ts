@@ -5,10 +5,14 @@ import {
 	DragAndDropItems,
 	DragAndDropUtils
 } from "../../../common/dragAndDrop";
-import {useActiveCollection, useCollections, useCollectionsStateless} from "../../base/collectionHooks";
-import {useItemsStateless} from "../../base/itemHooks";
+import {
+	useCollections,
+	useCollectionsState,
+} from "../../base/collectionHooks";
+import {useItems} from "../../base/itemHooks";
 import {CollectionSidebarActionType, useCollectionSidebarState} from "../../../store/collectionSidebarState";
 import {useMount} from "../../../../components/utils/commonHooks";
+import {useActiveCollectionState} from "../../base/activeCollectionHooks";
 
 export function useCollectionSidebarUtils() {
 
@@ -54,25 +58,25 @@ export function useCollectionSidebar() {
 	] = useCollectionSidebarState()
 
 	const {
+		loadGroups,
+		moveGroup,
+		moveCollection
+	} = useCollections();
+
+	const {
 		rootGroup,
 		findCollection,
-		loadGroups,
-		moveGroup
-	} = useCollections();
+	} = useCollectionsState();
 
 	const {
 		activeCollectionId,
 		openCollection
-	} = useActiveCollection();
-
-	const {
-		moveCollection
-	} = useCollectionsStateless()
+	} = useActiveCollectionState();
 
 	const {
 		loadItems,
 		moveOrCopyItems
-	} = useItemsStateless()
+	} = useItems()
 
 	useMount(() => {
 		loadGroups()

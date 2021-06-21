@@ -9,14 +9,13 @@ import {useModifyNotifications} from "./notificationHooks";
 import {genNotificationId} from "./notificationUtils";
 import {ImportProcessData, ImportResult, ImportStatus, ItemData} from "../../../../common/commonModels";
 import {AppNotificationType} from "../../store/notificationState";
-import {ItemsActionType, useItemsState, useItemsStateDispatch} from "../../store/itemsState";
-import {ItemSelectionActionType, useItemSelectionState} from "../../store/itemSelectionState";
+import {ItemsActionType, useItemsContext, useItemsDispatch} from "../../store/itemsState";
 
-export function useItems() {
+export function useItemsState() {
 
 	const [
 		itemsState
-	] = useItemsState();
+	] = useItemsContext();
 
 	function getItemsIds(): number[] {
 		return itemsState.items.map((item: ItemData) => item.id);
@@ -29,7 +28,7 @@ export function useItems() {
 }
 
 
-export function useItemsStateless() {
+export function useItems() {
 
 	const {
 		throwErrorNotification,
@@ -38,7 +37,7 @@ export function useItemsStateless() {
 		removeNotification
 	} = useModifyNotifications()
 
-	const itemsDispatch = useItemsStateDispatch();
+	const itemsDispatch = useItemsDispatch();
 
 	function load(collectionId: number): void {
 		fetchItems(collectionId)
@@ -96,124 +95,4 @@ export function useItemsStateless() {
 		deleteItems: deleteItems,
 	}
 
-}
-
-
-export function useItemSelection() {
-
-	const [itemSelectionState, itemSelectionDispatch] = useItemSelectionState();
-
-	function isSelected(itemId: number): boolean {
-		return itemSelectionState.selectedItemIds.indexOf(itemId) !== -1;
-	}
-
-	function setSelection(itemIds: number[]) {
-		itemSelectionDispatch({
-			type: ItemSelectionActionType.ITEM_SELECTION_SET,
-			payload: itemIds,
-		});
-		itemSelectionDispatch({
-			type: ItemSelectionActionType.ITEM_SELECTION_SET_LAST,
-			payload: itemIds.length > 0 ? itemIds[0] : null,
-		});
-	}
-
-	function addToSelection(itemIds: number[]) {
-		itemSelectionDispatch({
-			type: ItemSelectionActionType.ITEM_SELECTION_ADD,
-			payload: itemIds,
-		});
-		itemSelectionDispatch({
-			type: ItemSelectionActionType.ITEM_SELECTION_SET_LAST,
-			payload: itemIds.length > 0 ? itemIds[0] : null,
-		});
-	}
-
-	function removeFromSelection(itemIds: number[]) {
-		itemSelectionDispatch({
-			type: ItemSelectionActionType.ITEM_SELECTION_REMOVE,
-			payload: itemIds,
-		});
-		itemSelectionDispatch({
-			type: ItemSelectionActionType.ITEM_SELECTION_SET_LAST,
-			payload: itemIds.length > 0 ? itemIds[0] : null,
-		});
-	}
-
-	function toggleSelection(itemIds: number[]) {
-		const newSelection: number[] = itemSelectionState.selectedItemIds.filter(itemId => itemIds.indexOf(itemId) === -1);
-		itemIds.forEach(itemId => {
-			if (itemSelectionState.selectedItemIds.indexOf(itemId) === -1) {
-				newSelection.push(itemId);
-			}
-		});
-		setSelection(newSelection);
-		itemSelectionDispatch({
-			type: ItemSelectionActionType.ITEM_SELECTION_SET_LAST,
-			payload: itemIds.length > 0 ? itemIds[0] : null,
-		});
-	}
-
-	function selectRangeTo(itemId: number, additive: boolean, allItemIds: number[]) {
-		const pivotItemId: number | null = itemSelectionState.lastSelectedItemId;
-		if (pivotItemId) {
-			const indexTo: number = allItemIds.indexOf(itemId);
-			const indexLast: number = allItemIds.indexOf(pivotItemId);
-
-			if (indexTo >= 0 && indexLast >= 0) {
-				const indexStart: number = Math.min(indexTo, indexLast);
-				const indexEnd: number = Math.max(indexTo, indexLast);
-				const idsInRange: number[] = allItemIds.slice(indexStart, indexEnd + 1);
-				if (additive) {
-					itemSelectionDispatch({
-						type: ItemSelectionActionType.ITEM_SELECTION_ADD,
-						payload: idsInRange,
-					});
-				} else {
-					itemSelectionDispatch({
-						type: ItemSelectionActionType.ITEM_SELECTION_SET,
-						payload: idsInRange,
-					});
-				}
-			}
-		} else {
-			if (additive) {
-				if (itemSelectionState.selectedItemIds.indexOf(itemId) === -1) {
-					itemSelectionDispatch({
-						type: ItemSelectionActionType.ITEM_SELECTION_ADD,
-						payload: [itemId],
-					});
-				} else {
-					itemSelectionDispatch({
-						type: ItemSelectionActionType.ITEM_SELECTION_REMOVE,
-						payload: [itemId],
-					});
-				}
-			} else {
-				itemSelectionDispatch({
-					type: ItemSelectionActionType.ITEM_SELECTION_SET,
-					payload: [itemId],
-				});
-			}
-		}
-		itemSelectionDispatch({
-			type: ItemSelectionActionType.ITEM_SELECTION_SET_LAST,
-			payload: pivotItemId,
-		});
-	}
-
-	function clearSelection() {
-		setSelection([]);
-	}
-
-	return {
-		selectedItemIds: itemSelectionState.selectedItemIds,
-		isSelected: isSelected,
-		addToSelection: addToSelection,
-		removeFromSelection: removeFromSelection,
-		setSelection: setSelection,
-		toggleSelection: toggleSelection,
-		selectRangeTo: selectRangeTo,
-		clearSelection: clearSelection,
-	};
 }

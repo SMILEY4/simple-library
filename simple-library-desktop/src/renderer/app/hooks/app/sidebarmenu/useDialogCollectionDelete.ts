@@ -1,8 +1,12 @@
-import {useDialogController} from "../useDialogController";
+import {useDialogController} from "../miscApplicationHooks";
 import {useState} from "react";
-import {useActiveCollection, useCollections, useCollectionsStateless} from "../../base/collectionHooks";
-import {useItemSelection} from "../../base/itemHooks";
+import {
+	useCollections,
+	useCollectionsState,
+} from "../../base/collectionHooks";
 import {Collection} from "../../../../../common/commonModels";
+import {useActiveCollectionState} from "../../base/activeCollectionHooks";
+import {useItemSelection} from "../../base/itemSelectionHooks";
 
 export function useDialogCollectionDeleteController(): [boolean, (id: number | null) => void, () => void, (number | null)] {
 
@@ -28,17 +32,19 @@ export function useDialogCollectionDeleteController(): [boolean, (id: number | n
 export function useDialogCollectionDelete(collectionId: number, onFinished: (deleted: boolean) => void) {
 
 	const {
-		findCollection,
-		loadGroups
+		loadGroups,
+		deleteCollection
 	} = useCollections();
 
 	const {
-		activeCollectionId,
-	} = useActiveCollection();
+		findCollection,
+	} = useCollectionsState();
+
 
 	const {
-		deleteCollection
-	} = useCollectionsStateless()
+		activeCollectionId,
+	} = useActiveCollectionState();
+
 
 	const {
 		clearSelection

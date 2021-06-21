@@ -6,7 +6,7 @@ import {AppLayout} from "../../../components/misc/app/AppLayout";
 import {AppToolbar} from "./apptoolbar/AppToolbar";
 import {CollectionSidebar, TAB_DATA_COLLECTIONS} from "./sidebarmenu/CollectionSidebar";
 import {NotificationStack} from "../../../components/modals/notification/NotificationStack";
-import {useNotifications} from "../../hooks/base/notificationHooks";
+import {useNotificationsState} from "../../hooks/base/notificationHooks";
 import {APP_ROOT_ID} from "../../Application";
 import {ContentArea} from "./contentarea/ContentArea";
 
@@ -18,7 +18,7 @@ export function MainView(props: React.PropsWithChildren<MainViewProps>): React.R
 
 	const {
 		getNotificationStackEntries,
-	} = useNotifications();
+	} = useNotificationsState();
 
 	return (
 		<>

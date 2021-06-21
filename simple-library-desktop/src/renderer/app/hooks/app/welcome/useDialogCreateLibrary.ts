@@ -1,4 +1,4 @@
-import {useDialogController} from "../useDialogController";
+import {useDialogController} from "../miscApplicationHooks";
 import {useLibraries} from "../../base/libraryHooks";
 import {useValidatedForm, useValidatedState} from "../../../../components/utils/commonHooks";
 

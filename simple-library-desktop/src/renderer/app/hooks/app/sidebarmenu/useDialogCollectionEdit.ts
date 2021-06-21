@@ -1,9 +1,11 @@
-import {useDialogController} from "../useDialogController";
+import {useDialogController} from "../miscApplicationHooks";
 import {useState} from "react";
-import {useActiveCollection, useCollections, useCollectionsStateless} from "../../base/collectionHooks";
-import {useItemSelection, useItemsStateless} from "../../base/itemHooks";
+import { useCollections, useCollectionsState,} from "../../base/collectionHooks";
 import {Collection, CollectionType} from "../../../../../common/commonModels";
 import {useStateRef, useValidatedState} from "../../../../components/utils/commonHooks";
+import {useActiveCollectionState} from "../../base/activeCollectionHooks";
+import {useItems} from "../../base/itemHooks";
+import {useItemSelection} from "../../base/itemSelectionHooks";
 
 export function useDialogCollectionEditController(): [boolean, (id: number | null) => void, () => void, (number | null)] {
 
@@ -29,21 +31,21 @@ export function useDialogCollectionEditController(): [boolean, (id: number | nul
 export function useDialogCollectionEdit(collectionId: number, onClose: () => void) {
 
 	const {
-		findCollection,
-		loadGroups
+		loadGroups,
+		editCollection
 	} = useCollections()
 
 	const {
-		activeCollectionId,
-	} = useActiveCollection()
+		findCollection,
+	} = useCollectionsState()
 
 	const {
-		editCollection
-	} = useCollectionsStateless()
+		activeCollectionId,
+	} = useActiveCollectionState()
 
 	const {
 		loadItems
-	} = useItemsStateless();
+	} = useItems();
 
 	const {
 		clearSelection

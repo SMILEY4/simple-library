@@ -46,10 +46,10 @@ export function ItemsStateProvider(props: { children: any }) {
 	return GenericContextProvider(props.children, initialState, reducerConfigMap, stateContext, dispatchContext);
 }
 
-export function useItemsState(): IStateHookResultReadWrite<ItemsState, ItemsActionType> {
+export function useItemsContext(): IStateHookResultReadWrite<ItemsState, ItemsActionType> {
 	return useGlobalStateReadWrite<ItemsState, ItemsActionType>(stateContext, dispatchContext)
 }
 
-export function useItemsStateDispatch(): IStateHookResultWriteOnly<ItemsActionType> {
+export function useItemsDispatch(): IStateHookResultWriteOnly<ItemsActionType> {
 	return useGlobalStateWriteOnly<ItemsActionType>(dispatchContext)
 }

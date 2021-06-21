@@ -14,6 +14,7 @@ export function ContentArea(props: React.PropsWithChildren<ContentAreaProps>): R
 
 	return activeCollection && (
 		<VBox alignMain="start" alignCross="stretch" fill>
+
 			<div style={{
 				backgroundColor: "var(--color-background-1)",
 				borderBottom: "1px solid var(--color-border)",
@@ -21,7 +22,9 @@ export function ContentArea(props: React.PropsWithChildren<ContentAreaProps>): R
 			}}>
 				{activeCollection.name}
 			</div>
+
 			<ItemList activeCollection={activeCollection}/>
+
 		</VBox>
 	);
 

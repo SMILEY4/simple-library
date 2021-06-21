@@ -3,19 +3,17 @@ import {NotificationStackEntry} from "../../../components/modals/notification/No
 import {
 	AppNotificationType,
 	NotificationActionType,
-	useNotificationState,
-	useNotificationStateDispatch
+	useNotificationContext,
+	useNotificationDispatch
 } from "../../store/notificationState";
 
-export function useNotifications() {
 
-	const [state] = useNotificationState();
+export function useNotificationsState() {
+
+	const [state] = useNotificationContext();
 
 	const {
-		addNotification,
-		throwErrorNotification,
 		removeNotification,
-		updateNotification,
 	} = useModifyNotifications();
 
 	function getNotificationStackEntries(): NotificationStackEntry[] {
@@ -25,17 +23,14 @@ export function useNotifications() {
 
 	return {
 		notifications: state.notifications,
-		addNotification: addNotification,
-		throwErrorNotification: throwErrorNotification,
-		removeNotification: removeNotification,
-		updateNotification: updateNotification,
 		getNotificationStackEntries: getNotificationStackEntries
 	};
 }
 
+
 export function useModifyNotifications() {
 
-	const dispatch = useNotificationStateDispatch();
+	const dispatch = useNotificationDispatch();
 
 	function throwError(notificationId: string, type: AppNotificationType, error: any) {
 		add(notificationId, type, error);

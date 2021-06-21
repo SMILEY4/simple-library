@@ -1,15 +1,16 @@
-import {useActiveCollection, useCollections} from "../../base/collectionHooks";
+import { useCollectionsState} from "../../base/collectionHooks";
 import {Collection} from "../../../../../common/commonModels";
+import {useActiveCollectionState} from "../../base/activeCollectionHooks";
 
 export function useContentArea() {
 
 	const {
 		findCollection
-	} = useCollections();
+	} = useCollectionsState();
 
 	const {
 		activeCollectionId,
-	} = useActiveCollection();
+	} = useActiveCollectionState();
 
 	const activeCollection: Collection | null = findCollection(activeCollectionId);
 

@@ -97,11 +97,11 @@ export function NotificationStateProvider(props: { children: any }) {
 	return GenericContextProvider(props.children, initialState, reducerConfigMap, stateContext, dispatchContext);
 }
 
-export function useNotificationState(): IStateHookResultReadWrite<NotificationState, NotificationActionType> {
+export function useNotificationContext(): IStateHookResultReadWrite<NotificationState, NotificationActionType> {
 	return useGlobalStateReadWrite<NotificationState, NotificationActionType>(stateContext, dispatchContext)
 }
 
-export function useNotificationStateDispatch(): IStateHookResultWriteOnly<NotificationActionType> {
+export function useNotificationDispatch(): IStateHookResultWriteOnly<NotificationActionType> {
 	return useGlobalStateWriteOnly<NotificationActionType>(dispatchContext)
 }
 

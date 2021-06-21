@@ -1,8 +1,9 @@
-import {useItems, useItemSelection, useItemsStateless} from "../../base/itemHooks";
-import React, {useCallback, useEffect} from "react";
+import {useItems, useItemsState} from "../../base/itemHooks";
+import React, {useEffect} from "react";
 import {useCollections} from "../../base/collectionHooks";
 import {isCopyMode, SelectModifier} from "../../../../components/utils/common";
 import {DragAndDropItems} from "../../../common/dragAndDrop";
+import {useItemSelection, useItemSelectionState} from "../../base/itemSelectionHooks";
 
 export function useItemList(activeCollectionId: number) {
 
@@ -13,17 +14,21 @@ export function useItemList(activeCollectionId: number) {
 	const {
 		items,
 		getItemsIds,
-	} = useItems();
+	} = useItemsState();
 
 	const {
 		removeItems,
 		deleteItems,
 		loadItems
-	} = useItemsStateless();
+	} = useItems();
 
 	const {
 		selectedItemIds,
 		isSelected,
+		lastSelectedItemId
+	} = useItemSelectionState();
+
+	const {
 		setSelection,
 		toggleSelection,
 		selectRangeTo,
@@ -49,15 +54,15 @@ export function useItemList(activeCollectionId: number) {
 				break;
 			}
 			case SelectModifier.TOGGLE: {
-				toggleSelection([itemId])
+				toggleSelection([itemId], selectedItemIds)
 				break;
 			}
 			case SelectModifier.RANGE: {
-				selectRangeTo(itemId, false, getItemsIds())
+				selectRangeTo(itemId, false, getItemsIds(), selectedItemIds, lastSelectedItemId)
 				break;
 			}
 			case SelectModifier.ADD_RANGE: {
-				selectRangeTo(itemId, true, getItemsIds())
+				selectRangeTo(itemId, true, getItemsIds(), selectedItemIds, lastSelectedItemId)
 				break;
 			}
 		}

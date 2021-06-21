@@ -1,14 +1,13 @@
 import {
-	applyStateAction,
 	buildContext,
-	GenericStateAction,
+	GenericContextProvider,
 	IStateHookResultReadWrite,
 	IStateHookResultWriteOnly,
 	ReducerConfigMap,
 	useGlobalStateReadWrite,
 	useGlobalStateWriteOnly
 } from "../../components/utils/storeUtils";
-import React, {useReducer} from "react";
+import React from "react";
 import {unique} from "../common/arrayUtils";
 
 
@@ -61,39 +60,14 @@ const [
 	dispatchContext
 ] = buildContext<ItemSelectionActionType, ItemSelectionState>()
 
-const reducer = (state: ItemSelectionState, action: GenericStateAction<ItemSelectionActionType>) => applyStateAction(reducerConfigMap, action, state);
-
 export function ItemSelectionStateProvider(props: { children: any }) {
-	const [state, dispatch] = useReducer(reducer, {
-		selectedItemIds: [],
-		lastSelectedItemId: null
-	});
-	return (
-		<stateContext.Provider value={state}>
-			<dispatchContext.Provider value={dispatch}>
-				{props.children}
-			</dispatchContext.Provider>
-		</stateContext.Provider>
-	);
+	return GenericContextProvider(props.children, initialState, reducerConfigMap, stateContext, dispatchContext);
 }
 
-export function useItemSelectionState(): IStateHookResultReadWrite<ItemSelectionState, ItemSelectionActionType> {
-	return [useItemSelectionStateReadOnly(), useItemSelectionStateDispatch()];
+export function useItemSelectionContext(): IStateHookResultReadWrite<ItemSelectionState, ItemSelectionActionType> {
+	return useGlobalStateReadWrite<ItemSelectionState, ItemSelectionActionType>(stateContext, dispatchContext)
 }
 
-export function useItemSelectionStateReadOnly(): ItemSelectionState {
-	const state = React.useContext(stateContext)
-	if (typeof state === 'undefined') {
-		throw new Error('state must be used within a Provider')
-	}
-	return state
-}
-
-
-export function useItemSelectionStateDispatch(): IStateHookResultWriteOnly<ItemSelectionActionType> {
-	const dispatcher = React.useContext(dispatchContext)
-	if (typeof dispatcher === 'undefined') {
-		throw new Error('dispatcher must be used within a Provider')
-	}
-	return dispatcher
+export function useItemSelectionDispatch(): IStateHookResultWriteOnly<ItemSelectionActionType> {
+	return useGlobalStateWriteOnly<ItemSelectionActionType>(dispatchContext)
 }

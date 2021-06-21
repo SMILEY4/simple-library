@@ -10,16 +10,14 @@ import {
 	requestRenameGroup
 } from "../../common/messagingInterface";
 import {genNotificationId} from "./notificationUtils";
-import {useModifyNotifications, useNotifications} from "./notificationHooks";
+import {useModifyNotifications} from "./notificationHooks";
 import {Collection, CollectionType, extractCollections, extractGroups, Group} from "../../../../common/commonModels";
 import {AppNotificationType} from "../../store/notificationState";
-import {CollectionActiveActionType, useCollectionActiveState} from "../../store/collectionActiveState";
-import {CollectionsActionType, useCollectionsState} from "../../store/collectionsState";
+import {CollectionsActionType, useCollectionsContext, useCollectionsDispatch} from "../../store/collectionsState";
 
-export function useCollections() {
+export function useCollectionsState() {
 
-	const [collectionsState, collectionsDispatch] = useCollectionsState();
-	const {throwErrorNotification} = useModifyNotifications()
+	const [collectionsState] = useCollectionsContext();
 
 	function findCollection(collectionId: number): Collection | null {
 		if (collectionId) {
@@ -34,6 +32,18 @@ export function useCollections() {
 		const result: Group | undefined = extractGroups(collectionsState.rootGroup).find(group => group.id === groupId);
 		return result ? result : null;
 	}
+
+	return {
+		rootGroup: collectionsState.rootGroup,
+		findCollection: findCollection,
+		findGroup: findGroup
+	}
+}
+
+export function useCollections() {
+
+	const collectionsDispatch = useCollectionsDispatch();
+	const {throwErrorNotification} = useModifyNotifications()
 
 	function loadGroups(): Promise<void> {
 		return fetchRootGroup()
@@ -70,63 +80,17 @@ export function useCollections() {
 			.then(() => loadGroups())
 	}
 
-	return {
-		rootGroup: collectionsState.rootGroup,
-		findCollection: findCollection,
-		findGroup: findGroup,
-		loadGroups: loadGroups,
-		moveGroup: moveGroup,
-		deleteGroup: deleteGroup,
-		createGroup: createGroup,
-		renameGroup: renameGroup
-	}
-
-}
-
-
-export function useActiveCollection() {
-
-	const [activeCollectionState, activeCollectionDispatch] = useCollectionActiveState();
-
-	function open(collectionId: number): void {
-		if (activeCollectionState.activeCollectionId !== collectionId) {
-			activeCollectionDispatch({
-				type: CollectionActiveActionType.SET_CURRENT_COLLECTION_ID,
-				payload: collectionId
-			});
-		}
-	}
-
-	function close(): void {
-		activeCollectionDispatch({
-			type: CollectionActiveActionType.SET_CURRENT_COLLECTION_ID,
-			payload: null
-		});
-	}
-
-	return {
-		activeCollectionId: activeCollectionState.activeCollectionId,
-		openCollection: open,
-		closeCollection: close,
-	}
-}
-
-
-export function useCollectionsStateless() {
-
-	const {throwErrorNotification} = useNotifications();
-
-	function move(collectionId: number, targetGroupId: number | null): Promise<void> {
+	function moveCollection(collectionId: number, targetGroupId: number | null): Promise<void> {
 		return requestMoveCollection(collectionId, targetGroupId)
 			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.COLLECTION_MOVE_FAILED, error))
 	}
 
-	function create(parentGroupId: number | null, name: string, type: CollectionType, query: string | null): Promise<void> {
+	function createCollection(parentGroupId: number | null, name: string, type: CollectionType, query: string | null): Promise<void> {
 		return requestCreateCollection(name, type, type === CollectionType.SMART ? query : null, parentGroupId)
 			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.COLLECTION_CREATE_FAILED, error))
 	}
 
-	function edit(collectionId: number, name: string, query: string | null): Promise<void> {
+	function editCollection(collectionId: number, name: string, query: string | null): Promise<void> {
 		return requestEditCollection(collectionId, name, query)
 			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.COLLECTION_EDIT_FAILED, error))
 	}
@@ -137,10 +101,14 @@ export function useCollectionsStateless() {
 	}
 
 	return {
-		moveCollection: move,
-		createCollection: create,
-		editCollection: edit,
+		loadGroups: loadGroups,
+		moveGroup: moveGroup,
+		deleteGroup: deleteGroup,
+		createGroup: createGroup,
+		renameGroup: renameGroup,
+		moveCollection: moveCollection,
+		editCollection: editCollection,
+		createCollection: createCollection,
 		deleteCollection: deleteCollection
 	}
-
 }

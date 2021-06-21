@@ -1,6 +1,6 @@
 import React from "react";
 import {DialogCreateLibrary} from "./DialogCreateLibrary";
-import {useNotifications} from "../../hooks/base/notificationHooks";
+import {useNotificationsState} from "../../hooks/base/notificationHooks";
 import {LastOpenedLibrary} from "../../hooks/base/libraryHooks";
 import {Grid} from "../../../components/layout/grid/Grid";
 import {VBox} from "../../../components/layout/box/Box";
@@ -23,7 +23,7 @@ export function WelcomeView(props: React.PropsWithChildren<WelcomeViewController
 
 	const {
 		getNotificationStackEntries,
-	} = useNotifications();
+	} = useNotificationsState();
 
 	const {
 		lastOpenedLibraries,

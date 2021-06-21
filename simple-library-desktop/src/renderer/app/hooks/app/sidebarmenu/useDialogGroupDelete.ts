@@ -1,6 +1,6 @@
-import {useDialogController} from "../useDialogController";
+import {useDialogController} from "../miscApplicationHooks";
 import {useState} from "react";
-import {useCollections} from "../../base/collectionHooks";
+import {useCollections, useCollectionsState} from "../../base/collectionHooks";
 import {Group} from "../../../../../common/commonModels";
 import {useStateRef} from "../../../../components/utils/commonHooks";
 
@@ -28,10 +28,13 @@ export function useDialogGroupDeleteController(): [boolean, (id: number | null) 
 export function useDialogGroupDelete(groupId: number, onFinished: (deleted: boolean) => void) {
 
 	const {
-		findGroup,
 		deleteGroup,
 		loadGroups
 	} = useCollections()
+
+	const {
+		findGroup,
+	} = useCollectionsState()
 
 	const [keepContent, setKeepContent, refKeepContent] = useStateRef(false)
 

@@ -47,10 +47,10 @@ export function CollectionsStateProvider(props: { children: any }) {
 	return GenericContextProvider(props.children, initialState, reducerConfigMap, stateContext, dispatchContext);
 }
 
-export function useCollectionsState(): IStateHookResultReadWrite<CollectionsState, CollectionsActionType> {
+export function useCollectionsContext(): IStateHookResultReadWrite<CollectionsState, CollectionsActionType> {
 	return useGlobalStateReadWrite<CollectionsState, CollectionsActionType>(stateContext, dispatchContext)
 }
 
-export function useCollectionsStateDispatch(): IStateHookResultWriteOnly<CollectionsActionType> {
+export function useCollectionsDispatch(): IStateHookResultWriteOnly<CollectionsActionType> {
 	return useGlobalStateWriteOnly<CollectionsActionType>(dispatchContext)
 }

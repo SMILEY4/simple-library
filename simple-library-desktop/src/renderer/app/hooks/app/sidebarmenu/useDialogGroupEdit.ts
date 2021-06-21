@@ -1,6 +1,6 @@
-import {useDialogController} from "../useDialogController";
+import {useDialogController} from "../miscApplicationHooks";
 import {useState} from "react";
-import {useCollections} from "../../base/collectionHooks";
+import {useCollections, useCollectionsState} from "../../base/collectionHooks";
 import {useValidatedState} from "../../../../components/utils/commonHooks";
 
 export function useDialogGroupEditController(): [boolean, (id: number | null) => void, () => void, (number | null)] {
@@ -27,9 +27,12 @@ export function useDialogGroupEditController(): [boolean, (id: number | null) =>
 export function useDialogGroupEdit(groupId: number, onClose: () => void) {
 
 	const {
-		findGroup,
 		renameGroup
 	} = useCollections();
+
+	const {
+		findGroup,
+	} = useCollectionsState();
 
 	const prevName: string = findGroup(groupId).name;
 

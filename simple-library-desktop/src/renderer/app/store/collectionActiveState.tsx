@@ -45,11 +45,11 @@ export function CollectionActiveStateProvider(props: { children: any }) {
 	return GenericContextProvider(props.children, initialState, reducerConfigMap, stateContext, dispatchContext);
 }
 
-export function useCollectionActiveState(): IStateHookResultReadWrite<CollectionActiveState, CollectionActiveActionType> {
+export function useCollectionActiveContext(): IStateHookResultReadWrite<CollectionActiveState, CollectionActiveActionType> {
 	return useGlobalStateReadWrite<CollectionActiveState, CollectionActiveActionType>(stateContext, dispatchContext)
 }
 
-export function useCollectionActiveStateDispatch(): IStateHookResultWriteOnly<CollectionActiveActionType> {
+export function useCollectionActiveDispatch(): IStateHookResultWriteOnly<CollectionActiveActionType> {
 	return useGlobalStateWriteOnly<CollectionActiveActionType>(dispatchContext)
 }
 

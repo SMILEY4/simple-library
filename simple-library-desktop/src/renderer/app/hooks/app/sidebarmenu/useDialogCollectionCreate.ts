@@ -1,6 +1,6 @@
-import {useDialogController} from "../useDialogController";
+import {useDialogController} from "../miscApplicationHooks";
 import {useState} from "react";
-import {useCollections, useCollectionsStateless} from "../../base/collectionHooks";
+import {useCollections, useCollectionsState} from "../../base/collectionHooks";
 import {CollectionType, Group} from "../../../../../common/commonModels";
 import {useStateRef, useValidatedState} from "../../../../components/utils/commonHooks";
 
@@ -26,13 +26,14 @@ export function useDialogCollectionCreateController(): [boolean, (id: number | n
 export function useDialogCollectionCreate(parentGroupId: number | null, onFinished: (created: boolean) => void) {
 
 	const {
-		findGroup,
-		loadGroups
+		loadGroups,
+		createCollection
 	} = useCollections();
 
 	const {
-		createCollection
-	} = useCollectionsStateless()
+		findGroup,
+	} = useCollectionsState();
+
 
 	const parentGroup: Group | null = findGroup(parentGroupId)
 
