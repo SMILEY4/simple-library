@@ -1,5 +1,5 @@
 import React from "react";
-import {ItemList} from "./ItemList";
+import {MemoizedItemList} from "./ItemList";
 import {VBox} from "../../../../components/layout/box/Box";
 import {useContentArea} from "../../../hooks/app/contentarea/useContentArea";
 
@@ -23,7 +23,7 @@ export function ContentArea(props: React.PropsWithChildren<ContentAreaProps>): R
 				{activeCollection.name}
 			</div>
 
-			<ItemList activeCollection={activeCollection}/>
+			<MemoizedItemList activeCollection={activeCollection}/>
 
 		</VBox>
 	);

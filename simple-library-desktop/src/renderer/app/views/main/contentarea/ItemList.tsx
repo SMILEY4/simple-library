@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {VBox} from "../../../../components/layout/box/Box";
 import {ItemListEntry} from "./ItemListEntry";
 import {Collection, ItemData} from "../../../../../common/commonModels";
@@ -7,6 +7,11 @@ import {useItemList} from "../../../hooks/app/contentarea/useItemList";
 interface ItemListProps {
 	activeCollection: Collection
 }
+
+export const MemoizedItemList = React.memo(ItemList, (prev: ItemListProps, next: ItemListProps) => {
+	// dont re-render when active-collection is same (might be diff reference but same value)
+	return prev.activeCollection.id === next.activeCollection.id;
+})
 
 export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.ReactElement {
 

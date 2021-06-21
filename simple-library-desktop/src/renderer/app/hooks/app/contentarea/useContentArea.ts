@@ -5,12 +5,13 @@ import {useActiveCollectionState} from "../../base/activeCollectionHooks";
 export function useContentArea() {
 
 	const {
+		activeCollectionId,
+	} = useActiveCollectionState();
+
+	const {
 		findCollection
 	} = useCollectionsState();
 
-	const {
-		activeCollectionId,
-	} = useActiveCollectionState();
 
 	const activeCollection: Collection | null = findCollection(activeCollectionId);
 
