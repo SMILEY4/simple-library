@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {MutableRefObject, ReactElement, useEffect} from 'react';
-import {BaseProps} from "../../utils/common";
-import {addPropsToChildren, concatClasses} from "../../utils/common";
+import {addPropsToChildren, BaseProps, concatClasses} from "../../utils/common";
 import * as ReactDOM from "react-dom";
 
 export interface ContextMenuBaseProps extends BaseProps {
@@ -12,6 +11,7 @@ export interface ContextMenuBaseProps extends BaseProps {
 	menuRef: MutableRefObject<any>,
 	onOpenMenu?: () => void,
 	onAction?: (itemId: string) => void,
+	onRequestClose?: () => void
 }
 
 export function ContextMenuBase(props: React.PropsWithChildren<ContextMenuBaseProps>): ReactElement {
@@ -63,9 +63,12 @@ export function ContextMenuBase(props: React.PropsWithChildren<ContextMenuBasePr
 		);
 	}
 
-	function handleMenuItemAction(itemId: string) {
+	function handleMenuItemAction(itemId: string, requestClose: boolean) {
 		if (props.onAction) {
 			props.onAction(itemId);
+		}
+		if(requestClose) {
+			props.onRequestClose && props.onRequestClose()
 		}
 	}
 
