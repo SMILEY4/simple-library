@@ -1,8 +1,7 @@
-import React, {useEffect} from "react";
-import {ItemList} from "./ItemList";
+import React from "react";
+import {MemoizedItemList} from "./ItemList";
 import {VBox} from "../../../../components/layout/box/Box";
-import {useCollections} from "../../../hooks/base/collectionHooks";
-import {Collection} from "../../../../../common/commonModels";
+import {useContentArea} from "../../../hooks/app/contentarea/useContentArea";
 
 interface ContentAreaProps {
 }
@@ -10,14 +9,12 @@ interface ContentAreaProps {
 export function ContentArea(props: React.PropsWithChildren<ContentAreaProps>): React.ReactElement {
 
 	const {
-		activeCollectionId,
-		findCollection
-	} = useCollections();
+		activeCollection
+	} = useContentArea()
 
-	const activeCollection: Collection | null = findCollection(activeCollectionId);
-
-	return activeCollectionId && activeCollection && (
+	return activeCollection && (
 		<VBox alignMain="start" alignCross="stretch" fill>
+
 			<div style={{
 				backgroundColor: "var(--color-background-1)",
 				borderBottom: "1px solid var(--color-border)",
@@ -25,7 +22,9 @@ export function ContentArea(props: React.PropsWithChildren<ContentAreaProps>): R
 			}}>
 				{activeCollection.name}
 			</div>
-			<ItemList/>
+
+			<MemoizedItemList activeCollection={activeCollection}/>
+
 		</VBox>
 	);
 

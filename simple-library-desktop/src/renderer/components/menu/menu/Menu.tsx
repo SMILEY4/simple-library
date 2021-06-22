@@ -8,7 +8,7 @@ import {MenuItem} from "../menuitem/MenuItem";
 import {SubMenuItem} from "../submenu/SubMenuItem";
 
 export interface MenuProps extends BaseProps {
-    __onActionInternal?: (itemId: string) => void,
+    __onActionInternal?: (itemId: string, requestClose: boolean) => void,
     onAction?: (itemId: string) => void,
 }
 
@@ -34,12 +34,12 @@ export function Menu(props: React.PropsWithChildren<MenuProps>): ReactElement {
         );
     }
 
-    function onMenuItemAction(itemId: string) {
+    function onMenuItemAction(itemId: string, requestClose: boolean) {
         if (props.onAction) {
             props.onAction(itemId);
         }
         if (props.__onActionInternal) {
-            props.__onActionInternal(itemId);
+            props.__onActionInternal(itemId, requestClose);
         }
     }
 

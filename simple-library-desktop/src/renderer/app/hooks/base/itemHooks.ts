@@ -1,4 +1,3 @@
-import {useGlobalState} from "./miscAppHooks";
 import {
 	fetchItems,
 	onImportStatusCommands,
@@ -6,41 +5,54 @@ import {
 	requestMoveItems,
 	requestRemoveItems
 } from "../../common/messagingInterface";
-import {useNotifications} from "./notificationHooks";
+import {useModifyNotifications} from "./notificationHooks";
 import {genNotificationId} from "./notificationUtils";
-import {AppNotificationType} from "../../store/state";
 import {ImportProcessData, ImportResult, ImportStatus, ItemData} from "../../../../common/commonModels";
-import {ActionType} from "../../store/reducer";
+import {AppNotificationType} from "../../store/notificationState";
+import {ItemsActionType, useItemsContext, useItemsDispatch} from "../../store/itemsState";
+
+export function useItemsState() {
+
+	const [
+		itemsState
+	] = useItemsContext();
+
+	function getItemsIds(): number[] {
+		return itemsState.items.map((item: ItemData) => item.id);
+	}
+
+	return {
+		items: itemsState.items,
+		getItemsIds: getItemsIds,
+	}
+}
+
 
 export function useItems() {
 
-	const {state, dispatch} = useGlobalState();
 	const {
 		throwErrorNotification,
 		addNotification,
 		updateNotification,
 		removeNotification
-	} = useNotifications()
+	} = useModifyNotifications()
+
+	const itemsDispatch = useItemsDispatch();
 
 	function load(collectionId: number): void {
 		fetchItems(collectionId)
 			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_FETCH_FAILED, error))
-			.then((items: ItemData[]) => dispatch({
-				type: ActionType.SET_ITEMS,
+			.then((items: ItemData[]) => itemsDispatch({
+				type: ItemsActionType.SET_ITEMS,
 				payload: items,
 			}));
 	}
 
 	function clear(): void {
-		dispatch({
-			type: ActionType.SET_ITEMS,
+		itemsDispatch({
+			type: ItemsActionType.SET_ITEMS,
 			payload: [],
 		})
-	}
-
-	function moveOrCopy(srcCollectionId: number, tgtCollectionId: number, itemIds: number[], copy: boolean): Promise<void> {
-		return requestMoveItems(srcCollectionId, tgtCollectionId, itemIds, copy)
-			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_MOVE_FAILED, error))
 	}
 
 	function remove(collectionId: number, itemIds: number[]): Promise<void> {
@@ -53,6 +65,11 @@ export function useItems() {
 		// todo
 		console.log("NOT IMPLEMENTED: delete items")
 		return new Promise((resolve, reject) => resolve())
+	}
+
+	function moveOrCopy(srcCollectionId: number, tgtCollectionId: number, itemIds: number[], copy: boolean): Promise<void> {
+		return requestMoveItems(srcCollectionId, tgtCollectionId, itemIds, copy)
+			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_MOVE_FAILED, error))
 	}
 
 	function importItems(data: ImportProcessData): Promise<void> {
@@ -70,138 +87,12 @@ export function useItems() {
 	}
 
 	return {
-		items: state.items,
+		moveOrCopyItems: moveOrCopy,
+		importItems: importItems,
 		loadItems: load,
 		clearItems: clear,
-		moveOrCopyItems: moveOrCopy,
 		removeItems: remove,
 		deleteItems: deleteItems,
-		importItems: importItems
-	}
-}
-
-
-export function useItemSelection() {
-
-	const {state, dispatch} = useGlobalState();
-
-	function isSelected(itemId: number): boolean {
-		return state.selectedItemIds.indexOf(itemId) !== -1;
 	}
 
-	function setSelection(itemIds: number[]) {
-		dispatch({
-			type: ActionType.ITEM_SELECTION_SET,
-			payload: itemIds,
-		});
-		dispatch({
-			type: ActionType.ITEM_SELECTION_SET_LAST,
-			payload: itemIds.length > 0 ? itemIds[0] : null,
-		});
-	}
-
-	function addToSelection(itemIds: number[]) {
-		dispatch({
-			type: ActionType.ITEM_SELECTION_ADD,
-			payload: itemIds,
-		});
-		dispatch({
-			type: ActionType.ITEM_SELECTION_SET_LAST,
-			payload: itemIds.length > 0 ? itemIds[0] : null,
-		});
-	}
-
-	function removeFromSelection(itemIds: number[]) {
-		dispatch({
-			type: ActionType.ITEM_SELECTION_REMOVE,
-			payload: itemIds,
-		});
-		dispatch({
-			type: ActionType.ITEM_SELECTION_SET_LAST,
-			payload: itemIds.length > 0 ? itemIds[0] : null,
-		});
-	}
-
-	function toggleSelection(itemIds: number[]) {
-		const newSelection: number[] = state.selectedItemIds.filter(itemId => itemIds.indexOf(itemId) === -1);
-		itemIds.forEach(itemId => {
-			if (state.selectedItemIds.indexOf(itemId) === -1) {
-				newSelection.push(itemId);
-			}
-		});
-		dispatch({
-			type: ActionType.ITEM_SELECTION_SET_LAST,
-			payload: itemIds.length > 0 ? itemIds[0] : null,
-		});
-		setSelection(newSelection);
-	}
-
-	function selectRangeTo(itemId: number, additive: boolean) {
-		const pivotItemId: number | null = state.lastSelectedItemId;
-		if (pivotItemId) {
-			const allItemIds: number[] = state.items.map((item: ItemData) => item.id);
-			const indexTo: number = allItemIds.indexOf(itemId);
-			const indexLast: number = allItemIds.indexOf(pivotItemId);
-
-			if (indexTo >= 0 && indexLast >= 0) {
-				const indexStart: number = Math.min(indexTo, indexLast);
-				const indexEnd: number = Math.max(indexTo, indexLast);
-				const idsInRange: number[] = allItemIds.slice(indexStart, indexEnd + 1);
-				if (additive) {
-					dispatch({
-						type: ActionType.ITEM_SELECTION_ADD,
-						payload: idsInRange,
-					});
-				} else {
-					dispatch({
-						type: ActionType.ITEM_SELECTION_SET,
-						payload: idsInRange,
-					});
-				}
-			}
-		} else {
-			if (additive) {
-				if (state.selectedItemIds.indexOf(itemId) === -1) {
-					dispatch({
-						type: ActionType.ITEM_SELECTION_ADD,
-						payload: [itemId],
-					});
-				} else {
-					dispatch({
-						type: ActionType.ITEM_SELECTION_REMOVE,
-						payload: [itemId],
-					});
-				}
-			} else {
-				dispatch({
-					type: ActionType.ITEM_SELECTION_SET,
-					payload: [itemId],
-				});
-			}
-		}
-		dispatch({
-			type: ActionType.ITEM_SELECTION_SET_LAST,
-			payload: pivotItemId,
-		});
-	}
-
-	function selectAll() {
-		setSelection(state.items.map((item: ItemData) => item.id));
-	}
-
-	function clearSelection() {
-		setSelection([]);
-	}
-
-	return {
-		selectedItemIds: state.selectedItemIds,
-		isSelected: isSelected,
-		addToSelection: addToSelection,
-		removeFromSelection: removeFromSelection,
-		setSelection: setSelection,
-		toggleSelection: toggleSelection,
-		selectRangeTo: selectRangeTo,
-		selectAll: selectAll,
-		clearSelection: clearSelection,
-	};
 }

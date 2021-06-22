@@ -14,7 +14,7 @@ export const SLOT_MENU = "menu";
 
 export interface SubMenuItemProps extends BaseProps {
     itemId?: string,
-    __onActionInternal?: (itemId: string) => void,
+    __onActionInternal?: (itemId: string, requestClose: boolean) => void,
     onAction?: (itemId: string) => void,
 }
 
@@ -48,7 +48,7 @@ export function SubMenuItem(props: React.PropsWithChildren<SubMenuItemProps>): R
                                 onMouseEnter={handleEnterMenu}
                                 onMouseLeave={handleExitMenu}
                             >
-                                <Menu onAction={handleItemAction}>
+                                <Menu __onActionInternal={handleItemAction}>
                                     {getChildrenMenu()}
                                 </Menu>
                             </div>
@@ -67,13 +67,13 @@ export function SubMenuItem(props: React.PropsWithChildren<SubMenuItemProps>): R
         return getChildrenOfSlot(props.children, SLOT_MENU);
     }
 
-    function handleItemAction(itemId: string) {
+    function handleItemAction(itemId: string, requestClose: boolean) {
         setOpen(false);
         if (props.onAction) {
             props.onAction(itemId);
         }
         if (props.__onActionInternal) {
-            props.__onActionInternal(itemId);
+            props.__onActionInternal(itemId, requestClose);
         }
     }
 

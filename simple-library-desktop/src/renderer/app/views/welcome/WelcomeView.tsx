@@ -1,7 +1,7 @@
 import React from "react";
 import {DialogCreateLibrary} from "./DialogCreateLibrary";
-import {useNotifications} from "../../hooks/base/notificationHooks";
-import {LastOpenedLibrary, useLastOpenedLibraries} from "../../hooks/base/libraryHooks";
+import {useNotificationsState} from "../../hooks/base/notificationHooks";
+import {LastOpenedLibrary} from "../../hooks/base/libraryHooks";
 import {Grid} from "../../../components/layout/grid/Grid";
 import {VBox} from "../../../components/layout/box/Box";
 import {Label} from "../../../components/base/label/Label";
@@ -10,10 +10,10 @@ import {Button} from "../../../components/buttons/button/Button";
 import {Image} from "../../../components/base/image/Image";
 import imgWelcome from "./imgWelcome.jpg";
 import {NotificationStack} from "../../../components/modals/notification/NotificationStack";
-import {Notification, NotificationProps} from "../../../components/modals/notification/Notification";
 import "./welcome.css"
 import {APP_ROOT_ID} from "../../Application";
-import {useWelcome} from "../../hooks/app/useWelcome";
+import {useWelcome} from "../../hooks/app/welcome/useWelcome";
+import {useDialogCreateLibraryController} from "../../hooks/app/welcome/useDialogCreateLibrary";
 
 interface WelcomeViewControllerProps {
 	onLoadProject: () => void
@@ -23,31 +23,32 @@ export function WelcomeView(props: React.PropsWithChildren<WelcomeViewController
 
 	const {
 		getNotificationStackEntries,
-	} = useNotifications();
+	} = useNotificationsState();
 
 	const {
-		showDialogCreateLibrary,
-		openCreateLibrary,
-		cancelCreateLibrary,
-		createLibrary,
+		lastOpenedLibraries,
 		browseLibrary,
 		openLibrary
-	} = useWelcome()
+	} = useWelcome(handleOpenLastUsed)
 
-	const {
-		lastOpenedLibraries
-	} = useLastOpenedLibraries(handleOpenLastUsed);
+	const [
+		showCreateLibrary,
+		openCreateLibrary,
+		closeCreateLibrary,
+	] = useDialogCreateLibraryController();
 
 	return (
 		<>
-
 			<div className="welcome">
 				<Grid columns={['var(--s-12)', '1fr']} rows={['1fr']} fill>
 					<VBox alignMain="center" alignCross="stretch" spacing="0-5" padding="0-5">
+
 						<Label type="header-1" align="center">Simple Library</Label>
 						<Spacer size="1" dir="horizontal"/>
+
 						<Button onAction={openCreateLibrary}>New Library</Button>
 						<Button onAction={handleOpenLibrary}>Open Library</Button>
+
 						<Spacer size="0-5" dir="horizontal" line/>
 						<Label type="header-4" align="center">Recently Used</Label>
 						{lastOpenedLibraries.map((entry: LastOpenedLibrary, index: number) =>
@@ -56,6 +57,7 @@ export function WelcomeView(props: React.PropsWithChildren<WelcomeViewController
 						{lastOpenedLibraries.length === 0 && (
 							<Label type="body" disabled align="center">Empty</Label>
 						)}
+
 					</VBox>
 					<Image url={imgWelcome}/>
 				</Grid>
@@ -66,18 +68,17 @@ export function WelcomeView(props: React.PropsWithChildren<WelcomeViewController
 				entries={getNotificationStackEntries()}
 			/>
 
-			{showDialogCreateLibrary && (
-				<DialogCreateLibrary
-					onCancel={cancelCreateLibrary}
-					onCreate={handleCreateLibrary}
-				/>
+			{showCreateLibrary && (
+				<DialogCreateLibrary onFinished={handleFinishCreatedLibrary}/>
 			)}
 		</>
 	);
 
-	function handleCreateLibrary(name: string, targetDir: string) {
-		createLibrary(name, targetDir)
-			.then(() => props.onLoadProject())
+	function handleFinishCreatedLibrary(created: boolean) {
+		closeCreateLibrary();
+		if (created) {
+			props.onLoadProject()
+		}
 	}
 
 	function handleOpenLibrary() {

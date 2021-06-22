@@ -1,58 +1,97 @@
-import React, {useState} from "react";
+import React from "react";
 import {
 	DragAndDropCollections,
 	DragAndDropGroups,
 	DragAndDropItems,
 	DragAndDropUtils
-} from "../../common/dragAndDrop";
-import {useGlobalState} from "../base/miscAppHooks";
-import {ActionType} from "../../store/reducer";
-import {useGroups} from "../base/groupHooks";
-import {useCollections} from "../base/collectionHooks";
-import {useItems, useItemSelection} from "../base/itemHooks";
+} from "../../../common/dragAndDrop";
+import {
+	useCollections,
+	useCollectionsState,
+} from "../../base/collectionHooks";
+import {useItems} from "../../base/itemHooks";
+import {CollectionSidebarActionType, useCollectionSidebarState} from "../../../store/collectionSidebarState";
+import {useMount} from "../../../../components/utils/commonHooks";
+import {useActiveCollectionState} from "../../base/activeCollectionHooks";
 
-export function useCollectionSidebar() {
+export function useCollectionSidebarUtils() {
 
 	const NODE_TYPE_COLLECTION = "collection"
 	const NODE_TYPE_GROUP = "group"
 
+	function getNodeId(type: string, id: number): string {
+		return type + "." + id
+	}
+
+	function getNodeType(nodeId: string): string {
+		return nodeId.substring(0, nodeId.indexOf("."))
+	}
+
+	function getNodeObjectId(nodeId: string): number | null {
+		const id = Number.parseInt(nodeId.substring(nodeId.indexOf(".") + 1, nodeId.length));
+		return Number.isNaN(id) ? null : id
+	}
+
+	return {
+		NODE_TYPE_COLLECTION: NODE_TYPE_COLLECTION,
+		NODE_TYPE_GROUP: NODE_TYPE_GROUP,
+		getNodeId: getNodeId,
+		getNodeType: getNodeType,
+		getNodeObjectId: getNodeObjectId
+	}
+
+}
+
+export function useCollectionSidebar() {
+
 	const {
-		state,
-		dispatch
-	} = useGlobalState();
+		NODE_TYPE_COLLECTION,
+		NODE_TYPE_GROUP,
+		getNodeId,
+		getNodeType,
+		getNodeObjectId
+	} = useCollectionSidebarUtils();
+
+	const [
+		sidebarState,
+		sidebarDispatch
+	] = useCollectionSidebarState()
+
+	const {
+		loadGroups,
+		moveGroup,
+		moveCollection
+	} = useCollections();
 
 	const {
 		rootGroup,
-		loadGroups,
-		moveGroup
-	} = useGroups();
+		findCollection,
+	} = useCollectionsState();
 
 	const {
 		activeCollectionId,
-		moveCollection,
-		openCollection,
-		findCollection,
-	} = useCollections();
+		openCollection
+	} = useActiveCollectionState();
 
 	const {
 		loadItems,
 		moveOrCopyItems
 	} = useItems()
 
-	const {
-		clearSelection
-	} = useItemSelection();
+	useMount(() => {
+		loadGroups()
+	})
 
 	function toggleExpandNode(nodeId: string, expanded: boolean) {
 		if (expanded) {
-			dispatch({
-				type: ActionType.COLLECTION_SIDEBAR_SET_EXPANDED,
-				payload: [...state.collectionSidebarExpandedNodes, nodeId],
+			sidebarDispatch({
+				type: CollectionSidebarActionType.COLLECTION_SIDEBAR_EXPANDED_ADD,
+				payload: nodeId,
 			});
 		} else {
-			dispatch({
-				type: ActionType.COLLECTION_SIDEBAR_SET_EXPANDED,
-				payload: state.collectionSidebarExpandedNodes.filter(id => id !== nodeId)
+			sidebarDispatch({
+				type: CollectionSidebarActionType.COLLECTION_SIDEBAR_EXPANDED_REMOVE,
+				payload: nodeId
 			});
 		}
 	}
@@ -165,121 +204,21 @@ export function useCollectionSidebar() {
 		if (getNodeType(nodeId) === NODE_TYPE_COLLECTION) {
 			const collectionId: number = getNodeObjectId(nodeId)
 			openCollection(collectionId)
-			clearSelection();
 			loadItems(collectionId)
 		} else {
 			console.error("Double-Click on unexpected element:", nodeId)
 		}
 	}
 
-	function getNodeId(type: string, id: number): string {
-		return type + "." + id
-	}
-
-	function getNodeType(nodeId: string): string {
-		return nodeId.substring(0, nodeId.indexOf("."))
-	}
-
-	function getNodeObjectId(nodeId: string): number | null {
-		const id = Number.parseInt(nodeId.substring(nodeId.indexOf(".") + 1, nodeId.length));
-		return Number.isNaN(id) ? null : id
-	}
-
 	return {
-		NODE_TYPE_COLLECTION: NODE_TYPE_COLLECTION,
-		NODE_TYPE_GROUP: NODE_TYPE_GROUP,
-		expandedNodes: state.collectionSidebarExpandedNodes,
+		activeNode: activeCollectionId ? getNodeId(NODE_TYPE_COLLECTION, activeCollectionId) : undefined,
+		expandedNodes: sidebarState.expandedNodes,
 		toggleExpandNode: toggleExpandNode,
+		rootGroup: rootGroup,
 		dragStart: handleDragStart,
 		dragOver: handleDragOver,
 		drop: handleDrop,
 		handleDoubleClick: handleDoubleClick,
-		getNodeId: getNodeId,
-		getNodeType: getNodeType,
-		getNodeObjectId: getNodeObjectId
-	}
-
-}
-
-
-export function useCollectionSidebarDialogs() {
-
-	const [
-		collectionIdDelete,
-		setCollectionIdDelete,
-	] = useState(null);
-
-	const [
-		collectionIdEdit,
-		setCollectionIdEdit
-	] = useState(null);
-
-	const [
-		groupIdDelete,
-		setGroupIdDelete
-	] = useState(null);
-
-	const [
-		groupIdEdit,
-		setGroupIdEdit
-	] = useState(null);
-
-	const [
-		parentGroupIdCreateGroup,
-		setParentGroupIdCreateGroup
-	] = useState(null);
-	const [
-		showCreateGroup,
-		setShowCreateGroup
-	] = useState(false);
-
-	const [
-		parentGroupIdCreateCollection,
-		setParentGroupIdCreateCollection
-	] = useState(null);
-	const [
-		showCreateCollection,
-		setShowCreateCollection
-	] = useState(false);
-
-	return {
-		collectionIdDelete: collectionIdDelete,
-		openDeleteCollection: (collectionId: number) => setCollectionIdDelete(collectionId),
-		closeDeleteCollection: () => setCollectionIdDelete(null),
-
-		collectionIdEdit: collectionIdEdit,
-		openEditCollection: (collectionId: number) => setCollectionIdEdit(collectionId),
-		closeEditCollection: () => setCollectionIdEdit(null),
-
-		groupIdDelete: groupIdDelete,
-		openDeleteGroup: (groupId: number) => setGroupIdDelete(groupId),
-		closeDeleteGroup: () => setGroupIdDelete(null),
-
-		groupIdEdit: groupIdEdit,
-		openEditGroup: (groupId: number) => setGroupIdEdit(groupId),
-		closeEditGroup: () => setGroupIdEdit(null),
-
-		showCreateGroup: showCreateGroup,
-		parentGroupIdCreateGroup: parentGroupIdCreateGroup,
-		openCreateGroup: (groupId: number) => {
-			setShowCreateGroup(true)
-			setParentGroupIdCreateGroup(groupId)
-		},
-		closeCreateGroup: () => {
-			setParentGroupIdCreateGroup(null)
-			setShowCreateGroup(false)
-		},
-
-		showCreateCollection: showCreateCollection,
-		parentGroupIdCreateCollection: parentGroupIdCreateCollection,
-		openCreateCollection: (groupId: number) => {
-			setShowCreateCollection(true)
-			setParentGroupIdCreateCollection(groupId)
-		},
-		closeCreateCollection: () => {
-			setParentGroupIdCreateCollection(null)
-			setShowCreateCollection(false)
-		}
 	}
 
 }

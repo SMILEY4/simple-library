@@ -8,6 +8,7 @@ import {concatClasses} from "../../utils/common";
 interface ElementLabelProps extends BaseProps {
 	text: string
 	side?: "top" | "bottom"
+	disabled?: boolean,
 }
 
 export function ElementLabel(props: React.PropsWithChildren<ElementLabelProps>): ReactElement {
@@ -22,11 +23,11 @@ export function ElementLabel(props: React.PropsWithChildren<ElementLabelProps>):
 			forwardRef={props.forwardRef}
 		>
 			{(!props.side || props.side === "top") && (
-				<Label type="caption" variant="secondary">{props.text}</Label>
+				<Label type="caption" variant="secondary" disabled={props.disabled}>{props.text}</Label>
 			)}
 			{props.children}
 			{props.side === "bottom" && (
-				<Label type="caption" variant="secondary">{props.text}</Label>
+				<Label type="caption" variant="secondary" disabled={props.disabled}>{props.text}</Label>
 			)}
 		</VBox>
 	);

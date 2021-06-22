@@ -6,31 +6,23 @@ import {TextField} from "../../../components/input/textfield/TextField";
 import {VBox} from "../../../components/layout/box/Box";
 import {DirectoryInputField} from "../../../components/input/directoryinputfield/DirectoryInputField";
 import {APP_ROOT_ID} from "../../Application";
-import {useWelcome} from "../../hooks/app/useWelcome";
-import {useValidatedState} from "../../../components/utils/commonHooks";
+import {useDialogCreateLibrary} from "../../hooks/app/welcome/useDialogCreateLibrary";
 
 interface DialogCreateLibraryProps {
-	onCancel: () => void,
-	onCreate: (name: string, targetDir: string) => void
+	onFinished: (created: boolean) => void
 }
 
 export function DialogCreateLibrary(props: React.PropsWithChildren<DialogCreateLibraryProps>): React.ReactElement {
 
-	const {browseTargetDir} = useWelcome()
-
-	const [
-		name,
+	const {
 		setName,
-		nameValid,
-		triggerNameValidation
-	] = useValidatedState("", true, validateName)
-
-	const [
-		targetDir,
+		isNameValid,
 		setTargetDir,
-		targetDirValid,
-		triggerTargetDirValidation
-	] = useValidatedState("", true, validateTargetDir)
+		isTargetDirValid,
+		browseTargetDir,
+		create,
+		cancel
+	} = useDialogCreateLibrary(props.onFinished);
 
 	return (
 		<Dialog
@@ -38,9 +30,9 @@ export function DialogCreateLibrary(props: React.PropsWithChildren<DialogCreateL
 			modalRootId={APP_ROOT_ID}
 			icon={undefined}
 			title={"Create New Library"}
-			onClose={handleCancel}
-			onEscape={handleCancel}
-			onEnter={handleCreate}
+			onClose={cancel}
+			onEscape={cancel}
+			onEnter={create}
 			withOverlay
 			closable
 			closeOnClickOutside
@@ -50,42 +42,22 @@ export function DialogCreateLibrary(props: React.PropsWithChildren<DialogCreateL
 					<TextField
 						placeholder={"Name"}
 						autofocus
-						error={!nameValid}
+						error={!isNameValid()}
 						onAccept={setName}
 					/>
 					<DirectoryInputField
 						placeholder={"Target Directory"}
-						error={!targetDirValid}
+						error={!isTargetDirValid()}
 						onBrowse={browseTargetDir}
 						onSelect={setTargetDir}
 					/>
 				</VBox>
 			</Slot>
 			<Slot name={"footer"}>
-				<Button onAction={handleCancel}>Cancel</Button>
-				<Button onAction={handleCreate} variant="info">Create</Button>
+				<Button onAction={cancel}>Cancel</Button>
+				<Button onAction={create} variant="info">Create</Button>
 			</Slot>
 		</Dialog>
 	);
-
-	function handleCancel(): void {
-		props.onCancel()
-	}
-
-	function handleCreate(): void {
-		triggerNameValidation();
-		triggerTargetDirValidation();
-		if (nameValid && targetDirValid) {
-			props.onCreate(name, targetDir)
-		}
-	}
-
-	function validateName(name: string): boolean {
-		return name && name.trim().length > 0
-	}
-
-	function validateTargetDir(targetDir: string): boolean {
-		return targetDir && targetDir.trim().length > 0
-	}
 
 }

@@ -12,8 +12,9 @@ export interface MenuItemProps extends BaseProps {
     disabled?: boolean,
     onAction?: () => void;
     onMouseEnter?: (event: React.MouseEvent) => void,
-    onMouseExit?: (event: React.MouseEvent) => void
-    __onActionInternal?: (itemId: string) => void;
+    onMouseExit?: (event: React.MouseEvent) => void,
+    closeOnAction?: boolean,
+    __onActionInternal?: (itemId: string, requestClose: boolean) => void;
 }
 
 export function MenuItem(props: React.PropsWithChildren<MenuItemProps>): ReactElement {
@@ -41,7 +42,7 @@ export function MenuItem(props: React.PropsWithChildren<MenuItemProps>): ReactEl
             props.onAction();
         }
         if (props.disabled !== true && props.__onActionInternal) {
-            props.__onActionInternal(props.itemId);
+            props.__onActionInternal(props.itemId, props.closeOnAction ? props.closeOnAction : false);
         }
     }
 }

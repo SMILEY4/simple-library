@@ -6,9 +6,9 @@ import {
 } from "../../common/messagingInterface";
 import {useState} from "react";
 import {genNotificationId} from "./notificationUtils";
-import {AppNotificationType} from "../../store/state";
-import {useNotifications} from "./notificationHooks";
+import {useModifyNotifications} from "./notificationHooks";
 import {useMount} from "../../../components/utils/commonHooks";
+import {AppNotificationType} from "../../store/notificationState";
 
 export interface LastOpenedLibrary {
 	name: string,
@@ -16,7 +16,7 @@ export interface LastOpenedLibrary {
 	onAction: () => void,
 }
 
-export function useLastOpenedLibraries(onOpen: (path: string) => void) {
+export function useLastOpenedLibraries(onOpen?: (path: string) => void) {
 
 	const [lastOpened, setLastOpened] = useState<LastOpenedLibrary[]>([]);
 
@@ -25,7 +25,7 @@ export function useLastOpenedLibraries(onOpen: (path: string) => void) {
 			.then(entries => entries.map(entry => ({
 				name: entry.name,
 				filePath: entry.path,
-				onAction: () => onOpen(entry.path)
+				onAction: () => onOpen && onOpen(entry.path)
 			})))
 			.then(setLastOpened)
 	});
@@ -38,7 +38,7 @@ export function useLastOpenedLibraries(onOpen: (path: string) => void) {
 
 export function useLibraries() {
 
-	const {throwErrorNotification} = useNotifications();
+	const {throwErrorNotification} = useModifyNotifications();
 
 	function create(name: string, targetDir: string): Promise<void> {
 		return requestCreateLibrary(name, targetDir)
