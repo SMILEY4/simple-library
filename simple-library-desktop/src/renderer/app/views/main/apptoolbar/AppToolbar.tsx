@@ -13,7 +13,8 @@ interface AppToolbarProps {
 export function AppToolbar(props: React.PropsWithChildren<AppToolbarProps>): React.ReactElement {
 
 	const {
-		closeLibrary
+		closeLibrary,
+		openConfigFile
 	} = useAppToolbar()
 
 	const [
@@ -25,8 +26,9 @@ export function AppToolbar(props: React.PropsWithChildren<AppToolbarProps>): Rea
 	return (
 		<>
 			<Toolbar>
-				<IconButton label="Import" icon={IconType.IMPORT} large ghost onAction={openImportDialog}/>
 				<IconButton label="Close" icon={IconType.CLOSE} large ghost onAction={handleOnClose}/>
+				<IconButton label="Config" icon={IconType.SETTINGS} large ghost onAction={openConfigFile}/>
+				<IconButton label="Import" icon={IconType.IMPORT} large ghost onAction={openImportDialog}/>
 			</Toolbar>
 
 			{showImportDialog && (<DialogImportFiles onClose={closeImportDialog}/>)}

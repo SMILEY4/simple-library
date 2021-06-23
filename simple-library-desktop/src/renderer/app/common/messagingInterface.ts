@@ -34,6 +34,7 @@ import {
     GetLastOpenedLibrariesMessage,
     OpenLibraryMessage
 } from '../../../common/messaging/messagesLibrary';
+import {OpenConfigFileMessage} from "../../../common/messaging/messagesApplication";
 
 const {ipcRenderer} = window.require('electron');
 
@@ -182,4 +183,8 @@ export function requestMoveCollection(collectionId: number, targetGroupId: numbe
         collectionId: collectionId,
         targetGroupId: targetGroupId,
     }).then();
+}
+
+export function requestOpenConfigFile():  Promise<void> {
+    return OpenConfigFileMessage.request(ipcRenderer, {}).then();
 }

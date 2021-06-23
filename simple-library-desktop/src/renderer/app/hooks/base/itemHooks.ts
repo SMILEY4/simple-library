@@ -1,6 +1,7 @@
 import {
 	fetchItems,
-	onImportStatusCommands, requestDeleteItems,
+	onImportStatusCommands,
+	requestDeleteItems,
 	requestImport,
 	requestMoveItems,
 	requestRemoveItems

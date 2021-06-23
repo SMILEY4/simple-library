@@ -209,6 +209,16 @@ export function toNotificationEntry(notificationData: AppNotification, onClose: 
                 onClose: () => onClose(),
             };
         }
+        case AppNotificationType.OPEN_CONFIG_FILE_FAILED: {
+            return {
+                id: notificationData.id,
+                type: "error",
+                title: "Failed to open config file",
+                content: errorToString(notificationData.data),
+                closable: true,
+                onClose: () => onClose(),
+            };
+        }
     }
 }
 

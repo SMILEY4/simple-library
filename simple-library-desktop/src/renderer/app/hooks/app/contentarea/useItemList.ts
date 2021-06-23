@@ -18,7 +18,6 @@ export function useItemList(activeCollectionId: number) {
 
 	const {
 		removeItems,
-		deleteItems,
 		loadItems
 	} = useItems();
 
