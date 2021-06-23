@@ -32,8 +32,10 @@ Starts electron instance in development mode.
 # Changelog
 
 ### Release 0.3.0
+
  - Added ability to completely delete items from the library
  - Added button to open config file
- - Theme is saved in config file 
+ - Theme is saved in config file
+ - Items can be opened with the default application
  - Rework UI-Layout,Design 
  - Refactoring / Optimisation
