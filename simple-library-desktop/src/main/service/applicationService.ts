@@ -15,5 +15,12 @@ export class ApplicationService {
 		return open(this.configDataAccess.getConfigFileLocation());
 	}
 
+	public getApplicationTheme(): "dark" | "light" {
+		return this.configDataAccess.getApplicationTheme();
+	}
+
+	public setApplicationTheme(theme: "dark" | "light"): void {
+		this.configDataAccess.setApplicationTheme(theme)
+	}
 
 }

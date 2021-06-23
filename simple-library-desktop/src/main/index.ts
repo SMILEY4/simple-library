@@ -51,7 +51,7 @@ if (RUN_TESTS) {
 	// service
 	const appService: ApplicationService = new ApplicationService(configDataAccess);
 	const libraryService: LibraryService = new LibraryService(libraryDataAccess, configDataAccess);
-	const windowService: WindowService = new WindowService();
+	const windowService: WindowService = new WindowService(appService);
 	const itemService: ItemService = new ItemService(
 		new ImportService(
 			itemDataAccess,
@@ -74,7 +74,7 @@ if (RUN_TESTS) {
 	new ItemMessageHandler(itemService).initialize();
 	new CollectionMessageHandler(collectionService).initialize();
 	new GroupMessageHandler(groupService).initialize();
-	new WindowMessageHandler(windowService).initialize();
+	new WindowMessageHandler(windowService, appService).initialize();
 
 	app.whenReady().then(() => windowService.whenReady());
 	app.on('window-all-closed', () => windowService.allWindowsClosed());

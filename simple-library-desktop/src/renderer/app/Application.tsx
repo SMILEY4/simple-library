@@ -2,7 +2,7 @@ import React, {Component, ReactElement} from 'react';
 import {ComponentShowcase} from "../components/_showcase/ComponentShowcase";
 import {WelcomeView} from "./views/welcome/WelcomeView";
 import {MainView} from "./views/main/MainView";
-import {SetApplicationTheme} from "../../common/messaging/messagesWindow";
+import {GetApplicationTheme, SetApplicationTheme} from "../../common/messaging/messagesWindow";
 import {hot} from 'react-hot-loader/root';
 import {NotificationStateProvider} from "./store/notificationState";
 import {Compose} from "../components/misc/compose/Compose";
@@ -55,7 +55,11 @@ export class Application extends Component<any, AppState> {
 				this.handleSetTheme(this.state.theme === Theme.LIGHT ? Theme.DARK : Theme.LIGHT)
 			}
 		}, true);
-		this.handleSetTheme(this.state.theme)
+
+		GetApplicationTheme.request(ipcRenderer)
+			.then((payload: GetApplicationTheme.ResponsePayload) => payload.theme)
+			.then((theme: "dark" | "light") => theme === "light" ? Theme.LIGHT : Theme.DARK)
+			.then((theme: Theme) => this.setState({theme: theme}));
 	}
 
 	handleSetTheme(theme: Theme) {

@@ -1,12 +1,17 @@
 import {app, BrowserWindow, nativeTheme} from 'electron';
 import installExtension, {REACT_DEVELOPER_TOOLS} from 'electron-devtools-installer';
+import {ApplicationService} from "./applicationService";
 
 const isDev: boolean = !app.isPackaged;
 
 export class WindowService {
 
+	appService: ApplicationService
 	window: BrowserWindow;
 
+	constructor(appService: ApplicationService) {
+		this.appService = appService;
+	}
 
 	/**
 	 * initializes the window (trigger the application is ready)
@@ -88,6 +93,9 @@ export class WindowService {
 		});
 
 		this.window.setAlwaysOnTop(true); // todo wip: only for testing (normally = false)
+
+		this.setApplicationTheme(this.appService.getApplicationTheme())
+
 		if (isDev) {
 			this.window.loadURL('http://localhost:8080');
 			this.window.webContents.on("did-frame-finish-load", () => {

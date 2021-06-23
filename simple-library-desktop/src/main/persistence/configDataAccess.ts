@@ -39,4 +39,23 @@ export class ConfigDataAccess {
 		this.store.set('lastOpened', lastOpened);
 	}
 
+
+	/**
+	 * @return the application theme
+	 */
+	public getApplicationTheme(): "light" | "dark" {
+		const data: any = this.store.get('theme');
+		return (data ? data : "light");
+	}
+
+
+	/**
+	 * Saves the application theme
+	 * @param theme the new application theme to save
+	 */
+	public setApplicationTheme(theme: "light" | "dark"): void {
+		this.store.set('theme', theme);
+	}
+
+
 }
