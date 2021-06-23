@@ -62,6 +62,9 @@ const mainConfig = {
         filename: 'bundle.js',
         path: path.resolve(__dirname, '.webpack', 'main'),
     },
+    browser: {
+        "fs": false
+    }
 };
 
 module.exports = [rendererConfig, mainConfig];
