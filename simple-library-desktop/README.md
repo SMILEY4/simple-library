@@ -32,5 +32,6 @@ Starts electron instance in development mode.
 # Changelog
 
 ### Release 0.3.0
-- Refactoring
+- Added ability to completely delete items from the library
 - Rework UI-Layout,Design 
+- Refactoring / Optimisation
