@@ -1,7 +1,12 @@
 import { ItemService } from '../service/ItemService';
 import { ipcMain } from 'electron';
 import { errorResponse, ErrorResponse } from '../../common/messaging/messages';
-import {DeleteItemsMessage, GetItemsMessage, ImportItemsMessage} from '../../common/messaging/messagesItems';
+import {
+    DeleteItemsMessage,
+    GetItemsMessage,
+    ImportItemsMessage,
+    OpenItemsExternalMessage
+} from '../../common/messaging/messagesItems';
 import { ImportResult, ItemData } from '../../common/commonModels';
 
 export class ItemMessageHandler {
@@ -16,6 +21,7 @@ export class ItemMessageHandler {
         GetItemsMessage.handle(ipcMain, payload => this.handleGet(payload));
         DeleteItemsMessage.handle(ipcMain, payload => this.handleDelete(payload));
         ImportItemsMessage.handle(ipcMain, payload => this.handleImport(payload));
+        OpenItemsExternalMessage.handle(ipcMain, payload => this.handleOpenExternal(payload));
     }
 
     private async handleGet(payload: GetItemsMessage.RequestPayload): Promise<GetItemsMessage.ResponsePayload | ErrorResponse> {
@@ -33,6 +39,12 @@ export class ItemMessageHandler {
     private async handleImport(payload: ImportItemsMessage.RequestPayload): Promise<ImportItemsMessage.ResponsePayload | ErrorResponse> {
         return this.itemService.importFiles(payload.data)
             .then((result: ImportResult) => ({ result: result }))
+            .catch(err => errorResponse(err));
+    }
+
+    private async handleOpenExternal(payload: OpenItemsExternalMessage.RequestPayload): Promise<OpenItemsExternalMessage.ResponsePayload | ErrorResponse> {
+        return this.itemService.openFilesExternal(payload.itemIds)
+            .then(() => ({}))
             .catch(err => errorResponse(err));
     }
 

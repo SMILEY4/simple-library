@@ -1,6 +1,7 @@
 import {ConfigDataAccess} from "../persistence/configDataAccess";
 
-const open = require('open');
+const shell = require('electron').shell;
+
 
 export class ApplicationService {
 
@@ -12,7 +13,7 @@ export class ApplicationService {
 	}
 
 	public openConfigFile(): Promise<void> {
-		return open(this.configDataAccess.getConfigFileLocation());
+		return shell.openExternal(this.configDataAccess.getConfigFileLocation()).then();
 	}
 
 	public getApplicationTheme(): "dark" | "light" {

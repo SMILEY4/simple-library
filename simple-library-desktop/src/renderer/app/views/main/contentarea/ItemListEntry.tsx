@@ -9,6 +9,7 @@ interface ItemListEntryProps {
 	activeCollectionType: CollectionType,
 	selected: boolean,
 	onSelect: (itemId: number, selectMod: SelectModifier) => void,
+	onOpen: (itemId: number) => void,
 	onDragStart: (itemId: number, event: React.DragEvent) => void
 	onContextMenu: (itemId: number, event: React.MouseEvent) => void,
 }
@@ -18,6 +19,7 @@ export function ItemListEntry(props: React.PropsWithChildren<ItemListEntryProps>
 	return (
 		<div
 			onClick={handleClick}
+			onDoubleClick={handleDoubleClick}
 			draggable
 			onDragStart={handleOnDragStart}
 			onContextMenu={handleContextMenu}
@@ -49,6 +51,10 @@ export function ItemListEntry(props: React.PropsWithChildren<ItemListEntryProps>
 		event.preventDefault();
 		event.stopPropagation();
 		props.onSelect(props.item.id, getSelectModifier(event))
+	}
+
+	function handleDoubleClick(): void {
+		props.onOpen(props.item.id);
 	}
 
 	function handleContextMenu(event: React.MouseEvent): void {
