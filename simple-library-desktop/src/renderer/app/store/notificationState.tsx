@@ -40,7 +40,8 @@ export enum AppNotificationType {
 	GROUP_CREATE_FAILED,
 	GROUP_MOVE_FAILED,
 	GROUP_RENAME_FAILED,
-	GROUP_DELETE_FAILED
+	GROUP_DELETE_FAILED,
+	OPEN_CONFIG_FILE_FAILED,
 }
 
 const initialState: NotificationState = {

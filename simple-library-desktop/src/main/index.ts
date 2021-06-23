@@ -23,58 +23,62 @@ import {LibraryMessageHandler} from './messagehandler/libraryMessageHandler';
 import {GroupService} from './service/groupService';
 import {GroupDataAccess} from './persistence/groupDataAccess';
 import {WindowMessageHandler} from "./messagehandler/windowMessageHandler";
+import {ApplicationService} from "./service/applicationService";
+import {ApplicationMessageHandler} from "./messagehandler/applicationMessageHandler";
 
 const RUN_TESTS = false;
 
 if (RUN_TESTS) {
-    SimpleLibraryTests.runAll().then(() => {
-    });
+	SimpleLibraryTests.runAll().then(() => {
+	});
 
 } else {
 
-    const log = require('electron-log');
-    Object.assign(console, log.functions);
+	const log = require('electron-log');
+	Object.assign(console, log.functions);
 
-    // utils
-    const fsWrapper: FileSystemWrapper = new FileSystemWrapper();
+	// utils
+	const fsWrapper: FileSystemWrapper = new FileSystemWrapper();
 
-    // data access
-    const configDataAccess: ConfigDataAccess = new ConfigDataAccess();
-    const dataAccess: DataAccess = new DataAccess();
-    const libraryDataAccess: LibraryDataAccess = new LibraryDataAccess(dataAccess);
-    const itemDataAccess: ItemDataAccess = new ItemDataAccess(dataAccess);
-    const collectionDataAccess: CollectionDataAccess = new CollectionDataAccess(dataAccess, itemDataAccess);
-    const groupDataAccess: GroupDataAccess = new GroupDataAccess(dataAccess);
+	// data access
+	const configDataAccess: ConfigDataAccess = new ConfigDataAccess();
+	const dataAccess: DataAccess = new DataAccess();
+	const libraryDataAccess: LibraryDataAccess = new LibraryDataAccess(dataAccess);
+	const itemDataAccess: ItemDataAccess = new ItemDataAccess(dataAccess);
+	const collectionDataAccess: CollectionDataAccess = new CollectionDataAccess(dataAccess, itemDataAccess);
+	const groupDataAccess: GroupDataAccess = new GroupDataAccess(dataAccess);
 
-    // service
-    const appService: LibraryService = new LibraryService(libraryDataAccess, configDataAccess);
-    const windowService: WindowService = new WindowService();
-    const itemService: ItemService = new ItemService(
-        new ImportService(
-            itemDataAccess,
-            new ImportDataValidator(fsWrapper),
-            new ImportStepRename(),
-            new ImportStepImportTarget(fsWrapper),
-            new ImportStepFileHash(fsWrapper),
-            new ImportStepThumbnail(),
-            windowService,
-        ),
-        itemDataAccess,
-        collectionDataAccess,
-    );
-    const collectionService: CollectionService = new CollectionService(itemService, collectionDataAccess);
-    const groupService: GroupService = new GroupService(itemService, collectionService, collectionDataAccess, groupDataAccess);
+	// service
+	const appService: ApplicationService = new ApplicationService(configDataAccess);
+	const libraryService: LibraryService = new LibraryService(libraryDataAccess, configDataAccess);
+	const windowService: WindowService = new WindowService(appService);
+	const itemService: ItemService = new ItemService(
+		new ImportService(
+			itemDataAccess,
+			new ImportDataValidator(fsWrapper),
+			new ImportStepRename(),
+			new ImportStepImportTarget(fsWrapper),
+			new ImportStepFileHash(fsWrapper),
+			new ImportStepThumbnail(),
+			windowService,
+		),
+		itemDataAccess,
+		collectionDataAccess,
+	);
+	const collectionService: CollectionService = new CollectionService(itemService, collectionDataAccess);
+	const groupService: GroupService = new GroupService(itemService, collectionService, collectionDataAccess, groupDataAccess);
 
-    // message-handler
-    new LibraryMessageHandler(appService, windowService).initialize();
-    new ItemMessageHandler(itemService).initialize();
-    new CollectionMessageHandler(collectionService).initialize();
-    new GroupMessageHandler(groupService).initialize();
-    new WindowMessageHandler(windowService).initialize();
+	// message-handler
+	new ApplicationMessageHandler(appService).initialize();
+	new LibraryMessageHandler(libraryService, windowService).initialize();
+	new ItemMessageHandler(itemService).initialize();
+	new CollectionMessageHandler(collectionService).initialize();
+	new GroupMessageHandler(groupService).initialize();
+	new WindowMessageHandler(windowService, appService).initialize();
 
-    app.whenReady().then(() => windowService.whenReady());
-    app.on('window-all-closed', () => windowService.allWindowsClosed());
-    app.on('activate', () => windowService.activate());
+	app.whenReady().then(() => windowService.whenReady());
+	app.on('window-all-closed', () => windowService.allWindowsClosed());
+	app.on('activate', () => windowService.activate());
 
 }
 

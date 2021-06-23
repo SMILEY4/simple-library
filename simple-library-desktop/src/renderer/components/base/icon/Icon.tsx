@@ -4,7 +4,8 @@ import {
     AiFillCaretRight,
     AiFillHome,
     AiOutlineFileText,
-    AiOutlineFolder, BiImage, BiImages,
+    AiOutlineFolder,
+    BiImages,
     BiImport,
     BsChevronDoubleLeft,
     BsChevronDoubleRight,
@@ -13,6 +14,7 @@ import {
     BsChevronRight,
     BsChevronUp,
     FaCheck,
+    FiSettings,
     VscClose,
 } from 'react-icons/all';
 import {BaseProps, concatClasses, getIf, map, Size} from "../../utils/common";
@@ -35,6 +37,7 @@ export enum IconType {
     // REFRESH,
     IMPORT,
     HOME,
+    SETTINGS,
     CHECKMARK,
     // DIRECTORY,
     FILE,
@@ -68,6 +71,7 @@ const ICON_COLOR_TYPE = new Map<IconType, string>([
     [IconType.COLLECTION, SVG_FILLED],
     [IconType.COLLECTIONS_SMART, SVG_FILLED],
 
+    [IconType.SETTINGS, SVG_OUTLINED],
 
 ]);
 
@@ -115,6 +119,8 @@ export function Icon(props: React.PropsWithChildren<IconProps>): React.ReactElem
             return <BiImages {...iconProps} />;
         case IconType.COLLECTIONS_SMART:
             return <BiImagesSmart {...iconProps} />;
+        case IconType.SETTINGS:
+            return <FiSettings {...iconProps} />;
         default:
             return null;
     }
