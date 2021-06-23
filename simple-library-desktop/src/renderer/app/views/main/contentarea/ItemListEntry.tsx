@@ -10,8 +10,6 @@ interface ItemListEntryProps {
 	selected: boolean,
 	onSelect: (itemId: number, selectMod: SelectModifier) => void,
 	onDragStart: (itemId: number, event: React.DragEvent) => void
-	onRemove: () => void,
-	onDelete: () => void,
 	onContextMenu: (itemId: number, event: React.MouseEvent) => void,
 }
 

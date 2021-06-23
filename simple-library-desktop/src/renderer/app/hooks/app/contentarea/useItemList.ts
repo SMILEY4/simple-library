@@ -88,21 +88,14 @@ export function useItemList(activeCollectionId: number) {
 			.then(() => loadGroups())
 	}
 
-	function handleDeleteSelectedItems(): void {
-		deleteItems(selectedItemIds)
-			.then(() => clearSelection())
-			.then(() => loadItems(activeCollectionId))
-			.then(() => loadGroups())
-	}
-
 	return {
 		items: items,
 		isSelected: isSelected,
+		itemIdsSelected: selectedItemIds,
 		handleOnKeyDown: handleOnKeyDown,
 		handleSelectItem: handleSelectItem,
 		handleDragItem: handleDragItem,
 		handleRemoveSelectedItems: handleRemoveSelectedItems,
-		handleDeleteSelectedItems: handleDeleteSelectedItems,
 	}
 
 }

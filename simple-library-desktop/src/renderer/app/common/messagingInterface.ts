@@ -15,6 +15,7 @@ import {
     RenameGroupMessage,
 } from '../../../common/messaging/messagesGroups';
 import {
+    DeleteItemsMessage,
     GetItemsMessage,
     ImportItemsMessage,
     ImportStatusUpdateCommand,
@@ -77,6 +78,13 @@ export function requestMoveItems(srcCollectionId: number, tgtCollectionId: numbe
 export function requestRemoveItems(collectionId: number, itemIds: number[]): Promise<void> {
     return RemoveItemsFromCollectionsMessage.request(ipcRenderer, {
         collectionId: collectionId,
+        itemIds: itemIds,
+    }).then();
+}
+
+
+export function requestDeleteItems(itemIds: number[]): Promise<void> {
+    return DeleteItemsMessage.request(ipcRenderer, {
         itemIds: itemIds,
     }).then();
 }

@@ -8,6 +8,8 @@ import {APP_ROOT_ID} from "../../../Application";
 import {ItemListEntryContextMenu} from "./ItemListEntryContextMenu";
 import {useContextMenu} from "../../../../components/menu/contextmenu/contextMenuHook";
 import {SelectModifier} from "../../../../components/utils/common";
+import {useDialogItemsDeleteController} from "../../../hooks/app/contentarea/useDialogItemsDelete";
+import {DialogDeleteItems} from "./DialogDeleteItems";
 
 interface ItemListProps {
 	activeCollection: Collection
@@ -24,12 +26,19 @@ export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.R
 	const {
 		items,
 		isSelected,
+		itemIdsSelected,
 		handleOnKeyDown,
 		handleSelectItem,
 		handleDragItem,
-		handleDeleteSelectedItems,
 		handleRemoveSelectedItems
 	} = useItemList(props.activeCollection.id)
+
+	const [
+		showDeleteItems,
+		openDeleteItems,
+		closeDeleteItems,
+		itemIdsDelete
+	] = useDialogItemsDeleteController();
 
 	const {
 		showContextMenu,
@@ -60,8 +69,6 @@ export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.R
 					selected={isSelected(itemData.id)}
 					onSelect={handleSelectItem}
 					onDragStart={handleDragItem}
-					onRemove={handleRemoveSelectedItems}
-					onDelete={handleDeleteSelectedItems}
 					onContextMenu={handleOnContextMenu}
 				/>)}
 			</VBox>
@@ -77,9 +84,15 @@ export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.R
 				<ItemListEntryContextMenu
 					canRemove={props.activeCollection.type !== CollectionType.SMART}
 					onRemove={handleRemoveSelectedItems}
-					onDelete={handleDeleteSelectedItems}
+					onDelete={() => openDeleteItems(itemIdsSelected)}
 				/>
 			</ContextMenuBase>
+
+			{showDeleteItems && (<DialogDeleteItems
+				itemIds={itemIdsDelete}
+				activeCollectionId={props.activeCollection.id}
+				onClose={closeDeleteItems}
+			/>)}
 
 		</>
 	);
