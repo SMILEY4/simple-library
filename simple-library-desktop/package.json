@@ -10,7 +10,7 @@
     "build": "webpack --config webpack.config.prod.js",
     "build:dev": "webpack --config webpack.config.dev.js",
     "package": "npm run build && electron-builder --dir .",
-    "dist": "npm run build && electron-builder .",
+    "dist": "npm run build && electron-builder",
     "start": "concurrently \"npm run start:dev\" \"npm run start:electron\"",
     "start:dev": "webpack-dev-server --config webpack.config.dev.js",
     "start:electron": "npm run build:dev && electron ./.webpack/main/bundle.js"
@@ -48,7 +48,7 @@
     "concurrently": "^5.1.0",
     "css-loader": "^3.4.2",
     "electron": "^11.1.1",
-    "electron-builder": "^22.11.3",
+    "electron-builder": "^22.4.1",
     "electron-devtools-installer": "^3.2.0",
     "file-loader": "^6.0.0",
     "html-webpack-plugin": "^4.0.4",
