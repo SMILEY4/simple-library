@@ -1,11 +1,11 @@
 import DataAccess from './dataAccess';
 import {
     sqlCountItemsWithCollectionId,
-    sqlCountItemsWithCustomFilter,
+    sqlCountItemsWithCustomFilter, sqlDeleteItems,
     sqlGetItemsByCustomFilter,
     sqlGetItemsCountTotal,
     sqlGetItemsInCollection,
-    sqlInsertItem,
+    sqlInsertItem, sqlRemoveItemsFromAllCollections,
 } from './sql/sql';
 import { ItemData } from '../../common/commonModels';
 
@@ -78,6 +78,15 @@ export class ItemDataAccess {
     public getItemCountBySmartQuery(smartQuery: string): Promise<number> {
         return this.dataAccess.querySingle(sqlCountItemsWithCustomFilter(smartQuery.trim()))
             .then((row: any) => row.count);
+    }
+
+    /**
+     * Completely delete the items with the given ids
+     * @param itemIds the ids of the items to delete
+     */
+    public async deleteItems(itemIds: number[]): Promise<void> {
+        await this.dataAccess.executeRun(sqlRemoveItemsFromAllCollections(itemIds))
+        await this.dataAccess.executeRun(sqlDeleteItems(itemIds))
     }
 
     private static rowToItem(row: any): ItemData {

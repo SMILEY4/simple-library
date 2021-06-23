@@ -1,6 +1,6 @@
 import {
 	fetchItems,
-	onImportStatusCommands,
+	onImportStatusCommands, requestDeleteItems,
 	requestImport,
 	requestMoveItems,
 	requestRemoveItems
@@ -62,9 +62,8 @@ export function useItems() {
 	}
 
 	function deleteItems(itemIds: number[]): Promise<void> {
-		// todo
-		console.log("NOT IMPLEMENTED: delete items")
-		return new Promise((resolve, reject) => resolve())
+		return requestDeleteItems(itemIds)
+			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_REMOVE_FAILED, error))
 	}
 
 	function moveOrCopy(srcCollectionId: number, tgtCollectionId: number, itemIds: number[], copy: boolean): Promise<void> {

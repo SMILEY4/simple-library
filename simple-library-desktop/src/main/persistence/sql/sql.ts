@@ -13,6 +13,7 @@ import collectionItemsInsertMultiple from "./collection_items/collection_items_i
 import collectionItemsDeleteCollection from "./collection_items/collection_items_delete_collection.sql";
 import collectionItemsDeleteItem from "./collection_items/collection_items_delete_item.sql";
 import collectionItemsDeleteItemsMultiple from "./collection_items/collection_items_delete_items_multiple.sql";
+import collectionItemsDeleteFromAll from "./collection_items/collection_items_delete_items_from_all.sql";
 import collectionItemsCountWithCollectionId from "./collection_items/items_count_with_collection_id.sql";
 
 import collectionsCreateTable from "./collections/collections_create_table.sql";
@@ -29,6 +30,7 @@ import collectionsFindById from "./collections/collections_find_by_id.sql";
 
 import itemsCreateTable from "./items/items_create_table.sql";
 import itemsInsert from "./items/items_insert.sql";
+import itemsDelete from "./items/items_delete.sql";
 import itemsGetAll from "./items/items_get_all.sql";
 import itemsGetByCollection from "./items/items_get_by_collection.sql";
 import itemsGetByCustomFilter from "./items/items_get_by_custom_filter.sql";
@@ -188,6 +190,11 @@ export function sqlRemoveItemsFromCollection(collectionId: number, itemIds: numb
 		.replace("$itemIds", itemIds.join(","));
 }
 
+export function sqlRemoveItemsFromAllCollections(itemIds: number[]) {
+	return collectionItemsDeleteFromAll
+		.replace("$itemIds", itemIds);
+}
+
 export function sqlCountItemsWithCollectionId(collectionId: number): string {
 	return collectionItemsCountWithCollectionId
 		.replace("$collectionId", collectionId);
@@ -208,6 +215,11 @@ export function sqlInsertItem(filepath: string, timestamp: number, hash: string,
 		.replace("$timestamp", timestamp)
 		.replace("$hash", "'" + hash + "'")
 		.replace("$thumbnail", "'" + thumbnail + "'");
+}
+
+export function sqlDeleteItems(itemIds: number[]) {
+	return itemsDelete
+		.replace("$itemIds", itemIds);
 }
 
 export function sqlGetItemsInCollection(collectionId: number) {

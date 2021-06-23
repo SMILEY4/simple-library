@@ -52,4 +52,12 @@ export class ItemService {
         }
     }
 
+    /**
+     * Completely delete the items with the given ids
+     * @param itemIds the ids of the items to delete
+     */
+    public deleteItems(itemIds: number[]): Promise<void> {
+        return this.itemDataAccess.deleteItems(itemIds);
+    }
+
 }
