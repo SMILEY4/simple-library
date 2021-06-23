@@ -122,13 +122,10 @@ export class CollectionService {
 			return failedAsync("Can not move/copy items. Target collection can not be a Smart-Collection.");
 		}
 
-		for (let i = 0; i < itemIds.length; i++) {
-			const itemId: number = itemIds[i];
-			if (copyMode) {
-				await this.collectionDataAccess.copyItemToCollection(tgtCollectionId, itemId);
-			} else {
-				await this.collectionDataAccess.moveItemsToCollection(srcCollectionId, tgtCollectionId, itemId);
-			}
+		if (copyMode) {
+			return this.collectionDataAccess.copyItemToCollection(tgtCollectionId, itemIds);
+		} else {
+			return this.collectionDataAccess.moveItemsToCollection(srcCollectionId, tgtCollectionId, itemIds);
 		}
 	}
 
@@ -147,9 +144,7 @@ export class CollectionService {
 			return failedAsync("Can not remove items. Collection can not be a Smart-Collection.");
 		}
 
-		for (let i = 0; i < itemIds.length; i++) {
-			await this.collectionDataAccess.removeItemFromCollection(collectionId, itemIds[i]);
-		}
+		return this.collectionDataAccess.removeItemsFromCollection(collectionId, itemIds);
 	}
 
 }
