@@ -4,6 +4,7 @@ import {useCollections} from "../../base/collectionHooks";
 import {isCopyMode, SelectModifier} from "../../../../components/utils/common";
 import {DragAndDropItems} from "../../../common/dragAndDrop";
 import {useItemSelection, useItemSelectionState} from "../../base/itemSelectionHooks";
+import {requestOpenItemsExternal} from "../../../common/messagingInterface";
 
 export function useItemList(activeCollectionId: number) {
 
@@ -67,6 +68,14 @@ export function useItemList(activeCollectionId: number) {
 		}
 	}
 
+	function openItemExternal(itemId: number) {
+		requestOpenItemsExternal([itemId])
+	}
+
+	function openSelectedItemsExternal() {
+		requestOpenItemsExternal(selectedItemIds)
+	}
+
 	function handleDragItem(itemId: number, event: React.DragEvent): void {
 		const copyMode: boolean = isCopyMode(event);
 		let dragItemIds: number[];
@@ -93,6 +102,8 @@ export function useItemList(activeCollectionId: number) {
 		itemIdsSelected: selectedItemIds,
 		handleOnKeyDown: handleOnKeyDown,
 		handleSelectItem: handleSelectItem,
+		openItemExternal: openItemExternal,
+		openSelectedItemsExternal: openSelectedItemsExternal,
 		handleDragItem: handleDragItem,
 		handleRemoveSelectedItems: handleRemoveSelectedItems,
 	}

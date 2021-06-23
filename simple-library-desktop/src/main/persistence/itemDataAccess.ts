@@ -1,13 +1,15 @@
 import DataAccess from './dataAccess';
 import {
     sqlCountItemsWithCollectionId,
-    sqlCountItemsWithCustomFilter, sqlDeleteItems,
+    sqlCountItemsWithCustomFilter,
+    sqlDeleteItems,
     sqlGetItemsByCustomFilter,
     sqlGetItemsCountTotal,
     sqlGetItemsInCollection,
-    sqlInsertItem, sqlRemoveItemsFromAllCollections,
+    sqlInsertItem,
+    sqlRemoveItemsFromAllCollections,
 } from './sql/sql';
-import { ItemData } from '../../common/commonModels';
+import {ItemData} from '../../common/commonModels';
 
 export class ItemDataAccess {
 
@@ -48,6 +50,16 @@ export class ItemDataAccess {
      */
     public getItemsBySmartQuery(query: string): Promise<ItemData[]> {
         return this.dataAccess.queryAll(sqlGetItemsByCustomFilter(query))
+            .then((rows: any[]) => rows.map(ItemDataAccess.rowToItem));
+    }
+
+    /**
+     * Get all items with the given id
+     * @param itemIds the ids of the items to fetch
+     * @return a promise that resolves with the array of {@link ItemData}
+     */
+    public getItemsByIds(itemIds: number[]): Promise<ItemData[]> {
+        return this.dataAccess.queryAll(sqlGetItemsByCustomFilter("item_id IN (" + itemIds.join(",") + ")"))
             .then((rows: any[]) => rows.map(ItemDataAccess.rowToItem));
     }
 

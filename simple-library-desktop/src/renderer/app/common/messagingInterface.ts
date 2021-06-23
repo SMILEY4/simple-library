@@ -19,6 +19,7 @@ import {
     GetItemsMessage,
     ImportItemsMessage,
     ImportStatusUpdateCommand,
+    OpenItemsExternalMessage,
 } from '../../../common/messaging/messagesItems';
 import {
     CreateCollectionMessage,
@@ -185,6 +186,12 @@ export function requestMoveCollection(collectionId: number, targetGroupId: numbe
     }).then();
 }
 
-export function requestOpenConfigFile():  Promise<void> {
+export function requestOpenItemsExternal(itemIds: number[]): Promise<void> {
+    return OpenItemsExternalMessage.request(ipcRenderer, {
+        itemIds: itemIds
+    }).then();
+}
+
+export function requestOpenConfigFile(): Promise<void> {
     return OpenConfigFileMessage.request(ipcRenderer, {}).then();
 }

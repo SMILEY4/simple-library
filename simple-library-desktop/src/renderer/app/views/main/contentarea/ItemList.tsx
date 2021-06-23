@@ -29,6 +29,8 @@ export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.R
 		itemIdsSelected,
 		handleOnKeyDown,
 		handleSelectItem,
+		openItemExternal,
+		openSelectedItemsExternal,
 		handleDragItem,
 		handleRemoveSelectedItems
 	} = useItemList(props.activeCollection.id)
@@ -68,6 +70,7 @@ export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.R
 					activeCollectionType={props.activeCollection ? props.activeCollection.type : undefined}
 					selected={isSelected(itemData.id)}
 					onSelect={handleSelectItem}
+					onOpen={openItemExternal}
 					onDragStart={handleDragItem}
 					onContextMenu={handleOnContextMenu}
 				/>)}
@@ -85,6 +88,7 @@ export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.R
 					canRemove={props.activeCollection.type !== CollectionType.SMART}
 					onRemove={handleRemoveSelectedItems}
 					onDelete={() => openDeleteItems(itemIdsSelected)}
+					onOpen={openSelectedItemsExternal}
 				/>
 			</ContextMenuBase>
 
