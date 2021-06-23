@@ -30,7 +30,7 @@ export class ItemService {
 
 
     /**
-     * Get all items (in the given collection)
+     * Get all items in the given collection
      * @param collectionId the id of the collection.
      * @return a promise that resolves with the items
      */

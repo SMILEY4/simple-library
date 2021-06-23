@@ -9,8 +9,10 @@ import groupsUpdateParentId from "./groups/groups_update_parent_id.sql";
 
 import collectionItemsCreateTable from "./collection_items/collection_items_create_table.sql";
 import collectionItemsInsert from "./collection_items/collection_items_insert.sql";
+import collectionItemsInsertMultiple from "./collection_items/collection_items_insert_multiple.sql";
 import collectionItemsDeleteCollection from "./collection_items/collection_items_delete_collection.sql";
 import collectionItemsDeleteItem from "./collection_items/collection_items_delete_item.sql";
+import collectionItemsDeleteItemsMultiple from "./collection_items/collection_items_delete_items_multiple.sql";
 import collectionItemsCountWithCollectionId from "./collection_items/items_count_with_collection_id.sql";
 
 import collectionsCreateTable from "./collections/collections_create_table.sql";
@@ -46,46 +48,46 @@ import metadataUpdateTimestampLastOpened from "./metadata/metadata_update_timest
 //==================//
 
 export function sqlCreateTableGroups(): string {
-    return groupsCreateTable;
+	return groupsCreateTable;
 }
 
 export function sqlAllGroups(): string {
-    return groupsSelectAll;
+	return groupsSelectAll;
 }
 
 export function sqlFindGroupById(groupId: number): string {
-    return groupsFindById
-        .replace("$groupId", groupId);
+	return groupsFindById
+		.replace("$groupId", groupId);
 
 }
 
 export function sqlInsertGroup(name: string, parentGroup: number | null): string {
-    return groupsInsert
-        .replace("$groupName", "'" + name + "'")
-        .replace("$parentGroupId", parentGroup);
+	return groupsInsert
+		.replace("$groupName", "'" + name + "'")
+		.replace("$parentGroupId", parentGroup);
 }
 
 export function sqlDeleteGroup(groupId: number): string {
-    return groupsDelete
-        .replace("$groupId", groupId);
+	return groupsDelete
+		.replace("$groupId", groupId);
 }
 
 export function sqlUpdateGroupName(groupId: number, name: string): string {
-    return groupsUpdateName
-        .replace("$groupId", groupId)
-        .replace("$groupName", "'" + name + "'");
+	return groupsUpdateName
+		.replace("$groupId", groupId)
+		.replace("$groupName", "'" + name + "'");
 }
 
 export function sqlUpdateGroupsParents(prevParentGroupId: number | null, parentGroupId: number | null): string {
-    return groupsUpdateParents
-        .replace("$prevParentGroupId", prevParentGroupId)
-        .replace("$parentGroupId", parentGroupId);
+	return groupsUpdateParents
+		.replace("$prevParentGroupId", prevParentGroupId)
+		.replace("$parentGroupId", parentGroupId);
 }
 
 export function sqlUpdateGroupsParentId(groupId: number, parentGroupId: number | null): string {
-    return groupsUpdateParentId
-        .replace("$groupId", groupId)
-        .replace("$parentGroupId", parentGroupId);
+	return groupsUpdateParentId
+		.replace("$groupId", groupId)
+		.replace("$parentGroupId", parentGroupId);
 }
 
 
@@ -94,63 +96,63 @@ export function sqlUpdateGroupsParentId(groupId: number, parentGroupId: number |
 //==================//
 
 export function sqlCreateTableCollections(): string {
-    return collectionsCreateTable;
+	return collectionsCreateTable;
 }
 
 export function sqlAllCollections(includeItemCount: boolean) {
-    if (includeItemCount) {
-        return collectionsSelectAllItemCount;
-    } else {
-        return collectionsSelectAll;
-    }
+	if (includeItemCount) {
+		return collectionsSelectAllItemCount;
+	} else {
+		return collectionsSelectAll;
+	}
 }
 
 export function sqlFindCollectionById(collectionId: number): string {
-    return collectionsFindById
-        .replace("$collectionId", collectionId);
+	return collectionsFindById
+		.replace("$collectionId", collectionId);
 }
 
 export function sqlInsertCollection(name: string, type: string, smartQuery: string | null, groupId: number | null) {
-    return collectionsInsert
-        .replace("$collectionName", "'" + name + "'")
-        .replace("$collectionType", "'" + type + "'")
-        .replace("$smartQuery", smartQuery ? "'" + smartQuery + "'" : null)
-        .replace("$groupId", groupId);
+	return collectionsInsert
+		.replace("$collectionName", "'" + name + "'")
+		.replace("$collectionType", "'" + type + "'")
+		.replace("$smartQuery", smartQuery ? "'" + smartQuery + "'" : null)
+		.replace("$groupId", groupId);
 }
 
 export function sqlDeleteCollection(collectionId: number) {
-    return collectionsDelete
-        .replace("$collectionId", collectionId);
+	return collectionsDelete
+		.replace("$collectionId", collectionId);
 }
 
 export function sqlDeleteCollectionItems(collectionId: number) {
-    return collectionItemsDeleteCollection
-        .replace("$collectionId", collectionId);
+	return collectionItemsDeleteCollection
+		.replace("$collectionId", collectionId);
 }
 
 export function sqlUpdateCollectionName(collectionId: number, name: string) {
-    return collectionsUpdateName
-        .replace("$collectionName", "'" + name + "'")
-        .replace("$collectionId", collectionId);
+	return collectionsUpdateName
+		.replace("$collectionName", "'" + name + "'")
+		.replace("$collectionId", collectionId);
 }
 
 export function sqlUpdateCollectionSmartQuery(collectionId: number, smartQuery: string) {
-    return collectionsUpdateSmartQuery
-        .replace("$collectionSmartQuery", smartQuery ? "'" + smartQuery + "'" : "null")
-        .replace("$collectionId", collectionId);
+	return collectionsUpdateSmartQuery
+		.replace("$collectionSmartQuery", smartQuery ? "'" + smartQuery + "'" : "null")
+		.replace("$collectionId", collectionId);
 }
 
 
 export function sqlUpdateCollectionsParents(prevParentGroupId: number | null, newParentGroupId: number | null) {
-    return collectionsUpdateParents
-        .replace("$groupId", newParentGroupId)
-        .replace("$prevGroupId", prevParentGroupId);
+	return collectionsUpdateParents
+		.replace("$groupId", newParentGroupId)
+		.replace("$prevGroupId", prevParentGroupId);
 }
 
 export function sqlUpdateCollectionsGroupId(collectionId: number, groupId: number | null) {
-    return collectionsUpdateGroupId
-        .replace("$collectionId", collectionId)
-        .replace("$groupId", groupId);
+	return collectionsUpdateGroupId
+		.replace("$collectionId", collectionId)
+		.replace("$groupId", groupId);
 }
 
 
@@ -159,24 +161,36 @@ export function sqlUpdateCollectionsGroupId(collectionId: number, groupId: numbe
 //==================//
 
 export function sqlCreateTableCollectionItems(): string {
-    return collectionItemsCreateTable;
+	return collectionItemsCreateTable;
 }
 
 export function sqlAddItemToCollection(collectionId: number, itemId: number) {
-    return collectionItemsInsert
-        .replace("$collectionId", collectionId)
-        .replace("$itemId", itemId);
+	return collectionItemsInsert
+		.replace("$collectionId", collectionId)
+		.replace("$itemId", itemId);
+}
+
+export function sqlAddItemsToCollection(collectionId: number, itemIds: number[]) {
+	const entriesString = itemIds.map(id => "(" + collectionId + "," + id + ")").join(", ")
+	return collectionItemsInsertMultiple
+		.replace("$entries", entriesString);
 }
 
 export function sqlRemoveItemFromCollection(collectionId: number, itemId: number) {
-    return collectionItemsDeleteItem
-        .replace("$collectionId", collectionId)
-        .replace("$itemId", itemId);
+	return collectionItemsDeleteItem
+		.replace("$collectionId", collectionId)
+		.replace("$itemId", itemId);
+}
+
+export function sqlRemoveItemsFromCollection(collectionId: number, itemIds: number[]) {
+	return collectionItemsDeleteItemsMultiple
+		.replace("$collectionId", collectionId)
+		.replace("$itemIds", itemIds.join(","));
 }
 
 export function sqlCountItemsWithCollectionId(collectionId: number): string {
-    return collectionItemsCountWithCollectionId
-        .replace("$collectionId", collectionId);
+	return collectionItemsCountWithCollectionId
+		.replace("$collectionId", collectionId);
 }
 
 
@@ -185,38 +199,38 @@ export function sqlCountItemsWithCollectionId(collectionId: number): string {
 //==================//
 
 export function sqlCreateTableItems(): string {
-    return itemsCreateTable;
+	return itemsCreateTable;
 }
 
 export function sqlInsertItem(filepath: string, timestamp: number, hash: string, thumbnail: string) {
-    return itemsInsert
-        .replace("$filepath", "'" + filepath + "'")
-        .replace("$timestamp", timestamp)
-        .replace("$hash", "'" + hash + "'")
-        .replace("$thumbnail", "'" + thumbnail + "'");
+	return itemsInsert
+		.replace("$filepath", "'" + filepath + "'")
+		.replace("$timestamp", timestamp)
+		.replace("$hash", "'" + hash + "'")
+		.replace("$thumbnail", "'" + thumbnail + "'");
 }
 
 export function sqlGetItemsInCollection(collectionId: number) {
-    if (collectionId) {
-        return itemsGetByCollection
-            .replace("$collectionId", collectionId);
-    } else {
-        return itemsGetAll;
-    }
+	if (collectionId) {
+		return itemsGetByCollection
+			.replace("$collectionId", collectionId);
+	} else {
+		return itemsGetAll;
+	}
 }
 
 export function sqlGetItemsByCustomFilter(query: string) {
-    return itemsGetByCustomFilter
-        .replace("$query", query);
+	return itemsGetByCustomFilter
+		.replace("$query", query);
 }
 
 export function sqlCountItemsWithCustomFilter(query: string): string {
-    return itemsCountWithCustomQuery
-        .replace("$query", query);
+	return itemsCountWithCustomQuery
+		.replace("$query", query);
 }
 
 export function sqlGetItemsCountTotal() {
-    return itemsCountTotal;
+	return itemsCountTotal;
 }
 
 //==================//
@@ -224,34 +238,34 @@ export function sqlGetItemsCountTotal() {
 //==================//
 
 export function sqlCreateTableMetadata(): string {
-    return metadataCreateTable;
+	return metadataCreateTable;
 }
 
 export function sqlInsertMetadataLibraryName(name: string): string {
-    return metadataInsertLibraryName
-        .replace("$name", "'" + name + "'");
+	return metadataInsertLibraryName
+		.replace("$name", "'" + name + "'");
 }
 
 export function sqlInsertMetadataTimestampCreated(timestamp: number): string {
-    return metadataInsertTimestampCreated
-        .replace("$timestamp", timestamp);
+	return metadataInsertTimestampCreated
+		.replace("$timestamp", timestamp);
 }
 
 export function sqlInsertMetadataTimestampLastOpened(timestamp: number): string {
-    return metadataInsertTimestampLastOpened
-        .replace("$timestamp", timestamp);
+	return metadataInsertTimestampLastOpened
+		.replace("$timestamp", timestamp);
 }
 
 export function sqlUpdateMetadataTimestampLastOpened(newTimestamp: number): string {
-    return metadataUpdateTimestampLastOpened
-        .replace("$newTimestamp", newTimestamp);
+	return metadataUpdateTimestampLastOpened
+		.replace("$newTimestamp", newTimestamp);
 }
 
 export function sqlGetMetadataLibraryName(): string {
-    return metadataGetLibraryName;
+	return metadataGetLibraryName;
 }
 
 export function sqlAllMetadata(): string {
-    return metadataGetAll;
+	return metadataGetAll;
 }
 

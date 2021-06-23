@@ -1,6 +1,5 @@
 import {useDialogController, useReloadItems} from "../miscApplicationHooks";
 import {useItems} from "../../base/itemHooks";
-import {useActiveCollectionState} from "../../base/activeCollectionHooks";
 import {useCollections} from "../../base/collectionHooks";
 import {useComplexValidatedState} from "../../../../components/utils/commonHooks";
 import {

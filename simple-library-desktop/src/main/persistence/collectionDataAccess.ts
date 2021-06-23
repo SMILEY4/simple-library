@@ -1,17 +1,19 @@
 import DataAccess from './dataAccess';
 import {
-    sqlAddItemToCollection,
+    sqlAddItemsToCollection,
     sqlAllCollections,
     sqlDeleteCollection,
     sqlFindCollectionById,
     sqlInsertCollection,
-    sqlRemoveItemFromCollection,
+    sqlRemoveItemsFromCollection,
     sqlUpdateCollectionName,
-    sqlUpdateCollectionsGroupId, sqlUpdateCollectionSmartQuery,
+    sqlUpdateCollectionsGroupId,
+    sqlUpdateCollectionSmartQuery,
     sqlUpdateCollectionsParents,
 } from './sql/sql';
-import { Collection, CollectionType } from '../../common/commonModels';
-import { ItemDataAccess } from './itemDataAccess';
+import {Collection, CollectionType} from '../../common/commonModels';
+import {ItemDataAccess} from './itemDataAccess';
+import {startAsyncWithValue} from "../../common/AsyncCommon";
 
 export class CollectionDataAccess {
 
@@ -31,24 +33,18 @@ export class CollectionDataAccess {
     public getCollections(includeItemCount: boolean): Promise<Collection[]> {
         if (includeItemCount) {
             return this.dataAccess.queryAll(sqlAllCollections(true))
-                .then((rows: any[]) => rows.map((row: any) => this.rowToCollection(row, true)))
+                .then((rows: any[]) => rows.map((row: any) => CollectionDataAccess.rowToCollection(row, true)))
                 .then(async (collections: Collection[]) => {
                     for (let i = 0; i < collections.length; i++) {
-                        const collection: Collection = collections[i];
-                        if (collection.type === CollectionType.SMART) {
-                            const smartQuery: string = collection.smartQuery;
-                            if (smartQuery && smartQuery.trim().length > 0) {
-                                collection.itemCount = await this.itemDataAccess.getItemCountBySmartQuery(smartQuery.trim());
-                            } else {
-                                collection.itemCount = await this.itemDataAccess.getTotalItemCount();
-                            }
+                        if (collections[i].type === CollectionType.SMART) {
+                            collections[i].itemCount = await this.getSmartItemCount(collections[i])
                         }
                     }
                     return collections;
                 });
         } else {
             return this.dataAccess.queryAll(sqlAllCollections(false))
-                .then((rows: any[]) => rows.map((row: any) => this.rowToCollection(row, false)));
+                .then((rows: any[]) => rows.map((row: any) => CollectionDataAccess.rowToCollection(row, false)));
         }
     }
 
@@ -60,7 +56,7 @@ export class CollectionDataAccess {
      */
     public findCollection(collectionId: number): Promise<Collection | null> {
         return this.dataAccess.querySingle(sqlFindCollectionById(collectionId))
-            .then((row: any | undefined) => this.rowToCollection(row, false));
+            .then((row: any | undefined) => CollectionDataAccess.rowToCollection(row, false));
     }
 
     /**
@@ -116,7 +112,7 @@ export class CollectionDataAccess {
     }
 
     /**
-     * Moves the all child collections of the given parent group to the new group
+     * Moves all child collections of the given parent group to the new group
      * @param prevParentGroupId the id of the previous parent group
      * @param newParentGroupId the id of the new parent group
      * @return a promise that resolves when the collections were moved
@@ -136,14 +132,14 @@ export class CollectionDataAccess {
     }
 
     /**
-     * Adds the given item to the given collection
+     * Adds the given items to the given collection
      * @param collectionId the id of the collection
-     * @param itemId the id of the item to copy
-     * @return a promise that resolves when the item was copied
+     * @param itemIds the ids of the items to copy
+     * @return a promise that resolves when the items were copied
      */
-    public copyItemToCollection(collectionId: number, itemId: number): Promise<void> {
+    public async copyItemToCollection(collectionId: number, itemIds: number[]): Promise<void> {
         if (collectionId) {
-            return this.dataAccess.executeRun(sqlAddItemToCollection(collectionId, itemId)).then();
+            return this.dataAccess.executeRun(sqlAddItemsToCollection(collectionId, itemIds)).then();
         } else {
             return Promise.resolve();
         }
@@ -151,30 +147,43 @@ export class CollectionDataAccess {
 
 
     /**
-     * Adds the given item to the given target collection and removes it from the given source collection
+     * Adds the given items to the given target collection and removes them from the given source collection
      * @param srcCollectionId the id of the source collection
      * @param tgtCollectionId the id of the target collection
-     * @param itemId the id of the item to move
-     * @return a promise that resolves when the item was moved
+     * @param itemIds the ids of the items to move
+     * @return a promise that resolves when the items were moved
      */
-    public moveItemsToCollection(srcCollectionId: number, tgtCollectionId: number, itemId: number): Promise<void> {
-        return this.dataAccess.executeRun(sqlAddItemToCollection(tgtCollectionId, itemId))
-            .then(() => this.dataAccess.executeRun(sqlRemoveItemFromCollection(srcCollectionId, itemId)))
-            .then();
+    public async moveItemsToCollection(srcCollectionId: number, tgtCollectionId: number, itemIds: number[]): Promise<void> {
+        await this.dataAccess.executeRun(sqlAddItemsToCollection(tgtCollectionId, itemIds))
+        await this.dataAccess.executeRun(sqlRemoveItemsFromCollection(srcCollectionId, itemIds))
     }
 
 
     /**
-     * Removes the given item from the given collection
+     * Removes the given items from the given collection
      * @param collectionId the id of the collection
-     * @param itemId the id of the item to remove
+     * @param itemIds the ids of the items to remove
      */
-    public removeItemFromCollection(collectionId: number, itemId: number): Promise<void> {
-        return this.dataAccess.executeRun(sqlRemoveItemFromCollection(collectionId, itemId)).then();
+    public async removeItemsFromCollection(collectionId: number, itemIds: number[]): Promise<void> {
+        return this.dataAccess.executeRun(sqlRemoveItemsFromCollection(collectionId, itemIds)).then()
     }
 
 
-    private rowToCollection(row: any, includeItemCount: boolean): Collection | null {
+    private getSmartItemCount(collection: Collection): Promise<number> {
+        if (collection.type === CollectionType.SMART) {
+            const smartQuery: string = collection.smartQuery;
+            if (smartQuery && smartQuery.trim().length > 0) {
+                return this.itemDataAccess.getItemCountBySmartQuery(smartQuery.trim());
+            } else {
+                return this.itemDataAccess.getTotalItemCount();
+            }
+        } else {
+            return startAsyncWithValue(0)
+        }
+    }
+
+
+    private static rowToCollection(row: any, includeItemCount: boolean): Collection | null {
         if (row) {
             return {
                 id: row.collection_id,
