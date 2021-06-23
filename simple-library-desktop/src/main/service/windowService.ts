@@ -82,7 +82,7 @@ export class WindowService {
 		this.window = new BrowserWindow({
 			width: 680,
 			height: 420,
-			resizable: true, // todo wip: only for testing (normally = false)
+			resizable: true,
 			webPreferences: {
 				nodeIntegration: true,
 				enableRemoteModule: true,
@@ -92,11 +92,10 @@ export class WindowService {
 			},
 		});
 
-		this.window.setAlwaysOnTop(true); // todo wip: only for testing (normally = false)
-
 		this.setApplicationTheme(this.appService.getApplicationTheme())
 
 		if (isDev) {
+			this.window.setAlwaysOnTop(true);
 			this.window.loadURL('http://localhost:8080');
 			this.window.webContents.on("did-frame-finish-load", () => {
 				this.window.webContents.once("devtools-opened", () => {
