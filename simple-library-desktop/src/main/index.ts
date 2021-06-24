@@ -37,6 +37,8 @@ if (RUN_TESTS) {
 	const log = require('electron-log');
 	Object.assign(console, log.functions);
 
+	console.log("log filepath:", log.transports.file.file)
+
 	// utils
 	const fsWrapper: FileSystemWrapper = new FileSystemWrapper();
 

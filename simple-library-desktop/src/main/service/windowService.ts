@@ -88,7 +88,7 @@ export class WindowService {
 				enableRemoteModule: true,
 				webSecurity: false,
 				enableBlinkFeatures: "CSSColorSchemeUARendering",
-				devTools: process.env.NODE_ENV !== 'production',
+				devTools: true, // isDev,
 			},
 		});
 
