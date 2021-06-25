@@ -71,7 +71,7 @@ export class ItemService {
 			.then((itemIds: number[]) => this.itemDataAccess.getItemsByIds(itemIds))
 			.then((items: ItemData[]) => {
 				return Promise.all(
-					items.map((item: ItemData) => shell.openExternal(item.filepath))
+					items.map((item: ItemData) => shell.openPath(item.filepath))
 				).then()
 			})
 	}

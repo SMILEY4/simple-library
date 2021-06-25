@@ -13,7 +13,7 @@ export class ApplicationService {
 	}
 
 	public openConfigFile(): Promise<void> {
-		return shell.openExternal(this.configDataAccess.getConfigFileLocation()).then();
+		return shell.openPath(this.configDataAccess.getConfigFileLocation()).then();
 	}
 
 	public getApplicationTheme(): "dark" | "light" {
