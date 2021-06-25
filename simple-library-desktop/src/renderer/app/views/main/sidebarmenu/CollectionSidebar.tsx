@@ -100,6 +100,7 @@ export function CollectionSidebar(props: React.PropsWithChildren<CollectionSideb
 				rootNode={buildTree(rootGroup)}
 				modalRootId={APP_ROOT_ID}
 				forceExpanded={expandedNodes}
+				withSearch
 				onToggleExpand={toggleExpandNode}
 				onDoubleClick={handleDoubleClick}
 				onDragStart={dragStart}

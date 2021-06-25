@@ -4,7 +4,7 @@ import {
     AiFillCaretRight,
     AiFillHome,
     AiOutlineFileText,
-    AiOutlineFolder,
+    AiOutlineFolder, AiOutlineSearch,
     BiImages,
     BiImport,
     BsChevronDoubleLeft,
@@ -19,6 +19,7 @@ import {
 } from 'react-icons/all';
 import {BaseProps, concatClasses, getIf, map, Size} from "../../utils/common";
 import {BiImagesSmart} from "./BiImagesSmart";
+import {IconBaseProps} from "react-icons/lib/cjs/iconBase";
 
 export enum IconType {
     CHEVRON_UP,
@@ -34,6 +35,7 @@ export enum IconType {
     // MINUS,
     // CROSS,
     CLOSE,
+    SEARCH,
     // REFRESH,
     IMPORT,
     HOME,
@@ -60,6 +62,7 @@ const ICON_COLOR_TYPE = new Map<IconType, string>([
     [IconType.CHECKMARK, SVG_FILLED],
     [IconType.CARET_RIGHT, SVG_FILLED],
     [IconType.IMPORT, SVG_FILLED],
+    [IconType.SEARCH, SVG_OUTLINED],
 
     [IconType.CHEVRON_UP, SVG_FILLED],
     [IconType.CHEVRON_DOWN, SVG_FILLED],
@@ -80,13 +83,15 @@ export interface IconProps extends BaseProps {
     size?: Size,
     color?: "primary" | "secondary" | "info" | "success" | "error" | "warn" | "on-variant"
     disabled?: boolean,
+    onClick?: () => void,
 }
 
 export function Icon(props: React.PropsWithChildren<IconProps>): React.ReactElement {
 
-    const iconProps: any = {
+    const iconProps: IconBaseProps = {
         className: getClassName(),
         style: props.style,
+        onClick: props.onClick
     };
     switch (props.type) {
         case IconType.CLOSE:
@@ -121,6 +126,8 @@ export function Icon(props: React.PropsWithChildren<IconProps>): React.ReactElem
             return <BiImagesSmart {...iconProps} />;
         case IconType.SETTINGS:
             return <FiSettings {...iconProps} />;
+        case IconType.SEARCH:
+            return <AiOutlineSearch {...iconProps} />;
         default:
             return null;
     }
