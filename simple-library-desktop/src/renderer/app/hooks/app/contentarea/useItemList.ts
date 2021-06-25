@@ -1,7 +1,7 @@
 import {useItems, useItemsState} from "../../base/itemHooks";
 import React, {useEffect} from "react";
 import {useCollections} from "../../base/collectionHooks";
-import {isCopyMode, SelectModifier} from "../../../../components/utils/common";
+import {isCopyMode, isShortcut, SelectModifier} from "../../../../components/utils/common";
 import {DragAndDropItems} from "../../../common/dragAndDrop";
 import {useItemSelection, useItemSelectionState} from "../../base/itemSelectionHooks";
 import {requestOpenItemsExternal} from "../../../common/messagingInterface";
@@ -40,7 +40,7 @@ export function useItemList(activeCollectionId: number) {
 	}, [activeCollectionId])
 
 	function handleOnKeyDown(event: React.KeyboardEvent): void {
-		if (event.ctrlKey && event.keyCode === 65) {
+		if (isShortcut(event) && event.keyCode === 65) {
 			event.preventDefault();
 			event.stopPropagation();
 			setSelection(getItemsIds())

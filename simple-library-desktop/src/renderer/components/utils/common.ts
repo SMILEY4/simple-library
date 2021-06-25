@@ -45,6 +45,24 @@ export function removeClass(element: any, className: string): void {
 	}
 }
 
+/**
+ * for primary shortcuts, e.g.
+ * 	- "[shortcut] + s" => save
+ * 	- "[shortcut] click" => "toggle selection
+ */
+export function isShortcut(event: React.MouseEvent | React.KeyboardEvent) {
+	return process.platform === "darwin" ? event.metaKey : event.ctrlKey;
+}
+
+/**
+ * for modifying shortcuts / actions, e.g.
+ *  - "[mod] + click" => select range
+ *  - "[shorcut] + [mod] + click" => toggle selection range
+ */
+export function isModifierShortcut(event: React.MouseEvent | React.KeyboardEvent) {
+	return event.shiftKey;
+}
+
 export enum SelectModifier {
 	NONE = "none",
 	TOGGLE = "toggle",
@@ -53,8 +71,8 @@ export enum SelectModifier {
 }
 
 export function getSelectModifier(event: React.MouseEvent): SelectModifier {
-	const toggleKey: boolean = event.ctrlKey;
-	const rangeKey: boolean = event.shiftKey;
+	const toggleKey: boolean = isShortcut(event);
+	const rangeKey: boolean = isModifierShortcut(event);
 	switch (true) {
 		case !toggleKey && !rangeKey:
 			return SelectModifier.NONE
@@ -68,7 +86,7 @@ export function getSelectModifier(event: React.MouseEvent): SelectModifier {
 }
 
 export function isCopyMode(event: React.DragEvent): boolean {
-	return process.platform === "darwin" ? event.metaKey : event.ctrlKey;
+	return isShortcut(event)
 }
 
 /**
