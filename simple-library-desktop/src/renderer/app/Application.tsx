@@ -45,13 +45,12 @@ export class Application extends Component<any, AppState> {
 		this.renderComponentShowcase = this.renderComponentShowcase.bind(this);
 		this.renderWelcomeView = this.renderWelcomeView.bind(this);
 		this.renderMainView = this.renderMainView.bind(this);
-		window.addEventListener('keyup', e => { // shift + alt + D => toggle component _showcase
-			if (e.key === 'D' && e.ctrlKey && e.altKey) {
+		window.addEventListener('keyup', e => {
+			console.log(e.code)
+			if (e.code === "KeyD" && (e.ctrlKey || e.metaKey)) {
 				this.setState({displayComponentShowcase: !this.state.displayComponentShowcase});
 			}
-		}, true);
-		window.addEventListener('keyup', e => { // shift + alt + T => toggle theme
-			if (e.key === 'T' && e.shiftKey && e.altKey) {
+			if (e.code === 'KeyT' && (e.ctrlKey || e.metaKey)) {
 				this.handleSetTheme(this.state.theme === Theme.LIGHT ? Theme.DARK : Theme.LIGHT)
 			}
 		}, true);

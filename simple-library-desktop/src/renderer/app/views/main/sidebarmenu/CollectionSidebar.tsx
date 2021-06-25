@@ -189,7 +189,7 @@ export function CollectionSidebar(props: React.PropsWithChildren<CollectionSideb
 	function buildGroupTreeNode(group: Group, isRoot: boolean): TreeViewNode {
 		return {
 			id: getNodeId(NODE_TYPE_GROUP, group.id),
-			value: group.name,
+			value: isRoot ? "Collections" : group.name,
 			icon: IconType.FOLDER,
 			draggable: !isRoot,
 			droppable: true,
