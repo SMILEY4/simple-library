@@ -38,5 +38,6 @@ Starts electron instance in development mode.
  - Theme is saved in config file
  - Items can be opened with the default application
  - Collections in sidebar can be filtered
- - Rework UI-Layout,Design 
+ - Rework UI-Layout,Design
+ - added first custom icon
  - Refactoring / Optimisation

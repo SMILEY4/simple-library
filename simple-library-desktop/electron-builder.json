@@ -1,18 +1,26 @@
 {
+  "productName": "Simple Library",
   "appId": "de.ruegnerlukas.simplelibrary",
   "publish": null,
   "files": [
     ".webpack/main/**/*",
-    ".webpack/renderer/**/*"
+    ".webpack/renderer/**/*",
+    "resources/**/*"
   ],
+  "directories": {
+    "buildResources": "resources",
+    "output": "release"
+  },
   "mac": {
-    "target": "dmg"
+    "target": "dmg",
+    "icon": "resources/icons/mac/icon.icns"
   },
   "dmg": {
     "title": "${productName} ${version}"
   },
   "win": {
-    "target": "nsis"
+    "target": "nsis",
+    "icon": "resources/icons/win/icon.ico"
   },
   "nsis": {
     "oneClick": false,
