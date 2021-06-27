@@ -14,6 +14,8 @@ import "./welcome.css"
 import {APP_ROOT_ID} from "../../Application";
 import {useWelcome} from "../../hooks/app/welcome/useWelcome";
 import {useDialogCreateLibraryController} from "../../hooks/app/welcome/useDialogCreateLibrary";
+import {useDialogErrorExiftoolLocationController} from "../../hooks/app/welcome/useDialogErrorExiftoolLocation";
+import {DialogErrorExiftoolLocation} from "./DialogErrorExiftoolLocation";
 
 interface WelcomeViewControllerProps {
 	onLoadProject: () => void
@@ -36,6 +38,8 @@ export function WelcomeView(props: React.PropsWithChildren<WelcomeViewController
 		openCreateLibrary,
 		closeCreateLibrary,
 	] = useDialogCreateLibraryController();
+
+	const showErrorExiftool = useDialogErrorExiftoolLocationController();
 
 	return (
 		<>
@@ -70,6 +74,9 @@ export function WelcomeView(props: React.PropsWithChildren<WelcomeViewController
 
 			{showCreateLibrary && (
 				<DialogCreateLibrary onFinished={handleFinishCreatedLibrary}/>
+			)}
+			{showErrorExiftool && (
+				<DialogErrorExiftoolLocation/>
 			)}
 		</>
 	);

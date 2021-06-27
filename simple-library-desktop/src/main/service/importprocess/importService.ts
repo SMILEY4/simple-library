@@ -8,6 +8,7 @@ import { ImportProcessData, ImportResult, ItemData } from '../../../common/commo
 import { startAsync } from '../../../common/AsyncCommon';
 import { WindowService } from '../windowService';
 import { ImportStatusUpdateCommand } from '../../../common/messaging/messagesItems';
+import {ImportStepMetadata} from "./importStepMetadata";
 
 export class ImportService {
 
@@ -17,6 +18,7 @@ export class ImportService {
     importStepThumbnail: ImportStepThumbnail;
     importStepRename: ImportStepRename;
     importStepImportTarget: ImportStepImportTarget;
+    importStepMetadata: ImportStepMetadata;
     windowService: WindowService;
 
     /**
@@ -31,6 +33,7 @@ export class ImportService {
                 importStepImportTarget: ImportStepImportTarget,
                 importStepFileHash: ImportStepFileHash,
                 importStepThumbnail: ImportStepThumbnail,
+                importStepMetadata: ImportStepMetadata,
                 windowService: WindowService) {
         this.itemDataAccess = itemDataAccess;
         this.importDataValidator = importDataValidator;
@@ -38,6 +41,7 @@ export class ImportService {
         this.importStepThumbnail = importStepThumbnail;
         this.importStepRename = importStepRename;
         this.importStepImportTarget = importStepImportTarget;
+        this.importStepMetadata = importStepMetadata;
         this.windowService = windowService;
     }
 
@@ -80,7 +84,8 @@ export class ImportService {
                     .then((item: ItemData) => this.importStepImportTarget.handle(item, data.importTarget.action))
                     .then((item: ItemData) => this.importStepFileHash.handle(item))
                     .then((item: ItemData) => this.importStepThumbnail.handle(item))
-                    .then((item: ItemData) => this.itemDataAccess.insertItem(item))
+                    .then((item: ItemData) => this.importStepMetadata.handle(item))
+                    // .then((item: ItemData) => this.itemDataAccess.insertItem(item))
                     .then(() => console.log("done importing file: " + currentFile))
                     .catch((error: any) => {
                         console.error("Error while importing file " + currentFile + ": " + error);

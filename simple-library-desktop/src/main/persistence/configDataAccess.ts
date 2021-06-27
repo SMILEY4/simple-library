@@ -5,11 +5,18 @@ const Store = require('electron-store');
 
 export class ConfigDataAccess {
 
+	KEY_LAST_OPENED: string = "lastOpened";
+	KEY_THEME: string = "theme";
+	KEY_EXIFTOOL_LOCATION: string = "exiftool";
+
 	store: ElectronStore;
 
 
 	constructor() {
 		this.store = new Store();
+		this.store.set(this.KEY_LAST_OPENED, [])
+		this.store.set(this.KEY_THEME, "dark")
+		this.store.set(this.KEY_EXIFTOOL_LOCATION, "")
 		console.log('Creating config store at ' + this.store.path);
 	}
 
@@ -25,7 +32,7 @@ export class ConfigDataAccess {
 	 * @return the array of last opened libraries
 	 */
 	public getLastOpenedLibraries(): LastOpenedLibraryEntry[] {
-		const data: any = this.store.get('lastOpened');
+		const data: any = this.store.get(this.KEY_LAST_OPENED);
 		return (data ? data : [])
 			.map((entry: any) => ({name: entry.name, path: entry.path}));
 	}
@@ -36,7 +43,7 @@ export class ConfigDataAccess {
 	 * @param lastOpened the array of new "last-opened" libraries
 	 */
 	public setLastOpenedLibraries(lastOpened: LastOpenedLibraryEntry[]) {
-		this.store.set('lastOpened', lastOpened);
+		this.store.set(this.KEY_LAST_OPENED, lastOpened);
 	}
 
 
@@ -44,7 +51,7 @@ export class ConfigDataAccess {
 	 * @return the application theme
 	 */
 	public getApplicationTheme(): "light" | "dark" {
-		const data: any = this.store.get('theme');
+		const data: any = this.store.get(this.KEY_THEME);
 		return (data ? data : "light");
 	}
 
@@ -54,8 +61,16 @@ export class ConfigDataAccess {
 	 * @param theme the new application theme to save
 	 */
 	public setApplicationTheme(theme: "light" | "dark"): void {
-		this.store.set('theme', theme);
+		this.store.set(this.KEY_THEME, theme);
 	}
 
+
+	/**
+	 * @return the full path to the exiftool executable or null
+	 */
+	public getExiftoolLocation(): string | null {
+		const data: any = this.store.get(this.KEY_EXIFTOOL_LOCATION);
+		return (data && ("" + data).length > 0) ? "" + data : null;
+	}
 
 }

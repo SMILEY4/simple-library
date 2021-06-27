@@ -35,7 +35,7 @@ import {
     GetLastOpenedLibrariesMessage,
     OpenLibraryMessage
 } from '../../../common/messaging/messagesLibrary';
-import {OpenConfigFileMessage} from "../../../common/messaging/messagesApplication";
+import {GetExiftoolDataMessage, OpenConfigFileMessage} from "../../../common/messaging/messagesApplication";
 
 const {ipcRenderer} = window.require('electron');
 
@@ -194,4 +194,9 @@ export function requestOpenItemsExternal(itemIds: number[]): Promise<void> {
 
 export function requestOpenConfigFile(): Promise<void> {
     return OpenConfigFileMessage.request(ipcRenderer, {}).then();
+}
+
+export function fetchExiftoolData(): Promise<[string | null, boolean]> {
+    return GetExiftoolDataMessage.request(ipcRenderer, {})
+        .then((response: GetExiftoolDataMessage.ResponsePayload) => [response.location, response.defined]);
 }

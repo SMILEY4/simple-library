@@ -24,4 +24,8 @@ export class ApplicationService {
 		this.configDataAccess.setApplicationTheme(theme)
 	}
 
+	public getExiftoolLocation(): string | null {
+		return this.configDataAccess.getExiftoolLocation();
+	}
+
 }

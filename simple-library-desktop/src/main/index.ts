@@ -25,6 +25,7 @@ import {GroupDataAccess} from './persistence/groupDataAccess';
 import {WindowMessageHandler} from "./messagehandler/windowMessageHandler";
 import {ApplicationService} from "./service/applicationService";
 import {ApplicationMessageHandler} from "./messagehandler/applicationMessageHandler";
+import {ImportStepMetadata} from "./service/importprocess/importStepMetadata";
 
 const RUN_TESTS = false;
 
@@ -62,6 +63,7 @@ if (RUN_TESTS) {
 			new ImportStepImportTarget(fsWrapper),
 			new ImportStepFileHash(fsWrapper),
 			new ImportStepThumbnail(),
+			new ImportStepMetadata(),
 			windowService,
 		),
 		itemDataAccess,
