@@ -14,9 +14,15 @@ export class ConfigDataAccess {
 
 	constructor() {
 		this.store = new Store();
-		this.store.set(this.KEY_LAST_OPENED, [])
-		this.store.set(this.KEY_THEME, "dark")
-		this.store.set(this.KEY_EXIFTOOL_LOCATION, "")
+		if (!this.store.has(this.KEY_LAST_OPENED)) {
+			this.store.set(this.KEY_LAST_OPENED, [])
+		}
+		if (!this.store.has(this.KEY_THEME)) {
+			this.store.set(this.KEY_THEME, "dark")
+		}
+		if (!this.store.has(this.KEY_EXIFTOOL_LOCATION)) {
+			this.store.set(this.KEY_EXIFTOOL_LOCATION, "")
+		}
 		console.log('Creating config store at ' + this.store.path);
 	}
 

@@ -7,6 +7,7 @@ import {
     sqlGetItemsCountTotal,
     sqlGetItemsInCollection,
     sqlInsertItem,
+    sqlInsertItemAttribs,
     sqlRemoveItemsFromAllCollections,
 } from './sql/sql';
 import {ItemData} from '../../common/commonModels';
@@ -30,6 +31,14 @@ export class ItemDataAccess {
             .then((id: number) => {
                 data.id = id;
                 return data;
+            }).then((item: ItemData) => {
+                if (item.metadataEntries) {
+                    console.log(sqlInsertItemAttribs(item.id, item.metadataEntries))
+                    this.dataAccess.executeRun(sqlInsertItemAttribs(item.id, item.metadataEntries))
+                        .then(() => item);
+                } else {
+                    return item;
+                }
             });
     }
 

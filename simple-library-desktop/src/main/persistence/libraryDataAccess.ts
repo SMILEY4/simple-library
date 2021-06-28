@@ -4,7 +4,7 @@ import {
     sqlAllMetadata,
     sqlCreateTableCollectionItems,
     sqlCreateTableCollections,
-    sqlCreateTableGroups,
+    sqlCreateTableGroups, sqlCreateTableItemAttributes,
     sqlCreateTableItems,
     sqlCreateTableMetadata,
     sqlGetMetadataLibraryName,
@@ -38,6 +38,7 @@ export class LibraryDataAccess {
                 const timestamp = Date.now();
                 await this.dataAccess.executeRun(sqlCreateTableMetadata());
                 await this.dataAccess.executeRun(sqlCreateTableItems());
+                await this.dataAccess.executeRun(sqlCreateTableItemAttributes());
                 await this.dataAccess.executeRun(sqlCreateTableCollections());
                 await this.dataAccess.executeRun(sqlCreateTableCollectionItems());
                 await this.dataAccess.executeRun(sqlCreateTableGroups());

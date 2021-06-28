@@ -85,7 +85,7 @@ export class ImportService {
                     .then((item: ItemData) => this.importStepFileHash.handle(item))
                     .then((item: ItemData) => this.importStepThumbnail.handle(item))
                     .then((item: ItemData) => this.importStepMetadata.handle(item))
-                    // .then((item: ItemData) => this.itemDataAccess.insertItem(item))
+                    .then((item: ItemData) => this.itemDataAccess.insertItem(item))
                     .then(() => console.log("done importing file: " + currentFile))
                     .catch((error: any) => {
                         console.error("Error while importing file " + currentFile + ": " + error);

@@ -9,6 +9,14 @@ export interface LastOpenedLibraryEntry {
     path: string
 }
 
+export type MetadataEntryType = "text" | "number" | "boolean" | "date" | "list"
+
+export interface MetadataEntry {
+    key: string,
+    value: string,
+    type: MetadataEntryType,
+}
+
 export interface ItemData {
     id: number,
     timestamp: number,
@@ -16,6 +24,7 @@ export interface ItemData {
     sourceFilepath: string,
     hash: string,
     thumbnail: string,
+    metadataEntries?: MetadataEntry[]
 }
 
 

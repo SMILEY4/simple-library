@@ -37,6 +37,9 @@ import itemsGetByCustomFilter from "./items/items_get_by_custom_filter.sql";
 import itemsCountWithCustomQuery from "./items/items_count_with_custom_query.sql";
 import itemsCountTotal from "./items/items_count_total.sql";
 
+import itemAttribsCreateTable from "./item_attributes/item_attribs_create_table.sql";
+import itemAttribsInsert from "./item_attributes/item_attribs_insert.sql";
+
 import metadataCreateTable from "./metadata/metadata_create_table.sql";
 import metadataGetAll from "./metadata/metadata_get_all.sql";
 import metadataGetLibraryName from "./metadata/metadata_get_library_name.sql";
@@ -44,6 +47,7 @@ import metadataInsertLibraryName from "./metadata/metadata_insert_library_name.s
 import metadataInsertTimestampCreated from "./metadata/metadata_insert_timestamp_created.sql";
 import metadataInsertTimestampLastOpened from "./metadata/metadata_insert_timestamp_last_opened.sql";
 import metadataUpdateTimestampLastOpened from "./metadata/metadata_update_timestamp_last_opened.sql";
+import {MetadataEntry} from "../../../common/commonModels";
 
 //==================//
 //     GROUPS       //
@@ -244,6 +248,31 @@ export function sqlCountItemsWithCustomFilter(query: string): string {
 export function sqlGetItemsCountTotal() {
 	return itemsCountTotal;
 }
+
+//====================//
+//  ITEM_ATTRIBUTES   //
+//====================//
+
+export function sqlCreateTableItemAttributes(): string {
+	return itemAttribsCreateTable;
+}
+
+export function sqlInsertItemAttribs(itemId: number, entries: MetadataEntry[]) {
+	const strEntries: string = entries
+		.map((entry: MetadataEntry) =>
+			"("
+			+ "'" + entry.key + "'" + ","
+			+ "'" + (""+entry.value).replace(/'/g, "''") + "'" + ","
+			+ "'" + entry.type + "'" + ","
+			+ "" + itemId
+			+ ")"
+		)
+		.join(", ");
+
+	return itemAttribsInsert
+		.replace("$entries", strEntries)
+}
+
 
 //==================//
 //     LIBRARY      //

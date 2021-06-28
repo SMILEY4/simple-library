@@ -63,7 +63,7 @@ if (RUN_TESTS) {
 			new ImportStepImportTarget(fsWrapper),
 			new ImportStepFileHash(fsWrapper),
 			new ImportStepThumbnail(),
-			new ImportStepMetadata(),
+			new ImportStepMetadata(configDataAccess),
 			windowService,
 		),
 		itemDataAccess,
