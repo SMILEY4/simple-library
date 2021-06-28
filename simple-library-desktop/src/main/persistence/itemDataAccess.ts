@@ -3,14 +3,14 @@ import {
     sqlCountItemsWithCollectionId,
     sqlCountItemsWithCustomFilter,
     sqlDeleteItems,
-    sqlGetItemsByCustomFilter,
     sqlGetItemsCountTotal,
-    sqlGetItemsInCollection,
+    sqlGetItemsWithAttributesByCustomFilter,
+    sqlGetItemsWithAttributesInCollection,
     sqlInsertItem,
     sqlInsertItemAttribs,
     sqlRemoveItemsFromAllCollections,
 } from './sql/sql';
-import {ItemData} from '../../common/commonModels';
+import {ItemData, MetadataEntry, MetadataEntryType} from '../../common/commonModels';
 
 export class ItemDataAccess {
 
@@ -45,31 +45,33 @@ export class ItemDataAccess {
     /**
      * Get all items in the given collection (if provided)
      * @param collectionId the id of the collection or undefined to get all items
+     * @param itemAttributeKeys the keys of attributes to extract together with the items
      * @return a promise that resolves with the array of {@link ItemData}
      */
-    public getAllItems(collectionId: number): Promise<ItemData[]> {
-        return this.dataAccess.queryAll(sqlGetItemsInCollection(collectionId))
+    public getAllItems(collectionId: number, itemAttributeKeys: string[]): Promise<ItemData[]> {
+        return this.dataAccess.queryAll(sqlGetItemsWithAttributesInCollection(collectionId, itemAttributeKeys))
             .then((rows: any[]) => rows.map(ItemDataAccess.rowToItem));
     }
 
     /**
      * Get all items matching the given smart-query
      * @param query the query as a string
+     * @param itemAttributeKeys the keys of attributes to extract together with the items
      * @return a promise that resolves with the array of {@link ItemData}
      */
-    public getItemsBySmartQuery(query: string): Promise<ItemData[]> {
-        return this.dataAccess.queryAll(sqlGetItemsByCustomFilter(query))
+    public getItemsBySmartQuery(query: string, itemAttributeKeys: string[]): Promise<ItemData[]> {
+        return this.dataAccess.queryAll(sqlGetItemsWithAttributesByCustomFilter(query, itemAttributeKeys))
             .then((rows: any[]) => rows.map(ItemDataAccess.rowToItem));
     }
 
     /**
      * Get all items with the given id
      * @param itemIds the ids of the items to fetch
+     * @param itemAttributeKeys the keys of attributes to extract together with the items
      * @return a promise that resolves with the array of {@link ItemData}
      */
-    public getItemsByIds(itemIds: number[]): Promise<ItemData[]> {
-        return this.dataAccess.queryAll(sqlGetItemsByCustomFilter("item_id IN (" + itemIds.join(",") + ")"))
-            .then((rows: any[]) => rows.map(ItemDataAccess.rowToItem));
+    public getItemsByIds(itemIds: number[], itemAttributeKeys: string[]): Promise<ItemData[]> {
+        return this.getItemsBySmartQuery("item_id IN (" + itemIds.join(",") + ")", itemAttributeKeys)
     }
 
     /**
@@ -118,7 +120,26 @@ export class ItemDataAccess {
             sourceFilepath: row.filepath,
             hash: row.hash,
             thumbnail: row.thumbnail,
+            metadataEntries: ItemDataAccess.attributeColumnToEntries(row.attributes)
         };
+    }
+
+    private static attributeColumnToEntries(str: string): MetadataEntry[] {
+        if (str) {
+            const regexGlobal: RegExp = /"(.+?)"="(.+?)"-"(.+?)"/g;
+            const regex: RegExp = /"(.+?)"="(.+?)"-"(.+?)"/;
+            return str.match(regexGlobal).map((strEntry: string) => {
+                const strEntryParts: string[] = strEntry.match(regex);
+                const entry: MetadataEntry = {
+                    key: strEntryParts[1],
+                    value: strEntryParts[2],
+                    type: strEntryParts[3] as MetadataEntryType,
+                }
+                return entry;
+            })
+        } else {
+            return [];
+        }
     }
 
 }

@@ -45,7 +45,7 @@ export class CollectionService {
 	 */
 	public async createSmartCollection(name: string, query: string, parentGroupId: number | null): Promise<Collection> {
 		const createdCollection: Collection = await this.collectionDataAccess.createCollection(name.trim(), CollectionType.SMART, query.trim(), parentGroupId);
-		return this.itemService.getAllItems(createdCollection.id)
+		return this.itemService.getAllItems(createdCollection.id, [])
 			.then(() => createdCollection)
 			.catch(error => {
 				this.collectionDataAccess.deleteCollection(createdCollection.id);
@@ -81,7 +81,7 @@ export class CollectionService {
 		}
 		if (collection.type === CollectionType.SMART) {
 			await this.collectionDataAccess.editCollectionSmartQuery(collectionId, newSmartQuery.trim())
-				.then(() => this.itemService.getAllItems(collectionId))
+				.then(() => this.itemService.getAllItems(collectionId, []))
 				.catch(error => {
 					this.collectionDataAccess.editCollectionSmartQuery(collectionId, collection.smartQuery);
 					throw error;

@@ -5,7 +5,8 @@ import { ErrorResponse, handleRequest, mainSendCommand, rendererOnCommand, sendR
 export module GetItemsMessage {
 
     export interface RequestPayload {
-        collectionId: number
+        collectionId: number,
+        itemAttributeKeys: string[]
     }
 
     export interface ResponsePayload {

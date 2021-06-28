@@ -34,6 +34,9 @@ import itemsDelete from "./items/items_delete.sql";
 import itemsGetAll from "./items/items_get_all.sql";
 import itemsGetByCollection from "./items/items_get_by_collection.sql";
 import itemsGetByCustomFilter from "./items/items_get_by_custom_filter.sql";
+import itemsGetWithAttribsByCollection from "./items/items_with_attribs_get_by_collection.sql";
+import itemsGetWithAttribsByCustomFilter from "./items/items_with_attribs_get_by_custom_filter.sql";
+import itemsGetWithAttribsAll from "./items/items_with_attribs_get_all.sql";
 import itemsCountWithCustomQuery from "./items/items_count_with_custom_query.sql";
 import itemsCountTotal from "./items/items_count_total.sql";
 
@@ -226,7 +229,7 @@ export function sqlDeleteItems(itemIds: number[]) {
 		.replace("$itemIds", itemIds);
 }
 
-export function sqlGetItemsInCollection(collectionId: number) {
+export function sqlGetItemsInCollection(collectionId: number | null) {
 	if (collectionId) {
 		return itemsGetByCollection
 			.replace("$collectionId", collectionId);
@@ -235,9 +238,28 @@ export function sqlGetItemsInCollection(collectionId: number) {
 	}
 }
 
+export function sqlGetItemsWithAttributesInCollection(collectionId: number | null, attributeKeys: string[]) {
+	const strKeys: string = attributeKeys.map((key: string) => "'" + key + "'").join(", ")
+	if (collectionId) {
+		return itemsGetWithAttribsByCollection
+			.replace("$collectionId", collectionId)
+			.replace("$attributeKeys", strKeys);
+	} else {
+		return itemsGetWithAttribsAll
+			.replace("$attributeKeys", strKeys);
+	}
+}
+
 export function sqlGetItemsByCustomFilter(query: string) {
 	return itemsGetByCustomFilter
 		.replace("$query", query);
+}
+
+export function sqlGetItemsWithAttributesByCustomFilter(query: string, attributeKeys: string[]) {
+	const strKeys: string = attributeKeys.map((key: string) => "'" + key + "'").join(", ")
+	return itemsGetWithAttribsByCustomFilter
+		.replace("$query", query)
+		.replace("$attributeKeys", strKeys);
 }
 
 export function sqlCountItemsWithCustomFilter(query: string): string {
@@ -262,7 +284,7 @@ export function sqlInsertItemAttribs(itemId: number, entries: MetadataEntry[]) {
 		.map((entry: MetadataEntry) =>
 			"("
 			+ "'" + entry.key + "'" + ","
-			+ "'" + (""+entry.value).replace(/'/g, "''") + "'" + ","
+			+ "'" + ("" + entry.value).replace(/'/g, "''") + "'" + ","
 			+ "'" + entry.type + "'" + ","
 			+ "" + itemId
 			+ ")"

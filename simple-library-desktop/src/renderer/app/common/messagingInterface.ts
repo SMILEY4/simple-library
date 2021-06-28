@@ -60,9 +60,10 @@ export function fetchRootGroup(): Promise<Group> {
 }
 
 
-export function fetchItems(collectionId: number): Promise<ItemData[]> {
+export function fetchItems(collectionId: number, itemAttributeKeys: string[]): Promise<ItemData[]> {
     return GetItemsMessage.request(ipcRenderer, {
         collectionId: collectionId,
+        itemAttributeKeys: itemAttributeKeys
     }).then((response: GetItemsMessage.ResponsePayload) => response.items);
 }
 

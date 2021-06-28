@@ -40,8 +40,10 @@ export function useItems() {
 
 	const itemsDispatch = useItemsDispatch();
 
+	const itemAttributeKeys: string[] = ["EXIF.ISO", "EXIF.Model", "IPTC.Keywords"];
+
 	function load(collectionId: number): void {
-		fetchItems(collectionId)
+		fetchItems(collectionId, itemAttributeKeys)
 			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_FETCH_FAILED, error))
 			.then((items: ItemData[]) => itemsDispatch({
 				type: ItemsActionType.SET_ITEMS,

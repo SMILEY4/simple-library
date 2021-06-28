@@ -25,7 +25,7 @@ export class ItemMessageHandler {
     }
 
     private async handleGet(payload: GetItemsMessage.RequestPayload): Promise<GetItemsMessage.ResponsePayload | ErrorResponse> {
-        return this.itemService.getAllItems(payload.collectionId)
+        return this.itemService.getAllItems(payload.collectionId, payload.itemAttributeKeys)
             .then((items: ItemData[]) => ({ items: items }))
             .catch(err => errorResponse(err));
     }

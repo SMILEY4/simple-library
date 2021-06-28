@@ -34,9 +34,10 @@ export class ItemService {
 	/**
 	 * Get all items in the given collection
 	 * @param collectionId the id of the collection.
+	 * @param itemAttributeKeys the keys of attributes to extract together with the items
 	 * @return a promise that resolves with the items
 	 */
-	public async getAllItems(collectionId: number): Promise<ItemData[]> {
+	public async getAllItems(collectionId: number, itemAttributeKeys: string[]): Promise<ItemData[]> {
 		const collection: Collection | null = await this.collectionDataAccess.findCollection(collectionId);
 
 		if (!collection) {
@@ -44,13 +45,13 @@ export class ItemService {
 
 		} else if (collection.type === CollectionType.SMART) {
 			if (collection.smartQuery && collection.smartQuery.trim().length > 0) {
-				return this.itemDataAccess.getItemsBySmartQuery(collection.smartQuery);
+				return this.itemDataAccess.getItemsBySmartQuery(collection.smartQuery, itemAttributeKeys);
 			} else {
-				return this.itemDataAccess.getAllItems(undefined);
+				return this.itemDataAccess.getAllItems(undefined, itemAttributeKeys);
 			}
 
 		} else {
-			return this.itemDataAccess.getAllItems(collectionId);
+			return this.itemDataAccess.getAllItems(collectionId, itemAttributeKeys);
 		}
 	}
 
@@ -68,12 +69,9 @@ export class ItemService {
 	 */
 	public openFilesExternal(itemIds: number[]): Promise<void> {
 		return startAsyncWithValue(itemIds)
-			.then((itemIds: number[]) => this.itemDataAccess.getItemsByIds(itemIds))
-			.then((items: ItemData[]) => {
-				return Promise.all(
-					items.map((item: ItemData) => shell.openPath(item.filepath))
-				).then()
-			})
+			.then((itemIds: number[]) => this.itemDataAccess.getItemsByIds(itemIds, []))
+			.then((items: ItemData[]) => items.map((item: ItemData) => item.filepath))
+			.then((paths: string[]) => Promise.all(paths.map(shell.openPath)).then())
 	}
 
 }
