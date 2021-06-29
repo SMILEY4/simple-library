@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {SidebarTab} from "../../../../components/misc/app/AppLayout";
 import {IconType} from "../../../../components/base/icon/Icon";
 import {useMetadataSidebar} from "../../../hooks/app/sidebarmenu/metadata/useMetadataSidebar";
@@ -7,6 +7,7 @@ import {MetadataEntry} from "../../../../../common/commonModels";
 import {Label} from "../../../../components/base/label/Label";
 import {LabelBox} from "../../../../components/base/labelbox/LabelBox";
 import {Accordion} from "../../../../components/misc/accordion/Accordion";
+import {TextField} from "../../../../components/input/textfield/TextField";
 
 
 export const TAB_DATA_METADATA: SidebarTab = {
@@ -20,6 +21,8 @@ interface MetadataSidebarProps {
 
 export function MetadataSidebar(props: React.PropsWithChildren<MetadataSidebarProps>): React.ReactElement {
 
+	const [search, setSearch] = useState<string>("");
+
 	const {
 		metadataEntries
 	} = useMetadataSidebar();
@@ -28,10 +31,23 @@ export function MetadataSidebar(props: React.PropsWithChildren<MetadataSidebarPr
 		<>
 
 			<VBox spacing="0-5" padding="0-5" alignCross="stretch">
+
+				<TextField
+					placeholder={"Search"}
+					value={search}
+					onAccept={setSearch}
+					onChange={setSearch}
+					forceState
+					prependIcon={IconType.SEARCH}
+					appendIcon={IconType.CLOSE}
+					onClickAppendIcon={() => setSearch("")}
+				/>
+
 				{
 					group(metadataEntries)
-						.sort((a,b) => a.title.toLowerCase().localeCompare(b.title.toLowerCase()))
-						.map(group => <MetadataGroupListEntry title={group.title} entries={group.entries}/>)
+						.sort((a, b) => a.title.toLowerCase().localeCompare(b.title.toLowerCase()))
+						.map(group =>
+							<MetadataGroupListEntry title={group.title} entries={group.entries} searchFilter={search.toLowerCase()}/>)
 				}
 			</VBox>
 
@@ -69,6 +85,7 @@ export function MetadataSidebar(props: React.PropsWithChildren<MetadataSidebarPr
 
 
 interface MetadataGroupListEntryProps {
+	searchFilter: string,
 	title: string,
 	entries: ([string, MetadataEntry])[];
 }
@@ -76,17 +93,28 @@ interface MetadataGroupListEntryProps {
 
 function MetadataGroupListEntry(props: React.PropsWithChildren<MetadataGroupListEntryProps>): React.ReactElement {
 
-	return (
-		<Accordion title={props.title} label={"" + props.entries.length}>
-			<VBox spacing="0-5" padding="0-5" alignCross="stretch">
-				{
-					props.entries
-						.sort((a,b) => a[0].toLowerCase().localeCompare(b[0].toLowerCase()))
-						.map((entry: [string,MetadataEntry]) => <MetadataListEntry key={entry[1].key} entry={entry[1]} shortName={entry[0]}/>)
-				}
-			</VBox>
-		</Accordion>
-	);
+	const doSearch: boolean = !!props.searchFilter && props.searchFilter.trim().length > 0;
+
+	const displayEntries = props.entries
+		.filter(entry => !doSearch || entry[1].key.toLowerCase().includes(props.searchFilter.trim()));
+
+	if (displayEntries.length === 0) {
+		return null;
+	} else {
+		return (
+			<Accordion title={props.title} label={doSearch ? displayEntries.length + "/" + props.entries.length : "" + props.entries.length}>
+				<VBox spacing="0-5" padding="0-5" alignCross="stretch">
+					{
+						displayEntries
+							.sort((a, b) => a[0].toLowerCase().localeCompare(b[0].toLowerCase()))
+							.map((entry: [string, MetadataEntry]) =>
+								<MetadataListEntry key={entry[1].key} entry={entry[1]} shortName={entry[0]}/>)
+					}
+				</VBox>
+			</Accordion>
+		);
+	}
+
 }
 
 
