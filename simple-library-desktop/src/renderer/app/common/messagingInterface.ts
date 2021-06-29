@@ -6,6 +6,7 @@ import {
     ImportStatus,
     ItemData,
     LastOpenedLibraryEntry,
+    MetadataEntry,
 } from '../../../common/commonModels';
 import {
     CreateGroupMessage,
@@ -16,6 +17,7 @@ import {
 } from '../../../common/messaging/messagesGroups';
 import {
     DeleteItemsMessage,
+    GetItemMetadataMessage,
     GetItemsMessage,
     ImportItemsMessage,
     ImportStatusUpdateCommand,
@@ -90,6 +92,13 @@ export function requestDeleteItems(itemIds: number[]): Promise<void> {
     return DeleteItemsMessage.request(ipcRenderer, {
         itemIds: itemIds,
     }).then();
+}
+
+
+export function fetchItemMetadata(itemId: number): Promise<MetadataEntry[]> {
+    return GetItemMetadataMessage.request(ipcRenderer, {
+        itemId: itemId
+    }).then((response: GetItemMetadataMessage.ResponsePayload) => response.metadataEntries);
 }
 
 

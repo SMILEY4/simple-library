@@ -3,6 +3,7 @@ import {
     sqlCountItemsWithCollectionId,
     sqlCountItemsWithCustomFilter,
     sqlDeleteItems,
+    sqlGetItemMetadata,
     sqlGetItemsCountTotal,
     sqlGetItemsWithAttributesByCustomFilter,
     sqlGetItemsWithAttributesInCollection,
@@ -112,6 +113,15 @@ export class ItemDataAccess {
         await this.dataAccess.executeRun(sqlDeleteItems(itemIds))
     }
 
+    /**
+     * Fetch all metadata entries for the given item
+     * @param itemId the array of metadata entries (or an empty array)
+     */
+    public getItemMetadata(itemId: number): Promise<MetadataEntry[]> {
+        return this.dataAccess.queryAll(sqlGetItemMetadata(itemId))
+            .then((rows: any[]) => rows.map(ItemDataAccess.rowToMetadataEntry));
+    }
+
     private static rowToItem(row: any): ItemData {
         return {
             id: row.item_id,
@@ -120,11 +130,19 @@ export class ItemDataAccess {
             sourceFilepath: row.filepath,
             hash: row.hash,
             thumbnail: row.thumbnail,
-            metadataEntries: ItemDataAccess.attributeColumnToEntries(row.attributes)
+            metadataEntries: ItemDataAccess.concatAttributeColumnToEntries(row.attributes)
         };
     }
 
-    private static attributeColumnToEntries(str: string): MetadataEntry[] {
+    private static rowToMetadataEntry(row: any): MetadataEntry {
+        return {
+            key: row.key,
+            value: row.value,
+            type: row.type,
+        };
+    }
+
+    private static concatAttributeColumnToEntries(str: string): MetadataEntry[] {
         if (str) {
             const regexGlobal: RegExp = /"(.+?)"="(.+?)"-"(.+?)"/g;
             const regex: RegExp = /"(.+?)"="(.+?)"-"(.+?)"/;

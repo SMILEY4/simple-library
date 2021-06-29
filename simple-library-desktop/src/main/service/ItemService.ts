@@ -1,5 +1,12 @@
 import {ItemDataAccess} from '../persistence/itemDataAccess';
-import {Collection, CollectionType, ImportProcessData, ImportResult, ItemData} from '../../common/commonModels';
+import {
+	Collection,
+	CollectionType,
+	ImportProcessData,
+	ImportResult,
+	ItemData,
+	MetadataEntry
+} from '../../common/commonModels';
 import {ImportService} from './importprocess/importService';
 import {CollectionDataAccess} from '../persistence/collectionDataAccess';
 import {failedAsync, startAsyncWithValue} from '../../common/AsyncCommon';
@@ -61,6 +68,14 @@ export class ItemService {
 	 */
 	public deleteItems(itemIds: number[]): Promise<void> {
 		return this.itemDataAccess.deleteItems(itemIds);
+	}
+
+	/**
+	 * Fetch all metadata entries for the given item
+	 * @param itemId the array of metadata entries (or an empty array)
+	 */
+	public getItemMetadata(itemId: number): Promise<MetadataEntry[]> {
+		return this.itemDataAccess.getItemMetadata(itemId);
 	}
 
 	/**

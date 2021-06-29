@@ -1,7 +1,6 @@
-import {BaseProps, ClickableProps, Size} from "../../utils/common";
+import {addPropsToChildren, BaseProps, ClickableProps, concatClasses, getIf, map, Size} from "../../utils/common";
 import React, {ReactElement} from "react";
 import "./label.css"
-import {addPropsToChildren, concatClasses, getIf, map, mapOrDefault} from "../../utils/common";
 import {Icon, IconProps} from "../icon/Icon";
 
 export interface LabelProps extends BaseProps, ClickableProps {

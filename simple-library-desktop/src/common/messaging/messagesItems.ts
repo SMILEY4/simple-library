@@ -1,4 +1,4 @@
-import { ImportProcessData, ImportResult, ImportStatus, ItemData } from '../commonModels';
+import {ImportProcessData, ImportResult, ImportStatus, ItemData, MetadataEntry} from '../commonModels';
 import { ErrorResponse, handleRequest, mainSendCommand, rendererOnCommand, sendRequest } from './messages';
 
 
@@ -99,6 +99,29 @@ export module OpenItemsExternalMessage {
     }
 
     const CHANNEL: string = 'item.open_external';
+
+    export function request(ipc: Electron.IpcRenderer, payload: RequestPayload): Promise<ResponsePayload> {
+        return sendRequest<RequestPayload, ResponsePayload>(ipc, CHANNEL, payload);
+    }
+
+    export function handle(ipc: Electron.IpcMain, action: (payload: RequestPayload) => Promise<ResponsePayload | ErrorResponse>) {
+        handleRequest<RequestPayload, ResponsePayload>(ipc, CHANNEL, action);
+    }
+
+}
+
+
+export module GetItemMetadataMessage {
+
+    export interface RequestPayload {
+        itemId: number
+    }
+
+    export interface ResponsePayload {
+        metadataEntries: MetadataEntry[]
+    }
+
+    const CHANNEL: string = 'item.metadata.get';
 
     export function request(ipc: Electron.IpcRenderer, payload: RequestPayload): Promise<ResponsePayload> {
         return sendRequest<RequestPayload, ResponsePayload>(ipc, CHANNEL, payload);

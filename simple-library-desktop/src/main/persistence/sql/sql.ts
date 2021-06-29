@@ -27,7 +27,6 @@ import collectionsUpdateParents from "./collections/collections_update_parent_gr
 import collectionsUpdateGroupId from "./collections/collections_update_group_id.sql";
 import collectionsFindById from "./collections/collections_find_by_id.sql";
 
-
 import itemsCreateTable from "./items/items_create_table.sql";
 import itemsInsert from "./items/items_insert.sql";
 import itemsDelete from "./items/items_delete.sql";
@@ -39,6 +38,7 @@ import itemsGetWithAttribsByCustomFilter from "./items/items_with_attribs_get_by
 import itemsGetWithAttribsAll from "./items/items_with_attribs_get_all.sql";
 import itemsCountWithCustomQuery from "./items/items_count_with_custom_query.sql";
 import itemsCountTotal from "./items/items_count_total.sql";
+import itemsGetMetadataEntries from "./items/items_get_metadata.sql";
 
 import itemAttribsCreateTable from "./item_attributes/item_attribs_create_table.sql";
 import itemAttribsInsert from "./item_attributes/item_attribs_insert.sql";
@@ -269,6 +269,11 @@ export function sqlCountItemsWithCustomFilter(query: string): string {
 
 export function sqlGetItemsCountTotal() {
 	return itemsCountTotal;
+}
+
+export function sqlGetItemMetadata(itemId: number): string {
+	return itemsGetMetadataEntries
+		.replace("$itemId", itemId);
 }
 
 //====================//
