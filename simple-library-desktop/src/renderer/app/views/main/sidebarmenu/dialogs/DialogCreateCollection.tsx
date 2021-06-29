@@ -10,7 +10,7 @@ import {Spacer} from "../../../../../components/base/spacer/Spacer";
 import {TextArea} from "../../../../../components/input/textarea/TextArea";
 import {ChoiceBox, ChoiceBoxItem} from "../../../../../components/buttons/choicebox/ChoiceBox";
 import {ElementLabel} from "../../../../../components/misc/elementlabel/ElementLabel";
-import {useDialogCollectionCreate} from "../../../../hooks/app/sidebarmenu/useDialogCollectionCreate";
+import {useDialogCollectionCreate} from "../../../../hooks/app/sidebarmenu/collection/useDialogCollectionCreate";
 
 interface DialogCreateCollectionProps {
 	parentGroupId: number | null,

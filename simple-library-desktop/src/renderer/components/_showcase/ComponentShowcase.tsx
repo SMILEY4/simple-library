@@ -49,6 +49,7 @@ import {getTreeData} from "./sampleData";
 import {IconButton} from "../buttons/iconbutton/IconButton";
 import {Toolbar} from "../misc/toolbar/Toolbar";
 import {Spacer} from "../base/spacer/Spacer";
+import {Accordion} from "../misc/accordion/Accordion";
 
 const {ipcRenderer} = window.require('electron');
 
@@ -82,6 +83,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 				<div onClick={() => setBackground("2")}>BG-2</div>
 			</div>
 
+			{renderAccordion()}
 			{renderDragAndDrop()}
 			{renderToolbar()}
 			{renderIconButton()}
@@ -112,6 +114,78 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 	);
 
 
+	function renderAccordion() {
+		return <ShowcaseSection title={"Accordion"}>
+			<VBox
+				style={{
+					width: "100%",
+					height: "400px",
+					border: "1px solid black",
+				}}
+				spacing="0-5"
+				padding="0-5"
+				alignCross="stretch"
+				alignMain="start"
+			>
+
+				<Accordion title="First Accordion" label="44">
+					This is the body of the first accordion
+					<ul>
+						<li>
+							Lorem ipsum dolor sit amet, consectetuer adipiscing
+							elit. Aenean commodo ligula eget dolor. Aenean
+							massa.
+						</li>
+						<li>
+							Cum sociis natoque penatibus et magnis dis
+							parturient montes, nascetur ridiculus mus. Donec quam
+							felis, ultricies nec, pellentesque eu, pretium quis,
+							sem.
+						</li>
+						<li>
+							Nulla consequat massa quis enim. Donec pede justo,
+							fringilla vel, aliquet nec, vulputate eget, arcu.
+						</li>
+						<li>
+							In enim justo, rhoncus ut, imperdiet a, venenatis
+							vitae, justo. Nullam dictum felis eu pede mollis
+							pretium. Integer tincidunt.
+						</li>
+					</ul>
+
+				</Accordion>
+
+				<Accordion title="Second Accordion">
+					This is the body of the second accordion
+					<ul>
+						<li>Lorem ipsum dolor sit amet consectetuer.</li>
+						<li>Aenean commodo ligula eget dolor.</li>
+						<li>Aenean massa cum sociis natoque penatibus.</li>
+					</ul>
+				</Accordion>
+
+				<Accordion title="Borderless Accordion" noBorder>
+					This is the body of the borderless accordion
+					<ul>
+						<li>Lorem ipsum dolor sit amet consectetuer.</li>
+						<li>Aenean massa cum sociis natoque penatibus.</li>
+					</ul>
+				</Accordion>
+
+				<Accordion title="Accordion with icon" icon={IconType.HOME} label="932">
+					This is the body of the accordion with an icon
+					<ul>
+						<li>Lorem ipsum dolor sit amet consectetuer.</li>
+						<li>Aenean commodo ligula eget dolor.</li>
+						<li>Aenean massa cum sociis natoque penatibus.</li>
+					</ul>
+				</Accordion>
+
+
+			</VBox>
+		</ShowcaseSection>
+	}
+
 	function renderDragAndDrop() {
 		return <ShowcaseSection title={"Drag and Drop"}>
 
@@ -134,13 +208,13 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 
 			<div
 				style={{
-				width: "200px",
-				height: "200px",
-				border: "1px solid black",
-				display: "flex",
-				justifyContent: "center",
-				alignItems: "center"
-			}}
+					width: "200px",
+					height: "200px",
+					border: "1px solid black",
+					display: "flex",
+					justifyContent: "center",
+					alignItems: "center"
+				}}
 				onDragOver={(e: React.DragEvent) => {
 					e.preventDefault()
 					e.dataTransfer.dropEffect = "copy"

@@ -1,11 +1,11 @@
-import {useDialogController} from "../miscApplicationHooks";
+import {useDialogController} from "../../miscApplicationHooks";
 import {useState} from "react";
-import { useCollections, useCollectionsState,} from "../../base/collectionHooks";
-import {Collection, CollectionType} from "../../../../../common/commonModels";
-import {useStateRef, useValidatedState} from "../../../../components/utils/commonHooks";
-import {useActiveCollectionState} from "../../base/activeCollectionHooks";
-import {useItems} from "../../base/itemHooks";
-import {useItemSelection} from "../../base/itemSelectionHooks";
+import { useCollections, useCollectionsState,} from "../../../base/collectionHooks";
+import {Collection, CollectionType} from "../../../../../../common/commonModels";
+import {useStateRef, useValidatedState} from "../../../../../components/utils/commonHooks";
+import {useActiveCollectionState} from "../../../base/activeCollectionHooks";
+import {useItems} from "../../../base/itemHooks";
+import {useItemSelection} from "../../../base/itemSelectionHooks";
 
 export function useDialogCollectionEditController(): [boolean, (id: number | null) => void, () => void, (number | null)] {
 

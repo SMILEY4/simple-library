@@ -1,8 +1,8 @@
-import {useDialogController} from "../miscApplicationHooks";
+import {useDialogController} from "../../miscApplicationHooks";
 import {useState} from "react";
-import {useCollections, useCollectionsState} from "../../base/collectionHooks";
-import {CollectionType, Group} from "../../../../../common/commonModels";
-import {useStateRef, useValidatedState} from "../../../../components/utils/commonHooks";
+import {useCollections, useCollectionsState} from "../../../base/collectionHooks";
+import {CollectionType, Group} from "../../../../../../common/commonModels";
+import {useStateRef, useValidatedState} from "../../../../../components/utils/commonHooks";
 
 export function useDialogCollectionCreateController(): [boolean, (id: number | null) => void, () => void, (number | null)] {
 

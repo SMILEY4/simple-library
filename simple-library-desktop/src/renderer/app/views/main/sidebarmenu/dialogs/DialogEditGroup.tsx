@@ -6,7 +6,7 @@ import {VBox} from "../../../../../components/layout/box/Box";
 import {Button} from "../../../../../components/buttons/button/Button";
 import {Label} from "../../../../../components/base/label/Label";
 import {TextField} from "../../../../../components/input/textfield/TextField";
-import {useDialogGroupEdit} from "../../../../hooks/app/sidebarmenu/useDialogGroupEdit";
+import {useDialogGroupEdit} from "../../../../hooks/app/sidebarmenu/collection/useDialogGroupEdit";
 
 interface DialogEditGroupProps {
 	groupId: number,

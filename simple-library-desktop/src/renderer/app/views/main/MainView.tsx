@@ -9,6 +9,7 @@ import {NotificationStack} from "../../../components/modals/notification/Notific
 import {useNotificationsState} from "../../hooks/base/notificationHooks";
 import {APP_ROOT_ID} from "../../Application";
 import {ContentArea} from "./contentarea/ContentArea";
+import {MetadataSidebar, TAB_DATA_METADATA} from "./sidebarmenu/MetadataSidebar";
 
 interface MainViewProps {
 	onClosed: () => void
@@ -26,11 +27,20 @@ export function MainView(props: React.PropsWithChildren<MainViewProps>): React.R
 
 				<AppToolbar onClosedLibrary={props.onClosed}/>
 
-				<AppLayout tabsLeft={[TAB_DATA_COLLECTIONS]}>
+				<AppLayout tabsLeft={[TAB_DATA_COLLECTIONS]} tabsRight={[TAB_DATA_METADATA]}>
 					<DynamicSlot name="sidebar-left">
 						{(tabId: string) => {
 							if (tabId === TAB_DATA_COLLECTIONS.id) {
 								return <CollectionSidebar/>;
+							} else {
+								return null;
+							}
+						}}
+					</DynamicSlot>
+					<DynamicSlot name="sidebar-right">
+						{(tabId: string) => {
+							if (tabId === TAB_DATA_METADATA.id) {
+								return <MetadataSidebar/>;
 							} else {
 								return null;
 							}

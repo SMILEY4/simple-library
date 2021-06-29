@@ -4,7 +4,7 @@ import {
     AiFillCaretRight,
     AiFillHome,
     AiOutlineFileText,
-    AiOutlineFolder, AiOutlineSearch,
+    AiOutlineFolder, AiOutlineSearch, AiOutlineTags,
     BiImages,
     BiImport,
     BsChevronDoubleLeft,
@@ -46,7 +46,8 @@ export enum IconType {
     // IMAGES,
     FOLDER,
     COLLECTION,
-    COLLECTIONS_SMART
+    COLLECTIONS_SMART,
+    TAGS,
 }
 
 
@@ -63,6 +64,7 @@ const ICON_COLOR_TYPE = new Map<IconType, string>([
     [IconType.CARET_RIGHT, SVG_FILLED],
     [IconType.IMPORT, SVG_FILLED],
     [IconType.SEARCH, SVG_OUTLINED],
+    [IconType.SETTINGS, SVG_OUTLINED],
 
     [IconType.CHEVRON_UP, SVG_FILLED],
     [IconType.CHEVRON_DOWN, SVG_FILLED],
@@ -73,9 +75,7 @@ const ICON_COLOR_TYPE = new Map<IconType, string>([
 
     [IconType.COLLECTION, SVG_FILLED],
     [IconType.COLLECTIONS_SMART, SVG_FILLED],
-
-    [IconType.SETTINGS, SVG_OUTLINED],
-
+    [IconType.TAGS, SVG_OUTLINED]
 ]);
 
 export interface IconProps extends BaseProps {
@@ -128,6 +128,8 @@ export function Icon(props: React.PropsWithChildren<IconProps>): React.ReactElem
             return <FiSettings {...iconProps} />;
         case IconType.SEARCH:
             return <AiOutlineSearch {...iconProps} />;
+        case IconType.TAGS:
+            return <AiOutlineTags {...iconProps} />;
         default:
             return null;
     }

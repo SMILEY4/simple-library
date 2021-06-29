@@ -1,7 +1,7 @@
-import {useDialogController} from "../miscApplicationHooks";
+import {useDialogController} from "../../miscApplicationHooks";
 import {useState} from "react";
-import {useCollections, useCollectionsState} from "../../base/collectionHooks";
-import {useValidatedState} from "../../../../components/utils/commonHooks";
+import {useCollections, useCollectionsState} from "../../../base/collectionHooks";
+import {useValidatedState} from "../../../../../components/utils/commonHooks";
 
 export function useDialogGroupEditController(): [boolean, (id: number | null) => void, () => void, (number | null)] {
 

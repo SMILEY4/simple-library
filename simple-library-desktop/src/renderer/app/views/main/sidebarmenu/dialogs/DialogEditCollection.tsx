@@ -8,7 +8,7 @@ import {Label} from "../../../../../components/base/label/Label";
 import {TextField} from "../../../../../components/input/textfield/TextField";
 import {Spacer} from "../../../../../components/base/spacer/Spacer";
 import {TextArea} from "../../../../../components/input/textarea/TextArea";
-import {useDialogCollectionEdit} from "../../../../hooks/app/sidebarmenu/useDialogCollectionEdit";
+import {useDialogCollectionEdit} from "../../../../hooks/app/sidebarmenu/collection/useDialogCollectionEdit";
 
 interface DialogEditCollectionProps {
 	collectionId: number,

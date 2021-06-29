@@ -7,7 +7,7 @@ import {Button} from "../../../../../components/buttons/button/Button";
 import {Label} from "../../../../../components/base/label/Label";
 import {TextField} from "../../../../../components/input/textfield/TextField";
 import {Spacer} from "../../../../../components/base/spacer/Spacer";
-import {useDialogGroupCreate} from "../../../../hooks/app/sidebarmenu/useDialogGroupCreate";
+import {useDialogGroupCreate} from "../../../../hooks/app/sidebarmenu/collection/useDialogGroupCreate";
 
 interface DialogCreateGroupProps {
 	parentGroupId: number | null,

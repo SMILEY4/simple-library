@@ -4,15 +4,15 @@ import {
 	DragAndDropGroups,
 	DragAndDropItems,
 	DragAndDropUtils
-} from "../../../common/dragAndDrop";
+} from "../../../../common/dragAndDrop";
 import {
 	useCollections,
 	useCollectionsState,
-} from "../../base/collectionHooks";
-import {useItems} from "../../base/itemHooks";
-import {CollectionSidebarActionType, useCollectionSidebarState} from "../../../store/collectionSidebarState";
-import {useMount} from "../../../../components/utils/commonHooks";
-import {useActiveCollectionState} from "../../base/activeCollectionHooks";
+} from "../../../base/collectionHooks";
+import {useItems} from "../../../base/itemHooks";
+import {CollectionSidebarActionType, useCollectionSidebarState} from "../../../../store/collectionSidebarState";
+import {useMount} from "../../../../../components/utils/commonHooks";
+import {useActiveCollectionState} from "../../../base/activeCollectionHooks";
 
 export function useCollectionSidebarUtils() {
 

@@ -8,18 +8,18 @@ import {ContextMenuCollection} from "./contextmenues/ContextMenuCollection";
 import {ContextMenuGroup} from "./contextmenues/ContextMenuGroup";
 import {APP_ROOT_ID} from "../../../Application";
 import {DialogDeleteCollection} from "./dialogs/DialogDeleteCollection";
-import {useCollectionSidebar, useCollectionSidebarUtils} from "../../../hooks/app/sidebarmenu/useCollectionSidebar";
+import {useCollectionSidebar, useCollectionSidebarUtils} from "../../../hooks/app/sidebarmenu/collection/useCollectionSidebar";
 import {DialogDeleteGroup} from "./dialogs/DialogDeleteGroup";
 import {DialogEditGroup} from "./dialogs/DialogEditGroup";
 import {DialogEditCollection} from "./dialogs/DialogEditCollection";
 import {DialogCreateGroup} from "./dialogs/DialogCreateGroup";
 import {DialogCreateCollection} from "./dialogs/DialogCreateCollection";
-import {useDialogCollectionDeleteController} from "../../../hooks/app/sidebarmenu/useDialogCollectionDelete";
-import {useDialogCollectionCreateController} from "../../../hooks/app/sidebarmenu/useDialogCollectionCreate";
-import {useDialogCollectionEditController} from "../../../hooks/app/sidebarmenu/useDialogCollectionEdit";
-import {useDialogGroupDeleteController} from "../../../hooks/app/sidebarmenu/useDialogGroupDelete";
-import {useDialogGroupEditController} from "../../../hooks/app/sidebarmenu/useDialogGroupEdit";
-import {useDialogGroupCreateController} from "../../../hooks/app/sidebarmenu/useDialogGroupCreate";
+import {useDialogCollectionDeleteController} from "../../../hooks/app/sidebarmenu/collection/useDialogCollectionDelete";
+import {useDialogCollectionCreateController} from "../../../hooks/app/sidebarmenu/collection/useDialogCollectionCreate";
+import {useDialogCollectionEditController} from "../../../hooks/app/sidebarmenu/collection/useDialogCollectionEdit";
+import {useDialogGroupDeleteController} from "../../../hooks/app/sidebarmenu/collection/useDialogGroupDelete";
+import {useDialogGroupEditController} from "../../../hooks/app/sidebarmenu/collection/useDialogGroupEdit";
+import {useDialogGroupCreateController} from "../../../hooks/app/sidebarmenu/collection/useDialogGroupCreate";
 
 export const TAB_DATA_COLLECTIONS: SidebarTab = {
 	id: "tab-collections",

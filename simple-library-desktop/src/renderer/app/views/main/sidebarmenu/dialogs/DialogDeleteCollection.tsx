@@ -5,7 +5,7 @@ import {Slot} from "../../../../../components/base/slot/Slot";
 import {VBox} from "../../../../../components/layout/box/Box";
 import {Button} from "../../../../../components/buttons/button/Button";
 import {Label} from "../../../../../components/base/label/Label";
-import {useDialogCollectionDelete} from "../../../../hooks/app/sidebarmenu/useDialogCollectionDelete";
+import {useDialogCollectionDelete} from "../../../../hooks/app/sidebarmenu/collection/useDialogCollectionDelete";
 
 interface DialogDeleteCollectionProps {
 	collectionId: number,

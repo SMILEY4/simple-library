@@ -6,7 +6,7 @@ import {VBox} from "../../../../../components/layout/box/Box";
 import {Button} from "../../../../../components/buttons/button/Button";
 import {Label} from "../../../../../components/base/label/Label";
 import {CheckBox} from "../../../../../components/buttons/checkbox/CheckBox";
-import {useDialogGroupDelete} from "../../../../hooks/app/sidebarmenu/useDialogGroupDelete";
+import {useDialogGroupDelete} from "../../../../hooks/app/sidebarmenu/collection/useDialogGroupDelete";
 
 interface DialogDeleteGroupProps {
 	groupId: number,

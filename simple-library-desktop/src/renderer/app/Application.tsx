@@ -39,7 +39,7 @@ export class Application extends Component<any, AppState> {
 		this.state = {
 			theme: Theme.LIGHT,
 			currentView: View.WELCOME,
-			displayComponentShowcase: false,
+			displayComponentShowcase: true,
 		};
 		this.handleSetTheme = this.handleSetTheme.bind(this);
 		this.renderComponentShowcase = this.renderComponentShowcase.bind(this);

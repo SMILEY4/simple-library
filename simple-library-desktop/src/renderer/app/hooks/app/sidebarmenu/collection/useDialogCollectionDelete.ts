@@ -1,12 +1,12 @@
-import {useDialogController} from "../miscApplicationHooks";
+import {useDialogController} from "../../miscApplicationHooks";
 import {useState} from "react";
 import {
 	useCollections,
 	useCollectionsState,
-} from "../../base/collectionHooks";
-import {Collection} from "../../../../../common/commonModels";
-import {useActiveCollectionState} from "../../base/activeCollectionHooks";
-import {useItemSelection} from "../../base/itemSelectionHooks";
+} from "../../../base/collectionHooks";
+import {Collection} from "../../../../../../common/commonModels";
+import {useActiveCollectionState} from "../../../base/activeCollectionHooks";
+import {useItemSelection} from "../../../base/itemSelectionHooks";
 
 export function useDialogCollectionDeleteController(): [boolean, (id: number | null) => void, () => void, (number | null)] {
 
