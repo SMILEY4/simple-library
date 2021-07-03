@@ -32,3 +32,25 @@ b {
 	box-shadow: none;
 	outline:    none;
 }
+
+
+*::-webkit-scrollbar {
+	width: var(--s-0-75);
+}
+
+*::-webkit-scrollbar-corner {
+	background: rgba(0, 0, 0, 0);
+}
+
+*::-webkit-scrollbar-thumb {
+	background-color: var(--color-border);
+	border-radius:    var(--radius-0);
+	border:           2px solid rgba(0, 0, 0, 0);
+	background-clip:  content-box;
+	min-width:        var(--s-0-75);
+	min-height:       var(--s-0-75);
+}
+
+*::-webkit-scrollbar-track {
+	background-color: rgba(0, 0, 0, 0);
+}
