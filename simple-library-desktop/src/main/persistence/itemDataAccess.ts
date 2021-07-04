@@ -7,9 +7,11 @@ import {
     sqlGetItemsCountTotal,
     sqlGetItemsWithAttributesByCustomFilter,
     sqlGetItemsWithAttributesInCollection,
+    sqlGetMetadataEntry,
     sqlInsertItem,
     sqlInsertItemAttribs,
     sqlRemoveItemsFromAllCollections,
+    sqlUpdateMetadataEntry,
 } from './sql/sql';
 import {ItemData, MetadataEntry, MetadataEntryType} from '../../common/commonModels';
 
@@ -72,7 +74,7 @@ export class ItemDataAccess {
      * @return a promise that resolves with the array of {@link ItemData}
      */
     public getItemsByIds(itemIds: number[], itemAttributeKeys: string[]): Promise<ItemData[]> {
-        return this.getItemsBySmartQuery("item_id IN (" + itemIds.join(",") + ")", itemAttributeKeys)
+        return this.getItemsBySmartQuery("items.item_id IN (" + itemIds.join(",") + ")", itemAttributeKeys)
     }
 
     /**
@@ -115,11 +117,31 @@ export class ItemDataAccess {
 
     /**
      * Fetch all metadata entries for the given item
-     * @param itemId the array of metadata entries (or an empty array)
+     * @param itemId the id of the item
      */
     public getItemMetadata(itemId: number): Promise<MetadataEntry[]> {
         return this.dataAccess.queryAll(sqlGetItemMetadata(itemId))
             .then((rows: any[]) => rows.map(ItemDataAccess.rowToMetadataEntry));
+    }
+
+    /**
+     * Fetch a single metadata entry for the given item
+     * @param itemId the id of the item
+     * @param entryKey the key of the metadata entry
+     */
+    public getItemMetadataEntry(itemId: number, entryKey: string): Promise<MetadataEntry | null> {
+        return this.dataAccess.querySingle(sqlGetMetadataEntry(itemId, entryKey))
+            .then((row: any) => ItemDataAccess.rowToMetadataEntry(row));
+    }
+
+    /**
+     * Set the value of a single metadata entry of the given item
+     * @param itemId the id of the item
+     * @param entryKey the key of the metadata entry
+     * @param newValue the new value
+     */
+    public setItemMetadataEntry(itemId: number, entryKey: string, newValue: string): Promise<void> {
+        return this.dataAccess.executeRun(sqlUpdateMetadataEntry(itemId, entryKey, newValue)).then()
     }
 
     private static rowToItem(row: any): ItemData {

@@ -90,6 +90,8 @@ export function TextField(props: React.PropsWithChildren<TextFieldProps>): React
         }
         if (event.key === 'Escape') {
             event.stopPropagation();
+            setValue(props.value)
+            event.target.value = props.value;
             event.target.blur();
             // onAccept triggered by blur
             handleChange(event.target.value, () => undefined);

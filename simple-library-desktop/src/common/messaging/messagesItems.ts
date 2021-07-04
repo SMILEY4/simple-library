@@ -25,6 +25,29 @@ export module GetItemsMessage {
 
 }
 
+
+export module GetItemByIdMessage {
+
+    export interface RequestPayload {
+        itemId: number
+    }
+
+    export interface ResponsePayload {
+        item: ItemData | null
+    }
+
+    const CHANNEL: string = 'item.get_by_id';
+
+    export function request(ipc: Electron.IpcRenderer, payload: RequestPayload): Promise<ResponsePayload> {
+        return sendRequest<RequestPayload, ResponsePayload>(ipc, CHANNEL, payload);
+    }
+
+    export function handle(ipc: Electron.IpcMain, action: (payload: RequestPayload) => Promise<ResponsePayload | ErrorResponse>) {
+        handleRequest<RequestPayload, ResponsePayload>(ipc, CHANNEL, action);
+    }
+
+}
+
 export module DeleteItemsMessage {
 
     export interface RequestPayload {
@@ -122,6 +145,31 @@ export module GetItemMetadataMessage {
     }
 
     const CHANNEL: string = 'item.metadata.get';
+
+    export function request(ipc: Electron.IpcRenderer, payload: RequestPayload): Promise<ResponsePayload> {
+        return sendRequest<RequestPayload, ResponsePayload>(ipc, CHANNEL, payload);
+    }
+
+    export function handle(ipc: Electron.IpcMain, action: (payload: RequestPayload) => Promise<ResponsePayload | ErrorResponse>) {
+        handleRequest<RequestPayload, ResponsePayload>(ipc, CHANNEL, action);
+    }
+
+}
+
+
+export module SetItemMetadataMessage {
+
+    export interface RequestPayload {
+        itemId: number,
+        entryKey: string,
+        newValue: string
+    }
+
+    export interface ResponsePayload {
+        metadataEntry: MetadataEntry
+    }
+
+    const CHANNEL: string = 'item.metadata.set';
 
     export function request(ipc: Electron.IpcRenderer, payload: RequestPayload): Promise<ResponsePayload> {
         return sendRequest<RequestPayload, ResponsePayload>(ipc, CHANNEL, payload);

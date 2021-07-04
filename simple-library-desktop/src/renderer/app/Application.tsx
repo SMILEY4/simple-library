@@ -46,7 +46,6 @@ export class Application extends Component<any, AppState> {
 		this.renderWelcomeView = this.renderWelcomeView.bind(this);
 		this.renderMainView = this.renderMainView.bind(this);
 		window.addEventListener('keyup', e => {
-			console.log(e.code)
 			if (e.code === "KeyD" && (e.ctrlKey || e.metaKey)) {
 				this.setState({displayComponentShowcase: !this.state.displayComponentShowcase});
 			}

@@ -1,0 +1,14 @@
+.toggle-text-field {
+	min-height: var(--s-1-5);
+}
+
+.toggle-text-field-fill,
+.toggle-text-field-fill > .label {
+	position: relative;
+	width: 100%;
+}
+
+
+.toggle-text-field-label {
+	display: flex;
+}

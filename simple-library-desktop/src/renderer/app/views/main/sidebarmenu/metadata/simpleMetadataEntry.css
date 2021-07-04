@@ -1,0 +1,32 @@
+.metadata-entry {
+	display:        flex;
+	flex-direction: row;
+	position:       relative;
+	gap:            var(--s-0-5)
+}
+
+.metadata-entry > * {
+	flex:      1;
+	min-width: 50%;
+	position: relative;
+}
+
+.metadata-entry > .metadata-value {
+	overflow: hidden;
+}
+
+.metadata-key > .badge-wrapper,
+.metadata-key-label {
+	max-width: 100%;
+}
+
+.metadata-key-label {
+	overflow: hidden;
+}
+
+.metadata-entry > .metadata-key {
+	display:         flex;
+	flex-direction:  row;
+	justify-content: flex-end;
+	align-items:     center;
+}

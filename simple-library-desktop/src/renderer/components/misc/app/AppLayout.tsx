@@ -19,7 +19,7 @@ export interface SidebarTab {
 
 interface AppLayoutProps extends BaseProps {
     tabsLeft?: SidebarTab[],
-    tabsRight?: SidebarTab[]
+    tabsRight?: SidebarTab[],
 }
 
 export function AppLayout(props: React.PropsWithChildren<AppLayoutProps>): ReactElement {

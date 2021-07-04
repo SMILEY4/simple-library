@@ -9,7 +9,7 @@ import {NotificationStack} from "../../../components/modals/notification/Notific
 import {useNotificationsState} from "../../hooks/base/notificationHooks";
 import {APP_ROOT_ID} from "../../Application";
 import {ContentArea} from "./contentarea/ContentArea";
-import {MetadataSidebar, TAB_DATA_METADATA} from "./sidebarmenu/MetadataSidebar";
+import {MetadataSidebar, TAB_DATA_METADATA} from "./sidebarmenu/metadata/MetadataSidebar";
 
 interface MainViewProps {
 	onClosed: () => void

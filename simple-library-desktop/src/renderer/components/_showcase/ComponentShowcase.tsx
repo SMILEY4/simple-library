@@ -50,6 +50,7 @@ import {IconButton} from "../buttons/iconbutton/IconButton";
 import {Toolbar} from "../misc/toolbar/Toolbar";
 import {Spacer} from "../base/spacer/Spacer";
 import {Accordion} from "../misc/accordion/Accordion";
+import {ToggleTextField} from "../input/textfield/ToggleTextField";
 
 const {ipcRenderer} = window.require('electron');
 
@@ -83,6 +84,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 				<div onClick={() => setBackground("2")}>BG-2</div>
 			</div>
 
+			{renderToggleTextField()}
 			{renderAccordion()}
 			{renderDragAndDrop()}
 			{renderToolbar()}
@@ -112,6 +114,20 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 
 		</div>
 	);
+
+
+	function renderToggleTextField() {
+		return <ShowcaseSection title={"Toggle-Textfield"}>
+
+			<ToggleTextField
+				placeholder={"Placeholder"}
+				value={"Init Value"}
+				onAccept={v => console.log("Accept", v)}
+				fillWidth
+			/>
+
+		</ShowcaseSection>
+	}
 
 
 	function renderAccordion() {

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {CSSProperties, ReactElement, ReactNode} from 'react';
+import {CSSProperties, ReactElement, ReactNode, SyntheticEvent} from 'react';
 
 export interface BaseProps {
 	className?: string,

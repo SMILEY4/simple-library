@@ -16,12 +16,12 @@ import {
     RenameGroupMessage,
 } from '../../../common/messaging/messagesGroups';
 import {
-    DeleteItemsMessage,
+    DeleteItemsMessage, GetItemByIdMessage,
     GetItemMetadataMessage,
     GetItemsMessage,
     ImportItemsMessage,
     ImportStatusUpdateCommand,
-    OpenItemsExternalMessage,
+    OpenItemsExternalMessage, SetItemMetadataMessage,
 } from '../../../common/messaging/messagesItems';
 import {
     CreateCollectionMessage,
@@ -69,6 +69,11 @@ export function fetchItems(collectionId: number, itemAttributeKeys: string[]): P
     }).then((response: GetItemsMessage.ResponsePayload) => response.items);
 }
 
+export function fetchItemById(itemId: number): Promise<ItemData | null> {
+    return GetItemByIdMessage.request(ipcRenderer, {
+        itemId: itemId
+    }).then((response: GetItemByIdMessage.ResponsePayload) => response.item);
+}
 
 export function requestMoveItems(srcCollectionId: number, tgtCollectionId: number, itemIds: number[], copy: boolean): Promise<void> {
     return MoveItemsToCollectionsMessage.request(ipcRenderer, {
@@ -101,6 +106,13 @@ export function fetchItemMetadata(itemId: number): Promise<MetadataEntry[]> {
     }).then((response: GetItemMetadataMessage.ResponsePayload) => response.metadataEntries);
 }
 
+export function setItemMetadata(itemId: number, entryKey: string, value: string): Promise<MetadataEntry> {
+    return SetItemMetadataMessage.request(ipcRenderer, {
+        itemId: itemId,
+        entryKey: entryKey,
+        newValue: value
+    }).then((response: SetItemMetadataMessage.ResponsePayload) => response.metadataEntry);
+}
 
 export function requestImport(data: ImportProcessData,
                               callbackSuccess: (result: ImportResult) => void,
