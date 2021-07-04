@@ -36,7 +36,6 @@ export class ItemDataAccess {
                 return data;
             }).then((item: ItemData) => {
                 if (item.metadataEntries) {
-                    console.log(sqlInsertItemAttribs(item.id, item.metadataEntries))
                     this.dataAccess.executeRun(sqlInsertItemAttribs(item.id, item.metadataEntries))
                         .then(() => item);
                 } else {
