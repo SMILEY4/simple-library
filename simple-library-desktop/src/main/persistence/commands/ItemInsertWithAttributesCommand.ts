@@ -3,6 +3,7 @@ import DataAccess from "../dataAccess";
 import {ItemInsertCommand} from "./ItemInsertCommand";
 import {CommandMultiple} from "./base/CommandMultiple";
 import {AttributeInsertCommand} from "./AttributeInsertCommand";
+import {CommandCustom} from "./base/CommandCustom";
 
 export interface ModelItemInsertWithAttributes {
     filepath: string,
@@ -12,12 +13,12 @@ export interface ModelItemInsertWithAttributes {
     attributes: MetadataEntry[]
 }
 
-export class ItemInsertWithAttributesCommand extends CommandMultiple {
+export class ItemInsertWithAttributesCommand extends CommandCustom<void> {
 
     entry: ModelItemInsertWithAttributes;
 
     constructor(entry: ModelItemInsertWithAttributes) {
-        super([]);
+        super();
         this.entry = entry;
     }
 
@@ -28,6 +29,9 @@ export class ItemInsertWithAttributesCommand extends CommandMultiple {
             hash: this.entry.hash,
             thumbnail: this.entry.thumbnail
         }).run(dataAccess)
-        await new AttributeInsertCommand(itemId, this.entry.attributes).run(dataAccess)
+        if (this.entry.attributes && this.entry.attributes.length > 0) {
+            await new AttributeInsertCommand(itemId, this.entry.attributes).run(dataAccess)
+        }
     }
+
 }

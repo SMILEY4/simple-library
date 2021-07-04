@@ -1,19 +1,10 @@
 import DataAccess from './dataAccess';
-import {CollectionType, LibraryMetadata} from '../../common/commonModels';
-import {
-    sqlAllMetadata,
-    sqlCreateTableCollectionItems,
-    sqlCreateTableCollections,
-    sqlCreateTableGroups, sqlCreateTableItemAttributes,
-    sqlCreateTableItems,
-    sqlCreateTableMetadata,
-    sqlGetMetadataLibraryName,
-    sqlInsertCollection,
-    sqlInsertMetadataLibraryName,
-    sqlInsertMetadataTimestampCreated,
-    sqlInsertMetadataTimestampLastOpened,
-    sqlUpdateMetadataTimestampLastOpened,
-} from './sql/sql';
+import {LibraryMetadata} from '../../common/commonModels';
+import {sqlAllMetadata,} from './sql/sql';
+import {LibraryCreateCommand} from "./commands/LibraryCreateCommand";
+import {LibraryOpenCommand} from "./commands/LibraryOpenCommand";
+import {LibraryCloseCommand} from "./commands/LibraryCloseCommand";
+import {LibraryMetadataQuery} from "./queries/LibraryMetadataQuery";
 
 export class LibraryDataAccess {
 
@@ -31,26 +22,8 @@ export class LibraryDataAccess {
      * @param libraryName the name of the library
      * @return a promise that resolves when the library was created and initialized
      */
-    public async createLibrary(url: string, libraryName: string): Promise<void> {
-        return this.dataAccess.openDatabase(url, true)
-            .then(async () => {
-                console.log('Created library: ' + url);
-                const timestamp = Date.now();
-                await this.dataAccess.executeRun(sqlCreateTableMetadata());
-                await this.dataAccess.executeRun(sqlCreateTableItems());
-                await this.dataAccess.executeRun(sqlCreateTableItemAttributes());
-                await this.dataAccess.executeRun(sqlCreateTableCollections());
-                await this.dataAccess.executeRun(sqlCreateTableCollectionItems());
-                await this.dataAccess.executeRun(sqlCreateTableGroups());
-                await this.dataAccess.executeRun(sqlInsertMetadataLibraryName(libraryName));
-                await this.dataAccess.executeRun(sqlInsertMetadataTimestampCreated(timestamp));
-                await this.dataAccess.executeRun(sqlInsertMetadataTimestampLastOpened(timestamp));
-                await this.dataAccess.executeRun(sqlInsertCollection("All Items", CollectionType.SMART, "", null))
-            })
-            .catch(error => {
-                console.log('Failed to create library: ' + url + ' - ' + error);
-                return Promise.reject();
-            })
+    public createLibrary(url: string, libraryName: string): Promise<void> {
+        return new LibraryCreateCommand(url, libraryName).run(this.dataAccess).then();
     }
 
     /**
@@ -58,10 +31,8 @@ export class LibraryDataAccess {
      * @param url the path to the db-fil
      * @return a promise that resolves with the name of the library
      */
-    public async openLibrary(url: string): Promise<string> {
-        await this.dataAccess.openDatabase(url, false);
-        await this.dataAccess.executeRun(sqlUpdateMetadataTimestampLastOpened(Date.now()));
-        return this.dataAccess.queryAll(sqlGetMetadataLibraryName()).then((row: any[]) => row[0].value);
+    public openLibrary(url: string): Promise<string> {
+        return new LibraryOpenCommand(url).run(this.dataAccess);
     }
 
 
@@ -69,20 +40,15 @@ export class LibraryDataAccess {
      * Closes the currently open database
      */
     public closeCurrentLibrary(): void {
-        this.dataAccess.closeDatabase();
+        new LibraryCloseCommand().run(this.dataAccess).then();
     }
 
 
     /**
      * @return a promise that resolves with the metadata of the current library
      */
-    public async getLibraryMetadata(): Promise<LibraryMetadata> {
-        const result: any[] = await this.dataAccess.queryAll(sqlAllMetadata());
-        return {
-            name: result.find((row: any) => row.key === 'library_name').value,
-            timestampCreated: parseInt(result.find((row: any) => row.key === 'timestamp_created').value),
-            timestampLastOpened: parseInt(result.find((row: any) => row.key === 'timestamp_last_opened').value),
-        };
+    public getLibraryMetadata(): Promise<LibraryMetadata> {
+        return new LibraryMetadataQuery().run(this.dataAccess);
     }
 
 }

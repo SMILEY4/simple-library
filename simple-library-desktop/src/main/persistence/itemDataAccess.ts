@@ -1,19 +1,17 @@
 import DataAccess from './dataAccess';
-import {
-    sqlCountItemsWithCollectionId,
-    sqlCountItemsWithCustomFilter,
-    sqlDeleteItems,
-    sqlGetItemMetadata,
-    sqlGetItemsCountTotal,
-    sqlGetItemsWithAttributesByCustomFilter,
-    sqlGetItemsWithAttributesInCollection,
-    sqlGetMetadataEntry,
-    sqlInsertItem,
-    sqlInsertItemAttribs,
-    sqlRemoveItemsFromAllCollections,
-    sqlUpdateMetadataEntry,
-} from './sql/sql';
+import {sqlInsertItem, sqlInsertItemAttribs,} from './sql/sql';
 import {ItemData, MetadataEntry, MetadataEntryType} from '../../common/commonModels';
+import {ItemsGetAllQuery} from "./queries/ItemsGetAllQuery";
+import {ItemsGetAllBySmartQuery} from "./queries/ItemsGetAllBySmartQuery";
+import {ItemsGetByIdInQuery} from "./queries/ItemsGetByIdInQuery";
+import {ItemsCountQuery} from "./queries/ItemsCountQuery";
+import {ItemsCountByCollectionIdQuery} from "./queries/ItemsCountByCollectionIdQuery";
+import {ItemsCountBySmartQuery} from "./queries/ItemsCountBySmartQuery";
+import {ItemsDeleteCommand} from "./commands/ItemsDeleteCommand";
+import {AttributesGetByItemIdQuery} from "./queries/AttributesGetByItemIdQuery";
+import {AttributesGetByItemIdAndKeyQuery} from "./queries/AttributesGetByItemIdAndKeyQuery";
+import {AttributeUpdateValueCommand} from "./commands/AttributeUpdateValueCommand";
+import {ItemInsertWithAttributesCommand} from "./commands/ItemInsertWithAttributesCommand";
 
 export class ItemDataAccess {
 
@@ -29,19 +27,14 @@ export class ItemDataAccess {
      * @param data the item to save
      * @return a promise that resolves with the saved item data (including the item-id)
      */
-    public insertItem(data: ItemData): Promise<ItemData> {
-        return this.dataAccess.executeRun(sqlInsertItem(data.filepath, data.timestamp, data.hash, data.thumbnail))
-            .then((id: number) => {
-                data.id = id;
-                return data;
-            }).then((item: ItemData) => {
-                if (item.metadataEntries) {
-                    this.dataAccess.executeRun(sqlInsertItemAttribs(item.id, item.metadataEntries))
-                        .then(() => item);
-                } else {
-                    return item;
-                }
-            });
+    public insertItem(data: ItemData): Promise<void> {
+        return new ItemInsertWithAttributesCommand({
+            filepath: data.filepath,
+            timestamp: data.timestamp,
+            hash: data.hash,
+            thumbnail: data.thumbnail,
+            attributes: data.metadataEntries
+        }).run(this.dataAccess);
     }
 
     /**
@@ -51,8 +44,7 @@ export class ItemDataAccess {
      * @return a promise that resolves with the array of {@link ItemData}
      */
     public getAllItems(collectionId: number, itemAttributeKeys: string[]): Promise<ItemData[]> {
-        return this.dataAccess.queryAll(sqlGetItemsWithAttributesInCollection(collectionId, itemAttributeKeys))
-            .then((rows: any[]) => rows.map(ItemDataAccess.rowToItem));
+        return new ItemsGetAllQuery(collectionId, itemAttributeKeys).run(this.dataAccess)
     }
 
     /**
@@ -62,8 +54,7 @@ export class ItemDataAccess {
      * @return a promise that resolves with the array of {@link ItemData}
      */
     public getItemsBySmartQuery(query: string, itemAttributeKeys: string[]): Promise<ItemData[]> {
-        return this.dataAccess.queryAll(sqlGetItemsWithAttributesByCustomFilter(query, itemAttributeKeys))
-            .then((rows: any[]) => rows.map(ItemDataAccess.rowToItem));
+        return new ItemsGetAllBySmartQuery(query, itemAttributeKeys).run(this.dataAccess);
     }
 
     /**
@@ -73,7 +64,7 @@ export class ItemDataAccess {
      * @return a promise that resolves with the array of {@link ItemData}
      */
     public getItemsByIds(itemIds: number[], itemAttributeKeys: string[]): Promise<ItemData[]> {
-        return this.getItemsBySmartQuery("items.item_id IN (" + itemIds.join(",") + ")", itemAttributeKeys)
+        return new ItemsGetByIdInQuery(itemIds, itemAttributeKeys).run(this.dataAccess);
     }
 
     /**
@@ -81,8 +72,7 @@ export class ItemDataAccess {
      * @return a promise that resolves with the number of total items
      */
     public getTotalItemCount(): Promise<number> {
-        return this.dataAccess.querySingle(sqlGetItemsCountTotal())
-            .then((row: any) => row.count);
+        return new ItemsCountQuery().run(this.dataAccess);
     }
 
     /**
@@ -91,8 +81,7 @@ export class ItemDataAccess {
      * @return a promise that resolves with the number of items in the given collection
      */
     public getItemCountByCollectionId(collectionId: number): Promise<number> {
-        return this.dataAccess.querySingle(sqlCountItemsWithCollectionId(collectionId))
-            .then((row: any) => row.count);
+        return new ItemsCountByCollectionIdQuery(collectionId).run(this.dataAccess)
     }
 
     /**
@@ -101,17 +90,15 @@ export class ItemDataAccess {
      * @return a promise that resolves with the number of matching items
      */
     public getItemCountBySmartQuery(smartQuery: string): Promise<number> {
-        return this.dataAccess.querySingle(sqlCountItemsWithCustomFilter(smartQuery.trim()))
-            .then((row: any) => row.count);
+        return new ItemsCountBySmartQuery(smartQuery).run(this.dataAccess)
     }
 
     /**
      * Completely delete the items with the given ids
      * @param itemIds the ids of the items to delete
      */
-    public async deleteItems(itemIds: number[]): Promise<void> {
-        await this.dataAccess.executeRun(sqlRemoveItemsFromAllCollections(itemIds))
-        await this.dataAccess.executeRun(sqlDeleteItems(itemIds))
+    public deleteItems(itemIds: number[]): Promise<void> {
+        return new ItemsDeleteCommand(itemIds).run(this.dataAccess);
     }
 
     /**
@@ -119,8 +106,7 @@ export class ItemDataAccess {
      * @param itemId the id of the item
      */
     public getItemMetadata(itemId: number): Promise<MetadataEntry[]> {
-        return this.dataAccess.queryAll(sqlGetItemMetadata(itemId))
-            .then((rows: any[]) => rows.map(ItemDataAccess.rowToMetadataEntry));
+        return new AttributesGetByItemIdQuery(itemId).run(this.dataAccess);
     }
 
     /**
@@ -129,8 +115,7 @@ export class ItemDataAccess {
      * @param entryKey the key of the metadata entry
      */
     public getItemMetadataEntry(itemId: number, entryKey: string): Promise<MetadataEntry | null> {
-        return this.dataAccess.querySingle(sqlGetMetadataEntry(itemId, entryKey))
-            .then((row: any) => ItemDataAccess.rowToMetadataEntry(row));
+        return new AttributesGetByItemIdAndKeyQuery(itemId, entryKey).run(this.dataAccess)
     }
 
     /**
@@ -140,45 +125,7 @@ export class ItemDataAccess {
      * @param newValue the new value
      */
     public setItemMetadataEntry(itemId: number, entryKey: string, newValue: string): Promise<void> {
-        return this.dataAccess.executeRun(sqlUpdateMetadataEntry(itemId, entryKey, newValue)).then()
-    }
-
-    private static rowToItem(row: any): ItemData {
-        return {
-            id: row.item_id,
-            timestamp: row.timestamp_imported,
-            filepath: row.filepath,
-            sourceFilepath: row.filepath,
-            hash: row.hash,
-            thumbnail: row.thumbnail,
-            metadataEntries: ItemDataAccess.concatAttributeColumnToEntries(row.attributes)
-        };
-    }
-
-    private static rowToMetadataEntry(row: any): MetadataEntry {
-        return {
-            key: row.key,
-            value: row.value,
-            type: row.type,
-        };
-    }
-
-    private static concatAttributeColumnToEntries(str: string): MetadataEntry[] {
-        if (str) {
-            const regexGlobal: RegExp = /"(.+?)"="(.+?)"-"(.+?)"/g;
-            const regex: RegExp = /"(.+?)"="(.+?)"-"(.+?)"/;
-            return str.match(regexGlobal).map((strEntry: string) => {
-                const strEntryParts: string[] = strEntry.match(regex);
-                const entry: MetadataEntry = {
-                    key: strEntryParts[1],
-                    value: strEntryParts[2],
-                    type: strEntryParts[3] as MetadataEntryType,
-                }
-                return entry;
-            })
-        } else {
-            return [];
-        }
+        return new AttributeUpdateValueCommand(itemId, entryKey, newValue).run(this.dataAccess).then()
     }
 
 }
