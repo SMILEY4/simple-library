@@ -1,15 +1,13 @@
-import {
-    sqlCountItemsWithCollectionId,
-    sqlCountItemsWithCustomFilter,
-    sqlGetItemsCountTotal
-} from "../sql/sql";
+import {sqlCountItemsWithCustomFilter, sqlGetItemsCountTotal} from "../sql/sql";
 import {QuerySingle} from "./base/QuerySingle";
 
 
 export class ItemsCountBySmartQuery extends QuerySingle<number> {
 
-    constructor(smartQuery: string) {
-        super(sqlCountItemsWithCustomFilter(smartQuery.trim()));
+    constructor(smartQuery: string | null) {
+        super(smartQuery && smartQuery.trim().length > 0
+            ? sqlCountItemsWithCustomFilter(smartQuery.trim())
+            : sqlGetItemsCountTotal());
     }
 
     convertRow(row: any): number {

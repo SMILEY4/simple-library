@@ -132,7 +132,7 @@ export interface Collection {
     name: string,
     type: CollectionType
     smartQuery: string | null,
-    itemCount: number | null,
+    itemCount?: number | null,
     groupId: number | null
 }
 

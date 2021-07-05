@@ -2,18 +2,14 @@ import DataAccess from "../../dataAccess";
 
 export abstract class Command {
 
-    sqlString: string | null;
+    sqlString: string;
 
-    protected constructor(sqlString: string | null) {
+    protected constructor(sqlString: string) {
         this.sqlString = sqlString;
     }
 
-    public run(dataAccess: DataAccess): Promise<number | null> {
-        if (this.sqlString) {
-            return dataAccess.executeRun(this.sqlString)
-        } else {
-            return Promise.resolve(null);
-        }
+    public run(dataAccess: DataAccess): Promise<number> {
+        return dataAccess.executeRun(this.sqlString)
     }
 
 }

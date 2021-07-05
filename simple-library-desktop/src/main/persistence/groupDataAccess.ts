@@ -1,13 +1,13 @@
 import DataAccess from './dataAccess';
-import {
-    sqlAllGroups,
-    sqlDeleteGroup,
-    sqlFindGroupById,
-    sqlInsertGroup,
-    sqlUpdateGroupName, sqlUpdateGroupsParentId,
-    sqlUpdateGroupsParents,
-} from './sql/sql';
-import { GroupDTO } from '../../common/commonModels';
+import {sqlDeleteGroup, sqlUpdateGroupName, sqlUpdateGroupsParentId, sqlUpdateGroupsParents,} from './sql/sql';
+import {GroupDTO} from '../../common/commonModels';
+import {GroupsGetAllQuery} from "./queries/GroupsGetAllQuery";
+import {GroupsGetByIdQuery} from "./queries/GroupsGetByIdQuery";
+import {GroupInsertCommand} from "./commands/GroupInsertCommand";
+import {GroupDeleteCommand} from "./commands/GroupDeleteCommand";
+import {GroupUpdateNameCommand} from "./commands/GroupUpdateNameCommand";
+import {GroupsUpdateParentGroupsCommand} from "./commands/GroupsUpdateParentGroupsCommand";
+import {GroupUpdateParentGroupCommand} from "./commands/GroupUpdateParentGroupCommand";
 
 export class GroupDataAccess {
 
@@ -23,14 +23,7 @@ export class GroupDataAccess {
      * @return a promise that resolves with all {@link GroupDTO}s
      */
     public getGroups(): Promise<GroupDTO[]> {
-        return this.dataAccess.queryAll(sqlAllGroups())
-            .then((rows: any[]) => rows.map((row: any) => {
-                return {
-                    id: row.group_id,
-                    name: row.name,
-                    parentId: row.parent_group_id,
-                };
-            }));
+        return new GroupsGetAllQuery().run(this.dataAccess)
     }
 
     /**
@@ -38,18 +31,7 @@ export class GroupDataAccess {
      * @return a promise that resolves with the found group or null
      */
     public findGroupById(groupId: number): Promise<GroupDTO | null> {
-        return this.dataAccess.querySingle(sqlFindGroupById(groupId))
-            .then((row: any | undefined) => {
-                if (row) {
-                    return {
-                        id: row.group_id,
-                        name: row.name,
-                        parentId: row.parent_group_id,
-                    };
-                } else {
-                    return null;
-                }
-            });
+        return new GroupsGetByIdQuery(groupId).run(this.dataAccess);
     }
 
 
@@ -60,14 +42,9 @@ export class GroupDataAccess {
      * @return  a promise that resolves with the created {@link GroupDTO}
      */
     public createGroup(name: string, parentGroupId: number | null): Promise<GroupDTO> {
-        return this.dataAccess.executeRun(sqlInsertGroup(name, parentGroupId ? parentGroupId : null))
-            .then((id: number) => {
-                return {
-                    id: id,
-                    name: name,
-                    parentId: parentGroupId,
-                };
-            });
+        return new GroupInsertCommand(name, parentGroupId)
+            .run(this.dataAccess)
+            .then(groupId => this.findGroupById(groupId))
     }
 
 
@@ -77,7 +54,7 @@ export class GroupDataAccess {
      * @return a promise that resolves when the group was deleted
      */
     public deleteGroup(groupId: number): Promise<void> {
-        return this.dataAccess.executeRun(sqlDeleteGroup(groupId)).then();
+        return new GroupDeleteCommand(groupId).run(this.dataAccess).then();
     }
 
 
@@ -88,7 +65,7 @@ export class GroupDataAccess {
      * @return a promise that resolves when the group was renamed
      */
     public renameGroup(groupId: number, newName: string): Promise<void> {
-        return this.dataAccess.executeRun(sqlUpdateGroupName(groupId, newName)).then();
+        return new GroupUpdateNameCommand(groupId, newName).run(this.dataAccess).then();
     }
 
 
@@ -99,7 +76,7 @@ export class GroupDataAccess {
      * @return a promise that resolves when the groups were moved
      */
     public moveGroups(prevParentGroupId: number | null, newParentGroupId: number | null): Promise<void> {
-        return this.dataAccess.executeRun(sqlUpdateGroupsParents(prevParentGroupId, newParentGroupId)).then();
+        return new GroupsUpdateParentGroupsCommand(prevParentGroupId, newParentGroupId).run(this.dataAccess).then();
     }
 
     /**
@@ -109,7 +86,7 @@ export class GroupDataAccess {
      * @return a promise that resolves when the id was set
      */
     public setParentGroup(groupId: number, parentGroupId: number | null): Promise<void> {
-        return this.dataAccess.executeRun(sqlUpdateGroupsParentId(groupId, parentGroupId)).then();
+        return new GroupUpdateParentGroupCommand(groupId, parentGroupId).run(this.dataAccess).then();
     }
 
 }

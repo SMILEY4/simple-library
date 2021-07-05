@@ -1,19 +1,17 @@
 import DataAccess from './dataAccess';
-import {
-    sqlAddItemsToCollection,
-    sqlAllCollections,
-    sqlDeleteCollection,
-    sqlFindCollectionById,
-    sqlInsertCollection,
-    sqlRemoveItemsFromCollection,
-    sqlUpdateCollectionName,
-    sqlUpdateCollectionsGroupId,
-    sqlUpdateCollectionSmartQuery,
-    sqlUpdateCollectionsParents,
-} from './sql/sql';
 import {Collection, CollectionType} from '../../common/commonModels';
 import {ItemDataAccess} from './itemDataAccess';
-import {startAsyncWithValue} from "../../common/AsyncCommon";
+import {CollectionsGetAllQuery} from "./queries/CollectionsGetAllQuery";
+import {CollectionGetByIdQuery} from "./queries/CollectionGetByIdQuery";
+import {CollectionInsertCommand} from "./commands/CollectionInsertCommand";
+import {CollectionDeleteCommand} from "./commands/CollectionDeleteCommand";
+import {CollectionUpdateNameCommand} from "./commands/CollectionUpdateNameCommand";
+import {CollectionUpdateSmartQueryCommand} from "./commands/CollectionUpdateSmartQueryCommand";
+import {CollectionsUpdateParentGroupsCommand} from "./commands/CollectionsUpdateParentGroupsCommand";
+import {CollectionUpdateParentGroupCommand} from "./commands/CollectionUpdateParentGroupCommand";
+import {CollectionInsertItemsCommand} from "./commands/CollectionInsertItemsCommand";
+import {CollectionMoveItemsCommand} from "./commands/CollectionMoveItemsCommand";
+import {CollectionDeleteItemsCommand} from "./commands/CollectionDeleteItemsCommand";
 
 export class CollectionDataAccess {
 
@@ -31,21 +29,7 @@ export class CollectionDataAccess {
      * @return a promise that resolves with the array of {@link Collection}s
      */
     public getCollections(includeItemCount: boolean): Promise<Collection[]> {
-        if (includeItemCount) {
-            return this.dataAccess.queryAll(sqlAllCollections(true))
-                .then((rows: any[]) => rows.map((row: any) => CollectionDataAccess.rowToCollection(row, true)))
-                .then(async (collections: Collection[]) => {
-                    for (let i = 0; i < collections.length; i++) {
-                        if (collections[i].type === CollectionType.SMART) {
-                            collections[i].itemCount = await this.getSmartItemCount(collections[i])
-                        }
-                    }
-                    return collections;
-                });
-        } else {
-            return this.dataAccess.queryAll(sqlAllCollections(false))
-                .then((rows: any[]) => rows.map((row: any) => CollectionDataAccess.rowToCollection(row, false)));
-        }
+        return new CollectionsGetAllQuery(includeItemCount).run(this.dataAccess)
     }
 
 
@@ -55,8 +39,7 @@ export class CollectionDataAccess {
      * @return a promise that resolves with the found collection or null if none found
      */
     public findCollection(collectionId: number): Promise<Collection | null> {
-        return this.dataAccess.querySingle(sqlFindCollectionById(collectionId))
-            .then((row: any | undefined) => CollectionDataAccess.rowToCollection(row, false));
+        return new CollectionGetByIdQuery(collectionId).run(this.dataAccess)
     }
 
     /**
@@ -68,17 +51,21 @@ export class CollectionDataAccess {
      * @return a promise that resolves with the created collection
      */
     public createCollection(name: string, type: CollectionType, query: string | null, parentGroupId: number | null): Promise<Collection> {
-        return this.dataAccess.executeRun(sqlInsertCollection(name, type, query, parentGroupId ? parentGroupId : null))
-            .then((id: number) => {
-                return {
-                    id: id,
-                    name: name,
-                    type: type,
-                    smartQuery: query,
-                    itemCount: null,
-                    groupId: parentGroupId,
-                };
-            });
+        return new CollectionInsertCommand({
+            name: name,
+            type: type,
+            smartQuery: query,
+            groupId: parentGroupId
+        })
+            .run(this.dataAccess)
+            .then((id: number) => ({
+                id: id,
+                name: name,
+                type: type,
+                smartQuery: query,
+                itemCount: null,
+                groupId: parentGroupId,
+            }));
     }
 
     /**
@@ -87,7 +74,7 @@ export class CollectionDataAccess {
      * @return a promise that resolves when the collection was deleted
      */
     public deleteCollection(collectionId: number): Promise<void> {
-        return this.dataAccess.executeRun(sqlDeleteCollection(collectionId)).then();
+        return new CollectionDeleteCommand(collectionId).run(this.dataAccess).then();
     }
 
 
@@ -98,7 +85,7 @@ export class CollectionDataAccess {
      * @return a promise that resolves when the collection was renamed
      */
     public renameCollection(collectionId: number, name: string): Promise<void> {
-        return this.dataAccess.executeRun(sqlUpdateCollectionName(collectionId, name)).then();
+        return new CollectionUpdateNameCommand(collectionId, name).run(this.dataAccess).then();
     }
 
     /**
@@ -108,7 +95,7 @@ export class CollectionDataAccess {
      * @return a promise that resolves when the collection was modified
      */
     public editCollectionSmartQuery(collectionId: number, query: string | null): Promise<void> {
-        return this.dataAccess.executeRun(sqlUpdateCollectionSmartQuery(collectionId, query)).then();
+        return new CollectionUpdateSmartQueryCommand(collectionId, query).run(this.dataAccess).then();
     }
 
     /**
@@ -118,7 +105,7 @@ export class CollectionDataAccess {
      * @return a promise that resolves when the collections were moved
      */
     public moveCollections(prevParentGroupId: number | null, newParentGroupId: number | null): Promise<void> {
-        return this.dataAccess.executeRun(sqlUpdateCollectionsParents(prevParentGroupId, newParentGroupId)).then();
+        return new CollectionsUpdateParentGroupsCommand(prevParentGroupId, newParentGroupId).run(this.dataAccess).then();
     }
 
     /**
@@ -128,7 +115,7 @@ export class CollectionDataAccess {
      * @return a promise that resolves when the collection was moved
      */
     public moveCollection(collectionId: number, targetGroupId: number | null): Promise<void> {
-        return this.dataAccess.executeRun(sqlUpdateCollectionsGroupId(collectionId, targetGroupId)).then();
+        return new CollectionUpdateParentGroupCommand(collectionId, targetGroupId).run(this.dataAccess).then();
     }
 
     /**
@@ -137,12 +124,8 @@ export class CollectionDataAccess {
      * @param itemIds the ids of the items to copy
      * @return a promise that resolves when the items were copied
      */
-    public async copyItemToCollection(collectionId: number, itemIds: number[]): Promise<void> {
-        if (collectionId) {
-            return this.dataAccess.executeRun(sqlAddItemsToCollection(collectionId, itemIds)).then();
-        } else {
-            return Promise.resolve();
-        }
+    public copyItemToCollection(collectionId: number, itemIds: number[]): Promise<void> {
+        return new CollectionInsertItemsCommand(collectionId, itemIds).run(this.dataAccess).then();
     }
 
 
@@ -153,9 +136,8 @@ export class CollectionDataAccess {
      * @param itemIds the ids of the items to move
      * @return a promise that resolves when the items were moved
      */
-    public async moveItemsToCollection(srcCollectionId: number, tgtCollectionId: number, itemIds: number[]): Promise<void> {
-        await this.dataAccess.executeRun(sqlAddItemsToCollection(tgtCollectionId, itemIds))
-        await this.dataAccess.executeRun(sqlRemoveItemsFromCollection(srcCollectionId, itemIds))
+    public moveItemsToCollection(srcCollectionId: number, tgtCollectionId: number, itemIds: number[]): Promise<void> {
+        return new CollectionMoveItemsCommand(srcCollectionId, tgtCollectionId, itemIds).run(this.dataAccess)
     }
 
 
@@ -164,38 +146,8 @@ export class CollectionDataAccess {
      * @param collectionId the id of the collection
      * @param itemIds the ids of the items to remove
      */
-    public async removeItemsFromCollection(collectionId: number, itemIds: number[]): Promise<void> {
-        return this.dataAccess.executeRun(sqlRemoveItemsFromCollection(collectionId, itemIds)).then()
-    }
-
-
-    private getSmartItemCount(collection: Collection): Promise<number> {
-        if (collection.type === CollectionType.SMART) {
-            const smartQuery: string = collection.smartQuery;
-            if (smartQuery && smartQuery.trim().length > 0) {
-                return this.itemDataAccess.getItemCountBySmartQuery(smartQuery.trim());
-            } else {
-                return this.itemDataAccess.getTotalItemCount();
-            }
-        } else {
-            return startAsyncWithValue(0)
-        }
-    }
-
-
-    private static rowToCollection(row: any, includeItemCount: boolean): Collection | null {
-        if (row) {
-            return {
-                id: row.collection_id,
-                name: row.collection_name,
-                type: row.collection_type,
-                smartQuery: row.smart_query ? row.smart_query : null,
-                groupId: row.group_id,
-                itemCount: includeItemCount ? row.item_count : null,
-            };
-        } else {
-            return null;
-        }
+    public removeItemsFromCollection(collectionId: number, itemIds: number[]): Promise<void> {
+        return new CollectionDeleteItemsCommand(collectionId, itemIds).run(this.dataAccess).then()
     }
 
 }
