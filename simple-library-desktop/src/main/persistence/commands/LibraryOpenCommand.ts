@@ -12,10 +12,10 @@ export class LibraryOpenCommand extends CommandCustom<string> {
         this.url = url;
     }
 
-
-    async run(dataAccess: DataAccess): Promise<string> {
-        await dataAccess.openDatabase(this.url, false);
-        await dataAccess.executeRun(sqlUpdateMetadataTimestampLastOpened(Date.now()));
-        return dataAccess.queryAll(sqlGetMetadataLibraryName()).then((row: any[]) => row[0].value);
+    run(dataAccess: DataAccess): Promise<string> {
+        return dataAccess.openDatabase(this.url, false)
+            .then(() => dataAccess.executeRun(sqlUpdateMetadataTimestampLastOpened(Date.now())))
+            .then(() => dataAccess.queryAll(sqlGetMetadataLibraryName()))
+            .then((row: any[]) => row[0].value)
     }
 }

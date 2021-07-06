@@ -9,9 +9,13 @@ export abstract class CommandMultiple {
     }
 
     public async run(dataAccess: DataAccess): Promise<void> {
-        for (let sqlString of this.sqlStrings) {
-            await dataAccess.executeRun(sqlString);
-        }
+        const promises: Promise<any>[] = this.sqlStrings.map(sql => dataAccess.executeRun(sql))
+        return Promise.all(promises)
+            .then(() => console.debug("Command Multiple:", this.sqlStrings))
+            .catch((err: any) => {
+                console.debug("Command Multiple:", this.sqlStrings, "with error", err);
+                throw err;
+            })
     }
 
 }

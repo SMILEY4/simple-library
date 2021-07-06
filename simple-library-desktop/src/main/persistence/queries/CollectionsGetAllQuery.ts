@@ -35,12 +35,15 @@ export class CollectionsGetAllQuery extends QueryMultiple<ModelCollectionsGetAll
 
     private enrichWithItemCount(entries: ModelCollectionsGetAll[], dataAccess: DataAccess): Promise<ModelCollectionsGetAll[]> {
         const promises: Promise<ModelCollectionsGetAll>[] = entries
-            .filter(entry => entry.type === CollectionType.SMART)
             .map(entry => {
-                    return new ItemsCountBySmartQuery(entry.smartQuery)
-                        .run(dataAccess)
-                        .then(count => entry.itemCount = count)
-                        .then(() => entry)
+                    if (entry.type === CollectionType.SMART) {
+                        return new ItemsCountBySmartQuery(entry.smartQuery)
+                            .run(dataAccess)
+                            .then(count => entry.itemCount = count)
+                            .then(() => entry)
+                    } else {
+                        return Promise.resolve(entry);
+                    }
                 }
             )
         return Promise.all(promises);
