@@ -2,6 +2,8 @@ import {QueryMultiple} from "./base/QueryMultiple";
 import {ItemData, MetadataEntry, MetadataEntryType} from "../../../common/commonModels";
 import {sqlAllGroups, sqlGetItemsWithAttributesInCollection} from "../sql/sql";
 import {concatAttributeColumnToEntries} from "./queryUtils";
+import DataAccess from "../dataAccess";
+import {ModelCollectionsGetAll} from "./CollectionsGetAllQuery";
 
 
 export interface ModelGroupsGetAll {
@@ -11,6 +13,10 @@ export interface ModelGroupsGetAll {
 }
 
 export class GroupsGetAllQuery extends QueryMultiple<ModelGroupsGetAll> {
+
+    static run(dataAccess: DataAccess): Promise<ModelGroupsGetAll[]> {
+        return new GroupsGetAllQuery().run(dataAccess)
+    }
 
     constructor() {
         super(sqlAllGroups());

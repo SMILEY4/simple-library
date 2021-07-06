@@ -1,6 +1,7 @@
 import {Command} from "./base/Command";
 import {sqlInsertCollection} from "../sql/sql";
 import {CollectionType} from "../../../common/commonModels";
+import DataAccess from "../dataAccess";
 
 export interface ModelCollectionInsert {
     name: string,
@@ -10,6 +11,10 @@ export interface ModelCollectionInsert {
 }
 
 export class CollectionInsertCommand extends Command {
+
+    static run(dataAccess: DataAccess, entry: ModelCollectionInsert): Promise<number> {
+        return new CollectionInsertCommand(entry).run(dataAccess);
+    }
 
     constructor(entry: ModelCollectionInsert) {
         super(sqlInsertCollection(

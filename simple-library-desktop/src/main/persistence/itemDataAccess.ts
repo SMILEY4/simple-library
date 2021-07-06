@@ -1,6 +1,5 @@
 import DataAccess from './dataAccess';
-import {sqlInsertItem, sqlInsertItemAttribs,} from './sql/sql';
-import {ItemData, MetadataEntry, MetadataEntryType} from '../../common/commonModels';
+import {ItemData, MetadataEntry} from '../../common/commonModels';
 import {ItemsGetAllQuery} from "./queries/ItemsGetAllQuery";
 import {ItemsGetAllBySmartQuery} from "./queries/ItemsGetAllBySmartQuery";
 import {ItemsGetByIdInQuery} from "./queries/ItemsGetByIdInQuery";
@@ -44,7 +43,7 @@ export class ItemDataAccess {
      * @return a promise that resolves with the array of {@link ItemData}
      */
     public getAllItems(collectionId: number, itemAttributeKeys: string[]): Promise<ItemData[]> {
-        return new ItemsGetAllQuery(collectionId, itemAttributeKeys).run(this.dataAccess)
+        return ItemsGetAllQuery.run(this.dataAccess, collectionId, itemAttributeKeys)
     }
 
     /**
@@ -54,7 +53,7 @@ export class ItemDataAccess {
      * @return a promise that resolves with the array of {@link ItemData}
      */
     public getItemsBySmartQuery(query: string, itemAttributeKeys: string[]): Promise<ItemData[]> {
-        return new ItemsGetAllBySmartQuery(query, itemAttributeKeys).run(this.dataAccess);
+        return ItemsGetAllBySmartQuery.run(this.dataAccess, query, itemAttributeKeys);
     }
 
     /**
@@ -64,7 +63,7 @@ export class ItemDataAccess {
      * @return a promise that resolves with the array of {@link ItemData}
      */
     public getItemsByIds(itemIds: number[], itemAttributeKeys: string[]): Promise<ItemData[]> {
-        return new ItemsGetByIdInQuery(itemIds, itemAttributeKeys).run(this.dataAccess);
+        return ItemsGetByIdInQuery.run(this.dataAccess, itemIds, itemAttributeKeys);
     }
 
     /**
@@ -72,7 +71,7 @@ export class ItemDataAccess {
      * @return a promise that resolves with the number of total items
      */
     public getTotalItemCount(): Promise<number> {
-        return new ItemsCountQuery().run(this.dataAccess);
+        return ItemsCountQuery.run(this.dataAccess);
     }
 
     /**
@@ -81,7 +80,7 @@ export class ItemDataAccess {
      * @return a promise that resolves with the number of items in the given collection
      */
     public getItemCountByCollectionId(collectionId: number): Promise<number> {
-        return new ItemsCountByCollectionIdQuery(collectionId).run(this.dataAccess)
+        return ItemsCountByCollectionIdQuery.run(this.dataAccess, collectionId)
     }
 
     /**
@@ -90,7 +89,7 @@ export class ItemDataAccess {
      * @return a promise that resolves with the number of matching items
      */
     public getItemCountBySmartQuery(smartQuery: string): Promise<number> {
-        return new ItemsCountBySmartQuery(smartQuery).run(this.dataAccess)
+        return ItemsCountBySmartQuery.run(this.dataAccess, smartQuery);
     }
 
     /**
@@ -98,7 +97,7 @@ export class ItemDataAccess {
      * @param itemIds the ids of the items to delete
      */
     public deleteItems(itemIds: number[]): Promise<void> {
-        return new ItemsDeleteCommand(itemIds).run(this.dataAccess);
+        return ItemsDeleteCommand.run(this.dataAccess, itemIds);
     }
 
     /**
@@ -106,7 +105,7 @@ export class ItemDataAccess {
      * @param itemId the id of the item
      */
     public getItemMetadata(itemId: number): Promise<MetadataEntry[]> {
-        return new AttributesGetByItemIdQuery(itemId).run(this.dataAccess);
+        return AttributesGetByItemIdQuery.run(this.dataAccess, itemId);
     }
 
     /**
@@ -115,7 +114,7 @@ export class ItemDataAccess {
      * @param entryKey the key of the metadata entry
      */
     public getItemMetadataEntry(itemId: number, entryKey: string): Promise<MetadataEntry | null> {
-        return new AttributesGetByItemIdAndKeyQuery(itemId, entryKey).run(this.dataAccess)
+        return AttributesGetByItemIdAndKeyQuery.run(this.dataAccess, itemId, entryKey);
     }
 
     /**
@@ -125,7 +124,7 @@ export class ItemDataAccess {
      * @param newValue the new value
      */
     public setItemMetadataEntry(itemId: number, entryKey: string, newValue: string): Promise<void> {
-        return new AttributeUpdateValueCommand(itemId, entryKey, newValue).run(this.dataAccess).then()
+        return AttributeUpdateValueCommand.run(this.dataAccess, itemId, entryKey, newValue).then();
     }
 
 }

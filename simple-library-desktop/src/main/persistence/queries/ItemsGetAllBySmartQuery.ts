@@ -2,6 +2,7 @@ import {QueryMultiple} from "./base/QueryMultiple";
 import {MetadataEntry} from "../../../common/commonModels";
 import {sqlGetItemsWithAttributesByCustomFilter} from "../sql/sql";
 import {concatAttributeColumnToEntries} from "./queryUtils";
+import DataAccess from "../dataAccess";
 
 export interface ModelItemsGetAllBySmartQuery {
     id: number,
@@ -14,6 +15,10 @@ export interface ModelItemsGetAllBySmartQuery {
 }
 
 export class ItemsGetAllBySmartQuery extends QueryMultiple<ModelItemsGetAllBySmartQuery> {
+
+    static run(dataAccess: DataAccess, smartQuery: string, itemAttributeKeys: string[]): Promise<ModelItemsGetAllBySmartQuery[]> {
+        return new ItemsGetAllBySmartQuery(smartQuery, itemAttributeKeys).run(dataAccess);
+    }
 
     constructor(smartQuery: string, itemAttributeKeys: string[]) {
         super(sqlGetItemsWithAttributesByCustomFilter(smartQuery.trim(), itemAttributeKeys));

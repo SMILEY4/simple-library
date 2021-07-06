@@ -1,5 +1,6 @@
 import {sqlFindGroupById} from "../sql/sql";
 import {QuerySingle} from "./base/QuerySingle";
+import DataAccess from "../dataAccess";
 
 
 export interface ModelGroupsGetById {
@@ -9,6 +10,10 @@ export interface ModelGroupsGetById {
 }
 
 export class GroupsGetByIdQuery extends QuerySingle<ModelGroupsGetById> {
+
+    static run(dataAccess: DataAccess, groupId: number): Promise<ModelGroupsGetById> {
+        return new GroupsGetByIdQuery(groupId).run(dataAccess);
+    }
 
     constructor(groupId: number) {
         super(sqlFindGroupById(groupId));

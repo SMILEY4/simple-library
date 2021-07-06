@@ -16,6 +16,10 @@ export interface ModelCollectionsGetAll {
 
 export class CollectionsGetAllQuery extends QueryMultiple<ModelCollectionsGetAll> {
 
+    static run(dataAccess: DataAccess, includeItemCount: boolean): Promise<ModelCollectionsGetAll[]> {
+        return new CollectionsGetAllQuery(includeItemCount).run(dataAccess)
+    }
+
     includeItemCount: boolean
 
     constructor(includeItemCount: boolean) {

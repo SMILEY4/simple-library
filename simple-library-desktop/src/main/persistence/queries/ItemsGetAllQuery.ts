@@ -1,7 +1,8 @@
 import {QueryMultiple} from "./base/QueryMultiple";
-import {ItemData, MetadataEntry, MetadataEntryType} from "../../../common/commonModels";
+import {MetadataEntry} from "../../../common/commonModels";
 import {sqlGetItemsWithAttributesInCollection} from "../sql/sql";
 import {concatAttributeColumnToEntries} from "./queryUtils";
+import DataAccess from "../dataAccess";
 
 
 export interface ModelItemsGetAll {
@@ -15,6 +16,10 @@ export interface ModelItemsGetAll {
 }
 
 export class ItemsGetAllQuery extends QueryMultiple<ModelItemsGetAll> {
+
+    static run(dataAccess: DataAccess, collectionId: number, itemAttributeKeys: string[]): Promise<ModelItemsGetAll[]> {
+        return new ItemsGetAllQuery(collectionId, itemAttributeKeys).run(dataAccess);
+    }
 
     constructor(collectionId: number, itemAttributeKeys: string[]) {
         super(sqlGetItemsWithAttributesInCollection(collectionId, itemAttributeKeys));

@@ -1,6 +1,7 @@
 import {QueryMultiple} from "./base/QueryMultiple";
 import {MetadataEntryType} from "../../../common/commonModels";
 import {sqlGetItemMetadata} from "../sql/sql";
+import DataAccess from "../dataAccess";
 
 
 export interface ModelAttributesGetByItemId {
@@ -10,6 +11,10 @@ export interface ModelAttributesGetByItemId {
 }
 
 export class AttributesGetByItemIdQuery extends QueryMultiple<ModelAttributesGetByItemId> {
+
+    static run(dataAccess: DataAccess, itemId: number): Promise<ModelAttributesGetByItemId[]> {
+        return new AttributesGetByItemIdQuery(itemId).run(dataAccess)
+    }
 
     constructor(itemId: number) {
         super(sqlGetItemMetadata(itemId));

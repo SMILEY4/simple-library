@@ -6,7 +6,6 @@ import {LibraryDataAccess} from './persistence/libraryDataAccess';
 import {ConfigDataAccess} from './persistence/configDataAccess';
 import {ItemService} from './service/ItemService';
 import {ItemDataAccess} from './persistence/itemDataAccess';
-import {SimpleLibraryTests} from '../tests/simpleLibraryTests';
 import {FileSystemWrapper} from './service/utils/fileSystemWrapper';
 import {ImportStepThumbnail} from './service/importprocess/importStepThumbnail';
 import {ImportStepRename} from './service/importprocess/importStepRename';
@@ -14,7 +13,6 @@ import {ImportStepImportTarget} from './service/importprocess/importStepImportTa
 import {ImportStepFileHash} from './service/importprocess/importStepFileHash';
 import {ImportDataValidator} from './service/importprocess/importDataValidator';
 import {ImportService} from './service/importprocess/importService';
-import {CollectionDataAccess} from './persistence/collectionDataAccess';
 import {CollectionService} from './service/collectionService';
 import {CollectionMessageHandler} from './messagehandler/collectionMessageHandler';
 import {ItemMessageHandler} from './messagehandler/itemMessageHandler';
@@ -27,13 +25,6 @@ import {ApplicationService} from "./service/applicationService";
 import {ApplicationMessageHandler} from "./messagehandler/applicationMessageHandler";
 import {ImportStepMetadata} from "./service/importprocess/importStepMetadata";
 
-const RUN_TESTS = false;
-
-if (RUN_TESTS) {
-	SimpleLibraryTests.runAll().then(() => {
-	});
-
-} else {
 
 	const log = require('electron-log');
 	Object.assign(console, log.functions);
@@ -48,7 +39,6 @@ if (RUN_TESTS) {
 	const dataAccess: DataAccess = new DataAccess();
 	const libraryDataAccess: LibraryDataAccess = new LibraryDataAccess(dataAccess);
 	const itemDataAccess: ItemDataAccess = new ItemDataAccess(dataAccess);
-	const collectionDataAccess: CollectionDataAccess = new CollectionDataAccess(dataAccess, itemDataAccess);
 	const groupDataAccess: GroupDataAccess = new GroupDataAccess(dataAccess);
 
 	// service
@@ -67,10 +57,10 @@ if (RUN_TESTS) {
 			windowService,
 		),
 		itemDataAccess,
-		collectionDataAccess,
+		dataAccess
 	);
-	const collectionService: CollectionService = new CollectionService(itemService, collectionDataAccess);
-	const groupService: GroupService = new GroupService(itemService, collectionService, collectionDataAccess, groupDataAccess);
+	const collectionService: CollectionService = new CollectionService(itemService, dataAccess);
+	const groupService: GroupService = new GroupService(itemService, collectionService, groupDataAccess, dataAccess);
 
 	// message-handler
 	new ApplicationMessageHandler(appService).initialize();
@@ -83,7 +73,5 @@ if (RUN_TESTS) {
 	app.whenReady().then(() => windowService.whenReady());
 	app.on('window-all-closed', () => windowService.allWindowsClosed());
 	app.on('activate', () => windowService.activate());
-
-}
 
 

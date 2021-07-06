@@ -8,8 +8,9 @@ import {
     MetadataEntry
 } from '../../common/commonModels';
 import {ImportService} from './importprocess/importService';
-import {CollectionDataAccess} from '../persistence/collectionDataAccess';
 import {failedAsync, startAsyncWithValue} from '../../common/AsyncCommon';
+import DataAccess from "../persistence/dataAccess";
+import {CollectionGetByIdQuery} from "../persistence/queries/CollectionGetByIdQuery";
 
 const shell = require('electron').shell;
 
@@ -17,15 +18,14 @@ export class ItemService {
 
     importService: ImportService;
     itemDataAccess: ItemDataAccess;
-    collectionDataAccess: CollectionDataAccess;
-
+    dataAccess: DataAccess
 
     constructor(importService: ImportService,
                 itemDataAccess: ItemDataAccess,
-                collectionDataAccess: CollectionDataAccess) {
+                dataAccess: DataAccess) {
         this.importService = importService;
         this.itemDataAccess = itemDataAccess;
-        this.collectionDataAccess = collectionDataAccess;
+        this.dataAccess = dataAccess;
     }
 
     /**
@@ -45,7 +45,7 @@ export class ItemService {
      * @return a promise that resolves with the items
      */
     public async getAllItems(collectionId: number, itemAttributeKeys: string[]): Promise<ItemData[]> {
-        const collection: Collection | null = await this.collectionDataAccess.findCollection(collectionId);
+        const collection: Collection | null = await new CollectionGetByIdQuery(collectionId).run(this.dataAccess);
 
         if (!collection) {
             return failedAsync("Could not fetch items. Collection does not exist.");

@@ -1,5 +1,6 @@
 import {QueryMerging} from "./base/QueryMerging";
 import {sqlAllMetadata} from "../sql/sql";
+import DataAccess from "../dataAccess";
 
 export interface ModelLibraryMetadata {
     name: string,
@@ -8,6 +9,10 @@ export interface ModelLibraryMetadata {
 }
 
 export class LibraryMetadataQuery extends QueryMerging<ModelLibraryMetadata> {
+
+    static run(dataAccess: DataAccess): Promise<ModelLibraryMetadata> {
+        return new LibraryMetadataQuery().run(dataAccess);
+    }
 
     constructor() {
         super(sqlAllMetadata());

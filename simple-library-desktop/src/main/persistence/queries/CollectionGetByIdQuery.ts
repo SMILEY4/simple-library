@@ -1,6 +1,8 @@
 import {CollectionType} from "../../../common/commonModels";
 import {sqlFindCollectionById} from "../sql/sql";
 import {QuerySingle} from "./base/QuerySingle";
+import DataAccess from "../dataAccess";
+import {ModelAttributesGetByItemIdAndKey} from "./AttributesGetByItemIdAndKeyQuery";
 
 
 export interface ModelCollectionGetById {
@@ -12,6 +14,10 @@ export interface ModelCollectionGetById {
 }
 
 export class CollectionGetByIdQuery extends QuerySingle<ModelCollectionGetById> {
+
+    static run(dataAccess: DataAccess, collectionId: number): Promise<ModelCollectionGetById> {
+        return new CollectionGetByIdQuery(collectionId).run(dataAccess)
+    }
 
     constructor(collectionId: number) {
         super(sqlFindCollectionById(collectionId));

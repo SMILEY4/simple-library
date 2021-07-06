@@ -1,5 +1,4 @@
 import DataAccess from './dataAccess';
-import {sqlDeleteGroup, sqlUpdateGroupName, sqlUpdateGroupsParentId, sqlUpdateGroupsParents,} from './sql/sql';
 import {GroupDTO} from '../../common/commonModels';
 import {GroupsGetAllQuery} from "./queries/GroupsGetAllQuery";
 import {GroupsGetByIdQuery} from "./queries/GroupsGetByIdQuery";

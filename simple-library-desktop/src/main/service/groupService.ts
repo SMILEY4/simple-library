@@ -2,25 +2,26 @@ import { Collection, Group, GroupDTO } from '../../common/commonModels';
 import { ItemService } from "./ItemService";
 import { CollectionService } from './collectionService';
 import { GroupDataAccess } from '../persistence/groupDataAccess';
-import { CollectionDataAccess } from '../persistence/collectionDataAccess';
 import { failedAsync } from '../../common/AsyncCommon';
+import DataAccess from "../persistence/dataAccess";
+import {CollectionsUpdateParentGroupsCommand} from "../persistence/commands/CollectionsUpdateParentGroupsCommand";
 
 export class GroupService {
 
     groupDataAccess: GroupDataAccess;
     itemService: ItemService;
     collectionService: CollectionService;
-    collectionDataAccess: CollectionDataAccess;
+    dataAccess: DataAccess;
 
 
     constructor(itemService: ItemService,
                 collectionService: CollectionService,
-                collectionDataAccess: CollectionDataAccess,
-                groupDataAccess: GroupDataAccess) {
+                groupDataAccess: GroupDataAccess,
+                dataAccess: DataAccess) {
         this.itemService = itemService;
         this.collectionService = collectionService;
-        this.collectionDataAccess = collectionDataAccess;
         this.groupDataAccess = groupDataAccess;
+        this.dataAccess = dataAccess;
     }
 
 
@@ -73,7 +74,7 @@ export class GroupService {
                         const parentId: number | null = group.parentId ? group.parentId : null;
                         return Promise.all([
                             this.groupDataAccess.moveGroups(groupId, parentId),
-                            this.collectionDataAccess.moveCollections(groupId, parentId),
+                            new CollectionsUpdateParentGroupsCommand(groupId, parentId).run(this.dataAccess)
                         ]);
                     }
                 })
