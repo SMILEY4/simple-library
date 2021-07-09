@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>hidden worker window</title>
+</head>
+<body>
+<script type="text/javascript">
+  require('electron').ipcRenderer.invoke(
+    "window.register",
+    {f: "worker.html", d: JSON.stringify(document.title)}
+  );
+</script>
+</body>
+</html>

@@ -96,7 +96,7 @@ export class WindowService {
 
 		if (isDev) {
 			this.window.setAlwaysOnTop(true);
-			this.window.loadURL('http://localhost:8080');
+			this.window.loadURL('http://localhost:8080?worker=false');
 			this.window.webContents.on("did-frame-finish-load", () => {
 				this.window.webContents.once("devtools-opened", () => {
 					this.window.focus();
