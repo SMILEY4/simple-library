@@ -1,8 +1,8 @@
-import { ipcMain } from 'electron';
-import { errorResponse, ErrorResponse } from '../../common/messaging/messages';
-import { LastOpenedLibraryEntry, LibraryMetadata } from '../../common/commonModels';
-import { LibraryService } from '../service/libraryService';
-import { WindowService } from '../service/windowService';
+import {ipcMain} from 'electron';
+import {errorResponse, ErrorResponse} from '../../common/messaging/messages';
+import {LastOpenedLibraryEntry, LibraryMetadata} from '../../common/commonModels';
+import {LibraryService} from '../service/libraryService';
+import {WindowService} from '../service/windowService';
 import {
     CloseLibraryMessage,
     CreateLibraryMessage,
@@ -23,7 +23,7 @@ export class LibraryMessageHandler {
     }
 
     public initialize(): void {
-        GetLastOpenedLibrariesMessage.handle(ipcMain, payload => this.handleGetLastOpened(payload));
+        // GetLastOpenedLibrariesMessage.handle(ipcMain, payload => this.handleGetLastOpened(payload));
         CreateLibraryMessage.handle(ipcMain, payload => this.handleCreate(payload));
         OpenLibraryMessage.handle(ipcMain, payload => this.handleOpen(payload));
         CloseLibraryMessage.handle(ipcMain, payload => this.handleClose(payload));
@@ -32,7 +32,7 @@ export class LibraryMessageHandler {
 
     private async handleGetLastOpened(payload: GetLastOpenedLibrariesMessage.RequestPayload): Promise<GetLastOpenedLibrariesMessage.ResponsePayload | ErrorResponse> {
         return this.appService.getLibrariesLastOpened()
-            .then((data: LastOpenedLibraryEntry[]) => ({ lastOpened: data }))
+            .then((data: LastOpenedLibraryEntry[]) => ({lastOpened: data}))
             .catch(err => errorResponse(err));
     }
 
@@ -62,7 +62,7 @@ export class LibraryMessageHandler {
 
     private async handleGetMetadata(payload: GetLibraryMetadataMessage.RequestPayload): Promise<GetLibraryMetadataMessage.ResponsePayload | ErrorResponse> {
         return this.appService.getLibraryMetadata()
-            .then((data: LibraryMetadata) => ({ data: data }))
+            .then((data: LibraryMetadata) => ({data: data}))
             .catch(err => errorResponse(err));
     }
 

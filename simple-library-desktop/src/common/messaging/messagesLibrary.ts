@@ -1,4 +1,4 @@
-import { ErrorResponse, handleRequest, sendRequest } from './messages';
+import {ErrorResponse, handleRequest, mainSendCommand, sendRequest} from './messages';
 import { LastOpenedLibraryEntry, LibraryMetadata } from '../commonModels';
 
 export module GetLastOpenedLibrariesMessage {

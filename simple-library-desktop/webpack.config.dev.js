@@ -36,6 +36,10 @@ const rendererConfig = {
             '/': 'http://localhost:8080/renderer/',
         },
     },
+    externals: {
+        sharp: 'commonjs sharp',
+        sqlite3: 'commonjs sqlite3', mssql: '', mysql: '',  //Sqlite3 won't work without this line.
+    },
     resolve: {
         extensions: ['.tsx', '.ts', '.js'],
         alias: {
@@ -50,11 +54,6 @@ const rendererConfig = {
         new HtmlWebpackPlugin({
             filename: "index.html",
             template: path.resolve(__dirname, 'public', 'index.html'),
-            inject: true,
-        }),
-        new HtmlWebpackPlugin({
-            filename: "worker.html",
-            template: path.resolve(__dirname, 'public', 'worker.html'),
             inject: true,
         }),
         new webpack.HotModuleReplacementPlugin(),

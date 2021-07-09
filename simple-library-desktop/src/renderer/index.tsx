@@ -5,18 +5,13 @@ import "./components/baseStyle.css"
 import "./components/commonstyle.css"
 import "./components/constants.css"
 import "./components/themes.css"
+import {initBackground} from "../background/backgroundConfig";
 
 console.log("log filepath:", require('electron-log').transports.file.file)
 
-window.require('electron').ipcRenderer.invoke(
-    "window.register",
-    {f: "index.tsx / " + window.location.search, d: JSON.stringify(document.title)}
-);
-
 if (window.location.search === "?worker=true") {
-    console.log("Im a worker")
+	initBackground();
 } else {
-    console.log("Im the renderer")
-    ReactDOM.render(<Application/>, document.getElementById('app'));
+	ReactDOM.render(<Application/>, document.getElementById('app'));
 }
 

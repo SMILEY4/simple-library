@@ -1,4 +1,4 @@
-import {app, BrowserWindow} from 'electron';
+import {app, BrowserWindow, ipcMain} from 'electron';
 import {LibraryService} from './service/libraryService';
 import DataAccess from './persistence/dataAccess';
 import {WindowService} from './service/windowService';
@@ -25,7 +25,7 @@ import {WindowMessageHandler} from "./messagehandler/windowMessageHandler";
 import {ApplicationService} from "./service/applicationService";
 import {ApplicationMessageHandler} from "./messagehandler/applicationMessageHandler";
 import {ImportStepMetadata} from "./service/importprocess/importStepMetadata";
-
+import {mainSendCommand} from "../common/messaging/messages";
 
 const log = require('electron-log');
 Object.assign(console, log.functions);
@@ -72,24 +72,35 @@ new CollectionMessageHandler(collectionService).initialize();
 new GroupMessageHandler(groupService).initialize();
 new WindowMessageHandler(windowService, appService).initialize();
 
-import {ipcMain} from "electron";
-
 ipcMain.handle("window.register", (event, arg) => {
     console.log("REGISTER WINDOW", arg)
 });
+
+let workerWindow: BrowserWindow | null = null;
 
 app.whenReady()
     .then(() => {
         windowService.whenReady();
 
-        const workerWindow = new BrowserWindow({
-            show: false,
-            webPreferences: {nodeIntegration: true}
+        workerWindow = new BrowserWindow({
+            show: true,
+            width: 200,
+            height: 200,
+            webPreferences: {
+                nodeIntegration: true,
+                devTools: true
+            },
         })
-        console.log("open worker window")
+        workerWindow.webContents.openDevTools();
         workerWindow.loadURL('http://localhost:8080?worker=true');
+        console.log("opened worker window")
 
     })
+
+ipcMain.handle("library.get.last_opened", (event, arg) => {
+    mainSendCommand(workerWindow, "test-background", {})
+});
+
 
 app.on('window-all-closed', () => windowService.allWindowsClosed());
 app.on('activate', () => windowService.activate());

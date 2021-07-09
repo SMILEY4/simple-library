@@ -35,11 +35,6 @@ const rendererConfig = {
             template: path.resolve(__dirname, 'public', 'index.html'),
             inject: true,
         }),
-        new HtmlWebpackPlugin({
-            filename: "worker.html",
-            template: path.resolve(__dirname, 'public', 'worker.html'),
-            inject: true,
-        }),
     ],
 };
 
