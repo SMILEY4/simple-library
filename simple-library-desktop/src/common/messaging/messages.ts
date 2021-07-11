@@ -26,7 +26,7 @@ export function rendererOnCommand<T>(ipc: Electron.IpcRenderer, channel: string,
 
 // REQUESTS: send and "wait" for returned data, renderer-to-main (and back)
 
-const ERROR_RESPONSE_MARKER: string = "error-response";
+export const ERROR_RESPONSE_MARKER: string = "error-response";
 
 export interface ErrorResponse {
     status: string,
