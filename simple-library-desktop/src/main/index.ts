@@ -26,6 +26,8 @@ import {ApplicationService} from "./service/applicationService";
 import {ApplicationMessageHandler} from "./messagehandler/applicationMessageHandler";
 import {ImportStepMetadata} from "./service/importprocess/importStepMetadata";
 import {mainSendCommand} from "../common/messaging/messages";
+import {MainPingMsgSender} from "../common/messagingNew/pingMsgSender";
+import {MainPingMsgHandler} from "../common/messagingNew/pingMsgHandler";
 
 const log = require('electron-log');
 Object.assign(console, log.functions);
@@ -48,18 +50,18 @@ const appService: ApplicationService = new ApplicationService(configDataAccess);
 const libraryService: LibraryService = new LibraryService(libraryDataAccess, configDataAccess);
 const windowService: WindowService = new WindowService(appService);
 const itemService: ItemService = new ItemService(
-    new ImportService(
-        itemDataAccess,
-        new ImportDataValidator(fsWrapper),
-        new ImportStepRename(),
-        new ImportStepImportTarget(fsWrapper),
-        new ImportStepFileHash(fsWrapper),
-        new ImportStepThumbnail(),
-        new ImportStepMetadata(configDataAccess),
-        windowService,
-    ),
-    itemDataAccess,
-    collectionDataAccess,
+	new ImportService(
+		itemDataAccess,
+		new ImportDataValidator(fsWrapper),
+		new ImportStepRename(),
+		new ImportStepImportTarget(fsWrapper),
+		new ImportStepFileHash(fsWrapper),
+		new ImportStepThumbnail(),
+		new ImportStepMetadata(configDataAccess),
+		windowService,
+	),
+	itemDataAccess,
+	collectionDataAccess,
 );
 const collectionService: CollectionService = new CollectionService(itemService, collectionDataAccess);
 const groupService: GroupService = new GroupService(itemService, collectionService, collectionDataAccess, groupDataAccess);
@@ -72,33 +74,43 @@ new CollectionMessageHandler(collectionService).initialize();
 new GroupMessageHandler(groupService).initialize();
 new WindowMessageHandler(windowService, appService).initialize();
 
-ipcMain.handle("window.register", (event, arg) => {
-    console.log("REGISTER WINDOW", arg)
-});
+
+let pingSender: MainPingMsgSender;
+const pingHandler: MainPingMsgHandler = new MainPingMsgHandler();
 
 let workerWindow: BrowserWindow | null = null;
 
 app.whenReady()
-    .then(() => {
-        windowService.whenReady();
+	.then(() => {
+		windowService.whenReady();
 
-        workerWindow = new BrowserWindow({
-            show: true,
-            width: 200,
-            height: 200,
-            webPreferences: {
-                nodeIntegration: true,
-                devTools: true
-            },
-        })
-        workerWindow.webContents.openDevTools();
-        workerWindow.loadURL('http://localhost:8080?worker=true');
-        console.log("opened worker window")
+		workerWindow = new BrowserWindow({
+			show: true,
+			width: 200,
+			height: 200,
+			webPreferences: {
+				nodeIntegration: true,
+				devTools: true
+			},
+		})
+		workerWindow.webContents.openDevTools();
+		workerWindow.loadURL('http://localhost:8080?worker=true');
+		console.log("opened worker window")
 
-    })
+		pingSender = new MainPingMsgSender(workerWindow)
+		pingHandler.init();
+
+		workerWindow.webContents.once("did-finish-load", () => {
+		    console.log("MAIN PING RENDER", "hello from main")
+			pingSender.ping("hello from main")
+				.then((response: any) => console.log("RESPONSE FROM RENDER:", response))
+				.catch((err: any) => console.log("ERROR FROM RENDER:", err))
+		})
+
+	})
 
 ipcMain.handle("library.get.last_opened", (event, arg) => {
-    mainSendCommand(workerWindow, "test-background", {})
+	mainSendCommand(workerWindow, "test-background", {})
 });
 
 

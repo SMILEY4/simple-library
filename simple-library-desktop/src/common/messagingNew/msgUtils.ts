@@ -4,6 +4,10 @@ export function asChannel(prefix: string, id: string): string {
 	return prefix + "." + id;
 }
 
+export function asReplyChannel(prefix: string): string {
+	return "reply." + prefix;
+}
+
 export interface IpcWrapper {
 	process: "main" | "renderer",
 	ipcMain?: Electron.IpcMain,
