@@ -6,122 +6,84 @@ import {
     ImportStatus,
     ItemData,
     LastOpenedLibraryEntry,
-    MetadataEntry,
-} from '../../../common/commonModels';
-import {
-    CreateGroupMessage,
-    DeleteGroupMessage,
-    GetGroupsMessage,
-    MoveGroupMessage,
-    RenameGroupMessage,
-} from '../../../common/messaging/messagesGroups';
-import {
-    DeleteItemsMessage, GetItemByIdMessage,
-    GetItemMetadataMessage,
-    GetItemsMessage,
-    ImportItemsMessage,
-    ImportStatusUpdateCommand,
-    OpenItemsExternalMessage, SetItemMetadataMessage,
-} from '../../../common/messaging/messagesItems';
-import {
-    CreateCollectionMessage,
-    DeleteCollectionMessage,
-    EditCollectionMessage,
-    MoveCollectionMessage,
-    MoveItemsToCollectionsMessage,
-    RemoveItemsFromCollectionsMessage,
-} from '../../../common/messaging/messagesCollections';
-import {
-    CloseLibraryMessage,
-    CreateLibraryMessage,
-    GetLastOpenedLibrariesMessage,
-    OpenLibraryMessage
-} from '../../../common/messaging/messagesLibrary';
-import {GetExiftoolDataMessage, OpenConfigFileMessage} from "../../../common/messaging/messagesApplication";
+    MetadataEntry
+} from "../../../common/commonModels";
+import {RenderApplicationMsgSender} from "../../../common/messagingNew/applicationMsgSender";
+import {RenderCollectionMsgSender} from "../../../common/messagingNew/collectionMsgSender";
+import {RenderGroupMsgSender} from "../../../common/messagingNew/groupMsgSender";
+import {RenderItemMsgSender} from "../../../common/messagingNew/itemMsgSender";
+import {RenderLibraryMsgSender} from "../../../common/messagingNew/libraryMsgSender";
+import {GetExiftoolDataPayload} from "../../../common/messagingNew/applicationMsgHandler";
+import {RenderItemMsgHandler} from "../../../common/messagingNew/itemMsgHandler";
 
-const {ipcRenderer} = window.require('electron');
+const appSender: RenderApplicationMsgSender = new RenderApplicationMsgSender().init();
+const collectionSender: RenderCollectionMsgSender = new RenderCollectionMsgSender().init();
+const groupSender: RenderGroupMsgSender = new RenderGroupMsgSender().init();
+const itemSender: RenderItemMsgSender = new RenderItemMsgSender().init();
+const librarySender: RenderLibraryMsgSender = new RenderLibraryMsgSender().init();
+const itemMsgHandler: RenderItemMsgHandler = new RenderItemMsgHandler().init();
+
+export function addImportStatusListener(listener: (status: ImportStatus) => void): void {
+    itemMsgHandler.addImportStatusListener(listener);
+}
+
+export function removeImportStatusListener(listener: (status: ImportStatus) => void): void {
+    itemMsgHandler.removeImportStatusListener(listener);
+}
 
 export function fetchLastOpenedLibraries(): Promise<LastOpenedLibraryEntry[]> {
-    return GetLastOpenedLibrariesMessage.request(ipcRenderer)
-        .then((response: GetLastOpenedLibrariesMessage.ResponsePayload) => response.lastOpened);
+    return librarySender.getLastOpened();
 }
 
 export function requestOpenLibrary(filepath: string): Promise<void> {
-    return OpenLibraryMessage.request(ipcRenderer, {path: filepath}).then();
+    return librarySender.open(filepath);
 }
 
 export function requestCreateLibrary(name: string, targetDir: string): Promise<void> {
-    return CreateLibraryMessage.request(ipcRenderer, {targetDir: targetDir, name: name}).then()
+    return librarySender.create(targetDir, name);
 }
 
 export function fetchRootGroup(): Promise<Group> {
-    return GetGroupsMessage.request(ipcRenderer, {
-        includeCollections: true,
-        includeItemCount: true,
-    }).then((response: GetGroupsMessage.ResponsePayload) => response.groups[0]);
+    return groupSender.getAll(true, true)
+        .then((groups: Group[]) => groups[0]);
 }
 
-
 export function fetchItems(collectionId: number, itemAttributeKeys: string[]): Promise<ItemData[]> {
-    return GetItemsMessage.request(ipcRenderer, {
-        collectionId: collectionId,
-        itemAttributeKeys: itemAttributeKeys
-    }).then((response: GetItemsMessage.ResponsePayload) => response.items);
+    return itemSender.get(collectionId, itemAttributeKeys);
 }
 
 export function fetchItemById(itemId: number): Promise<ItemData | null> {
-    return GetItemByIdMessage.request(ipcRenderer, {
-        itemId: itemId
-    }).then((response: GetItemByIdMessage.ResponsePayload) => response.item);
+    return itemSender.getById(itemId);
 }
 
 export function requestMoveItems(srcCollectionId: number, tgtCollectionId: number, itemIds: number[], copy: boolean): Promise<void> {
-    return MoveItemsToCollectionsMessage.request(ipcRenderer, {
-        sourceCollectionId: srcCollectionId,
-        targetCollectionId: tgtCollectionId,
-        itemIds: itemIds,
-        copy: copy,
-    }).then();
+    return collectionSender.moveItemsToCollection(srcCollectionId, tgtCollectionId, itemIds, copy);
 }
 
 
 export function requestRemoveItems(collectionId: number, itemIds: number[]): Promise<void> {
-    return RemoveItemsFromCollectionsMessage.request(ipcRenderer, {
-        collectionId: collectionId,
-        itemIds: itemIds,
-    }).then();
+    return collectionSender.removeItemsFromCollection(collectionId, itemIds);
 }
 
 
 export function requestDeleteItems(itemIds: number[]): Promise<void> {
-    return DeleteItemsMessage.request(ipcRenderer, {
-        itemIds: itemIds,
-    }).then();
+    return itemSender.deleteItems(itemIds);
 }
 
 
 export function fetchItemMetadata(itemId: number): Promise<MetadataEntry[]> {
-    return GetItemMetadataMessage.request(ipcRenderer, {
-        itemId: itemId
-    }).then((response: GetItemMetadataMessage.ResponsePayload) => response.metadataEntries);
+    return itemSender.getMetadata(itemId);
 }
 
 export function setItemMetadata(itemId: number, entryKey: string, value: string): Promise<MetadataEntry> {
-    return SetItemMetadataMessage.request(ipcRenderer, {
-        itemId: itemId,
-        entryKey: entryKey,
-        newValue: value
-    }).then((response: SetItemMetadataMessage.ResponsePayload) => response.metadataEntry);
+    return itemSender.setMetadata(itemId, entryKey, value);
 }
 
 export function requestImport(data: ImportProcessData,
                               callbackSuccess: (result: ImportResult) => void,
                               callbackFailed: (result: ImportResult) => void,
                               callbackWithErrors: (result: ImportResult) => void): Promise<ImportResult> {
-    return ImportItemsMessage.request(ipcRenderer, {
-        data: data,
-    })
-        .then((resp: ImportItemsMessage.ResponsePayload) => resp.result)
+    return itemSender.importItems(data)
         .then((result: ImportResult) => {
             if (result.failed) {
                 callbackFailed(result);
@@ -134,91 +96,51 @@ export function requestImport(data: ImportProcessData,
         });
 }
 
-
-export function onImportStatusCommands(onStatus: (status: ImportStatus) => void) {
-    ImportStatusUpdateCommand.on(ipcRenderer, (status: ImportStatus) => {
-        onStatus(status);
-    });
-}
-
-
 export function requestCloseLibrary(): Promise<void> {
-    return CloseLibraryMessage.request(ipcRenderer).then();
+    return librarySender.close();
 }
-
 
 export function requestCreateCollection(name: string, type: CollectionType, query: string | null, parentGroupId: number | null): Promise<void> {
-    return CreateCollectionMessage.request(ipcRenderer, {
-        name: name,
-        type: type,
-        smartQuery: type === CollectionType.SMART ? query : null,
-        parentGroupId: parentGroupId,
-    }).then();
+    return collectionSender.createCollection(name, type, parentGroupId, type === CollectionType.SMART ? query : null).then();
 }
 
-
 export function requestEditCollection(collectionId: number, name: string, query: string | null): Promise<void> {
-    return EditCollectionMessage.request(ipcRenderer, {
-        collectionId: collectionId,
-        newName: name,
-        newSmartQuery: query,
-    }).then();
+    return collectionSender.editCollection(collectionId, name, query);
 }
 
 export function requestDeleteCollection(collectionId: number): Promise<void> {
-    return DeleteCollectionMessage.request(ipcRenderer, {
-        collectionId: collectionId,
-    }).then();
+    return collectionSender.deleteCollection(collectionId);
 }
 
 export function requestCreateGroup(name: string, parentGroupId: number | null): Promise<void> {
-    return CreateGroupMessage.request(ipcRenderer, {
-        name: name,
-        parentGroupId: parentGroupId,
-    }).then();
+    return groupSender.createGroup(name, parentGroupId).then();
 }
 
-
 export function requestRenameGroup(groupId: number, name: string): Promise<void> {
-    return RenameGroupMessage.request(ipcRenderer, {
-        groupId: groupId,
-        newName: name,
-    }).then();
+    return groupSender.renameGroup(groupId, name);
 }
 
 export function requestDeleteGroup(groupId: number, deleteChildren: boolean): Promise<void> {
-    return DeleteGroupMessage.request(ipcRenderer, {
-        groupId: groupId,
-        deleteChildren: deleteChildren,
-    }).then();
+    return groupSender.deleteGroup(groupId, deleteChildren);
 }
 
 export function requestMoveGroup(groupId: number, targetGroupId: number | null): Promise<void> {
-    return MoveGroupMessage.request(ipcRenderer, {
-        groupId: groupId,
-        targetGroupId: targetGroupId,
-    }).then();
+    return groupSender.moveGroup(groupId, targetGroupId);
 }
 
-
 export function requestMoveCollection(collectionId: number, targetGroupId: number | null): Promise<void> {
-    return MoveCollectionMessage.request(ipcRenderer, {
-        collectionId: collectionId,
-        targetGroupId: targetGroupId,
-    }).then();
+    return collectionSender.moveCollection(collectionId, targetGroupId);
 }
 
 export function requestOpenItemsExternal(itemIds: number[]): Promise<void> {
-    return OpenItemsExternalMessage.request(ipcRenderer, {
-        itemIds: itemIds
-    }).then();
+    return itemSender.openExternal(itemIds);
 }
 
 export function requestOpenConfigFile(): Promise<void> {
-    return OpenConfigFileMessage.request(ipcRenderer, {}).then();
+    return appSender.openConfig();
 }
 
 export function fetchExiftoolData(): Promise<[string | null, boolean]> {
-    return GetExiftoolDataMessage.request(ipcRenderer, {})
-        .then((response: GetExiftoolDataMessage.ResponsePayload) => [response.location, response.defined]);
+    return appSender.getExiftoolData()
+        .then((data: GetExiftoolDataPayload) => [data.location, data.defined]);
 }

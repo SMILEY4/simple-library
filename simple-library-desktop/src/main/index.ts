@@ -1,41 +1,42 @@
-import {app, BrowserWindow, ipcMain} from 'electron';
-import {LibraryService} from './service/libraryService';
-import DataAccess from './persistence/dataAccess';
-import {WindowService} from './service/windowService';
-import {LibraryDataAccess} from './persistence/libraryDataAccess';
-import {ConfigDataAccess} from './persistence/configDataAccess';
-import {ItemService} from './service/ItemService';
-import {ItemDataAccess} from './persistence/itemDataAccess';
-import {FileSystemWrapper} from './service/utils/fileSystemWrapper';
-import {ImportStepThumbnail} from './service/importprocess/importStepThumbnail';
-import {ImportStepRename} from './service/importprocess/importStepRename';
-import {ImportStepImportTarget} from './service/importprocess/importStepImportTarget';
-import {ImportStepFileHash} from './service/importprocess/importStepFileHash';
-import {ImportDataValidator} from './service/importprocess/importDataValidator';
-import {ImportService} from './service/importprocess/importService';
-import {CollectionDataAccess} from './persistence/collectionDataAccess';
-import {CollectionService} from './service/collectionService';
-import {CollectionMessageHandler} from './messagehandler/collectionMessageHandler';
-import {ItemMessageHandler} from './messagehandler/itemMessageHandler';
-import {GroupMessageHandler} from './messagehandler/groupMessageHandler';
-import {LibraryMessageHandler} from './messagehandler/libraryMessageHandler';
-import {GroupService} from './service/groupService';
-import {GroupDataAccess} from './persistence/groupDataAccess';
-import {WindowMessageHandler} from "./messagehandler/windowMessageHandler";
+import {app, BrowserWindow} from "electron";
+import {LibraryService} from "./service/libraryService";
+import DataAccess from "./persistence/dataAccess";
+import {WindowService} from "./service/windowService";
+import {LibraryDataAccess} from "./persistence/libraryDataAccess";
+import {ConfigDataAccess} from "./persistence/configDataAccess";
+import {ItemService} from "./service/ItemService";
+import {ItemDataAccess} from "./persistence/itemDataAccess";
+import {FileSystemWrapper} from "./service/utils/fileSystemWrapper";
+import {ImportStepThumbnail} from "./service/importprocess/importStepThumbnail";
+import {ImportStepRename} from "./service/importprocess/importStepRename";
+import {ImportStepImportTarget} from "./service/importprocess/importStepImportTarget";
+import {ImportStepFileHash} from "./service/importprocess/importStepFileHash";
+import {ImportDataValidator} from "./service/importprocess/importDataValidator";
+import {ImportService} from "./service/importprocess/importService";
+import {CollectionDataAccess} from "./persistence/collectionDataAccess";
+import {CollectionService} from "./service/collectionService";
+import {GroupService} from "./service/groupService";
+import {GroupDataAccess} from "./persistence/groupDataAccess";
 import {ApplicationService} from "./service/applicationService";
-import {ApplicationMessageHandler} from "./messagehandler/applicationMessageHandler";
 import {ImportStepMetadata} from "./service/importprocess/importStepMetadata";
-import {mainSendCommand} from "../common/messaging/messages";
-import {MainPingMsgSender} from "../common/messagingNew/pingMsgSender";
-import {MainPingMsgHandler} from "../common/messagingNew/pingMsgHandler";
+import {MainApplicationMsgHandler} from "../common/messagingNew/applicationMsgHandler";
+import {MainLibraryMsgHandler} from "../common/messagingNew/libraryMsgHandler";
+import {MainItemMsgHandler} from "../common/messagingNew/itemMsgHandler";
+import {MainCollectionMsgHandler} from "../common/messagingNew/collectionMsgHandler";
+import {MainGroupMsgHandler} from "../common/messagingNew/groupMsgHandler";
+import {MainItemMsgSender} from "../common/messagingNew/itemMsgSender";
+import {mainIpcWrapper} from "../common/messagingNew/core/msgUtils";
 
-const log = require('electron-log');
+const log = require("electron-log");
 Object.assign(console, log.functions);
 
-console.log("log filepath:", log.transports.file.file)
+console.log("log filepath:", log.transports.file.file);
 
 // utils
 const fsWrapper: FileSystemWrapper = new FileSystemWrapper();
+
+// msg sender
+const itemMsgSender: MainItemMsgSender = new MainItemMsgSender(null);
 
 // data access
 const configDataAccess: ConfigDataAccess = new ConfigDataAccess();
@@ -59,62 +60,56 @@ const itemService: ItemService = new ItemService(
 		new ImportStepThumbnail(),
 		new ImportStepMetadata(configDataAccess),
 		windowService,
+		itemMsgSender
 	),
 	itemDataAccess,
-	collectionDataAccess,
+	collectionDataAccess
 );
 const collectionService: CollectionService = new CollectionService(itemService, collectionDataAccess);
 const groupService: GroupService = new GroupService(itemService, collectionService, collectionDataAccess, groupDataAccess);
 
 // message-handler
-new ApplicationMessageHandler(appService).initialize();
-new LibraryMessageHandler(libraryService, windowService).initialize();
-new ItemMessageHandler(itemService).initialize();
-new CollectionMessageHandler(collectionService).initialize();
-new GroupMessageHandler(groupService).initialize();
-new WindowMessageHandler(windowService, appService).initialize();
+new MainApplicationMsgHandler(appService, windowService).init();
+new MainLibraryMsgHandler(libraryService, windowService).init();
+new MainItemMsgHandler(itemService).init();
+new MainCollectionMsgHandler(collectionService).init();
+new MainGroupMsgHandler(groupService).init();
 
-
-let pingSender: MainPingMsgSender;
-const pingHandler: MainPingMsgHandler = new MainPingMsgHandler();
-
-let workerWindow: BrowserWindow | null = null;
+// let workerWindow: BrowserWindow | null = null;
 
 app.whenReady()
 	.then(() => {
-		windowService.whenReady();
-
-		workerWindow = new BrowserWindow({
-			show: true,
-			width: 200,
-			height: 200,
-			webPreferences: {
-				nodeIntegration: true,
-				devTools: true
-			},
+		windowService.whenReady()
+		.then((window: BrowserWindow) => {
+			itemMsgSender.setIpcWrapper(mainIpcWrapper(window))
+			itemMsgSender.init();
 		})
-		workerWindow.webContents.openDevTools();
-		workerWindow.loadURL('http://localhost:8080?worker=true');
-		console.log("opened worker window")
+		//
+		// workerWindow = new BrowserWindow({
+		// 	show: true,
+		// 	width: 200,
+		// 	height: 200,
+		// 	webPreferences: {
+		// 		nodeIntegration: true,
+		// 		devTools: true
+		// 	},
+		// })
+		// workerWindow.webContents.openDevTools();
+		// workerWindow.loadURL('http://localhost:8080?worker=true');
+		// console.log("opened worker window")
+		//
+		// pingSender = new MainPingMsgSender(workerWindow)
+		// pingHandler.init();
+		//
+		// workerWindow.webContents.once("did-finish-load", () => {
+		//     console.log("MAIN PING RENDER", "hello from main")
+		// 	pingSender.ping("hello from main")
+		// 		.then((response: any) => console.log("RESPONSE FROM RENDER:", response))
+		// 		.catch((err: any) => console.log("ERROR FROM RENDER:", err))
+		// })
+	});
 
-		pingSender = new MainPingMsgSender(workerWindow)
-		pingHandler.init();
-
-		workerWindow.webContents.once("did-finish-load", () => {
-		    console.log("MAIN PING RENDER", "hello from main")
-			pingSender.ping("hello from main")
-				.then((response: any) => console.log("RESPONSE FROM RENDER:", response))
-				.catch((err: any) => console.log("ERROR FROM RENDER:", err))
-		})
-
-	})
-
-ipcMain.handle("library.get.last_opened", (event, arg) => {
-	mainSendCommand(workerWindow, "test-background", {})
-});
-
-
-app.on('window-all-closed', () => windowService.allWindowsClosed());
-app.on('activate', () => windowService.activate());
+app.on("window-all-closed", () => windowService.allWindowsClosed());
+app.on("activate", () => windowService.activate());
 
 

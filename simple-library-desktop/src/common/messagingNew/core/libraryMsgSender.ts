@@ -1,5 +1,5 @@
 import {AbstractMsgSender} from "./abstractMsgSender";
-import {LastOpenedLibraryEntry} from "../commonModels";
+import {LastOpenedLibraryEntry} from "../../commonModels";
 import {IpcWrapper} from "./msgUtils";
 
 export class LibraryMsgSender extends AbstractMsgSender {

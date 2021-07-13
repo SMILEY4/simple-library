@@ -1,9 +1,8 @@
-import React, {Component, ReactElement} from 'react';
+import React, {Component, ReactElement} from "react";
 import {ComponentShowcase} from "../components/_showcase/ComponentShowcase";
 import {WelcomeView} from "./views/welcome/WelcomeView";
 import {MainView} from "./views/main/MainView";
-import {GetApplicationTheme, SetApplicationTheme} from "../../common/messaging/messagesWindow";
-import {hot} from 'react-hot-loader/root';
+import {hot} from "react-hot-loader/root";
 import {NotificationStateProvider} from "./store/notificationState";
 import {Compose} from "../components/misc/compose/Compose";
 import {CollectionsStateProvider} from "./store/collectionsState";
@@ -11,17 +10,16 @@ import {ItemSelectionStateProvider} from "./store/itemSelectionState";
 import {ItemsStateProvider} from "./store/itemsState";
 import {CollectionSidebarStateProvider} from "./store/collectionSidebarState";
 import {CollectionActiveStateProvider} from "./store/collectionActiveState";
-
-const {ipcRenderer} = window.require('electron');
+import {RenderApplicationMsgSender} from "../../common/messagingNew/applicationMsgSender";
 
 export enum Theme {
-	LIGHT = 'light',
-	DARK = 'dark'
+	LIGHT = "light",
+	DARK = "dark"
 }
 
 export enum View {
-	WELCOME = 'welcome',
-	MAIN = 'main'
+	WELCOME = "welcome",
+	MAIN = "main"
 }
 
 interface AppState {
@@ -32,6 +30,8 @@ interface AppState {
 
 export const APP_ROOT_ID = "root";
 
+const appSender: RenderApplicationMsgSender = new RenderApplicationMsgSender();
+
 export class Application extends Component<any, AppState> {
 
 	constructor(props: any) {
@@ -39,31 +39,30 @@ export class Application extends Component<any, AppState> {
 		this.state = {
 			theme: Theme.LIGHT,
 			currentView: View.WELCOME,
-			displayComponentShowcase: false,
+			displayComponentShowcase: false
 		};
 		this.handleSetTheme = this.handleSetTheme.bind(this);
 		this.renderComponentShowcase = this.renderComponentShowcase.bind(this);
 		this.renderWelcomeView = this.renderWelcomeView.bind(this);
 		this.renderMainView = this.renderMainView.bind(this);
-		window.addEventListener('keyup', e => {
+		window.addEventListener("keyup", e => {
 			if (e.code === "KeyD" && (e.ctrlKey || e.metaKey)) {
 				this.setState({displayComponentShowcase: !this.state.displayComponentShowcase});
 			}
-			if (e.code === 'KeyT' && (e.ctrlKey || e.metaKey)) {
-				this.handleSetTheme(this.state.theme === Theme.LIGHT ? Theme.DARK : Theme.LIGHT)
+			if (e.code === "KeyT" && (e.ctrlKey || e.metaKey)) {
+				this.handleSetTheme(this.state.theme === Theme.LIGHT ? Theme.DARK : Theme.LIGHT);
 			}
 		}, true);
 
-		GetApplicationTheme.request(ipcRenderer)
-			.then((payload: GetApplicationTheme.ResponsePayload) => payload.theme)
+		appSender.getTheme()
 			.then((theme: "dark" | "light") => theme === "light" ? Theme.LIGHT : Theme.DARK)
 			.then((theme: Theme) => this.setState({theme: theme}));
 	}
 
 	handleSetTheme(theme: Theme) {
-		SetApplicationTheme.request(ipcRenderer, theme === Theme.DARK ? "dark" : "light").then(() => {
+		appSender.setTheme(theme === Theme.DARK ? "dark" : "light").then(() => {
 			this.setState({theme: theme});
-		})
+		});
 	}
 
 	render(): any {
@@ -71,10 +70,10 @@ export class Application extends Component<any, AppState> {
 			return this.renderComponentShowcase();
 		} else {
 			if (this.state.currentView === View.WELCOME) {
-				return this.renderWithGlobalStates(this.renderWelcomeView())
+				return this.renderWithGlobalStates(this.renderWelcomeView());
 			}
 			if (this.state.currentView === View.MAIN) {
-				return this.renderWithGlobalStates(this.renderMainView())
+				return this.renderWithGlobalStates(this.renderMainView());
 			}
 		}
 	}
@@ -87,7 +86,7 @@ export class Application extends Component<any, AppState> {
 				CollectionsStateProvider,
 				ItemSelectionStateProvider,
 				ItemsStateProvider,
-				NotificationStateProvider,
+				NotificationStateProvider
 			]}>
 				{element}
 			</Compose>
@@ -97,7 +96,7 @@ export class Application extends Component<any, AppState> {
 
 	renderComponentShowcase(): ReactElement {
 		return (
-			<div className='root-view' style={{width: '100%', height: '100%'}} id={APP_ROOT_ID}>
+			<div className="root-view" style={{width: "100%", height: "100%"}} id={APP_ROOT_ID}>
 				<ComponentShowcase
 					theme={this.state.theme}
 					onChangeTheme={(nextTheme: Theme) => this.setState({theme: nextTheme})}
@@ -110,8 +109,8 @@ export class Application extends Component<any, AppState> {
 	renderWelcomeView(): ReactElement {
 		return (
 			<div
-				className={'root-view theme-' + this.state.theme}
-				style={{width: '100%', height: '100%'}}
+				className={"root-view theme-" + this.state.theme}
+				style={{width: "100%", height: "100%"}}
 				id={APP_ROOT_ID}
 			>
 				<WelcomeView onLoadProject={() => this.setState({currentView: View.MAIN})}/>
@@ -123,8 +122,8 @@ export class Application extends Component<any, AppState> {
 	renderMainView(): ReactElement {
 		return (
 			<div
-				className={'root-view theme-' + this.state.theme}
-				style={{width: '100%', height: '100%'}}
+				className={"root-view theme-" + this.state.theme}
+				style={{width: "100%", height: "100%"}}
 				id={APP_ROOT_ID}
 			>
 				<MainView onClosed={() => this.setState({currentView: View.WELCOME})}/>

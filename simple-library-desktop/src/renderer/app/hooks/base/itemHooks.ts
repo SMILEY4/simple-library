@@ -1,11 +1,12 @@
 import {
-	fetchItemById,
-	fetchItems,
-	onImportStatusCommands,
-	requestDeleteItems,
-	requestImport,
-	requestMoveItems,
-	requestRemoveItems
+    addImportStatusListener,
+    fetchItemById,
+    fetchItems,
+    removeImportStatusListener,
+    requestDeleteItems,
+    requestImport,
+    requestMoveItems,
+    requestRemoveItems
 } from "../../common/messagingInterface";
 import {useModifyNotifications} from "./notificationHooks";
 import {genNotificationId} from "./notificationUtils";
@@ -25,8 +26,8 @@ export function useItemsState() {
 
     return {
         items: itemsState.items,
-        getItemsIds: getItemsIds,
-    }
+        getItemsIds: getItemsIds
+    };
 }
 
 
@@ -37,7 +38,7 @@ export function useItems() {
         addNotification,
         updateNotification,
         removeNotification
-    } = useModifyNotifications()
+    } = useModifyNotifications();
 
     const itemsDispatch = useItemsDispatch();
 
@@ -48,45 +49,48 @@ export function useItems() {
             .catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_FETCH_FAILED, error))
             .then((items: ItemData[]) => itemsDispatch({
                 type: ItemsActionType.SET_ITEMS,
-                payload: items,
+                payload: items
             }));
     }
 
     function clear(): void {
         itemsDispatch({
             type: ItemsActionType.SET_ITEMS,
-            payload: [],
-        })
+            payload: []
+        });
     }
 
     function remove(collectionId: number, itemIds: number[]): Promise<void> {
         return requestRemoveItems(collectionId, itemIds)
             .catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_REMOVE_FAILED, error))
-            .then(() => load(collectionId))
+            .then(() => load(collectionId));
     }
 
     function deleteItems(itemIds: number[]): Promise<void> {
         return requestDeleteItems(itemIds)
-            .catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_REMOVE_FAILED, error))
+            .catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_REMOVE_FAILED, error));
     }
 
     function moveOrCopy(srcCollectionId: number, tgtCollectionId: number, itemIds: number[], copy: boolean): Promise<void> {
         return requestMoveItems(srcCollectionId, tgtCollectionId, itemIds, copy)
-            .catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_MOVE_FAILED, error))
+            .catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_MOVE_FAILED, error));
     }
 
     function importItems(data: ImportProcessData): Promise<void> {
         const importStatusNotificationId = genNotificationId();
         addNotification(importStatusNotificationId, AppNotificationType.IMPORT_STATUS, null);
-        onImportStatusCommands((status: ImportStatus) => updateNotification(importStatusNotificationId, status));
+
+        const statusListener = (status: ImportStatus) => updateNotification(importStatusNotificationId, status);
+        addImportStatusListener(statusListener);
         return requestImport(
             data,
             (result: ImportResult) => addNotification(genNotificationId(), AppNotificationType.IMPORT_SUCCESSFUL, result),
             (result: ImportResult) => addNotification(genNotificationId(), AppNotificationType.IMPORT_FAILED, result),
-            (result: ImportResult) => addNotification(genNotificationId(), AppNotificationType.IMPORT_WITH_ERRORS, result),
+            (result: ImportResult) => addNotification(genNotificationId(), AppNotificationType.IMPORT_WITH_ERRORS, result)
         )
             .catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.IMPORT_FAILED_UNKNOWN, error))
-            .then(() => removeNotification(importStatusNotificationId));
+            .then(() => removeNotification(importStatusNotificationId))
+            .finally(() => removeImportStatusListener(statusListener));
     }
 
 
@@ -101,7 +105,7 @@ export function useItems() {
         clearItems: clear,
         removeItems: remove,
         deleteItems: deleteItems,
-		fetchItem: fetchItem
-    }
+        fetchItem: fetchItem
+    };
 
 }

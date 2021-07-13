@@ -1,30 +1,31 @@
-import { ItemDataAccess } from '../../persistence/itemDataAccess';
-import { ImportDataValidator } from './importDataValidator';
-import { ImportStepFileHash } from './importStepFileHash';
-import { ImportStepThumbnail } from './importStepThumbnail';
-import { ImportStepRename } from './importStepRename';
-import { ImportStepImportTarget } from './importStepImportTarget';
-import { ImportProcessData, ImportResult, ItemData } from '../../../common/commonModels';
-import { startAsync } from '../../../common/AsyncCommon';
-import { WindowService } from '../windowService';
-import { ImportStatusUpdateCommand } from '../../../common/messaging/messagesItems';
+import {ItemDataAccess} from "../../persistence/itemDataAccess";
+import {ImportDataValidator} from "./importDataValidator";
+import {ImportStepFileHash} from "./importStepFileHash";
+import {ImportStepThumbnail} from "./importStepThumbnail";
+import {ImportStepRename} from "./importStepRename";
+import {ImportStepImportTarget} from "./importStepImportTarget";
+import {ImportProcessData, ImportResult, ItemData} from "../../../common/commonModels";
+import {startAsync} from "../../../common/AsyncCommon";
+import {WindowService} from "../windowService";
 import {ImportStepMetadata} from "./importStepMetadata";
+import {MainItemMsgSender} from "../../../common/messagingNew/itemMsgSender";
 
 export class ImportService {
 
-    itemDataAccess: ItemDataAccess;
-    importDataValidator: ImportDataValidator;
-    importStepFileHash: ImportStepFileHash;
-    importStepThumbnail: ImportStepThumbnail;
-    importStepRename: ImportStepRename;
-    importStepImportTarget: ImportStepImportTarget;
-    importStepMetadata: ImportStepMetadata;
-    windowService: WindowService;
+    private readonly itemDataAccess: ItemDataAccess;
+    private readonly importDataValidator: ImportDataValidator;
+    private readonly importStepFileHash: ImportStepFileHash;
+    private readonly importStepThumbnail: ImportStepThumbnail;
+    private readonly importStepRename: ImportStepRename;
+    private readonly importStepImportTarget: ImportStepImportTarget;
+    private readonly importStepMetadata: ImportStepMetadata;
+    private readonly windowService: WindowService;
+    private readonly itemSender: MainItemMsgSender;
 
     /**
      * True, when an import is currently running
      */
-    importRunning: boolean = false;
+    private importRunning: boolean = false;
 
 
     constructor(itemDataAccess: ItemDataAccess,
@@ -34,7 +35,8 @@ export class ImportService {
                 importStepFileHash: ImportStepFileHash,
                 importStepThumbnail: ImportStepThumbnail,
                 importStepMetadata: ImportStepMetadata,
-                windowService: WindowService) {
+                windowService: WindowService,
+                itemSender: MainItemMsgSender) {
         this.itemDataAccess = itemDataAccess;
         this.importDataValidator = importDataValidator;
         this.importStepFileHash = importStepFileHash;
@@ -43,6 +45,7 @@ export class ImportService {
         this.importStepImportTarget = importStepImportTarget;
         this.importStepMetadata = importStepMetadata;
         this.windowService = windowService;
+        this.itemSender = itemSender;
     }
 
 
@@ -57,9 +60,9 @@ export class ImportService {
                 timestamp: Date.now(),
                 amountFiles: 0,
                 failed: true,
-                failureReason: 'Can not start import while another import is already running.',
+                failureReason: "Can not start import while another import is already running.",
                 encounteredErrors: false,
-                filesWithErrors: [],
+                filesWithErrors: []
             };
         }
         this.importRunning = true;
@@ -68,9 +71,9 @@ export class ImportService {
             timestamp: Date.now(),
             amountFiles: totalAmountFiles,
             failed: false,
-            failureReason: '',
+            failureReason: "",
             encounteredErrors: false,
-            filesWithErrors: [],
+            filesWithErrors: []
         };
         try {
             console.log("starting import-process of " + totalAmountFiles + " files.");
@@ -92,9 +95,9 @@ export class ImportService {
                         importResult.encounteredErrors = true;
                         importResult.filesWithErrors.push([currentFile, error]);
                     });
-                ImportStatusUpdateCommand.send(this.windowService.window, {
+                this.itemSender.importStatus({
                     totalAmountFiles: totalAmountFiles,
-                    completedFiles: i + 1,
+                    completedFiles: i + 1
                 });
             }
             console.log("import-process complete.");
@@ -111,7 +114,7 @@ export class ImportService {
         return {
             timestamp: Date.now(),
             sourceFilepath: filepath,
-            filepath: filepath,
+            filepath: filepath
         };
     }
 

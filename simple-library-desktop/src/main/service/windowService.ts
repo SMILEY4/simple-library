@@ -1,12 +1,12 @@
-import {app, BrowserWindow, nativeTheme} from 'electron';
-import installExtension, {REACT_DEVELOPER_TOOLS} from 'electron-devtools-installer';
+import {app, BrowserWindow, nativeTheme} from "electron";
+import installExtension, {REACT_DEVELOPER_TOOLS} from "electron-devtools-installer";
 import {ApplicationService} from "./applicationService";
 
 const isDev: boolean = !app.isPackaged;
 
 export class WindowService {
 
-	appService: ApplicationService
+	appService: ApplicationService;
 	window: BrowserWindow;
 
 	constructor(appService: ApplicationService) {
@@ -16,17 +16,19 @@ export class WindowService {
 	/**
 	 * initializes the window (trigger the application is ready)
 	 */
-	public whenReady() {
+	public whenReady(): Promise<BrowserWindow> {
 		if (isDev) {
-			installExtension(REACT_DEVELOPER_TOOLS, {
+			return installExtension(REACT_DEVELOPER_TOOLS, {
 				loadExtensionOptions: {allowFileAccess: true},
 				forceDownload: false
 			})
 				.then((name) => console.log(`Added Extension:  ${name}`))
-				.catch((err) => console.log('An error occurred when adding extension: ', err))
+				.catch((err) => console.log("An error occurred when adding extension: ", err))
 				.then(() => this.createWindow())
+				.then(() => this.window);
 		} else {
 			this.createWindow();
+			return Promise.resolve(this.window);
 		}
 	}
 
@@ -35,7 +37,7 @@ export class WindowService {
 	 * Quits the application (trigger when all windows are closed)
 	 */
 	public allWindowsClosed() {
-		if (process.platform !== 'darwin') {
+		if (process.platform !== "darwin") {
 			app.quit();
 		}
 	}
@@ -88,15 +90,15 @@ export class WindowService {
 				enableRemoteModule: true,
 				webSecurity: false,
 				enableBlinkFeatures: "CSSColorSchemeUARendering",
-				devTools: true, // isDev,
-			},
+				devTools: true // isDev,
+			}
 		});
 
-		this.setApplicationTheme(this.appService.getApplicationTheme())
+		this.setApplicationTheme(this.appService.getApplicationTheme());
 
 		if (isDev) {
 			this.window.setAlwaysOnTop(true);
-			this.window.loadURL('http://localhost:8080?worker=false');
+			this.window.loadURL("http://localhost:8080?worker=false");
 			this.window.webContents.on("did-frame-finish-load", () => {
 				this.window.webContents.once("devtools-opened", () => {
 					this.window.focus();
@@ -104,13 +106,13 @@ export class WindowService {
 				this.window.webContents.openDevTools();
 			});
 		} else {
-			this.window.loadFile('./.webpack/renderer/index.html');
+			this.window.loadFile("./.webpack/renderer/index.html");
 		}
 	}
 
 
 	public setApplicationTheme(theme: "dark" | "light"): void {
-		nativeTheme.themeSource = theme
+		nativeTheme.themeSource = theme;
 	}
 
 }
