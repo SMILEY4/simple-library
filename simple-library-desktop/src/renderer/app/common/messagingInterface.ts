@@ -8,13 +8,13 @@ import {
     LastOpenedLibraryEntry,
     MetadataEntry
 } from "../../../common/commonModels";
-import {RenderApplicationMsgSender} from "../../../common/messagingNew/applicationMsgSender";
-import {RenderCollectionMsgSender} from "../../../common/messagingNew/collectionMsgSender";
-import {RenderGroupMsgSender} from "../../../common/messagingNew/groupMsgSender";
-import {RenderItemMsgSender} from "../../../common/messagingNew/itemMsgSender";
-import {RenderLibraryMsgSender} from "../../../common/messagingNew/libraryMsgSender";
-import {GetExiftoolDataPayload} from "../../../common/messagingNew/applicationMsgHandler";
-import {RenderItemMsgHandler} from "../../../common/messagingNew/itemMsgHandler";
+import {RenderApplicationMsgSender} from "../../../common/messaging/applicationMsgSender";
+import {RenderCollectionMsgSender} from "../../../common/messaging/collectionMsgSender";
+import {RenderGroupMsgSender} from "../../../common/messaging/groupMsgSender";
+import {RenderItemMsgSender} from "../../../common/messaging/itemMsgSender";
+import {RenderLibraryMsgSender} from "../../../common/messaging/libraryMsgSender";
+import {GetExiftoolDataPayload} from "../../../common/messaging/applicationMsgHandler";
+import {RenderItemMsgHandler} from "./renderItemMsgHandler";
 
 const appSender: RenderApplicationMsgSender = new RenderApplicationMsgSender().init();
 const collectionSender: RenderCollectionMsgSender = new RenderCollectionMsgSender().init();
@@ -79,10 +79,12 @@ export function setItemMetadata(itemId: number, entryKey: string, value: string)
     return itemSender.setMetadata(itemId, entryKey, value);
 }
 
-export function requestImport(data: ImportProcessData,
-                              callbackSuccess: (result: ImportResult) => void,
-                              callbackFailed: (result: ImportResult) => void,
-                              callbackWithErrors: (result: ImportResult) => void): Promise<ImportResult> {
+export function requestImport(
+    data: ImportProcessData,
+    callbackSuccess: (result: ImportResult) => void,
+    callbackFailed: (result: ImportResult) => void,
+    callbackWithErrors: (result: ImportResult) => void
+): Promise<ImportResult> {
     return itemSender.importItems(data)
         .then((result: ImportResult) => {
             if (result.failed) {

@@ -8,7 +8,7 @@ import {ImportProcessData, ImportResult, ItemData} from "../../../common/commonM
 import {startAsync} from "../../../common/AsyncCommon";
 import {WindowService} from "../windowService";
 import {ImportStepMetadata} from "./importStepMetadata";
-import {MainItemMsgSender} from "../../../common/messagingNew/itemMsgSender";
+import {MainItemMsgSender} from "../../../common/messaging/itemMsgSender";
 
 export class ImportService {
 

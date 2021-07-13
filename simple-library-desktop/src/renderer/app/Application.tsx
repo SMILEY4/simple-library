@@ -10,7 +10,7 @@ import {ItemSelectionStateProvider} from "./store/itemSelectionState";
 import {ItemsStateProvider} from "./store/itemsState";
 import {CollectionSidebarStateProvider} from "./store/collectionSidebarState";
 import {CollectionActiveStateProvider} from "./store/collectionActiveState";
-import {RenderApplicationMsgSender} from "../../common/messagingNew/applicationMsgSender";
+import {RenderApplicationMsgSender} from "../../common/messaging/applicationMsgSender";
 
 export enum Theme {
 	LIGHT = "light",

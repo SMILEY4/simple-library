@@ -1,7 +1,6 @@
 import {AbstractMsgHandler} from "./core/abstractMsgHandler";
-import {IpcWrapper, mainIpcWrapper} from "./core/msgUtils";
+import {IpcWrapper} from "./core/msgUtils";
 import {Group} from "../commonModels";
-import {GroupService} from "../../main/service/groupService";
 
 export module GroupMsgConstants {
 	export const PREFIX: string = "group";
@@ -13,7 +12,7 @@ export module GroupMsgConstants {
 
 }
 
-abstract class AbstractGroupMsgHandler extends AbstractMsgHandler {
+export abstract class AbstractGroupMsgHandler extends AbstractMsgHandler {
 
 	protected constructor(ipcWrapper: IpcWrapper) {
 		super(GroupMsgConstants.PREFIX, ipcWrapper);
@@ -51,49 +50,3 @@ abstract class AbstractGroupMsgHandler extends AbstractMsgHandler {
 
 }
 
-
-export class MainGroupMsgHandler extends AbstractGroupMsgHandler {
-
-	private readonly groupService: GroupService;
-
-	constructor(groupService: GroupService) {
-		super(mainIpcWrapper());
-		this.groupService = groupService;
-	}
-
-	protected getAll(
-		includeCollections: boolean,
-		includeItemCount: boolean
-	): Promise<Group[]> {
-		return this.groupService.getGroups(includeCollections, includeItemCount);
-	}
-
-	protected createGroup(
-		name: string,
-		parentGroupId: number | null
-	): Promise<Group> {
-		return this.groupService.createGroup(name, parentGroupId);
-	}
-
-	protected deleteGroup(
-		groupId: number,
-		deleteChildren: boolean
-	): Promise<void> {
-		return this.groupService.deleteGroup(groupId, deleteChildren);
-	}
-
-	protected renameGroup(
-		groupId: number,
-		newName: string
-	): Promise<void> {
-		return this.groupService.renameGroup(groupId, newName);
-	}
-
-	protected moveGroup(
-		groupId: number,
-		targetGroupId: number | null
-	): Promise<void> {
-		return this.groupService.moveGroup(groupId, targetGroupId);
-	}
-
-}
