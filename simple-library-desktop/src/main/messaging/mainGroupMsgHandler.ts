@@ -1,50 +1,57 @@
 import {GroupService} from "../service/groupService";
 import {mainIpcWrapper} from "../../common/messaging/core/msgUtils";
-import {Group} from "../../common/commonModels";
-import {AbstractGroupMsgHandler} from "../../common/messaging/groupMsgHandler";
+import {
+	GroupCreateChannel,
+	GroupDeleteChannel,
+	GroupMoveChannel,
+	GroupRenameChannel,
+	GroupsGetAllChannel
+} from "../../common/messaging/channels/channels";
 
-export class MainGroupMsgHandler extends AbstractGroupMsgHandler {
+export class MainGroupMsgHandler {
 
 	private readonly groupService: GroupService;
 
+	private readonly channelGetAll = new GroupsGetAllChannel(mainIpcWrapper());
+	private readonly channelCreate = new GroupCreateChannel(mainIpcWrapper());
+	private readonly channelDelete = new GroupDeleteChannel(mainIpcWrapper());
+	private readonly channelRename = new GroupRenameChannel(mainIpcWrapper());
+	private readonly channelMove = new GroupMoveChannel(mainIpcWrapper());
+
+
 	constructor(groupService: GroupService) {
-		super(mainIpcWrapper());
 		this.groupService = groupService;
+
+		this.channelGetAll.on((payload) => {
+			return this.groupService.getGroups(payload.includeCollections, payload.includeItemCount);
+		});
+
+		this.channelCreate.on((payload) => {
+			return this.groupService.createGroup(payload.name, payload.parentGroupId);
+		});
+
+		this.channelDelete.on((payload) => {
+			return this.groupService.deleteGroup(payload.groupId, payload.deleteChildren);
+		});
+
+		this.channelRename.on((payload) => {
+			return this.groupService.renameGroup(payload.groupId, payload.newName);
+		});
+
+		this.channelMove.on((payload) => {
+			return this.groupService.moveGroup(payload.groupId, payload.targetGroupId);
+		});
+
 	}
 
-	protected getAll(
-		includeCollections: boolean,
-		includeItemCount: boolean
-	): Promise<Group[]> {
-		return this.groupService.getGroups(includeCollections, includeItemCount);
-	}
 
-	protected createGroup(
-		name: string,
-		parentGroupId: number | null
-	): Promise<Group> {
-		return this.groupService.createGroup(name, parentGroupId);
-	}
-
-	protected deleteGroup(
-		groupId: number,
-		deleteChildren: boolean
-	): Promise<void> {
-		return this.groupService.deleteGroup(groupId, deleteChildren);
-	}
-
-	protected renameGroup(
-		groupId: number,
-		newName: string
-	): Promise<void> {
-		return this.groupService.renameGroup(groupId, newName);
-	}
-
-	protected moveGroup(
-		groupId: number,
-		targetGroupId: number | null
-	): Promise<void> {
-		return this.groupService.moveGroup(groupId, targetGroupId);
+	public init(): MainGroupMsgHandler {
+		this.channelGetAll.init();
+		this.channelCreate.init();
+		this.channelDelete.init();
+		this.channelRename.init();
+		this.channelMove.init();
+		return this;
 	}
 
 }

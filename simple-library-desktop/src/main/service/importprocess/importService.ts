@@ -8,7 +8,8 @@ import {ImportProcessData, ImportResult, ItemData} from "../../../common/commonM
 import {startAsync} from "../../../common/AsyncCommon";
 import {WindowService} from "../windowService";
 import {ImportStepMetadata} from "./importStepMetadata";
-import {MainItemMsgSender} from "../../../common/messaging/itemMsgSender";
+import {ItemsImportStatusChannel} from "../../../common/messaging/channels/channels";
+import {mainIpcWrapper, rendererIpcWrapper} from "../../../common/messaging/core/msgUtils";
 
 export class ImportService {
 
@@ -20,7 +21,8 @@ export class ImportService {
     private readonly importStepImportTarget: ImportStepImportTarget;
     private readonly importStepMetadata: ImportStepMetadata;
     private readonly windowService: WindowService;
-    private readonly itemSender: MainItemMsgSender;
+    private readonly channelItemsImportStatus: ItemsImportStatusChannel;
+
 
     /**
      * True, when an import is currently running
@@ -36,7 +38,7 @@ export class ImportService {
                 importStepThumbnail: ImportStepThumbnail,
                 importStepMetadata: ImportStepMetadata,
                 windowService: WindowService,
-                itemSender: MainItemMsgSender) {
+                channelItemsImportStatus: ItemsImportStatusChannel) {
         this.itemDataAccess = itemDataAccess;
         this.importDataValidator = importDataValidator;
         this.importStepFileHash = importStepFileHash;
@@ -45,7 +47,7 @@ export class ImportService {
         this.importStepImportTarget = importStepImportTarget;
         this.importStepMetadata = importStepMetadata;
         this.windowService = windowService;
-        this.itemSender = itemSender;
+        this.channelItemsImportStatus = channelItemsImportStatus;
     }
 
 
@@ -95,7 +97,7 @@ export class ImportService {
                         importResult.encounteredErrors = true;
                         importResult.filesWithErrors.push([currentFile, error]);
                     });
-                this.itemSender.importStatus({
+                this.channelItemsImportStatus.sendAndForget({
                     totalAmountFiles: totalAmountFiles,
                     completedFiles: i + 1
                 });

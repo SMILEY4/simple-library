@@ -1,5 +1,19 @@
 import {BrowserWindow, ipcMain} from "electron";
 
+export const ERROR_RESPONSE_MARKER: string = "error-response";
+
+export interface ErrorResponse {
+	status: string,
+	body?: any,
+}
+
+export function errorResponse(body?: any): ErrorResponse {
+	return {
+		status: ERROR_RESPONSE_MARKER,
+		body: body,
+	};
+}
+
 export function asChannel(prefix: string, id: string): string {
 	return prefix + "." + id;
 }

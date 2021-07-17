@@ -19,24 +19,24 @@ import {GroupService} from "./service/groupService";
 import {GroupDataAccess} from "./persistence/groupDataAccess";
 import {ApplicationService} from "./service/applicationService";
 import {ImportStepMetadata} from "./service/importprocess/importStepMetadata";
-import {MainItemMsgSender} from "../common/messaging/itemMsgSender";
 import {mainIpcWrapper} from "../common/messaging/core/msgUtils";
 import {MainApplicationMsgHandler} from "./messaging/mainApplicationMsgHandler";
 import {MainLibraryMsgHandler} from "./messaging/mainLibraryMsgHandler";
 import {MainItemMsgHandler} from "./messaging/mainItemMsgHandler";
 import {MainCollectionMsgHandler} from "./messaging/mainCollectionMsgHandler";
 import {MainGroupMsgHandler} from "./messaging/mainGroupMsgHandler";
+import {WorkerHandler} from "./workerHandler";
+import {ItemsImportStatusChannel} from "../common/messaging/channels/channels";
 
 const log = require("electron-log");
 Object.assign(console, log.functions);
-
-console.log("log filepath:", log.transports.file.file);
+console.log("log filepath (main):", log.transports.file.getFile().path);
 
 // utils
 const fsWrapper: FileSystemWrapper = new FileSystemWrapper();
 
 // msg sender
-const itemMsgSender: MainItemMsgSender = new MainItemMsgSender(null);
+const channelImportStatus: ItemsImportStatusChannel = new ItemsImportStatusChannel(null);
 
 // data access
 const configDataAccess: ConfigDataAccess = new ConfigDataAccess();
@@ -60,7 +60,7 @@ const itemService: ItemService = new ItemService(
 		new ImportStepThumbnail(),
 		new ImportStepMetadata(configDataAccess),
 		windowService,
-		itemMsgSender
+		channelImportStatus
 	),
 	itemDataAccess,
 	collectionDataAccess
@@ -75,41 +75,60 @@ new MainItemMsgHandler(itemService).init();
 new MainCollectionMsgHandler(collectionService).init();
 new MainGroupMsgHandler(groupService).init();
 
-// let workerWindow: BrowserWindow | null = null;
+// worker
+const workerHandler: WorkerHandler = new WorkerHandler();
 
-app.whenReady()
-	.then(() => {
-		windowService.whenReady()
-		.then((window: BrowserWindow) => {
-			itemMsgSender.setIpcWrapper(mainIpcWrapper(window))
-			itemMsgSender.init();
-		})
-		//
-		// workerWindow = new BrowserWindow({
-		// 	show: true,
-		// 	width: 200,
-		// 	height: 200,
-		// 	webPreferences: {
-		// 		nodeIntegration: true,
-		// 		devTools: true
-		// 	},
-		// })
-		// workerWindow.webContents.openDevTools();
-		// workerWindow.loadURL('http://localhost:8080?worker=true');
-		// console.log("opened worker window")
-		//
-		// pingSender = new MainPingMsgSender(workerWindow)
-		// pingHandler.init();
-		//
-		// workerWindow.webContents.once("did-finish-load", () => {
-		//     console.log("MAIN PING RENDER", "hello from main")
-		// 	pingSender.ping("hello from main")
-		// 		.then((response: any) => console.log("RESPONSE FROM RENDER:", response))
-		// 		.catch((err: any) => console.log("ERROR FROM RENDER:", err))
-		// })
+
+// setup
+onReady(() => {
+	console.debug("ready -> create windows + background-workers");
+	windowService.setup().then((window: BrowserWindow) => {
+		channelImportStatus.setIpcWrapper(mainIpcWrapper(window));
+		channelImportStatus.init();
+	});
+	workerHandler.setupWorker(true);
+
+	onActivate(() => {
+		if (BrowserWindow.getAllWindows().length === 0) {
+			console.debug("re-activated -> recreate windows + workers");
+			windowService.setup().then((window: BrowserWindow) => {
+				channelImportStatus.setIpcWrapper(mainIpcWrapper(window));
+				channelImportStatus.init();
+			});
+			workerHandler.setupWorker(true);
+		}
 	});
 
-app.on("window-all-closed", () => windowService.allWindowsClosed());
-app.on("activate", () => windowService.activate());
+});
+
+onMainWindowsClosed(() => {
+	if (process.platform !== "darwin") {
+		console.debug("main window closed -> quit");
+		app.quit();
+	}
+});
+
+onAllWindowsClosed(() => {
+	if (process.platform !== "darwin") {
+		console.debug("all windows closed -> quit");
+		app.quit();
+	}
+});
 
 
+// utils
+function onReady(callback: () => void): void {
+	app.whenReady().then(() => callback());
+}
+
+function onActivate(callback: () => void): void {
+	app.on("activate", () => callback());
+}
+
+function onAllWindowsClosed(callback: () => void): void {
+	app.on("window-all-closed", () => callback());
+}
+
+function onMainWindowsClosed(callback: () => void): void {
+	windowService.onWindowClosed(() => callback());
+}

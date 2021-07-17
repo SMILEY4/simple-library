@@ -1,64 +1,72 @@
 import {ItemService} from "../service/ItemService";
 import {mainIpcWrapper} from "../../common/messaging/core/msgUtils";
-import {ImportProcessData, ImportResult, ImportStatus, ItemData, MetadataEntry} from "../../common/commonModels";
-import {AbstractItemMsgHandler} from "../../common/messaging/itemMsgHandler";
+import {ImportProcessData} from "../../common/commonModels";
+import {
+	ItemGetByIdChannel,
+	ItemGetMetadataChannel,
+	ItemsDeleteChannel,
+	ItemSetMetadataChannel,
+	ItemsGetByCollectionChannel,
+	ItemsImportChannel,
+	ItemsOpenExternalChannel
+} from "../../common/messaging/channels/channels";
 
-export class MainItemMsgHandler extends AbstractItemMsgHandler {
+export class MainItemMsgHandler {
 
 	private readonly itemService: ItemService;
 
+	private readonly channelGetByCollection = new ItemsGetByCollectionChannel(mainIpcWrapper());
+	private readonly channelGetById = new ItemGetByIdChannel(mainIpcWrapper());
+	private readonly channelDelete = new ItemsDeleteChannel(mainIpcWrapper());
+	private readonly channelImport = new ItemsImportChannel(mainIpcWrapper());
+	private readonly channelGetMetadata = new ItemGetMetadataChannel(mainIpcWrapper());
+	private readonly channelSetMetadata = new ItemSetMetadataChannel(mainIpcWrapper());
+	private readonly channelOpenExternal = new ItemsOpenExternalChannel((mainIpcWrapper()));
+
+
 	constructor(itemService: ItemService) {
-		super(mainIpcWrapper());
 		this.itemService = itemService;
+
+		this.channelGetByCollection.on((payload) => {
+			return this.itemService.getAllItems(payload.collectionId, payload.itemAttributeKeys);
+		});
+
+		this.channelGetById.on((itemId: number) => {
+			return this.itemService.getItemById(itemId);
+		});
+
+		this.channelDelete.on((itemIds: number[]) => {
+			return this.itemService.deleteItems(itemIds);
+		});
+
+		this.channelImport.on((importData: ImportProcessData) => {
+			return this.itemService.importFiles(importData);
+		});
+
+		this.channelGetMetadata.on((itemId: number) => {
+			return this.itemService.getItemMetadata(itemId);
+		});
+
+		this.channelSetMetadata.on((payload) => {
+			return this.itemService.setItemMetadata(payload.itemId, payload.entryKey, payload.newValue);
+		});
+
+		this.channelOpenExternal.on((itemIds: number[]) => {
+			return this.itemService.openFilesExternal(itemIds);
+		});
+
 	}
 
-	protected get(
-		collectionId: number,
-		itemAttributeKeys: string[]
-	): Promise<ItemData[]> {
-		return this.itemService.getAllItems(collectionId, itemAttributeKeys);
-	}
 
-	protected getById(
-		itemId: number
-	): Promise<ItemData | null> {
-		return this.itemService.getItemById(itemId);
-	}
-
-	protected deleteItems(
-		itemIds: number[]
-	): Promise<void> {
-		return this.itemService.deleteItems(itemIds);
-	}
-
-	protected importItems(
-		data: ImportProcessData
-	): Promise<ImportResult> {
-		return this.itemService.importFiles(data);
-	}
-
-	protected importStatus(status: ImportStatus): void {
-		throw "handle import status not implemented on main-process";
-	}
-
-	protected getMetadata(
-		itemId: number
-	): Promise<MetadataEntry[]> {
-		return this.itemService.getItemMetadata(itemId);
-	}
-
-	protected setMetadata(
-		itemId: number,
-		entryKey: string,
-		newValue: string
-	): Promise<MetadataEntry> {
-		return this.itemService.setItemMetadata(itemId, entryKey, newValue);
-	}
-
-	protected openExternal(
-		itemIds: number[]
-	): Promise<void> {
-		return this.itemService.openFilesExternal(itemIds);
+	public init(): MainItemMsgHandler {
+		this.channelGetByCollection.init();
+		this.channelGetById.init();
+		this.channelDelete.init();
+		this.channelImport.init();
+		this.channelGetMetadata.init();
+		this.channelSetMetadata.init();
+		this.channelOpenExternal.init();
+		return this;
 	}
 
 }

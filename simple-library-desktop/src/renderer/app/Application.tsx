@@ -10,7 +10,7 @@ import {ItemSelectionStateProvider} from "./store/itemSelectionState";
 import {ItemsStateProvider} from "./store/itemsState";
 import {CollectionSidebarStateProvider} from "./store/collectionSidebarState";
 import {CollectionActiveStateProvider} from "./store/collectionActiveState";
-import {RenderApplicationMsgSender} from "../../common/messaging/applicationMsgSender";
+import {getTheme, setTheme} from "./common/messagingInterface";
 
 export enum Theme {
 	LIGHT = "light",
@@ -29,8 +29,6 @@ interface AppState {
 }
 
 export const APP_ROOT_ID = "root";
-
-const appSender: RenderApplicationMsgSender = new RenderApplicationMsgSender();
 
 export class Application extends Component<any, AppState> {
 
@@ -54,13 +52,13 @@ export class Application extends Component<any, AppState> {
 			}
 		}, true);
 
-		appSender.getTheme()
+		getTheme()
 			.then((theme: "dark" | "light") => theme === "light" ? Theme.LIGHT : Theme.DARK)
 			.then((theme: Theme) => this.setState({theme: theme}));
 	}
 
 	handleSetTheme(theme: Theme) {
-		appSender.setTheme(theme === Theme.DARK ? "dark" : "light").then(() => {
+		setTheme(theme === Theme.DARK ? "dark" : "light").then(() => {
 			this.setState({theme: theme});
 		});
 	}

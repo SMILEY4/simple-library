@@ -6,8 +6,10 @@ const isDev: boolean = !app.isPackaged;
 
 export class WindowService {
 
-	appService: ApplicationService;
-	window: BrowserWindow;
+	private readonly appService: ApplicationService;
+	private window: BrowserWindow;
+	private windowCloseListener: () => void | null;
+
 
 	constructor(appService: ApplicationService) {
 		this.appService = appService;
@@ -16,7 +18,7 @@ export class WindowService {
 	/**
 	 * initializes the window (trigger the application is ready)
 	 */
-	public whenReady(): Promise<BrowserWindow> {
+	public setup(): Promise<BrowserWindow> {
 		if (isDev) {
 			return installExtension(REACT_DEVELOPER_TOOLS, {
 				loadExtensionOptions: {allowFileAccess: true},
@@ -31,27 +33,6 @@ export class WindowService {
 			return Promise.resolve(this.window);
 		}
 	}
-
-
-	/**
-	 * Quits the application (trigger when all windows are closed)
-	 */
-	public allWindowsClosed() {
-		if (process.platform !== "darwin") {
-			app.quit();
-		}
-	}
-
-
-	/**
-	 * Re-initializes the window (trigger on activate)
-	 */
-	public activate() {
-		if (BrowserWindow.getAllWindows().length === 0) {
-			this.createWindow();
-		}
-	}
-
 
 	/**
 	 * Switch to the smaller window setup e.g. of the welcome screen
@@ -98,7 +79,7 @@ export class WindowService {
 
 		if (isDev) {
 			this.window.setAlwaysOnTop(true);
-			this.window.loadURL("http://localhost:8080?worker=false");
+			this.window.loadURL("http://localhost:8080");
 			this.window.webContents.on("did-frame-finish-load", () => {
 				this.window.webContents.once("devtools-opened", () => {
 					this.window.focus();
@@ -108,11 +89,20 @@ export class WindowService {
 		} else {
 			this.window.loadFile("./.webpack/renderer/index.html");
 		}
-	}
 
+		this.window.on("closed", () => {
+			this.windowCloseListener && this.windowCloseListener();
+			this.window = null;
+		});
+
+	}
 
 	public setApplicationTheme(theme: "dark" | "light"): void {
 		nativeTheme.themeSource = theme;
+	}
+
+	public onWindowClosed(callback: () => void): void {
+		this.windowCloseListener = callback;
 	}
 
 }
