@@ -105,4 +105,8 @@ export class WindowService {
 		this.windowCloseListener = callback;
 	}
 
+	public getMainWindow(): BrowserWindow {
+		return this.window;
+	}
+
 }

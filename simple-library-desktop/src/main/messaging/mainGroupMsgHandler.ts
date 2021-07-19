@@ -44,14 +44,4 @@ export class MainGroupMsgHandler {
 
 	}
 
-
-	public init(): MainGroupMsgHandler {
-		this.channelGetAll.init();
-		this.channelCreate.init();
-		this.channelDelete.init();
-		this.channelRename.init();
-		this.channelMove.init();
-		return this;
-	}
-
 }

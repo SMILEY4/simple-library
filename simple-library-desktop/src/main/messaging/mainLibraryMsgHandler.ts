@@ -55,15 +55,4 @@ export class MainLibraryMsgHandler {
 
 	}
 
-
-	public init(): MainLibraryMsgHandler {
-		this.channelGetLastOpened.init();
-		this.channelCreate.init();
-		this.channelOpen.init();
-		this.channelClose.init();
-		this.channelGetMetadata.init();
-		return this;
-	}
-
-
 }

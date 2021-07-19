@@ -26,26 +26,26 @@ export class ConfigOpenChannel extends Channel<void, void> {
 
 export class ConfigGetExiftoolChannel extends Channel<void, GetExiftoolDataPayload> {
 	constructor(ipcWrapper: IpcWrapper) {
-		super("config.exiftool.get", ipcWrapper);
+		super("config.exiftool.get", ipcWrapper, null);
 	}
 }
 
 export class ConfigGetThemeChannel extends Channel<void, "dark" | "light"> {
 	constructor(ipcWrapper: IpcWrapper) {
-		super("config.theme.get", ipcWrapper);
+		super("config.theme.get", ipcWrapper, null);
 	}
 }
 
 export class ConfigSetThemeChannel extends Channel<"dark" | "light", void> {
 	constructor(ipcWrapper: IpcWrapper) {
-		super("config.theme.set", ipcWrapper);
+		super("config.theme.set", ipcWrapper, null);
 	}
 }
 
 
 export class CollectionsGetAllChannel extends Channel<boolean, Collection[]> {
 	constructor(ipcWrapper: IpcWrapper) {
-		super("collection.all.get", ipcWrapper);
+		super("collection.all.get", ipcWrapper, null);
 	}
 }
 
@@ -56,13 +56,13 @@ export class CollectionCreateChannel extends Channel<{
 	smartQuery: string | null
 }, Collection> {
 	constructor(ipcWrapper: IpcWrapper) {
-		super("collection.create", ipcWrapper);
+		super("collection.create", ipcWrapper, null);
 	}
 }
 
 export class CollectionDeleteChannel extends Channel<number, void> {
 	constructor(ipcWrapper: IpcWrapper) {
-		super("collection.delete", ipcWrapper);
+		super("collection.delete", ipcWrapper, null);
 	}
 }
 
@@ -72,7 +72,7 @@ export class CollectionEditChannel extends Channel<{
 	newSmartQuery: string
 }, void> {
 	constructor(ipcWrapper: IpcWrapper) {
-		super("collection.edit", ipcWrapper);
+		super("collection.edit", ipcWrapper, null);
 	}
 }
 
@@ -81,7 +81,7 @@ export class CollectionMoveChannel extends Channel<{
 	targetGroupId: number | null
 }, void> {
 	constructor(ipcWrapper: IpcWrapper) {
-		super("collection.move", ipcWrapper);
+		super("collection.move", ipcWrapper, null);
 	}
 }
 
@@ -92,7 +92,7 @@ export class CollectionMoveItemsChannel extends Channel<{
 	copy: boolean
 }, void> {
 	constructor(ipcWrapper: IpcWrapper) {
-		super("collection.items.move", ipcWrapper);
+		super("collection.items.move", ipcWrapper, null);
 	}
 }
 
@@ -101,7 +101,7 @@ export class CollectionRemoveItemsChannel extends Channel<{
 	itemIds: number[]
 }, void> {
 	constructor(ipcWrapper: IpcWrapper) {
-		super("collection.items.remove", ipcWrapper);
+		super("collection.items.remove", ipcWrapper, null);
 	}
 }
 
@@ -111,7 +111,7 @@ export class GroupsGetAllChannel extends Channel<{
 	includeItemCount: boolean
 }, Group[]> {
 	constructor(ipcWrapper: IpcWrapper) {
-		super("group.all.get", ipcWrapper);
+		super("group.all.get", ipcWrapper, null);
 	}
 }
 
@@ -120,7 +120,7 @@ export class GroupCreateChannel extends Channel<{
 	parentGroupId: number | null
 }, Group> {
 	constructor(ipcWrapper: IpcWrapper) {
-		super("group.create", ipcWrapper);
+		super("group.create", ipcWrapper, null);
 	}
 }
 
@@ -129,7 +129,7 @@ export class GroupDeleteChannel extends Channel<{
 	deleteChildren: boolean
 }, void> {
 	constructor(ipcWrapper: IpcWrapper) {
-		super("group.delete", ipcWrapper);
+		super("group.delete", ipcWrapper, null);
 	}
 }
 
@@ -138,7 +138,7 @@ export class GroupRenameChannel extends Channel<{
 	newName: string
 }, void> {
 	constructor(ipcWrapper: IpcWrapper) {
-		super("group.rename", ipcWrapper);
+		super("group.rename", ipcWrapper, null);
 	}
 }
 
@@ -147,7 +147,7 @@ export class GroupMoveChannel extends Channel<{
 	targetGroupId: number | null
 }, void> {
 	constructor(ipcWrapper: IpcWrapper) {
-		super("group.move", ipcWrapper);
+		super("group.move", ipcWrapper, null);
 	}
 }
 
@@ -169,25 +169,25 @@ export class ItemGetByIdChannel extends Channel<number, ItemData | null> {
 
 export class ItemsDeleteChannel extends Channel<number[], void> {
 	constructor(ipcWrapper: IpcWrapper) {
-		super("item.delete", ipcWrapper);
+		super("item.delete", ipcWrapper, null);
 	}
 }
 
 export class ItemsImportChannel extends Channel<ImportProcessData, ImportResult> {
 	constructor(ipcWrapper: IpcWrapper) {
-		super("item.import", ipcWrapper);
+		super("item.import", ipcWrapper, null);
 	}
 }
 
 export class ItemsImportStatusChannel extends Channel<ImportStatus, void> {
 	constructor(ipcWrapper: IpcWrapper) {
-		super("item.import.status", ipcWrapper);
+		super("item.import.status", ipcWrapper, null);
 	}
 }
 
 export class ItemGetMetadataChannel extends Channel<number, MetadataEntry[]> {
 	constructor(ipcWrapper: IpcWrapper) {
-		super("item.metadata.get", ipcWrapper);
+		super("item.metadata.get", ipcWrapper, null);
 	}
 }
 
@@ -197,20 +197,20 @@ export class ItemSetMetadataChannel extends Channel<{
 	newValue: string
 }, MetadataEntry> {
 	constructor(ipcWrapper: IpcWrapper) {
-		super("item.metadata.set", ipcWrapper);
+		super("item.metadata.set", ipcWrapper, null);
 	}
 }
 
 export class ItemsOpenExternalChannel extends Channel<number[], void> {
 	constructor(ipcWrapper: IpcWrapper) {
-		super("item.open-external", ipcWrapper);
+		super("item.open-external", ipcWrapper, null);
 	}
 }
 
 
 export class LibrariesGetLastOpenedChannel extends Channel<void, LastOpenedLibraryEntry[]> {
 	constructor(ipcWrapper: IpcWrapper) {
-		super("library.last-opened.get", ipcWrapper);
+		super("library.last-opened.get", ipcWrapper, null);
 	}
 }
 
@@ -219,24 +219,24 @@ export class LibraryCreateChannel extends Channel<{
 	name: string
 }, void> {
 	constructor(ipcWrapper: IpcWrapper) {
-		super("library.create", ipcWrapper);
+		super("library.create", ipcWrapper, null);
 	}
 }
 
 export class LibraryOpenChannel extends Channel<string, void> {
 	constructor(ipcWrapper: IpcWrapper) {
-		super("library.open", ipcWrapper);
+		super("library.open", ipcWrapper, null);
 	}
 }
 
 export class LibraryCloseChannel extends Channel<void, void> {
 	constructor(ipcWrapper: IpcWrapper) {
-		super("library.close", ipcWrapper);
+		super("library.close", ipcWrapper, null);
 	}
 }
 
 export class LibraryGetMetadataChannel extends Channel<void, LibraryMetadata> {
 	constructor(ipcWrapper: IpcWrapper) {
-		super("library.metadata.get", ipcWrapper);
+		super("library.metadata.get", ipcWrapper, null);
 	}
 }

@@ -57,16 +57,4 @@ export class MainItemMsgHandler {
 
 	}
 
-
-	public init(): MainItemMsgHandler {
-		this.channelGetByCollection.init();
-		this.channelGetById.init();
-		this.channelDelete.init();
-		this.channelImport.init();
-		this.channelGetMetadata.init();
-		this.channelSetMetadata.init();
-		this.channelOpenExternal.init();
-		return this;
-	}
-
 }

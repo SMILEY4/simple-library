@@ -61,16 +61,4 @@ export class MainCollectionMsgHandler {
 
 	}
 
-
-	public init(): MainCollectionMsgHandler {
-		this.channelGetAll.init();
-		this.channelCreate.init();
-		this.channelDelete.init();
-		this.channelEdit.init();
-		this.channelMove.init();
-		this.channelMoveItems.init();
-		this.channelRemoveItems.init();
-		return this;
-	}
-
 }

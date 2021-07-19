@@ -1,52 +1,75 @@
-import {LastOpenedLibraryEntry} from "../../common/commonModels";
 import ElectronStore from "electron-store";
 
 const Store = require("electron-store");
 
-export class ConfigAccess {
+export module ConfigKey {
+	export const LAST_OPENED: string = "lastOpened";
+	export const THEME: string = "theme";
+	export const EXIFTOOL_LOCATION: string = "exiftool";
+}
 
-	private readonly KEY_LAST_OPENED: string = "lastOpened";
-	private readonly KEY_THEME: string = "theme";
-	private readonly KEY_EXIFTOOL_LOCATION: string = "exiftool";
+
+export class ConfigAccess {
 
 	private readonly store: ElectronStore;
 
-
 	constructor() {
 		this.store = new Store();
-		if (!this.store.has(this.KEY_LAST_OPENED)) {
-			this.store.set(this.KEY_LAST_OPENED, []);
+		if (!this.store.has(ConfigKey.LAST_OPENED)) {
+			this.store.set(ConfigKey.LAST_OPENED, []);
 		}
-		if (!this.store.has(this.KEY_THEME)) {
-			this.store.set(this.KEY_THEME, "dark");
+		if (!this.store.has(ConfigKey.THEME)) {
+			this.store.set(ConfigKey.THEME, "dark");
 		}
-		if (!this.store.has(this.KEY_EXIFTOOL_LOCATION)) {
-			this.store.set(this.KEY_EXIFTOOL_LOCATION, "");
+		if (!this.store.has(ConfigKey.EXIFTOOL_LOCATION)) {
+			this.store.set(ConfigKey.EXIFTOOL_LOCATION, "");
 		}
 		console.log("Created config store at ", this.store.path);
 	}
 
-	public getLastOpened(): LastOpenedLibraryEntry[] {
-		const data: any = this.store.get(this.KEY_LAST_OPENED);
-		return (data ? data : []).map((entry: any) => ({name: entry.name, path: entry.path}));
+	/**
+	 * Get the absolute path of the config file
+	 */
+	public getConfigFileLocation(): string {
+		return this.store.path;
 	}
 
-	public setLastOpened(entries: LastOpenedLibraryEntry[]): void {
-		this.store.set(this.KEY_LAST_OPENED, entries);
+	/**
+	 * Get the configured value by the given key or return the given default value if the key does not exist
+	 */
+	public getValueOr<T>(key: string, defaultValue: T): T {
+		const data: any = this.store.get(key);
+		if (data !== null && data !== undefined) {
+			return data;
+		} else {
+			return defaultValue;
+		}
 	}
 
-	public addLastOpened(name: string, path: string): void {
-		try {
-			let lastOpened: LastOpenedLibraryEntry[] = this.getLastOpened();
-			if (lastOpened) {
-				lastOpened = lastOpened.filter((e: any) => e.path != path);
-				lastOpened = [{name: name, path: path}, ...lastOpened];
-				lastOpened = lastOpened.slice(0, Math.min(lastOpened.length, 3));
-			} else {
-				lastOpened = [{name: name, path: path}];
-			}
-			this.setLastOpened(lastOpened);
-		} catch (err) {
+	/**
+	 * Set the config value of the given key to the given value
+	 */
+	public setValue<T>(key: string, value: T): void {
+		this.store.set(key, value);
+	}
+
+	/**
+	 * Add the given value to the array with the given key. If the key does not exist, it will be created
+	 */
+	public addValue<T>(key: string, entry: T): void {
+		const arr: T[] = this.getValueOr(key, []);
+		if (!arr.some(e => e === entry)) {
+			this.setValue(key, [...arr, entry]);
+		}
+	}
+
+	/**
+	 * Remove the given entry from the array with the given key (if the key exists)
+	 */
+	public removeValue<T>(key: string, entry: T): void {
+		const arr: T[] = this.getValueOr(key, null);
+		if (arr) {
+			this.setValue(key, arr.filter(e => e !== entry));
 		}
 	}
 

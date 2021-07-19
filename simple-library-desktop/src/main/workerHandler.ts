@@ -28,4 +28,8 @@ export class WorkerHandler {
 
 	}
 
+	public getWorkerWindow(): BrowserWindow {
+		return this.window;
+	}
+
 }

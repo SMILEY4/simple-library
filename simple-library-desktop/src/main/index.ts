@@ -36,7 +36,7 @@ console.log("log filepath (main):", log.transports.file.getFile().path);
 const fsWrapper: FileSystemWrapper = new FileSystemWrapper();
 
 // msg sender
-const channelImportStatus: ItemsImportStatusChannel = new ItemsImportStatusChannel(null);
+// const channelImportStatus: ItemsImportStatusChannel = new ItemsImportStatusChannel(null);
 
 // data access
 const configDataAccess: ConfigDataAccess = new ConfigDataAccess();
@@ -50,6 +50,7 @@ const groupDataAccess: GroupDataAccess = new GroupDataAccess(dataAccess);
 const appService: ApplicationService = new ApplicationService(configDataAccess);
 const libraryService: LibraryService = new LibraryService(libraryDataAccess, configDataAccess);
 const windowService: WindowService = new WindowService(appService);
+const channelImportStatus: ItemsImportStatusChannel = new ItemsImportStatusChannel(mainIpcWrapper(() => windowService.getMainWindow()));
 const itemService: ItemService = new ItemService(
 	new ImportService(
 		itemDataAccess,
@@ -68,33 +69,27 @@ const itemService: ItemService = new ItemService(
 const collectionService: CollectionService = new CollectionService(itemService, collectionDataAccess);
 const groupService: GroupService = new GroupService(itemService, collectionService, collectionDataAccess, groupDataAccess);
 
-// message-handler
-new MainApplicationMsgHandler(appService, windowService).init();
-new MainLibraryMsgHandler(libraryService, windowService).init();
-new MainItemMsgHandler(itemService).init();
-new MainCollectionMsgHandler(collectionService).init();
-new MainGroupMsgHandler(groupService).init();
 
 // worker
 const workerHandler: WorkerHandler = new WorkerHandler();
+
+// message-handler
+new MainApplicationMsgHandler(appService, windowService, () => workerHandler.getWorkerWindow());
+new MainLibraryMsgHandler(libraryService, windowService);
+new MainItemMsgHandler(itemService);
+new MainCollectionMsgHandler(collectionService);
+new MainGroupMsgHandler(groupService);
 
 
 // setup
 onReady(() => {
 	console.debug("ready -> create windows + background-workers");
-	windowService.setup().then((window: BrowserWindow) => {
-		channelImportStatus.setIpcWrapper(mainIpcWrapper(window));
-		channelImportStatus.init();
-	});
+	windowService.setup();
 	workerHandler.setupWorker(true);
 
 	onActivate(() => {
 		if (BrowserWindow.getAllWindows().length === 0) {
 			console.debug("re-activated -> recreate windows + workers");
-			windowService.setup().then((window: BrowserWindow) => {
-				channelImportStatus.setIpcWrapper(mainIpcWrapper(window));
-				channelImportStatus.init();
-			});
 			workerHandler.setupWorker(true);
 		}
 	});
