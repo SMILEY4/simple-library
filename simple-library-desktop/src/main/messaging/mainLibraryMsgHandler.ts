@@ -14,11 +14,11 @@ export class MainLibraryMsgHandler {
 	private readonly appService: LibraryService;
 	private readonly windowService: WindowService;
 
-	private readonly channelGetLastOpened = new LibrariesGetLastOpenedChannel(mainIpcWrapper());
-	private readonly channelCreate = new LibraryCreateChannel(mainIpcWrapper());
-	private readonly channelOpen = new LibraryOpenChannel(mainIpcWrapper());
-	private readonly channelClose = new LibraryCloseChannel(mainIpcWrapper());
-	private readonly channelGetMetadata = new LibraryGetMetadataChannel((mainIpcWrapper()));
+	private readonly channelGetLastOpened = new LibrariesGetLastOpenedChannel(mainIpcWrapper(), "r");
+	private readonly channelCreate = new LibraryCreateChannel(mainIpcWrapper(), "r");
+	private readonly channelOpen = new LibraryOpenChannel(mainIpcWrapper(), "r");
+	private readonly channelClose = new LibraryCloseChannel(mainIpcWrapper(), "r");
+	private readonly channelGetMetadata = new LibraryGetMetadataChannel((mainIpcWrapper()), "r");
 
 
 	constructor(appService: LibraryService, windowService: WindowService) {

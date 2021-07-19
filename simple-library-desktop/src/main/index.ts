@@ -35,9 +35,6 @@ console.log("log filepath (main):", log.transports.file.getFile().path);
 // utils
 const fsWrapper: FileSystemWrapper = new FileSystemWrapper();
 
-// msg sender
-// const channelImportStatus: ItemsImportStatusChannel = new ItemsImportStatusChannel(null);
-
 // data access
 const configDataAccess: ConfigDataAccess = new ConfigDataAccess();
 const dataAccess: DataAccess = new DataAccess();
@@ -50,7 +47,7 @@ const groupDataAccess: GroupDataAccess = new GroupDataAccess(dataAccess);
 const appService: ApplicationService = new ApplicationService(configDataAccess);
 const libraryService: LibraryService = new LibraryService(libraryDataAccess, configDataAccess);
 const windowService: WindowService = new WindowService(appService);
-const channelImportStatus: ItemsImportStatusChannel = new ItemsImportStatusChannel(mainIpcWrapper(() => windowService.getMainWindow()));
+const channelImportStatus: ItemsImportStatusChannel = new ItemsImportStatusChannel(mainIpcWrapper(() => windowService.getMainWindow()), "r");
 const itemService: ItemService = new ItemService(
 	new ImportService(
 		itemDataAccess,
@@ -69,12 +66,11 @@ const itemService: ItemService = new ItemService(
 const collectionService: CollectionService = new CollectionService(itemService, collectionDataAccess);
 const groupService: GroupService = new GroupService(itemService, collectionService, collectionDataAccess, groupDataAccess);
 
-
 // worker
 const workerHandler: WorkerHandler = new WorkerHandler();
 
 // message-handler
-new MainApplicationMsgHandler(appService, windowService, () => workerHandler.getWorkerWindow());
+new MainApplicationMsgHandler(windowService, () => workerHandler.getWorkerWindow());
 new MainLibraryMsgHandler(libraryService, windowService);
 new MainItemMsgHandler(itemService);
 new MainCollectionMsgHandler(collectionService);

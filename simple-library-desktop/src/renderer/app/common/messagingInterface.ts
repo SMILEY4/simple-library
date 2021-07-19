@@ -46,37 +46,37 @@ import {rendererIpcWrapper} from "../../../common/messaging/core/msgUtils";
 // const librarySender: RenderLibraryMsgSender = new RenderLibraryMsgSender().init();
 // const itemMsgHandler: RenderItemMsgHandler = new RenderItemMsgHandler().init();
 
-const channelConfigOpenConfig = new ConfigOpenChannel(rendererIpcWrapper());
-const channelConfigGetExiftoolData = new ConfigGetExiftoolChannel(rendererIpcWrapper());
-const channelConfigGetTheme = new ConfigGetThemeChannel(rendererIpcWrapper());
-const channelConfigSetTheme = new ConfigSetThemeChannel(rendererIpcWrapper());
+const channelConfigOpenConfig = new ConfigOpenChannel(rendererIpcWrapper(), "r");
+const channelConfigGetExiftoolData = new ConfigGetExiftoolChannel(rendererIpcWrapper(), "r");
+const channelConfigGetTheme = new ConfigGetThemeChannel(rendererIpcWrapper(), "r");
+const channelConfigSetTheme = new ConfigSetThemeChannel(rendererIpcWrapper(), "r");
 
-const channelLibraryGetLastOpened = new LibrariesGetLastOpenedChannel(rendererIpcWrapper());
-const channelLibraryCreate = new LibraryCreateChannel(rendererIpcWrapper());
-const channelLibraryOpen = new LibraryOpenChannel(rendererIpcWrapper());
-const channelLibraryClose = new LibraryCloseChannel(rendererIpcWrapper());
+const channelLibraryGetLastOpened = new LibrariesGetLastOpenedChannel(rendererIpcWrapper(), "r");
+const channelLibraryCreate = new LibraryCreateChannel(rendererIpcWrapper(), "r");
+const channelLibraryOpen = new LibraryOpenChannel(rendererIpcWrapper(), "r");
+const channelLibraryClose = new LibraryCloseChannel(rendererIpcWrapper(), "r");
 
-const channelItemsGetByCollection = new ItemsGetByCollectionChannel(rendererIpcWrapper());
-const channelItemsGetById = new ItemGetByIdChannel(rendererIpcWrapper());
-const channelItemsDelete = new ItemsDeleteChannel(rendererIpcWrapper());
-const channelItemsImport = new ItemsImportChannel(rendererIpcWrapper());
-const channelItemsImportStatus = new ItemsImportStatusChannel(rendererIpcWrapper());
-const channelItemsGetMetadata = new ItemGetMetadataChannel(rendererIpcWrapper());
-const channelItemsSetMetadata = new ItemSetMetadataChannel(rendererIpcWrapper());
-const channelItemsOpenExternal = new ItemsOpenExternalChannel((rendererIpcWrapper()));
+const channelItemsGetByCollection = new ItemsGetByCollectionChannel(rendererIpcWrapper(), "r");
+const channelItemsGetById = new ItemGetByIdChannel(rendererIpcWrapper(), "r");
+const channelItemsDelete = new ItemsDeleteChannel(rendererIpcWrapper(), "r");
+const channelItemsImport = new ItemsImportChannel(rendererIpcWrapper(), "r");
+const channelItemsImportStatus = new ItemsImportStatusChannel(rendererIpcWrapper(), "r");
+const channelItemsGetMetadata = new ItemGetMetadataChannel(rendererIpcWrapper(), "r");
+const channelItemsSetMetadata = new ItemSetMetadataChannel(rendererIpcWrapper(), "r");
+const channelItemsOpenExternal = new ItemsOpenExternalChannel(rendererIpcWrapper(), "r");
 
-const channelGroupsGetAll = new GroupsGetAllChannel(rendererIpcWrapper());
-const channelGroupsCreate = new GroupCreateChannel(rendererIpcWrapper());
-const channelGroupsDelete = new GroupDeleteChannel(rendererIpcWrapper());
-const channelGroupsRename = new GroupRenameChannel(rendererIpcWrapper());
-const channelGroupsMove = new GroupMoveChannel(rendererIpcWrapper());
+const channelGroupsGetAll = new GroupsGetAllChannel(rendererIpcWrapper(), "r");
+const channelGroupsCreate = new GroupCreateChannel(rendererIpcWrapper(), "r");
+const channelGroupsDelete = new GroupDeleteChannel(rendererIpcWrapper(), "r");
+const channelGroupsRename = new GroupRenameChannel(rendererIpcWrapper(), "r");
+const channelGroupsMove = new GroupMoveChannel(rendererIpcWrapper(), "r");
 
-const channelCollectionsCreate = new CollectionCreateChannel(rendererIpcWrapper());
-const channelCollectionsDelete = new CollectionDeleteChannel(rendererIpcWrapper());
-const channelCollectionsEdit = new CollectionEditChannel(rendererIpcWrapper());
-const channelCollectionsMove = new CollectionMoveChannel(rendererIpcWrapper());
-const channelCollectionsMoveItems = new CollectionMoveItemsChannel(rendererIpcWrapper());
-const channelCollectionsRemoveItems = new CollectionRemoveItemsChannel(rendererIpcWrapper());
+const channelCollectionsCreate = new CollectionCreateChannel(rendererIpcWrapper(), "r");
+const channelCollectionsDelete = new CollectionDeleteChannel(rendererIpcWrapper(), "r");
+const channelCollectionsEdit = new CollectionEditChannel(rendererIpcWrapper(), "r");
+const channelCollectionsMove = new CollectionMoveChannel(rendererIpcWrapper(), "r");
+const channelCollectionsMoveItems = new CollectionMoveItemsChannel(rendererIpcWrapper(), "r");
+const channelCollectionsRemoveItems = new CollectionRemoveItemsChannel(rendererIpcWrapper(), "r");
 
 
 export function addImportStatusListener(listener: (status: ImportStatus) => void): void {
@@ -202,6 +202,7 @@ export function requestOpenItemsExternal(itemIds: number[]): Promise<void> {
 }
 
 export function requestOpenConfigFile(): Promise<void> {
+    console.log("request open config")
     return channelConfigOpenConfig.send();
 }
 

@@ -15,13 +15,13 @@ export class MainItemMsgHandler {
 
 	private readonly itemService: ItemService;
 
-	private readonly channelGetByCollection = new ItemsGetByCollectionChannel(mainIpcWrapper());
-	private readonly channelGetById = new ItemGetByIdChannel(mainIpcWrapper());
-	private readonly channelDelete = new ItemsDeleteChannel(mainIpcWrapper());
-	private readonly channelImport = new ItemsImportChannel(mainIpcWrapper());
-	private readonly channelGetMetadata = new ItemGetMetadataChannel(mainIpcWrapper());
-	private readonly channelSetMetadata = new ItemSetMetadataChannel(mainIpcWrapper());
-	private readonly channelOpenExternal = new ItemsOpenExternalChannel((mainIpcWrapper()));
+	private readonly channelGetByCollection = new ItemsGetByCollectionChannel(mainIpcWrapper(), "r");
+	private readonly channelGetById = new ItemGetByIdChannel(mainIpcWrapper(), "r");
+	private readonly channelDelete = new ItemsDeleteChannel(mainIpcWrapper(), "r");
+	private readonly channelImport = new ItemsImportChannel(mainIpcWrapper(), "r");
+	private readonly channelGetMetadata = new ItemGetMetadataChannel(mainIpcWrapper(), "r");
+	private readonly channelSetMetadata = new ItemSetMetadataChannel(mainIpcWrapper(), "r");
+	private readonly channelOpenExternal = new ItemsOpenExternalChannel((mainIpcWrapper()), "r");
 
 
 	constructor(itemService: ItemService) {

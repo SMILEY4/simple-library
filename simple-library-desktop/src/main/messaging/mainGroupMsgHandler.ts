@@ -12,11 +12,11 @@ export class MainGroupMsgHandler {
 
 	private readonly groupService: GroupService;
 
-	private readonly channelGetAll = new GroupsGetAllChannel(mainIpcWrapper());
-	private readonly channelCreate = new GroupCreateChannel(mainIpcWrapper());
-	private readonly channelDelete = new GroupDeleteChannel(mainIpcWrapper());
-	private readonly channelRename = new GroupRenameChannel(mainIpcWrapper());
-	private readonly channelMove = new GroupMoveChannel(mainIpcWrapper());
+	private readonly channelGetAll = new GroupsGetAllChannel(mainIpcWrapper(), "r");
+	private readonly channelCreate = new GroupCreateChannel(mainIpcWrapper(), "r");
+	private readonly channelDelete = new GroupDeleteChannel(mainIpcWrapper(), "r");
+	private readonly channelRename = new GroupRenameChannel(mainIpcWrapper(), "r");
+	private readonly channelMove = new GroupMoveChannel(mainIpcWrapper(), "r");
 
 
 	constructor(groupService: GroupService) {

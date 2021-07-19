@@ -13,39 +13,55 @@ import {
 } from "../../commonModels";
 import {Channel} from "../core/channel";
 
+export type ComDir = "r" | "w";
+
+export function proxyChannel(ipcWrapper: IpcWrapper, id: string, dirFrom: ComDir, dirTo: ComDir): void {
+	const channelFrom = new Channel(dirFrom + "." + id, ipcWrapper);
+	const channelTo = new Channel(dirTo + "." + id, ipcWrapper);
+	channelFrom.on((payload: any) => channelTo.send(payload));
+}
+
 export interface GetExiftoolDataPayload {
 	location: string | null;
 	defined: boolean;
 }
 
 export class ConfigOpenChannel extends Channel<void, void> {
-	constructor(ipcWrapper: IpcWrapper) {
-		super("config.open", ipcWrapper);
+	public static readonly ID: string = "config.open";
+
+	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
+		super(comDir + "." + ConfigOpenChannel.ID, ipcWrapper);
 	}
 }
 
 export class ConfigGetExiftoolChannel extends Channel<void, GetExiftoolDataPayload> {
-	constructor(ipcWrapper: IpcWrapper) {
-		super("config.exiftool.get", ipcWrapper, null);
+	public static readonly ID: string = "config.exiftool.get";
+
+	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
+		super(comDir + "." + ConfigGetExiftoolChannel.ID, ipcWrapper);
 	}
 }
 
 export class ConfigGetThemeChannel extends Channel<void, "dark" | "light"> {
-	constructor(ipcWrapper: IpcWrapper) {
-		super("config.theme.get", ipcWrapper, null);
+	public static readonly ID: string = "config.theme.get";
+
+	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
+		super(comDir + "." + ConfigGetThemeChannel.ID, ipcWrapper);
 	}
 }
 
 export class ConfigSetThemeChannel extends Channel<"dark" | "light", void> {
-	constructor(ipcWrapper: IpcWrapper) {
-		super("config.theme.set", ipcWrapper, null);
+	public static readonly ID: string = "config.theme.set";
+
+	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
+		super(comDir + "." + ConfigSetThemeChannel.ID, ipcWrapper);
 	}
 }
 
 
 export class CollectionsGetAllChannel extends Channel<boolean, Collection[]> {
-	constructor(ipcWrapper: IpcWrapper) {
-		super("collection.all.get", ipcWrapper, null);
+	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
+		super(comDir + ".collection.all.get", ipcWrapper, null);
 	}
 }
 
@@ -55,14 +71,14 @@ export class CollectionCreateChannel extends Channel<{
 	parentGroupId: number | null,
 	smartQuery: string | null
 }, Collection> {
-	constructor(ipcWrapper: IpcWrapper) {
-		super("collection.create", ipcWrapper, null);
+	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
+		super(comDir + ".collection.create", ipcWrapper, null);
 	}
 }
 
 export class CollectionDeleteChannel extends Channel<number, void> {
-	constructor(ipcWrapper: IpcWrapper) {
-		super("collection.delete", ipcWrapper, null);
+	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
+		super(comDir + ".collection.delete", ipcWrapper, null);
 	}
 }
 
@@ -71,8 +87,8 @@ export class CollectionEditChannel extends Channel<{
 	newName: string,
 	newSmartQuery: string
 }, void> {
-	constructor(ipcWrapper: IpcWrapper) {
-		super("collection.edit", ipcWrapper, null);
+	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
+		super(comDir + ".collection.edit", ipcWrapper, null);
 	}
 }
 
@@ -80,8 +96,8 @@ export class CollectionMoveChannel extends Channel<{
 	collectionId: number,
 	targetGroupId: number | null
 }, void> {
-	constructor(ipcWrapper: IpcWrapper) {
-		super("collection.move", ipcWrapper, null);
+	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
+		super(comDir + ".collection.move", ipcWrapper, null);
 	}
 }
 
@@ -91,8 +107,8 @@ export class CollectionMoveItemsChannel extends Channel<{
 	itemIds: number[],
 	copy: boolean
 }, void> {
-	constructor(ipcWrapper: IpcWrapper) {
-		super("collection.items.move", ipcWrapper, null);
+	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
+		super(comDir + ".collection.items.move", ipcWrapper, null);
 	}
 }
 
@@ -100,8 +116,8 @@ export class CollectionRemoveItemsChannel extends Channel<{
 	collectionId: number,
 	itemIds: number[]
 }, void> {
-	constructor(ipcWrapper: IpcWrapper) {
-		super("collection.items.remove", ipcWrapper, null);
+	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
+		super(comDir + ".collection.items.remove", ipcWrapper, null);
 	}
 }
 
@@ -110,8 +126,8 @@ export class GroupsGetAllChannel extends Channel<{
 	includeCollections: boolean,
 	includeItemCount: boolean
 }, Group[]> {
-	constructor(ipcWrapper: IpcWrapper) {
-		super("group.all.get", ipcWrapper, null);
+	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
+		super(comDir + ".group.all.get", ipcWrapper, null);
 	}
 }
 
@@ -119,8 +135,8 @@ export class GroupCreateChannel extends Channel<{
 	name: string,
 	parentGroupId: number | null
 }, Group> {
-	constructor(ipcWrapper: IpcWrapper) {
-		super("group.create", ipcWrapper, null);
+	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
+		super(comDir + ".group.create", ipcWrapper, null);
 	}
 }
 
@@ -128,8 +144,8 @@ export class GroupDeleteChannel extends Channel<{
 	groupId: number,
 	deleteChildren: boolean
 }, void> {
-	constructor(ipcWrapper: IpcWrapper) {
-		super("group.delete", ipcWrapper, null);
+	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
+		super(comDir + ".group.delete", ipcWrapper, null);
 	}
 }
 
@@ -137,8 +153,8 @@ export class GroupRenameChannel extends Channel<{
 	groupId: number,
 	newName: string
 }, void> {
-	constructor(ipcWrapper: IpcWrapper) {
-		super("group.rename", ipcWrapper, null);
+	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
+		super(comDir + ".group.rename", ipcWrapper, null);
 	}
 }
 
@@ -146,8 +162,8 @@ export class GroupMoveChannel extends Channel<{
 	groupId: number,
 	targetGroupId: number | null
 }, void> {
-	constructor(ipcWrapper: IpcWrapper) {
-		super("group.move", ipcWrapper, null);
+	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
+		super(comDir + ".group.move", ipcWrapper, null);
 	}
 }
 
@@ -156,38 +172,38 @@ export class ItemsGetByCollectionChannel extends Channel<{
 	collectionId: number,
 	itemAttributeKeys: string[]
 }, ItemData[]> {
-	constructor(ipcWrapper: IpcWrapper) {
-		super("item.by-collection.get", ipcWrapper, false);
+	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
+		super(comDir + ".item.by-collection.get", ipcWrapper, false);
 	}
 }
 
 export class ItemGetByIdChannel extends Channel<number, ItemData | null> {
-	constructor(ipcWrapper: IpcWrapper) {
-		super("item.by-id.get", ipcWrapper, false);
+	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
+		super(comDir + ".item.by-id.get", ipcWrapper, false);
 	}
 }
 
 export class ItemsDeleteChannel extends Channel<number[], void> {
-	constructor(ipcWrapper: IpcWrapper) {
-		super("item.delete", ipcWrapper, null);
+	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
+		super(comDir + ".item.delete", ipcWrapper, null);
 	}
 }
 
 export class ItemsImportChannel extends Channel<ImportProcessData, ImportResult> {
-	constructor(ipcWrapper: IpcWrapper) {
-		super("item.import", ipcWrapper, null);
+	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
+		super(comDir + ".item.import", ipcWrapper, null);
 	}
 }
 
 export class ItemsImportStatusChannel extends Channel<ImportStatus, void> {
-	constructor(ipcWrapper: IpcWrapper) {
-		super("item.import.status", ipcWrapper, null);
+	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
+		super(comDir + ".item.import.status", ipcWrapper, null);
 	}
 }
 
 export class ItemGetMetadataChannel extends Channel<number, MetadataEntry[]> {
-	constructor(ipcWrapper: IpcWrapper) {
-		super("item.metadata.get", ipcWrapper, null);
+	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
+		super(comDir + ".item.metadata.get", ipcWrapper, null);
 	}
 }
 
@@ -196,21 +212,21 @@ export class ItemSetMetadataChannel extends Channel<{
 	entryKey: string,
 	newValue: string
 }, MetadataEntry> {
-	constructor(ipcWrapper: IpcWrapper) {
-		super("item.metadata.set", ipcWrapper, null);
+	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
+		super(comDir + ".item.metadata.set", ipcWrapper, null);
 	}
 }
 
 export class ItemsOpenExternalChannel extends Channel<number[], void> {
-	constructor(ipcWrapper: IpcWrapper) {
-		super("item.open-external", ipcWrapper, null);
+	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
+		super(comDir + ".item.open-external", ipcWrapper, null);
 	}
 }
 
 
 export class LibrariesGetLastOpenedChannel extends Channel<void, LastOpenedLibraryEntry[]> {
-	constructor(ipcWrapper: IpcWrapper) {
-		super("library.last-opened.get", ipcWrapper, null);
+	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
+		super(comDir + ".library.last-opened.get", ipcWrapper, null);
 	}
 }
 
@@ -218,25 +234,25 @@ export class LibraryCreateChannel extends Channel<{
 	targetDir: string,
 	name: string
 }, void> {
-	constructor(ipcWrapper: IpcWrapper) {
-		super("library.create", ipcWrapper, null);
+	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
+		super(comDir + ".library.create", ipcWrapper, null);
 	}
 }
 
 export class LibraryOpenChannel extends Channel<string, void> {
-	constructor(ipcWrapper: IpcWrapper) {
-		super("library.open", ipcWrapper, null);
+	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
+		super(comDir + ".library.open", ipcWrapper, null);
 	}
 }
 
 export class LibraryCloseChannel extends Channel<void, void> {
-	constructor(ipcWrapper: IpcWrapper) {
-		super("library.close", ipcWrapper, null);
+	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
+		super(comDir + ".library.close", ipcWrapper, null);
 	}
 }
 
 export class LibraryGetMetadataChannel extends Channel<void, LibraryMetadata> {
-	constructor(ipcWrapper: IpcWrapper) {
-		super("library.metadata.get", ipcWrapper, null);
+	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
+		super(comDir + ".library.metadata.get", ipcWrapper, null);
 	}
 }

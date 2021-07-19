@@ -3,6 +3,7 @@
  - Electron: https://www.electronjs.org/docs
  - React: https://reactjs.org/docs
  - SQLite: https://github.com/mapbox/node-sqlite3/wiki
+ - electron-better-ipc: https://github.com/sindresorhus/electron-better-ipc
 
 # Commands
 

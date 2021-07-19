@@ -15,13 +15,13 @@ export class MainCollectionMsgHandler {
 
 	private readonly collectionService: CollectionService;
 
-	private readonly channelGetAll = new CollectionsGetAllChannel(mainIpcWrapper());
-	private readonly channelCreate = new CollectionCreateChannel(mainIpcWrapper());
-	private readonly channelDelete = new CollectionDeleteChannel(mainIpcWrapper());
-	private readonly channelEdit = new CollectionEditChannel(mainIpcWrapper());
-	private readonly channelMove = new CollectionMoveChannel(mainIpcWrapper());
-	private readonly channelMoveItems = new CollectionMoveItemsChannel(mainIpcWrapper());
-	private readonly channelRemoveItems = new CollectionRemoveItemsChannel(mainIpcWrapper());
+	private readonly channelGetAll = new CollectionsGetAllChannel(mainIpcWrapper(), "r");
+	private readonly channelCreate = new CollectionCreateChannel(mainIpcWrapper(), "r");
+	private readonly channelDelete = new CollectionDeleteChannel(mainIpcWrapper(), "r");
+	private readonly channelEdit = new CollectionEditChannel(mainIpcWrapper(), "r");
+	private readonly channelMove = new CollectionMoveChannel(mainIpcWrapper(), "r");
+	private readonly channelMoveItems = new CollectionMoveItemsChannel(mainIpcWrapper(), "r");
+	private readonly channelRemoveItems = new CollectionRemoveItemsChannel(mainIpcWrapper(), "r");
 
 
 	constructor(collectionService: CollectionService) {

@@ -23,6 +23,7 @@ export class Channel<SEND, RECEIVE> {
 				this.ipcWrapper.ipcMain.answerRenderer(this.id, (payload: SEND) => this.handleRequest(payload));
 				break;
 			}
+			case "worker":
 			case "renderer": {
 				this.ipcWrapper.ipcRenderer.answerMain(this.id, (payload: SEND) => this.handleRequest(payload));
 				break;
@@ -37,6 +38,7 @@ export class Channel<SEND, RECEIVE> {
 				return this.ipcWrapper.ipcMain.callRenderer(getBrowserWindow(this.ipcWrapper), this.id, payload)
 					.then((response: any) => this.handleResponse(response));
 			}
+			case "worker":
 			case "renderer": {
 				return this.ipcWrapper.ipcRenderer.callMain(this.id, payload)
 					.then((response: any) => this.handleResponse(response));

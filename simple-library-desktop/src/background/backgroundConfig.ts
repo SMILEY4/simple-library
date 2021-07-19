@@ -6,7 +6,7 @@ import {
 	ConfigOpenChannel,
 	ConfigSetThemeChannel
 } from "../common/messaging/channels/channels";
-import {rendererIpcWrapper} from "../common/messaging/core/msgUtils";
+import { workerIpcWrapper} from "../common/messaging/core/msgUtils";
 
 export function initBackgroundWorker(): void {
 	console.log("initialize background worker");
@@ -16,16 +16,16 @@ export function initBackgroundWorker(): void {
 	const configService: ConfigService = new ConfigService(configAccess);
 
 
-	new ConfigOpenChannel(rendererIpcWrapper())
+	new ConfigOpenChannel(workerIpcWrapper(), "w")
 		.on(() => configService.openConfig());
 
-	new ConfigGetExiftoolChannel(rendererIpcWrapper())
+	new ConfigGetExiftoolChannel(workerIpcWrapper(), "w")
 		.on(() => configService.getExiftoolInfo());
 
-	new ConfigGetThemeChannel(rendererIpcWrapper())
+	new ConfigGetThemeChannel(workerIpcWrapper(), "w")
 		.on(() => configService.getTheme());
 
-	new ConfigSetThemeChannel(rendererIpcWrapper())
+	new ConfigSetThemeChannel(workerIpcWrapper(), "w")
 		.on((theme: "dark" | "light") => configService.setTheme(theme));
 
 }

@@ -18,10 +18,17 @@ export function errorResponse(body?: any): ErrorResponse {
 }
 
 export interface IpcWrapper {
-	process: "main" | "renderer",
+	process: "main" | "renderer" | "worker",
 	ipcMain?: MainProcessIpc,
 	ipcRenderer?: RendererProcessIpc,
 	browserWindow?: BrowserWindow | (() => BrowserWindow),
+}
+
+export function workerIpcWrapper(): IpcWrapper {
+	return {
+		process: "worker",
+		ipcRenderer: window.require("electron-better-ipc").ipcRenderer
+	};
 }
 
 export function rendererIpcWrapper(): IpcWrapper {

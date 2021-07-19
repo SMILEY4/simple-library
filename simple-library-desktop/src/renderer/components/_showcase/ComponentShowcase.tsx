@@ -53,7 +53,7 @@ import {ToggleTextField} from "../input/textfield/ToggleTextField";
 import {ConfigSetThemeChannel} from "../../../common/messaging/channels/channels";
 import {rendererIpcWrapper} from "../../../common/messaging/core/msgUtils";
 
-const channelSetTheme = new ConfigSetThemeChannel(rendererIpcWrapper());
+const channelSetTheme = new ConfigSetThemeChannel(rendererIpcWrapper(), "r");
 
 interface ComponentShowcaseProps {
 	theme: Theme,
