@@ -51,7 +51,7 @@ import {Spacer} from "../base/spacer/Spacer";
 import {Accordion} from "../misc/accordion/Accordion";
 import {ToggleTextField} from "../input/textfield/ToggleTextField";
 import {ConfigSetThemeChannel} from "../../../common/messaging/channels/channels";
-import {rendererIpcWrapper} from "../../../common/messaging/core/msgUtils";
+import {rendererIpcWrapper} from "../../../common/messaging/core/ipcWrapper";
 
 const channelSetTheme = new ConfigSetThemeChannel(rendererIpcWrapper(), "r");
 

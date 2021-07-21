@@ -9,6 +9,7 @@ export class WorkerHandler {
 			show: devMode,
 			width: 200,
 			height: 200,
+			title: "SimpleLibrary.Worker",
 			webPreferences: {
 				nodeIntegration: true,
 				devTools: true,
@@ -18,7 +19,8 @@ export class WorkerHandler {
 		});
 
 		if (devMode) {
-			this.window.loadURL("http://localhost:8080?worker=true");
+			this.window.loadURL("http://localhost:8080?worker=true")
+				.then(() => this.window.setTitle("SimpleLibrary.Worker"));
 			this.window.webContents.on("did-frame-finish-load", () => {
 				this.window.webContents.openDevTools();
 			});

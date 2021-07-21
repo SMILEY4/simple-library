@@ -3,20 +3,6 @@ import {MainProcessIpc, RendererProcessIpc} from "electron-better-ipc";
 
 const {ipcMain: ipcMain} = require("electron-better-ipc");
 
-export const ERROR_RESPONSE_MARKER: string = "error-response";
-
-export interface ErrorResponse {
-	status: string,
-	body?: any,
-}
-
-export function errorResponse(body?: any): ErrorResponse {
-	return {
-		status: ERROR_RESPONSE_MARKER,
-		body: body
-	};
-}
-
 export interface IpcWrapper {
 	process: "main" | "renderer" | "worker",
 	ipcMain?: MainProcessIpc,

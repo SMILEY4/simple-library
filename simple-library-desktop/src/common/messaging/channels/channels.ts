@@ -1,4 +1,4 @@
-import {IpcWrapper} from "../core/msgUtils";
+import {IpcWrapper} from "../core/ipcWrapper";
 import {
 	Collection,
 	CollectionType,
@@ -15,10 +15,12 @@ import {Channel} from "../core/channel";
 
 export type ComDir = "r" | "w";
 
-export function proxyChannel(ipcWrapper: IpcWrapper, id: string, dirFrom: ComDir, dirTo: ComDir): void {
-	const channelFrom = new Channel(dirFrom + "." + id, ipcWrapper);
-	const channelTo = new Channel(dirTo + "." + id, ipcWrapper);
-	channelFrom.on((payload: any) => channelTo.send(payload));
+export function proxyChannel(ipcWrapper: IpcWrapper, id: string, dirFrom?: ComDir, dirTo?: ComDir): void {
+	const channelFrom = new Channel((dirFrom ? dirFrom : "r") + "." + id, ipcWrapper);
+	const channelTo = new Channel((dirTo ? dirTo : "w") + "." + id, ipcWrapper);
+	channelFrom.on((payload: any, traceId: string) => {
+		return channelTo.send(payload, traceId+"-p").then((response) => response)
+	});
 }
 
 export interface GetExiftoolDataPayload {
@@ -225,8 +227,10 @@ export class ItemsOpenExternalChannel extends Channel<number[], void> {
 
 
 export class LibrariesGetLastOpenedChannel extends Channel<void, LastOpenedLibraryEntry[]> {
+	public static readonly ID: string = "library.last-opened.get";
+
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + ".library.last-opened.get", ipcWrapper, null);
+		super(comDir + "." + LibrariesGetLastOpenedChannel.ID, ipcWrapper, null);
 	}
 }
 
@@ -234,25 +238,33 @@ export class LibraryCreateChannel extends Channel<{
 	targetDir: string,
 	name: string
 }, void> {
+	public static readonly ID: string = "library.create";
+
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + ".library.create", ipcWrapper, null);
+		super(comDir + "." + LibraryCreateChannel.ID, ipcWrapper, null);
 	}
 }
 
 export class LibraryOpenChannel extends Channel<string, void> {
+	public static readonly ID: string = "library.open";
+
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + ".library.open", ipcWrapper, null);
+		super(comDir + "." + LibraryOpenChannel.ID, ipcWrapper, null);
 	}
 }
 
 export class LibraryCloseChannel extends Channel<void, void> {
+	public static readonly ID: string = "library.close";
+
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + ".library.close", ipcWrapper, null);
+		super(comDir + "." + LibraryCloseChannel.ID, ipcWrapper, null);
 	}
 }
 
 export class LibraryGetMetadataChannel extends Channel<void, LibraryMetadata> {
+	public static readonly ID: string = "library.metadata.get";
+
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + ".library.metadata.get", ipcWrapper, null);
+		super(comDir + "." + LibraryGetMetadataChannel.ID, ipcWrapper, null);
 	}
 }

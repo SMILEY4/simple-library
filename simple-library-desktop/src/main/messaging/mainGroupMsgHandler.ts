@@ -1,5 +1,5 @@
 import {GroupService} from "../service/groupService";
-import {mainIpcWrapper} from "../../common/messaging/core/msgUtils";
+import {mainIpcWrapper} from "../../common/messaging/core/ipcWrapper";
 import {
 	GroupCreateChannel,
 	GroupDeleteChannel,

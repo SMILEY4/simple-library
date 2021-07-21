@@ -1,5 +1,5 @@
 import {CollectionService} from "../service/collectionService";
-import {mainIpcWrapper} from "../../common/messaging/core/msgUtils";
+import {mainIpcWrapper} from "../../common/messaging/core/ipcWrapper";
 import {CollectionType} from "../../common/commonModels";
 import {
 	CollectionCreateChannel,

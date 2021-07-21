@@ -19,14 +19,13 @@ import {GroupService} from "./service/groupService";
 import {GroupDataAccess} from "./persistence/groupDataAccess";
 import {ApplicationService} from "./service/applicationService";
 import {ImportStepMetadata} from "./service/importprocess/importStepMetadata";
-import {mainIpcWrapper} from "../common/messaging/core/msgUtils";
-import {MainApplicationMsgHandler} from "./messaging/mainApplicationMsgHandler";
-import {MainLibraryMsgHandler} from "./messaging/mainLibraryMsgHandler";
+import {mainIpcWrapper} from "../common/messaging/core/ipcWrapper";
 import {MainItemMsgHandler} from "./messaging/mainItemMsgHandler";
 import {MainCollectionMsgHandler} from "./messaging/mainCollectionMsgHandler";
 import {MainGroupMsgHandler} from "./messaging/mainGroupMsgHandler";
 import {WorkerHandler} from "./workerHandler";
 import {ItemsImportStatusChannel} from "../common/messaging/channels/channels";
+import {MessageProxy} from "./messaging/messageProxy";
 
 const log = require("electron-log");
 Object.assign(console, log.functions);
@@ -38,14 +37,12 @@ const fsWrapper: FileSystemWrapper = new FileSystemWrapper();
 // data access
 const configDataAccess: ConfigDataAccess = new ConfigDataAccess();
 const dataAccess: DataAccess = new DataAccess();
-const libraryDataAccess: LibraryDataAccess = new LibraryDataAccess(dataAccess);
 const itemDataAccess: ItemDataAccess = new ItemDataAccess(dataAccess);
 const collectionDataAccess: CollectionDataAccess = new CollectionDataAccess(dataAccess, itemDataAccess);
 const groupDataAccess: GroupDataAccess = new GroupDataAccess(dataAccess);
 
 // service
 const appService: ApplicationService = new ApplicationService(configDataAccess);
-const libraryService: LibraryService = new LibraryService(libraryDataAccess, configDataAccess);
 const windowService: WindowService = new WindowService(appService);
 const channelImportStatus: ItemsImportStatusChannel = new ItemsImportStatusChannel(mainIpcWrapper(() => windowService.getMainWindow()), "r");
 const itemService: ItemService = new ItemService(
@@ -70,8 +67,7 @@ const groupService: GroupService = new GroupService(itemService, collectionServi
 const workerHandler: WorkerHandler = new WorkerHandler();
 
 // message-handler
-new MainApplicationMsgHandler(windowService, () => workerHandler.getWorkerWindow());
-new MainLibraryMsgHandler(libraryService, windowService);
+new MessageProxy(windowService, () => workerHandler.getWorkerWindow());
 new MainItemMsgHandler(itemService);
 new MainCollectionMsgHandler(collectionService);
 new MainGroupMsgHandler(groupService);

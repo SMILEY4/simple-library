@@ -1,4 +1,9 @@
-import {ERROR_RESPONSE_MARKER, errorResponse, getBrowserWindow, IpcWrapper} from "./msgUtils";
+import {getBrowserWindow, IpcWrapper} from "./ipcWrapper";
+import {MsgTraceId} from "./msgTraceId";
+import {MsgDefaultEntity, MsgEntity, MsgErrorEntity} from "./msgEntity";
+import {BrowserWindow} from "electron";
+
+export type MsgHandler<SEND, RECEIVE> = (payload: SEND, traceId: string) => RECEIVE | Promise<RECEIVE>
 
 export class Channel<SEND, RECEIVE> {
 
@@ -6,8 +11,8 @@ export class Channel<SEND, RECEIVE> {
 	private readonly id: string;
 	private readonly ipcWrapper: IpcWrapper;
 
-	private readonly noopHandler: (payload: SEND) => RECEIVE | Promise<RECEIVE> = () => undefined;
-	private handler: (payload: SEND) => RECEIVE | Promise<RECEIVE> = this.noopHandler;
+	private readonly noopHandler: MsgHandler<SEND, RECEIVE> = () => undefined;
+	private handler: MsgHandler<SEND, RECEIVE> = this.noopHandler;
 
 
 	constructor(id: string, ipcWrapper: IpcWrapper, logPayload?: boolean) {
@@ -20,73 +25,87 @@ export class Channel<SEND, RECEIVE> {
 	private setupListener() {
 		switch (this.ipcWrapper.process) {
 			case "main": {
-				this.ipcWrapper.ipcMain.answerRenderer(this.id, (payload: SEND) => this.handleRequest(payload));
+				this.ipcWrapper.ipcMain.answerRenderer(this.id, (msgEntity: MsgEntity, window: BrowserWindow) => {
+					if(!MsgEntity.isError(msgEntity)){
+						return this.handleRequest(msgEntity as MsgDefaultEntity, window)
+					}
+				});
 				break;
 			}
 			case "worker":
 			case "renderer": {
-				this.ipcWrapper.ipcRenderer.answerMain(this.id, (payload: SEND) => this.handleRequest(payload));
+				this.ipcWrapper.ipcRenderer.answerMain(this.id, (msgEntity: MsgEntity) => {
+					if(!MsgEntity.isError(msgEntity)){
+						return this.handleRequest(msgEntity as MsgDefaultEntity, null)
+					}
+				});
 				break;
 			}
 		}
 	}
 
-	public send(payload: SEND): Promise<RECEIVE> {
-		console.debug("[" + this.ipcWrapper.process + "/" + this.id + ">]: send", +this.logPayload ? payload : "<payload>");
+	public send(payload: SEND, traceId?: string): Promise<RECEIVE> {
+		const msgTraceId = !!traceId ? traceId : MsgTraceId.gen();
+		console.debug(this.logHeader(msgTraceId, "out"), "send", this.logPayload ? payload : "<payload>");
 		switch (this.ipcWrapper.process) {
 			case "main": {
-				return this.ipcWrapper.ipcMain.callRenderer(getBrowserWindow(this.ipcWrapper), this.id, payload)
-					.then((response: any) => this.handleResponse(response));
+				return this.ipcWrapper.ipcMain.callRenderer(getBrowserWindow(this.ipcWrapper), this.id, MsgEntity.entity(msgTraceId, payload))
+					.then((response: MsgEntity) => this.handleResponse(response));
 			}
 			case "worker":
 			case "renderer": {
-				return this.ipcWrapper.ipcRenderer.callMain(this.id, payload)
-					.then((response: any) => this.handleResponse(response));
+				return this.ipcWrapper.ipcRenderer.callMain(this.id, MsgEntity.entity(msgTraceId, payload))
+					.then((response: MsgEntity) => this.handleResponse(response));
 			}
 			default: {
 				return Promise.reject("Unexpected process: " + this.ipcWrapper.process);
 			}
 		}
+
 	}
 
 	public sendAndForget(payload: SEND): Promise<void> {
 		return this.send(payload).then();
 	}
 
-	public on<T extends Channel<SEND, RECEIVE>>(handler: (payload: SEND) => RECEIVE | Promise<RECEIVE>): T {
+	public on<T extends Channel<SEND, RECEIVE>>(handler: MsgHandler<SEND, RECEIVE>): T {
 		this.handler = (!!handler) ? handler : this.noopHandler;
 		return (this as unknown) as T;
 	}
 
-	private handleRequest(payload: any): Promise<any> {
-		console.debug("[>" + this.ipcWrapper.process + "/" + this.id + "]: handle", +this.logPayload ? payload : "<payload>");
-		return Promise.resolve(this.handler(payload))
+	private handleRequest(msgEntity: MsgDefaultEntity, window: BrowserWindow): Promise<any> {
+		console.debug(this.logHeader(msgEntity.traceId, "in"), "handle", this.logPayload ? msgEntity.body : "<payload>", "from", window ? window.getTitle() : "null")
+		const handlerResult: RECEIVE | Promise<RECEIVE> = this.handler(msgEntity.body, msgEntity.traceId);
+		console.debug(msgEntity.traceId, handlerResult)
+		return Promise.resolve(handlerResult)
 			.then((response: any) => {
-				console.debug("[>" + this.ipcWrapper.process + "/" + this.id + "]: answer", +this.logPayload ? response : "<payload>");
-				return response;
+				console.debug(this.logHeader(msgEntity.traceId, "in"), "answer", this.logPayload ? response : "<payload>");
+				return MsgEntity.entity(msgEntity.traceId, response);
 			})
 			.catch((err: any) => {
 				const strError: string = (err.toString ? err.toString() : JSON.stringify(err));
-				console.debug("[>" + this.ipcWrapper.process + "/" + this.id + "]: answer error", +strError);
-				return errorResponse(strError);
+				console.debug(this.logHeader(msgEntity.traceId, "in"), "answer error", strError);
+				return MsgEntity.error(msgEntity.traceId, strError);
 			});
 	}
 
-	private handleResponse(response: any): Promise<any> {
-		console.debug("[" + this.ipcWrapper.process + "/" + this.id + ">]: response", +this.logPayload ? response : "<payload>");
-		if (Channel.isErrorResponse(response)) {
-			return Channel.rejectWithErrorResponse(response);
+	private handleResponse(responseEntity: MsgEntity): Promise<any> {
+		console.debug(this.logHeader(responseEntity.traceId, "out"), "response", this.logPayload
+			? (MsgEntity.isError(responseEntity) ? (responseEntity as MsgErrorEntity).error : (responseEntity as MsgDefaultEntity).body)
+			: "<payload>");
+		if (MsgEntity.isError(responseEntity)) {
+			return Channel.rejectWithErrorEntity((responseEntity as MsgErrorEntity));
 		} else {
-			return Promise.resolve(response);
+			return Promise.resolve((responseEntity as MsgDefaultEntity).body);
 		}
 	}
 
-	private static isErrorResponse(response: any): boolean {
-		return response && response.status && response.status === ERROR_RESPONSE_MARKER;
+	private static rejectWithErrorEntity(response: MsgErrorEntity): Promise<any> {
+		return Promise.reject((response && response.error) ? response.error : JSON.stringify(response));
 	}
 
-	private static rejectWithErrorResponse(response: any): Promise<any> {
-		return Promise.reject((response && response.body) ? response.body : JSON.stringify(response));
+	private logHeader(traceId: string, dir: "in" | "out"): string {
+		return "(" + traceId + ")[" + (dir === "in" ? ">" : "") + this.ipcWrapper.process + "/" + this.id + (dir === "out" ? ">" : "") + "]";
 	}
 
 }

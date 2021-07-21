@@ -9,7 +9,7 @@ import {startAsync} from "../../../common/AsyncCommon";
 import {WindowService} from "../windowService";
 import {ImportStepMetadata} from "./importStepMetadata";
 import {ItemsImportStatusChannel} from "../../../common/messaging/channels/channels";
-import {mainIpcWrapper, rendererIpcWrapper} from "../../../common/messaging/core/msgUtils";
+import {mainIpcWrapper, rendererIpcWrapper} from "../../../common/messaging/core/ipcWrapper";
 
 export class ImportService {
 

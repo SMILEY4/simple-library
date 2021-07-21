@@ -1,5 +1,5 @@
 import {ItemService} from "../service/ItemService";
-import {mainIpcWrapper} from "../../common/messaging/core/msgUtils";
+import {mainIpcWrapper} from "../../common/messaging/core/ipcWrapper";
 import {ImportProcessData} from "../../common/commonModels";
 import {
 	ItemGetByIdChannel,

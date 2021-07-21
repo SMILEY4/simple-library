@@ -18,7 +18,8 @@ import {
     ConfigGetExiftoolChannel,
     ConfigGetThemeChannel,
     ConfigOpenChannel,
-    ConfigSetThemeChannel, GetExiftoolDataPayload,
+    ConfigSetThemeChannel,
+    GetExiftoolDataPayload,
     GroupCreateChannel,
     GroupDeleteChannel,
     GroupMoveChannel,
@@ -37,7 +38,7 @@ import {
     LibraryCreateChannel,
     LibraryOpenChannel
 } from "../../../common/messaging/channels/channels";
-import {rendererIpcWrapper} from "../../../common/messaging/core/msgUtils";
+import {rendererIpcWrapper} from "../../../common/messaging/core/ipcWrapper";
 
 // const appSender: RenderApplicationMsgSender = new RenderApplicationMsgSender().init();
 // const collectionSender: RenderCollectionMsgSender = new RenderCollectionMsgSender().init();
@@ -88,6 +89,12 @@ export function removeImportStatusListener(listener: (status: ImportStatus) => v
 }
 
 export function fetchLastOpenedLibraries(): Promise<LastOpenedLibraryEntry[]> {
+    // console.log("Fetch last opened");
+    // return channelLibraryGetLastOpened.send()
+    //     .then(response => {
+    //         console.log("Response: ", response);
+    //         return response;
+    //     });
     return channelLibraryGetLastOpened.send();
 }
 
@@ -202,7 +209,7 @@ export function requestOpenItemsExternal(itemIds: number[]): Promise<void> {
 }
 
 export function requestOpenConfigFile(): Promise<void> {
-    console.log("request open config")
+    console.log("request open config");
     return channelConfigOpenConfig.send();
 }
 
