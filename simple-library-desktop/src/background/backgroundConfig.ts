@@ -4,13 +4,19 @@ import {
 	ConfigGetExiftoolChannel,
 	ConfigGetThemeChannel,
 	ConfigOpenChannel,
-	ConfigSetThemeChannel,
-	LibrariesGetLastOpenedChannel, LibraryCloseChannel,
-	LibraryCreateChannel, LibraryGetMetadataChannel, LibraryOpenChannel
+	ConfigSetThemeChannel, GroupCreateChannel, GroupDeleteChannel, GroupMoveChannel, GroupRenameChannel,
+	GroupsGetTreeChannel,
+	LibrariesGetLastOpenedChannel,
+	LibraryCloseChannel,
+	LibraryCreateChannel,
+	LibraryGetMetadataChannel,
+	LibraryOpenChannel
 } from "../common/messaging/channels/channels";
 import {workerIpcWrapper} from "../common/messaging/core/ipcWrapper";
 import {LibraryService} from "./service/libraryService";
 import {DbAccess} from "./persistence/dbAcces";
+import {Group, GroupService} from "./service/groupService";
+import {CollectionService} from "./service/collectionService";
 
 export function initBackgroundWorker(): void {
 	console.log("initialize background worker");
@@ -20,7 +26,8 @@ export function initBackgroundWorker(): void {
 
 	const configService: ConfigService = new ConfigService(configAccess);
 	const libraryService: LibraryService = new LibraryService(dbAccess);
-
+	const collectionService: CollectionService = new CollectionService(dbAccess)
+	const groupService: GroupService = new GroupService(dbAccess, collectionService);
 
 	new ConfigOpenChannel(workerIpcWrapper(), "w")
 		.on(() => configService.openConfig());
@@ -39,19 +46,35 @@ export function initBackgroundWorker(): void {
 
 	new LibraryCreateChannel(workerIpcWrapper(), "w")
 		.on((payload) => {
-			return libraryService.createLibrary(payload.name, payload.targetDir)
-				.then((library) => configService.addLastOpened(library.path, library.name))
+			return libraryService.create(payload.name, payload.targetDir)
+				.then((library) => configService.addLastOpened(library.path, library.name));
 		});
 
 	new LibraryOpenChannel(workerIpcWrapper(), "w")
 		.on((payload) => {
-			return libraryService.openLibrary(payload)
-				.then((library) => configService.addLastOpened(library.path, library.name))
+			return libraryService.open(payload)
+				.then((library) => configService.addLastOpened(library.path, library.name));
 		});
 
 	new LibraryCloseChannel(workerIpcWrapper(), "w")
-		.on(() => libraryService.closeLibrary());
+		.on(() => libraryService.closeCurrent());
 
 	new LibraryGetMetadataChannel(workerIpcWrapper(), "w")
-		.on(() => libraryService.getLibraryInformation());
+		.on(() => libraryService.getCurrentInformation());
+
+	new GroupsGetTreeChannel(workerIpcWrapper(), "w")
+		.on((payload) => groupService.getTree(payload.includeCollections, payload.includeItemCount));
+
+	new GroupCreateChannel(workerIpcWrapper(), "w")
+		.on((payload) => groupService.create(payload.name, payload.parentGroupId));
+
+	new GroupDeleteChannel(workerIpcWrapper(), "w")
+		.on((payload) => groupService.delete(payload.groupId, payload.deleteChildren));
+
+	new GroupRenameChannel(workerIpcWrapper(), "w")
+		.on((payload) => groupService.rename(payload.groupId, payload.newName));
+
+	new GroupMoveChannel(workerIpcWrapper(), "w")
+		.on((payload) => groupService.move(payload.groupId, payload.targetGroupId));
+
 }

@@ -24,7 +24,7 @@ import {
     GroupDeleteChannel,
     GroupMoveChannel,
     GroupRenameChannel,
-    GroupsGetAllChannel,
+    GroupsGetTreeChannel,
     ItemGetByIdChannel,
     ItemGetMetadataChannel,
     ItemsDeleteChannel,
@@ -66,7 +66,7 @@ const channelItemsGetMetadata = new ItemGetMetadataChannel(rendererIpcWrapper(),
 const channelItemsSetMetadata = new ItemSetMetadataChannel(rendererIpcWrapper(), "r");
 const channelItemsOpenExternal = new ItemsOpenExternalChannel(rendererIpcWrapper(), "r");
 
-const channelGroupsGetAll = new GroupsGetAllChannel(rendererIpcWrapper(), "r");
+const channelGroupsGetAll = new GroupsGetTreeChannel(rendererIpcWrapper(), "r");
 const channelGroupsCreate = new GroupCreateChannel(rendererIpcWrapper(), "r");
 const channelGroupsDelete = new GroupDeleteChannel(rendererIpcWrapper(), "r");
 const channelGroupsRename = new GroupRenameChannel(rendererIpcWrapper(), "r");
@@ -107,8 +107,7 @@ export function requestCreateLibrary(name: string, targetDir: string): Promise<v
 }
 
 export function fetchRootGroup(): Promise<Group> {
-    return channelGroupsGetAll.send({includeItemCount: true, includeCollections: true})
-        .then((groups: Group[]) => groups[0]);
+    return channelGroupsGetAll.send({includeItemCount: true, includeCollections: true});
 }
 
 export function fetchItems(collectionId: number, itemAttributeKeys: string[]): Promise<ItemData[]> {

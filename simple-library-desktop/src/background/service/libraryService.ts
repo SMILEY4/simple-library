@@ -27,7 +27,7 @@ export class LibraryService {
 	/**
 	 * Create (and "open") a new library with the given name in the given directory.
 	 */
-	public createLibrary(name: string, targetDir: string): Promise<LibraryFileHandle> {
+	public create(name: string, targetDir: string): Promise<LibraryFileHandle> {
 		const filePath: string = LibraryService.toFilePath(targetDir, name);
 		if (fs.existsSync(filePath)) {
 			console.error("Could not create library. File already exists: " + filePath);
@@ -46,12 +46,12 @@ export class LibraryService {
 	/**
 	 * "Opens" the library-file at the given location.
 	 */
-	public openLibrary(filePath: string): Promise<LibraryFileHandle> {
+	public open(filePath: string): Promise<LibraryFileHandle> {
 		if (fs.existsSync(filePath)) {
 			console.log("Opening library: " + filePath);
 			return this.dbAccess.setDatabasePath(filePath, false)
 				.then(() => this.updateLibraryOpenedTimestamp())
-				.then(() => this.getLibraryInformation())
+				.then(() => this.getCurrentInformation())
 				.then((libInfo: LibraryInformation) => ({
 					path: filePath,
 					name: libInfo.name
@@ -65,7 +65,7 @@ export class LibraryService {
 	/**
 	 * "Closes" the current library
 	 */
-	public closeLibrary(): Promise<void> {
+	public closeCurrent(): Promise<void> {
 		console.log("Closing library");
 		this.dbAccess.clearDatabasePath();
 		return Promise.resolve();
@@ -74,7 +74,7 @@ export class LibraryService {
 	/**
 	 * Get information / metadata about the current library
 	 */
-	public getLibraryInformation(): Promise<LibraryInformation> {
+	public getCurrentInformation(): Promise<LibraryInformation> {
 		return this.dbAccess.queryAll(SQL.queryLibraryInfo())
 			.then((rows: any[]) => ({
 				name: rows.find((row: any) => row.key === "library_name").value,

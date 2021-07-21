@@ -5,8 +5,16 @@ import {
 	ConfigGetThemeChannel,
 	ConfigOpenChannel,
 	ConfigSetThemeChannel,
-	LibrariesGetLastOpenedChannel, LibraryCloseChannel,
-	LibraryCreateChannel, LibraryGetMetadataChannel, LibraryOpenChannel,
+	GroupCreateChannel,
+	GroupDeleteChannel,
+	GroupMoveChannel,
+	GroupRenameChannel,
+	GroupsGetTreeChannel,
+	LibrariesGetLastOpenedChannel,
+	LibraryCloseChannel,
+	LibraryCreateChannel,
+	LibraryGetMetadataChannel,
+	LibraryOpenChannel,
 	proxyChannel
 } from "../../common/messaging/channels/channels";
 import {BrowserWindow} from "electron";
@@ -24,6 +32,11 @@ export class MessageProxy {
 		proxyChannel(ipcWrapper, ConfigGetThemeChannel.ID);
 		proxyChannel(ipcWrapper, LibrariesGetLastOpenedChannel.ID);
 		proxyChannel(ipcWrapper, LibraryGetMetadataChannel.ID);
+		proxyChannel(ipcWrapper, GroupsGetTreeChannel.ID);
+		proxyChannel(ipcWrapper, GroupCreateChannel.ID);
+		proxyChannel(ipcWrapper, GroupDeleteChannel.ID);
+		proxyChannel(ipcWrapper, GroupRenameChannel.ID);
+		proxyChannel(ipcWrapper, GroupMoveChannel.ID);
 
 		const channelSetTheme = new ConfigSetThemeChannel(ipcWrapper, "w");
 		new ConfigSetThemeChannel(ipcWrapper, "r").on((theme) => {

@@ -19,7 +19,7 @@ export function proxyChannel(ipcWrapper: IpcWrapper, id: string, dirFrom?: ComDi
 	const channelFrom = new Channel((dirFrom ? dirFrom : "r") + "." + id, ipcWrapper);
 	const channelTo = new Channel((dirTo ? dirTo : "w") + "." + id, ipcWrapper);
 	channelFrom.on((payload: any, traceId: string) => {
-		return channelTo.send(payload, traceId+"-p").then((response) => response)
+		return channelTo.send(payload, traceId + "-p").then((response) => response);
 	});
 }
 
@@ -124,12 +124,14 @@ export class CollectionRemoveItemsChannel extends Channel<{
 }
 
 
-export class GroupsGetAllChannel extends Channel<{
+export class GroupsGetTreeChannel extends Channel<{
 	includeCollections: boolean,
 	includeItemCount: boolean
-}, Group[]> {
+}, Group> {
+	public static readonly ID: string = "group.tree.get";
+
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + ".group.all.get", ipcWrapper, null);
+		super(comDir + "." + GroupsGetTreeChannel.ID, ipcWrapper, null);
 	}
 }
 
@@ -137,8 +139,10 @@ export class GroupCreateChannel extends Channel<{
 	name: string,
 	parentGroupId: number | null
 }, Group> {
+	public static readonly ID: string = "group.create";
+
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + ".group.create", ipcWrapper, null);
+		super(comDir + "." + GroupCreateChannel.ID, ipcWrapper, null);
 	}
 }
 
@@ -146,8 +150,10 @@ export class GroupDeleteChannel extends Channel<{
 	groupId: number,
 	deleteChildren: boolean
 }, void> {
+	public static readonly ID: string = "group.delete";
+
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + ".group.delete", ipcWrapper, null);
+		super(comDir + "." + GroupDeleteChannel.ID, ipcWrapper, null);
 	}
 }
 
@@ -155,8 +161,10 @@ export class GroupRenameChannel extends Channel<{
 	groupId: number,
 	newName: string
 }, void> {
+	public static readonly ID: string = "group.rename";
+
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + ".group.rename", ipcWrapper, null);
+		super(comDir + "." + GroupRenameChannel.ID, ipcWrapper, null);
 	}
 }
 
@@ -164,8 +172,10 @@ export class GroupMoveChannel extends Channel<{
 	groupId: number,
 	targetGroupId: number | null
 }, void> {
+	public static readonly ID: string = "group.move";
+
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + ".group.move", ipcWrapper, null);
+		super(comDir + "." + GroupMoveChannel.ID, ipcWrapper, null);
 	}
 }
 

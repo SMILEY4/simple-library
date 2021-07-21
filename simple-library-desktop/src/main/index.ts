@@ -1,8 +1,6 @@
 import {app, BrowserWindow} from "electron";
-import {LibraryService} from "./service/libraryService";
 import DataAccess from "./persistence/dataAccess";
 import {WindowService} from "./service/windowService";
-import {LibraryDataAccess} from "./persistence/libraryDataAccess";
 import {ConfigDataAccess} from "./persistence/configDataAccess";
 import {ItemService} from "./service/ItemService";
 import {ItemDataAccess} from "./persistence/itemDataAccess";
@@ -15,14 +13,11 @@ import {ImportDataValidator} from "./service/importprocess/importDataValidator";
 import {ImportService} from "./service/importprocess/importService";
 import {CollectionDataAccess} from "./persistence/collectionDataAccess";
 import {CollectionService} from "./service/collectionService";
-import {GroupService} from "./service/groupService";
-import {GroupDataAccess} from "./persistence/groupDataAccess";
 import {ApplicationService} from "./service/applicationService";
 import {ImportStepMetadata} from "./service/importprocess/importStepMetadata";
 import {mainIpcWrapper} from "../common/messaging/core/ipcWrapper";
 import {MainItemMsgHandler} from "./messaging/mainItemMsgHandler";
 import {MainCollectionMsgHandler} from "./messaging/mainCollectionMsgHandler";
-import {MainGroupMsgHandler} from "./messaging/mainGroupMsgHandler";
 import {WorkerHandler} from "./workerHandler";
 import {ItemsImportStatusChannel} from "../common/messaging/channels/channels";
 import {MessageProxy} from "./messaging/messageProxy";
@@ -39,7 +34,6 @@ const configDataAccess: ConfigDataAccess = new ConfigDataAccess();
 const dataAccess: DataAccess = new DataAccess();
 const itemDataAccess: ItemDataAccess = new ItemDataAccess(dataAccess);
 const collectionDataAccess: CollectionDataAccess = new CollectionDataAccess(dataAccess, itemDataAccess);
-const groupDataAccess: GroupDataAccess = new GroupDataAccess(dataAccess);
 
 // service
 const appService: ApplicationService = new ApplicationService(configDataAccess);
@@ -61,7 +55,6 @@ const itemService: ItemService = new ItemService(
 	collectionDataAccess
 );
 const collectionService: CollectionService = new CollectionService(itemService, collectionDataAccess);
-const groupService: GroupService = new GroupService(itemService, collectionService, collectionDataAccess, groupDataAccess);
 
 // worker
 const workerHandler: WorkerHandler = new WorkerHandler();
@@ -70,7 +63,6 @@ const workerHandler: WorkerHandler = new WorkerHandler();
 new MessageProxy(windowService, () => workerHandler.getWorkerWindow());
 new MainItemMsgHandler(itemService);
 new MainCollectionMsgHandler(collectionService);
-new MainGroupMsgHandler(groupService);
 
 
 // setup
