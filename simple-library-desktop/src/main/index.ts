@@ -12,12 +12,10 @@ import {ImportStepFileHash} from "./service/importprocess/importStepFileHash";
 import {ImportDataValidator} from "./service/importprocess/importDataValidator";
 import {ImportService} from "./service/importprocess/importService";
 import {CollectionDataAccess} from "./persistence/collectionDataAccess";
-import {CollectionService} from "./service/collectionService";
 import {ApplicationService} from "./service/applicationService";
 import {ImportStepMetadata} from "./service/importprocess/importStepMetadata";
 import {mainIpcWrapper} from "../common/messaging/core/ipcWrapper";
 import {MainItemMsgHandler} from "./messaging/mainItemMsgHandler";
-import {MainCollectionMsgHandler} from "./messaging/mainCollectionMsgHandler";
 import {WorkerHandler} from "./workerHandler";
 import {ItemsImportStatusChannel} from "../common/messaging/channels/channels";
 import {MessageProxy} from "./messaging/messageProxy";
@@ -40,21 +38,20 @@ const appService: ApplicationService = new ApplicationService(configDataAccess);
 const windowService: WindowService = new WindowService(appService);
 const channelImportStatus: ItemsImportStatusChannel = new ItemsImportStatusChannel(mainIpcWrapper(() => windowService.getMainWindow()), "r");
 const itemService: ItemService = new ItemService(
-	new ImportService(
-		itemDataAccess,
-		new ImportDataValidator(fsWrapper),
-		new ImportStepRename(),
-		new ImportStepImportTarget(fsWrapper),
-		new ImportStepFileHash(fsWrapper),
-		new ImportStepThumbnail(),
-		new ImportStepMetadata(configDataAccess),
-		windowService,
-		channelImportStatus
-	),
-	itemDataAccess,
-	collectionDataAccess
+    new ImportService(
+        itemDataAccess,
+        new ImportDataValidator(fsWrapper),
+        new ImportStepRename(),
+        new ImportStepImportTarget(fsWrapper),
+        new ImportStepFileHash(fsWrapper),
+        new ImportStepThumbnail(),
+        new ImportStepMetadata(configDataAccess),
+        windowService,
+        channelImportStatus
+    ),
+    itemDataAccess,
+    collectionDataAccess
 );
-const collectionService: CollectionService = new CollectionService(itemService, collectionDataAccess);
 
 // worker
 const workerHandler: WorkerHandler = new WorkerHandler();
@@ -62,52 +59,51 @@ const workerHandler: WorkerHandler = new WorkerHandler();
 // message-handler
 new MessageProxy(windowService, () => workerHandler.getWorkerWindow());
 new MainItemMsgHandler(itemService);
-new MainCollectionMsgHandler(collectionService);
 
 
 // setup
 onReady(() => {
-	console.debug("ready -> create windows + background-workers");
-	windowService.setup();
-	workerHandler.setupWorker(true);
+    console.debug("ready -> create windows + background-workers");
+    windowService.setup();
+    workerHandler.setupWorker(true);
 
-	onActivate(() => {
-		if (BrowserWindow.getAllWindows().length === 0) {
-			console.debug("re-activated -> recreate windows + workers");
-			workerHandler.setupWorker(true);
-		}
-	});
+    onActivate(() => {
+        if (BrowserWindow.getAllWindows().length === 0) {
+            console.debug("re-activated -> recreate windows + workers");
+            workerHandler.setupWorker(true);
+        }
+    });
 
 });
 
 onMainWindowsClosed(() => {
-	if (process.platform !== "darwin") {
-		console.debug("main window closed -> quit");
-		app.quit();
-	}
+    if (process.platform !== "darwin") {
+        console.debug("main window closed -> quit");
+        app.quit();
+    }
 });
 
 onAllWindowsClosed(() => {
-	if (process.platform !== "darwin") {
-		console.debug("all windows closed -> quit");
-		app.quit();
-	}
+    if (process.platform !== "darwin") {
+        console.debug("all windows closed -> quit");
+        app.quit();
+    }
 });
 
 
 // utils
 function onReady(callback: () => void): void {
-	app.whenReady().then(() => callback());
+    app.whenReady().then(() => callback());
 }
 
 function onActivate(callback: () => void): void {
-	app.on("activate", () => callback());
+    app.on("activate", () => callback());
 }
 
 function onAllWindowsClosed(callback: () => void): void {
-	app.on("window-all-closed", () => callback());
+    app.on("window-all-closed", () => callback());
 }
 
 function onMainWindowsClosed(callback: () => void): void {
-	windowService.onWindowClosed(() => callback());
+    windowService.onWindowClosed(() => callback());
 }

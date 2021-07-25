@@ -1,2 +1,3 @@
+-- entries: the entries in the following format: (collId1, itemId1), (collId2, itemId2), (collId3, itemId3), ...
 INSERT OR IGNORE INTO collection_items (collection_id, item_id)
 VALUES $entries;

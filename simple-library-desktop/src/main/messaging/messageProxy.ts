@@ -1,6 +1,12 @@
 import {WindowService} from "../service/windowService";
 import {mainIpcWrapper} from "../../common/messaging/core/ipcWrapper";
 import {
+	CollectionCreateChannel,
+	CollectionDeleteChannel,
+	CollectionEditChannel,
+	CollectionMoveChannel,
+	CollectionRemoveItemsChannel,
+	CollectionsGetAllChannel,
 	ConfigGetExiftoolChannel,
 	ConfigGetThemeChannel,
 	ConfigOpenChannel,
@@ -37,6 +43,12 @@ export class MessageProxy {
 		proxyChannel(ipcWrapper, GroupDeleteChannel.ID);
 		proxyChannel(ipcWrapper, GroupRenameChannel.ID);
 		proxyChannel(ipcWrapper, GroupMoveChannel.ID);
+		proxyChannel(ipcWrapper, CollectionsGetAllChannel.ID);
+		proxyChannel(ipcWrapper, CollectionCreateChannel.ID);
+		proxyChannel(ipcWrapper, CollectionDeleteChannel.ID);
+		proxyChannel(ipcWrapper, CollectionEditChannel.ID);
+		proxyChannel(ipcWrapper, CollectionMoveChannel.ID);
+		proxyChannel(ipcWrapper, CollectionRemoveItemsChannel.ID);
 
 		const channelSetTheme = new ConfigSetThemeChannel(ipcWrapper, "w");
 		new ConfigSetThemeChannel(ipcWrapper, "r").on((theme) => {

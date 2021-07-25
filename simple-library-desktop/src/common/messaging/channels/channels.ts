@@ -62,8 +62,10 @@ export class ConfigSetThemeChannel extends Channel<"dark" | "light", void> {
 
 
 export class CollectionsGetAllChannel extends Channel<boolean, Collection[]> {
+	public static readonly ID: string = "collection.all.get";
+
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + ".collection.all.get", ipcWrapper, null);
+		super(comDir + "." + CollectionsGetAllChannel.ID, ipcWrapper, null);
 	}
 }
 
@@ -73,14 +75,18 @@ export class CollectionCreateChannel extends Channel<{
 	parentGroupId: number | null,
 	smartQuery: string | null
 }, Collection> {
+	public static readonly ID: string = "collection.create";
+
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + ".collection.create", ipcWrapper, null);
+		super(comDir + "." + CollectionCreateChannel.ID, ipcWrapper, null);
 	}
 }
 
 export class CollectionDeleteChannel extends Channel<number, void> {
+	public static readonly ID: string = "collection.delete";
+
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + ".collection.delete", ipcWrapper, null);
+		super(comDir + "." + CollectionDeleteChannel.ID, ipcWrapper, null);
 	}
 }
 
@@ -89,8 +95,10 @@ export class CollectionEditChannel extends Channel<{
 	newName: string,
 	newSmartQuery: string
 }, void> {
+	public static readonly ID: string = "collection.edit";
+
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + ".collection.edit", ipcWrapper, null);
+		super(comDir + "." + CollectionEditChannel.ID, ipcWrapper, null);
 	}
 }
 
@@ -98,8 +106,10 @@ export class CollectionMoveChannel extends Channel<{
 	collectionId: number,
 	targetGroupId: number | null
 }, void> {
+	public static readonly ID: string = "collection.move";
+
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + ".collection.move", ipcWrapper, null);
+		super(comDir + "." + CollectionMoveChannel.ID, ipcWrapper, null);
 	}
 }
 
@@ -109,8 +119,10 @@ export class CollectionMoveItemsChannel extends Channel<{
 	itemIds: number[],
 	copy: boolean
 }, void> {
+	public static readonly ID: string = "collection.items.move";
+
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + ".collection.items.move", ipcWrapper, null);
+		super(comDir + "." + CollectionMoveItemsChannel, ipcWrapper, null);
 	}
 }
 
@@ -118,8 +130,10 @@ export class CollectionRemoveItemsChannel extends Channel<{
 	collectionId: number,
 	itemIds: number[]
 }, void> {
+	public static readonly ID: string = "collection.items.remove";
+
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + ".collection.items.remove", ipcWrapper, null);
+		super(comDir + "." + CollectionRemoveItemsChannel.ID, ipcWrapper, null);
 	}
 }
 
