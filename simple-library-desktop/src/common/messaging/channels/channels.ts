@@ -33,6 +33,7 @@ export class ConfigOpenChannel extends Channel<void, void> {
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
 		super(comDir + "." + ConfigOpenChannel.ID, ipcWrapper);
+		this.setShouldVoidResult(true);
 	}
 }
 
@@ -57,6 +58,7 @@ export class ConfigSetThemeChannel extends Channel<"dark" | "light", void> {
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
 		super(comDir + "." + ConfigSetThemeChannel.ID, ipcWrapper);
+		this.setShouldVoidResult(true);
 	}
 }
 
@@ -87,6 +89,7 @@ export class CollectionDeleteChannel extends Channel<number, void> {
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
 		super(comDir + "." + CollectionDeleteChannel.ID, ipcWrapper, null);
+		this.setShouldVoidResult(true);
 	}
 }
 
@@ -99,6 +102,7 @@ export class CollectionEditChannel extends Channel<{
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
 		super(comDir + "." + CollectionEditChannel.ID, ipcWrapper, null);
+		this.setShouldVoidResult(true);
 	}
 }
 
@@ -110,6 +114,7 @@ export class CollectionMoveChannel extends Channel<{
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
 		super(comDir + "." + CollectionMoveChannel.ID, ipcWrapper, null);
+		this.setShouldVoidResult(true);
 	}
 }
 
@@ -123,6 +128,7 @@ export class CollectionMoveItemsChannel extends Channel<{
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
 		super(comDir + "." + CollectionMoveItemsChannel, ipcWrapper, null);
+		this.setShouldVoidResult(true);
 	}
 }
 
@@ -134,6 +140,7 @@ export class CollectionRemoveItemsChannel extends Channel<{
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
 		super(comDir + "." + CollectionRemoveItemsChannel.ID, ipcWrapper, null);
+		this.setShouldVoidResult(true);
 	}
 }
 
@@ -168,6 +175,7 @@ export class GroupDeleteChannel extends Channel<{
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
 		super(comDir + "." + GroupDeleteChannel.ID, ipcWrapper, null);
+		this.setShouldVoidResult(true);
 	}
 }
 
@@ -179,6 +187,7 @@ export class GroupRenameChannel extends Channel<{
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
 		super(comDir + "." + GroupRenameChannel.ID, ipcWrapper, null);
+		this.setShouldVoidResult(true);
 	}
 }
 
@@ -190,6 +199,7 @@ export class GroupMoveChannel extends Channel<{
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
 		super(comDir + "." + GroupMoveChannel.ID, ipcWrapper, null);
+		this.setShouldVoidResult(true);
 	}
 }
 
@@ -212,6 +222,7 @@ export class ItemGetByIdChannel extends Channel<number, ItemData | null> {
 export class ItemsDeleteChannel extends Channel<number[], void> {
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
 		super(comDir + ".item.delete", ipcWrapper, null);
+		this.setShouldVoidResult(true);
 	}
 }
 

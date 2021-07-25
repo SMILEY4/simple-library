@@ -60,7 +60,7 @@ export class MessageProxy {
 		new LibraryCreateChannel(ipcWrapper, "r").on((payload) => {
 			return channelLibraryCreate.send(payload)
 				.then(() => this.windowService.switchToLargeWindow())
-				.then(() => undefined);
+				.then();
 		});
 
 		const channelLibraryOpen = new LibraryOpenChannel(ipcWrapper, "w");

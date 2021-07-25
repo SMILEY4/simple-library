@@ -13,3 +13,7 @@ export function doAsync<T>(executor: (resolve: (value: T | PromiseLike<T>) => vo
 export function failedAsync<T>(error: string): Promise<T> {
     return new Promise((resolve, reject) => reject(error));
 }
+
+export function voidThen(): void {
+    return undefined;
+}
