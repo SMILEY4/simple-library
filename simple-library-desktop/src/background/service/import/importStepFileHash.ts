@@ -1,7 +1,7 @@
 import { doAsync, startAsync } from '../../../common/AsyncCommon';
 import { Hash } from 'crypto';
-import { ItemData } from '../../../common/commonModels';
-import { FileSystemWrapper } from '../utils/fileSystemWrapper';
+import {FileSystemWrapper} from "../fileSystemWrapper";
+import {ItemData} from "../importService";
 
 const crypto = require('crypto');
 

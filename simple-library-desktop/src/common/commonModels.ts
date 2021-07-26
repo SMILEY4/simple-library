@@ -24,7 +24,7 @@ export interface ItemData {
     sourceFilepath: string,
     hash: string,
     thumbnail: string,
-    metadataEntries?: MetadataEntry[]
+    attributes?: MetadataEntry[]
 }
 
 

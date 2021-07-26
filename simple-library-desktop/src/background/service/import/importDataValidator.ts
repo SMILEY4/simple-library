@@ -5,7 +5,7 @@ import {
     ImportTargetAction,
     RenamePartType,
 } from '../../../common/commonModels';
-import { FileSystemWrapper } from '../utils/fileSystemWrapper';
+import {FileSystemWrapper} from "../fileSystemWrapper";
 
 
 export class ImportDataValidator {

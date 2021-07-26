@@ -208,39 +208,51 @@ export class ItemsGetByCollectionChannel extends Channel<{
 	collectionId: number,
 	itemAttributeKeys: string[]
 }, ItemData[]> {
+	public static readonly ID: string = "item.by-collection.get";
+
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + ".item.by-collection.get", ipcWrapper, false);
+		super(comDir + "." + ItemsGetByCollectionChannel.ID, ipcWrapper, false);
 	}
 }
 
 export class ItemGetByIdChannel extends Channel<number, ItemData | null> {
+	public static readonly ID: string = "item.by-id.get";
+
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + ".item.by-id.get", ipcWrapper, false);
+		super(comDir + "." + ItemGetByIdChannel.ID, ipcWrapper, false);
 	}
 }
 
 export class ItemsDeleteChannel extends Channel<number[], void> {
+	public static readonly ID: string = "item.delete";
+
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + ".item.delete", ipcWrapper, null);
+		super(comDir + "." + ItemsDeleteChannel.ID, ipcWrapper, null);
 		this.setShouldVoidResult(true);
 	}
 }
 
 export class ItemsImportChannel extends Channel<ImportProcessData, ImportResult> {
+	public static readonly ID: string = "item.import";
+
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + ".item.import", ipcWrapper, null);
+		super(comDir + "." + ItemsImportChannel.ID, ipcWrapper, null);
 	}
 }
 
 export class ItemsImportStatusChannel extends Channel<ImportStatus, void> {
+	public static readonly ID: string = "item.import.status";
+
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + ".item.import.status", ipcWrapper, null);
+		super(comDir + "." + ItemsImportStatusChannel.ID, ipcWrapper, null);
 	}
 }
 
 export class ItemGetMetadataChannel extends Channel<number, MetadataEntry[]> {
+	public static readonly ID: string = "item.metadata.get";
+
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + ".item.metadata.get", ipcWrapper, null);
+		super(comDir + "." + ItemGetMetadataChannel.ID, ipcWrapper, null);
 	}
 }
 
@@ -249,14 +261,18 @@ export class ItemSetMetadataChannel extends Channel<{
 	entryKey: string,
 	newValue: string
 }, MetadataEntry> {
+	public static readonly ID: string = "item.metadata.set";
+
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + ".item.metadata.set", ipcWrapper, null);
+		super(comDir + "." + ItemSetMetadataChannel.ID, ipcWrapper, null);
 	}
 }
 
 export class ItemsOpenExternalChannel extends Channel<number[], void> {
+	public static readonly ID: string = "item.open-external";
+
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + ".item.open-external", ipcWrapper, null);
+		super(comDir + "." + ItemsOpenExternalChannel.ID, ipcWrapper, null);
 	}
 }
 

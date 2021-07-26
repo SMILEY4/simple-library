@@ -1,3 +1,5 @@
+-- attributeKeys (csv-strings): the keys of the attributes to fetch in the format: "key1", "key2", "key3", ...
+-- query: the custom query / where-expression
 SELECT items.*, group_concat(attribs.attr_key_value, ';') AS attributes
 FROM items
          LEFT JOIN (

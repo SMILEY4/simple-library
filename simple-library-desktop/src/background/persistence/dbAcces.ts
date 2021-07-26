@@ -100,6 +100,7 @@ export class DbAccess {
 	}
 
 	private executeRun(database: Database, sql: string): Promise<number> {
+		console.debug("db run: ", sql)
 		return new Promise((resolve, reject) => {
 			database.run(sql, function (error: Error | null) {
 				error ? reject(error) : resolve(this.lastID);
@@ -108,12 +109,14 @@ export class DbAccess {
 	}
 
 	private executeQuerySingle(database: Database, sql: string): Promise<any | null> {
+		console.debug("db query single: ", sql)
 		return new Promise((resolve, reject) => {
 			database.get(sql, (err, row) => err ? reject(err) : resolve(row ? row : null));
 		});
 	}
 
 	private executeQueryAll(database: Database, sql: string): Promise<any[]> {
+		console.debug("db query all: ", sql)
 		return new Promise((resolve, reject) => {
 			database.all(sql, (err, rows) => err ? reject(err) : resolve(rows ? rows : []));
 		});

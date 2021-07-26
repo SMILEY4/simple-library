@@ -16,6 +16,14 @@ import {
 	GroupMoveChannel,
 	GroupRenameChannel,
 	GroupsGetTreeChannel,
+	ItemGetByIdChannel,
+	ItemGetMetadataChannel,
+	ItemsDeleteChannel,
+	ItemSetMetadataChannel,
+	ItemsGetByCollectionChannel,
+	ItemsImportChannel,
+	ItemsImportStatusChannel,
+	ItemsOpenExternalChannel,
 	LibrariesGetLastOpenedChannel,
 	LibraryCloseChannel,
 	LibraryCreateChannel,
@@ -49,6 +57,14 @@ export class MessageProxy {
 		proxyChannel(ipcWrapper, CollectionEditChannel.ID);
 		proxyChannel(ipcWrapper, CollectionMoveChannel.ID);
 		proxyChannel(ipcWrapper, CollectionRemoveItemsChannel.ID);
+		proxyChannel(ipcWrapper, ItemsGetByCollectionChannel.ID);
+		proxyChannel(ipcWrapper, ItemGetByIdChannel.ID);
+		proxyChannel(ipcWrapper, ItemsDeleteChannel.ID);
+		proxyChannel(ipcWrapper, ItemsOpenExternalChannel.ID);
+		proxyChannel(ipcWrapper, ItemGetMetadataChannel.ID);
+		proxyChannel(ipcWrapper, ItemSetMetadataChannel.ID);
+		proxyChannel(ipcWrapper, ItemsImportChannel.ID);
+		proxyChannel(ipcWrapper, ItemsImportStatusChannel.ID, "w", "r");
 
 		const channelSetTheme = new ConfigSetThemeChannel(ipcWrapper, "w");
 		new ConfigSetThemeChannel(ipcWrapper, "r").on((theme) => {

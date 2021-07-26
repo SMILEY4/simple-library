@@ -1,5 +1,6 @@
-import {ItemData, MetadataEntry, MetadataEntryType} from "../../../common/commonModels";
-import {ConfigDataAccess} from "../../persistence/configDataAccess";
+import {ConfigService} from "../configService";
+import {ItemData} from "../importService";
+import {Attribute, AttributeType} from "../itemService";
 
 const exiftool = require('node-exiftool');
 
@@ -7,8 +8,8 @@ export class ImportStepMetadata {
 
 	exiftoolProcess: any;
 
-	constructor(configDataAccess: ConfigDataAccess) {
-		this.exiftoolProcess = new exiftool.ExiftoolProcess(configDataAccess.getExiftoolLocation());
+	constructor(configService: ConfigService) {
+		this.exiftoolProcess = new exiftool.ExiftoolProcess(configService.getExiftoolInfo().defined ? configService.getExiftoolInfo().defined : "");
 	}
 
 	public handle(itemData: ItemData): Promise<ItemData> {
@@ -16,14 +17,14 @@ export class ImportStepMetadata {
 			.open()
 			.then(() => this.exiftoolProcess.readMetadata(itemData.sourceFilepath, ['g', 'd %Y-%m-%dT%H:%M:%S']))
 			.then((data: any) => this.flatten(data.data[0]))
-			.then((entries: MetadataEntry[]) => itemData.metadataEntries = entries)
+			.then((entries: Attribute[]) => itemData.attributes = entries)
 			.catch(() => this.exiftoolProcess.close())
 			.then(() => this.exiftoolProcess.close())
 			.then(() => itemData);
 	}
 
-	private flatten(obj: any): MetadataEntry[] {
-		const map: MetadataEntry[] = []
+	private flatten(obj: any): Attribute[] {
+		const map: Attribute[] = []
 
 		for (let key in obj) {
 			if (!obj.hasOwnProperty(key)) {
@@ -39,7 +40,7 @@ export class ImportStepMetadata {
 				})
 
 			} else if ((typeof value) == 'object') {
-				map.push(...this.flatten(value).map((flat: MetadataEntry) => ({
+				map.push(...this.flatten(value).map((flat: Attribute) => ({
 					key: key + "." + flat.key,
 					value: flat.value,
 					type: flat.type
@@ -58,7 +59,7 @@ export class ImportStepMetadata {
 		return map;
 	}
 
-	private static extractType(value: any): MetadataEntryType  {
+	private static extractType(value: any): AttributeType  {
 		const isISODate = !!(""+value).match(/\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d/);
 		if(isISODate) {
 			return "date"

@@ -4,7 +4,9 @@ import {
     CollectionCreateChannel,
     CollectionDeleteChannel,
     CollectionEditChannel,
-    CollectionMoveChannel, CollectionMoveItemsChannel, CollectionRemoveItemsChannel,
+    CollectionMoveChannel,
+    CollectionMoveItemsChannel,
+    CollectionRemoveItemsChannel,
     CollectionsGetAllChannel,
     ConfigGetExiftoolChannel,
     ConfigGetThemeChannel,
@@ -15,6 +17,14 @@ import {
     GroupMoveChannel,
     GroupRenameChannel,
     GroupsGetTreeChannel,
+    ItemGetByIdChannel,
+    ItemGetMetadataChannel,
+    ItemsDeleteChannel,
+    ItemSetMetadataChannel,
+    ItemsGetByCollectionChannel,
+    ItemsImportChannel,
+    ItemsImportStatusChannel,
+    ItemsOpenExternalChannel,
     LibrariesGetLastOpenedChannel,
     LibraryCloseChannel,
     LibraryCreateChannel,
@@ -26,17 +36,39 @@ import {LibraryService} from "./service/libraryService";
 import {DbAccess} from "./persistence/dbAcces";
 import {GroupService} from "./service/groupService";
 import {CollectionService} from "./service/collectionService";
+import {ItemService} from "./service/itemService";
+import {ImportService} from "./service/importService";
+import {ImportDataValidator} from "./service/import/importDataValidator";
+import {ImportStepFileHash} from "./service/import/importStepFileHash";
+import {ImportStepThumbnail} from "./service/import/importStepThumbnail";
+import {ImportStepRename} from "./service/import/importStepRename";
+import {ImportStepImportTarget} from "./service/import/importStepImportTarget";
+import {ImportStepMetadata} from "./service/import/importStepMetadata";
+import {FileSystemWrapper} from "./service/fileSystemWrapper";
 
 export function initBackgroundWorker(): void {
     console.log("initialize background worker");
 
+
     const configAccess: ConfigAccess = new ConfigAccess();
     const dbAccess: DbAccess = new DbAccess();
+    const fsWrapper: FileSystemWrapper = new FileSystemWrapper();
 
     const configService: ConfigService = new ConfigService(configAccess);
     const libraryService: LibraryService = new LibraryService(dbAccess);
-    const collectionService: CollectionService = new CollectionService(dbAccess)
+    const collectionService: CollectionService = new CollectionService(dbAccess);
     const groupService: GroupService = new GroupService(dbAccess, collectionService);
+    const itemService: ItemService = new ItemService(dbAccess, collectionService);
+    const importService: ImportService = new ImportService(
+        dbAccess,
+        new ImportDataValidator(fsWrapper),
+        new ImportStepFileHash(fsWrapper),
+        new ImportStepThumbnail(),
+        new ImportStepRename(),
+        new ImportStepImportTarget(fsWrapper),
+        new ImportStepMetadata(configService),
+        new ItemsImportStatusChannel(workerIpcWrapper(), "w")
+    );
 
     new ConfigOpenChannel(workerIpcWrapper(), "w")
         .on(() => configService.openConfig());
@@ -102,10 +134,30 @@ export function initBackgroundWorker(): void {
         .on((payload) => collectionService.move(payload.collectionId, payload.targetGroupId));
 
     new CollectionMoveItemsChannel(workerIpcWrapper(), "w")
-        .on((payload) => collectionService.moveItems(payload.sourceCollectionId, payload.targetCollectionId, payload.itemIds, payload.copy))
+        .on((payload) => collectionService.moveItems(payload.sourceCollectionId, payload.targetCollectionId, payload.itemIds, payload.copy));
 
     new CollectionRemoveItemsChannel(workerIpcWrapper(), "w")
-        .on((payload) => collectionService.removeItems(payload.collectionId, payload.itemIds))
+        .on((payload) => collectionService.removeItems(payload.collectionId, payload.itemIds));
 
+    new ItemsGetByCollectionChannel(workerIpcWrapper(), "w")
+        .on((payload) => itemService.getByCollection(payload.collectionId, payload.itemAttributeKeys));
+
+    new ItemGetByIdChannel(workerIpcWrapper(), "w")
+        .on((payload) => itemService.getById(payload));
+
+    new ItemsDeleteChannel(workerIpcWrapper(), "w")
+        .on((payload) => itemService.delete(payload));
+
+    new ItemsOpenExternalChannel(workerIpcWrapper(), "w")
+        .on((payload) => itemService.openExternal(payload));
+
+    new ItemGetMetadataChannel(workerIpcWrapper(), "w")
+        .on((payload) => itemService.getAttributes(payload));
+
+    new ItemSetMetadataChannel(workerIpcWrapper(), "w")
+        .on((payload) => itemService.updateAttribute(payload.itemId, payload.entryKey, payload.newValue));
+
+    new ItemsImportChannel(workerIpcWrapper(), "w")
+        .on((payload) => importService.import(payload));
 
 }

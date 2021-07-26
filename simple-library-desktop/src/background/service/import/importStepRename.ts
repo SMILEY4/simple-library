@@ -2,12 +2,11 @@ import {
     BulkRenameInstruction,
     ImportFileTarget,
     ImportTargetAction,
-    ItemData,
     RenamePart,
-    RenamePartType,
-} from '../../../common/commonModels';
-import path from 'path';
-import { startAsyncWithValue } from '../../../common/AsyncCommon';
+    RenamePartType
+} from "../../../common/commonModels";
+import path from "path";
+import {ItemData} from "../importService";
 
 export class ImportStepRename {
 
@@ -19,11 +18,13 @@ export class ImportStepRename {
      * @param counter the counter, starting with the first imported file (of the current process) and counting up
      * @return a promise that resolves with the given item data, but with the new filepath
      */
-    public handle(itemData: ItemData,
-                  handleData: ImportFileTarget,
-                  renameInstruction: BulkRenameInstruction,
-                  counter: number): Promise<ItemData> {
-        return startAsyncWithValue(itemData)
+    public handle(
+        itemData: ItemData,
+        handleData: ImportFileTarget,
+        renameInstruction: BulkRenameInstruction,
+        counter: number
+    ): Promise<ItemData> {
+        return Promise.resolve(itemData)
             .then(data => {
                 const targetDir: string = (handleData.action === ImportTargetAction.KEEP) ? undefined : handleData.targetDir;
                 data.filepath = this.getNewFilepath(data.sourceFilepath, targetDir, renameInstruction, counter);
@@ -31,18 +32,22 @@ export class ImportStepRename {
             });
     }
 
-    public getNewFilepath(filepath: string,
-                          targetDir: undefined | string,
-                          renameInstruction: BulkRenameInstruction,
-                          counter: number): string {
+    public getNewFilepath(
+        filepath: string,
+        targetDir: undefined | string,
+        renameInstruction: BulkRenameInstruction,
+        counter: number
+    ): string {
         const dirname = targetDir ? targetDir : path.dirname(filepath);
         const filename = path.basename(filepath);
         return path.join(dirname, this.getNewFilename(filename, renameInstruction, counter));
     }
 
-    public getNewFilename(filename: string,
-                          renameInstruction: BulkRenameInstruction,
-                          counter: number): string {
+    public getNewFilename(
+        filename: string,
+        renameInstruction: BulkRenameInstruction,
+        counter: number
+    ): string {
         if (renameInstruction.doRename) {
             const extension = path.extname(filename);
             const pureFilename = path.basename(filename, extension);

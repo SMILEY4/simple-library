@@ -36,7 +36,7 @@ export function ItemListEntry(props: React.PropsWithChildren<ItemListEntryProps>
 				<VBox padding="1" spacing="0-5" alignMain="center" alignCross="start">
 					<li>{props.item.id}</li>
 					<li>{props.item.filepath}</li>
-					{props.item.metadataEntries.map((entry: MetadataEntry) => {
+					{props.item.attributes.map((entry: MetadataEntry) => {
 						return <li>{entry.key + ":" + entry.type + " = " + entry.value}</li>
 					})}
 				</VBox>
