@@ -1,4 +1,5 @@
 import {Database, OPEN_CREATE, OPEN_READWRITE} from "sqlite3";
+import {SQL} from "./sqlHandler";
 
 export class DbAccess {
 
@@ -27,6 +28,13 @@ export class DbAccess {
 	}
 
 	/**
+	 * Get the current url of the database.
+	 */
+	public getDatabaseUrl(): string | null {
+		return this.url;
+	}
+
+	/**
 	 * Run the given sql-command and return the last-id on success
 	 */
 	public run(sql: string, database?: Database): Promise<null | number> {
@@ -40,6 +48,19 @@ export class DbAccess {
 	public runMultiple(arrSql: string[], database?: Database): Promise<(number | null)[]> {
 		return (database ? Promise.resolve(database) : this.getDatabase())
 			.then(db => Promise.all(arrSql.map((sql: string) => this.executeRun(db, sql).catch(() => null))));
+	}
+
+	/**
+	 * Run the given sql-commands sequentially and return an array containing the last-ids or null (order is preserved).
+	 */
+	public runMultipleSeq(arrSql: string[], database?: Database): Promise<(number | null)[]> {
+		return (database ? Promise.resolve(database) : this.getDatabase()).then(async (db: Database) => {
+			const results: (number | null)[] = [];
+			for (let sqlStmt of SQL.initializeNewLibrary(name, Date.now())) {
+				results.push(await this.executeRun(db, sqlStmt).catch(() => null));
+			}
+			return results;
+		});
 	}
 
 	/**
@@ -100,7 +121,7 @@ export class DbAccess {
 	}
 
 	private executeRun(database: Database, sql: string): Promise<number> {
-		console.debug("db run: ", sql)
+		console.debug("db run: ", sql);
 		return new Promise((resolve, reject) => {
 			database.run(sql, function (error: Error | null) {
 				error ? reject(error) : resolve(this.lastID);
@@ -109,14 +130,14 @@ export class DbAccess {
 	}
 
 	private executeQuerySingle(database: Database, sql: string): Promise<any | null> {
-		console.debug("db query single: ", sql)
+		console.debug("db query single: ", sql);
 		return new Promise((resolve, reject) => {
 			database.get(sql, (err, row) => err ? reject(err) : resolve(row ? row : null));
 		});
 	}
 
 	private executeQueryAll(database: Database, sql: string): Promise<any[]> {
-		console.debug("db query all: ", sql)
+		console.debug("db query all: ", sql);
 		return new Promise((resolve, reject) => {
 			database.all(sql, (err, rows) => err ? reject(err) : resolve(rows ? rows : []));
 		});
