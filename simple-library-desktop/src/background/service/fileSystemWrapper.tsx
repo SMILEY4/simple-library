@@ -2,6 +2,7 @@ import { ReadStream, Stats } from 'fs';
 
 const fs = require('fs');
 const fsp = fs.promises;
+const shell = require("electron").shell;
 
 export class FileSystemWrapper {
 
@@ -64,6 +65,14 @@ export class FileSystemWrapper {
         } catch (e) {
             return false;
         }
+    }
+
+    /**
+     * Opens the given file with the system default application
+     * @param path the path to the file to open
+     */
+    public open(path: string): Promise<void> {
+        return shell.openPath(path).then();
     }
 
 }

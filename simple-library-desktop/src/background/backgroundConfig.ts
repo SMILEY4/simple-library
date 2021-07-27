@@ -54,8 +54,8 @@ export function initBackgroundWorker(): void {
     const dbAccess: DbAccess = new DbAccess();
     const fsWrapper: FileSystemWrapper = new FileSystemWrapper();
 
-    const configService: ConfigService = new ConfigService(configAccess);
-    const libraryService: LibraryService = new LibraryService(dbAccess);
+    const configService: ConfigService = new ConfigService(configAccess, fsWrapper);
+    const libraryService: LibraryService = new LibraryService(dbAccess, fsWrapper);
     const collectionService: CollectionService = new CollectionService(dbAccess);
     const groupService: GroupService = new GroupService(dbAccess, collectionService);
     const itemService: ItemService = new ItemService(dbAccess, collectionService);
