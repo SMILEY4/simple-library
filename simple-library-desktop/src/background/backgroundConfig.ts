@@ -87,7 +87,7 @@ export function initBackgroundWorker(): void {
 
     new LibraryCreateChannel(workerIpcWrapper(), "w")
         .on((payload) => {
-            return libraryService.create(payload.name, payload.targetDir)
+            return libraryService.create(payload.name, payload.targetDir, true)
                 .then((library) => configService.addLastOpened(library.path, library.name));
         });
 

@@ -1,1 +1,5 @@
-module.exports = "SQL-MOCK";
+module.exports = {
+	process: (content) => {
+		return "module.exports = " + JSON.stringify(content)
+	},
+};

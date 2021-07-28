@@ -2,6 +2,7 @@ import path from "path";
 import {DbAccess} from "../persistence/dbAcces";
 import {SQL} from "../persistence/sqlHandler";
 import {FileSystemWrapper} from "./fileSystemWrapper";
+import {CollectionType} from "./collectionService";
 
 export interface LibraryFileHandle {
 	path: string,
@@ -27,7 +28,7 @@ export class LibraryService {
 	/**
 	 * Create (and "open") a new library with the given name in the given directory.
 	 */
-	public create(name: string, targetDir: string): Promise<LibraryFileHandle> {
+	public create(name: string, targetDir: string, createDefaultCollection: boolean): Promise<LibraryFileHandle> {
 		const filePath: string = LibraryService.toFilePath(targetDir, name);
 		if (this.fsWrapper.existsFile(filePath)) {
 			console.log("Could not create library. File already exists: " + filePath);
@@ -35,11 +36,11 @@ export class LibraryService {
 		} else {
 			console.log("Creating new library: " + filePath);
 			return this.dbAccess.setDatabasePath(filePath, true)
-				.then(() => this.initLibrary(name))
+				.then(() => this.initLibrary(name, createDefaultCollection))
 				.then(() => ({
 					path: filePath,
 					name: name
-				}))
+				}));
 		}
 	}
 
@@ -90,8 +91,12 @@ export class LibraryService {
 		return path.join(dir, filename + ".db");
 	}
 
-	private initLibrary(name: string): Promise<void> {
-		return this.dbAccess.runMultipleSeq(SQL.initializeNewLibrary(name, Date.now())).then();
+	private initLibrary(name: string, createDefaultCollection: boolean): Promise<void> {
+		const queries = SQL.initializeNewLibrary(name, Date.now());
+		if (createDefaultCollection) {
+			queries.push(SQL.insertCollection("All Items", CollectionType.SMART, null, null));
+		}
+		return this.dbAccess.runMultipleSeq(queries).then();
 	}
 
 	private updateLibraryOpenedTimestamp(): Promise<void> {

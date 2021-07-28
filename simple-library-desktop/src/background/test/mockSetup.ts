@@ -2,6 +2,22 @@ import {jest} from "@jest/globals";
 import {DbAccess} from "../persistence/dbAcces";
 import {FileSystemWrapper} from "../service/fileSystemWrapper";
 import {ConfigAccess} from "../persistence/configAccess";
+import {SQL} from "../persistence/sqlHandler";
+
+export function mockSqlReturnQueryName() {
+	Object.getOwnPropertyNames(SQL).forEach(item => {
+		// @ts-ignore
+		if (typeof SQL[item] === "function") {
+			// @ts-ignore
+			SQL[item] = () => item as any;
+			// @ts-ignore
+			Object.defineProperty(SQL[item], "name", {value: item});
+		}
+	});
+	SQL.queryItemCountByQuery = (query: string) => "queryItemCountByQuery(" + query + ")";
+	Object.defineProperty(SQL.queryItemCountByQuery, "name", {value: "queryItemCountByQuery"});
+}
+
 
 export function mockFileSystemWrapper(): FileSystemWrapper {
 	const fsWrapper = new FileSystemWrapper();
@@ -30,9 +46,30 @@ export function mockConfigAccess(): ConfigAccess {
 	const configAccess = new ConfigAccess();
 	configAccess["getStoreValue"] = jest.fn().mockReturnValue(undefined) as any;
 	configAccess["setValue"] = jest.fn().mockReturnValue(undefined) as any;
-	return configAccess
+	return configAccess;
 }
 
-export function mockQueryAll(dbAccess: DbAccess, result: any[]) {
-	dbAccess["executeQueryAll"] = jest.fn().mockImplementation((db: any, sql: string) => result) as any;
+export function mockDateNow(timestamp: number) {
+	Date.now = () => timestamp;
 }
+
+export interface QueryMockEntry {
+	id: string,
+	result: any
+}
+
+export function mockQueryAll(dbAccess: DbAccess, queryMocks: QueryMockEntry[]) {
+	dbAccess["executeQueryAll"] = jest.fn().mockImplementation((db: any, sql: string) => {
+		const mock = queryMocks.find(entry => entry.id.trim() === sql.trim());
+		return mock ? Promise.resolve(mock.result) : undefined;
+	}) as any;
+}
+
+export function mockQuerySingle(dbAccess: DbAccess, queryMocks: QueryMockEntry[]) {
+	dbAccess["executeQuerySingle"] = jest.fn().mockImplementation((db: any, sql: string) => {
+		const mock = queryMocks.find(entry => entry.id.trim() === sql.trim());
+		return mock ? Promise.resolve(mock.result) : undefined;
+	}) as any;
+}
+
+

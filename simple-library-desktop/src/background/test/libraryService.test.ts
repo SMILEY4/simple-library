@@ -1,76 +1,96 @@
 import {jest} from "@jest/globals";
 import {LibraryService} from "../service/libraryService";
-import {mockDbAccess, mockFileSystemWrapper, mockQueryAll} from "./mockSetup";
+import {mockDateNow, mockFileSystemWrapper} from "./mockSetup";
 import {DbAccess} from "../persistence/dbAcces";
 import {FileSystemWrapper} from "../service/fileSystemWrapper";
+import {MemDbAccess} from "./memDbAccess";
+import {SQL} from "../persistence/sqlHandler";
 
-test("create new valid library", async () => {
-	const name = "My 1. Test Library!";
-	const dir = "my/test/directory";
-	const expectedFilePath = "my\\test\\directory\\My1TestLibrary.db";
+describe("library-service", () => {
 
-	const [libraryService, dbAccess, fsWrapper] = mockLibraryService();
-	mockExistsFile(fsWrapper, false);
-	spyCreateDbFile(dbAccess);
+	test("create new valid library", async () => {
+		const name = "My 1. Test Library!";
+		const dir = "my/test/directory";
+		const expectedFilePath = "my\\test\\directory\\My1TestLibrary.db";
+		const expectedTimestamp = Date.now();
 
-	await expect(libraryService.create(name, dir)).resolves.toStrictEqual({path: expectedFilePath, name: name});
-	expect(dbAccess.getDatabaseUrl()).toBe(expectedFilePath);
-	expect(funCreateDbFile(dbAccess)).toHaveBeenCalledWith(expectedFilePath);
-});
+		const [libraryService, dbAccess, fsWrapper] = mockLibraryService();
+		mockExistsFile(fsWrapper, false);
+		mockDateNow(expectedTimestamp);
 
-
-test("dont create new library when file already exists", async () => {
-	const [libraryService, dbAccess, fsWrapper] = mockLibraryService();
-	mockExistsFile(fsWrapper, true);
-	spyCreateDbFile(dbAccess);
-
-	await expect(libraryService.create("name", "dir")).rejects.toBeDefined();
-	expect(dbAccess.getDatabaseUrl()).toBe(null);
-	expect(funCreateDbFile(dbAccess)).toHaveBeenCalledTimes(0);
-});
+		await expect(libraryService.create(name, dir, true)).resolves.toStrictEqual({path: expectedFilePath, name: name});
+		await expect(libraryService.getCurrentInformation()).resolves.toStrictEqual({
+			"name": name,
+			"timestampCreated": expectedTimestamp,
+			"timestampLastOpened": expectedTimestamp
+		});
+		expect(dbAccess.getDatabaseUrl()).toBe(expectedFilePath);
+	});
 
 
-test("open existing library", async () => {
-	const filePath = "my\\test\\directory\\TestLib.db";
-	const libName = "MyLib";
+	test("dont create new library when file already exists", async () => {
+		const [libraryService, dbAccess, fsWrapper] = mockLibraryService();
+		mockExistsFile(fsWrapper, true);
 
-	const [libraryService, dbAccess, fsWrapper] = mockLibraryService();
-	mockExistsFile(fsWrapper, true);
-	spyCreateDbFile(dbAccess);
-	mockQueryAll(dbAccess, [
-		{key: "library_name", value: libName},
-		{key: "timestamp_created", value: 1234},
-		{key: "timestamp_last_opened", value: 5678}
-	]);
+		await expect(libraryService.create("name", "dir", true)).rejects.toBeDefined();
+		await expect(libraryService.getCurrentInformation()).rejects.toBeDefined();
+		expect(dbAccess.getDatabaseUrl()).toBe(null);
+	});
 
-	await expect(libraryService.open(filePath)).resolves.toStrictEqual({path: filePath, name: libName});
-	expect(dbAccess.getDatabaseUrl()).toBe(filePath);
-	expect(funCreateDbFile(dbAccess)).toHaveBeenCalledTimes(0);
-});
+	test("dont create new library when name is invalid", async () => {
+		const [libraryService, dbAccess, fsWrapper] = mockLibraryService();
+		mockExistsFile(fsWrapper, true);
 
-test("open non-existing library", async () => {
-	const filePath = "my\\test\\directory\\NoLib.db";
+		await expect(libraryService.create("./_", "dir", true)).rejects.toBeDefined();
+		expect(dbAccess.getDatabaseUrl()).toBe(null);
+	});
 
-	const [libraryService, dbAccess, fsWrapper] = mockLibraryService();
-	mockExistsFile(fsWrapper, false);
-	spyCreateDbFile(dbAccess);
 
-	await expect(libraryService.open(filePath)).rejects.toBeDefined();
-	expect(dbAccess.getDatabaseUrl()).toBe(null);
-	expect(funCreateDbFile(dbAccess)).toHaveBeenCalledTimes(0);
-});
+	test("open existing library", async () => {
+		const filePath = "my\\test\\directory\\TestLib.db";
+		const libName = "MyLib";
+		const tsNow = Date.now();
+		const tsCreated = Date.now() - 2000;
 
-test("close current library", async () => {
-	const [libraryService, dbAccess] = mockLibraryService();
-	await dbAccess.setDatabasePath("my/path/to/MyLib.db", false);
+		const [libraryService, dbAccess, fsWrapper] = mockLibraryService();
+		mockExistsFile(fsWrapper, true);
+		mockDateNow(tsNow);
 
-	await expect(libraryService.closeCurrent()).resolves.toBeUndefined();
-	expect(dbAccess.getDatabaseUrl()).toBe(null);
+		await dbAccess.setDatabasePath(filePath, false);
+		await dbAccess.runMultipleSeq(SQL.initializeNewLibrary("MyLib", tsCreated));
+
+		await expect(libraryService.open(filePath)).resolves.toStrictEqual({path: filePath, name: libName});
+		expect(dbAccess.getDatabaseUrl()).toBe(filePath);
+		await expect(libraryService.getCurrentInformation()).resolves.toStrictEqual({
+			"name": libName,
+			"timestampCreated": tsCreated,
+			"timestampLastOpened": tsNow
+		});
+	});
+
+	test("open non-existing library", async () => {
+		const filePath = "my\\test\\directory\\NoLib.db";
+
+		const [libraryService, dbAccess, fsWrapper] = mockLibraryService();
+		mockExistsFile(fsWrapper, false);
+
+		await expect(libraryService.open(filePath)).rejects.toBeDefined();
+		expect(dbAccess.getDatabaseUrl()).toBe(null);
+		await expect(libraryService.getCurrentInformation()).rejects.toBeDefined();
+	});
+
+	test("close current library", async () => {
+		const [libraryService, dbAccess] = mockLibraryService();
+		await dbAccess.setDatabasePath("my/path/to/MyLib.db", false);
+
+		await expect(libraryService.closeCurrent()).resolves.toBeUndefined();
+		expect(dbAccess.getDatabaseUrl()).toBe(null);
+	});
 });
 
 
 function mockLibraryService(): [LibraryService, DbAccess, FileSystemWrapper] {
-	const dbAccess = mockDbAccess();
+	const dbAccess = new MemDbAccess();
 	const fsWrapper = mockFileSystemWrapper();
 	const libraryService: LibraryService = new LibraryService(dbAccess, fsWrapper);
 	return [libraryService, dbAccess, fsWrapper];
@@ -78,13 +98,4 @@ function mockLibraryService(): [LibraryService, DbAccess, FileSystemWrapper] {
 
 function mockExistsFile(fsWrapper: FileSystemWrapper, exists: boolean) {
 	fsWrapper.existsFile = jest.fn().mockReturnValue(exists) as any;
-}
-
-function spyCreateDbFile(dbAccess: DbAccess) {
-	// @ts-ignore
-	jest.spyOn(dbAccess, "createDbFile");
-}
-
-function funCreateDbFile(dbAccess: DbAccess): any {
-	return dbAccess["createDbFile"];
 }
