@@ -89,7 +89,8 @@ export module SQL {
 	export function updateGroupParents(prevParentGroupId: number | null, newParentGroupId: number | null) {
 		return sql(groupUpdateParents)
 			.replace(v("prevParentGroupId"), num(prevParentGroupId))
-			.replace(v("parentGroupId"), num(newParentGroupId));
+			.replace(v("parentGroupId"), num(newParentGroupId))
+			.replace(" = null", " IS NULL");
 	}
 
 	export function queryAllCollections(): string {
@@ -133,7 +134,8 @@ export module SQL {
 	export function updateCollectionParents(prevParentGroupId: number | null, newParentGroupId: number | null): string {
 		return sql(collectionsUpdateParents)
 			.replace(v("groupId"), num(newParentGroupId))
-			.replace(v("prevGroupId"), num(prevParentGroupId));
+			.replace(v("prevGroupId"), num(prevParentGroupId))
+			.replace(" = null", " IS NULL");
 	}
 
 	export function updateCollectionParent(collectionId: number, newParentGroupId: number | null): string {
@@ -184,7 +186,7 @@ export module SQL {
 	}
 
 
-	export function insertItemsToCollection(collectionId: number, itemIds: number[]): string {
+	export function insertItemsIntoCollection(collectionId: number, itemIds: number[]): string {
 		const strEntries = itemIds.map(id => "(" + collectionId + "," + id + ")").join(", ");
 		return sql(collectionItemsAdd)
 			.replace(v("entries"), strEntries);
