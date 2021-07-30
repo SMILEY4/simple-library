@@ -36,6 +36,8 @@ export class CollectionService {
 					for (let i = 0; i < collections.length; i++) {
 						if (collections[i].type === CollectionType.SMART) {
 							collections[i].itemCount = await this.getSmartItemCount(collections[i]);
+						} else if(!collections[i].itemCount) {
+							collections[i].itemCount = 0;
 						}
 					}
 					return collections;

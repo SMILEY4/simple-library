@@ -88,9 +88,9 @@ export module SQL {
 
 	export function updateGroupParents(prevParentGroupId: number | null, newParentGroupId: number | null) {
 		return sql(groupUpdateParents)
-			.replace(v("prevParentGroupId"), num(prevParentGroupId))
+			.replace(v("prevParentGroupId"), eqNum(prevParentGroupId))
 			.replace(v("parentGroupId"), num(newParentGroupId))
-			.replace(" = null", " IS NULL");
+			.replace(vNull(), isNull);
 	}
 
 	export function queryAllCollections(): string {
@@ -134,8 +134,8 @@ export module SQL {
 	export function updateCollectionParents(prevParentGroupId: number | null, newParentGroupId: number | null): string {
 		return sql(collectionsUpdateParents)
 			.replace(v("groupId"), num(newParentGroupId))
-			.replace(v("prevGroupId"), num(prevParentGroupId))
-			.replace(" = null", " IS NULL");
+			.replace(v("prevGroupId"), eqNum(prevParentGroupId))
+			.replace(vNull(), isNull());
 	}
 
 	export function updateCollectionParent(collectionId: number, newParentGroupId: number | null): string {
@@ -244,12 +244,24 @@ function v(name: string): RegExp {
 	return new RegExp("\\$" + name, "g");
 }
 
+function vNull() {
+	return new RegExp("= \\$null", "g");
+}
+
+function isNull(): string {
+	return "IS NULL";
+}
+
 function str(value: any): string {
 	return !!value ? "'" + value + "'" : "null";
 }
 
-function num(value: number): string {
+function num(value: number | null): string {
 	return !!value ? "" + value : "null";
+}
+
+function eqNum(value: number | null): string {
+	return !!value ? "" + value : "$null";
 }
 
 function strCsv(values: any[]): string {
@@ -259,4 +271,5 @@ function strCsv(values: any[]): string {
 function numCsv(values: number[]): string {
 	return !!values ? values.map((value: number) => num(value)).join(", ") : "null";
 }
+
 

@@ -10,7 +10,6 @@ describe("collection-service", () => {
 
 	describe("get collections", () => {
 
-
 		test("get all without item count when empty", async () => {
 			// given
 			const [collectionService, libraryService] = mockCollectionService();
@@ -85,7 +84,6 @@ describe("collection-service", () => {
 
 
 	describe("create collections", () => {
-
 
 		test("create normal collection", async () => {
 			// given
