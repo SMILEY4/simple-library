@@ -67,11 +67,18 @@ export class ImportService {
 	}
 
 	/**
+	 * Whether an import is currently running.
+	 */
+	public isImportRunning(): boolean {
+		return this.importRunning;
+	}
+
+	/**
 	 * Import the given data
 	 */
 	public async import(data: ImportProcessData): Promise<ImportResult> {
 		if (this.importRunning) {
-			return Promise.resolve(ImportService.resultAlreadyRunning());
+			return Promise.resolve(ImportService.resultAlreadyRunning(data.files.length));
 		} else {
 			this.importRunning = true;
 			const totalAmountFiles: number = data.files.length;
@@ -127,10 +134,10 @@ export class ImportService {
 			.then(voidThen);
 	}
 
-	private static resultAlreadyRunning(): ImportResult {
+	private static resultAlreadyRunning(amountFiles: number): ImportResult {
 		return {
 			timestamp: Date.now(),
-			amountFiles: 0,
+			amountFiles: amountFiles,
 			failed: true,
 			failureReason: "Can not start import while another import is already running.",
 			encounteredErrors: false,

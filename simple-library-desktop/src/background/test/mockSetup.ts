@@ -3,6 +3,8 @@ import {DbAccess} from "../persistence/dbAcces";
 import {FileSystemWrapper} from "../service/fileSystemWrapper";
 import {ConfigAccess} from "../persistence/configAccess";
 import {SQL} from "../persistence/sqlHandler";
+import {Channel} from "../../common/messaging/core/channel";
+import {ItemsImportStatusChannel} from "../../common/messaging/channels/channels";
 
 export function mockSqlReturnQueryName() {
 	Object.getOwnPropertyNames(SQL).forEach(item => {
@@ -49,8 +51,9 @@ export function mockConfigAccess(): ConfigAccess {
 	return configAccess;
 }
 
-export function mockDateNow(timestamp: number) {
+export function mockDateNow(timestamp: number): number {
 	Date.now = () => timestamp;
+	return timestamp;
 }
 
 export interface QueryMockEntry {

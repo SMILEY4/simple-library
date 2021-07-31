@@ -32,7 +32,7 @@ export class ImportStepFileHash {
         return startAsync()
             .then(() => console.log('start computing hash for file "' + filepath + '"'))
             .then(() => crypto.createHash("md5"))
-            .then((hash: Hash) => this.computeHashWithAlgorithm(filepath, hash))
+            .then((hashFunction: Hash) => this.computeHashWithAlgorithm(filepath, hashFunction))
             .then((hash: string) => {
                 if (!hash || hash.length === 0) {
                     throw "Could not calculate hash";
@@ -43,7 +43,7 @@ export class ImportStepFileHash {
     }
 
 
-    private computeHashWithAlgorithm(filepath: string, hash: Hash): Promise<string> {
+    private computeHashWithAlgorithm(filepath: string, hashFunction: Hash): Promise<string> {
         return doAsync((resolve, reject) => {
             const rs = this.fsWrapper.createReadStream(filepath);
             rs.on('error', (err: Error) => {
@@ -51,10 +51,10 @@ export class ImportStepFileHash {
                 reject(err);
             });
             rs.on('data', (chunk: Buffer | string) => {
-                hash = hash.update(chunk);
+                hashFunction = hashFunction.update(chunk);
             });
             rs.on('end', () => {
-                resolve(hash.digest('hex'));
+                resolve(hashFunction.digest('hex'));
             });
         });
     }
