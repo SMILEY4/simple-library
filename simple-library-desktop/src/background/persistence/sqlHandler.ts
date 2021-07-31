@@ -31,6 +31,7 @@ import collectionItemsAdd from "./sqlfiles/collection_items/collection_items_ins
 import collectionItemsRemove from "./sqlfiles/collection_items/collection_items_delete_items_multiple.sql";
 import itemAttributes from "./sqlfiles/items/items_get_metadata.sql";
 import itemAttribute from "./sqlfiles/item_attributes/item_attribs_get_single.sql";
+import itemAttributesInsert from "./sqlfiles/item_attributes/item_attribs_insert.sql";
 import itemUpdateAttribute from "./sqlfiles/item_attributes/item_attribs_update_value.sql";
 import itemInsert from "./sqlfiles/items/items_insert.sql";
 
@@ -232,6 +233,12 @@ export module SQL {
 			.replace(v("itemId"), num(itemId))
 			.replace(v("key"), str(attributeKey))
 			.replace(v("value"), str(value));
+	}
+
+	export function insertItemAttributes(itemId: number, attributes: ({ key: string, value: string, type: string })[]): string {
+		const entries: string[] = attributes.map(att => `("${att.key}", "${att.value}", "${att.type}", ${itemId})`)
+		return sql(itemAttributesInsert)
+			.replace(v("entries"), entries.join(", "));
 	}
 
 }
