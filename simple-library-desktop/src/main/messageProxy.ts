@@ -1,5 +1,4 @@
-import {WindowService} from "../service/windowService";
-import {mainIpcWrapper} from "../../common/messaging/core/ipcWrapper";
+import {mainIpcWrapper} from "../common/messaging/core/ipcWrapper";
 import {
 	CollectionCreateChannel,
 	CollectionDeleteChannel,
@@ -30,15 +29,13 @@ import {
 	LibraryGetMetadataChannel,
 	LibraryOpenChannel,
 	proxyChannel
-} from "../../common/messaging/channels/channels";
+} from "../common/messaging/channels/channels";
 import {BrowserWindow} from "electron";
+import {WindowHandle} from "./windowHandle";
 
 export class MessageProxy {
 
-	private readonly windowService: WindowService;
-
-	constructor(windowService: WindowService, workerWindowProvider: () => BrowserWindow) {
-		this.windowService = windowService;
+	constructor(workerWindowProvider: () => BrowserWindow) {
 		const ipcWrapper = mainIpcWrapper(workerWindowProvider);
 
 		proxyChannel(ipcWrapper, ConfigOpenChannel.ID);
@@ -46,6 +43,9 @@ export class MessageProxy {
 		proxyChannel(ipcWrapper, ConfigGetThemeChannel.ID);
 		proxyChannel(ipcWrapper, LibrariesGetLastOpenedChannel.ID);
 		proxyChannel(ipcWrapper, LibraryGetMetadataChannel.ID);
+		proxyChannel(ipcWrapper, LibraryCreateChannel.ID);
+		proxyChannel(ipcWrapper, LibraryOpenChannel.ID);
+		proxyChannel(ipcWrapper, LibraryCloseChannel.ID);
 		proxyChannel(ipcWrapper, GroupsGetTreeChannel.ID);
 		proxyChannel(ipcWrapper, GroupCreateChannel.ID);
 		proxyChannel(ipcWrapper, GroupDeleteChannel.ID);
@@ -68,29 +68,7 @@ export class MessageProxy {
 
 		const channelSetTheme = new ConfigSetThemeChannel(ipcWrapper, "w");
 		new ConfigSetThemeChannel(ipcWrapper, "r").on((theme) => {
-			return channelSetTheme.send(theme)
-				.then(() => this.windowService.setApplicationTheme(theme));
-		});
-
-		const channelLibraryCreate = new LibraryCreateChannel(ipcWrapper, "w");
-		new LibraryCreateChannel(ipcWrapper, "r").on((payload) => {
-			return channelLibraryCreate.send(payload)
-				.then(() => this.windowService.switchToLargeWindow())
-				.then();
-		});
-
-		const channelLibraryOpen = new LibraryOpenChannel(ipcWrapper, "w");
-		new LibraryOpenChannel(ipcWrapper, "r").on((payload) => {
-			return channelLibraryOpen.send(payload)
-				.then(() => this.windowService.switchToLargeWindow())
-				.then(() => undefined);
-		});
-
-		const channelLibraryClose = new LibraryCloseChannel(ipcWrapper, "w");
-		new LibraryCloseChannel(ipcWrapper, "r").on((payload) => {
-			return channelLibraryClose.send(payload)
-				.then(() => this.windowService.switchToSmallWindow())
-				.then(() => undefined);
+			return channelSetTheme.send(theme).then(() => WindowHandle.setTheme(theme));
 		});
 
 	}
