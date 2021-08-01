@@ -15,9 +15,9 @@ import {Channel} from "../core/channel";
 
 export type ComDir = "r" | "w";
 
-export function proxyChannel(ipcWrapper: IpcWrapper, id: string, dirFrom?: ComDir, dirTo?: ComDir): void {
-	const channelFrom = new Channel((dirFrom ? dirFrom : "r") + "." + id, ipcWrapper);
-	const channelTo = new Channel((dirTo ? dirTo : "w") + "." + id, ipcWrapper);
+export function proxyChannel(ipcWrapper: IpcWrapper, id: string, logPayload: boolean, dirFrom?: ComDir, dirTo?: ComDir): void {
+	const channelFrom = new Channel((dirFrom ? dirFrom : "r") + "." + id, ipcWrapper, logPayload);
+	const channelTo = new Channel((dirTo ? dirTo : "w") + "." + id, ipcWrapper, logPayload);
 	channelFrom.on((payload: any, traceId: string) => {
 		return channelTo.send(payload, traceId + "-p").then((response) => response);
 	});
@@ -32,7 +32,7 @@ export class ConfigOpenChannel extends Channel<void, void> {
 	public static readonly ID: string = "config.open";
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + "." + ConfigOpenChannel.ID, ipcWrapper);
+		super(comDir + "." + ConfigOpenChannel.ID, ipcWrapper, true);
 		this.setShouldVoidResult(true);
 	}
 }
@@ -41,7 +41,7 @@ export class ConfigGetExiftoolChannel extends Channel<void, GetExiftoolDataPaylo
 	public static readonly ID: string = "config.exiftool.get";
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + "." + ConfigGetExiftoolChannel.ID, ipcWrapper);
+		super(comDir + "." + ConfigGetExiftoolChannel.ID, ipcWrapper, true);
 	}
 }
 
@@ -49,7 +49,7 @@ export class ConfigGetThemeChannel extends Channel<void, "dark" | "light"> {
 	public static readonly ID: string = "config.theme.get";
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + "." + ConfigGetThemeChannel.ID, ipcWrapper);
+		super(comDir + "." + ConfigGetThemeChannel.ID, ipcWrapper, true);
 	}
 }
 
@@ -57,7 +57,7 @@ export class ConfigSetThemeChannel extends Channel<"dark" | "light", void> {
 	public static readonly ID: string = "config.theme.set";
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + "." + ConfigSetThemeChannel.ID, ipcWrapper);
+		super(comDir + "." + ConfigSetThemeChannel.ID, ipcWrapper, true);
 		this.setShouldVoidResult(true);
 	}
 }
@@ -67,7 +67,7 @@ export class CollectionsGetAllChannel extends Channel<boolean, Collection[]> {
 	public static readonly ID: string = "collection.all.get";
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + "." + CollectionsGetAllChannel.ID, ipcWrapper, null);
+		super(comDir + "." + CollectionsGetAllChannel.ID, ipcWrapper, true);
 	}
 }
 
@@ -80,7 +80,7 @@ export class CollectionCreateChannel extends Channel<{
 	public static readonly ID: string = "collection.create";
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + "." + CollectionCreateChannel.ID, ipcWrapper, null);
+		super(comDir + "." + CollectionCreateChannel.ID, ipcWrapper, true);
 	}
 }
 
@@ -88,7 +88,7 @@ export class CollectionDeleteChannel extends Channel<number, void> {
 	public static readonly ID: string = "collection.delete";
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + "." + CollectionDeleteChannel.ID, ipcWrapper, null);
+		super(comDir + "." + CollectionDeleteChannel.ID, ipcWrapper, true);
 		this.setShouldVoidResult(true);
 	}
 }
@@ -101,7 +101,7 @@ export class CollectionEditChannel extends Channel<{
 	public static readonly ID: string = "collection.edit";
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + "." + CollectionEditChannel.ID, ipcWrapper, null);
+		super(comDir + "." + CollectionEditChannel.ID, ipcWrapper, true);
 		this.setShouldVoidResult(true);
 	}
 }
@@ -113,7 +113,7 @@ export class CollectionMoveChannel extends Channel<{
 	public static readonly ID: string = "collection.move";
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + "." + CollectionMoveChannel.ID, ipcWrapper, null);
+		super(comDir + "." + CollectionMoveChannel.ID, ipcWrapper, true);
 		this.setShouldVoidResult(true);
 	}
 }
@@ -127,7 +127,7 @@ export class CollectionMoveItemsChannel extends Channel<{
 	public static readonly ID: string = "collection.items.move";
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + "." + CollectionMoveItemsChannel, ipcWrapper, null);
+		super(comDir + "." + CollectionMoveItemsChannel.ID, ipcWrapper, true);
 		this.setShouldVoidResult(true);
 	}
 }
@@ -139,7 +139,7 @@ export class CollectionRemoveItemsChannel extends Channel<{
 	public static readonly ID: string = "collection.items.remove";
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + "." + CollectionRemoveItemsChannel.ID, ipcWrapper, null);
+		super(comDir + "." + CollectionRemoveItemsChannel.ID, ipcWrapper, true);
 		this.setShouldVoidResult(true);
 	}
 }
@@ -152,7 +152,7 @@ export class GroupsGetTreeChannel extends Channel<{
 	public static readonly ID: string = "group.tree.get";
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + "." + GroupsGetTreeChannel.ID, ipcWrapper, null);
+		super(comDir + "." + GroupsGetTreeChannel.ID, ipcWrapper, true);
 	}
 }
 
@@ -163,7 +163,7 @@ export class GroupCreateChannel extends Channel<{
 	public static readonly ID: string = "group.create";
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + "." + GroupCreateChannel.ID, ipcWrapper, null);
+		super(comDir + "." + GroupCreateChannel.ID, ipcWrapper, true);
 	}
 }
 
@@ -174,7 +174,7 @@ export class GroupDeleteChannel extends Channel<{
 	public static readonly ID: string = "group.delete";
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + "." + GroupDeleteChannel.ID, ipcWrapper, null);
+		super(comDir + "." + GroupDeleteChannel.ID, ipcWrapper, true);
 		this.setShouldVoidResult(true);
 	}
 }
@@ -186,7 +186,7 @@ export class GroupRenameChannel extends Channel<{
 	public static readonly ID: string = "group.rename";
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + "." + GroupRenameChannel.ID, ipcWrapper, null);
+		super(comDir + "." + GroupRenameChannel.ID, ipcWrapper, true);
 		this.setShouldVoidResult(true);
 	}
 }
@@ -198,7 +198,7 @@ export class GroupMoveChannel extends Channel<{
 	public static readonly ID: string = "group.move";
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + "." + GroupMoveChannel.ID, ipcWrapper, null);
+		super(comDir + "." + GroupMoveChannel.ID, ipcWrapper, true);
 		this.setShouldVoidResult(true);
 	}
 }
@@ -227,7 +227,7 @@ export class ItemsDeleteChannel extends Channel<number[], void> {
 	public static readonly ID: string = "item.delete";
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + "." + ItemsDeleteChannel.ID, ipcWrapper, null);
+		super(comDir + "." + ItemsDeleteChannel.ID, ipcWrapper, true);
 		this.setShouldVoidResult(true);
 	}
 }
@@ -236,7 +236,7 @@ export class ItemsImportChannel extends Channel<ImportProcessData, ImportResult>
 	public static readonly ID: string = "item.import";
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + "." + ItemsImportChannel.ID, ipcWrapper, null);
+		super(comDir + "." + ItemsImportChannel.ID, ipcWrapper, true);
 	}
 }
 
@@ -244,7 +244,7 @@ export class ItemsImportStatusChannel extends Channel<ImportStatus, void> {
 	public static readonly ID: string = "item.import.status";
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + "." + ItemsImportStatusChannel.ID, ipcWrapper, null);
+		super(comDir + "." + ItemsImportStatusChannel.ID, ipcWrapper, true);
 	}
 }
 
@@ -252,7 +252,7 @@ export class ItemGetMetadataChannel extends Channel<number, MetadataEntry[]> {
 	public static readonly ID: string = "item.metadata.get";
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + "." + ItemGetMetadataChannel.ID, ipcWrapper, null);
+		super(comDir + "." + ItemGetMetadataChannel.ID, ipcWrapper, true);
 	}
 }
 
@@ -264,7 +264,7 @@ export class ItemSetMetadataChannel extends Channel<{
 	public static readonly ID: string = "item.metadata.set";
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + "." + ItemSetMetadataChannel.ID, ipcWrapper, null);
+		super(comDir + "." + ItemSetMetadataChannel.ID, ipcWrapper, true);
 	}
 }
 
@@ -272,7 +272,7 @@ export class ItemsOpenExternalChannel extends Channel<number[], void> {
 	public static readonly ID: string = "item.open-external";
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + "." + ItemsOpenExternalChannel.ID, ipcWrapper, null);
+		super(comDir + "." + ItemsOpenExternalChannel.ID, ipcWrapper, true);
 	}
 }
 
@@ -281,7 +281,7 @@ export class LibrariesGetLastOpenedChannel extends Channel<void, LastOpenedLibra
 	public static readonly ID: string = "library.last-opened.get";
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + "." + LibrariesGetLastOpenedChannel.ID, ipcWrapper, null);
+		super(comDir + "." + LibrariesGetLastOpenedChannel.ID, ipcWrapper, true);
 	}
 }
 
@@ -292,7 +292,7 @@ export class LibraryCreateChannel extends Channel<{
 	public static readonly ID: string = "library.create";
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + "." + LibraryCreateChannel.ID, ipcWrapper, null);
+		super(comDir + "." + LibraryCreateChannel.ID, ipcWrapper, true);
 	}
 }
 
@@ -300,7 +300,7 @@ export class LibraryOpenChannel extends Channel<string, void> {
 	public static readonly ID: string = "library.open";
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + "." + LibraryOpenChannel.ID, ipcWrapper, null);
+		super(comDir + "." + LibraryOpenChannel.ID, ipcWrapper, true);
 	}
 }
 
@@ -308,7 +308,7 @@ export class LibraryCloseChannel extends Channel<void, void> {
 	public static readonly ID: string = "library.close";
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + "." + LibraryCloseChannel.ID, ipcWrapper, null);
+		super(comDir + "." + LibraryCloseChannel.ID, ipcWrapper, true);
 	}
 }
 
@@ -316,6 +316,6 @@ export class LibraryGetMetadataChannel extends Channel<void, LibraryMetadata> {
 	public static readonly ID: string = "library.metadata.get";
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
-		super(comDir + "." + LibraryGetMetadataChannel.ID, ipcWrapper, null);
+		super(comDir + "." + LibraryGetMetadataChannel.ID, ipcWrapper, true);
 	}
 }

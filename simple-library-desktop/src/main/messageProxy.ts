@@ -3,7 +3,7 @@ import {
 	CollectionCreateChannel,
 	CollectionDeleteChannel,
 	CollectionEditChannel,
-	CollectionMoveChannel,
+	CollectionMoveChannel, CollectionMoveItemsChannel,
 	CollectionRemoveItemsChannel,
 	CollectionsGetAllChannel,
 	ConfigGetExiftoolChannel,
@@ -38,33 +38,34 @@ export class MessageProxy {
 	constructor(workerWindowProvider: () => BrowserWindow) {
 		const ipcWrapper = mainIpcWrapper(workerWindowProvider);
 
-		proxyChannel(ipcWrapper, ConfigOpenChannel.ID);
-		proxyChannel(ipcWrapper, ConfigGetExiftoolChannel.ID);
-		proxyChannel(ipcWrapper, ConfigGetThemeChannel.ID);
-		proxyChannel(ipcWrapper, LibrariesGetLastOpenedChannel.ID);
-		proxyChannel(ipcWrapper, LibraryGetMetadataChannel.ID);
-		proxyChannel(ipcWrapper, LibraryCreateChannel.ID);
-		proxyChannel(ipcWrapper, LibraryOpenChannel.ID);
-		proxyChannel(ipcWrapper, LibraryCloseChannel.ID);
-		proxyChannel(ipcWrapper, GroupsGetTreeChannel.ID);
-		proxyChannel(ipcWrapper, GroupCreateChannel.ID);
-		proxyChannel(ipcWrapper, GroupDeleteChannel.ID);
-		proxyChannel(ipcWrapper, GroupRenameChannel.ID);
-		proxyChannel(ipcWrapper, GroupMoveChannel.ID);
-		proxyChannel(ipcWrapper, CollectionsGetAllChannel.ID);
-		proxyChannel(ipcWrapper, CollectionCreateChannel.ID);
-		proxyChannel(ipcWrapper, CollectionDeleteChannel.ID);
-		proxyChannel(ipcWrapper, CollectionEditChannel.ID);
-		proxyChannel(ipcWrapper, CollectionMoveChannel.ID);
-		proxyChannel(ipcWrapper, CollectionRemoveItemsChannel.ID);
-		proxyChannel(ipcWrapper, ItemsGetByCollectionChannel.ID);
-		proxyChannel(ipcWrapper, ItemGetByIdChannel.ID);
-		proxyChannel(ipcWrapper, ItemsDeleteChannel.ID);
-		proxyChannel(ipcWrapper, ItemsOpenExternalChannel.ID);
-		proxyChannel(ipcWrapper, ItemGetMetadataChannel.ID);
-		proxyChannel(ipcWrapper, ItemSetMetadataChannel.ID);
-		proxyChannel(ipcWrapper, ItemsImportChannel.ID);
-		proxyChannel(ipcWrapper, ItemsImportStatusChannel.ID, "w", "r");
+		proxyChannel(ipcWrapper, ConfigOpenChannel.ID, true);
+		proxyChannel(ipcWrapper, ConfigGetExiftoolChannel.ID, true);
+		proxyChannel(ipcWrapper, ConfigGetThemeChannel.ID, true);
+		proxyChannel(ipcWrapper, LibrariesGetLastOpenedChannel.ID, true);
+		proxyChannel(ipcWrapper, LibraryGetMetadataChannel.ID, true);
+		proxyChannel(ipcWrapper, LibraryCreateChannel.ID, true);
+		proxyChannel(ipcWrapper, LibraryOpenChannel.ID, true);
+		proxyChannel(ipcWrapper, LibraryCloseChannel.ID, true);
+		proxyChannel(ipcWrapper, GroupsGetTreeChannel.ID, true);
+		proxyChannel(ipcWrapper, GroupCreateChannel.ID, true);
+		proxyChannel(ipcWrapper, GroupDeleteChannel.ID, true);
+		proxyChannel(ipcWrapper, GroupRenameChannel.ID, true);
+		proxyChannel(ipcWrapper, GroupMoveChannel.ID, true);
+		proxyChannel(ipcWrapper, CollectionsGetAllChannel.ID, true);
+		proxyChannel(ipcWrapper, CollectionCreateChannel.ID, true);
+		proxyChannel(ipcWrapper, CollectionDeleteChannel.ID, true);
+		proxyChannel(ipcWrapper, CollectionEditChannel.ID, true);
+		proxyChannel(ipcWrapper, CollectionMoveChannel.ID, true);
+		proxyChannel(ipcWrapper, CollectionRemoveItemsChannel.ID, true);
+		proxyChannel(ipcWrapper, ItemsGetByCollectionChannel.ID, false);
+		proxyChannel(ipcWrapper, ItemGetByIdChannel.ID, false);
+		proxyChannel(ipcWrapper, ItemsDeleteChannel.ID, true);
+		proxyChannel(ipcWrapper, CollectionMoveItemsChannel.ID, true);
+		proxyChannel(ipcWrapper, ItemsOpenExternalChannel.ID, true);
+		proxyChannel(ipcWrapper, ItemGetMetadataChannel.ID, true);
+		proxyChannel(ipcWrapper, ItemSetMetadataChannel.ID, true);
+		proxyChannel(ipcWrapper, ItemsImportChannel.ID, true);
+		proxyChannel(ipcWrapper, ItemsImportStatusChannel.ID, true, "w", "r");
 
 		const channelSetTheme = new ConfigSetThemeChannel(ipcWrapper, "w");
 		new ConfigSetThemeChannel(ipcWrapper, "r").on((theme) => {
