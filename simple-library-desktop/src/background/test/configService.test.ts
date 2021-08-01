@@ -1,8 +1,10 @@
 import {FileSystemWrapper} from "../service/fileSystemWrapper";
 import {mockConfigAccess, mockFileSystemWrapper} from "./mockSetup";
 import {ConfigAccess} from "../persistence/configAccess";
-import {ConfigService, ExiftoolInfo} from "../service/configService";
+import {ConfigService} from "../service/configService";
 import {jest} from "@jest/globals";
+import {ConfigCommons} from "../service/config/configCommons";
+import ExiftoolInfo = ConfigCommons.ExiftoolInfo;
 
 describe("config-service", () => {
 

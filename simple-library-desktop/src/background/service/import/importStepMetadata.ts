@@ -1,5 +1,5 @@
 import {ConfigService} from "../configService";
-import {ItemData} from "../importService";
+import {ItemData} from "./importService";
 import {Attribute, AttributeType} from "../itemService";
 
 const exiftool = require('node-exiftool');

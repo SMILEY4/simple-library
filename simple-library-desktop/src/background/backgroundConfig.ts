@@ -35,9 +35,8 @@ import {workerIpcWrapper} from "../common/messaging/core/ipcWrapper";
 import {LibraryService} from "./service/libraryService";
 import {DbAccess} from "./persistence/dbAcces";
 import {GroupService} from "./service/groupService";
-import {CollectionService} from "./service/collectionService";
 import {ItemService} from "./service/itemService";
-import {ImportService} from "./service/importService";
+import {ImportService} from "./service/import/importService";
 import {ImportDataValidator} from "./service/import/importDataValidator";
 import {ImportStepFileHash} from "./service/import/importStepFileHash";
 import {ImportStepThumbnail} from "./service/import/importStepThumbnail";
@@ -45,6 +44,15 @@ import {ImportStepRename} from "./service/import/importStepRename";
 import {ImportStepImportTarget} from "./service/import/importStepImportTarget";
 import {ImportStepMetadata} from "./service/import/importStepMetadata";
 import {FileSystemWrapper} from "./service/fileSystemWrapper";
+import {ActionGetAllCollections} from "./service/collection/actionGetAllCollections";
+import {ActionGetCollectionById} from "./service/collection/actionGetCollectionById";
+import {ActionCreateCollection} from "./service/collection/actionCreateCollection";
+import {ActionDeleteCollection} from "./service/collection/actionDeleteCollection";
+import {ActionEditCollection} from "./service/collection/actionEditCollection";
+import {ActionMoveCollection} from "./service/collection/actionMoveCollection";
+import {ActionMoveAllCollections} from "./service/collection/actionMoveAllCollections";
+import {ActionMoveItems} from "./service/collection/actionMoveItems";
+import {ActionRemoveItems} from "./service/collection/actionRemoveItems";
 
 export function initBackgroundWorker(): void {
     console.log("initialize background worker");
@@ -54,11 +62,21 @@ export function initBackgroundWorker(): void {
     const dbAccess: DbAccess = new DbAccess();
     const fsWrapper: FileSystemWrapper = new FileSystemWrapper();
 
+
+    const actionGetAllCollections = new ActionGetAllCollections(dbAccess);
+    const actionGetCollectionById = new ActionGetCollectionById(dbAccess);
+    const actionCreateCollection = new ActionCreateCollection(dbAccess);
+    const actionDeleteCollection = new ActionDeleteCollection(dbAccess);
+    const actionEditCollection = new ActionEditCollection(dbAccess, actionGetCollectionById);
+    const actionMoveCollection = new ActionMoveCollection(dbAccess);
+    const actionMoveAllCollections = new ActionMoveAllCollections(dbAccess);
+    const actionMoveItems = new ActionMoveItems(dbAccess, actionGetCollectionById);
+    const actionRemoveItems = new ActionRemoveItems(dbAccess, actionGetCollectionById);
+
     const configService: ConfigService = new ConfigService(configAccess, fsWrapper);
     const libraryService: LibraryService = new LibraryService(dbAccess, fsWrapper);
-    const collectionService: CollectionService = new CollectionService(dbAccess);
-    const groupService: GroupService = new GroupService(dbAccess, collectionService);
-    const itemService: ItemService = new ItemService(dbAccess, collectionService, fsWrapper);
+    const groupService: GroupService = new GroupService(dbAccess, actionGetAllCollections, actionMoveAllCollections);
+    const itemService: ItemService = new ItemService(dbAccess, actionGetCollectionById, fsWrapper);
     const importService: ImportService = new ImportService(
         dbAccess,
         new ImportDataValidator(fsWrapper),
@@ -119,25 +137,25 @@ export function initBackgroundWorker(): void {
         .on((payload) => groupService.move(payload.groupId, payload.targetGroupId));
 
     new CollectionsGetAllChannel(workerIpcWrapper(), "w")
-        .on((payload) => collectionService.getAll(payload));
+        .on((payload) => actionGetAllCollections.perform(payload));
 
     new CollectionCreateChannel(workerIpcWrapper(), "w")
-        .on((payload) => collectionService.create(payload.name, payload.type, payload.parentGroupId, payload.smartQuery));
+        .on((payload) => actionCreateCollection.perform(payload.type, payload.name, payload.parentGroupId, payload.smartQuery));
 
     new CollectionDeleteChannel(workerIpcWrapper(), "w")
-        .on((payload) => collectionService.delete(payload));
+        .on((payload) => actionDeleteCollection.perform(payload));
 
     new CollectionEditChannel(workerIpcWrapper(), "w")
-        .on((payload) => collectionService.edit(payload.collectionId, payload.newName, payload.newSmartQuery));
+        .on((payload) => actionEditCollection.perform(payload.collectionId, payload.newName, payload.newSmartQuery));
 
     new CollectionMoveChannel(workerIpcWrapper(), "w")
-        .on((payload) => collectionService.move(payload.collectionId, payload.targetGroupId));
+        .on((payload) => actionMoveCollection.perform(payload.collectionId, payload.targetGroupId));
 
     new CollectionMoveItemsChannel(workerIpcWrapper(), "w")
-        .on((payload) => collectionService.moveItems(payload.sourceCollectionId, payload.targetCollectionId, payload.itemIds, payload.copy));
+        .on((payload) => actionMoveItems.perform(payload.sourceCollectionId, payload.targetCollectionId, payload.itemIds, payload.copy));
 
     new CollectionRemoveItemsChannel(workerIpcWrapper(), "w")
-        .on((payload) => collectionService.removeItems(payload.collectionId, payload.itemIds));
+        .on((payload) => actionRemoveItems.perform(payload.collectionId, payload.itemIds));
 
     new ItemsGetByCollectionChannel(workerIpcWrapper(), "w")
         .on((payload) => itemService.getByCollection(payload.collectionId, payload.itemAttributeKeys));

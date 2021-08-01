@@ -1,11 +1,15 @@
 import {DbAccess} from "../persistence/dbAcces";
 import {Group, GroupService} from "../service/groupService";
 import {MemDbAccess} from "./memDbAccess";
-import {Collection, CollectionService, CollectionType} from "../service/collectionService";
 import {SQL} from "../persistence/sqlHandler";
 import {LibraryService} from "../service/libraryService";
 import {mockFileSystemWrapper} from "./mockSetup";
 import {jest} from "@jest/globals";
+import {CollectionCommons} from "../service/collection/collectionCommons";
+import {ActionGetAllCollections} from "../service/collection/actionGetAllCollections";
+import {ActionMoveAllCollections} from "../service/collection/actionMoveAllCollections";
+import CollectionType = CollectionCommons.CollectionType;
+import Collection = CollectionCommons.Collection;
 
 
 describe("group-service", () => {
@@ -14,7 +18,7 @@ describe("group-service", () => {
 
 		test("get by id", async () => {
 			// given
-			const [groupService, , libraryService, dbAccess] = mockGroupService();
+			const [groupService, libraryService, dbAccess] = mockGroupService();
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -32,7 +36,7 @@ describe("group-service", () => {
 
 		test("get non-existing by id", async () => {
 			// given
-			const [groupService, , libraryService, dbAccess] = mockGroupService();
+			const [groupService, libraryService, dbAccess] = mockGroupService();
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null)
@@ -46,7 +50,7 @@ describe("group-service", () => {
 
 		test("get all empty", async () => {
 			// given
-			const [groupService, , libraryService, dbAccess] = mockGroupService();
+			const [groupService, libraryService, dbAccess] = mockGroupService();
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", 1, null),
@@ -63,7 +67,7 @@ describe("group-service", () => {
 
 		test("get all empty with collections and count", async () => {
 			// given
-			const [groupService, , libraryService, dbAccess] = mockGroupService();
+			const [groupService, libraryService, dbAccess] = mockGroupService();
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -82,7 +86,7 @@ describe("group-service", () => {
 
 		test("get all without collections", async () => {
 			// given
-			const [groupService, , libraryService, dbAccess] = mockGroupService();
+			const [groupService, libraryService, dbAccess] = mockGroupService();
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -112,7 +116,7 @@ describe("group-service", () => {
 
 		test("get all with collections no item counts", async () => {
 			// given
-			const [groupService, , libraryService, dbAccess] = mockGroupService();
+			const [groupService, libraryService, dbAccess] = mockGroupService();
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -150,7 +154,7 @@ describe("group-service", () => {
 
 		test("get all with collections and item counts", async () => {
 			// given
-			const [groupService, , libraryService, dbAccess] = mockGroupService();
+			const [groupService, libraryService, dbAccess] = mockGroupService();
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -189,7 +193,7 @@ describe("group-service", () => {
 
 		test("get tree empty", async () => {
 			// given
-			const [groupService, , libraryService, dbAccess] = mockGroupService();
+			const [groupService, libraryService, dbAccess] = mockGroupService();
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", 1, null),
@@ -206,7 +210,7 @@ describe("group-service", () => {
 
 		test("get tree empty with collections", async () => {
 			// given
-			const [groupService, , libraryService, dbAccess] = mockGroupService();
+			const [groupService, libraryService, dbAccess] = mockGroupService();
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -225,7 +229,7 @@ describe("group-service", () => {
 
 		test("get tree", async () => {
 			// given
-			const [groupService, , libraryService, dbAccess] = mockGroupService();
+			const [groupService, libraryService, dbAccess] = mockGroupService();
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -261,7 +265,7 @@ describe("group-service", () => {
 
 		test("get tree with collections and item counts", async () => {
 			// given
-			const [groupService, , libraryService, dbAccess] = mockGroupService();
+			const [groupService, libraryService, dbAccess] = mockGroupService();
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -305,7 +309,7 @@ describe("group-service", () => {
 
 		test("create new top level group", async () => {
 			// given
-			const [groupService, , libraryService, dbAccess] = mockGroupService();
+			const [groupService, libraryService, dbAccess] = mockGroupService();
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Existing Group", null)
@@ -341,7 +345,7 @@ describe("group-service", () => {
 
 		test("create new child-group", async () => {
 			// given
-			const [groupService, , libraryService, dbAccess] = mockGroupService();
+			const [groupService, libraryService, dbAccess] = mockGroupService();
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Existing Group", null)
@@ -377,7 +381,7 @@ describe("group-service", () => {
 
 		test("create new child-group of invalid parent", async () => {
 			// given
-			const [groupService, , libraryService, dbAccess] = mockGroupService();
+			const [groupService, libraryService, dbAccess] = mockGroupService();
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Existing Group", null)
@@ -402,7 +406,7 @@ describe("group-service", () => {
 
 		test("delete top level group", async () => {
 			// given
-			const [groupService, , libraryService, dbAccess] = mockGroupService();
+			const [groupService, libraryService, dbAccess] = mockGroupService();
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -420,7 +424,7 @@ describe("group-service", () => {
 
 		test("delete non-existing group", async () => {
 			// given
-			const [groupService, , libraryService, dbAccess] = mockGroupService();
+			const [groupService, libraryService, dbAccess] = mockGroupService();
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -441,7 +445,7 @@ describe("group-service", () => {
 
 		test("delete child group", async () => {
 			// given
-			const [groupService, , libraryService, dbAccess] = mockGroupService();
+			const [groupService, libraryService, dbAccess] = mockGroupService();
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -459,7 +463,7 @@ describe("group-service", () => {
 
 		test("delete group", async () => {
 			// given
-			const [groupService, , libraryService, dbAccess] = mockGroupService();
+			const [groupService, libraryService, dbAccess] = mockGroupService();
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -480,7 +484,8 @@ describe("group-service", () => {
 
 		test("delete child group with children", async () => {
 			// given
-			const [groupService, collectionService, libraryService, dbAccess] = mockGroupService();
+			const [groupService, libraryService, dbAccess] = mockGroupService();
+			const actionGetAllCollections = new ActionGetAllCollections(dbAccess);
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -510,7 +515,7 @@ describe("group-service", () => {
 					collectionNormal(1, "Collection 1", 1, 2)
 				])
 			]);
-			await expect(collectionService.getAll(false).then(cl => cl.map(c => c.id))).resolves.toEqual([1, 5]);
+			await expect(actionGetAllCollections.perform(false).then(cl => cl.map(c => c.id))).resolves.toEqual([1, 5]);
 		});
 
 	});
@@ -520,7 +525,7 @@ describe("group-service", () => {
 
 		test("rename group", async () => {
 			// given
-			const [groupService, , libraryService, dbAccess] = mockGroupService();
+			const [groupService, libraryService, dbAccess] = mockGroupService();
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -541,7 +546,7 @@ describe("group-service", () => {
 
 		test("rename non-existing group", async () => {
 			// given
-			const [groupService, , libraryService, dbAccess] = mockGroupService();
+			const [groupService, libraryService, dbAccess] = mockGroupService();
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -562,7 +567,7 @@ describe("group-service", () => {
 
 		test("rename to same name", async () => {
 			// given
-			const [groupService, , libraryService, dbAccess] = mockGroupService();
+			const [groupService, libraryService, dbAccess] = mockGroupService();
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -587,7 +592,7 @@ describe("group-service", () => {
 
 		test("move group with all children", async () => {
 			// given
-			const [groupService, , libraryService, dbAccess] = mockGroupService();
+			const [groupService, libraryService, dbAccess] = mockGroupService();
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -595,7 +600,7 @@ describe("group-service", () => {
 				SQL.insertGroup("Group 3", 1),
 				SQL.insertGroup("Group 4", 2),
 				SQL.insertGroup("Group 5", 4),
-				SQL.insertGroup("Group 6", 4),
+				SQL.insertGroup("Group 6", 4)
 			]);
 			// when
 			const result = groupService.move(4, 1);
@@ -609,12 +614,12 @@ describe("group-service", () => {
 				group(5, "Group 5", 4, [], []),
 				group(6, "Group 6", 4, [], [])
 			]);
-		})
+		});
 
 
 		test("move group invalid: group does not exist", async () => {
 			// given
-			const [groupService, , libraryService, dbAccess] = mockGroupService();
+			const [groupService, libraryService, dbAccess] = mockGroupService();
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -622,7 +627,7 @@ describe("group-service", () => {
 				SQL.insertGroup("Group 3", 1),
 				SQL.insertGroup("Group 4", 2),
 				SQL.insertGroup("Group 5", 4),
-				SQL.insertGroup("Group 6", 4),
+				SQL.insertGroup("Group 6", 4)
 			]);
 			// when
 			const result = groupService.move(42, 1);
@@ -636,12 +641,12 @@ describe("group-service", () => {
 				group(5, "Group 5", 4, [], []),
 				group(6, "Group 6", 4, [], [])
 			]);
-		})
+		});
 
 
 		test("move group invalid: target does not exist", async () => {
 			// given
-			const [groupService, , libraryService, dbAccess] = mockGroupService();
+			const [groupService, libraryService, dbAccess] = mockGroupService();
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -649,7 +654,7 @@ describe("group-service", () => {
 				SQL.insertGroup("Group 3", 1),
 				SQL.insertGroup("Group 4", 2),
 				SQL.insertGroup("Group 5", 4),
-				SQL.insertGroup("Group 6", 4),
+				SQL.insertGroup("Group 6", 4)
 			]);
 			// when
 			const result = groupService.move(4, 42);
@@ -663,12 +668,12 @@ describe("group-service", () => {
 				group(5, "Group 5", 4, [], []),
 				group(6, "Group 6", 4, [], [])
 			]);
-		})
+		});
 
 
 		test("move group invalid: group equals target", async () => {
 			// given
-			const [groupService, , libraryService, dbAccess] = mockGroupService();
+			const [groupService, libraryService, dbAccess] = mockGroupService();
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -676,7 +681,7 @@ describe("group-service", () => {
 				SQL.insertGroup("Group 3", 1),
 				SQL.insertGroup("Group 4", 2),
 				SQL.insertGroup("Group 5", 4),
-				SQL.insertGroup("Group 6", 4),
+				SQL.insertGroup("Group 6", 4)
 			]);
 			// when
 			const result = groupService.move(3, 3);
@@ -690,12 +695,12 @@ describe("group-service", () => {
 				group(5, "Group 5", 4, [], []),
 				group(6, "Group 6", 4, [], [])
 			]);
-		})
+		});
 
 
 		test("move group invalid: target is in subtree of source", async () => {
 			// given
-			const [groupService, , libraryService, dbAccess] = mockGroupService();
+			const [groupService, libraryService, dbAccess] = mockGroupService();
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -703,7 +708,7 @@ describe("group-service", () => {
 				SQL.insertGroup("Group 3", 1),
 				SQL.insertGroup("Group 4", 2),
 				SQL.insertGroup("Group 5", 4),
-				SQL.insertGroup("Group 6", 4),
+				SQL.insertGroup("Group 6", 4)
 			]);
 			// when
 			const result = groupService.move(2, 5);
@@ -717,21 +722,20 @@ describe("group-service", () => {
 				group(5, "Group 5", 4, [], []),
 				group(6, "Group 6", 4, [], [])
 			]);
-		})
+		});
 
 	});
 
 });
 
 
-function mockGroupService(): [GroupService, CollectionService, LibraryService, DbAccess] {
+function mockGroupService(): [GroupService, LibraryService, DbAccess] {
 	const dbAccess = new MemDbAccess();
-	const collectionService: CollectionService = new CollectionService(dbAccess);
-	const groupService: GroupService = new GroupService(dbAccess, collectionService);
+	const groupService: GroupService = new GroupService(dbAccess, new ActionGetAllCollections(dbAccess), new ActionMoveAllCollections(dbAccess));
 	const fsWrapper = mockFileSystemWrapper();
 	fsWrapper.existsFile = jest.fn().mockReturnValue(false) as any;
 	const libraryService = new LibraryService(dbAccess, fsWrapper);
-	return [groupService, collectionService, libraryService, dbAccess];
+	return [groupService, libraryService, dbAccess];
 }
 
 function collectionNormal(id: number, name: string, group: number | null, itemCount: number | null): Collection {

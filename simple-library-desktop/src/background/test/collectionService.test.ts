@@ -1,10 +1,21 @@
 import {mockFileSystemWrapper} from "./mockSetup";
-import {Collection, CollectionService, CollectionType} from "../service/collectionService";
 import {DbAccess} from "../persistence/dbAcces";
 import {SQL} from "../persistence/sqlHandler";
 import {MemDbAccess} from "./memDbAccess";
 import {LibraryService} from "../service/libraryService";
 import {jest} from "@jest/globals";
+import {CollectionCommons} from "../service/collection/collectionCommons";
+import {ActionGetAllCollections} from "../service/collection/actionGetAllCollections";
+import {ActionCreateCollection} from "../service/collection/actionCreateCollection";
+import {ActionGetCollectionById} from "../service/collection/actionGetCollectionById";
+import {ActionDeleteCollection} from "../service/collection/actionDeleteCollection";
+import {ActionEditCollection} from "../service/collection/actionEditCollection";
+import {ActionMoveItems} from "../service/collection/actionMoveItems";
+import {ActionMoveCollection} from "../service/collection/actionMoveCollection";
+import {ActionMoveAllCollections} from "../service/collection/actionMoveAllCollections";
+import {ActionRemoveItems} from "../service/collection/actionRemoveItems";
+import Collection = CollectionCommons.Collection;
+import CollectionType = CollectionCommons.CollectionType;
 
 describe("collection-service", () => {
 
@@ -12,10 +23,11 @@ describe("collection-service", () => {
 
 		test("get all without item count when empty", async () => {
 			// given
-			const [collectionService, libraryService] = mockCollectionService();
+			const [libraryService, dbAccess] = mockCollectionService();
+			const actionGetAll = new ActionGetAllCollections(dbAccess);
 			await libraryService.create("TestLib", "path/to/test", false);
 			// when
-			const result: Promise<Collection[]> = collectionService.getAll(false);
+			const result: Promise<Collection[]> = actionGetAll.perform(false);
 			// then
 			await expect(result).resolves.toHaveLength(0);
 		});
@@ -23,7 +35,8 @@ describe("collection-service", () => {
 
 		test("get all without item count", async () => {
 			// given
-			const [collectionService, libraryService, dbAccess] = mockCollectionService();
+			const [libraryService, dbAccess] = mockCollectionService();
+			const actionGetAll = new ActionGetAllCollections(dbAccess);
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group", null),
@@ -40,7 +53,7 @@ describe("collection-service", () => {
 				SQL.insertItemsIntoCollection(1, [2, 3, 4])
 			]);
 			// when
-			const result: Promise<Collection[]> = collectionService.getAll(false);
+			const result: Promise<Collection[]> = actionGetAll.perform(false);
 			// then
 			await expect(result.then((r: any) => [...r])).resolves.toStrictEqual([
 				normalCollection(1, null, null),
@@ -53,7 +66,8 @@ describe("collection-service", () => {
 
 		test("get all with item count", async () => {
 			// given
-			const [collectionService, libraryService, dbAccess] = mockCollectionService();
+			const [libraryService, dbAccess] = mockCollectionService();
+			const actionGetAll = new ActionGetAllCollections(dbAccess);
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group", null),
@@ -70,7 +84,7 @@ describe("collection-service", () => {
 				SQL.insertItemsIntoCollection(1, [2, 3, 4])
 			]);
 			// when
-			const result: Promise<Collection[]> = collectionService.getAll(true);
+			const result: Promise<Collection[]> = actionGetAll.perform(true);
 			// then
 			await expect(result.then((r: any) => [...r])).resolves.toStrictEqual([
 				normalCollection(1, null, 3),
@@ -87,13 +101,16 @@ describe("collection-service", () => {
 
 		test("create normal collection", async () => {
 			// given
-			const [collectionService, libraryService, dbAccess] = mockCollectionService();
+			const [libraryService, dbAccess] = mockCollectionService();
+			const actionGetAll = new ActionGetAllCollections(dbAccess);
+			const actionCreate = new ActionCreateCollection(dbAccess);
+			const actionGetById = new ActionGetCollectionById(dbAccess);
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group", null)
 			]);
 			// when
-			const result: Promise<Collection> = collectionService.create("   My Collection", CollectionType.NORMAL, 1, "some query");
+			const result: Promise<Collection> = actionCreate.perform(CollectionType.NORMAL, "   My Collection", 1, "some query");
 			// then
 			await expect(result).resolves.toStrictEqual({
 				id: 1,
@@ -103,14 +120,17 @@ describe("collection-service", () => {
 				itemCount: null,
 				groupId: 1
 			});
-			await expect(collectionService.getAll(false)).resolves.toHaveLength(1);
-			await expect(collectionService.getById(1)).resolves.toBeDefined();
+			await expect(actionGetAll.perform(false)).resolves.toHaveLength(1);
+			await expect(actionGetById.perform(1)).resolves.toBeDefined();
 		});
 
 
 		test("create smart collection", async () => {
 			// given
-			const [collectionService, libraryService, dbAccess] = mockCollectionService();
+			const [libraryService, dbAccess] = mockCollectionService();
+			const actionGetAll = new ActionGetAllCollections(dbAccess);
+			const actionCreate = new ActionCreateCollection(dbAccess);
+			const actionGetById = new ActionGetCollectionById(dbAccess);
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group", null),
@@ -122,7 +142,7 @@ describe("collection-service", () => {
 				SQL.insertItem("/path/to/file/6", 1005, "hash6", "thumbnail6")
 			]);
 			// when
-			const result: Promise<Collection> = collectionService.create("   My Collection", CollectionType.SMART, 1, "item_id <= 2");
+			const result: Promise<Collection> = actionCreate.perform(CollectionType.SMART, "   My Collection", 1, "item_id <= 2");
 			// then
 			await expect(result).resolves.toStrictEqual({
 				id: 1,
@@ -132,7 +152,7 @@ describe("collection-service", () => {
 				itemCount: null,
 				groupId: 1
 			});
-			await expect(collectionService.getAll(true).then(c => c[0])).resolves.toStrictEqual({
+			await expect(actionGetAll.perform(true).then(c => c[0])).resolves.toStrictEqual({
 				id: 1,
 				name: "My Collection",
 				type: CollectionType.SMART,
@@ -140,26 +160,28 @@ describe("collection-service", () => {
 				itemCount: 2,
 				groupId: 1
 			});
-			await expect(collectionService.getById(1)).resolves.toBeDefined();
+			await expect(actionGetById.perform(1)).resolves.toBeDefined();
 		});
 
 
 		test("create smart collection with invalid query", async () => {
 			// given
-			const [collectionService, libraryService, dbAccess] = mockCollectionService();
+			const [libraryService, dbAccess] = mockCollectionService();
+			const actionGetAll = new ActionGetAllCollections(dbAccess);
+			const actionCreate = new ActionCreateCollection(dbAccess);
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group", null),
 				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
 				SQL.insertItem("/path/to/file/2", 1001, "hash2", "thumbnail2"),
 				SQL.insertItem("/path/to/file/3", 1002, "hash3", "thumbnail3"),
-				SQL.insertItem("/path/to/file/4", 1003, "hash4", "thumbnail4"),
+				SQL.insertItem("/path/to/file/4", 1003, "hash4", "thumbnail4")
 			]);
 			// when
-			const result: Promise<Collection> = collectionService.create("   My Collection", CollectionType.SMART, 1, "invalid <= 2");
+			const result: Promise<Collection> = actionCreate.perform(CollectionType.SMART, "   My Collection", 1, "invalid <= 2");
 			// then
 			await expect(result).rejects.toBeDefined();
-			await expect(collectionService.getAll(false)).resolves.toHaveLength(0);
+			await expect(actionGetAll.perform(false)).resolves.toHaveLength(0);
 		});
 
 	});
@@ -168,7 +190,10 @@ describe("collection-service", () => {
 
 		test("delete existing normal collection", async () => {
 			// given
-			const [collectionService, libraryService, dbAccess] = mockCollectionService();
+			const [libraryService, dbAccess] = mockCollectionService();
+			const actionDelete = new ActionDeleteCollection(dbAccess);
+			const actionGetAll = new ActionGetAllCollections(dbAccess);
+			const actionGetById = new ActionGetCollectionById(dbAccess);
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group", null),
@@ -184,10 +209,10 @@ describe("collection-service", () => {
 				SQL.insertItemsIntoCollection(2, [3, 4, 5])
 			]);
 			// when
-			const result: Promise<void> = collectionService.delete(1);
+			const result: Promise<void> = actionDelete.perform(1);
 			// then
 			await expect(result).resolves.toBeUndefined();
-			await expect(collectionService.getAll(true).then(r => [...r])).resolves.toStrictEqual([{
+			await expect(actionGetAll.perform(true).then(r => [...r])).resolves.toStrictEqual([{
 				id: 2,
 				name: "Collection 2",
 				type: "normal",
@@ -199,12 +224,15 @@ describe("collection-service", () => {
 			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(1, []))).resolves.toHaveLength(0);
 			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(2, []))).resolves.toHaveLength(3);
 			await expect(dbAccess.queryAll(SQL.queryAllGroups())).resolves.toHaveLength(1);
-			await expect(collectionService.getById(1)).resolves.toBeNull();
+			await expect(actionGetById.perform(1)).resolves.toBeNull();
 		});
 
 		test("delete existing smart collection", async () => {
 			// given
-			const [collectionService, libraryService, dbAccess] = mockCollectionService();
+			const [libraryService, dbAccess] = mockCollectionService();
+			const actionDelete = new ActionDeleteCollection(dbAccess);
+			const actionGetAll = new ActionGetAllCollections(dbAccess);
+			const actionGetById = new ActionGetCollectionById(dbAccess);
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group", null),
@@ -219,10 +247,10 @@ describe("collection-service", () => {
 				SQL.insertItemsIntoCollection(2, [3, 4, 5])
 			]);
 			// when
-			const result: Promise<void> = collectionService.delete(1);
+			const result: Promise<void> = actionDelete.perform(1);
 			// then
 			await expect(result).resolves.toBeUndefined();
-			await expect(collectionService.getAll(true).then(r => [...r])).resolves.toStrictEqual([{
+			await expect(actionGetAll.perform(true).then(r => [...r])).resolves.toStrictEqual([{
 				id: 2,
 				name: "Collection 2",
 				type: "normal",
@@ -234,12 +262,15 @@ describe("collection-service", () => {
 			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(1, []))).resolves.toHaveLength(0);
 			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(2, []))).resolves.toHaveLength(3);
 			await expect(dbAccess.queryAll(SQL.queryAllGroups())).resolves.toHaveLength(1);
-			await expect(collectionService.getById(1)).resolves.toBeNull();
+			await expect(actionGetById.perform(1)).resolves.toBeNull();
 		});
 
 		test("delete non-existing collection expect no change", async () => {
 			// given
-			const [collectionService, libraryService, dbAccess] = mockCollectionService();
+			const [libraryService, dbAccess] = mockCollectionService();
+			const actionDelete = new ActionDeleteCollection(dbAccess);
+			const actionGetAll = new ActionGetAllCollections(dbAccess);
+			const actionGetById = new ActionGetCollectionById(dbAccess);
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group", null),
@@ -251,15 +282,15 @@ describe("collection-service", () => {
 				SQL.insertItemsIntoCollection(2, [1, 2])
 			]);
 			// when
-			const result: Promise<void> = collectionService.delete(42);
+			const result: Promise<void> = actionDelete.perform(42);
 			// then
 			await expect(result).resolves.toBeUndefined();
-			await expect(collectionService.getAll(true)).resolves.toHaveLength(2);
+			await expect(actionGetAll.perform(true)).resolves.toHaveLength(2);
 			await expect(dbAccess.queryAll(SQL.queryItemsAll([]))).resolves.toHaveLength(3);
 			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(2, []))).resolves.toHaveLength(2);
 			await expect(dbAccess.queryAll(SQL.queryAllGroups())).resolves.toHaveLength(1);
-			await expect(collectionService.getById(1)).resolves.toBeDefined();
-			await expect(collectionService.getById(2)).resolves.toBeDefined();
+			await expect(actionGetById.perform(1)).resolves.toBeDefined();
+			await expect(actionGetById.perform(2)).resolves.toBeDefined();
 		});
 
 	});
@@ -268,17 +299,19 @@ describe("collection-service", () => {
 
 		test("edit collection (name and query) expect updated", async () => {
 			// given
-			const [collectionService, libraryService, dbAccess] = mockCollectionService();
+			const [libraryService, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(dbAccess);
+			const actionEdit = new ActionEditCollection(dbAccess, actionGetById);
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group", null),
 				SQL.insertCollection("Collection 1", "smart", 1, null)
 			]);
 			// when
-			const result = collectionService.edit(1, "New Name", "item_id <= 2");
+			const result = actionEdit.perform(1, "New Name", "item_id <= 2");
 			// then
 			await expect(result).resolves.toBeUndefined();
-			await expect(collectionService.getById(1)).resolves.toStrictEqual({
+			await expect(actionGetById.perform(1)).resolves.toStrictEqual({
 				id: 1,
 				name: "New Name",
 				type: CollectionType.SMART,
@@ -290,17 +323,19 @@ describe("collection-service", () => {
 
 		test("edit normal collection query expect no change", async () => {
 			// given
-			const [collectionService, libraryService, dbAccess] = mockCollectionService();
+			const [libraryService, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(dbAccess);
+			const actionEdit = new ActionEditCollection(dbAccess, actionGetById);
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group", null),
 				SQL.insertCollection("Collection 1", "normal", 1, null)
 			]);
 			// when
-			const result = collectionService.edit(1, "Collection 1", "item_id <= 2");
+			const result = actionEdit.perform(1, "Collection 1", "item_id <= 2");
 			// then
 			await expect(result).resolves.toBeUndefined();
-			await expect(collectionService.getById(1)).resolves.toStrictEqual({
+			await expect(actionGetById.perform(1)).resolves.toStrictEqual({
 				id: 1,
 				name: "Collection 1",
 				type: CollectionType.NORMAL,
@@ -312,17 +347,19 @@ describe("collection-service", () => {
 
 		test("edit collection set fields null", async () => {
 			// given
-			const [collectionService, libraryService, dbAccess] = mockCollectionService();
+			const [libraryService, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(dbAccess);
+			const actionEdit = new ActionEditCollection(dbAccess, actionGetById);
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group", null),
 				SQL.insertCollection("Collection 1", "smart", 1, "item_id <= 2")
 			]);
 			// when
-			const result = collectionService.edit(1, null, null);
+			const result = actionEdit.perform(1, null, null);
 			// then
 			await expect(result).resolves.toBeUndefined();
-			await expect(collectionService.getById(1)).resolves.toStrictEqual({
+			await expect(actionGetById.perform(1)).resolves.toStrictEqual({
 				id: 1,
 				name: "Collection 1",
 				type: CollectionType.SMART,
@@ -334,31 +371,35 @@ describe("collection-service", () => {
 
 		test("edit non-existing collection", async () => {
 			// given
-			const [collectionService, libraryService, dbAccess] = mockCollectionService();
+			const [libraryService, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(dbAccess);
+			const actionEdit = new ActionEditCollection(dbAccess, actionGetById);
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group", null),
 				SQL.insertCollection("Collection 1", "smart", 1, null)
 			]);
 			// when
-			const result = collectionService.edit(42, "New Name", "item_id <= 2");
+			const result = actionEdit.perform(42, "New Name", "item_id <= 2");
 			// then
 			await expect(result).rejects.toBeDefined();
 		});
 
 		test("edit smart collection set invalid query", async () => {
 			// given
-			const [collectionService, libraryService, dbAccess] = mockCollectionService();
+			const [libraryService, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(dbAccess);
+			const actionEdit = new ActionEditCollection(dbAccess, actionGetById);
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group", null),
 				SQL.insertCollection("Collection 1", "smart", 1, "item_id <= 2")
 			]);
 			// when
-			const result = collectionService.edit(1, "New Name", "invalid > 2");
+			const result = actionEdit.perform(1, "New Name", "invalid > 2");
 			// then
 			await expect(result).rejects.toBeDefined();
-			await expect(collectionService.getById(1)).resolves.toStrictEqual({
+			await expect(actionGetById.perform(1)).resolves.toStrictEqual({
 				id: 1,
 				name: "Collection 1",
 				type: CollectionType.SMART,
@@ -376,7 +417,9 @@ describe("collection-service", () => {
 
 		test("move collection into sub-group", async () => {
 			// given
-			const [collectionService, libraryService, dbAccess] = mockCollectionService();
+			const [libraryService, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(dbAccess);
+			const actionMove = new ActionMoveCollection(dbAccess);
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -384,10 +427,10 @@ describe("collection-service", () => {
 				SQL.insertCollection("Collection 1", "normal", 1, null)
 			]);
 			// when
-			const result = collectionService.move(1, 2);
+			const result = actionMove.perform(1, 2);
 			// then
 			await expect(result).resolves.toBeUndefined();
-			await expect(collectionService.getById(1)).resolves.toStrictEqual({
+			await expect(actionGetById.perform(1)).resolves.toStrictEqual({
 				id: 1,
 				name: "Collection 1",
 				type: CollectionType.NORMAL,
@@ -399,7 +442,9 @@ describe("collection-service", () => {
 
 		test("move top-level collection into sub-group", async () => {
 			// given
-			const [collectionService, libraryService, dbAccess] = mockCollectionService();
+			const [libraryService, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(dbAccess);
+			const actionMove = new ActionMoveCollection(dbAccess);
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -407,30 +452,34 @@ describe("collection-service", () => {
 				SQL.insertCollection("Collection 1", "normal", null, null)
 			]);
 			// when
-			const result = collectionService.move(1, 2);
+			const result = actionMove.perform(1, 2);
 			// then
 			await expect(result).resolves.toBeUndefined();
-			await expect(collectionService.getById(1).then(c => c.groupId)).resolves.toBe(2);
+			await expect(actionGetById.perform(1).then(c => c.groupId)).resolves.toBe(2);
 		});
 
 		test("move collection to top-level", async () => {
 			// given
-			const [collectionService, libraryService, dbAccess] = mockCollectionService();
+			const [libraryService, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(dbAccess);
+			const actionMove = new ActionMoveCollection(dbAccess);
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
 				SQL.insertCollection("Collection 1", "normal", 1, null)
 			]);
 			// when
-			const result = collectionService.move(1, null);
+			const result = actionMove.perform(1, null);
 			// then
 			await expect(result).resolves.toBeUndefined();
-			await expect(collectionService.getById(1).then(c => c.groupId)).resolves.toBe(null);
+			await expect(actionGetById.perform(1).then(c => c.groupId)).resolves.toBe(null);
 		});
 
 		test("move all top level collections into group", async () => {
 			// given
-			const [collectionService, libraryService, dbAccess] = mockCollectionService();
+			const [libraryService, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(dbAccess);
+			const actionMoveAll = new ActionMoveAllCollections(dbAccess);
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -442,18 +491,20 @@ describe("collection-service", () => {
 				SQL.insertCollection("Collection 4", "normal", 3, null)
 			]);
 			// when
-			const result = collectionService.moveAllOfParent(null, 2);
+			const result = actionMoveAll.perform(null, 2);
 			// then
 			await expect(result).resolves.toBeUndefined();
-			await expect(collectionService.getById(1).then(c => c.groupId)).resolves.toBe(2);
-			await expect(collectionService.getById(2).then(c => c.groupId)).resolves.toBe(2);
-			await expect(collectionService.getById(3).then(c => c.groupId)).resolves.toBe(2);
-			await expect(collectionService.getById(4).then(c => c.groupId)).resolves.toBe(3);
+			await expect(actionGetById.perform(1).then(c => c.groupId)).resolves.toBe(2);
+			await expect(actionGetById.perform(2).then(c => c.groupId)).resolves.toBe(2);
+			await expect(actionGetById.perform(3).then(c => c.groupId)).resolves.toBe(2);
+			await expect(actionGetById.perform(4).then(c => c.groupId)).resolves.toBe(3);
 		});
 
 		test("move all collections into different group", async () => {
 			// given
-			const [collectionService, libraryService, dbAccess] = mockCollectionService();
+			const [libraryService, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(dbAccess);
+			const actionMoveAll = new ActionMoveAllCollections(dbAccess);
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -465,18 +516,20 @@ describe("collection-service", () => {
 				SQL.insertCollection("Collection 4", "normal", 3, null)
 			]);
 			// when
-			const result = collectionService.moveAllOfParent(1, 2);
+			const result = actionMoveAll.perform(1, 2);
 			// then
 			await expect(result).resolves.toBeUndefined();
-			await expect(collectionService.getById(1).then(c => c.groupId)).resolves.toBe(2);
-			await expect(collectionService.getById(2).then(c => c.groupId)).resolves.toBe(2);
-			await expect(collectionService.getById(3).then(c => c.groupId)).resolves.toBe(2);
-			await expect(collectionService.getById(4).then(c => c.groupId)).resolves.toBe(3);
+			await expect(actionGetById.perform(1).then(c => c.groupId)).resolves.toBe(2);
+			await expect(actionGetById.perform(2).then(c => c.groupId)).resolves.toBe(2);
+			await expect(actionGetById.perform(3).then(c => c.groupId)).resolves.toBe(2);
+			await expect(actionGetById.perform(4).then(c => c.groupId)).resolves.toBe(3);
 		});
 
 		test("move no collections into different group", async () => {
 			// given
-			const [collectionService, libraryService, dbAccess] = mockCollectionService();
+			const [libraryService, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(dbAccess);
+			const actionMoveAll = new ActionMoveAllCollections(dbAccess);
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -488,18 +541,20 @@ describe("collection-service", () => {
 				SQL.insertCollection("Collection 4", "normal", 3, null)
 			]);
 			// when
-			const result = collectionService.moveAllOfParent(42, 2);
+			const result = actionMoveAll.perform(42, 2);
 			// then
 			await expect(result).resolves.toBeUndefined();
-			await expect(collectionService.getById(1).then(c => c.groupId)).resolves.toBe(1);
-			await expect(collectionService.getById(2).then(c => c.groupId)).resolves.toBe(1);
-			await expect(collectionService.getById(3).then(c => c.groupId)).resolves.toBe(2);
-			await expect(collectionService.getById(4).then(c => c.groupId)).resolves.toBe(3);
+			await expect(actionGetById.perform(1).then(c => c.groupId)).resolves.toBe(1);
+			await expect(actionGetById.perform(2).then(c => c.groupId)).resolves.toBe(1);
+			await expect(actionGetById.perform(3).then(c => c.groupId)).resolves.toBe(2);
+			await expect(actionGetById.perform(4).then(c => c.groupId)).resolves.toBe(3);
 		});
 
 		test("move collections into original group", async () => {
 			// given
-			const [collectionService, libraryService, dbAccess] = mockCollectionService();
+			const [libraryService, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(dbAccess);
+			const actionMoveAll = new ActionMoveAllCollections(dbAccess);
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -511,18 +566,20 @@ describe("collection-service", () => {
 				SQL.insertCollection("Collection 4", "normal", 3, null)
 			]);
 			// when
-			const result = collectionService.moveAllOfParent(1, 1);
+			const result = actionMoveAll.perform(1, 1);
 			// then
 			await expect(result).resolves.toBeUndefined();
-			await expect(collectionService.getById(1).then(c => c.groupId)).resolves.toBe(1);
-			await expect(collectionService.getById(2).then(c => c.groupId)).resolves.toBe(1);
-			await expect(collectionService.getById(3).then(c => c.groupId)).resolves.toBe(2);
-			await expect(collectionService.getById(4).then(c => c.groupId)).resolves.toBe(3);
+			await expect(actionGetById.perform(1).then(c => c.groupId)).resolves.toBe(1);
+			await expect(actionGetById.perform(2).then(c => c.groupId)).resolves.toBe(1);
+			await expect(actionGetById.perform(3).then(c => c.groupId)).resolves.toBe(2);
+			await expect(actionGetById.perform(4).then(c => c.groupId)).resolves.toBe(3);
 		});
 
 		test("move collections into non-existing group", async () => {
 			// given
-			const [collectionService, libraryService, dbAccess] = mockCollectionService();
+			const [libraryService, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(dbAccess);
+			const actionMoveAll = new ActionMoveAllCollections(dbAccess);
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -534,13 +591,13 @@ describe("collection-service", () => {
 				SQL.insertCollection("Collection 4", "normal", 3, null)
 			]);
 			// when
-			const result = collectionService.moveAllOfParent(1, 42);
+			const result = actionMoveAll.perform(1, 42);
 			// then
 			await expect(result).rejects.toBeDefined();
-			await expect(collectionService.getById(1).then(c => c.groupId)).resolves.toBe(1);
-			await expect(collectionService.getById(2).then(c => c.groupId)).resolves.toBe(1);
-			await expect(collectionService.getById(3).then(c => c.groupId)).resolves.toBe(2);
-			await expect(collectionService.getById(4).then(c => c.groupId)).resolves.toBe(3);
+			await expect(actionGetById.perform(1).then(c => c.groupId)).resolves.toBe(1);
+			await expect(actionGetById.perform(2).then(c => c.groupId)).resolves.toBe(1);
+			await expect(actionGetById.perform(3).then(c => c.groupId)).resolves.toBe(2);
+			await expect(actionGetById.perform(4).then(c => c.groupId)).resolves.toBe(3);
 		});
 
 	});
@@ -550,7 +607,9 @@ describe("collection-service", () => {
 
 		test("move some items to collection", async () => {
 			// given
-			const [collectionService, libraryService, dbAccess] = mockCollectionService();
+			const [libraryService, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(dbAccess);
+			const actionMoveItems = new ActionMoveItems(dbAccess, actionGetById);
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -568,7 +627,7 @@ describe("collection-service", () => {
 			]);
 			const mapToItemIds = (rows: any[]) => [...rows.map(r => r.item_id)];
 			// when
-			const result = collectionService.moveItems(1, 2, [2, 3], false);
+			const result = actionMoveItems.perform(1, 2, [2, 3], false);
 			// then
 			await expect(result).resolves.toBeUndefined();
 			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(1, [])).then(mapToItemIds)).resolves.toStrictEqual([1]);
@@ -578,7 +637,9 @@ describe("collection-service", () => {
 
 		test("copy items to collection", async () => {
 			// given
-			const [collectionService, libraryService, dbAccess] = mockCollectionService();
+			const [libraryService, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(dbAccess);
+			const actionMoveItems = new ActionMoveItems(dbAccess, actionGetById);
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -596,7 +657,7 @@ describe("collection-service", () => {
 			]);
 			const mapToItemIds = (rows: any[]) => [...rows.map(r => r.item_id)];
 			// when
-			const result = collectionService.moveItems(1, 2, [2, 3], true);
+			const result = actionMoveItems.perform(1, 2, [2, 3], true);
 			// then
 			await expect(result).resolves.toBeUndefined();
 			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(1, [])).then(mapToItemIds)).resolves.toStrictEqual([1, 2, 3]);
@@ -606,7 +667,9 @@ describe("collection-service", () => {
 
 		test("move items to non-existing collection", async () => {
 			// given
-			const [collectionService, libraryService, dbAccess] = mockCollectionService();
+			const [libraryService, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(dbAccess);
+			const actionMoveItems = new ActionMoveItems(dbAccess, actionGetById);
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -618,11 +681,11 @@ describe("collection-service", () => {
 				SQL.insertItem("/path/to/file/4", 1003, "hash4", "thumbnail4"),
 				SQL.insertItem("/path/to/file/5", 1004, "hash5", "thumbnail5"),
 				SQL.insertItem("/path/to/file/6", 1005, "hash6", "thumbnail6"),
-				SQL.insertItemsIntoCollection(1, [1, 2, 3]),
+				SQL.insertItemsIntoCollection(1, [1, 2, 3])
 			]);
 			const mapToItemIds = (rows: any[]) => [...rows.map(r => r.item_id)];
 			// when
-			const result = collectionService.moveItems(1, 42, [2, 3], false);
+			const result = actionMoveItems.perform(1, 42, [2, 3], false);
 			// then
 			await expect(result).rejects.toBeDefined();
 			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(1, [])).then(mapToItemIds)).resolves.toStrictEqual([1, 2, 3]);
@@ -630,7 +693,9 @@ describe("collection-service", () => {
 
 		test("move items from non-existing collection", async () => {
 			// given
-			const [collectionService, libraryService, dbAccess] = mockCollectionService();
+			const [libraryService, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(dbAccess);
+			const actionMoveItems = new ActionMoveItems(dbAccess, actionGetById);
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -642,11 +707,11 @@ describe("collection-service", () => {
 				SQL.insertItem("/path/to/file/4", 1003, "hash4", "thumbnail4"),
 				SQL.insertItem("/path/to/file/5", 1004, "hash5", "thumbnail5"),
 				SQL.insertItem("/path/to/file/6", 1005, "hash6", "thumbnail6"),
-				SQL.insertItemsIntoCollection(1, [1, 2, 3]),
+				SQL.insertItemsIntoCollection(1, [1, 2, 3])
 			]);
 			const mapToItemIds = (rows: any[]) => [...rows.map(r => r.item_id)];
 			// when
-			const result = collectionService.moveItems(42, 1, [4, 5], false);
+			const result = actionMoveItems.perform(42, 1, [4, 5], false);
 			// then
 			await expect(result).rejects.toBeDefined();
 			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(1, [])).then(mapToItemIds)).resolves.toStrictEqual([1, 2, 3]);
@@ -654,7 +719,9 @@ describe("collection-service", () => {
 
 		test("move items same collection", async () => {
 			// given
-			const [collectionService, libraryService, dbAccess] = mockCollectionService();
+			const [libraryService, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(dbAccess);
+			const actionMoveItems = new ActionMoveItems(dbAccess, actionGetById);
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -666,11 +733,11 @@ describe("collection-service", () => {
 				SQL.insertItem("/path/to/file/4", 1003, "hash4", "thumbnail4"),
 				SQL.insertItem("/path/to/file/5", 1004, "hash5", "thumbnail5"),
 				SQL.insertItem("/path/to/file/6", 1005, "hash6", "thumbnail6"),
-				SQL.insertItemsIntoCollection(1, [1, 2, 3]),
+				SQL.insertItemsIntoCollection(1, [1, 2, 3])
 			]);
 			const mapToItemIds = (rows: any[]) => [...rows.map(r => r.item_id)];
 			// when
-			const result = collectionService.moveItems(1, 1, [2, 3], false);
+			const result = actionMoveItems.perform(1, 1, [2, 3], false);
 			// then
 			await expect(result).resolves.toBeUndefined();
 			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(1, [])).then(mapToItemIds)).resolves.toStrictEqual([1, 2, 3]);
@@ -678,7 +745,9 @@ describe("collection-service", () => {
 
 		test("move non-existing items to collection", async () => {
 			// given
-			const [collectionService, libraryService, dbAccess] = mockCollectionService();
+			const [libraryService, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(dbAccess);
+			const actionMoveItems = new ActionMoveItems(dbAccess, actionGetById);
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -691,11 +760,11 @@ describe("collection-service", () => {
 				SQL.insertItem("/path/to/file/5", 1004, "hash5", "thumbnail5"),
 				SQL.insertItem("/path/to/file/6", 1005, "hash6", "thumbnail6"),
 				SQL.insertItemsIntoCollection(1, [1, 2, 3]),
-				SQL.insertItemsIntoCollection(2, [3, 4, 5]),
+				SQL.insertItemsIntoCollection(2, [3, 4, 5])
 			]);
 			const mapToItemIds = (rows: any[]) => [...rows.map(r => r.item_id)];
 			// when
-			const result = collectionService.moveItems(1, 2, [10, 11], false);
+			const result = actionMoveItems.perform(1, 2, [10, 11], false);
 			// then
 			await expect(result).resolves.toBeUndefined();
 			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(1, [])).then(mapToItemIds)).resolves.toStrictEqual([1, 2, 3]);
@@ -704,7 +773,9 @@ describe("collection-service", () => {
 
 		test("move items to smart collection", async () => {
 			// given
-			const [collectionService, libraryService, dbAccess] = mockCollectionService();
+			const [libraryService, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(dbAccess);
+			const actionMoveItems = new ActionMoveItems(dbAccess, actionGetById);
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -716,11 +787,11 @@ describe("collection-service", () => {
 				SQL.insertItem("/path/to/file/5", 1004, "hash5", "thumbnail5"),
 				SQL.insertItem("/path/to/file/6", 1005, "hash6", "thumbnail6"),
 				SQL.insertItemsIntoCollection(1, [1, 2, 3]),
-				SQL.insertItemsIntoCollection(2, [3, 4, 5]),
+				SQL.insertItemsIntoCollection(2, [3, 4, 5])
 			]);
 			const mapToItemIds = (rows: any[]) => [...rows.map(r => r.item_id)];
 			// when
-			const result = collectionService.moveItems(1, 2, [10, 11], false);
+			const result = actionMoveItems.perform(1, 2, [10, 11], false);
 			// then
 			await expect(result).rejects.toBeDefined();
 			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(1, [])).then(mapToItemIds)).resolves.toStrictEqual([1, 2, 3]);
@@ -729,7 +800,9 @@ describe("collection-service", () => {
 
 		test("move items from smart collection", async () => {
 			// given
-			const [collectionService, libraryService, dbAccess] = mockCollectionService();
+			const [libraryService, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(dbAccess);
+			const actionMoveItems = new ActionMoveItems(dbAccess, actionGetById);
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "smart", null, "item_id > 2"),
@@ -740,11 +813,11 @@ describe("collection-service", () => {
 				SQL.insertItem("/path/to/file/4", 1003, "hash4", "thumbnail4"),
 				SQL.insertItem("/path/to/file/5", 1004, "hash5", "thumbnail5"),
 				SQL.insertItem("/path/to/file/6", 1005, "hash6", "thumbnail6"),
-				SQL.insertItemsIntoCollection(2, [1, 2, 3]),
+				SQL.insertItemsIntoCollection(2, [1, 2, 3])
 			]);
 			const mapToItemIds = (rows: any[]) => [...rows.map(r => r.item_id)];
 			// when
-			const result = collectionService.moveItems(1, 2, [3, 4, 5], false);
+			const result = actionMoveItems.perform(1, 2, [3, 4, 5], false);
 			// then
 			await expect(result).resolves.toBeUndefined();
 			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(2, [])).then(mapToItemIds)).resolves.toStrictEqual([1, 2, 3, 4, 5]);
@@ -757,7 +830,9 @@ describe("collection-service", () => {
 
 		test("remove some items from collection", async () => {
 			// given
-			const [collectionService, libraryService, dbAccess] = mockCollectionService();
+			const [libraryService, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(dbAccess);
+			const actionRemoveItems = new ActionRemoveItems(dbAccess, actionGetById);
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -774,7 +849,7 @@ describe("collection-service", () => {
 			]);
 			const mapToItemIds = (rows: any[]) => [...rows.map(r => r.item_id)];
 			// when
-			const result = collectionService.removeItems(1, [2, 3, 4]);
+			const result = actionRemoveItems.perform(1, [2, 3, 4]);
 			// then
 			await expect(result).resolves.toBeUndefined();
 			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(1, [])).then(mapToItemIds)).resolves.toStrictEqual([1]);
@@ -783,7 +858,9 @@ describe("collection-service", () => {
 
 		test("remove some items from non-existing collection", async () => {
 			// given
-			const [collectionService, libraryService, dbAccess] = mockCollectionService();
+			const [libraryService, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(dbAccess);
+			const actionRemoveItems = new ActionRemoveItems(dbAccess, actionGetById);
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -793,11 +870,11 @@ describe("collection-service", () => {
 				SQL.insertItem("/path/to/file/4", 1003, "hash4", "thumbnail4"),
 				SQL.insertItem("/path/to/file/5", 1004, "hash5", "thumbnail5"),
 				SQL.insertItem("/path/to/file/6", 1005, "hash6", "thumbnail6"),
-				SQL.insertItemsIntoCollection(1, [1, 2, 3]),
+				SQL.insertItemsIntoCollection(1, [1, 2, 3])
 			]);
 			const mapToItemIds = (rows: any[]) => [...rows.map(r => r.item_id)];
 			// when
-			const result = collectionService.removeItems(42, [2, 3, 4]);
+			const result = actionRemoveItems.perform(42, [2, 3, 4]);
 			// then
 			await expect(result).rejects.toBeDefined();
 			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(1, [])).then(mapToItemIds)).resolves.toStrictEqual([1, 2, 3]);
@@ -805,7 +882,9 @@ describe("collection-service", () => {
 
 		test("remove some items from smart collection", async () => {
 			// given
-			const [collectionService, libraryService, dbAccess] = mockCollectionService();
+			const [libraryService, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(dbAccess);
+			const actionRemoveItems = new ActionRemoveItems(dbAccess, actionGetById);
 			await libraryService.create("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "smart", null, "item_id > 2"),
@@ -814,10 +893,10 @@ describe("collection-service", () => {
 				SQL.insertItem("/path/to/file/3", 1002, "hash3", "thumbnail3"),
 				SQL.insertItem("/path/to/file/4", 1003, "hash4", "thumbnail4"),
 				SQL.insertItem("/path/to/file/5", 1004, "hash5", "thumbnail5"),
-				SQL.insertItem("/path/to/file/6", 1005, "hash6", "thumbnail6"),
+				SQL.insertItem("/path/to/file/6", 1005, "hash6", "thumbnail6")
 			]);
 			// when
-			const result = collectionService.removeItems(1, [2, 3, 4]);
+			const result = actionRemoveItems.perform(1, [2, 3, 4]);
 			// then
 			await expect(result).rejects.toBeDefined();
 		});
@@ -847,11 +926,10 @@ function smartCollection(id: number, groupId: number | null, smartQuery: string 
 	};
 }
 
-function mockCollectionService(): [CollectionService, LibraryService, DbAccess] {
+function mockCollectionService(): [LibraryService, DbAccess] {
 	const dbAccess = new MemDbAccess();
 	const fsWrapper = mockFileSystemWrapper();
 	fsWrapper.existsFile = jest.fn().mockReturnValue(false) as any;
-	const collectionService: CollectionService = new CollectionService(dbAccess);
 	const libraryService = new LibraryService(dbAccess, fsWrapper);
-	return [collectionService, libraryService, dbAccess];
+	return [libraryService, dbAccess];
 }

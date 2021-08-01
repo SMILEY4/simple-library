@@ -1,7 +1,10 @@
 import {DbAccess} from "../persistence/dbAcces";
 import {SQL} from "../persistence/sqlHandler";
-import {Collection, CollectionService} from "./collectionService";
 import {voidThen} from "../../common/AsyncCommon";
+import {CollectionCommons} from "./collection/collectionCommons";
+import {ActionGetAllCollections} from "./collection/actionGetAllCollections";
+import {ActionMoveAllCollections} from "./collection/actionMoveAllCollections";
+import Collection = CollectionCommons.Collection;
 
 export interface Group {
 	id: number,
@@ -14,11 +17,17 @@ export interface Group {
 export class GroupService {
 
 	private readonly dbAccess: DbAccess;
-	private readonly collectionService: CollectionService;
+	private readonly actionGetAllCollections: ActionGetAllCollections;
+	private readonly actionMoveAllCollections: ActionMoveAllCollections;
 
-	constructor(dbAccess: DbAccess, collectionService: CollectionService) {
+	constructor(
+		dbAccess: DbAccess,
+		actionGetAllCollections: ActionGetAllCollections,
+		actionMoveAllCollections: ActionMoveAllCollections
+	) {
 		this.dbAccess = dbAccess;
-		this.collectionService = collectionService;
+		this.actionGetAllCollections = actionGetAllCollections;
+		this.actionMoveAllCollections = actionMoveAllCollections;
 	}
 
 	/**
@@ -127,7 +136,7 @@ export class GroupService {
 					const parentId: number | null = group.parentGroupId ? group.parentGroupId : null;
 					return Promise.all([
 						this.moveAllOfParent(groupId, parentId),
-						this.collectionService.moveAllOfParent(groupId, parentId)
+						this.actionMoveAllCollections.perform(groupId, parentId)
 					]);
 				})
 				.then(() => this.dbAccess.run(SQL.deleteGroup(groupId)))
@@ -171,7 +180,7 @@ export class GroupService {
 	}
 
 	private appendCollections(groups: Group[], includeItemCount: boolean): Promise<Group[]> {
-		return this.collectionService.getAll(includeItemCount)
+		return this.actionGetAllCollections.perform(includeItemCount)
 			.then((collections: Collection[]) => {
 				groups.forEach((group: Group) => {
 					group.collections = collections.filter((collection: Collection) => collection.groupId === group.id);

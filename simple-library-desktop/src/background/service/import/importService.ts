@@ -1,15 +1,15 @@
-import {DbAccess} from "../persistence/dbAcces";
-import {ImportProcessData} from "../../common/commonModels";
-import {ImportDataValidator} from "./import/importDataValidator";
-import {ImportStepFileHash} from "./import/importStepFileHash";
-import {ImportStepThumbnail} from "./import/importStepThumbnail";
-import {ImportStepRename} from "./import/importStepRename";
-import {ImportStepImportTarget} from "./import/importStepImportTarget";
-import {ImportStepMetadata} from "./import/importStepMetadata";
-import {SQL} from "../persistence/sqlHandler";
-import {Attribute} from "./itemService";
-import {ItemsImportStatusChannel} from "../../common/messaging/channels/channels";
-import {voidThen} from "../../common/AsyncCommon";
+import {DbAccess} from "../../persistence/dbAcces";
+import {ImportProcessData} from "../../../common/commonModels";
+import {ImportDataValidator} from "./importDataValidator";
+import {ImportStepFileHash} from "./importStepFileHash";
+import {ImportStepThumbnail} from "./importStepThumbnail";
+import {ImportStepRename} from "./importStepRename";
+import {ImportStepImportTarget} from "./importStepImportTarget";
+import {ImportStepMetadata} from "./importStepMetadata";
+import {SQL} from "../../persistence/sqlHandler";
+import {Attribute} from "../itemService";
+import {ItemsImportStatusChannel} from "../../../common/messaging/channels/channels";
+import {voidThen} from "../../../common/AsyncCommon";
 
 export interface ImportResult {
 	timestamp: number,

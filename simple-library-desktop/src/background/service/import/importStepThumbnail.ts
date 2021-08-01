@@ -1,4 +1,4 @@
-import {ItemData} from "../importService";
+import {ItemData} from "./importService";
 
 const sharp = require('sharp');
 

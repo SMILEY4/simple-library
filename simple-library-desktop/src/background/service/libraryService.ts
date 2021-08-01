@@ -2,7 +2,8 @@ import path from "path";
 import {DbAccess} from "../persistence/dbAcces";
 import {SQL} from "../persistence/sqlHandler";
 import {FileSystemWrapper} from "./fileSystemWrapper";
-import {CollectionType} from "./collectionService";
+import {CollectionCommons} from "./collection/collectionCommons";
+import CollectionType = CollectionCommons.CollectionType;
 
 export interface LibraryFileHandle {
 	path: string,

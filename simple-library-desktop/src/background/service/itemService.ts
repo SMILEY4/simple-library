@@ -1,8 +1,11 @@
 import {DbAccess} from "../persistence/dbAcces";
 import {SQL} from "../persistence/sqlHandler";
-import {Collection, CollectionService, CollectionType} from "./collectionService";
 import {voidThen} from "../../common/AsyncCommon";
 import {FileSystemWrapper} from "./fileSystemWrapper";
+import {ActionGetCollectionById} from "./collection/actionGetCollectionById";
+import {CollectionCommons} from "./collection/collectionCommons";
+import Collection = CollectionCommons.Collection;
+import CollectionType = CollectionCommons.CollectionType;
 
 export interface Item {
 	id: number,
@@ -25,13 +28,13 @@ export interface Attribute {
 export class ItemService {
 
 	private readonly dbAccess: DbAccess;
-	private readonly collectionService: CollectionService;
+	private readonly actionGetCollectionById: ActionGetCollectionById;
 	private readonly fsWrapper: FileSystemWrapper;
 
 
-	constructor(dbAccess: DbAccess, collectionService: CollectionService, fsWrapper: FileSystemWrapper) {
+	constructor(dbAccess: DbAccess, actionGetCollectionById: ActionGetCollectionById, fsWrapper: FileSystemWrapper) {
 		this.dbAccess = dbAccess;
-		this.collectionService = collectionService;
+		this.actionGetCollectionById = actionGetCollectionById;
 		this.fsWrapper = fsWrapper;
 	}
 
@@ -39,7 +42,7 @@ export class ItemService {
 	 * Get all items of the given collection (with the attributes of the given keys)
 	 */
 	public getByCollection(collectionId: number, attributeKeys: string[]): Promise<Item[]> {
-		return this.collectionService.getById(collectionId)
+		return this.actionGetCollectionById.perform(collectionId)
 			.then((collection: Collection | null) => {
 				if (!collection) {
 					throw "Cant fetch items: collection with id " + collectionId + " not found";

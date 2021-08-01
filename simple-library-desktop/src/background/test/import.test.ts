@@ -1,4 +1,4 @@
-import {ImportResult, ImportService} from "../service/importService";
+import {ImportResult, ImportService} from "../service/import/importService";
 import {FileSystemWrapper} from "../service/fileSystemWrapper";
 import {mockConfigAccess, mockDateNow, mockFileSystemWrapper} from "./mockSetup";
 import {DbAccess} from "../persistence/dbAcces";

@@ -1,17 +1,10 @@
 import {ConfigAccess, ConfigKey} from "../persistence/configAccess";
 import {FileSystemWrapper} from "./fileSystemWrapper";
+import {ConfigCommons} from "./config/configCommons";
+import ExiftoolInfo = ConfigCommons.ExiftoolInfo;
+import AppTheme = ConfigCommons.AppTheme;
+import LastOpenedEntry = ConfigCommons.LastOpenedEntry;
 
-export type AppTheme = "light" | "dark"
-
-export interface ExiftoolInfo {
-	location: string | null;
-	defined: boolean;
-}
-
-export interface LastOpenedEntry {
-	name: string,
-	path: string
-}
 
 export class ConfigService {
 

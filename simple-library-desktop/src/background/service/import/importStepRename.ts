@@ -6,7 +6,7 @@ import {
     RenamePartType
 } from "../../../common/commonModels";
 import path from "path";
-import {ItemData} from "../importService";
+import {ItemData} from "./importService";
 
 export class ImportStepRename {
 
