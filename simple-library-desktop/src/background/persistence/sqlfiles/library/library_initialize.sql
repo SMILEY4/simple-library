@@ -73,6 +73,3 @@ VALUES ('timestamp_created', $timestamp);
 
 INSERT INTO metadata
 VALUES ('timestamp_last_opened', $timestamp);
-
-INSERT INTO collections(collection_name, collection_type, smart_query, group_id)
-VALUES ('All Items', 'smart', null, null);

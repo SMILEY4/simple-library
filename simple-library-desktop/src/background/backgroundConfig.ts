@@ -54,11 +54,11 @@ export function initBackgroundWorker(): void {
     const dbAccess: DbAccess = new DbAccess();
     const fsWrapper: FileSystemWrapper = new FileSystemWrapper();
 
-    const configService: ConfigService = new ConfigService(configAccess);
-    const libraryService: LibraryService = new LibraryService(dbAccess);
+    const configService: ConfigService = new ConfigService(configAccess, fsWrapper);
+    const libraryService: LibraryService = new LibraryService(dbAccess, fsWrapper);
     const collectionService: CollectionService = new CollectionService(dbAccess);
     const groupService: GroupService = new GroupService(dbAccess, collectionService);
-    const itemService: ItemService = new ItemService(dbAccess, collectionService);
+    const itemService: ItemService = new ItemService(dbAccess, collectionService, fsWrapper);
     const importService: ImportService = new ImportService(
         dbAccess,
         new ImportDataValidator(fsWrapper),
@@ -87,7 +87,7 @@ export function initBackgroundWorker(): void {
 
     new LibraryCreateChannel(workerIpcWrapper(), "w")
         .on((payload) => {
-            return libraryService.create(payload.name, payload.targetDir)
+            return libraryService.create(payload.name, payload.targetDir, true)
                 .then((library) => configService.addLastOpened(library.path, library.name));
         });
 

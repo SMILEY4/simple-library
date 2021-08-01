@@ -9,7 +9,11 @@ export class ImportStepMetadata {
 	exiftoolProcess: any;
 
 	constructor(configService: ConfigService) {
-		this.exiftoolProcess = new exiftool.ExiftoolProcess(configService.getExiftoolInfo().defined ? configService.getExiftoolInfo().defined : "");
+		this.exiftoolProcess = ImportStepMetadata.createExiftoolProcess(configService);
+	}
+
+	private static createExiftoolProcess(configService: ConfigService): any {
+		return new exiftool.ExiftoolProcess(configService.getExiftoolInfo().defined ? configService.getExiftoolInfo().defined : "");
 	}
 
 	public handle(itemData: ItemData): Promise<ItemData> {

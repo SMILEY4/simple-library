@@ -31,215 +31,244 @@ import collectionItemsAdd from "./sqlfiles/collection_items/collection_items_ins
 import collectionItemsRemove from "./sqlfiles/collection_items/collection_items_delete_items_multiple.sql";
 import itemAttributes from "./sqlfiles/items/items_get_metadata.sql";
 import itemAttribute from "./sqlfiles/item_attributes/item_attribs_get_single.sql";
+import itemAttributesInsert from "./sqlfiles/item_attributes/item_attribs_insert.sql";
 import itemUpdateAttribute from "./sqlfiles/item_attributes/item_attribs_update_value.sql";
-import itemInsert from "./sqlfiles/items/items_insert.sql"
+import itemInsert from "./sqlfiles/items/items_insert.sql";
 
 export module SQL {
 
 	export function initializeNewLibrary(name: string, timestamp: number): string[] {
-		return libraryInitialize
+		return sql(libraryInitialize)
 			.split(";")
 			.filter((stmt: string) => /[a-zA-Z]/g.test(stmt))
 			.map((stmt: string) => stmt
-				.replace("$name", str(name))
-				.replace("$timestamp", num(timestamp)));
+				.replace(v("name"), str(name))
+				.replace(v("timestamp"), num(timestamp)));
 	}
 
 	export function queryLibraryInfo(): string {
-		return metadataGetAll;
+		return sql(metadataGetAll);
 	}
 
 	export function updateLibraryInfoTimestampLastOpened(timestamp: number): string {
-		return metadataUpdateTimestampLastOpened
-			.replace("$newTimestamp", num(timestamp));
+		return sql(metadataUpdateTimestampLastOpened)
+			.replace(v("newTimestamp"), num(timestamp));
 	}
 
 	export function queryAllGroups(): string {
-		return groupsSelectAll;
+		return sql(groupsSelectAll);
 	}
 
 	export function queryGroupById(groupId: number): string {
-		return groupsSelectById
-			.replace("$groupId", num(groupId));
+		return sql(groupsSelectById)
+			.replace(v("groupId"), num(groupId));
 	}
 
 	export function insertGroup(name: string, parentGroupId: number | null) {
-		return groupInsert
-			.replace("$groupName", str(name))
-			.replace("$parentGroupId", num(parentGroupId));
+		return sql(groupInsert)
+			.replace(v("groupName"), str(name))
+			.replace(v("parentGroupId"), num(parentGroupId));
 	}
 
 	export function deleteGroup(groupId: number) {
-		return groupDelete
-			.replace("$groupId", num(groupId));
+		return sql(groupDelete)
+			.replace(v("groupId"), num(groupId));
 	}
 
 	export function updateGroupName(groupId: number, name: string): string {
-		return groupsUpdateName
-			.replace("$groupId", num(groupId))
-			.replace("$groupName", str(name));
+		return sql(groupsUpdateName)
+			.replace(v("groupId"), num(groupId))
+			.replace(v("groupName"), str(name));
 	}
 
 	export function updateGroupParent(groupId: number, newParentGroupId: number | null): string {
-		return groupUpdateParent
-			.replace("$groupId", num(groupId))
-			.replace("$parentGroupId", num(newParentGroupId));
+		return sql(groupUpdateParent)
+			.replace(v("groupId"), num(groupId))
+			.replace(v("parentGroupId"), num(newParentGroupId));
 	}
 
 	export function updateGroupParents(prevParentGroupId: number | null, newParentGroupId: number | null) {
-		return groupUpdateParents
-			.replace("$prevParentGroupId", num(prevParentGroupId))
-			.replace("$parentGroupId", num(newParentGroupId));
+		return sql(groupUpdateParents)
+			.replace(v("prevParentGroupId"), eqNum(prevParentGroupId))
+			.replace(v("parentGroupId"), num(newParentGroupId))
+			.replace(vNull(), isNull);
 	}
 
 	export function queryAllCollections(): string {
-		return collectionsSelectAll;
+		return sql(collectionsSelectAll);
 	}
 
-	export function insertCollection(name: string, type: string, parentGroupId: number | null, query: string): string {
-		return collectionInsert
-			.replace("$collectionName", str(name))
-			.replace("$collectionType", str(type))
-			.replace("$groupId", num(parentGroupId))
-			.replace("$query", str(query));
+	export function insertCollection(name: string, type: string, parentGroupId: number | null, query: string | null): string {
+		return sql(collectionInsert)
+			.replace(v("collectionName"), str(name))
+			.replace(v("collectionType"), str(type))
+			.replace(v("groupId"), num(parentGroupId))
+			.replace(v("query"), str(query));
 	}
 
 	export function deleteCollection(collectionId: number): string {
-		return collectionDelete
-			.replace("$collectionId", num(collectionId));
+		return sql(collectionDelete)
+			.replace(v("collectionId"), num(collectionId));
 	}
 
 	export function updateCollectionName(collectionId: number, name: string): string {
-		return collectionUpdateName
-			.replace("$collectionId", num(collectionId))
-			.replace("$collectionName", str(name));
+		return sql(collectionUpdateName)
+			.replace(v("collectionId"), num(collectionId))
+			.replace(v("collectionName"), str(name));
 	}
 
 	export function updateCollectionSmartQuery(collectionId: number, smartQuery: string | null): string {
-		return collectionUpdateSmartQuery
-			.replace("$collectionId", num(collectionId))
-			.replace("$collectionName", str(name));
+		return sql(collectionUpdateSmartQuery)
+			.replace(v("collectionId"), num(collectionId))
+			.replace(v("collectionSmartQuery"), str(smartQuery));
 	}
 
 	export function queryCollectionById(collectionId: number): string {
-		return collectionById
-			.replace("$collectionId", num(collectionId));
+		return sql(collectionById)
+			.replace(v("collectionId"), num(collectionId));
 	}
 
 	export function queryAllCollectionsWithItemCount(): string {
-		return collectionsSelectAllWithItemCount;
+		return sql(collectionsSelectAllWithItemCount);
 	}
 
 	export function updateCollectionParents(prevParentGroupId: number | null, newParentGroupId: number | null): string {
-		return collectionsUpdateParents
-			.replace("$groupId", num(newParentGroupId))
-			.replace("$prevGroupId", num(prevParentGroupId));
+		return sql(collectionsUpdateParents)
+			.replace(v("groupId"), num(newParentGroupId))
+			.replace(v("prevGroupId"), eqNum(prevParentGroupId))
+			.replace(vNull(), isNull());
 	}
 
 	export function updateCollectionParent(collectionId: number, newParentGroupId: number | null): string {
-		return collectionUpdateParent
-			.replace("$collectionId", num(collectionId))
-			.replace("$groupId", num(newParentGroupId));
+		return sql(collectionUpdateParent)
+			.replace(v("collectionId"), num(collectionId))
+			.replace(v("groupId"), num(newParentGroupId));
 	}
 
 	export function queryItemCountByQuery(query: string): string {
-		return itemsCountWithCustomQuery
-			.replace("$query", query);
+		return sql(itemsCountWithCustomQuery)
+			.replace(v("query"), query);
 	}
 
 	export function queryItemCountTotal(): string {
-		return itemsCountTotal;
+		return sql(itemsCountTotal);
 	}
 
 	export function queryItemsByCustomQuery(query: string, attributeKeys?: string[]): string {
 		if (attributeKeys) {
-			return itemsByCustomQueryWithAttribs
-				.replace("$query", query)
-				.replace("$attributeKeys", strCsv(attributeKeys));
+			return sql(itemsByCustomQueryWithAttribs)
+				.replace(v("query"), query)
+				.replace(v("attributeKeys"), strCsv(attributeKeys));
 		} else {
-			return itemsByCustomQuery
-				.replace("$query", query);
+			return sql(itemsByCustomQuery)
+				.replace(v("query"), query);
 		}
 	}
 
 	export function queryItemById(itemId: number): string {
-		return itemById
-			.replace("$itemId", num(itemId));
+		return sql(itemById)
+			.replace(v("itemId"), num(itemId));
 	}
 
 	export function queryItemsByIds(itemIds: number[]): string {
-		return itemsByIds
-			.replace("$itemIds", numCsv(itemIds));
+		return sql(itemsByIds)
+			.replace(v("itemIds"), numCsv(itemIds));
 	}
 
 	export function queryItemsByCollection(collectionId: number, attributeKeys: string[]): string {
-		return itemsByCollectionWithAttributes
-			.replace("$collectionId", collectionId)
-			.replace("$attributeKeys", strCsv(attributeKeys));
+		return sql(itemsByCollectionWithAttributes)
+			.replace(v("collectionId"), num(collectionId))
+			.replace(v("attributeKeys"), strCsv(attributeKeys));
 	}
 
 	export function queryItemsAll(attributeKeys: string[]): string {
-		return itemsAllWithAttributes
-			.replace("$attributeKeys", strCsv(attributeKeys));
+		return sql(itemsAllWithAttributes)
+			.replace(v("attributeKeys"), strCsv(attributeKeys));
 	}
 
 
-	export function updateAddItemsToCollection(collectionId: number, itemIds: number[]): string {
+	export function insertItemsIntoCollection(collectionId: number, itemIds: number[]): string {
 		const strEntries = itemIds.map(id => "(" + collectionId + "," + id + ")").join(", ");
-		return collectionItemsAdd
-			.replace("$entries", strEntries);
+		return sql(collectionItemsAdd)
+			.replace(v("entries"), strEntries);
 	}
 
 	export function updateRemoveItemsFromCollection(collectionId: number, itemIds: number[]): string {
-		return collectionItemsRemove
-			.replace("$collectionId", num(collectionId))
-			.replace("$itemIds", itemIds.join(","));
+		return sql(collectionItemsRemove)
+			.replace(v("collectionId"), num(collectionId))
+			.replace(v("itemIds"), itemIds.join(","));
 	}
 
 	export function deleteItems(itemIds: number[]): string {
-		return itemsDelete
-			.replace("$itemIds", numCsv(itemIds));
+		return sql(itemsDelete)
+			.replace(v("itemIds"), numCsv(itemIds));
 	}
 
 	export function insertItem(filepath: string, timestamp: number, hash: string, thumbnail: string): string {
-		return itemInsert
-			.replace("$filepath", str(filepath))
-			.replace("$timestamp", num(timestamp))
-			.replace("$hash", str(hash))
-			.replace("$thumbnail", str(thumbnail));
+		return sql(itemInsert)
+			.replace(v("filepath"), str(filepath))
+			.replace(v("timestamp"), num(timestamp))
+			.replace(v("hash"), str(hash))
+			.replace(v("thumbnail"), str(thumbnail));
 	}
 
 	export function deleteItemsFromCollections(itemIds: number[]): string {
-		return itemsDeleteFromCollections
-			.replace("$itemIds", numCsv(itemIds));
+		return sql(itemsDeleteFromCollections)
+			.replace(v("itemIds"), numCsv(itemIds));
 	}
 
 	export function queryItemAttributes(itemId: number): string {
-		return itemAttributes
-			.replace("$itemId", num(itemId));
+		return sql(itemAttributes)
+			.replace(v("itemId"), num(itemId));
 	}
 
 	export function queryItemAttribute(itemId: number, attributeKey: string): string {
-		return itemAttribute
-			.replace("$itemId", num(itemId))
-			.replace("$key", str(attributeKey));
+		return sql(itemAttribute)
+			.replace(v("itemId"), num(itemId))
+			.replace(v("key"), str(attributeKey));
 	}
 
 	export function updateItemAttribute(itemId: number, attributeKey: string, value: string): string {
-		return itemUpdateAttribute
-			.replace("$itemId", num(itemId))
-			.replace("$key", str(attributeKey))
-			.replace("$value", str(value));
+		return sql(itemUpdateAttribute)
+			.replace(v("itemId"), num(itemId))
+			.replace(v("key"), str(attributeKey))
+			.replace(v("value"), str(value));
 	}
 
+	export function insertItemAttributes(itemId: number, attributes: ({ key: string, value: string, type: string })[]): string {
+		const entries: string[] = attributes.map(att => `("${att.key}", "${att.value}", "${att.type}", ${itemId})`)
+		return sql(itemAttributesInsert)
+			.replace(v("entries"), entries.join(", "));
+	}
+
+}
+
+function sql(value: any): string {
+	return value.toString();
+}
+
+function v(name: string): RegExp {
+	return new RegExp("\\$" + name, "g");
+}
+
+function vNull() {
+	return new RegExp("= \\$null", "g");
+}
+
+function isNull(): string {
+	return "IS NULL";
 }
 
 function str(value: any): string {
 	return !!value ? "'" + value + "'" : "null";
 }
 
-function num(value: number): string {
+function num(value: number | null): string {
 	return !!value ? "" + value : "null";
+}
+
+function eqNum(value: number | null): string {
+	return !!value ? "" + value : "$null";
 }
 
 function strCsv(values: any[]): string {
@@ -249,4 +278,5 @@ function strCsv(values: any[]): string {
 function numCsv(values: number[]): string {
 	return !!values ? values.map((value: number) => num(value)).join(", ") : "null";
 }
+
 

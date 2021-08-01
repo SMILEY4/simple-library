@@ -1,6 +1,7 @@
 import {DbAccess} from "../persistence/dbAcces";
 import {SQL} from "../persistence/sqlHandler";
 import {Collection, CollectionService} from "./collectionService";
+import {voidThen} from "../../common/AsyncCommon";
 
 export interface Group {
 	id: number,
@@ -25,13 +26,19 @@ export class GroupService {
 	 */
 	public getById(groupId: number): Promise<Group | null> {
 		return this.dbAccess.querySingle(SQL.queryGroupById(groupId))
-			.then((row: any) => ({
-				id: row.group_id,
-				name: row.name,
-				parentGroupId: row.parent_group_id,
-				collections: [],
-				children: []
-			}));
+			.then((row: any) => {
+				if (row) {
+					return {
+						id: row.group_id,
+						name: row.name,
+						parentGroupId: row.parent_group_id,
+						collections: [],
+						children: []
+					};
+				} else {
+					return null;
+				}
+			});
 	}
 
 	/**
@@ -105,7 +112,7 @@ export class GroupService {
 	 */
 	public delete(groupId: number, deleteChildren: boolean): Promise<void> {
 		if (deleteChildren) {
-			return this.dbAccess.run(SQL.deleteGroup(groupId)).then();
+			return this.dbAccess.run(SQL.deleteGroup(groupId)).then(voidThen);
 		} else {
 			return this.getById(groupId)
 				.then((group: Group | null) => {
@@ -124,7 +131,7 @@ export class GroupService {
 					]);
 				})
 				.then(() => this.dbAccess.run(SQL.deleteGroup(groupId)))
-				.then();
+				.then(voidThen);
 		}
 	}
 
@@ -132,7 +139,15 @@ export class GroupService {
 	 * Rename the group with the given id.
 	 */
 	public rename(groupId: number, name: string): Promise<void> {
-		return this.dbAccess.run(SQL.updateGroupName(groupId, name)).then();
+		return this.getById(groupId).then((group: Group | null) => {
+			if (!group) {
+				throw "No group with id " + groupId + " exists";
+			} else if (group.name === name) {
+				return;
+			} else {
+				return this.dbAccess.run(SQL.updateGroupName(groupId, name)).then(voidThen);
+			}
+		});
 	}
 
 	/**
@@ -141,7 +156,7 @@ export class GroupService {
 	public move(groupId: number, targetGroupId: number | null): Promise<void> {
 		return this.validateGroupMovement(groupId, targetGroupId).then((valid: boolean) => {
 			if (valid) {
-				return this.dbAccess.run(SQL.updateGroupParent(groupId, targetGroupId)).then();
+				return this.dbAccess.run(SQL.updateGroupParent(groupId, targetGroupId)).then(voidThen);
 			} else {
 				return Promise.reject("Group cant be moved: invalid.");
 			}

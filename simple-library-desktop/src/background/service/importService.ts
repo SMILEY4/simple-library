@@ -9,6 +9,7 @@ import {ImportStepMetadata} from "./import/importStepMetadata";
 import {SQL} from "../persistence/sqlHandler";
 import {Attribute} from "./itemService";
 import {ItemsImportStatusChannel} from "../../common/messaging/channels/channels";
+import {voidThen} from "../../common/AsyncCommon";
 
 export interface ImportResult {
 	timestamp: number,
@@ -66,11 +67,18 @@ export class ImportService {
 	}
 
 	/**
+	 * Whether an import is currently running.
+	 */
+	public isImportRunning(): boolean {
+		return this.importRunning;
+	}
+
+	/**
 	 * Import the given data
 	 */
 	public async import(data: ImportProcessData): Promise<ImportResult> {
 		if (this.importRunning) {
-			return Promise.resolve(ImportService.resultAlreadyRunning());
+			return Promise.resolve(ImportService.resultAlreadyRunning(data.files.length));
 		} else {
 			this.importRunning = true;
 			const totalAmountFiles: number = data.files.length;
@@ -112,13 +120,24 @@ export class ImportService {
 	}
 
 	private saveItem(item: ItemData): Promise<void> {
-		return this.dbAccess.run(SQL.insertItem(item.filepath, item.timestamp, item.hash, item.thumbnail)).then();
+		return this.dbAccess.run(SQL.insertItem(item.filepath, item.timestamp, item.hash, item.thumbnail))
+			.then((itemId: number | null) => itemId ? itemId : Promise.reject("Could not save item: " + item.filepath))
+			.then((itemId: number) => {
+				if (item.attributes) {
+					return this.dbAccess.run(SQL.insertItemAttributes(itemId, item.attributes.map(att => ({
+						key: att.key,
+						value: att.value,
+						type: att.type
+					}))));
+				}
+			})
+			.then(voidThen);
 	}
 
-	private static resultAlreadyRunning(): ImportResult {
+	private static resultAlreadyRunning(amountFiles: number): ImportResult {
 		return {
 			timestamp: Date.now(),
-			amountFiles: 0,
+			amountFiles: amountFiles,
 			failed: true,
 			failureReason: "Can not start import while another import is already running.",
 			encounteredErrors: false,

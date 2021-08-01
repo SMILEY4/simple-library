@@ -1,8 +1,8 @@
 import {DbAccess} from "../persistence/dbAcces";
 import {SQL} from "../persistence/sqlHandler";
 import {Collection, CollectionService, CollectionType} from "./collectionService";
-
-const shell = require("electron").shell;
+import {voidThen} from "../../common/AsyncCommon";
+import {FileSystemWrapper} from "./fileSystemWrapper";
 
 export interface Item {
 	id: number,
@@ -26,10 +26,13 @@ export class ItemService {
 
 	private readonly dbAccess: DbAccess;
 	private readonly collectionService: CollectionService;
+	private readonly fsWrapper: FileSystemWrapper;
 
-	constructor(dbAccess: DbAccess, collectionService: CollectionService) {
+
+	constructor(dbAccess: DbAccess, collectionService: CollectionService, fsWrapper: FileSystemWrapper) {
 		this.dbAccess = dbAccess;
 		this.collectionService = collectionService;
+		this.fsWrapper = fsWrapper;
 	}
 
 	/**
@@ -57,12 +60,12 @@ export class ItemService {
 						}
 					}
 					default: {
-						throw "Unexpected collection type: " + collection.type
+						throw "Unexpected collection type: " + collection.type;
 					}
 				}
 			})
 			.then((rows: any[]) => {
-				return rows.map(ItemService.rowToItem) // todo bug: rows = undefined
+				return rows.map(ItemService.rowToItem);
 			});
 	}
 
@@ -81,7 +84,7 @@ export class ItemService {
 		return this.dbAccess.runMultiple([
 			SQL.deleteItems(itemIds),
 			SQL.deleteItemsFromCollections(itemIds)
-		]).then();
+		]).then(voidThen);
 	}
 
 	/**
@@ -91,20 +94,22 @@ export class ItemService {
 		return this.dbAccess.queryAll(SQL.queryItemsByIds(itemIds))
 			.then((rows: any) => rows.map(ItemService.rowToItem))
 			.then((items: Item[]) => items.map((item: Item) => item.filepath))
-			.then((paths: string[]) => Promise.all(paths.map(shell.openPath)))
-			.then();
+			.then((paths: string[]) => Promise.all(paths.map(p => this.fsWrapper.open(p))))
+			.then(voidThen);
 	}
 
 	/**
 	 * Get all attributes of the given item
 	 */
 	public getAttributes(itemId: number): Promise<Attribute[]> {
-		return this.dbAccess.queryAll(SQL.queryItemAttributes(itemId))
+		return this.getById(itemId)
+			.then((item: Item | null) => item ? item : Promise.reject("Item with id " + itemId + " not found"))
+			.then(() => this.dbAccess.queryAll(SQL.queryItemAttributes(itemId)))
 			.then((rows: any[]) => rows.map(row => ItemService.rowToAttribute(row)));
 	}
 
 	/**
-	 * Updates the attribute of the given item to the given value
+	 * Updates the existing attribute of the given item to the given value
 	 */
 	public updateAttribute(itemId: number, attributeKey: string, newValue: string): Promise<Attribute> {
 		return this.dbAccess.querySingle(SQL.queryItemAttribute(itemId, attributeKey))

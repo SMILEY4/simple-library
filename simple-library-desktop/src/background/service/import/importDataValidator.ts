@@ -3,8 +3,9 @@ import {
     ImportFileTarget,
     ImportProcessData,
     ImportTargetAction,
-    RenamePartType,
-} from '../../../common/commonModels';
+    renamePartIsConst,
+    RenamePartType
+} from "../../../common/commonModels";
 import {FileSystemWrapper} from "../fileSystemWrapper";
 
 
@@ -24,7 +25,7 @@ export class ImportDataValidator {
      */
     public validate(data: ImportProcessData): void {
         this.validateImportTarget(data.importTarget);
-        this.validateRenameInstructions(data.renameInstructions);
+        this.validateRenameInstructions(data.renameInstructions, data.files.length);
     }
 
 
@@ -49,13 +50,16 @@ export class ImportDataValidator {
     }
 
 
-    private validateRenameInstructions(data: BulkRenameInstruction): void {
+    private validateRenameInstructions(data: BulkRenameInstruction, amountFiles: number): void {
         if (data.doRename) {
             if (data.parts.length == 0) {
                 throw "No rename parts given.";
             }
             if (data.parts.every(p => p.type === RenamePartType.NOTHING)) {
                 throw "At least one rename part must be not 'nothing'.";
+            }
+            if (amountFiles > 1 && !data.parts.some(p => renamePartIsConst(p.type))) {
+                throw "Renaming multiple files resulting in same filename for all.";
             }
             data.parts.forEach(part => {
                 switch (part.type) {
@@ -86,8 +90,12 @@ export class ImportDataValidator {
         if (!value || value.length === 0) {
             throw "Value of rename part 'number from' must not be empty.";
         }
-        if (isNaN(parseInt(value, 10))) {
+        const parsed: number = parseInt(value, 10);
+        if (isNaN(parsed)) {
             throw "Value of rename part 'number from' must be a valid number.";
+        }
+        if (parsed < 0) {
+            throw "Value of rename part 'number from' must be greater or equal to 0.";
         }
     }
 

@@ -1,9 +1,8 @@
 import path from "path";
 import {DbAccess} from "../persistence/dbAcces";
 import {SQL} from "../persistence/sqlHandler";
-import {Database} from "sqlite3";
-
-const fs = require("fs");
+import {FileSystemWrapper} from "./fileSystemWrapper";
+import {CollectionType} from "./collectionService";
 
 export interface LibraryFileHandle {
 	path: string,
@@ -19,23 +18,25 @@ export interface LibraryInformation {
 export class LibraryService {
 
 	private readonly dbAccess: DbAccess;
+	private readonly fsWrapper: FileSystemWrapper;
 
-	constructor(dbAccess: DbAccess) {
+	constructor(dbAccess: DbAccess, fileSystemWrapper: FileSystemWrapper) {
 		this.dbAccess = dbAccess;
+		this.fsWrapper = fileSystemWrapper;
 	}
 
 	/**
 	 * Create (and "open") a new library with the given name in the given directory.
 	 */
-	public create(name: string, targetDir: string): Promise<LibraryFileHandle> {
+	public create(name: string, targetDir: string, createDefaultCollection: boolean): Promise<LibraryFileHandle> {
 		const filePath: string = LibraryService.toFilePath(targetDir, name);
-		if (fs.existsSync(filePath)) {
-			console.error("Could not create library. File already exists: " + filePath);
+		if (this.fsWrapper.existsFile(filePath)) {
+			console.log("Could not create library. File already exists: " + filePath);
 			return Promise.reject("File with the same name already exists (" + filePath + ").");
 		} else {
 			console.log("Creating new library: " + filePath);
 			return this.dbAccess.setDatabasePath(filePath, true)
-				.then(() => this.initLibrary(name))
+				.then(() => this.initLibrary(name, createDefaultCollection))
 				.then(() => ({
 					path: filePath,
 					name: name
@@ -47,7 +48,7 @@ export class LibraryService {
 	 * "Opens" the library-file at the given location.
 	 */
 	public open(filePath: string): Promise<LibraryFileHandle> {
-		if (fs.existsSync(filePath)) {
+		if (this.fsWrapper.existsFile(filePath)) {
 			console.log("Opening library: " + filePath);
 			return this.dbAccess.setDatabasePath(filePath, false)
 				.then(() => this.updateLibraryOpenedTimestamp())
@@ -57,7 +58,7 @@ export class LibraryService {
 					name: libInfo.name
 				}));
 		} else {
-			console.error("Could not open library: File does not exist (" + filePath + ")");
+			console.log("Could not open library: File does not exist (" + filePath + ")");
 			return Promise.reject("Could not open library: File does not exist (" + filePath + ")");
 		}
 	}
@@ -90,12 +91,12 @@ export class LibraryService {
 		return path.join(dir, filename + ".db");
 	}
 
-	private initLibrary(name: string): Promise<void> {
-		return this.dbAccess.getDatabase().then(async (db: Database) => {
-			for (let sqlStmt of SQL.initializeNewLibrary(name, Date.now())) {
-				await this.dbAccess.run(sqlStmt, db);
-			}
-		});
+	private initLibrary(name: string, createDefaultCollection: boolean): Promise<void> {
+		const queries = SQL.initializeNewLibrary(name, Date.now());
+		if (createDefaultCollection) {
+			queries.push(SQL.insertCollection("All Items", CollectionType.SMART, null, null));
+		}
+		return this.dbAccess.runMultipleSeq(queries).then();
 	}
 
 	private updateLibraryOpenedTimestamp(): Promise<void> {

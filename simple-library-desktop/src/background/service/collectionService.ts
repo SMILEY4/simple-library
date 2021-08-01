@@ -1,6 +1,6 @@
 import {DbAccess} from "../persistence/dbAcces";
 import {SQL} from "../persistence/sqlHandler";
-import {startAsyncWithValue} from "../../common/AsyncCommon";
+import {voidThen} from "../../common/AsyncCommon";
 
 export enum CollectionType {
 	NORMAL = "normal",
@@ -36,6 +36,8 @@ export class CollectionService {
 					for (let i = 0; i < collections.length; i++) {
 						if (collections[i].type === CollectionType.SMART) {
 							collections[i].itemCount = await this.getSmartItemCount(collections[i]);
+						} else if(!collections[i].itemCount) {
+							collections[i].itemCount = 0;
 						}
 					}
 					return collections;
@@ -51,7 +53,7 @@ export class CollectionService {
 	 */
 	public getById(collectionId: number): Promise<Collection | null> {
 		return this.dbAccess.querySingle(SQL.queryCollectionById(collectionId))
-			.then((row: any) => CollectionService.rowToCollection(row));
+			.then((row: any) => row ? CollectionService.rowToCollection(row) : null);
 	}
 
 	/**
@@ -64,10 +66,7 @@ export class CollectionService {
 			}
 			case CollectionType.SMART: {
 				return this.dbAccess.querySingle(SQL.queryItemsByCustomQuery(smartQuery.trim()))
-					.then(() => this.insertCollection(name.trim(), CollectionType.SMART, parentGroupId, smartQuery.trim()))
-					.catch((err) => {
-						throw err;
-					});
+					.then(() => this.insertCollection(name.trim(), CollectionType.SMART, parentGroupId, smartQuery.trim()));
 			}
 		}
 	}
@@ -76,7 +75,7 @@ export class CollectionService {
 	 * Delete the collection with the given id
 	 */
 	public delete(collectionId: number): Promise<void> {
-		return this.dbAccess.run(SQL.deleteCollection(collectionId)).then();
+		return this.dbAccess.run(SQL.deleteCollection(collectionId)).then(voidThen);
 	}
 
 	/**
@@ -92,15 +91,12 @@ export class CollectionService {
 				}
 			})
 			.then((collection: Collection) => {
-				switch (collection.type) {
-					case CollectionType.SMART: {
-						return this.dbAccess.querySingle(SQL.queryItemsByCustomQuery(newSmartQuery.trim()))
-							.then(() => collection)
-							.catch(() => Promise.reject("Invalid custom query: " + newSmartQuery.trim()));
-					}
-					case CollectionType.NORMAL: {
-						return collection;
-					}
+				if (collection.type === CollectionType.SMART && newSmartQuery && newSmartQuery.trim().length > 0) {
+					return this.dbAccess.querySingle(SQL.queryItemsByCustomQuery(newSmartQuery.trim()))
+						.then(() => collection)
+						.catch(() => Promise.reject("Invalid custom query: " + newSmartQuery.trim()));
+				} else {
+					return collection;
 				}
 			})
 			.then((collection: Collection) => {
@@ -116,21 +112,21 @@ export class CollectionService {
 					}
 				}
 			})
-			.then();
+			.then(voidThen);
 	}
 
 	/**
 	 * Moves the collection with the given id into the given parent-group
 	 */
 	public move(collectionId: number, targetGroupId: number | null): Promise<void> {
-		return this.dbAccess.run(SQL.updateCollectionParent(collectionId, targetGroupId)).then();
+		return this.dbAccess.run(SQL.updateCollectionParent(collectionId, targetGroupId)).then(voidThen);
 	}
 
 	/**
 	 * Moves all child collections of the given parent-group into the new group
 	 */
 	public moveAllOfParent(prevParentGroupId: number | null, newParentGroupId: number | null): Promise<void> {
-		return this.dbAccess.run(SQL.updateCollectionParents(prevParentGroupId, newParentGroupId)).then();
+		return this.dbAccess.run(SQL.updateCollectionParents(prevParentGroupId, newParentGroupId)).then(voidThen);
 	}
 
 	/**
@@ -159,14 +155,15 @@ export class CollectionService {
 				})
 				.then(() => {
 					if (copy) {
-						return this.dbAccess.run(SQL.updateAddItemsToCollection(targetCollectionId, itemIds));
+						return this.dbAccess.run(SQL.insertItemsIntoCollection(targetCollectionId, itemIds));
 					} else {
 						return this.dbAccess.runMultiple([
 							SQL.updateRemoveItemsFromCollection(sourceCollectionId, itemIds),
-							SQL.updateAddItemsToCollection(targetCollectionId, itemIds)
+							SQL.insertItemsIntoCollection(targetCollectionId, itemIds)
 						]).then(() => null);
 					}
-				});
+				})
+				.then(voidThen);
 		}
 	}
 
@@ -184,7 +181,7 @@ export class CollectionService {
 					return this.dbAccess.run(SQL.updateRemoveItemsFromCollection(collectionId, itemIds));
 				}
 			})
-			.then();
+			.then(voidThen);
 	}
 
 	private getSmartItemCount(collection: Collection): Promise<number> {
@@ -196,11 +193,11 @@ export class CollectionService {
 			return this.dbAccess.querySingle(sqlQuery)
 				.then((row: any | null) => row ? row.count : 0);
 		} else {
-			return startAsyncWithValue(0);
+			return Promise.resolve(0);
 		}
 	}
 
-	private insertCollection(name: string, type: CollectionType, parentGroupId: number | null, smartQuery: string): Promise<Collection> {
+	private insertCollection(name: string, type: CollectionType, parentGroupId: number | null, smartQuery: string | null): Promise<Collection> {
 		return this.dbAccess.run(SQL.insertCollection(name, type, parentGroupId, smartQuery))
 			.then((itemId: number | null) => ({
 				id: itemId,
@@ -217,7 +214,7 @@ export class CollectionService {
 			id: row.collection_id,
 			name: row.collection_name,
 			type: row.collection_type,
-			smartQuery: row.smart_query ? row.smart_query : null,
+			smartQuery: (row.smart_query && row.smart_query.trim().length > 0) ? row.smart_query : null,
 			groupId: row.group_id,
 			itemCount: row.item_count ? row.item_count : null
 		};

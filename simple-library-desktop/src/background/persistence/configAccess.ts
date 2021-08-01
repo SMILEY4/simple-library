@@ -11,9 +11,13 @@ export module ConfigKey {
 
 export class ConfigAccess {
 
-	private readonly store: ElectronStore;
+	private store: ElectronStore;
 
 	constructor() {
+		this.initStore();
+	}
+
+	private initStore() {
 		this.store = new Store();
 		if (!this.store.has(ConfigKey.LAST_OPENED)) {
 			this.store.set(ConfigKey.LAST_OPENED, []);
@@ -38,12 +42,16 @@ export class ConfigAccess {
 	 * Get the configured value by the given key or return the given default value if the key does not exist
 	 */
 	public getValueOr<T>(key: string, defaultValue: T): T {
-		const data: any = this.store.get(key);
+		const data: any = this.getStoreValue(key);
 		if (data !== null && data !== undefined) {
 			return data;
 		} else {
 			return defaultValue;
 		}
+	}
+
+	private getStoreValue(key: string): any {
+		return this.store.get(key);
 	}
 
 	/**
