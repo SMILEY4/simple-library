@@ -1,12 +1,10 @@
 import ElectronStore from "electron-store";
+import {ConfigCommons} from "../service/config/configCommons";
+import CFG_LAST_OPENED = ConfigCommons.CFG_LAST_OPENED;
+import CFG_THEME = ConfigCommons.CFG_THEME;
+import CFG_EXIFTOOL_LOCATION = ConfigCommons.CFG_EXIFTOOL_LOCATION;
 
 const Store = require("electron-store");
-
-export module ConfigKey {
-	export const LAST_OPENED: string = "lastOpened";
-	export const THEME: string = "theme";
-	export const EXIFTOOL_LOCATION: string = "exiftool";
-}
 
 
 export class ConfigAccess {
@@ -19,14 +17,14 @@ export class ConfigAccess {
 
 	private initStore() {
 		this.store = new Store();
-		if (!this.store.has(ConfigKey.LAST_OPENED)) {
-			this.store.set(ConfigKey.LAST_OPENED, []);
+		if (!this.store.has(CFG_LAST_OPENED)) {
+			this.store.set(CFG_LAST_OPENED, []);
 		}
-		if (!this.store.has(ConfigKey.THEME)) {
-			this.store.set(ConfigKey.THEME, "dark");
+		if (!this.store.has(CFG_THEME)) {
+			this.store.set(CFG_THEME, "dark");
 		}
-		if (!this.store.has(ConfigKey.EXIFTOOL_LOCATION)) {
-			this.store.set(ConfigKey.EXIFTOOL_LOCATION, "");
+		if (!this.store.has(CFG_EXIFTOOL_LOCATION)) {
+			this.store.set(CFG_EXIFTOOL_LOCATION, "");
 		}
 		console.log("Created config store at ", this.store.path);
 	}

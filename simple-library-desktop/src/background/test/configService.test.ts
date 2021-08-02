@@ -1,9 +1,14 @@
 import {FileSystemWrapper} from "../service/fileSystemWrapper";
 import {mockConfigAccess, mockFileSystemWrapper} from "./mockSetup";
 import {ConfigAccess} from "../persistence/configAccess";
-import {ConfigService} from "../service/configService";
 import {jest} from "@jest/globals";
 import {ConfigCommons} from "../service/config/configCommons";
+import {ActionOpenConfig} from "../service/config/actionOpenConfig";
+import {ActionGetExiftoolInfo} from "../service/config/actionGetExiftoolInfo";
+import {ActionSetTheme} from "../service/config/actionSetTheme";
+import {ActionGetTheme} from "../service/config/actionGetTheme";
+import {ActionGetLastOpened} from "../service/config/actionGetLastOpened";
+import {ActionAddToLastOpened} from "../service/config/actionAddToLastOpened";
 import ExiftoolInfo = ConfigCommons.ExiftoolInfo;
 
 describe("config-service", () => {
@@ -14,10 +19,11 @@ describe("config-service", () => {
 		test("open config", async () => {
 			// given
 			const configLocation = "path/to/my/config.json";
-			const [configService, configAccess, fsWrapper] = mockConfigService();
+			const [configAccess, fsWrapper] = mockConfigService();
+			const actionOpenConfig = new ActionOpenConfig(configAccess, fsWrapper);
 			mockConfigFileLocation(configAccess, configLocation);
 			// when
-			const result: Promise<void> = configService.openConfig();
+			const result: Promise<void> = actionOpenConfig.perform();
 			// then
 			await expect(result).resolves.toBeUndefined();
 			expect(fsWrapper.open).toHaveBeenCalledWith(configLocation);
@@ -31,10 +37,11 @@ describe("config-service", () => {
 		test("get exiftool info", () => {
 			// given
 			const location = "path/to/my/exiftool.exe";
-			const [configService, configAccess] = mockConfigService();
+			const [configAccess] = mockConfigService();
+			const actionGetExiftoolInfo = new ActionGetExiftoolInfo(configAccess);
 			mockGetConfigValue(configAccess, {exiftool: location});
 			// when
-			const result: ExiftoolInfo = configService.getExiftoolInfo();
+			const result: ExiftoolInfo = actionGetExiftoolInfo.perform();
 			// then
 			expect(result).toStrictEqual({location: location, defined: true});
 		});
@@ -42,10 +49,11 @@ describe("config-service", () => {
 
 		test("get exiftool info when not defined", () => {
 			// given
-			const [configService, configAccess] = mockConfigService();
+			const [configAccess] = mockConfigService();
+			const actionGetExiftoolInfo = new ActionGetExiftoolInfo(configAccess);
 			mockGetConfigValue(configAccess, {});
 			// when
-			const result: ExiftoolInfo = configService.getExiftoolInfo();
+			const result: ExiftoolInfo = actionGetExiftoolInfo.perform();
 			// then
 			expect(result).toStrictEqual({location: null, defined: false});
 		});
@@ -57,18 +65,20 @@ describe("config-service", () => {
 
 		test("set and get theme", () => {
 			// given
-			const [configService, configAccess] = mockConfigService();
+			const [configAccess] = mockConfigService();
+			const actionSetTheme = new ActionSetTheme(configAccess);
+			const actionGetTheme = new ActionGetTheme(configAccess);
 			const store: any = {};
 			mockSetConfigValue(configAccess, store);
 			mockGetConfigValue(configAccess, store);
 			// when
-			configService.setTheme("dark");
+			actionSetTheme.perform("dark");
 			// then
-			expect(configService.getTheme()).toBe("dark");
+			expect(actionGetTheme.perform()).toBe("dark");
 			// when
-			configService.setTheme("light");
+			actionSetTheme.perform("light");
 			// then
-			expect(configService.getTheme()).toBe("light");
+			expect(actionGetTheme.perform()).toBe("light");
 		});
 
 	});
@@ -77,33 +87,35 @@ describe("config-service", () => {
 	describe("last opened", () => {
 
 		test("add and get last opened", () => {
-			const [configService, configAccess] = mockConfigService();
+			const [configAccess] = mockConfigService();
+			const actionGetLastOpened = new ActionGetLastOpened(configAccess);
+			const actionAddToLastOpened = new ActionAddToLastOpened(configAccess);
 			const store: any = {};
 			mockSetConfigValue(configAccess, store);
 			mockGetConfigValue(configAccess, store);
 
-			expect(configService.getLastOpened()).toStrictEqual([]);
+			expect(actionGetLastOpened.perform()).toStrictEqual([]);
 
-			configService.addLastOpened("path/to/a", "A");
-			expect(configService.getLastOpened()).toStrictEqual([{path: "path/to/a", name: "A"}]);
+			actionAddToLastOpened.perform("path/to/a", "A");
+			expect(actionGetLastOpened.perform()).toStrictEqual([{path: "path/to/a", name: "A"}]);
 
-			configService.addLastOpened("path/to/b", "B");
-			configService.addLastOpened("path/to/c", "C");
-			expect(configService.getLastOpened()).toStrictEqual([
+			actionAddToLastOpened.perform("path/to/b", "B");
+			actionAddToLastOpened.perform("path/to/c", "C");
+			expect(actionGetLastOpened.perform()).toStrictEqual([
 				{path: "path/to/c", name: "C"},
 				{path: "path/to/b", name: "B"},
 				{path: "path/to/a", name: "A"}
 			]);
 
-			configService.addLastOpened("path/to/d", "D");
-			expect(configService.getLastOpened()).toStrictEqual([
+			actionAddToLastOpened.perform("path/to/d", "D");
+			expect(actionGetLastOpened.perform()).toStrictEqual([
 				{path: "path/to/d", name: "D"},
 				{path: "path/to/c", name: "C"},
 				{path: "path/to/b", name: "B"}
 			]);
 
-			configService.addLastOpened("path/to/c", "C");
-			expect(configService.getLastOpened()).toStrictEqual([
+			actionAddToLastOpened.perform("path/to/c", "C");
+			expect(actionGetLastOpened.perform()).toStrictEqual([
 				{path: "path/to/c", name: "C"},
 				{path: "path/to/d", name: "D"},
 				{path: "path/to/b", name: "B"}
@@ -116,11 +128,10 @@ describe("config-service", () => {
 });
 
 
-function mockConfigService(): [ConfigService, ConfigAccess, FileSystemWrapper] {
+function mockConfigService(): [ConfigAccess, FileSystemWrapper] {
 	const configAccess = mockConfigAccess();
 	const fsWrapper = mockFileSystemWrapper();
-	const configService: ConfigService = new ConfigService(configAccess, fsWrapper);
-	return [configService, configAccess, fsWrapper];
+	return [configAccess, fsWrapper];
 }
 
 function mockConfigFileLocation(configAccess: ConfigAccess, location: string) {

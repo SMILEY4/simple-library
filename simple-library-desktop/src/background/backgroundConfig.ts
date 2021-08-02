@@ -1,4 +1,3 @@
-import {ConfigService} from "./service/configService";
 import {ConfigAccess} from "./persistence/configAccess";
 import {
     CollectionCreateChannel,
@@ -53,6 +52,12 @@ import {ActionMoveCollection} from "./service/collection/actionMoveCollection";
 import {ActionMoveAllCollections} from "./service/collection/actionMoveAllCollections";
 import {ActionMoveItems} from "./service/collection/actionMoveItems";
 import {ActionRemoveItems} from "./service/collection/actionRemoveItems";
+import {ActionAddToLastOpened} from "./service/config/actionAddToLastOpened";
+import {ActionGetExiftoolInfo} from "./service/config/actionGetExiftoolInfo";
+import {ActionGetLastOpened} from "./service/config/actionGetLastOpened";
+import {ActionGetTheme} from "./service/config/actionGetTheme";
+import {ActionOpenConfig} from "./service/config/actionOpenConfig";
+import {ActionSetTheme} from "./service/config/actionSetTheme";
 
 export function initBackgroundWorker(): void {
     console.log("initialize background worker");
@@ -73,7 +78,13 @@ export function initBackgroundWorker(): void {
     const actionMoveItems = new ActionMoveItems(dbAccess, actionGetCollectionById);
     const actionRemoveItems = new ActionRemoveItems(dbAccess, actionGetCollectionById);
 
-    const configService: ConfigService = new ConfigService(configAccess, fsWrapper);
+    const actionAddToLastOpened = new ActionAddToLastOpened(configAccess);
+    const actionGetExiftoolInfo = new ActionGetExiftoolInfo(configAccess);
+    const actionGetLastOpened = new ActionGetLastOpened(configAccess);
+    const actionGetTheme = new ActionGetTheme(configAccess);
+    const actionOpenConfig = new ActionOpenConfig(configAccess, fsWrapper);
+    const actionSetTheme = new ActionSetTheme(configAccess);
+
     const libraryService: LibraryService = new LibraryService(dbAccess, fsWrapper);
     const groupService: GroupService = new GroupService(dbAccess, actionGetAllCollections, actionMoveAllCollections);
     const itemService: ItemService = new ItemService(dbAccess, actionGetCollectionById, fsWrapper);
@@ -84,35 +95,35 @@ export function initBackgroundWorker(): void {
         new ImportStepThumbnail(),
         new ImportStepRename(),
         new ImportStepImportTarget(fsWrapper),
-        new ImportStepMetadata(configService),
+        new ImportStepMetadata(actionGetExiftoolInfo),
         new ItemsImportStatusChannel(workerIpcWrapper(), "w")
     );
 
     new ConfigOpenChannel(workerIpcWrapper(), "w")
-        .on(() => configService.openConfig());
+        .on(() => actionOpenConfig.perform());
 
     new ConfigGetExiftoolChannel(workerIpcWrapper(), "w")
-        .on(() => configService.getExiftoolInfo());
+        .on(() => actionGetExiftoolInfo.perform());
 
     new ConfigGetThemeChannel(workerIpcWrapper(), "w")
-        .on(() => configService.getTheme());
+        .on(() => actionGetTheme.perform());
 
     new ConfigSetThemeChannel(workerIpcWrapper(), "w")
-        .on((theme: "dark" | "light") => configService.setTheme(theme));
+        .on((theme: "dark" | "light") => actionSetTheme.perform(theme));
 
     new LibrariesGetLastOpenedChannel(workerIpcWrapper(), "w")
-        .on(() => configService.getLastOpened());
+        .on(() => actionGetLastOpened.perform());
 
     new LibraryCreateChannel(workerIpcWrapper(), "w")
         .on((payload) => {
             return libraryService.create(payload.name, payload.targetDir, true)
-                .then((library) => configService.addLastOpened(library.path, library.name));
+                .then((library) => actionAddToLastOpened.perform(library.path, library.name));
         });
 
     new LibraryOpenChannel(workerIpcWrapper(), "w")
         .on((payload) => {
             return libraryService.open(payload)
-                .then((library) => configService.addLastOpened(library.path, library.name));
+                .then((library) => actionAddToLastOpened.perform(library.path, library.name));
         });
 
     new LibraryCloseChannel(workerIpcWrapper(), "w")

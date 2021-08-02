@@ -1,6 +1,6 @@
-import {ConfigService} from "../configService";
 import {ItemData} from "./importService";
 import {Attribute, AttributeType} from "../itemService";
+import {ActionGetExiftoolInfo} from "../config/actionGetExiftoolInfo";
 
 const exiftool = require('node-exiftool');
 
@@ -8,12 +8,12 @@ export class ImportStepMetadata {
 
 	exiftoolProcess: any;
 
-	constructor(configService: ConfigService) {
-		this.exiftoolProcess = ImportStepMetadata.createExiftoolProcess(configService);
+	constructor(actionGetExiftoolInfo: ActionGetExiftoolInfo) {
+		this.exiftoolProcess = ImportStepMetadata.createExiftoolProcess(actionGetExiftoolInfo);
 	}
 
-	private static createExiftoolProcess(configService: ConfigService): any {
-		return new exiftool.ExiftoolProcess(configService.getExiftoolInfo().defined ? configService.getExiftoolInfo().defined : "");
+	private static createExiftoolProcess(actionGetExiftoolInfo: ActionGetExiftoolInfo): any {
+		return new exiftool.ExiftoolProcess(actionGetExiftoolInfo.perform().defined ? actionGetExiftoolInfo.perform().defined : "");
 	}
 
 	public handle(itemData: ItemData): Promise<ItemData> {

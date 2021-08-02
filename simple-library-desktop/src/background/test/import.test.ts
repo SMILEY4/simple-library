@@ -9,12 +9,12 @@ import {ImportStepRename} from "../service/import/importStepRename";
 import {ImportStepImportTarget} from "../service/import/importStepImportTarget";
 import {ImportStepMetadata} from "../service/import/importStepMetadata";
 import {ItemsImportStatusChannel} from "../../common/messaging/channels/channels";
-import {ConfigService} from "../service/configService";
 import {jest} from "@jest/globals";
 import {LibraryService} from "../service/libraryService";
 import {ImportProcessData, ImportTargetAction, RenamePartType} from "../../common/commonModels";
 import {MemDbAccess} from "./memDbAccess";
 import {SQL} from "../persistence/sqlHandler";
+import {ActionGetExiftoolInfo} from "../service/config/actionGetExiftoolInfo";
 
 describe("import", () => {
 
@@ -935,7 +935,6 @@ function mockImportService(): [ImportService, LibraryService, FileSystemWrapper,
 	const fsWrapper = mockFileSystemWrapper();
 	const dbAccess = new MemDbAccess();
 	const configAccess = mockConfigAccess();
-	const configService: ConfigService = new ConfigService(configAccess, fsWrapper);
 	const channel = mockItemsImportStatusChannel();
 	const stepHash = new ImportStepFileHash(fsWrapper);
 	// @ts-ignore
@@ -951,7 +950,7 @@ function mockImportService(): [ImportService, LibraryService, FileSystemWrapper,
 		new ImportStepThumbnail(),
 		new ImportStepRename(),
 		new ImportStepImportTarget(fsWrapper),
-		new ImportStepMetadata(configService),
+		new ImportStepMetadata(new ActionGetExiftoolInfo(configAccess)),
 		channel
 	);
 	const libraryService = new LibraryService(dbAccess, fsWrapper);

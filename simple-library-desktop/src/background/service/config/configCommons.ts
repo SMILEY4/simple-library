@@ -1,5 +1,9 @@
 export module ConfigCommons {
 
+	export const CFG_LAST_OPENED: string = "lastOpened";
+	export const CFG_THEME: string = "theme";
+	export const CFG_EXIFTOOL_LOCATION: string = "exiftool";
+
 	export type AppTheme = "light" | "dark"
 
 	export interface ExiftoolInfo {
@@ -11,5 +15,6 @@ export module ConfigCommons {
 		name: string,
 		path: string
 	}
+
 
 }
