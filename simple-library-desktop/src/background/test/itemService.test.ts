@@ -1,4 +1,3 @@
-import {LibraryService} from "../service/libraryService";
 import {DbAccess} from "../persistence/dbAcces";
 import {MemDbAccess} from "./memDbAccess";
 import {mockFileSystemWrapper} from "./mockSetup";
@@ -7,6 +6,7 @@ import {Attribute, AttributeType, Item, ItemService} from "../service/itemServic
 import {SQL} from "../persistence/sqlHandler";
 import {FileSystemWrapper} from "../service/fileSystemWrapper";
 import {ActionGetCollectionById} from "../service/collection/actionGetCollectionById";
+import {ActionCreateLibrary} from "../service/library/actionCreateLibrary";
 
 describe("item-service", () => {
 
@@ -14,8 +14,8 @@ describe("item-service", () => {
 
 		test("get by normal collection without attributes", async () => {
 			// given
-			const [itemService, libraryService, dbAccess] = mockItemService();
-			await libraryService.create("TestLib", "path/to/test", false);
+			const [itemService, actionCreateLibrary, dbAccess] = mockItemService();
+			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
 				SQL.insertCollection("Collection 2", "smart", null, null),
@@ -47,8 +47,8 @@ describe("item-service", () => {
 
 		test("get by normal collection", async () => {
 			// given
-			const [itemService, libraryService, dbAccess] = mockItemService();
-			await libraryService.create("TestLib", "path/to/test", false);
+			const [itemService, actionCreateLibrary, dbAccess] = mockItemService();
+			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
 				SQL.insertCollection("Collection 2", "smart", null, null),
@@ -85,8 +85,8 @@ describe("item-service", () => {
 
 		test("get by smart collection", async () => {
 			// given
-			const [itemService, libraryService, dbAccess] = mockItemService();
-			await libraryService.create("TestLib", "path/to/test", false);
+			const [itemService, actionCreateLibrary, dbAccess] = mockItemService();
+			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
 				SQL.insertCollection("Collection 2", "smart", null, "item_id <= 2"),
@@ -122,8 +122,8 @@ describe("item-service", () => {
 
 		test("get by smart collection with empty query", async () => {
 			// given
-			const [itemService, libraryService, dbAccess] = mockItemService();
-			await libraryService.create("TestLib", "path/to/test", false);
+			const [itemService, actionCreateLibrary, dbAccess] = mockItemService();
+			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
 				SQL.insertCollection("Collection 2", "smart", null, ""),
@@ -161,8 +161,8 @@ describe("item-service", () => {
 
 		test("get by non-existing collection", async () => {
 			// given
-			const [itemService, libraryService, dbAccess] = mockItemService();
-			await libraryService.create("TestLib", "path/to/test", false);
+			const [itemService, actionCreateLibrary, dbAccess] = mockItemService();
+			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
 				SQL.insertCollection("Collection 2", "smart", null, null),
@@ -190,8 +190,8 @@ describe("item-service", () => {
 
 		test("get by id", async () => {
 			// given
-			const [itemService, libraryService, dbAccess] = mockItemService();
-			await libraryService.create("TestLib", "path/to/test", false);
+			const [itemService, actionCreateLibrary, dbAccess] = mockItemService();
+			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
 				SQL.insertItem("/path/to/file/2", 1001, "hash2", "thumbnail2"),
@@ -214,8 +214,8 @@ describe("item-service", () => {
 
 		test("get by invalid id", async () => {
 			// given
-			const [itemService, libraryService, dbAccess] = mockItemService();
-			await libraryService.create("TestLib", "path/to/test", false);
+			const [itemService, actionCreateLibrary, dbAccess] = mockItemService();
+			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
 				SQL.insertItem("/path/to/file/2", 1001, "hash2", "thumbnail2"),
@@ -242,8 +242,8 @@ describe("item-service", () => {
 
 		test("delete item", async () => {
 			// given
-			const [itemService, libraryService, dbAccess] = mockItemService();
-			await libraryService.create("TestLib", "path/to/test", false);
+			const [itemService, actionCreateLibrary, dbAccess] = mockItemService();
+			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
 				SQL.insertCollection("Collection 2", "normal", null, null),
@@ -278,8 +278,8 @@ describe("item-service", () => {
 
 		test("delete non-existing item", async () => {
 			// given
-			const [itemService, libraryService, dbAccess] = mockItemService();
-			await libraryService.create("TestLib", "path/to/test", false);
+			const [itemService, actionCreateLibrary, dbAccess] = mockItemService();
+			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
 				SQL.insertCollection("Collection 2", "normal", null, null),
@@ -318,8 +318,8 @@ describe("item-service", () => {
 
 		test("open items", async () => {
 			// given
-			const [itemService, libraryService, dbAccess, fsWrapper] = mockItemService();
-			await libraryService.create("TestLib", "path/to/test", false);
+			const [itemService, actionCreateLibrary, dbAccess, fsWrapper] = mockItemService();
+			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
 				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
@@ -339,8 +339,8 @@ describe("item-service", () => {
 
 		test("open non existing items", async () => {
 			// given
-			const [itemService, libraryService, dbAccess, fsWrapper] = mockItemService();
-			await libraryService.create("TestLib", "path/to/test", false);
+			const [itemService, actionCreateLibrary, dbAccess, fsWrapper] = mockItemService();
+			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
 				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
@@ -359,8 +359,8 @@ describe("item-service", () => {
 
 		test("open non existing file", async () => {
 			// given
-			const [itemService, libraryService, dbAccess, fsWrapper] = mockItemService();
-			await libraryService.create("TestLib", "path/to/test", false);
+			const [itemService, actionCreateLibrary, dbAccess, fsWrapper] = mockItemService();
+			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
 				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
@@ -385,8 +385,8 @@ describe("item-service", () => {
 
 		test("get item attributes", async () => {
 			// given
-			const [itemService, libraryService, dbAccess] = mockItemService();
-			await libraryService.create("TestLib", "path/to/test", false);
+			const [itemService, actionCreateLibrary, dbAccess] = mockItemService();
+			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
 				SQL.insertItem("/path/to/file/2", 1001, "hash2", "thumbnail2"),
@@ -414,8 +414,8 @@ describe("item-service", () => {
 
 		test("get item attributes for non existing item", async () => {
 			// given
-			const [itemService, libraryService, dbAccess] = mockItemService();
-			await libraryService.create("TestLib", "path/to/test", false);
+			const [itemService, actionCreateLibrary, dbAccess] = mockItemService();
+			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
 				SQL.insertItem("/path/to/file/2", 1001, "hash2", "thumbnail2"),
@@ -443,8 +443,8 @@ describe("item-service", () => {
 
 		test("update attribute", async () => {
 			// given
-			const [itemService, libraryService, dbAccess] = mockItemService();
-			await libraryService.create("TestLib", "path/to/test", false);
+			const [itemService, actionCreateLibrary, dbAccess] = mockItemService();
+			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
 				SQL.insertItemAttributes(1, [
@@ -467,8 +467,8 @@ describe("item-service", () => {
 
 		test("update attributes for non existing item", async () => {
 			// given
-			const [itemService, libraryService, dbAccess] = mockItemService();
-			await libraryService.create("TestLib", "path/to/test", false);
+			const [itemService, actionCreateLibrary, dbAccess] = mockItemService();
+			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
 				SQL.insertItemAttributes(1, [
@@ -491,8 +491,8 @@ describe("item-service", () => {
 
 		test("update non existing attributes", async () => {
 			// given
-			const [itemService, libraryService, dbAccess] = mockItemService();
-			await libraryService.create("TestLib", "path/to/test", false);
+			const [itemService, actionCreateLibrary, dbAccess] = mockItemService();
+			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
 				SQL.insertItemAttributes(1, [
@@ -537,11 +537,11 @@ function attribute(key: string, value: string, type: AttributeType) {
 	};
 }
 
-function mockItemService(): [ItemService, LibraryService, DbAccess, FileSystemWrapper] {
+function mockItemService(): [ItemService, ActionCreateLibrary, DbAccess, FileSystemWrapper] {
 	const dbAccess = new MemDbAccess();
 	const fsWrapper = mockFileSystemWrapper();
 	fsWrapper.existsFile = jest.fn().mockReturnValue(false) as any;
-	const libraryService = new LibraryService(dbAccess, fsWrapper);
+	const actionCreateLibrary = new ActionCreateLibrary(dbAccess, fsWrapper);
 	const itemService = new ItemService(dbAccess, new ActionGetCollectionById(dbAccess), fsWrapper);
-	return [itemService, libraryService, dbAccess, fsWrapper];
+	return [itemService, actionCreateLibrary, dbAccess, fsWrapper];
 }

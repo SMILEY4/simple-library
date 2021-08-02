@@ -31,7 +31,6 @@ import {
     LibraryOpenChannel
 } from "../common/messaging/channels/channels";
 import {workerIpcWrapper} from "../common/messaging/core/ipcWrapper";
-import {LibraryService} from "./service/libraryService";
 import {DbAccess} from "./persistence/dbAcces";
 import {GroupService} from "./service/groupService";
 import {ItemService} from "./service/itemService";
@@ -58,6 +57,10 @@ import {ActionGetLastOpened} from "./service/config/actionGetLastOpened";
 import {ActionGetTheme} from "./service/config/actionGetTheme";
 import {ActionOpenConfig} from "./service/config/actionOpenConfig";
 import {ActionSetTheme} from "./service/config/actionSetTheme";
+import {ActionCloseLibrary} from "./service/library/actionCloseLibrary";
+import {ActionCreateLibrary} from "./service/library/actionCreateLibrary";
+import {ActionGetLibraryInfo} from "./service/library/ActionGetLibraryInfo";
+import {ActionOpenLibrary} from "./service/library/actionOpenLibrary";
 
 export function initBackgroundWorker(): void {
     console.log("initialize background worker");
@@ -85,7 +88,11 @@ export function initBackgroundWorker(): void {
     const actionOpenConfig = new ActionOpenConfig(configAccess, fsWrapper);
     const actionSetTheme = new ActionSetTheme(configAccess);
 
-    const libraryService: LibraryService = new LibraryService(dbAccess, fsWrapper);
+    const actionCloseLibrary = new ActionCloseLibrary(dbAccess);
+    const actionCreateLibrary = new ActionCreateLibrary(dbAccess, fsWrapper);
+    const actionGetLibraryInfo = new ActionGetLibraryInfo(dbAccess);
+    const actionOpenLibrary = new ActionOpenLibrary(dbAccess, fsWrapper, actionGetLibraryInfo);
+
     const groupService: GroupService = new GroupService(dbAccess, actionGetAllCollections, actionMoveAllCollections);
     const itemService: ItemService = new ItemService(dbAccess, actionGetCollectionById, fsWrapper);
     const importService: ImportService = new ImportService(
@@ -116,21 +123,21 @@ export function initBackgroundWorker(): void {
 
     new LibraryCreateChannel(workerIpcWrapper(), "w")
         .on((payload) => {
-            return libraryService.create(payload.name, payload.targetDir, true)
+            return actionCreateLibrary.perform(payload.name, payload.targetDir, true)
                 .then((library) => actionAddToLastOpened.perform(library.path, library.name));
         });
 
     new LibraryOpenChannel(workerIpcWrapper(), "w")
         .on((payload) => {
-            return libraryService.open(payload)
+            return actionOpenLibrary.perform(payload)
                 .then((library) => actionAddToLastOpened.perform(library.path, library.name));
         });
 
     new LibraryCloseChannel(workerIpcWrapper(), "w")
-        .on(() => libraryService.closeCurrent());
+        .on(() => actionCloseLibrary.perform());
 
     new LibraryGetMetadataChannel(workerIpcWrapper(), "w")
-        .on(() => libraryService.getCurrentInformation());
+        .on(() => actionGetLibraryInfo.perform());
 
     new GroupsGetTreeChannel(workerIpcWrapper(), "w")
         .on((payload) => groupService.getTree(payload.includeCollections, payload.includeItemCount));

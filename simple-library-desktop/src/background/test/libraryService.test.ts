@@ -1,10 +1,15 @@
 import {jest} from "@jest/globals";
-import {LibraryFileHandle, LibraryService} from "../service/libraryService";
 import {mockDateNow, mockFileSystemWrapper} from "./mockSetup";
 import {DbAccess} from "../persistence/dbAcces";
 import {FileSystemWrapper} from "../service/fileSystemWrapper";
 import {MemDbAccess} from "./memDbAccess";
 import {SQL} from "../persistence/sqlHandler";
+import {LibraryCommons} from "../service/library/libraryCommons";
+import {ActionCreateLibrary} from "../service/library/actionCreateLibrary";
+import {ActionGetLibraryInfo} from "../service/library/ActionGetLibraryInfo";
+import {ActionOpenLibrary} from "../service/library/actionOpenLibrary";
+import {ActionCloseLibrary} from "../service/library/actionCloseLibrary";
+import LibraryFileHandle = LibraryCommons.LibraryFileHandle;
 
 describe("library-service", () => {
 
@@ -16,14 +21,16 @@ describe("library-service", () => {
 			const dir = "my/test/directory";
 			const expectedFilePath = "my\\test\\directory\\My1TestLibrary.db";
 			const expectedTimestamp = Date.now();
-			const [libraryService, dbAccess, fsWrapper] = mockLibraryService();
+			const [dbAccess, fsWrapper] = mockLibraryService();
+			const actionCreateLibrary = new ActionCreateLibrary(dbAccess, fsWrapper);
+			const actionGetLibraryInfo = new ActionGetLibraryInfo(dbAccess);
 			mockExistsFile(fsWrapper, false);
 			mockDateNow(expectedTimestamp);
 			// when
-			const result: Promise<LibraryFileHandle> = libraryService.create(name, dir, true);
+			const result: Promise<LibraryFileHandle> = actionCreateLibrary.perform(name, dir, true);
 			// then
 			await expect(result).resolves.toStrictEqual({path: expectedFilePath, name: name});
-			await expect(libraryService.getCurrentInformation()).resolves.toStrictEqual({
+			await expect(actionGetLibraryInfo.perform()).resolves.toStrictEqual({
 				"name": name,
 				"timestampCreated": expectedTimestamp,
 				"timestampLastOpened": expectedTimestamp
@@ -34,23 +41,26 @@ describe("library-service", () => {
 
 		test("dont create new library when file already exists", async () => {
 			// given
-			const [libraryService, dbAccess, fsWrapper] = mockLibraryService();
+			const [dbAccess, fsWrapper] = mockLibraryService();
+			const actionCreateLibrary = new ActionCreateLibrary(dbAccess, fsWrapper);
+			const actionGetLibraryInfo = new ActionGetLibraryInfo(dbAccess);
 			mockExistsFile(fsWrapper, true);
 			// when
-			const result: Promise<LibraryFileHandle> = libraryService.create("name", "dir", true);
+			const result: Promise<LibraryFileHandle> = actionCreateLibrary.perform("name", "dir", true);
 			// then
 			await expect(result).rejects.toBeDefined();
-			await expect(libraryService.getCurrentInformation()).rejects.toBeDefined();
+			await expect(actionGetLibraryInfo.perform()).rejects.toBeDefined();
 			expect(dbAccess.getDatabaseUrl()).toBe(null);
 		});
 
 
 		test("dont create new library when name is invalid", async () => {
 			// given
-			const [libraryService, dbAccess, fsWrapper] = mockLibraryService();
+			const [dbAccess, fsWrapper] = mockLibraryService();
+			const actionCreateLibrary = new ActionCreateLibrary(dbAccess, fsWrapper);
 			mockExistsFile(fsWrapper, true);
 			// when
-			const result: Promise<LibraryFileHandle> = libraryService.create("./_", "dir", true);
+			const result: Promise<LibraryFileHandle> = actionCreateLibrary.perform("./_", "dir", true);
 			// then
 			await expect(result).rejects.toBeDefined();
 			expect(dbAccess.getDatabaseUrl()).toBe(null);
@@ -67,17 +77,19 @@ describe("library-service", () => {
 			const libName = "MyLib";
 			const tsNow = Date.now();
 			const tsCreated = Date.now() - 2000;
-			const [libraryService, dbAccess, fsWrapper] = mockLibraryService();
+			const [dbAccess, fsWrapper] = mockLibraryService();
+			const actionGetLibraryInfo = new ActionGetLibraryInfo(dbAccess);
+			const actionOpenLibrary = new ActionOpenLibrary(dbAccess, fsWrapper, actionGetLibraryInfo);
 			mockExistsFile(fsWrapper, true);
 			mockDateNow(tsNow);
 			await dbAccess.setDatabasePath(filePath, false);
 			await dbAccess.runMultipleSeq(SQL.initializeNewLibrary("MyLib", tsCreated));
 			// when
-			const result: Promise<LibraryFileHandle> = libraryService.open(filePath);
+			const result: Promise<LibraryFileHandle> = actionOpenLibrary.perform(filePath);
 			// then
 			await expect(result).resolves.toStrictEqual({path: filePath, name: libName});
 			expect(dbAccess.getDatabaseUrl()).toBe(filePath);
-			await expect(libraryService.getCurrentInformation()).resolves.toStrictEqual({
+			await expect(actionGetLibraryInfo.perform()).resolves.toStrictEqual({
 				"name": libName,
 				"timestampCreated": tsCreated,
 				"timestampLastOpened": tsNow
@@ -88,14 +100,16 @@ describe("library-service", () => {
 		test("open non-existing library", async () => {
 			// given
 			const filePath = "my\\test\\directory\\NoLib.db";
-			const [libraryService, dbAccess, fsWrapper] = mockLibraryService();
+			const [dbAccess, fsWrapper] = mockLibraryService();
+			const actionGetLibraryInfo = new ActionGetLibraryInfo(dbAccess);
+			const actionOpenLibrary = new ActionOpenLibrary(dbAccess, fsWrapper, actionGetLibraryInfo);
 			mockExistsFile(fsWrapper, false);
 			// when
-			const result: Promise<LibraryFileHandle> = libraryService.open(filePath);
+			const result: Promise<LibraryFileHandle> = actionOpenLibrary.perform(filePath);
 			// then
 			await expect(result).rejects.toBeDefined();
 			expect(dbAccess.getDatabaseUrl()).toBe(null);
-			await expect(libraryService.getCurrentInformation()).rejects.toBeDefined();
+			await expect(actionGetLibraryInfo.perform()).rejects.toBeDefined();
 		});
 
 	});
@@ -105,12 +119,12 @@ describe("library-service", () => {
 
 		test("close current library", async () => {
 			// given
-			const [libraryService, dbAccess] = mockLibraryService();
+			const [dbAccess] = mockLibraryService();
+			const actionCloseLibrary = new ActionCloseLibrary(dbAccess);
 			await dbAccess.setDatabasePath("my/path/to/MyLib.db", false);
 			// when
-			const result: Promise<void> = libraryService.closeCurrent();
+			actionCloseLibrary.perform();
 			// then
-			await expect(result).resolves.toBeUndefined();
 			expect(dbAccess.getDatabaseUrl()).toBe(null);
 		});
 
@@ -120,11 +134,10 @@ describe("library-service", () => {
 });
 
 
-function mockLibraryService(): [LibraryService, DbAccess, FileSystemWrapper] {
+function mockLibraryService(): [DbAccess, FileSystemWrapper] {
 	const dbAccess = new MemDbAccess();
 	const fsWrapper = mockFileSystemWrapper();
-	const libraryService: LibraryService = new LibraryService(dbAccess, fsWrapper);
-	return [libraryService, dbAccess, fsWrapper];
+	return [dbAccess, fsWrapper];
 }
 
 function mockExistsFile(fsWrapper: FileSystemWrapper, exists: boolean) {

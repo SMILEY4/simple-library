@@ -10,11 +10,11 @@ import {ImportStepImportTarget} from "../service/import/importStepImportTarget";
 import {ImportStepMetadata} from "../service/import/importStepMetadata";
 import {ItemsImportStatusChannel} from "../../common/messaging/channels/channels";
 import {jest} from "@jest/globals";
-import {LibraryService} from "../service/libraryService";
 import {ImportProcessData, ImportTargetAction, RenamePartType} from "../../common/commonModels";
 import {MemDbAccess} from "./memDbAccess";
 import {SQL} from "../persistence/sqlHandler";
 import {ActionGetExiftoolInfo} from "../service/config/actionGetExiftoolInfo";
+import {ActionCreateLibrary} from "../service/library/actionCreateLibrary";
 
 describe("import", () => {
 
@@ -25,8 +25,8 @@ describe("import", () => {
 			test("move (target does not exist)", async () => {
 				// given
 				const TIMESTAMP = mockDateNow(1234);
-				const [importService, libraryService, fsWrapper, , dbAccess] = mockImportService();
-				await libraryService.create("TestLib", "path/to/test", false);
+				const [importService, actionCreateLibrary, fsWrapper, , dbAccess] = mockImportService();
+				await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 				mockDirsExist(fsWrapper, ["path/to"]);
 				const importData: ImportProcessData = {
 					files: [
@@ -64,8 +64,8 @@ describe("import", () => {
 			test("copy (target does not exist)", async () => {
 				// given
 				const TIMESTAMP = mockDateNow(1234);
-				const [importService, libraryService, fsWrapper, , dbAccess] = mockImportService();
-				await libraryService.create("TestLib", "path/to/test", false);
+				const [importService, actionCreateLibrary, fsWrapper, , dbAccess] = mockImportService();
+				await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 				mockDirsExist(fsWrapper, ["path/to"]);
 				const importData: ImportProcessData = {
 					files: [
@@ -106,8 +106,8 @@ describe("import", () => {
 			test("no parts provided", async () => {
 				// given
 				const TIMESTAMP = mockDateNow(1234);
-				const [importService, libraryService, fsWrapper, , dbAccess] = mockImportService();
-				await libraryService.create("TestLib", "path/to/test", false);
+				const [importService, actionCreateLibrary, fsWrapper, , dbAccess] = mockImportService();
+				await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 				const importData: ImportProcessData = {
 					files: [
 						"path/to/file1.png",
@@ -144,8 +144,8 @@ describe("import", () => {
 			test("invalid part combination - all 'nothing'", async () => {
 				// given
 				const TIMESTAMP = mockDateNow(1234);
-				const [importService, libraryService, fsWrapper, , dbAccess] = mockImportService();
-				await libraryService.create("TestLib", "path/to/test", false);
+				const [importService, actionCreateLibrary, fsWrapper, , dbAccess] = mockImportService();
+				await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 				const importData: ImportProcessData = {
 					files: [
 						"path/to/file1.png",
@@ -185,8 +185,8 @@ describe("import", () => {
 			test("invalid text part: empty text provided", async () => {
 				// given
 				const TIMESTAMP = mockDateNow(1234);
-				const [importService, libraryService, fsWrapper, , dbAccess] = mockImportService();
-				await libraryService.create("TestLib", "path/to/test", false);
+				const [importService, actionCreateLibrary, fsWrapper, , dbAccess] = mockImportService();
+				await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 				const importData: ImportProcessData = {
 					files: [
 						"path/to/file1.png",
@@ -226,8 +226,8 @@ describe("import", () => {
 			test("invalid number-from part: empty value provided", async () => {
 				// given
 				const TIMESTAMP = mockDateNow(1234);
-				const [importService, libraryService, fsWrapper, , dbAccess] = mockImportService();
-				await libraryService.create("TestLib", "path/to/test", false);
+				const [importService, actionCreateLibrary, fsWrapper, , dbAccess] = mockImportService();
+				await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 				const importData: ImportProcessData = {
 					files: [
 						"path/to/file1.png",
@@ -267,8 +267,8 @@ describe("import", () => {
 			test("invalid number-from part: not a number", async () => {
 				// given
 				const TIMESTAMP = mockDateNow(1234);
-				const [importService, libraryService, fsWrapper, , dbAccess] = mockImportService();
-				await libraryService.create("TestLib", "path/to/test", false);
+				const [importService, actionCreateLibrary, fsWrapper, , dbAccess] = mockImportService();
+				await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 				const importData: ImportProcessData = {
 					files: [
 						"path/to/file1.png",
@@ -307,8 +307,8 @@ describe("import", () => {
 			test("invalid number-from part: number must be >= 0", async () => {
 				// given
 				const TIMESTAMP = mockDateNow(1234);
-				const [importService, libraryService, fsWrapper, , dbAccess] = mockImportService();
-				await libraryService.create("TestLib", "path/to/test", false);
+				const [importService, actionCreateLibrary, fsWrapper, , dbAccess] = mockImportService();
+				await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 				const importData: ImportProcessData = {
 					files: [
 						"path/to/file1.png",
@@ -350,8 +350,8 @@ describe("import", () => {
 		test("invalid filenames after rename: multiple files will be called the same", async () => {
 			// given
 			const TIMESTAMP = mockDateNow(1234);
-			const [importService, libraryService, fsWrapper, , dbAccess] = mockImportService();
-			await libraryService.create("TestLib", "path/to/test", false);
+			const [importService, actionCreateLibrary, fsWrapper, , dbAccess] = mockImportService();
+			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			const importData: ImportProcessData = {
 				files: [
 					"path/to/file1.png",
@@ -391,8 +391,8 @@ describe("import", () => {
 		test("import already running", async () => {
 			// given
 			const TIMESTAMP = mockDateNow(1234);
-			const [importService, libraryService, fsWrapper, , dbAccess] = mockImportService();
-			await libraryService.create("TestLib", "path/to/test", false);
+			const [importService, actionCreateLibrary, fsWrapper, , dbAccess] = mockImportService();
+			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			const importData: ImportProcessData = {
 				files: [
 					"path/to/file1.png",
@@ -435,10 +435,10 @@ describe("import", () => {
 		test("move (file already exists)", async () => {
 			// given
 			const TIMESTAMP = mockDateNow(1234);
-			const [importService, libraryService, fsWrapper, statusChannel, dbAccess] = mockImportService();
+			const [importService, actionCreateLibrary, fsWrapper, statusChannel, dbAccess] = mockImportService();
 			mockDirsExist(fsWrapper, ["new/target/directory"]);
 			mockFilesExist(fsWrapper, ["new\\target\\directory\\file2.png"]);
-			await libraryService.create("TestLib", "path/to/test", false);
+			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			const importData: ImportProcessData = {
 				files: [
 					"path/to/file1.png",
@@ -481,10 +481,10 @@ describe("import", () => {
 		test("copy (file already exists)", async () => {
 			// given
 			const TIMESTAMP = mockDateNow(1234);
-			const [importService, libraryService, fsWrapper, statusChannel, dbAccess] = mockImportService();
+			const [importService, actionCreateLibrary, fsWrapper, statusChannel, dbAccess] = mockImportService();
 			mockDirsExist(fsWrapper, ["new/target/directory"]);
 			mockFilesExist(fsWrapper, ["new\\target\\directory\\file2.png"]);
-			await libraryService.create("TestLib", "path/to/test", false);
+			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			const importData: ImportProcessData = {
 				files: [
 					"path/to/file1.png",
@@ -526,10 +526,10 @@ describe("import", () => {
 		test("rename (file already exists)", async () => {
 			// given
 			const TIMESTAMP = mockDateNow(1234);
-			const [importService, libraryService, fsWrapper, statusChannel, dbAccess] = mockImportService();
+			const [importService, actionCreateLibrary, fsWrapper, statusChannel, dbAccess] = mockImportService();
 			mockDirsExist(fsWrapper, ["new/target/directory"]);
 			mockFilesExist(fsWrapper, ["new\\target\\directory\\file2_renamed.png"]);
-			await libraryService.create("TestLib", "path/to/test", false);
+			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			const importData: ImportProcessData = {
 				files: [
 					"path/to/file1.png",
@@ -579,9 +579,9 @@ describe("import", () => {
 		test("keep, no rename", async () => {
 			// given
 			const TIMESTAMP = mockDateNow(1234);
-			const [importService, libraryService, fsWrapper, statusChannel, dbAccess] = mockImportService();
+			const [importService, actionCreateLibrary, fsWrapper, statusChannel, dbAccess] = mockImportService();
 			mockFilesExist(fsWrapper, []);
-			await libraryService.create("TestLib", "path/to/test", false);
+			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			const importData: ImportProcessData = {
 				files: [
 					"path/to/file1.png",
@@ -637,10 +637,10 @@ describe("import", () => {
 		test("copy, no rename", async () => {
 			// given
 			const TIMESTAMP = mockDateNow(1234);
-			const [importService, libraryService, fsWrapper, statusChannel, dbAccess] = mockImportService();
+			const [importService, actionCreateLibrary, fsWrapper, statusChannel, dbAccess] = mockImportService();
 			mockFilesExist(fsWrapper, []);
 			mockDirsExist(fsWrapper, ["new/target/directory"]);
-			await libraryService.create("TestLib", "path/to/test", false);
+			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			const importData: ImportProcessData = {
 				files: [
 					"path/to/file1.png",
@@ -688,10 +688,10 @@ describe("import", () => {
 		test("move, no rename", async () => {
 			// given
 			const TIMESTAMP = mockDateNow(1234);
-			const [importService, libraryService, fsWrapper, statusChannel, dbAccess] = mockImportService();
+			const [importService, actionCreateLibrary, fsWrapper, statusChannel, dbAccess] = mockImportService();
 			mockFilesExist(fsWrapper, []);
 			mockDirsExist(fsWrapper, ["new/target/directory"]);
-			await libraryService.create("TestLib", "path/to/test", false);
+			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			const importData: ImportProcessData = {
 				files: [
 					"path/to/file1.png",
@@ -739,9 +739,9 @@ describe("import", () => {
 		test("keep, with rename", async () => {
 			// given
 			const TIMESTAMP = mockDateNow(1234);
-			const [importService, libraryService, fsWrapper, statusChannel, dbAccess] = mockImportService();
+			const [importService, actionCreateLibrary, fsWrapper, statusChannel, dbAccess] = mockImportService();
 			mockFilesExist(fsWrapper, []);
-			await libraryService.create("TestLib", "path/to/test", false);
+			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			const importData: ImportProcessData = {
 				files: [
 					"path/to/file1.png",
@@ -796,10 +796,10 @@ describe("import", () => {
 		test("copy, with rename", async () => {
 			// given
 			const TIMESTAMP = mockDateNow(1234);
-			const [importService, libraryService, fsWrapper, statusChannel, dbAccess] = mockImportService();
+			const [importService, actionCreateLibrary, fsWrapper, statusChannel, dbAccess] = mockImportService();
 			mockFilesExist(fsWrapper, []);
 			mockDirsExist(fsWrapper, ["new/target/directory"]);
-			await libraryService.create("TestLib", "path/to/test", false);
+			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			const importData: ImportProcessData = {
 				files: [
 					"path/to/file1.png",
@@ -854,10 +854,10 @@ describe("import", () => {
 		test("move, with rename", async () => {
 			// given
 			const TIMESTAMP = mockDateNow(1234);
-			const [importService, libraryService, fsWrapper, statusChannel, dbAccess] = mockImportService();
+			const [importService, actionCreateLibrary, fsWrapper, statusChannel, dbAccess] = mockImportService();
 			mockFilesExist(fsWrapper, []);
 			mockDirsExist(fsWrapper, ["new/target/directory"]);
-			await libraryService.create("TestLib", "path/to/test", false);
+			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			const importData: ImportProcessData = {
 				files: [
 					"path/to/file1.png",
@@ -931,7 +931,7 @@ function attribute(key: string, value: string, type: string) {
 	}
 }
 
-function mockImportService(): [ImportService, LibraryService, FileSystemWrapper, ItemsImportStatusChannel, DbAccess] {
+function mockImportService(): [ImportService, ActionCreateLibrary, FileSystemWrapper, ItemsImportStatusChannel, DbAccess] {
 	const fsWrapper = mockFileSystemWrapper();
 	const dbAccess = new MemDbAccess();
 	const configAccess = mockConfigAccess();
@@ -953,8 +953,8 @@ function mockImportService(): [ImportService, LibraryService, FileSystemWrapper,
 		new ImportStepMetadata(new ActionGetExiftoolInfo(configAccess)),
 		channel
 	);
-	const libraryService = new LibraryService(dbAccess, fsWrapper);
-	return [importService, libraryService, fsWrapper, channel, dbAccess];
+	const actionCreateLibrary = new ActionCreateLibrary(dbAccess, fsWrapper);
+	return [importService, actionCreateLibrary, fsWrapper, channel, dbAccess];
 }
 
 function mockItemsImportStatusChannel(): ItemsImportStatusChannel {
