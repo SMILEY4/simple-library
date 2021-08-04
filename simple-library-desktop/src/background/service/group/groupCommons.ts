@@ -10,7 +10,7 @@ export module GroupCommons {
 		children: Group[],
 	}
 
-	export function rowToMinGroup(row: any): Group | null {
+	export function rowToMinGroup(row: any | null): Group | null {
 		if (row) {
 			return {
 				id: row.group_id,
@@ -22,6 +22,10 @@ export module GroupCommons {
 		} else {
 			return null;
 		}
+	}
+
+	export function rowsToMinGroups(rows: any[]): Group[] {
+		return rows.map(row => rowToMinGroup(row))
 	}
 
 }

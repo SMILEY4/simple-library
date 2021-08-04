@@ -20,11 +20,9 @@ export class ActionMoveGroup {
 
 
 	public perform(groupId: number, targetGroupId: number | null): Promise<void> {
-		return this.validate(groupId, targetGroupId).then((valid: boolean) => {
-			return valid
-				? this.move(groupId, targetGroupId).then(voidThen)
-				: Promise.reject("Group cant be moved: invalid.");
-		});
+		return this.validate(groupId, targetGroupId)
+			.then(() => this.move(groupId, targetGroupId))
+			.then(voidThen);
 	}
 
 
@@ -33,15 +31,13 @@ export class ActionMoveGroup {
 	}
 
 
-	private async validate(groupId: number, targetGroupId: number | null): Promise<boolean> {
+	private async validate(groupId: number, targetGroupId: number | null): Promise<void> {
 		return Promise.resolve()
 			.then(() => this.validateDifferentGroup(groupId, targetGroupId))
 			.then(() => this.validateGroupsExist(groupId, targetGroupId))
 			.then(() => this.validateDifferentSubtree(groupId, targetGroupId))
-			.then(() => true)
 			.catch((err) => {
-				console.log("Group movement invalid: " + err);
-				return false;
+				throw "Group movement invalid: " + err;
 			});
 	}
 

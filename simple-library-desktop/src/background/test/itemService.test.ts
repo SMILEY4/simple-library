@@ -2,11 +2,20 @@ import {DbAccess} from "../persistence/dbAcces";
 import {MemDbAccess} from "./memDbAccess";
 import {mockFileSystemWrapper} from "./mockSetup";
 import {jest} from "@jest/globals";
-import {Attribute, AttributeType, Item, ItemService} from "../service/itemService";
 import {SQL} from "../persistence/sqlHandler";
 import {FileSystemWrapper} from "../service/fileSystemWrapper";
-import {ActionGetCollectionById} from "../service/collection/actionGetCollectionById";
 import {ActionCreateLibrary} from "../service/library/actionCreateLibrary";
+import {ItemCommon} from "../service/item/itemCommon";
+import {ActionGetItemsByCollection} from "../service/item/actionGetItemsByCollection";
+import {ActionGetCollectionById} from "../service/collection/actionGetCollectionById";
+import {ActionGetItemById} from "../service/item/actionGetItemById";
+import {ActionDeleteItems} from "../service/item/actionDeleteItems";
+import {ActionOpenItemsExternal} from "../service/item/actionOpenItemsExternal";
+import {ActionGetItemAttributes} from "../service/item/actionGetItemAttributes";
+import {ActionUpdateItemAttribute} from "../service/item/actionUpdateItemAttribute";
+import Item = ItemCommon.Item;
+import Attribute = ItemCommon.Attribute;
+import AttributeType = ItemCommon.AttributeType;
 
 describe("item-service", () => {
 
@@ -14,7 +23,8 @@ describe("item-service", () => {
 
 		test("get by normal collection without attributes", async () => {
 			// given
-			const [itemService, actionCreateLibrary, dbAccess] = mockItemService();
+			const [actionCreateLibrary, dbAccess] = mockItemService();
+			const actionGetByCollection = new ActionGetItemsByCollection(dbAccess, new ActionGetCollectionById(dbAccess));
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -35,7 +45,7 @@ describe("item-service", () => {
 				])
 			]);
 			// when
-			const result: Promise<Item[]> = itemService.getByCollection(1, []);
+			const result: Promise<Item[]> = actionGetByCollection.perform(1, []);
 			// then
 			await expect(result).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, []),
@@ -47,7 +57,8 @@ describe("item-service", () => {
 
 		test("get by normal collection", async () => {
 			// given
-			const [itemService, actionCreateLibrary, dbAccess] = mockItemService();
+			const [actionCreateLibrary, dbAccess] = mockItemService();
+			const actionGetByCollection = new ActionGetItemsByCollection(dbAccess, new ActionGetCollectionById(dbAccess));
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -68,7 +79,7 @@ describe("item-service", () => {
 				])
 			]);
 			// when
-			const result: Promise<Item[]> = itemService.getByCollection(1, ["att1", "att3"]);
+			const result: Promise<Item[]> = actionGetByCollection.perform(1, ["att1", "att3"]);
 			// then
 			await expect(result).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, [
@@ -85,7 +96,8 @@ describe("item-service", () => {
 
 		test("get by smart collection", async () => {
 			// given
-			const [itemService, actionCreateLibrary, dbAccess] = mockItemService();
+			const [actionCreateLibrary, dbAccess] = mockItemService();
+			const actionGetByCollection = new ActionGetItemsByCollection(dbAccess, new ActionGetCollectionById(dbAccess));
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -106,7 +118,7 @@ describe("item-service", () => {
 				])
 			]);
 			// when
-			const result: Promise<Item[]> = itemService.getByCollection(2, ["att1", "att3"]);
+			const result: Promise<Item[]> = actionGetByCollection.perform(2, ["att1", "att3"]);
 			// then
 			await expect(result).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, [
@@ -122,7 +134,8 @@ describe("item-service", () => {
 
 		test("get by smart collection with empty query", async () => {
 			// given
-			const [itemService, actionCreateLibrary, dbAccess] = mockItemService();
+			const [actionCreateLibrary, dbAccess] = mockItemService();
+			const actionGetByCollection = new ActionGetItemsByCollection(dbAccess, new ActionGetCollectionById(dbAccess));
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -143,7 +156,7 @@ describe("item-service", () => {
 				])
 			]);
 			// when
-			const result: Promise<Item[]> = itemService.getByCollection(2, ["att1", "att3"]);
+			const result: Promise<Item[]> = actionGetByCollection.perform(2, ["att1", "att3"]);
 			// then
 			await expect(result).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, [
@@ -161,7 +174,8 @@ describe("item-service", () => {
 
 		test("get by non-existing collection", async () => {
 			// given
-			const [itemService, actionCreateLibrary, dbAccess] = mockItemService();
+			const [actionCreateLibrary, dbAccess] = mockItemService();
+			const actionGetByCollection = new ActionGetItemsByCollection(dbAccess, new ActionGetCollectionById(dbAccess));
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -182,7 +196,7 @@ describe("item-service", () => {
 				])
 			]);
 			// when
-			const result: Promise<Item[]> = itemService.getByCollection(42, ["att1", "att3"]);
+			const result: Promise<Item[]> = actionGetByCollection.perform(42, ["att1", "att3"]);
 			// then
 			await expect(result).rejects.toBeDefined();
 		});
@@ -190,7 +204,8 @@ describe("item-service", () => {
 
 		test("get by id", async () => {
 			// given
-			const [itemService, actionCreateLibrary, dbAccess] = mockItemService();
+			const [actionCreateLibrary, dbAccess] = mockItemService();
+			const actionGetById = new ActionGetItemById(dbAccess);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
@@ -206,7 +221,7 @@ describe("item-service", () => {
 				])
 			]);
 			// when
-			const result: Promise<Item | null> = itemService.getById(2);
+			const result: Promise<Item | null> = actionGetById.perform(2);
 			// then
 			await expect(result).resolves.toEqual(item(2, "/path/to/file/2", "thumbnail2", "hash2", 1001, []));
 		});
@@ -214,7 +229,8 @@ describe("item-service", () => {
 
 		test("get by invalid id", async () => {
 			// given
-			const [itemService, actionCreateLibrary, dbAccess] = mockItemService();
+			const [actionCreateLibrary, dbAccess] = mockItemService();
+			const actionGetById = new ActionGetItemById(dbAccess);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
@@ -230,7 +246,7 @@ describe("item-service", () => {
 				])
 			]);
 			// when
-			const result: Promise<Item | null> = itemService.getById(42);
+			const result: Promise<Item | null> = actionGetById.perform(42);
 			// then
 			await expect(result).resolves.toBeNull();
 		});
@@ -242,7 +258,8 @@ describe("item-service", () => {
 
 		test("delete item", async () => {
 			// given
-			const [itemService, actionCreateLibrary, dbAccess] = mockItemService();
+			const [actionCreateLibrary, dbAccess] = mockItemService();
+			const actionDelete = new ActionDeleteItems(dbAccess);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -264,7 +281,7 @@ describe("item-service", () => {
 				])
 			]);
 			// when
-			const result: Promise<void> = itemService.delete([2, 3]);
+			const result: Promise<void> = actionDelete.perform([2, 3]);
 			// then
 			await expect(result).resolves.toBeUndefined();
 			await expect(dbAccess.queryAll(SQL.queryItemsAll([])).then((result => result.map(r => r.item_id)))).resolves.toEqual([1, 4]);
@@ -278,7 +295,8 @@ describe("item-service", () => {
 
 		test("delete non-existing item", async () => {
 			// given
-			const [itemService, actionCreateLibrary, dbAccess] = mockItemService();
+			const [actionCreateLibrary, dbAccess] = mockItemService();
+			const actionDelete = new ActionDeleteItems(dbAccess);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -300,7 +318,7 @@ describe("item-service", () => {
 				])
 			]);
 			// when
-			const result: Promise<void> = itemService.delete([2, 100]);
+			const result: Promise<void> = actionDelete.perform([2, 100]);
 			// then
 			await expect(result).resolves.toBeUndefined();
 			await expect(dbAccess.queryAll(SQL.queryItemsAll([])).then((result => result.map(r => r.item_id)))).resolves.toEqual([1, 3, 4]);
@@ -318,7 +336,8 @@ describe("item-service", () => {
 
 		test("open items", async () => {
 			// given
-			const [itemService, actionCreateLibrary, dbAccess, fsWrapper] = mockItemService();
+			const [actionCreateLibrary, dbAccess, fsWrapper] = mockItemService();
+			const actionOpen = new ActionOpenItemsExternal(dbAccess, fsWrapper);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -328,7 +347,7 @@ describe("item-service", () => {
 				SQL.insertItemsIntoCollection(1, [1, 2, 3])
 			]);
 			// when
-			const result: Promise<void> = itemService.openExternal([1, 3]);
+			const result: Promise<void> = actionOpen.perform([1, 3]);
 			// then
 			await expect(result).resolves.toBeUndefined();
 			expect(fsWrapper.open).toHaveBeenCalledTimes(2);
@@ -339,7 +358,8 @@ describe("item-service", () => {
 
 		test("open non existing items", async () => {
 			// given
-			const [itemService, actionCreateLibrary, dbAccess, fsWrapper] = mockItemService();
+			const [actionCreateLibrary, dbAccess, fsWrapper] = mockItemService();
+			const actionOpen = new ActionOpenItemsExternal(dbAccess, fsWrapper);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -349,7 +369,7 @@ describe("item-service", () => {
 				SQL.insertItemsIntoCollection(1, [1, 2, 3])
 			]);
 			// when
-			const result: Promise<void> = itemService.openExternal([1, 3, 15]);
+			const result: Promise<void> = actionOpen.perform([1, 3, 15]);
 			// then
 			await expect(result).resolves.toBeUndefined();
 			expect(fsWrapper.open).toHaveBeenCalledTimes(2);
@@ -359,7 +379,8 @@ describe("item-service", () => {
 
 		test("open non existing file", async () => {
 			// given
-			const [itemService, actionCreateLibrary, dbAccess, fsWrapper] = mockItemService();
+			const [actionCreateLibrary, dbAccess, fsWrapper] = mockItemService();
+			const actionOpen = new ActionOpenItemsExternal(dbAccess, fsWrapper);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -370,7 +391,7 @@ describe("item-service", () => {
 			]);
 			fsWrapper["open"] = jest.fn().mockImplementation((path) => path === "does/not/exist" ? Promise.reject("Err") : Promise.resolve()) as any;
 			// when
-			const result: Promise<void> = itemService.openExternal([1, 3]);
+			const result: Promise<void> = actionOpen.perform([1, 3]);
 			// then
 			await expect(result).rejects.toBeDefined();
 			expect(fsWrapper.open).toHaveBeenCalledTimes(2);
@@ -385,7 +406,8 @@ describe("item-service", () => {
 
 		test("get item attributes", async () => {
 			// given
-			const [itemService, actionCreateLibrary, dbAccess] = mockItemService();
+			const [actionCreateLibrary, dbAccess] = mockItemService();
+			const actionGetAttribs = new ActionGetItemAttributes(dbAccess, new ActionGetItemById(dbAccess));
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
@@ -402,7 +424,7 @@ describe("item-service", () => {
 				])
 			]);
 			// when
-			const result: Promise<Attribute[]> = itemService.getAttributes(2);
+			const result: Promise<Attribute[]> = actionGetAttribs.perform(2);
 			// then
 			await expect(result).resolves.toEqual([
 				attribute("att1", "value1", "text"),
@@ -414,7 +436,8 @@ describe("item-service", () => {
 
 		test("get item attributes for non existing item", async () => {
 			// given
-			const [itemService, actionCreateLibrary, dbAccess] = mockItemService();
+			const [actionCreateLibrary, dbAccess] = mockItemService();
+			const actionGetAttribs = new ActionGetItemAttributes(dbAccess, new ActionGetItemById(dbAccess));
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
@@ -431,7 +454,7 @@ describe("item-service", () => {
 				])
 			]);
 			// when
-			const result: Promise<Attribute[]> = itemService.getAttributes(100);
+			const result: Promise<Attribute[]> = actionGetAttribs.perform(100);
 			// then
 			await expect(result).rejects.toBeDefined();
 		});
@@ -443,7 +466,9 @@ describe("item-service", () => {
 
 		test("update attribute", async () => {
 			// given
-			const [itemService, actionCreateLibrary, dbAccess] = mockItemService();
+			const [actionCreateLibrary, dbAccess] = mockItemService();
+			const actionUpdateAttrib = new ActionUpdateItemAttribute(dbAccess);
+			const actionGetAttribs = new ActionGetItemAttributes(dbAccess, new ActionGetItemById(dbAccess));
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
@@ -454,10 +479,10 @@ describe("item-service", () => {
 				])
 			]);
 			// when
-			const result: Promise<Attribute> = itemService.updateAttribute(1, "att2", "new value");
+			const result: Promise<Attribute> = actionUpdateAttrib.perform(1, "att2", "new value");
 			// then
 			await expect(result).resolves.toEqual(attribute("att2", "new value", "text"));
-			await expect(itemService.getAttributes(1)).resolves.toEqual([
+			await expect(actionGetAttribs.perform(1)).resolves.toEqual([
 				attribute("att1", "value1", "text"),
 				attribute("att2", "new value", "text"),
 				attribute("att3a", "3", "number")
@@ -467,7 +492,9 @@ describe("item-service", () => {
 
 		test("update attributes for non existing item", async () => {
 			// given
-			const [itemService, actionCreateLibrary, dbAccess] = mockItemService();
+			const [actionCreateLibrary, dbAccess] = mockItemService();
+			const actionUpdateAttrib = new ActionUpdateItemAttribute(dbAccess);
+			const actionGetAttribs = new ActionGetItemAttributes(dbAccess, new ActionGetItemById(dbAccess));
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
@@ -478,10 +505,10 @@ describe("item-service", () => {
 				])
 			]);
 			// when
-			const result: Promise<Attribute> = itemService.updateAttribute(100, "att2", "new value");
+			const result: Promise<Attribute> = actionUpdateAttrib.perform(100, "att2", "new value");
 			// then
 			await expect(result).rejects.toBeDefined();
-			await expect(itemService.getAttributes(1)).resolves.toEqual([
+			await expect(actionGetAttribs.perform(1)).resolves.toEqual([
 				attribute("att1", "value1", "text"),
 				attribute("att2", "value2", "text"),
 				attribute("att3a", "3", "number")
@@ -491,7 +518,9 @@ describe("item-service", () => {
 
 		test("update non existing attributes", async () => {
 			// given
-			const [itemService, actionCreateLibrary, dbAccess] = mockItemService();
+			const [actionCreateLibrary, dbAccess] = mockItemService();
+			const actionUpdateAttrib = new ActionUpdateItemAttribute(dbAccess);
+			const actionGetAttribs = new ActionGetItemAttributes(dbAccess, new ActionGetItemById(dbAccess));
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
@@ -502,10 +531,10 @@ describe("item-service", () => {
 				])
 			]);
 			// when
-			const result: Promise<Attribute> = itemService.updateAttribute(1, "invalid", "new value");
+			const result: Promise<Attribute> = actionUpdateAttrib.perform(1, "invalid", "new value");
 			// then
 			await expect(result).rejects.toBeDefined();
-			await expect(itemService.getAttributes(1)).resolves.toEqual([
+			await expect(actionGetAttribs.perform(1)).resolves.toEqual([
 				attribute("att1", "value1", "text"),
 				attribute("att2", "value2", "text"),
 				attribute("att3a", "3", "number")
@@ -537,11 +566,10 @@ function attribute(key: string, value: string, type: AttributeType) {
 	};
 }
 
-function mockItemService(): [ItemService, ActionCreateLibrary, DbAccess, FileSystemWrapper] {
+function mockItemService(): [ActionCreateLibrary, DbAccess, FileSystemWrapper] {
 	const dbAccess = new MemDbAccess();
 	const fsWrapper = mockFileSystemWrapper();
 	fsWrapper.existsFile = jest.fn().mockReturnValue(false) as any;
 	const actionCreateLibrary = new ActionCreateLibrary(dbAccess, fsWrapper);
-	const itemService = new ItemService(dbAccess, new ActionGetCollectionById(dbAccess), fsWrapper);
-	return [itemService, actionCreateLibrary, dbAccess, fsWrapper];
+	return [actionCreateLibrary, dbAccess, fsWrapper];
 }

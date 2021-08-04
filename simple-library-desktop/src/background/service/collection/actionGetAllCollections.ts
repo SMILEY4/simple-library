@@ -2,8 +2,8 @@ import {CollectionCommons} from "./collectionCommons";
 import {DbAccess} from "../../persistence/dbAcces";
 import {SQL} from "../../persistence/sqlHandler";
 import Collection = CollectionCommons.Collection;
-import rowToCollection = CollectionCommons.rowToCollection;
 import CollectionType = CollectionCommons.CollectionType;
+import rowsToCollections = CollectionCommons.rowsToCollections;
 
 /**
  * Get all collections, optionally with item count
@@ -26,12 +26,12 @@ export class ActionGetAllCollections {
 
 	private getAllWithCounts(): Promise<Collection[]> {
 		return this.dbAccess.queryAll(SQL.queryAllCollectionsWithItemCount())
-			.then((rows: any[]) => rows.map(rowToCollection));
+			.then(rowsToCollections);
 	}
 
 	private getAll(): Promise<Collection[]> {
 		return this.dbAccess.queryAll(SQL.queryAllCollections())
-			.then((rows: any[]) => rows.map(rowToCollection));
+			.then(rowsToCollections);
 	}
 
 	private async enrichWithFinalCounts(collections: Collection[]) {

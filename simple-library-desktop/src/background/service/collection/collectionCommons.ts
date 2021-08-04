@@ -29,4 +29,8 @@ export module CollectionCommons {
 		}
 	}
 
+	export function rowsToCollections(rows: any[]): Collection[] {
+		return rows.map(row => rowToCollection(row));
+	}
+
 }

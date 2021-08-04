@@ -7,9 +7,10 @@ import {ImportStepRename} from "./importStepRename";
 import {ImportStepImportTarget} from "./importStepImportTarget";
 import {ImportStepMetadata} from "./importStepMetadata";
 import {SQL} from "../../persistence/sqlHandler";
-import {Attribute} from "../itemService";
 import {ItemsImportStatusChannel} from "../../../common/messaging/channels/channels";
 import {voidThen} from "../../../common/AsyncCommon";
+import {ItemCommon} from "../item/itemCommon";
+import Attribute = ItemCommon.Attribute;
 
 export interface ImportResult {
 	timestamp: number,

@@ -16,5 +16,4 @@ export module ConfigCommons {
 		path: string
 	}
 
-
 }

@@ -68,6 +68,12 @@ import {ActionGetGroupTree} from "./service/group/actionGetGroupTree";
 import {ActionMoveAllGroups} from "./service/group/actionMoveAllGroups";
 import {ActionMoveGroup} from "./service/group/actionMoveGroup";
 import {ActionRenameGroup} from "./service/group/actionRenameGroup";
+import {ActionDeleteItems} from "./service/item/actionDeleteItems";
+import {ActionGetItemAttributes} from "./service/item/actionGetItemAttributes";
+import {ActionGetItemById} from "./service/item/actionGetItemById";
+import {ActionGetItemsByCollection} from "./service/item/actionGetItemsByCollection";
+import {ActionOpenItemsExternal} from "./service/item/actionOpenItemsExternal";
+import {ActionUpdateItemAttribute} from "./service/item/actionUpdateItemAttribute";
 
 export function initBackgroundWorker(): void {
     console.log("initialize background worker");
@@ -97,6 +103,13 @@ export function initBackgroundWorker(): void {
     const actionGetGroupTree = new ActionGetGroupTree(dbAccess, actionGetAllGroups);
     const actionRenameGroup = new ActionRenameGroup(dbAccess, actionGetGroupById);
 
+    const actionDeleteItems = new ActionDeleteItems(dbAccess);
+    const actionGetItemById = new ActionGetItemById(dbAccess);
+    const actionGetItemAttributes = new ActionGetItemAttributes(dbAccess, actionGetItemById);
+    const actionGetItemsByCollection = new ActionGetItemsByCollection(dbAccess, actionGetCollectionById);
+    const actionOpenItemsExternal = new ActionOpenItemsExternal(dbAccess, fsWrapper);
+    const actionUpdateItemAttribute = new ActionUpdateItemAttribute(dbAccess);
+
     const actionAddToLastOpened = new ActionAddToLastOpened(configAccess);
     const actionGetExiftoolInfo = new ActionGetExiftoolInfo(configAccess);
     const actionGetLastOpened = new ActionGetLastOpened(configAccess);
@@ -109,7 +122,6 @@ export function initBackgroundWorker(): void {
     const actionGetLibraryInfo = new ActionGetLibraryInfo(dbAccess);
     const actionOpenLibrary = new ActionOpenLibrary(dbAccess, fsWrapper, actionGetLibraryInfo);
 
-    const itemService: ItemService = new ItemService(dbAccess, actionGetCollectionById, fsWrapper);
     const importService: ImportService = new ImportService(
         dbAccess,
         new ImportDataValidator(fsWrapper),
@@ -191,22 +203,22 @@ export function initBackgroundWorker(): void {
         .on((payload) => actionRemoveItems.perform(payload.collectionId, payload.itemIds));
 
     new ItemsGetByCollectionChannel(workerIpcWrapper(), "w")
-        .on((payload) => itemService.getByCollection(payload.collectionId, payload.itemAttributeKeys));
+        .on((payload) => actionGetItemsByCollection.perform(payload.collectionId, payload.itemAttributeKeys));
 
     new ItemGetByIdChannel(workerIpcWrapper(), "w")
-        .on((payload) => itemService.getById(payload));
+        .on((payload) => actionGetItemById.perform(payload));
 
     new ItemsDeleteChannel(workerIpcWrapper(), "w")
-        .on((payload) => itemService.delete(payload));
+        .on((payload) => actionDeleteItems.perform(payload));
 
     new ItemsOpenExternalChannel(workerIpcWrapper(), "w")
-        .on((payload) => itemService.openExternal(payload));
+        .on((payload) => actionOpenItemsExternal.perform(payload));
 
     new ItemGetMetadataChannel(workerIpcWrapper(), "w")
-        .on((payload) => itemService.getAttributes(payload));
+        .on((payload) => actionGetItemAttributes.perform(payload));
 
     new ItemSetMetadataChannel(workerIpcWrapper(), "w")
-        .on((payload) => itemService.updateAttribute(payload.itemId, payload.entryKey, payload.newValue));
+        .on((payload) => actionUpdateItemAttribute.perform(payload.itemId, payload.entryKey, payload.newValue));
 
     new ItemsImportChannel(workerIpcWrapper(), "w")
         .on((payload) => importService.import(payload));

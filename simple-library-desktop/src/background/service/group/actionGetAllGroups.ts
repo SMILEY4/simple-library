@@ -4,8 +4,8 @@ import {SQL} from "../../persistence/sqlHandler";
 import {ActionGetAllCollections} from "../collection/actionGetAllCollections";
 import {CollectionCommons} from "../collection/collectionCommons";
 import Group = GroupCommons.Group;
-import rowToMinGroup = GroupCommons.rowToMinGroup;
 import Collection = CollectionCommons.Collection;
+import rowsToMinGroups = GroupCommons.rowsToMinGroups;
 
 /**
  * Get all groups as a flat array. Optionally include collections and their item-counts.
@@ -24,7 +24,7 @@ export class ActionGetAllGroups {
 
 	public perform(includeCollections: boolean, includeItemCount: boolean): Promise<Group[]> {
 		return this.query()
-			.then((rows: any[]) => rows.map(rowToMinGroup))
+			.then(rowsToMinGroups)
 			.then((groups: Group[]) => includeCollections ? this.enrich(groups, includeItemCount) : groups);
 	}
 
