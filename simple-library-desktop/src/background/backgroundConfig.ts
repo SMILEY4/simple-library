@@ -32,7 +32,6 @@ import {
 } from "../common/messaging/channels/channels";
 import {workerIpcWrapper} from "../common/messaging/core/ipcWrapper";
 import {DbAccess} from "./persistence/dbAcces";
-import {GroupService} from "./service/groupService";
 import {ItemService} from "./service/itemService";
 import {ImportService} from "./service/import/importService";
 import {ImportDataValidator} from "./service/import/importDataValidator";
@@ -61,6 +60,14 @@ import {ActionCloseLibrary} from "./service/library/actionCloseLibrary";
 import {ActionCreateLibrary} from "./service/library/actionCreateLibrary";
 import {ActionGetLibraryInfo} from "./service/library/ActionGetLibraryInfo";
 import {ActionOpenLibrary} from "./service/library/actionOpenLibrary";
+import {ActionCreateGroup} from "./service/group/actionCreateGroup";
+import {ActionDeleteGroup} from "./service/group/actionDeleteGroup";
+import {ActionGetAllGroups} from "./service/group/actionGetAllGroups";
+import {ActionGetGroupById} from "./service/group/actionGetGroupById";
+import {ActionGetGroupTree} from "./service/group/actionGetGroupTree";
+import {ActionMoveAllGroups} from "./service/group/actionMoveAllGroups";
+import {ActionMoveGroup} from "./service/group/actionMoveGroup";
+import {ActionRenameGroup} from "./service/group/actionRenameGroup";
 
 export function initBackgroundWorker(): void {
     console.log("initialize background worker");
@@ -81,6 +88,15 @@ export function initBackgroundWorker(): void {
     const actionMoveItems = new ActionMoveItems(dbAccess, actionGetCollectionById);
     const actionRemoveItems = new ActionRemoveItems(dbAccess, actionGetCollectionById);
 
+    const actionGetAllGroups = new ActionGetAllGroups(dbAccess, actionGetAllCollections);
+    const actionGetGroupById = new ActionGetGroupById(dbAccess);
+    const actionCreateGroup = new ActionCreateGroup(dbAccess);
+    const actionMoveAllGroups = new ActionMoveAllGroups(dbAccess);
+    const actionMoveGroup = new ActionMoveGroup(dbAccess, actionGetGroupById);
+    const actionDeleteGroup = new ActionDeleteGroup(dbAccess, actionGetGroupById, actionMoveAllCollections, actionMoveAllGroups);
+    const actionGetGroupTree = new ActionGetGroupTree(dbAccess, actionGetAllGroups);
+    const actionRenameGroup = new ActionRenameGroup(dbAccess, actionGetGroupById);
+
     const actionAddToLastOpened = new ActionAddToLastOpened(configAccess);
     const actionGetExiftoolInfo = new ActionGetExiftoolInfo(configAccess);
     const actionGetLastOpened = new ActionGetLastOpened(configAccess);
@@ -93,7 +109,6 @@ export function initBackgroundWorker(): void {
     const actionGetLibraryInfo = new ActionGetLibraryInfo(dbAccess);
     const actionOpenLibrary = new ActionOpenLibrary(dbAccess, fsWrapper, actionGetLibraryInfo);
 
-    const groupService: GroupService = new GroupService(dbAccess, actionGetAllCollections, actionMoveAllCollections);
     const itemService: ItemService = new ItemService(dbAccess, actionGetCollectionById, fsWrapper);
     const importService: ImportService = new ImportService(
         dbAccess,
@@ -140,19 +155,19 @@ export function initBackgroundWorker(): void {
         .on(() => actionGetLibraryInfo.perform());
 
     new GroupsGetTreeChannel(workerIpcWrapper(), "w")
-        .on((payload) => groupService.getTree(payload.includeCollections, payload.includeItemCount));
+        .on((payload) => actionGetGroupTree.perform(payload.includeCollections, payload.includeItemCount));
 
     new GroupCreateChannel(workerIpcWrapper(), "w")
-        .on((payload) => groupService.create(payload.name, payload.parentGroupId));
+        .on((payload) => actionCreateGroup.perform(payload.name, payload.parentGroupId));
 
     new GroupDeleteChannel(workerIpcWrapper(), "w")
-        .on((payload) => groupService.delete(payload.groupId, payload.deleteChildren));
+        .on((payload) => actionDeleteGroup.perform(payload.groupId, payload.deleteChildren));
 
     new GroupRenameChannel(workerIpcWrapper(), "w")
-        .on((payload) => groupService.rename(payload.groupId, payload.newName));
+        .on((payload) => actionRenameGroup.perform(payload.groupId, payload.newName));
 
     new GroupMoveChannel(workerIpcWrapper(), "w")
-        .on((payload) => groupService.move(payload.groupId, payload.targetGroupId));
+        .on((payload) => actionMoveGroup.perform(payload.groupId, payload.targetGroupId));
 
     new CollectionsGetAllChannel(workerIpcWrapper(), "w")
         .on((payload) => actionGetAllCollections.perform(payload));
