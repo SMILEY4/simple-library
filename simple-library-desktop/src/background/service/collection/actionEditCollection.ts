@@ -1,10 +1,8 @@
 import {DbAccess} from "../../persistence/dbAcces";
 import {ActionGetCollectionById} from "./actionGetCollectionById";
-import {CollectionCommons} from "./collectionCommons";
+import {Collection, CollectionType} from "./collectionCommons";
 import {voidThen} from "../../../common/AsyncCommon";
 import {SQL} from "../../persistence/sqlHandler";
-import Collection = CollectionCommons.Collection;
-import CollectionType = CollectionCommons.CollectionType;
 
 /**
  * Edits the collection with the given id, i.e. sets the name and smart-query
@@ -56,9 +54,9 @@ export class ActionEditCollection {
 
 	private editCollection(collection: Collection, newName: string, newSmartQuery: string | null): Promise<any> {
 		switch (collection.type) {
-			case CollectionCommons.CollectionType.NORMAL:
+			case CollectionType.NORMAL:
 				return this.editNormalCollection(collection, newName);
-			case CollectionCommons.CollectionType.SMART:
+			case CollectionType.SMART:
 				return this.editSmartCollection(collection, newName, newSmartQuery);
 		}
 	}

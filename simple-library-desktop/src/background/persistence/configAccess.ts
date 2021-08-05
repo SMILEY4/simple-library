@@ -1,8 +1,5 @@
 import ElectronStore from "electron-store";
-import {ConfigCommons} from "../service/config/configCommons";
-import CFG_LAST_OPENED = ConfigCommons.CFG_LAST_OPENED;
-import CFG_THEME = ConfigCommons.CFG_THEME;
-import CFG_EXIFTOOL_LOCATION = ConfigCommons.CFG_EXIFTOOL_LOCATION;
+import {CFG_EXIFTOOL_LOCATION, CFG_LAST_OPENED, CFG_THEME} from "../service/config/configCommons";
 
 const Store = require("electron-store");
 

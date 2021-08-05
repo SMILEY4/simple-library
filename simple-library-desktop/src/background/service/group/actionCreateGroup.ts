@@ -1,7 +1,6 @@
 import {DbAccess} from "../../persistence/dbAcces";
-import {GroupCommons} from "./groupCommons";
 import {SQL} from "../../persistence/sqlHandler";
-import Group = GroupCommons.Group;
+import {Group} from "./groupCommons";
 
 /**
  * Create a new group with the given name and (optionally) the given parent.

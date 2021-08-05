@@ -5,7 +5,6 @@ import {jest} from "@jest/globals";
 import {SQL} from "../persistence/sqlHandler";
 import {FileSystemWrapper} from "../service/fileSystemWrapper";
 import {ActionCreateLibrary} from "../service/library/actionCreateLibrary";
-import {ItemCommon} from "../service/item/itemCommon";
 import {ActionGetItemsByCollection} from "../service/item/actionGetItemsByCollection";
 import {ActionGetCollectionById} from "../service/collection/actionGetCollectionById";
 import {ActionGetItemById} from "../service/item/actionGetItemById";
@@ -13,9 +12,7 @@ import {ActionDeleteItems} from "../service/item/actionDeleteItems";
 import {ActionOpenItemsExternal} from "../service/item/actionOpenItemsExternal";
 import {ActionGetItemAttributes} from "../service/item/actionGetItemAttributes";
 import {ActionUpdateItemAttribute} from "../service/item/actionUpdateItemAttribute";
-import Item = ItemCommon.Item;
-import Attribute = ItemCommon.Attribute;
-import AttributeType = ItemCommon.AttributeType;
+import {Attribute, AttributeType, Item} from "../service/item/itemCommon";
 
 describe("item-service", () => {
 

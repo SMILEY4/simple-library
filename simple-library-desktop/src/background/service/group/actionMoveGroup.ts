@@ -1,9 +1,8 @@
 import {DbAccess} from "../../persistence/dbAcces";
 import {ActionGetGroupById} from "./actionGetGroupById";
-import {GroupCommons} from "./groupCommons";
 import {SQL} from "../../persistence/sqlHandler";
 import {voidThen} from "../../../common/AsyncCommon";
-import Group = GroupCommons.Group;
+import {Group} from "./groupCommons";
 
 /**
  * Move the group with the given id into the given target group.

@@ -1,7 +1,5 @@
 import {ConfigAccess} from "../../persistence/configAccess";
-import {ConfigCommons} from "./configCommons";
-import CFG_LAST_OPENED = ConfigCommons.CFG_LAST_OPENED;
-import LastOpenedEntry = ConfigCommons.LastOpenedEntry;
+import {CFG_LAST_OPENED, LastOpenedEntry} from "./configCommons";
 
 /**
  * Add the given entry to the last-opened entries.

@@ -3,7 +3,6 @@ import {DbAccess} from "../persistence/dbAcces";
 import {SQL} from "../persistence/sqlHandler";
 import {MemDbAccess} from "./memDbAccess";
 import {jest} from "@jest/globals";
-import {CollectionCommons} from "../service/collection/collectionCommons";
 import {ActionGetAllCollections} from "../service/collection/actionGetAllCollections";
 import {ActionCreateCollection} from "../service/collection/actionCreateCollection";
 import {ActionGetCollectionById} from "../service/collection/actionGetCollectionById";
@@ -13,9 +12,8 @@ import {ActionMoveItems} from "../service/collection/actionMoveItems";
 import {ActionMoveCollection} from "../service/collection/actionMoveCollection";
 import {ActionMoveAllCollections} from "../service/collection/actionMoveAllCollections";
 import {ActionRemoveItems} from "../service/collection/actionRemoveItems";
-import Collection = CollectionCommons.Collection;
-import CollectionType = CollectionCommons.CollectionType;
 import {ActionCreateLibrary} from "../service/library/actionCreateLibrary";
+import {Collection, CollectionType} from "../service/collection/collectionCommons";
 
 describe("collection-service", () => {
 

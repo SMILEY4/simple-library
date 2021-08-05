@@ -3,13 +3,8 @@ import {MemDbAccess} from "./memDbAccess";
 import {SQL} from "../persistence/sqlHandler";
 import {mockFileSystemWrapper} from "./mockSetup";
 import {jest} from "@jest/globals";
-import {CollectionCommons} from "../service/collection/collectionCommons";
 import {ActionGetAllCollections} from "../service/collection/actionGetAllCollections";
-import CollectionType = CollectionCommons.CollectionType;
-import Collection = CollectionCommons.Collection;
 import {ActionCreateLibrary} from "../service/library/actionCreateLibrary";
-import {GroupCommons} from "../service/group/groupCommons";
-import Group = GroupCommons.Group;
 import {ActionGetGroupById} from "../service/group/actionGetGroupById";
 import {ActionGetAllGroups} from "../service/group/actionGetAllGroups";
 import {ActionGetGroupTree} from "../service/group/actionGetGroupTree";
@@ -19,6 +14,8 @@ import {ActionDeleteGroup} from "../service/group/actionDeleteGroup";
 import {ActionMoveAllGroups} from "../service/group/actionMoveAllGroups";
 import {ActionMoveAllCollections} from "../service/collection/actionMoveAllCollections";
 import {ActionCreateGroup} from "../service/group/actionCreateGroup";
+import {Group} from "../service/group/groupCommons";
+import {Collection, CollectionType} from "../service/collection/collectionCommons";
 
 
 describe("group-service", () => {

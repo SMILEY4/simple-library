@@ -1,8 +1,7 @@
 import {DbAccess} from "../../persistence/dbAcces";
-import {GroupCommons} from "./groupCommons";
 import {SQL} from "../../persistence/sqlHandler";
-import Group = GroupCommons.Group;
-import rowToMinGroup = GroupCommons.rowToMinGroup;
+import {Group, rowToMinGroup} from "./groupCommons";
+
 
 /**
  * Get a group by the given group-id (without its collections and child-groups)

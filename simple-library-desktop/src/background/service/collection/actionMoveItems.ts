@@ -1,10 +1,8 @@
 import {DbAccess} from "../../persistence/dbAcces";
-import {CollectionCommons} from "./collectionCommons";
 import {ActionGetCollectionById} from "./actionGetCollectionById";
 import {voidThen} from "../../../common/AsyncCommon";
 import {SQL} from "../../persistence/sqlHandler";
-import Collection = CollectionCommons.Collection;
-import CollectionType = CollectionCommons.CollectionType;
+import {Collection, CollectionType} from "./collectionCommons";
 
 interface MoveCollections {
 	src: Collection | null,

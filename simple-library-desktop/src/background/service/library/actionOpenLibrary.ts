@@ -1,10 +1,8 @@
 import {DbAccess} from "../../persistence/dbAcces";
 import {FileSystemWrapper} from "../fileSystemWrapper";
-import {LibraryCommons} from "./libraryCommons";
 import {SQL} from "../../persistence/sqlHandler";
 import {ActionGetLibraryInfo} from "./ActionGetLibraryInfo";
-import LibraryFileHandle = LibraryCommons.LibraryFileHandle;
-import LibraryInformation = LibraryCommons.LibraryInformation;
+import {LibraryFileHandle, LibraryInformation} from "./libraryCommons";
 
 /**
  * "Opens" the library-file at the given location.

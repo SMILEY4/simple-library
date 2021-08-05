@@ -1,9 +1,7 @@
 import {DbAccess} from "../../persistence/dbAcces";
-import {GroupCommons} from "./groupCommons";
 import {ActionGetAllGroups} from "./actionGetAllGroups";
-import {CollectionCommons} from "../collection/collectionCommons";
-import Group = GroupCommons.Group;
-import Collection = CollectionCommons.Collection;
+import {Group} from "./groupCommons";
+import {Collection} from "../../../common/commonModels";
 
 /**
  * Get all groups as a tree. Optionally include collections and their item-counts.

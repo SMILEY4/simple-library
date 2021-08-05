@@ -1,9 +1,7 @@
-import {CollectionCommons} from "./collectionCommons";
+import {Collection, CollectionType, rowsToCollections} from "./collectionCommons";
 import {DbAccess} from "../../persistence/dbAcces";
 import {SQL} from "../../persistence/sqlHandler";
-import Collection = CollectionCommons.Collection;
-import CollectionType = CollectionCommons.CollectionType;
-import rowsToCollections = CollectionCommons.rowsToCollections;
+
 
 /**
  * Get all collections, optionally with item count

@@ -1,9 +1,8 @@
 import {DbAccess} from "../../persistence/dbAcces";
-import {GroupCommons} from "./groupCommons";
 import {ActionGetGroupById} from "./actionGetGroupById";
 import {SQL} from "../../persistence/sqlHandler";
 import {voidThen} from "../../../common/AsyncCommon";
-import Group = GroupCommons.Group;
+import {Group} from "./groupCommons";
 
 /**
  * Rename the group with the given id.

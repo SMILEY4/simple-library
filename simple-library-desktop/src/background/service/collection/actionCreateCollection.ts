@@ -1,8 +1,6 @@
-import {CollectionCommons} from "./collectionCommons";
+import {Collection, CollectionType} from "./collectionCommons";
 import {DbAccess} from "../../persistence/dbAcces";
 import {SQL} from "../../persistence/sqlHandler";
-import Collection = CollectionCommons.Collection;
-import CollectionType = CollectionCommons.CollectionType;
 
 /**
  * Creates a new collection.
@@ -17,9 +15,9 @@ export class ActionCreateCollection {
 
 	public perform(type: CollectionType, name: string, parentGroupId: number | null, smartQuery: string | null): Promise<Collection> {
 		switch (type) {
-			case CollectionCommons.CollectionType.NORMAL:
+			case CollectionType.NORMAL:
 				return this.createNormal(name, parentGroupId);
-			case CollectionCommons.CollectionType.SMART:
+			case CollectionType.SMART:
 				return this.createSmart(name, parentGroupId, smartQuery);
 		}
 	}

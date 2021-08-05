@@ -1,12 +1,9 @@
 import {DbAccess} from "../../persistence/dbAcces";
 import {SQL} from "../../persistence/sqlHandler";
 import {ActionGetCollectionById} from "../collection/actionGetCollectionById";
-import {CollectionCommons} from "../collection/collectionCommons";
-import {ItemCommon} from "./itemCommon";
-import Collection = CollectionCommons.Collection;
-import CollectionType = CollectionCommons.CollectionType;
-import Item = ItemCommon.Item;
-import rowsToItems = ItemCommon.rowsToItems;
+import {Item, rowsToItems} from "./itemCommon";
+import {Collection} from "../../../common/commonModels";
+import {CollectionType} from "../collection/collectionCommons";
 
 /**
  * Get all items of the given collection (with the attributes of the given keys)

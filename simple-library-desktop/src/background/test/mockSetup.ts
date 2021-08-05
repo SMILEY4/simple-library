@@ -2,23 +2,6 @@ import {jest} from "@jest/globals";
 import {DbAccess} from "../persistence/dbAcces";
 import {FileSystemWrapper} from "../service/fileSystemWrapper";
 import {ConfigAccess} from "../persistence/configAccess";
-import {SQL} from "../persistence/sqlHandler";
-import {Channel} from "../../common/messaging/core/channel";
-import {ItemsImportStatusChannel} from "../../common/messaging/channels/channels";
-
-export function mockSqlReturnQueryName() {
-	Object.getOwnPropertyNames(SQL).forEach(item => {
-		// @ts-ignore
-		if (typeof SQL[item] === "function") {
-			// @ts-ignore
-			SQL[item] = () => item as any;
-			// @ts-ignore
-			Object.defineProperty(SQL[item], "name", {value: item});
-		}
-	});
-	SQL.queryItemCountByQuery = (query: string) => "queryItemCountByQuery(" + query + ")";
-	Object.defineProperty(SQL.queryItemCountByQuery, "name", {value: "queryItemCountByQuery"});
-}
 
 
 export function mockFileSystemWrapper(): FileSystemWrapper {

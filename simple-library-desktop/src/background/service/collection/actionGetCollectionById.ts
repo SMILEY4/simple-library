@@ -1,8 +1,6 @@
-import {CollectionCommons} from "./collectionCommons";
+import {Collection, rowToCollection} from "./collectionCommons";
 import {DbAccess} from "../../persistence/dbAcces";
 import {SQL} from "../../persistence/sqlHandler";
-import Collection = CollectionCommons.Collection;
-import rowToCollection = CollectionCommons.rowToCollection;
 
 /**
  * Find a collection by the given id.

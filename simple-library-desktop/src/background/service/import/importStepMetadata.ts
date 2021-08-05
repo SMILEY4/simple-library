@@ -1,8 +1,6 @@
 import {ItemData} from "./importService";
 import {ActionGetExiftoolInfo} from "../config/actionGetExiftoolInfo";
-import {ItemCommon} from "../item/itemCommon";
-import Attribute = ItemCommon.Attribute;
-import AttributeType = ItemCommon.AttributeType;
+import {Attribute, AttributeType} from "../item/itemCommon";
 
 const exiftool = require("node-exiftool");
 

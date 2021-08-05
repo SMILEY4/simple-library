@@ -1,7 +1,5 @@
 import {ConfigAccess} from "../../persistence/configAccess";
-import {ConfigCommons} from "./configCommons";
-import AppTheme = ConfigCommons.AppTheme;
-import CFG_THEME = ConfigCommons.CFG_THEME;
+import {AppTheme, CFG_THEME} from "./configCommons";
 
 /**
  * Set the application theme.

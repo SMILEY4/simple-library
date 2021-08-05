@@ -1,7 +1,5 @@
 import {ConfigAccess} from "../../persistence/configAccess";
-import {ConfigCommons} from "./configCommons";
-import ExiftoolInfo = ConfigCommons.ExiftoolInfo;
-import CFG_EXIFTOOL_LOCATION = ConfigCommons.CFG_EXIFTOOL_LOCATION;
+import {CFG_EXIFTOOL_LOCATION, ExiftoolInfo} from "./configCommons";
 
 /**
  * Get information about the configured exiftool executable.

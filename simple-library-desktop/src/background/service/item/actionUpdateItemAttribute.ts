@@ -1,8 +1,6 @@
 import {DbAccess} from "../../persistence/dbAcces";
 import {SQL} from "../../persistence/sqlHandler";
-import {ItemCommon} from "./itemCommon";
-import Attribute = ItemCommon.Attribute;
-import rowToAttribute = ItemCommon.rowToAttribute;
+import {Attribute, rowToAttribute} from "./itemCommon";
 
 /**
  * Updates the existing attribute of the given item to the given value

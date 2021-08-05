@@ -1,10 +1,7 @@
 import {DbAccess} from "../../persistence/dbAcces";
 import {SQL} from "../../persistence/sqlHandler";
-import {ItemCommon} from "./itemCommon";
 import {ActionGetItemById} from "./actionGetItemById";
-import Item = ItemCommon.Item;
-import Attribute = ItemCommon.Attribute;
-import rowToAttribute = ItemCommon.rowToAttribute;
+import {Attribute, Item, rowToAttribute} from "./itemCommon";
 
 /**
  * Get all attributes of the given item

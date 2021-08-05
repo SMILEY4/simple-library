@@ -1,11 +1,8 @@
 import {DbAccess} from "../../persistence/dbAcces";
-import {GroupCommons} from "./groupCommons";
 import {SQL} from "../../persistence/sqlHandler";
 import {ActionGetAllCollections} from "../collection/actionGetAllCollections";
-import {CollectionCommons} from "../collection/collectionCommons";
-import Group = GroupCommons.Group;
-import Collection = CollectionCommons.Collection;
-import rowsToMinGroups = GroupCommons.rowsToMinGroups;
+import {Collection} from "../collection/collectionCommons";
+import {Group, rowsToMinGroups} from "./groupCommons";
 
 /**
  * Get all groups as a flat array. Optionally include collections and their item-counts.

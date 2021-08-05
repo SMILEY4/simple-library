@@ -1,11 +1,9 @@
 import {DbAccess} from "../../persistence/dbAcces";
-import {LibraryCommons} from "./libraryCommons";
 import path from "path";
 import {FileSystemWrapper} from "../fileSystemWrapper";
 import {SQL} from "../../persistence/sqlHandler";
-import {CollectionCommons} from "../collection/collectionCommons";
-import LibraryFileHandle = LibraryCommons.LibraryFileHandle;
-import CollectionType = CollectionCommons.CollectionType;
+import {LibraryFileHandle} from "./libraryCommons";
+import {CollectionType} from "../collection/collectionCommons";
 
 /**
  * Create (and "open") a new library with the given name in the given directory.

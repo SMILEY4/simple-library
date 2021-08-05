@@ -1,12 +1,10 @@
 import {DbAccess} from "../../persistence/dbAcces";
 import {SQL} from "../../persistence/sqlHandler";
 import {ActionGetGroupById} from "./actionGetGroupById";
-import {GroupCommons} from "./groupCommons";
 import {ActionMoveAllCollections} from "../collection/actionMoveAllCollections";
 import {voidThen} from "../../../common/AsyncCommon";
-import {ActionGetAllGroups} from "./actionGetAllGroups";
-import Group = GroupCommons.Group;
 import {ActionMoveAllGroups} from "./actionMoveAllGroups";
+import {Group} from "./groupCommons";
 
 /**
  * Delete the group with the given id. Optionally delete all its children and collections.

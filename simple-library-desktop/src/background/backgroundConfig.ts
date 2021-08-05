@@ -32,7 +32,6 @@ import {
 } from "../common/messaging/channels/channels";
 import {workerIpcWrapper} from "../common/messaging/core/ipcWrapper";
 import {DbAccess} from "./persistence/dbAcces";
-import {ItemService} from "./service/itemService";
 import {ImportService} from "./service/import/importService";
 import {ImportDataValidator} from "./service/import/importDataValidator";
 import {ImportStepFileHash} from "./service/import/importStepFileHash";

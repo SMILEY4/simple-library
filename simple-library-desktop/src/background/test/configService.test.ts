@@ -2,14 +2,13 @@ import {FileSystemWrapper} from "../service/fileSystemWrapper";
 import {mockConfigAccess, mockFileSystemWrapper} from "./mockSetup";
 import {ConfigAccess} from "../persistence/configAccess";
 import {jest} from "@jest/globals";
-import {ConfigCommons} from "../service/config/configCommons";
 import {ActionOpenConfig} from "../service/config/actionOpenConfig";
 import {ActionGetExiftoolInfo} from "../service/config/actionGetExiftoolInfo";
 import {ActionSetTheme} from "../service/config/actionSetTheme";
 import {ActionGetTheme} from "../service/config/actionGetTheme";
 import {ActionGetLastOpened} from "../service/config/actionGetLastOpened";
 import {ActionAddToLastOpened} from "../service/config/actionAddToLastOpened";
-import ExiftoolInfo = ConfigCommons.ExiftoolInfo;
+import {ExiftoolInfo} from "../service/config/configCommons";
 
 describe("config-service", () => {
 

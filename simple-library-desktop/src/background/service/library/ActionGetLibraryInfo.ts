@@ -1,7 +1,6 @@
-import {LibraryCommons} from "./libraryCommons";
 import {DbAccess} from "../../persistence/dbAcces";
 import {SQL} from "../../persistence/sqlHandler";
-import LibraryInformation = LibraryCommons.LibraryInformation;
+import {LibraryInformation} from "./libraryCommons";
 
 /**
  * Get information / metadata about the current library

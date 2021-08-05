@@ -4,12 +4,11 @@ import {DbAccess} from "../persistence/dbAcces";
 import {FileSystemWrapper} from "../service/fileSystemWrapper";
 import {MemDbAccess} from "./memDbAccess";
 import {SQL} from "../persistence/sqlHandler";
-import {LibraryCommons} from "../service/library/libraryCommons";
 import {ActionCreateLibrary} from "../service/library/actionCreateLibrary";
 import {ActionGetLibraryInfo} from "../service/library/ActionGetLibraryInfo";
 import {ActionOpenLibrary} from "../service/library/actionOpenLibrary";
 import {ActionCloseLibrary} from "../service/library/actionCloseLibrary";
-import LibraryFileHandle = LibraryCommons.LibraryFileHandle;
+import {LibraryFileHandle} from "../service/library/libraryCommons";
 
 describe("library-service", () => {
 

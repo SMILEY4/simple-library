@@ -8,8 +8,7 @@ import {ImportStepImportTarget} from "./importStepImportTarget";
 import {ImportStepMetadata} from "./importStepMetadata";
 import {SQL} from "../../persistence/sqlHandler";
 import {ItemsImportStatusChannel} from "../../../common/messaging/channels/channels";
-import {ItemCommon} from "../item/itemCommon";
-import Attribute = ItemCommon.Attribute;
+import {Attribute} from "../item/itemCommon";
 
 export interface ImportResult {
 	timestamp: number,

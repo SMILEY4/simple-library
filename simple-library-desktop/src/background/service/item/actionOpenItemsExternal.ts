@@ -1,10 +1,8 @@
 import {DbAccess} from "../../persistence/dbAcces";
 import {SQL} from "../../persistence/sqlHandler";
-import {ItemCommon} from "./itemCommon";
 import {voidThen} from "../../../common/AsyncCommon";
 import {FileSystemWrapper} from "../fileSystemWrapper";
-import Item = ItemCommon.Item;
-import rowsToItems = ItemCommon.rowsToItems;
+import {Item, rowsToItems} from "./itemCommon";
 
 /**
  * Open the given items with the system default application.
