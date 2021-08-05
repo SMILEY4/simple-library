@@ -936,18 +936,23 @@ function mockImportService(): [ImportService, ActionCreateLibrary, FileSystemWra
 	const dbAccess = new MemDbAccess();
 	const configAccess = mockConfigAccess();
 	const channel = mockItemsImportStatusChannel();
+
 	const stepHash = new ImportStepFileHash(fsWrapper);
 	// @ts-ignore
 	stepHash["computeHashWithAlgorithm"] = jest.fn().mockReturnValue(Promise.resolve("hashMock"));
+
+	const stepThumbnail = new ImportStepThumbnail();
 	// @ts-ignore
-	ImportStepThumbnail["createBase64Thumbnail"] = jest.fn().mockReturnValue(Promise.resolve("thumbnailMock"));
+	stepThumbnail["createBase64Thumbnail"] = jest.fn().mockReturnValue(Promise.resolve("thumbnailMock"));
+
 	// @ts-ignore
 	ImportStepMetadata["createExiftoolProcess"] = jest.fn().mockReturnValue(mockExiftoolProcess());
+
 	const importService: ImportService = new ImportService(
 		dbAccess,
 		new ImportDataValidator(fsWrapper),
 		stepHash,
-		new ImportStepThumbnail(),
+		stepThumbnail,
 		new ImportStepRename(),
 		new ImportStepImportTarget(fsWrapper),
 		new ImportStepMetadata(new ActionGetExiftoolInfo(configAccess)),
@@ -968,7 +973,7 @@ function mockItemsImportStatusChannel(): ItemsImportStatusChannel {
 function mockExiftoolProcess(): any {
 	return {
 		open: () => Promise.resolve(),
-		readMetadata: () => ({
+		readMetadata: (path: any, options: any) => ({
 			data: [{
 				attribText: "text value",
 				attribNumber: 42.1,

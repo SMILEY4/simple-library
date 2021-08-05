@@ -4,8 +4,8 @@ const sharp = require('sharp');
 
 export class ImportStepThumbnail {
 
-    private static THUMBNAIL_WIDTH: number = 200;
-    private static JPEG_QUALITY: number = 85;
+    private THUMBNAIL_WIDTH: number = 200;
+    private JPEG_QUALITY: number = 85;
 
 
     /**
@@ -14,7 +14,7 @@ export class ImportStepThumbnail {
      * @return a promise that resolves with the given item data, but with the calculated thumbnail
      */
     public handle(itemData: ItemData): Promise<ItemData> {
-        return ImportStepThumbnail.createBase64Thumbnail(itemData.filepath)
+        return this.createBase64Thumbnail(itemData.filepath)
             .then(imgBase64 => {
                 itemData.thumbnail = imgBase64;
                 return itemData;
@@ -22,7 +22,7 @@ export class ImportStepThumbnail {
     }
 
 
-    private static createBase64Thumbnail(filepath: string): Promise<string> {
+    private createBase64Thumbnail(filepath: string): Promise<string> {
         return sharp(filepath)
             .resize({ width: this.THUMBNAIL_WIDTH, fit: sharp.fit.contain })
             .jpeg({ quality: this.JPEG_QUALITY })

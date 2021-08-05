@@ -31,24 +31,34 @@ export class ImportDataValidator {
 
     private validateImportTarget(data: ImportFileTarget): void {
         switch (data.action) {
-            case ImportTargetAction.KEEP:
+            case ImportTargetAction.KEEP: {
                 break;
+            }
             case ImportTargetAction.MOVE: {
-                if (!data.targetDir || data.targetDir.length === 0 || !this.fsWrapper.existsDir(data.targetDir)) {
-                    throw "Target directory does not exist.";
-                }
+                this.validateImportTargetMove(data);
                 break;
             }
             case ImportTargetAction.COPY: {
-                if (!data.targetDir || data.targetDir.length === 0 || !this.fsWrapper.existsDir(data.targetDir)) {
-                    throw "Target directory does not exist.";
-                }
+                this.validateImportTargetCopy(data);
                 break;
             }
 
         }
     }
 
+
+    private validateImportTargetMove(data: ImportFileTarget) {
+        if (!data.targetDir || data.targetDir.length === 0 || !this.fsWrapper.existsDir(data.targetDir)) {
+            throw "Target directory does not exist.";
+        }
+    }
+
+
+    private validateImportTargetCopy(data: ImportFileTarget) {
+        if (!data.targetDir || data.targetDir.length === 0 || !this.fsWrapper.existsDir(data.targetDir)) {
+            throw "Target directory does not exist.";
+        }
+    }
 
     private validateRenameInstructions(data: BulkRenameInstruction, amountFiles: number): void {
         if (data.doRename) {

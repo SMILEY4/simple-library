@@ -17,10 +17,9 @@ export class ImportStepImportTarget {
 	 * @param itemData the data of the file/item
 	 * @param action data about how to handle the file, i.e. keep, move or copy
 	 * @return a promise that resolves with the given item data
-
 	 */
 	public handle(itemData: ItemData, action: ImportTargetAction): Promise<ItemData> {
-		return startAsync()
+		return Promise.resolve()
 			.then(() => {
 				switch (action) {
 					case ImportTargetAction.KEEP:
