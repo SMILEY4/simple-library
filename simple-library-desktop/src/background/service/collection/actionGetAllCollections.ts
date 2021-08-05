@@ -44,11 +44,11 @@ export class ActionGetAllCollections {
 	private getFinalCount(collection: Collection): Promise<number> {
 		if (collection.type === CollectionType.SMART) {
 			return this.getSmartItemCount(collection);
-		}
-		if (collection.itemCount) {
+		} else if (collection.itemCount) {
 			return Promise.resolve(collection.itemCount);
+		} else {
+			return Promise.resolve(0);
 		}
-		return Promise.resolve(0);
 	}
 
 	private getSmartItemCount(collection: Collection): Promise<number> {
@@ -58,10 +58,14 @@ export class ActionGetAllCollections {
 				? SQL.queryItemCountByQuery(smartQuery.trim())
 				: SQL.queryItemCountTotal();
 			return this.dbAccess.querySingle(sqlQuery)
-				.then((row: any | null) => row ? row.count : 0);
+				.then(this.rowToCount);
 		} else {
 			return Promise.resolve(0);
 		}
+	}
+
+	private rowToCount(row: any | null): number {
+		return row ? row.count : 0;
 	}
 
 }
