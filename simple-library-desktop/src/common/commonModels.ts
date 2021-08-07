@@ -9,7 +9,7 @@ export interface LastOpenedLibraryEntry {
 	path: string
 }
 
-export type MetadataEntryType = "text" | "number" | "boolean" | "date" | "list"
+export type MetadataEntryType = "none" | "text" | "number" | "boolean" | "date" | "list"
 
 export interface MetadataEntry {
 	key: string,

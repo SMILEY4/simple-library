@@ -1,4 +1,6 @@
-import {Database, OPEN_CREATE, OPEN_READWRITE} from "sqlite3";
+import {Database} from "sqlite3";
+
+const sqlite3 = require('sqlite3').verbose();
 
 export class DbAccess {
 
@@ -108,7 +110,7 @@ export class DbAccess {
 		if (this.url) {
 			let db: Database | null = null;
 			return new Promise((resolve, reject) => {
-				db = new Database(this.url, OPEN_READWRITE, (error: any) => {
+				db = new sqlite3.Database(this.url, sqlite3.OPEN_READWRITE, (error: any) => {
 					error ? reject(error.message) : resolve();
 				});
 			}).then(() => db);
@@ -120,7 +122,7 @@ export class DbAccess {
 	private createDbFile(url: string): Promise<void> {
 		let db: Database | null = null;
 		return new Promise((resolve, reject) => {
-			db = new Database(url, (OPEN_CREATE | OPEN_READWRITE), (error: any) => {
+			db = new sqlite3.Database(url, (sqlite3.OPEN_CREATE | sqlite3.OPEN_READWRITE), (error: any) => {
 				error ? reject(error.message) : resolve();
 			});
 		}).then(() => db.get("PRAGMA foreign_keys = ON")).then();

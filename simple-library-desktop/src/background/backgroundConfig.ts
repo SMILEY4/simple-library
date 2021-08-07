@@ -77,11 +77,9 @@ import {ActionUpdateItemAttribute} from "./service/item/actionUpdateItemAttribut
 export function initBackgroundWorker(): void {
     console.log("initialize background worker");
 
-
     const configAccess: ConfigAccess = new ConfigAccess();
     const dbAccess: DbAccess = new DbAccess();
     const fsWrapper: FileSystemWrapper = new FileSystemWrapper();
-
 
     const actionGetAllCollections = new ActionGetAllCollections(dbAccess);
     const actionGetCollectionById = new ActionGetCollectionById(dbAccess);

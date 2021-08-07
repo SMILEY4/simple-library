@@ -8,7 +8,7 @@ export interface Item {
 	attributes?: Attribute[]
 }
 
-export type AttributeType = "text" | "number" | "boolean" | "date" | "list"
+export type AttributeType = "none" | "text" | "number" | "boolean" | "date" | "list"
 
 export interface Attribute {
 	key: string,

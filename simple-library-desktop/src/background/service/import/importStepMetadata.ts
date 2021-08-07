@@ -74,15 +74,19 @@ export class ImportStepMetadata {
 
 
 	private attribValue(key: string, value: any) {
+		const type = this.extractType(value);
 		return {
 			key: key,
-			value: value,
-			type: ImportStepMetadata.extractType(value)
+			value: type === "none" ? "" : type,
+			type: type
 		};
 	}
 
 
-	private static extractType(value: any): AttributeType {
+	private extractType(value: any): AttributeType {
+		if (value === null || value === undefined) {
+			return "none";
+		}
 		const isISODate = !!("" + value).match(/\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d/);
 		if (isISODate) {
 			return "date";

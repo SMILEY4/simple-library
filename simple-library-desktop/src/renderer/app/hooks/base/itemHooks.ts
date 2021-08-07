@@ -90,7 +90,7 @@ export function useItems() {
         )
             .catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.IMPORT_FAILED_UNKNOWN, error))
             .then(() => removeNotification(importStatusNotificationId))
-            .finally(() => removeImportStatusListener(statusListener));
+            .finally(() => removeImportStatusListener());
     }
 
 

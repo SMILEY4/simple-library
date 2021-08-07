@@ -236,7 +236,7 @@ export module SQL {
 	}
 
 	export function insertItemAttributes(itemId: number, attributes: ({ key: string, value: string, type: string })[]): string {
-		const entries: string[] = attributes.map(att => `("${att.key}", "${att.value}", "${att.type}", ${itemId})`)
+		const entries: string[] = attributes.map(att => `(${str(att.key)}, ${str(att.value)}, ${str(att.type)}, ${num(itemId)})`)
 		return sql(sqlInsertItemAttributes)
 			.replace(v("entries"), entries.join(", "));
 	}
@@ -260,7 +260,7 @@ function isNull(): string {
 }
 
 function str(value: any): string {
-	return !!value ? "'" + value + "'" : "null";
+	return !!value ? "'" + (""+value).replace(/'/g, "''") + "'" : "null";
 }
 
 function num(value: number | null): string {

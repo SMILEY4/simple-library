@@ -13,7 +13,7 @@ console.log("log filepath (main):", log.transports.file.getFile().path);
 const configDataAccess: ConfigDataAccess = new ConfigDataAccess();
 const windowHandle: WindowHandle = new WindowHandle(isDev, configDataAccess);
 const workerHandle: WorkerHandle = new WorkerHandle(isDev);
-new MessageProxy(() => workerHandle.getWindow());
+new MessageProxy(() => workerHandle.getWindow(), () => windowHandle.getWindow());
 
 
 app.whenReady().then(() => {
