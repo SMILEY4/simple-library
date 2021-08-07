@@ -1,6 +1,6 @@
 import {DbAccess} from "../../persistence/dbAcces";
 import {ActionGetCollectionById} from "./actionGetCollectionById";
-import {voidThen} from "../../../common/AsyncCommon";
+import {voidThen} from "../../../common/utils";
 import {SQL} from "../../persistence/sqlHandler";
 import {Collection, CollectionType} from "./collectionCommons";
 
@@ -55,7 +55,7 @@ export class ActionMoveItems {
 		if (!collections.tgt) {
 			throw "Can not move/copy items: target collection not found!";
 		}
-		if (collections.tgt.type === CollectionType.SMART) {
+		if (collections.tgt.type === "smart") {
 			throw "Can not move/copy items: target collection is a Smart-Collection!";
 		}
 		return collections;

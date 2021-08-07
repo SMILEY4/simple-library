@@ -1,4 +1,4 @@
-import {ImportResult, ImportService} from "../service/import/importService";
+import {ImportProcessData, ImportResult, ImportService} from "../service/import/importService";
 import {FileSystemWrapper} from "../service/fileSystemWrapper";
 import {mockConfigAccess, mockDateNow, mockFileSystemWrapper} from "./mockSetup";
 import {DbAccess} from "../persistence/dbAcces";
@@ -10,7 +10,6 @@ import {ImportStepImportTarget} from "../service/import/importStepImportTarget";
 import {ImportStepMetadata} from "../service/import/importStepMetadata";
 import {ItemsImportStatusChannel} from "../../common/messaging/channels/channels";
 import {jest} from "@jest/globals";
-import {ImportProcessData, ImportTargetAction, RenamePartType} from "../../common/commonModels";
 import {MemDbAccess} from "./memDbAccess";
 import {SQL} from "../persistence/sqlHandler";
 import {ActionGetExiftoolInfo} from "../service/config/actionGetExiftoolInfo";
@@ -35,7 +34,7 @@ describe("import", () => {
 						"path/to/file3.png"
 					],
 					importTarget: {
-						action: ImportTargetAction.MOVE,
+						action: "move",
 						targetDir: "new/path"
 					},
 					renameInstructions: {
@@ -74,7 +73,7 @@ describe("import", () => {
 						"path/to/file3.png"
 					],
 					importTarget: {
-						action: ImportTargetAction.COPY,
+						action: "copy",
 						targetDir: "new/path"
 					},
 					renameInstructions: {
@@ -115,7 +114,7 @@ describe("import", () => {
 						"path/to/file3.png"
 					],
 					importTarget: {
-						action: ImportTargetAction.KEEP,
+						action: "keep",
 						targetDir: ""
 					},
 					renameInstructions: {
@@ -153,14 +152,14 @@ describe("import", () => {
 						"path/to/file3.png"
 					],
 					importTarget: {
-						action: ImportTargetAction.KEEP,
+						action: "keep",
 						targetDir: ""
 					},
 					renameInstructions: {
 						doRename: true,
 						parts: [
-							{type: RenamePartType.NOTHING, value: ""},
-							{type: RenamePartType.NOTHING, value: ""}
+							{type: "nothing", value: ""},
+							{type: "nothing", value: ""}
 						]
 					}
 				};
@@ -194,14 +193,14 @@ describe("import", () => {
 						"path/to/file3.png"
 					],
 					importTarget: {
-						action: ImportTargetAction.KEEP,
+						action: "keep",
 						targetDir: ""
 					},
 					renameInstructions: {
 						doRename: true,
 						parts: [
-							{type: RenamePartType.TEXT, value: "something"},
-							{type: RenamePartType.TEXT, value: ""}
+							{type: "text", value: "something"},
+							{type: "text", value: ""}
 						]
 					}
 				};
@@ -235,14 +234,14 @@ describe("import", () => {
 						"path/to/file3.png"
 					],
 					importTarget: {
-						action: ImportTargetAction.KEEP,
+						action: "keep",
 						targetDir: ""
 					},
 					renameInstructions: {
 						doRename: true,
 						parts: [
-							{type: RenamePartType.TEXT, value: "something"},
-							{type: RenamePartType.NUMBER_FROM, value: ""}
+							{type: "text", value: "something"},
+							{type: "number_from", value: ""}
 						]
 					}
 				};
@@ -276,14 +275,14 @@ describe("import", () => {
 						"path/to/file3.png"
 					],
 					importTarget: {
-						action: ImportTargetAction.KEEP,
+						action: "keep",
 						targetDir: ""
 					},
 					renameInstructions: {
 						doRename: true,
 						parts: [
-							{type: RenamePartType.TEXT, value: "something"},
-							{type: RenamePartType.NUMBER_FROM, value: "hello 42 :)"}
+							{type: "text", value: "something"},
+							{type: "number_from", value: "hello 42 :)"}
 						]
 					}
 				};
@@ -316,14 +315,14 @@ describe("import", () => {
 						"path/to/file3.png"
 					],
 					importTarget: {
-						action: ImportTargetAction.KEEP,
+						action: "keep",
 						targetDir: ""
 					},
 					renameInstructions: {
 						doRename: true,
 						parts: [
-							{type: RenamePartType.TEXT, value: "something"},
-							{type: RenamePartType.NUMBER_FROM, value: "-42"}
+							{type: "text", value: "something"},
+							{type: "number_from", value: "-42"}
 						]
 					}
 				};
@@ -359,15 +358,15 @@ describe("import", () => {
 					"path/to/file3.png"
 				],
 				importTarget: {
-					action: ImportTargetAction.KEEP,
+					action: "keep",
 					targetDir: ""
 				},
 				renameInstructions: {
 					doRename: true,
 					parts: [
-						{type: RenamePartType.NOTHING, value: ""},
-						{type: RenamePartType.TEXT, value: "something"},
-						{type: RenamePartType.TEXT, value: "else"}
+						{type: "nothing", value: ""},
+						{type: "text", value: "something"},
+						{type: "text", value: "else"}
 					]
 				}
 			};
@@ -400,7 +399,7 @@ describe("import", () => {
 					"path/to/file3.png"
 				],
 				importTarget: {
-					action: ImportTargetAction.KEEP,
+					action: "keep",
 					targetDir: ""
 				},
 				renameInstructions: {
@@ -446,7 +445,7 @@ describe("import", () => {
 					"path/to/file3.png"
 				],
 				importTarget: {
-					action: ImportTargetAction.MOVE,
+					action: "move",
 					targetDir: "new/target/directory"
 				},
 				renameInstructions: {
@@ -492,7 +491,7 @@ describe("import", () => {
 					"path/to/file3.png"
 				],
 				importTarget: {
-					action: ImportTargetAction.COPY,
+					action: "copy",
 					targetDir: "new/target/directory"
 				},
 				renameInstructions: {
@@ -537,14 +536,14 @@ describe("import", () => {
 					"path/to/file3.png"
 				],
 				importTarget: {
-					action: ImportTargetAction.COPY,
+					action: "copy",
 					targetDir: "new/target/directory"
 				},
 				renameInstructions: {
 					doRename: true,
 					parts: [
-						{type: RenamePartType.ORIGINAL_FILENAME, value: ""},
-						{type: RenamePartType.TEXT, value: "_renamed"}
+						{type: "original_filename", value: ""},
+						{type: "text", value: "_renamed"}
 					]
 				}
 			};
@@ -589,7 +588,7 @@ describe("import", () => {
 					"path/to/file3.png"
 				],
 				importTarget: {
-					action: ImportTargetAction.KEEP,
+					action: "keep",
 					targetDir: ""
 				},
 				renameInstructions: {
@@ -648,7 +647,7 @@ describe("import", () => {
 					"path/to/file3.png"
 				],
 				importTarget: {
-					action: ImportTargetAction.COPY,
+					action: "copy",
 					targetDir: "new/target/directory"
 				},
 				renameInstructions: {
@@ -699,7 +698,7 @@ describe("import", () => {
 					"path/to/file3.png"
 				],
 				importTarget: {
-					action: ImportTargetAction.MOVE,
+					action: "move",
 					targetDir: "new/target/directory"
 				},
 				renameInstructions: {
@@ -749,18 +748,18 @@ describe("import", () => {
 					"path/to/file3.png"
 				],
 				importTarget: {
-					action: ImportTargetAction.KEEP,
+					action: "keep",
 					targetDir: ""
 				},
 				renameInstructions: {
 					doRename: true,
 					parts: [
-						{type: RenamePartType.NOTHING, value: ""},
-						{type: RenamePartType.ORIGINAL_FILENAME, value: ""},
-						{type: RenamePartType.NOTHING, value: ""},
-						{type: RenamePartType.TEXT, value: "_txt_"},
-						{type: RenamePartType.NUMBER_FROM, value: "8"},
-						{type: RenamePartType.NOTHING, value: ""}
+						{type: "nothing", value: ""},
+						{type: "original_filename", value: ""},
+						{type: "nothing", value: ""},
+						{type: "text", value: "_txt_"},
+						{type: "number_from", value: "8"},
+						{type: "nothing", value: ""}
 					]
 				}
 			};
@@ -807,18 +806,18 @@ describe("import", () => {
 					"path/to/file3.png"
 				],
 				importTarget: {
-					action: ImportTargetAction.COPY,
+					action: "copy",
 					targetDir: "new/target/directory"
 				},
 				renameInstructions: {
 					doRename: true,
 					parts: [
-						{type: RenamePartType.NOTHING, value: ""},
-						{type: RenamePartType.ORIGINAL_FILENAME, value: ""},
-						{type: RenamePartType.NOTHING, value: ""},
-						{type: RenamePartType.TEXT, value: "_txt_"},
-						{type: RenamePartType.NUMBER_FROM, value: "8"},
-						{type: RenamePartType.NOTHING, value: ""}
+						{type: "nothing", value: ""},
+						{type: "original_filename", value: ""},
+						{type: "nothing", value: ""},
+						{type: "text", value: "_txt_"},
+						{type: "number_from", value: "8"},
+						{type: "nothing", value: ""}
 					]
 				}
 			};
@@ -865,18 +864,18 @@ describe("import", () => {
 					"path/to/file3.png"
 				],
 				importTarget: {
-					action: ImportTargetAction.MOVE,
+					action: "move",
 					targetDir: "new/target/directory"
 				},
 				renameInstructions: {
 					doRename: true,
 					parts: [
-						{type: RenamePartType.NOTHING, value: ""},
-						{type: RenamePartType.ORIGINAL_FILENAME, value: ""},
-						{type: RenamePartType.NOTHING, value: ""},
-						{type: RenamePartType.TEXT, value: "_txt_"},
-						{type: RenamePartType.NUMBER_FROM, value: "8"},
-						{type: RenamePartType.NOTHING, value: ""}
+						{type: "nothing", value: ""},
+						{type: "original_filename", value: ""},
+						{type: "nothing", value: ""},
+						{type: "text", value: "_txt_"},
+						{type: "number_from", value: "8"},
+						{type: "nothing", value: ""}
 					]
 				}
 			};

@@ -1,7 +1,5 @@
-import {ImportTargetAction} from "../../../common/commonModels";
-import {startAsyncWithValue} from "../../../common/AsyncCommon";
 import {FileSystemWrapper} from "../fileSystemWrapper";
-import {ItemData} from "./importService";
+import {ImportTargetAction, ItemData} from "./importService";
 
 export class ImportStepImportTarget {
 
@@ -22,11 +20,11 @@ export class ImportStepImportTarget {
 		return Promise.resolve()
 			.then(() => {
 				switch (action) {
-					case ImportTargetAction.KEEP:
+					case "keep":
 						return this.keepFile(itemData.sourceFilepath, itemData.filepath);
-					case ImportTargetAction.MOVE:
+					case "move":
 						return this.moveFile(itemData.sourceFilepath, itemData.filepath);
-					case ImportTargetAction.COPY:
+					case "copy":
 						return this.copyFile(itemData.sourceFilepath, itemData.filepath);
 				}
 			})
@@ -36,7 +34,7 @@ export class ImportStepImportTarget {
 
 	private keepFile(sourceFilepath: string, targetFilepath: string): Promise<string> {
 		if (sourceFilepath === targetFilepath || this.normalizePath(sourceFilepath) === this.normalizePath(targetFilepath)) {
-			return startAsyncWithValue(targetFilepath);
+			return Promise.resolve(targetFilepath);
 		} else {
 			return this.moveFile(sourceFilepath, targetFilepath);
 		}

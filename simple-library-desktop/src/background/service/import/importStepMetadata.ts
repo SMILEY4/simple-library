@@ -77,7 +77,7 @@ export class ImportStepMetadata {
 		const type = this.extractType(value);
 		return {
 			key: key,
-			value: type === "none" ? "" : type,
+			value: type === "none" ? "" : value,
 			type: type
 		};
 	}

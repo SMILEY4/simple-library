@@ -1,6 +1,6 @@
 import {DbAccess} from "../../persistence/dbAcces";
 import {SQL} from "../../persistence/sqlHandler";
-import {voidThen} from "../../../common/AsyncCommon";
+import {voidThen} from "../../../common/utils";
 
 /**
  * Moves all child groups of the given parent group into the new group.

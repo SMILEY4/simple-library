@@ -1,17 +1,18 @@
 import {IpcWrapper} from "../core/ipcWrapper";
-import {
-	Collection,
-	CollectionType,
-	Group,
-	ImportProcessData,
-	ImportResult,
-	ImportStatus,
-	ItemData,
-	LastOpenedLibraryEntry,
-	LibraryMetadata,
-	MetadataEntry
-} from "../../commonModels";
 import {Channel} from "../core/channel";
+import {
+	AttributeDTO,
+	CollectionDTO,
+	CollectionTypeDTO,
+	ExiftoolInfoDTO,
+	GroupDTO, ImportProcessDataDTO,
+	ImportResultDTO,
+	ImportStatusDTO,
+	ItemDTO,
+	LastOpenedLibraryDTO,
+	LibraryInfoDTO,
+	ThemeDTO
+} from "../dtoModels";
 
 export type ComDir = "r" | "w";
 
@@ -23,11 +24,6 @@ export function proxyChannel(ipcWrapper: IpcWrapper, id: string, logPayload: boo
 	});
 }
 
-export interface GetExiftoolDataPayload {
-	location: string | null;
-	defined: boolean;
-}
-
 export class ConfigOpenChannel extends Channel<void, void> {
 	public static readonly ID: string = "config.open";
 
@@ -37,7 +33,7 @@ export class ConfigOpenChannel extends Channel<void, void> {
 	}
 }
 
-export class ConfigGetExiftoolChannel extends Channel<void, GetExiftoolDataPayload> {
+export class ConfigGetExiftoolChannel extends Channel<void, ExiftoolInfoDTO> {
 	public static readonly ID: string = "config.exiftool.get";
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
@@ -45,7 +41,7 @@ export class ConfigGetExiftoolChannel extends Channel<void, GetExiftoolDataPaylo
 	}
 }
 
-export class ConfigGetThemeChannel extends Channel<void, "dark" | "light"> {
+export class ConfigGetThemeChannel extends Channel<void, ThemeDTO> {
 	public static readonly ID: string = "config.theme.get";
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
@@ -53,7 +49,7 @@ export class ConfigGetThemeChannel extends Channel<void, "dark" | "light"> {
 	}
 }
 
-export class ConfigSetThemeChannel extends Channel<"dark" | "light", void> {
+export class ConfigSetThemeChannel extends Channel<ThemeDTO, void> {
 	public static readonly ID: string = "config.theme.set";
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
@@ -63,7 +59,7 @@ export class ConfigSetThemeChannel extends Channel<"dark" | "light", void> {
 }
 
 
-export class CollectionsGetAllChannel extends Channel<boolean, Collection[]> {
+export class CollectionsGetAllChannel extends Channel<boolean, CollectionDTO[]> {
 	public static readonly ID: string = "collection.all.get";
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
@@ -73,10 +69,10 @@ export class CollectionsGetAllChannel extends Channel<boolean, Collection[]> {
 
 export class CollectionCreateChannel extends Channel<{
 	name: string,
-	type: CollectionType,
+	type: CollectionTypeDTO,
 	parentGroupId: number | null,
 	smartQuery: string | null
-}, Collection> {
+}, CollectionDTO> {
 	public static readonly ID: string = "collection.create";
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
@@ -148,7 +144,7 @@ export class CollectionRemoveItemsChannel extends Channel<{
 export class GroupsGetTreeChannel extends Channel<{
 	includeCollections: boolean,
 	includeItemCount: boolean
-}, Group> {
+}, GroupDTO> {
 	public static readonly ID: string = "group.tree.get";
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
@@ -159,7 +155,7 @@ export class GroupsGetTreeChannel extends Channel<{
 export class GroupCreateChannel extends Channel<{
 	name: string,
 	parentGroupId: number | null
-}, Group> {
+}, GroupDTO> {
 	public static readonly ID: string = "group.create";
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
@@ -207,7 +203,7 @@ export class GroupMoveChannel extends Channel<{
 export class ItemsGetByCollectionChannel extends Channel<{
 	collectionId: number,
 	itemAttributeKeys: string[]
-}, ItemData[]> {
+}, ItemDTO[]> {
 	public static readonly ID: string = "item.by-collection.get";
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
@@ -215,7 +211,7 @@ export class ItemsGetByCollectionChannel extends Channel<{
 	}
 }
 
-export class ItemGetByIdChannel extends Channel<number, ItemData | null> {
+export class ItemGetByIdChannel extends Channel<number, ItemDTO | null> {
 	public static readonly ID: string = "item.by-id.get";
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
@@ -232,7 +228,7 @@ export class ItemsDeleteChannel extends Channel<number[], void> {
 	}
 }
 
-export class ItemsImportChannel extends Channel<ImportProcessData, ImportResult> {
+export class ItemsImportChannel extends Channel<ImportProcessDataDTO, ImportResultDTO> {
 	public static readonly ID: string = "item.import";
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
@@ -240,7 +236,7 @@ export class ItemsImportChannel extends Channel<ImportProcessData, ImportResult>
 	}
 }
 
-export class ItemsImportStatusChannel extends Channel<ImportStatus, void> {
+export class ItemsImportStatusChannel extends Channel<ImportStatusDTO, void> {
 	public static readonly ID: string = "item.import.status";
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
@@ -248,7 +244,7 @@ export class ItemsImportStatusChannel extends Channel<ImportStatus, void> {
 	}
 }
 
-export class ItemGetMetadataChannel extends Channel<number, MetadataEntry[]> {
+export class ItemGetMetadataChannel extends Channel<number, AttributeDTO[]> {
 	public static readonly ID: string = "item.metadata.get";
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
@@ -260,7 +256,7 @@ export class ItemSetMetadataChannel extends Channel<{
 	itemId: number,
 	entryKey: string,
 	newValue: string
-}, MetadataEntry> {
+}, AttributeDTO> {
 	public static readonly ID: string = "item.metadata.set";
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
@@ -277,7 +273,7 @@ export class ItemsOpenExternalChannel extends Channel<number[], void> {
 }
 
 
-export class LibrariesGetLastOpenedChannel extends Channel<void, LastOpenedLibraryEntry[]> {
+export class LibrariesGetLastOpenedChannel extends Channel<void, LastOpenedLibraryDTO[]> {
 	public static readonly ID: string = "library.last-opened.get";
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {
@@ -312,7 +308,7 @@ export class LibraryCloseChannel extends Channel<void, void> {
 	}
 }
 
-export class LibraryGetMetadataChannel extends Channel<void, LibraryMetadata> {
+export class LibraryGetMetadataChannel extends Channel<void, LibraryInfoDTO> {
 	public static readonly ID: string = "library.metadata.get";
 
 	constructor(ipcWrapper: IpcWrapper, comDir: ComDir) {

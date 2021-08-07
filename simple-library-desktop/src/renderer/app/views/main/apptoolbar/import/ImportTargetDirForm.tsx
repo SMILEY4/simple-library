@@ -2,22 +2,22 @@ import React from "react";
 import {HBox, VBox} from "../../../../../components/layout/box/Box";
 import {ChoiceBox, ChoiceBoxItem} from "../../../../../components/buttons/choicebox/ChoiceBox";
 import {DirectoryInputField} from "../../../../../components/input/directoryinputfield/DirectoryInputField";
-import {ImportTargetAction} from "../../../../../../common/commonModels";
 import {BaseElementFlat} from "../../../../../components/base/element/BaseElementFlat";
+import {ImportTargetActionDTO} from "../../../../../../common/messaging/dtoModels";
 
 const electron = window.require('electron');
 
 const CB_ITEMS_FILE_TARGET_TYPES: ChoiceBoxItem[] = [
 	{
-		id: ImportTargetAction.KEEP,
+		id: "keep",
 		text: "Keep in directory"
 	},
 	{
-		id: ImportTargetAction.MOVE,
+		id: "move",
 		text: "Move to target directory"
 	},
 	{
-		id: ImportTargetAction.COPY,
+		id: "copy",
 		text: "Copy to target directory"
 	},
 ]
@@ -25,8 +25,8 @@ const CB_ITEMS_FILE_TARGET_TYPES: ChoiceBoxItem[] = [
 
 interface ImportTargetDirFormProps {
 	error: boolean
-	targetType: ImportTargetAction,
-	onSetTargetType: (type: ImportTargetAction) => void,
+	targetType: ImportTargetActionDTO,
+	onSetTargetType: (type: ImportTargetActionDTO) => void,
 	onSetTargetDir: (dir: string) => void
 }
 
@@ -47,7 +47,7 @@ export function ImportTargetDirForm(props: React.PropsWithChildren<ImportTargetD
 					error={props.error}
 					onBrowse={browseTargetDir}
 					onSelect={props.onSetTargetDir}
-					disabled={props.targetType === ImportTargetAction.KEEP}
+					disabled={props.targetType === "keep"}
 				/>
 			</VBox>
 		</BaseElementFlat>

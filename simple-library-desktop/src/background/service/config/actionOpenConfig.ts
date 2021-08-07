@@ -1,6 +1,6 @@
 import {ConfigAccess} from "../../persistence/configAccess";
 import {FileSystemWrapper} from "../fileSystemWrapper";
-import {voidThen} from "../../../common/AsyncCommon";
+import {voidThen} from "../../../common/utils";
 
 /**
  * Opens the config file with the system default application.

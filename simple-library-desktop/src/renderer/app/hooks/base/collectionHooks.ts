@@ -11,25 +11,26 @@ import {
 } from "../../common/messagingInterface";
 import {genNotificationId} from "./notificationUtils";
 import {useModifyNotifications} from "./notificationHooks";
-import {Collection, CollectionType, extractCollections, extractGroups, Group} from "../../../../common/commonModels";
 import {AppNotificationType} from "../../store/notificationState";
 import {CollectionsActionType, useCollectionsContext, useCollectionsDispatch} from "../../store/collectionsState";
+import {CollectionDTO, CollectionTypeDTO, GroupDTO} from "../../../../common/messaging/dtoModels";
+import {extractCollections, extractGroups} from "../../common/utils";
 
 export function useCollectionsState() {
 
 	const [collectionsState] = useCollectionsContext();
 
-	function findCollection(collectionId: number): Collection | null {
+	function findCollection(collectionId: number): CollectionDTO | null {
 		if (collectionId) {
-			const result: Collection | undefined = extractCollections(collectionsState.rootGroup).find(collection => collection.id === collectionId);
+			const result: CollectionDTO | undefined = extractCollections(collectionsState.rootGroup).find(collection => collection.id === collectionId);
 			return result ? result : null;
 		} else {
 			return null;
 		}
 	}
 
-	function findGroup(groupId: number): Group | null {
-		const result: Group | undefined = extractGroups(collectionsState.rootGroup).find(group => group.id === groupId);
+	function findGroup(groupId: number): GroupDTO | null {
+		const result: GroupDTO | undefined = extractGroups(collectionsState.rootGroup).find(group => group.id === groupId);
 		return result ? result : null;
 	}
 
@@ -48,7 +49,7 @@ export function useCollections() {
 	function loadGroups(): Promise<void> {
 		return fetchRootGroup()
 			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ROOT_GROUP_FETCH_FAILED, error))
-			.then((group: Group) => {
+			.then((group: GroupDTO) => {
 				collectionsDispatch({
 					type: CollectionsActionType.SET_ROOT_GROUP,
 					payload: group,
@@ -85,8 +86,8 @@ export function useCollections() {
 			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.COLLECTION_MOVE_FAILED, error))
 	}
 
-	function createCollection(parentGroupId: number | null, name: string, type: CollectionType, query: string | null): Promise<void> {
-		return requestCreateCollection(name, type, type === CollectionType.SMART ? query : null, parentGroupId)
+	function createCollection(parentGroupId: number | null, name: string, type: CollectionTypeDTO, query: string | null): Promise<void> {
+		return requestCreateCollection(name, type, type === "smart" ? query : null, parentGroupId)
 			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.COLLECTION_CREATE_FAILED, error))
 	}
 

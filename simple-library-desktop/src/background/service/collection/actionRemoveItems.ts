@@ -1,6 +1,6 @@
 import {DbAccess} from "../../persistence/dbAcces";
 import {ActionGetCollectionById} from "./actionGetCollectionById";
-import {voidThen} from "../../../common/AsyncCommon";
+import {voidThen} from "../../../common/utils";
 import {SQL} from "../../persistence/sqlHandler";
 import {Collection, CollectionType} from "./collectionCommons";
 
@@ -33,7 +33,7 @@ export class ActionRemoveItems {
 	private validate(collection: Collection): Collection {
 		if (!collection) {
 			throw "Can not remove items: Collection not found!";
-		} else if (collection.type === CollectionType.SMART) {
+		} else if (collection.type === "smart") {
 			throw "Can not remove items: Collection is Smart-Collection!";
 		} else {
 			return collection;

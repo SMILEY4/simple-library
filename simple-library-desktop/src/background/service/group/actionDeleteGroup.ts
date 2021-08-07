@@ -2,7 +2,7 @@ import {DbAccess} from "../../persistence/dbAcces";
 import {SQL} from "../../persistence/sqlHandler";
 import {ActionGetGroupById} from "./actionGetGroupById";
 import {ActionMoveAllCollections} from "../collection/actionMoveAllCollections";
-import {voidThen} from "../../../common/AsyncCommon";
+import {voidThen} from "../../../common/utils";
 import {ActionMoveAllGroups} from "./actionMoveAllGroups";
 import {Group} from "./groupCommons";
 

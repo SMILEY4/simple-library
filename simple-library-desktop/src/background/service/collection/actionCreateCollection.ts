@@ -15,21 +15,21 @@ export class ActionCreateCollection {
 
 	public perform(type: CollectionType, name: string, parentGroupId: number | null, smartQuery: string | null): Promise<Collection> {
 		switch (type) {
-			case CollectionType.NORMAL:
+			case "normal":
 				return this.createNormal(name, parentGroupId);
-			case CollectionType.SMART:
+			case "smart":
 				return this.createSmart(name, parentGroupId, smartQuery);
 		}
 	}
 
 	private createNormal(name: string, parentGroupId: number | null): Promise<Collection> {
-		const collection: Collection = this.buildCollection(CollectionType.NORMAL, name, parentGroupId, null);
+		const collection: Collection = this.buildCollection("normal", name, parentGroupId, null);
 		return this.insert(collection)
 			.then((id: number | null) => this.appendId(collection, id));
 	}
 
 	private createSmart(name: string, parentGroupId: number | null, smartQuery: string | null): Promise<Collection> {
-		const collection: Collection = this.buildCollection(CollectionType.SMART, name, parentGroupId, smartQuery);
+		const collection: Collection = this.buildCollection("smart", name, parentGroupId, smartQuery);
 		return this.validateQuery(smartQuery)
 			.then(() => this.insert(collection))
 			.then((id: number | null) => this.appendId(collection, id));

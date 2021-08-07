@@ -55,7 +55,7 @@ export class ActionCreateLibrary {
 	private initLibrary(name: string, createDefaultCollection: boolean): Promise<any> {
 		const queries = SQL.initializeNewLibrary(name, Date.now());
 		if (createDefaultCollection) {
-			queries.push(SQL.insertCollection("All Items", CollectionType.SMART, null, null));
+			queries.push(SQL.insertCollection("All Items", "smart", null, null));
 		}
 		return this.dbAccess.runMultipleSeq(queries);
 	}

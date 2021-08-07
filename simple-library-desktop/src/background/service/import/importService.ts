@@ -1,5 +1,4 @@
 import {DbAccess} from "../../persistence/dbAcces";
-import {ImportProcessData} from "../../../common/commonModels";
 import {ImportDataValidator} from "./importDataValidator";
 import {ImportStepFileHash} from "./importStepFileHash";
 import {ImportStepThumbnail} from "./importStepThumbnail";
@@ -9,6 +8,31 @@ import {ImportStepMetadata} from "./importStepMetadata";
 import {SQL} from "../../persistence/sqlHandler";
 import {ItemsImportStatusChannel} from "../../../common/messaging/channels/channels";
 import {Attribute} from "../item/itemCommon";
+
+export interface ImportProcessData {
+	files: string[],
+	importTarget: ImportFileTarget,
+	renameInstructions: BulkRenameInstruction,
+}
+
+export interface ImportFileTarget {
+	action: ImportTargetAction,
+	targetDir: string
+}
+
+export type ImportTargetAction = "keep" | "move" | "copy"
+
+export interface BulkRenameInstruction {
+	doRename: boolean,
+	parts: RenamePart[]
+}
+
+export interface RenamePart {
+	type: RenamePartType,
+	value: string
+}
+
+export type RenamePartType = "nothing" | "text" | "number_from" | "original_filename";
 
 export interface ImportResult {
 	timestamp: number,

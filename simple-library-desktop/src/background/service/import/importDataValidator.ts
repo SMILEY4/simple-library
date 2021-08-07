@@ -1,12 +1,5 @@
-import {
-    BulkRenameInstruction,
-    ImportFileTarget,
-    ImportProcessData,
-    ImportTargetAction,
-    renamePartIsConst,
-    RenamePartType
-} from "../../../common/commonModels";
 import {FileSystemWrapper} from "../fileSystemWrapper";
+import {BulkRenameInstruction, ImportFileTarget, ImportProcessData, RenamePartType} from "./importService";
 
 
 export class ImportDataValidator {
@@ -31,14 +24,14 @@ export class ImportDataValidator {
 
     private validateImportTarget(data: ImportFileTarget): void {
         switch (data.action) {
-            case ImportTargetAction.KEEP: {
+            case "keep": {
                 break;
             }
-            case ImportTargetAction.MOVE: {
+            case "move": {
                 this.validateImportTargetMove(data);
                 break;
             }
-            case ImportTargetAction.COPY: {
+            case "copy": {
                 this.validateImportTargetCopy(data);
                 break;
             }
@@ -65,27 +58,34 @@ export class ImportDataValidator {
             if (data.parts.length == 0) {
                 throw "No rename parts given.";
             }
-            if (data.parts.every(p => p.type === RenamePartType.NOTHING)) {
+            if (data.parts.every(p => p.type === "nothing")) {
                 throw "At least one rename part must be not 'nothing'.";
             }
-            if (amountFiles > 1 && !data.parts.some(p => renamePartIsConst(p.type))) {
+            if (amountFiles > 1 && !data.parts.some(p => this.renamePartIsConst(p.type))) {
                 throw "Renaming multiple files resulting in same filename for all.";
             }
             data.parts.forEach(part => {
                 switch (part.type) {
-                    case RenamePartType.NOTHING:
+                    case "nothing":
                         break;
-                    case RenamePartType.TEXT:
+                    case "text":
                         ImportDataValidator.validateRenamePartText(part.value);
                         break;
-                    case RenamePartType.NUMBER_FROM:
+                    case "number_from":
                         ImportDataValidator.validateRenamePartNumberFrom(part.value);
                         break;
-                    case RenamePartType.ORIGINAL_FILENAME:
+                    case "original_filename":
                         break;
                 }
             });
         }
+    }
+
+    /**
+     * Whether the rename part results in a different filename for different/multiple files
+     */
+    private renamePartIsConst(type: RenamePartType): boolean {
+        return type === "number_from" || type === "original_filename";
     }
 
 

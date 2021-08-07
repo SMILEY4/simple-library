@@ -10,9 +10,9 @@ import {
 } from "../../common/messagingInterface";
 import {useModifyNotifications} from "./notificationHooks";
 import {genNotificationId} from "./notificationUtils";
-import {ImportProcessData, ImportResult, ImportStatus, ItemData} from "../../../../common/commonModels";
 import {AppNotificationType} from "../../store/notificationState";
 import {ItemsActionType, useItemsContext, useItemsDispatch} from "../../store/itemsState";
+import {ImportProcessDataDTO, ImportResultDTO, ImportStatusDTO, ItemDTO} from "../../../../common/messaging/dtoModels";
 
 export function useItemsState() {
 
@@ -21,7 +21,7 @@ export function useItemsState() {
     ] = useItemsContext();
 
     function getItemsIds(): number[] {
-        return itemsState.items.map((item: ItemData) => item.id);
+        return itemsState.items.map((item: ItemDTO) => item.id);
     }
 
     return {
@@ -47,7 +47,7 @@ export function useItems() {
     function load(collectionId: number): void {
         fetchItems(collectionId, itemAttributeKeys)
             .catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_FETCH_FAILED, error))
-            .then((items: ItemData[]) => itemsDispatch({
+            .then((items: ItemDTO[]) => itemsDispatch({
                 type: ItemsActionType.SET_ITEMS,
                 payload: items
             }));
@@ -76,17 +76,17 @@ export function useItems() {
             .catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_MOVE_FAILED, error));
     }
 
-    function importItems(data: ImportProcessData): Promise<void> {
+    function importItems(data: ImportProcessDataDTO): Promise<void> {
         const importStatusNotificationId = genNotificationId();
         addNotification(importStatusNotificationId, AppNotificationType.IMPORT_STATUS, null);
 
-        const statusListener = (status: ImportStatus) => updateNotification(importStatusNotificationId, status);
+        const statusListener = (status: ImportStatusDTO) => updateNotification(importStatusNotificationId, status);
         addImportStatusListener(statusListener);
         return requestImport(
             data,
-            (result: ImportResult) => addNotification(genNotificationId(), AppNotificationType.IMPORT_SUCCESSFUL, result),
-            (result: ImportResult) => addNotification(genNotificationId(), AppNotificationType.IMPORT_FAILED, result),
-            (result: ImportResult) => addNotification(genNotificationId(), AppNotificationType.IMPORT_WITH_ERRORS, result)
+            (result: ImportResultDTO) => addNotification(genNotificationId(), AppNotificationType.IMPORT_SUCCESSFUL, result),
+            (result: ImportResultDTO) => addNotification(genNotificationId(), AppNotificationType.IMPORT_FAILED, result),
+            (result: ImportResultDTO) => addNotification(genNotificationId(), AppNotificationType.IMPORT_WITH_ERRORS, result)
         )
             .catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.IMPORT_FAILED_UNKNOWN, error))
             .then(() => removeNotification(importStatusNotificationId))
@@ -94,7 +94,7 @@ export function useItems() {
     }
 
 
-    function fetchItem(itemId: number): Promise<ItemData | null> {
+    function fetchItem(itemId: number): Promise<ItemDTO | null> {
         return fetchItemById(itemId); // todo: error handling -> notification
     }
 

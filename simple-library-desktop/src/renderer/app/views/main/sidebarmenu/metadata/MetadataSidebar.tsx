@@ -5,9 +5,9 @@ import {useMetadataSidebar} from "../../../../hooks/app/sidebarmenu/metadata/use
 import {VBox} from "../../../../../components/layout/box/Box";
 import {Accordion} from "../../../../../components/misc/accordion/Accordion";
 import {TextField} from "../../../../../components/input/textfield/TextField";
-import {MetadataEntry} from "../../../../../../common/commonModels";
 import {MetadataListEntry} from "./MetadataListEntry";
 import {Label} from "../../../../../components/base/label/Label";
+import {AttributeDTO} from "../../../../../../common/messaging/dtoModels";
 
 
 export const TAB_DATA_METADATA: SidebarTab = {
@@ -71,16 +71,16 @@ export function MetadataSidebar(props: React.PropsWithChildren<MetadataSidebarPr
         </>
     );
 
-    function handleOnUpdateEntryValue(entry: MetadataEntry, prev: string, next: string) {
+    function handleOnUpdateEntryValue(entry: AttributeDTO, prev: string, next: string) {
         updateMetadataEntry(entry.key, prev, next);
     }
 
 
-    function group(entries: MetadataEntry[]): ({ title: string, entries: ([string, MetadataEntry])[] })[] {
+    function group(entries: AttributeDTO[]): ({ title: string, entries: ([string, AttributeDTO])[] })[] {
 
-        const groups: ({ title: string, entries: ([string, MetadataEntry])[] })[] = [];
+        const groups: ({ title: string, entries: ([string, AttributeDTO])[] })[] = [];
 
-        function insert(groupName: string, entryName: string, entry: MetadataEntry): void {
+        function insert(groupName: string, entryName: string, entry: AttributeDTO): void {
             let group = groups.find(g => g.title === groupName)
             if (!group) {
                 groups.push({title: groupName, entries: [[entryName, entry]]})
@@ -89,7 +89,7 @@ export function MetadataSidebar(props: React.PropsWithChildren<MetadataSidebarPr
             }
         }
 
-        entries.forEach((entry: MetadataEntry) => {
+        entries.forEach((entry: AttributeDTO) => {
             const parts: string[] = entry.key.split(/\.(.+)/);
             if (parts.length >= 2) {
                 insert(parts[0], parts[1], entry);
@@ -108,8 +108,8 @@ export function MetadataSidebar(props: React.PropsWithChildren<MetadataSidebarPr
 interface MetadataGroupListEntryProps {
     searchFilter: string,
     title: string,
-    entries: ([string, MetadataEntry])[];
-    onUpdateValue: (entry: MetadataEntry, prev: string, next: string) => void
+    entries: ([string, AttributeDTO])[];
+    onUpdateValue: (entry: AttributeDTO, prev: string, next: string) => void
 }
 
 
@@ -131,7 +131,7 @@ function MetadataGroupListEntry(props: React.PropsWithChildren<MetadataGroupList
                     {
                         displayEntries
                             .sort((a, b) => a[0].toLowerCase().localeCompare(b[0].toLowerCase()))
-                            .map((entry: [string, MetadataEntry]) => {
+                            .map((entry: [string, AttributeDTO]) => {
                                 return <MetadataListEntry
                                     key={entry[1].key}
                                     entry={entry[1]}

@@ -36,21 +36,21 @@ export enum ItemSelectionActionType {
 const reducerConfigMap: ReducerConfigMap<ItemSelectionActionType, ItemSelectionState> = new ReducerConfigMap([
 	[ItemSelectionActionType.ITEM_SELECTION_SET, (state, payload) => ({
 		...state,
-		selectedItemIds: payload,
+		selectedItemIds: payload
 	})],
 	[ItemSelectionActionType.ITEM_SELECTION_ADD, (state, payload) => ({
 		...state,
-		selectedItemIds: unique<number>([...state.selectedItemIds, ...payload]),
+		selectedItemIds: unique<number>([...state.selectedItemIds, ...payload])
 	})],
 	[ItemSelectionActionType.ITEM_SELECTION_REMOVE, (state, payload) => ({
 		...state,
-		selectedItemIds: state.selectedItemIds.filter(itemId => payload.indexOf(itemId) === -1),
+		selectedItemIds: state.selectedItemIds.filter(itemId => payload.indexOf(itemId) === -1)
 	})],
 	[ItemSelectionActionType.ITEM_SELECTION_SET_LAST, (state, payload) => ({
 		...state,
-		lastSelectedItemId: payload,
-	})],
-])
+		lastSelectedItemId: payload
+	})]
+]);
 
 
 // CONTEXT
@@ -58,16 +58,16 @@ const reducerConfigMap: ReducerConfigMap<ItemSelectionActionType, ItemSelectionS
 const [
 	stateContext,
 	dispatchContext
-] = buildContext<ItemSelectionActionType, ItemSelectionState>()
+] = buildContext<ItemSelectionActionType, ItemSelectionState>();
 
 export function ItemSelectionStateProvider(props: { children: any }) {
 	return GenericContextProvider(props.children, initialState, reducerConfigMap, stateContext, dispatchContext);
 }
 
 export function useItemSelectionContext(): IStateHookResultReadWrite<ItemSelectionState, ItemSelectionActionType> {
-	return useGlobalStateReadWrite<ItemSelectionState, ItemSelectionActionType>(stateContext, dispatchContext)
+	return useGlobalStateReadWrite<ItemSelectionState, ItemSelectionActionType>(stateContext, dispatchContext);
 }
 
 export function useItemSelectionDispatch(): IStateHookResultWriteOnly<ItemSelectionActionType> {
-	return useGlobalStateWriteOnly<ItemSelectionActionType>(dispatchContext)
+	return useGlobalStateWriteOnly<ItemSelectionActionType>(dispatchContext);
 }

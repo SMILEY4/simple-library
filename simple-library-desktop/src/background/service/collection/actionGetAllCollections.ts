@@ -40,7 +40,7 @@ export class ActionGetAllCollections {
 	}
 
 	private getFinalCount(collection: Collection): Promise<number> {
-		if (collection.type === CollectionType.SMART) {
+		if (collection.type === "smart") {
 			return this.getSmartItemCount(collection);
 		} else if (collection.itemCount) {
 			return Promise.resolve(collection.itemCount);
@@ -50,7 +50,7 @@ export class ActionGetAllCollections {
 	}
 
 	private getSmartItemCount(collection: Collection): Promise<number> {
-		if (collection.type === CollectionType.SMART) {
+		if (collection.type === "smart") {
 			const smartQuery: string = collection.smartQuery;
 			const sqlQuery: string = (smartQuery && smartQuery.trim().length > 0)
 				? SQL.queryItemCountByQuery(smartQuery.trim())

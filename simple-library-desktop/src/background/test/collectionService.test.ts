@@ -108,12 +108,12 @@ describe("collection-service", () => {
 				SQL.insertGroup("Group", null)
 			]);
 			// when
-			const result: Promise<Collection> = actionCreate.perform(CollectionType.NORMAL, "   My Collection", 1, "some query");
+			const result: Promise<Collection> = actionCreate.perform("normal", "   My Collection", 1, "some query");
 			// then
 			await expect(result).resolves.toStrictEqual({
 				id: 1,
 				name: "My Collection",
-				type: CollectionType.NORMAL,
+				type: "normal",
 				smartQuery: null,
 				itemCount: null,
 				groupId: 1
@@ -140,12 +140,12 @@ describe("collection-service", () => {
 				SQL.insertItem("/path/to/file/6", 1005, "hash6", "thumbnail6")
 			]);
 			// when
-			const result: Promise<Collection> = actionCreate.perform(CollectionType.SMART, "   My Collection", 1, "item_id <= 2");
+			const result: Promise<Collection> = actionCreate.perform("smart", "   My Collection", 1, "item_id <= 2");
 			// then
 			await expect(result).resolves.toStrictEqual({
 				id: 1,
 				name: "My Collection",
-				type: CollectionType.SMART,
+				type: "smart",
 				smartQuery: "item_id <= 2",
 				itemCount: null,
 				groupId: 1
@@ -153,7 +153,7 @@ describe("collection-service", () => {
 			await expect(actionGetAll.perform(true).then(c => c[0])).resolves.toStrictEqual({
 				id: 1,
 				name: "My Collection",
-				type: CollectionType.SMART,
+				type: "smart",
 				smartQuery: "item_id <= 2",
 				itemCount: 2,
 				groupId: 1
@@ -176,7 +176,7 @@ describe("collection-service", () => {
 				SQL.insertItem("/path/to/file/4", 1003, "hash4", "thumbnail4")
 			]);
 			// when
-			const result: Promise<Collection> = actionCreate.perform(CollectionType.SMART, "   My Collection", 1, "invalid <= 2");
+			const result: Promise<Collection> = actionCreate.perform("smart", "   My Collection", 1, "invalid <= 2");
 			// then
 			await expect(result).rejects.toBeDefined();
 			await expect(actionGetAll.perform(false)).resolves.toHaveLength(0);
@@ -312,7 +312,7 @@ describe("collection-service", () => {
 			await expect(actionGetById.perform(1)).resolves.toStrictEqual({
 				id: 1,
 				name: "New Name",
-				type: CollectionType.SMART,
+				type: "smart",
 				groupId: 1,
 				smartQuery: "item_id <= 2",
 				itemCount: null
@@ -336,7 +336,7 @@ describe("collection-service", () => {
 			await expect(actionGetById.perform(1)).resolves.toStrictEqual({
 				id: 1,
 				name: "Collection 1",
-				type: CollectionType.NORMAL,
+				type: "normal",
 				groupId: 1,
 				smartQuery: null,
 				itemCount: null
@@ -360,7 +360,7 @@ describe("collection-service", () => {
 			await expect(actionGetById.perform(1)).resolves.toStrictEqual({
 				id: 1,
 				name: "Collection 1",
-				type: CollectionType.SMART,
+				type: "smart",
 				groupId: 1,
 				smartQuery: null,
 				itemCount: null
@@ -400,7 +400,7 @@ describe("collection-service", () => {
 			await expect(actionGetById.perform(1)).resolves.toStrictEqual({
 				id: 1,
 				name: "Collection 1",
-				type: CollectionType.SMART,
+				type: "smart",
 				groupId: 1,
 				smartQuery: "item_id <= 2",
 				itemCount: null
@@ -431,7 +431,7 @@ describe("collection-service", () => {
 			await expect(actionGetById.perform(1)).resolves.toStrictEqual({
 				id: 1,
 				name: "Collection 1",
-				type: CollectionType.NORMAL,
+				type: "normal",
 				groupId: 2,
 				smartQuery: null,
 				itemCount: null

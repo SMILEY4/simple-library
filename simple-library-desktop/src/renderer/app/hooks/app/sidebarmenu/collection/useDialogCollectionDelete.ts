@@ -4,9 +4,9 @@ import {
 	useCollections,
 	useCollectionsState,
 } from "../../../base/collectionHooks";
-import {Collection} from "../../../../../../common/commonModels";
 import {useActiveCollectionState} from "../../../base/activeCollectionHooks";
 import {useItemSelection} from "../../../base/itemSelectionHooks";
+import {CollectionDTO} from "../../../../../../common/messaging/dtoModels";
 
 export function useDialogCollectionDeleteController(): [boolean, (id: number | null) => void, () => void, (number | null)] {
 
@@ -50,7 +50,7 @@ export function useDialogCollectionDelete(collectionId: number, onFinished: (del
 		clearSelection
 	} = useItemSelection()
 
-	const collection: Collection | null = findCollection(collectionId);
+	const collection: CollectionDTO | null = findCollection(collectionId);
 
 	function handleCancel() {
 		onFinished(false)

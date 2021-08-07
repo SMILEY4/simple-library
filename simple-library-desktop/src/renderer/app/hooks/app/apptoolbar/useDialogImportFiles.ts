@@ -3,12 +3,13 @@ import {useItems} from "../../base/itemHooks";
 import {useCollections} from "../../base/collectionHooks";
 import {useComplexValidatedState} from "../../../../components/utils/commonHooks";
 import {
-	ImportProcessData,
-	ImportTargetAction,
-	RenamePart,
-	RenamePartType,
 	renamePartTypeAllowsUserInput
-} from "../../../../../common/commonModels";
+} from "../../../common/utils";
+import {
+	ImportProcessDataDTO,
+	ImportTargetActionDTO, RenamePartDTO,
+	RenamePartTypeDTO
+} from "../../../../../common/messaging/dtoModels";
 
 export function useDialogImportFilesController(): [boolean, () => void, () => void] {
 	const [show, open, close] = useDialogController();
@@ -44,29 +45,29 @@ export function useDialogImportFiles(onClose: () => void) {
 		triggerDataValidation,
 		refData,
 		refDataValid
-	] = useComplexValidatedState<ImportProcessData, ImportValidationData>(getInitialData, getInitialValidationData(), validateData)
+	] = useComplexValidatedState<ImportProcessDataDTO, ImportValidationData>(getInitialData, getInitialValidationData(), validateData)
 
 
-	function getInitialData(): ImportProcessData {
+	function getInitialData(): ImportProcessDataDTO {
 		return {
 			files: [],
 			importTarget: {
-				action: ImportTargetAction.KEEP,
+				action: "keep",
 				targetDir: ""
 			},
 			renameInstructions: {
 				doRename: false,
 				parts: [
 					{
-						type: RenamePartType.NOTHING,
+						type: "nothing",
 						value: ""
 					},
 					{
-						type: RenamePartType.NOTHING,
+						type: "original_filename",
 						value: ""
 					},
 					{
-						type: RenamePartType.ORIGINAL_FILENAME,
+						type: "nothing",
 						value: ""
 					},
 				]
@@ -83,20 +84,20 @@ export function useDialogImportFiles(onClose: () => void) {
 		}
 	}
 
-	function validateData(data: ImportProcessData): ImportValidationData {
+	function validateData(data: ImportProcessDataDTO): ImportValidationData {
 		return {
 			validFiles: data.files.length > 0,
-			validTargetDir: data.importTarget.action === ImportTargetAction.KEEP ? true : data.importTarget.targetDir.length > 0,
-			validRenameTypes: data.renameInstructions.doRename ? data.renameInstructions.parts.some(p => p.type !== RenamePartType.NOTHING) : true,
+			validTargetDir: data.importTarget.action === "keep" ? true : data.importTarget.targetDir.length > 0,
+			validRenameTypes: data.renameInstructions.doRename ? data.renameInstructions.parts.some(p => p.type !== "nothing") : true,
 			validRenameParts: data.renameInstructions.doRename ? data.renameInstructions.parts.map(p => {
 				switch (p.type) {
-					case RenamePartType.NOTHING:
+					case "nothing":
 						return true;
-					case RenamePartType.TEXT:
+					case "text":
 						return !!p.value && p.value.trim().length > 0;
-					case RenamePartType.NUMBER_FROM:
+					case "number_from":
 						return !!p.value && p.value.trim().length > 0 && !isNaN(parseInt(p.value)) && parseInt(p.value) >= 0;
-					case RenamePartType.ORIGINAL_FILENAME:
+					case "original_filename":
 						return true;
 				}
 			}) : [true, true, true]
@@ -131,7 +132,7 @@ export function useDialogImportFiles(onClose: () => void) {
 		})
 	}
 
-	function handleSetTargetType(type: ImportTargetAction): void {
+	function handleSetTargetType(type: ImportTargetActionDTO): void {
 		setData({
 			files: data.files,
 			importTarget: {
@@ -164,8 +165,8 @@ export function useDialogImportFiles(onClose: () => void) {
 		})
 	}
 
-	function handleSetRenameType(index: number, type: RenamePartType): void {
-		const newParts: RenamePart[] = [...data.renameInstructions.parts]
+	function handleSetRenameType(index: number, type: RenamePartTypeDTO): void {
+		const newParts: RenamePartDTO[] = [...data.renameInstructions.parts]
 		newParts[index].type = type;
 		if (!renamePartTypeAllowsUserInput(type)) {
 			newParts[index].value = ""
@@ -182,7 +183,7 @@ export function useDialogImportFiles(onClose: () => void) {
 	}
 
 	function handleSetRenameValue(index: number, value: string): void {
-		const newParts: RenamePart[] = [...data.renameInstructions.parts]
+		const newParts: RenamePartDTO[] = [...data.renameInstructions.parts]
 		newParts[index].value = value;
 
 		setData({

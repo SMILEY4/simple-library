@@ -1,7 +1,7 @@
 import {DbAccess} from "../../persistence/dbAcces";
 import {ActionGetCollectionById} from "./actionGetCollectionById";
 import {Collection, CollectionType} from "./collectionCommons";
-import {voidThen} from "../../../common/AsyncCommon";
+import {voidThen} from "../../../common/utils";
 import {SQL} from "../../persistence/sqlHandler";
 
 /**
@@ -39,7 +39,7 @@ export class ActionEditCollection {
 	}
 
 	private validateEdit(collection: Collection, newSmartQuery: string | null): Collection | Promise<Collection> {
-		if (collection.type === CollectionType.SMART && newSmartQuery && newSmartQuery.trim().length > 0) {
+		if (collection.type === "smart" && newSmartQuery && newSmartQuery.trim().length > 0) {
 			return this.testExecSmartQuery(newSmartQuery)
 				.then(() => collection)
 				.catch(() => Promise.reject("Invalid custom query: " + newSmartQuery.trim()));
@@ -54,9 +54,9 @@ export class ActionEditCollection {
 
 	private editCollection(collection: Collection, newName: string, newSmartQuery: string | null): Promise<any> {
 		switch (collection.type) {
-			case CollectionType.NORMAL:
+			case "normal":
 				return this.editNormalCollection(collection, newName);
-			case CollectionType.SMART:
+			case "smart":
 				return this.editSmartCollection(collection, newName, newSmartQuery);
 		}
 	}

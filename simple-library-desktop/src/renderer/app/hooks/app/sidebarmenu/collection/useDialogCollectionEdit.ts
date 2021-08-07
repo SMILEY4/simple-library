@@ -1,11 +1,11 @@
 import {useDialogController} from "../../miscApplicationHooks";
 import {useState} from "react";
 import { useCollections, useCollectionsState,} from "../../../base/collectionHooks";
-import {Collection, CollectionType} from "../../../../../../common/commonModels";
 import {useStateRef, useValidatedState} from "../../../../../components/utils/commonHooks";
 import {useActiveCollectionState} from "../../../base/activeCollectionHooks";
 import {useItems} from "../../../base/itemHooks";
 import {useItemSelection} from "../../../base/itemSelectionHooks";
+import {CollectionDTO} from "../../../../../../common/messaging/dtoModels";
 
 export function useDialogCollectionEditController(): [boolean, (id: number | null) => void, () => void, (number | null)] {
 
@@ -51,7 +51,7 @@ export function useDialogCollectionEdit(collectionId: number, onClose: () => voi
 		clearSelection
 	} = useItemSelection()
 
-	const collection: Collection = findCollection(collectionId);
+	const collection: CollectionDTO = findCollection(collectionId);
 
 	const [
 		getName,
@@ -76,7 +76,7 @@ export function useDialogCollectionEdit(collectionId: number, onClose: () => voi
 
 	function handleEdit() {
 		if (triggerNameValidation()) {
-			editCollection(collectionId, getName(), collection.type === CollectionType.SMART ? refQuery.current : null)
+			editCollection(collectionId, getName(), collection.type === "smart" ? refQuery.current : null)
 				.then(() => loadGroups())
 				.then(() => {
 					if (activeCollectionId === collectionId) {
@@ -89,7 +89,7 @@ export function useDialogCollectionEdit(collectionId: number, onClose: () => voi
 	}
 
 	return {
-		isSmartCollection: collection.type === CollectionType.SMART,
+		isSmartCollection: collection.type === "smart",
 		getName: getName,
 		setName: setName,
 		isNameValid: isNameValid,

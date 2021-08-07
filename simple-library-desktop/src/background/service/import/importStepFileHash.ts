@@ -1,4 +1,3 @@
-import { doAsync, startAsync } from '../../../common/AsyncCommon';
 import { Hash } from 'crypto';
 import {FileSystemWrapper} from "../fileSystemWrapper";
 import {ItemData} from "./importService";
@@ -29,7 +28,7 @@ export class ImportStepFileHash {
 
 
     private computeHash(filepath: string): Promise<string> {
-        return startAsync()
+        return Promise.resolve()
             .then(() => console.log('start computing hash for file "' + filepath + '"'))
             .then(() => crypto.createHash("md5"))
             .then((hashFunction: Hash) => this.computeHashWithAlgorithm(filepath, hashFunction))
@@ -44,7 +43,7 @@ export class ImportStepFileHash {
 
 
     private computeHashWithAlgorithm(filepath: string, hashFunction: Hash): Promise<string> {
-        return doAsync((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             const rs = this.fsWrapper.createReadStream(filepath);
             rs.on('error', (err: Error) => {
                 console.log("error while computing hash for file " + filepath + ": " + err);

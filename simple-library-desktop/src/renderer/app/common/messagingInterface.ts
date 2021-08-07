@@ -1,14 +1,4 @@
 import {
-    CollectionType,
-    Group,
-    ImportProcessData,
-    ImportResult,
-    ImportStatus,
-    ItemData,
-    LastOpenedLibraryEntry,
-    MetadataEntry
-} from "../../../common/commonModels";
-import {
     CollectionCreateChannel,
     CollectionDeleteChannel,
     CollectionEditChannel,
@@ -19,7 +9,6 @@ import {
     ConfigGetThemeChannel,
     ConfigOpenChannel,
     ConfigSetThemeChannel,
-    GetExiftoolDataPayload,
     GroupCreateChannel,
     GroupDeleteChannel,
     GroupMoveChannel,
@@ -39,8 +28,19 @@ import {
     LibraryOpenChannel
 } from "../../../common/messaging/channels/channels";
 import {rendererIpcWrapper} from "../../../common/messaging/core/ipcWrapper";
+import {
+    AttributeDTO,
+    CollectionTypeDTO,
+    ExiftoolInfoDTO,
+    GroupDTO,
+    ImportProcessDataDTO,
+    ImportResultDTO,
+    ImportStatusDTO,
+    ItemDTO,
+    LastOpenedLibraryDTO
+} from "../../../common/messaging/dtoModels";
 
-const ipcWrapper = rendererIpcWrapper()
+const ipcWrapper = rendererIpcWrapper();
 
 const channelConfigOpenConfig = new ConfigOpenChannel(ipcWrapper, "r");
 const channelConfigGetExiftoolData = new ConfigGetExiftoolChannel(ipcWrapper, "r");
@@ -75,7 +75,7 @@ const channelCollectionsMoveItems = new CollectionMoveItemsChannel(ipcWrapper, "
 const channelCollectionsRemoveItems = new CollectionRemoveItemsChannel(ipcWrapper, "r");
 
 
-export function addImportStatusListener(listener: (status: ImportStatus) => void): void {
+export function addImportStatusListener(listener: (status: ImportStatusDTO) => void): void {
     channelItemsImportStatus.on(listener);
 }
 
@@ -83,7 +83,7 @@ export function removeImportStatusListener(): void {
     channelItemsImportStatus.on(null);
 }
 
-export function fetchLastOpenedLibraries(): Promise<LastOpenedLibraryEntry[]> {
+export function fetchLastOpenedLibraries(): Promise<LastOpenedLibraryDTO[]> {
     return channelLibraryGetLastOpened.send();
 }
 
@@ -95,15 +95,15 @@ export function requestCreateLibrary(name: string, targetDir: string): Promise<v
     return channelLibraryCreate.send({targetDir: targetDir, name: name});
 }
 
-export function fetchRootGroup(): Promise<Group> {
+export function fetchRootGroup(): Promise<GroupDTO> {
     return channelGroupsGetAll.send({includeItemCount: true, includeCollections: true});
 }
 
-export function fetchItems(collectionId: number, itemAttributeKeys: string[]): Promise<ItemData[]> {
+export function fetchItems(collectionId: number, itemAttributeKeys: string[]): Promise<ItemDTO[]> {
     return channelItemsGetByCollection.send({collectionId: collectionId, itemAttributeKeys: itemAttributeKeys});
 }
 
-export function fetchItemById(itemId: number): Promise<ItemData | null> {
+export function fetchItemById(itemId: number): Promise<ItemDTO | null> {
     return channelItemsGetById.send(itemId);
 }
 
@@ -127,22 +127,22 @@ export function requestDeleteItems(itemIds: number[]): Promise<void> {
 }
 
 
-export function fetchItemMetadata(itemId: number): Promise<MetadataEntry[]> {
+export function fetchItemMetadata(itemId: number): Promise<AttributeDTO[]> {
     return channelItemsGetMetadata.send(itemId);
 }
 
-export function setItemMetadata(itemId: number, entryKey: string, value: string): Promise<MetadataEntry> {
+export function setItemMetadata(itemId: number, entryKey: string, value: string): Promise<AttributeDTO> {
     return channelItemsSetMetadata.send({itemId: itemId, entryKey: entryKey, newValue: value});
 }
 
 export function requestImport(
-    data: ImportProcessData,
-    callbackSuccess: (result: ImportResult) => void,
-    callbackFailed: (result: ImportResult) => void,
-    callbackWithErrors: (result: ImportResult) => void
-): Promise<ImportResult> {
+    data: ImportProcessDataDTO,
+    callbackSuccess: (result: ImportResultDTO) => void,
+    callbackFailed: (result: ImportResultDTO) => void,
+    callbackWithErrors: (result: ImportResultDTO) => void
+): Promise<ImportResultDTO> {
     return channelItemsImport.send(data)
-        .then((result: ImportResult) => {
+        .then((result: ImportResultDTO) => {
             if (result.failed) {
                 callbackFailed(result);
             } else if (result.encounteredErrors) {
@@ -158,9 +158,12 @@ export function requestCloseLibrary(): Promise<void> {
     return channelLibraryClose.send();
 }
 
-export function requestCreateCollection(name: string, type: CollectionType, query: string | null, parentGroupId: number | null): Promise<void> {
+export function requestCreateCollection(name: string, type: CollectionTypeDTO, query: string | null, parentGroupId: number | null): Promise<void> {
     return channelCollectionsCreate.send({
-        name: name, type: type, parentGroupId: parentGroupId, smartQuery: type === CollectionType.SMART ? query : null
+        name: name,
+        type: type,
+        parentGroupId: parentGroupId,
+        smartQuery: type === "smart" ? query : null
     }).then();
 }
 
@@ -203,7 +206,7 @@ export function requestOpenConfigFile(): Promise<void> {
 
 export function fetchExiftoolData(): Promise<[string | null, boolean]> {
     return channelConfigGetExiftoolData.send()
-        .then((data: GetExiftoolDataPayload) => [data.location, data.defined]);
+        .then((data: ExiftoolInfoDTO) => [data.location, data.defined]);
 }
 
 export function setTheme(theme: "dark" | "light"): Promise<void> {

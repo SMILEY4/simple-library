@@ -3,26 +3,27 @@ import {ElementLabel} from "../../../../../components/misc/elementlabel/ElementL
 import {HBox, VBox} from "../../../../../components/layout/box/Box";
 import {CheckBox} from "../../../../../components/buttons/checkbox/CheckBox";
 import {ChoiceBox, ChoiceBoxItem} from "../../../../../components/buttons/choicebox/ChoiceBox";
-import {RenamePart, RenamePartType, renamePartTypeAllowsUserInput} from "../../../../../../common/commonModels";
+import {renamePartTypeAllowsUserInput} from "../../../../common/utils";
 import {TextField} from "../../../../../components/input/textfield/TextField";
 import {BaseElementFlat} from "../../../../../components/base/element/BaseElementFlat";
 import {Label} from "../../../../../components/base/label/Label";
+import {RenamePartDTO, RenamePartTypeDTO} from "../../../../../../common/messaging/dtoModels";
 
 const CB_ITEMS_RENAME_PART_TYPES: ChoiceBoxItem[] = [
 	{
-		id: RenamePartType.NOTHING,
+		id: "nothing",
 		text: "Nothing"
 	},
 	{
-		id: RenamePartType.TEXT,
+		id: "text",
 		text: "Text"
 	},
 	{
-		id: RenamePartType.NUMBER_FROM,
+		id: "number_from",
 		text: "Number from"
 	},
 	{
-		id: RenamePartType.ORIGINAL_FILENAME,
+		id: "original_filename",
 		text: "Filename"
 	},
 ]
@@ -31,13 +32,13 @@ interface ImportRenameFilesFormProps {
 	rename: boolean,
 	onRename: (rename: boolean) => void
 
-	renameParts: RenamePart[]
+	renameParts: RenamePartDTO[]
 	sampleFile: string | null,
 
 	errorTypes?: boolean,
 	errorValues?: boolean[]
 
-	onSelectType: (index: number, type: RenamePartType) => void,
+	onSelectType: (index: number, type: RenamePartTypeDTO) => void,
 	onChangeValue: (index: number, value: string) => void,
 	onSelectValue: (index: number, value: string) => void,
 
@@ -52,7 +53,7 @@ export function ImportRenameFilesForm(props: React.PropsWithChildren<ImportRenam
 				<CheckBox selected={props.rename} onToggle={props.onRename}>Rename Files</CheckBox>
 
 				<HBox>
-					{props.renameParts.map((part: RenamePart, index: number) => renderRenamePart(part, index))}
+					{props.renameParts.map((part: RenamePartDTO, index: number) => renderRenamePart(part, index))}
 				</HBox>
 
 				<ElementLabel text={"Preview:"}>
@@ -67,7 +68,7 @@ export function ImportRenameFilesForm(props: React.PropsWithChildren<ImportRenam
 		</BaseElementFlat>
 	);
 
-	function filenamePreview(renameParts: RenamePart[], index: number): string {
+	function filenamePreview(renameParts: RenamePartDTO[], index: number): string {
 		const orgFilename: string = props.sampleFile
 			? props.sampleFile.replace(/^.*[\\\/]/, "").split(".")[0]
 			: "filename"
@@ -77,15 +78,15 @@ export function ImportRenameFilesForm(props: React.PropsWithChildren<ImportRenam
 		let previewFilename: string = "";
 		renameParts.forEach(part => {
 			switch (part.type) {
-				case RenamePartType.NOTHING:
+				case "nothing":
 					break;
-				case RenamePartType.TEXT:
+				case "text":
 					previewFilename += part.value;
 					break;
-				case RenamePartType.NUMBER_FROM:
+				case "number_from":
 					previewFilename += isNaN(parseInt(part.value)) ? "" : parseInt(part.value) + index;
 					break;
-				case RenamePartType.ORIGINAL_FILENAME:
+				case "original_filename":
 					previewFilename += orgFilename;
 					break;
 
@@ -95,14 +96,14 @@ export function ImportRenameFilesForm(props: React.PropsWithChildren<ImportRenam
 	}
 
 
-	function renderRenamePart(part: RenamePart, index: number): ReactElement {
+	function renderRenamePart(part: RenamePartDTO, index: number): ReactElement {
 		const groupPos = index === 0 ? "left" : (index + 1 === props.renameParts.length ? "right" : "center")
 		return (
 			<VBox alignCross="stretch" key={index}>
 				<ChoiceBox
 					items={CB_ITEMS_RENAME_PART_TYPES}
 					selectedItemId={part.type}
-					onAction={(itemId: string) => props.onSelectType(index, idToType(itemId))}
+					onAction={(itemId: string) => props.onSelectType(index, itemId as RenamePartTypeDTO)}
 					disabled={!props.rename}
 					groupPos={groupPos}
 					error={props.errorTypes}
@@ -118,26 +119,6 @@ export function ImportRenameFilesForm(props: React.PropsWithChildren<ImportRenam
 				/>
 			</VBox>
 		)
-	}
-
-	function idToType(itemId: string): RenamePartType {
-		switch (itemId) {
-			case "" + RenamePartType.NOTHING: {
-				return RenamePartType.NOTHING
-			}
-			case "" + RenamePartType.TEXT: {
-				return RenamePartType.TEXT
-			}
-			case "" + RenamePartType.ORIGINAL_FILENAME: {
-				return RenamePartType.ORIGINAL_FILENAME
-			}
-			case "" + RenamePartType.NUMBER_FROM: {
-				return RenamePartType.NUMBER_FROM
-			}
-			default: {
-				return RenamePartType.NOTHING
-			}
-		}
 	}
 
 }

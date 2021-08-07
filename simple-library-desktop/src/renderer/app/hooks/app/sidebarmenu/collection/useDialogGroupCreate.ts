@@ -1,8 +1,8 @@
 import {useDialogController} from "../../miscApplicationHooks";
 import {useState} from "react";
 import {useCollections, useCollectionsState} from "../../../base/collectionHooks";
-import {Group} from "../../../../../../common/commonModels";
 import {useValidatedState} from "../../../../../components/utils/commonHooks";
+import {GroupDTO} from "../../../../../../common/messaging/dtoModels";
 
 export function useDialogGroupCreateController(): [boolean, (id: number | null) => void, () => void, (number | null)] {
 
@@ -40,7 +40,7 @@ export function useDialogGroupCreate(parentGroupId: number | null, onFinished: (
 		triggerNameValidation
 	] = useValidatedState("", true, validateName)
 
-	const parentGroup: Group | null = findGroup(parentGroupId)
+	const parentGroup: GroupDTO | null = findGroup(parentGroupId)
 
 	function validateName(newName: string): boolean {
 		return newName.trim().length > 0

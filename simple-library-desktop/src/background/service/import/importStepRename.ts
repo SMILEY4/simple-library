@@ -1,12 +1,5 @@
-import {
-    BulkRenameInstruction,
-    ImportFileTarget,
-    ImportTargetAction,
-    RenamePart,
-    RenamePartType
-} from "../../../common/commonModels";
 import path from "path";
-import {ItemData} from "./importService";
+import {BulkRenameInstruction, ImportFileTarget, ImportTargetAction, ItemData, RenamePart} from "./importService";
 
 export class ImportStepRename {
 
@@ -25,7 +18,7 @@ export class ImportStepRename {
     }
 
     private getTargetDir(action: ImportTargetAction, targetDir: string | null) {
-        return (action === ImportTargetAction.KEEP) ? null : targetDir;
+        return (action === "keep") ? null : targetDir;
     }
 
 
@@ -57,14 +50,15 @@ export class ImportStepRename {
 
     private static getFilenamePart(renamePart: RenamePart, filename: string, counter: number): string {
         switch (renamePart.type) {
-            case RenamePartType.NOTHING:
+            case "nothing":
                 return this.getFilenamePartNothing();
-            case RenamePartType.TEXT:
+            case "text":
                 return this.getFilenamePartText(renamePart);
-            case RenamePartType.NUMBER_FROM:
+            case "number_from":
                 return this.getFilenamePartNumberFrom(renamePart, counter);
-            case RenamePartType.ORIGINAL_FILENAME:
+            case "original_filename":
                 return this.getFilenamePartOriginalFilename(filename);
+
         }
     }
 

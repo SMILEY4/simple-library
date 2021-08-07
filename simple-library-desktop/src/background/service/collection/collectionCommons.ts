@@ -1,7 +1,6 @@
-export enum CollectionType {
-	NORMAL = "normal",
-	SMART = "smart"
-}
+
+export type CollectionType = "normal" | "smart";
+
 
 export interface Collection {
 	id: number,

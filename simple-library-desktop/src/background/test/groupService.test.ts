@@ -790,7 +790,7 @@ function collectionNormal(id: number, name: string, group: number | null, itemCo
 	return {
 		id: id,
 		name: name,
-		type: CollectionType.NORMAL,
+		type: "normal",
 		smartQuery: null,
 		itemCount: itemCount,
 		groupId: group
@@ -801,7 +801,7 @@ function collectionSmart(id: number, name: string, group: number | null, query: 
 	return {
 		id: id,
 		name: name,
-		type: CollectionType.SMART,
+		type: "smart",
 		smartQuery: query,
 		itemCount: itemCount,
 		groupId: group

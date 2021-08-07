@@ -2,8 +2,7 @@ import {DbAccess} from "../../persistence/dbAcces";
 import {SQL} from "../../persistence/sqlHandler";
 import {ActionGetCollectionById} from "../collection/actionGetCollectionById";
 import {Item, rowsToItems} from "./itemCommon";
-import {Collection} from "../../../common/commonModels";
-import {CollectionType} from "../collection/collectionCommons";
+import {Collection} from "../collection/collectionCommons";
 
 /**
  * Get all items of the given collection (with the attributes of the given keys)
@@ -38,9 +37,9 @@ export class ActionGetItemsByCollection {
 
 	private getItemData(collection: Collection, attributeKeys: string[]): Promise<any[]> {
 		switch (collection.type) {
-			case CollectionType.NORMAL:
+			case "normal":
 				return this.getItemDataFromNormal(collection, attributeKeys);
-			case CollectionType.SMART:
+			case "smart":
 				return this.getItemDataFromSmart(collection, attributeKeys);
 			default: {
 				throw "Unexpected collection type: " + collection.type;
