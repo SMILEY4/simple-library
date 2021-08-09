@@ -1,12 +1,13 @@
 import {
 	buildContext,
 	GenericContextProvider,
-	IStateHookResultReadWrite, IStateHookResultWriteOnly,
+	IStateHookResultReadWrite,
+	IStateHookResultWriteOnly,
 	ReducerConfigMap,
-	useGlobalStateReadWrite, useGlobalStateWriteOnly
+	useGlobalStateReadWrite,
+	useGlobalStateWriteOnly
 } from "../../components/utils/storeUtils";
 import React from "react";
-import {ItemSelectionState} from "./itemSelectionState";
 
 
 // STATE
@@ -45,7 +46,7 @@ export enum AppNotificationType {
 }
 
 const initialState: NotificationState = {
-	notifications: [],
+	notifications: []
 };
 
 
@@ -63,12 +64,12 @@ const reducerConfigMap: ReducerConfigMap<NotificationActionType, NotificationSta
 		notifications: [...state.notifications, {
 			id: payload.notificationId,
 			type: payload.notificationType,
-			data: payload.notificationData,
-		}],
+			data: payload.notificationData
+		}]
 	})],
 	[NotificationActionType.NOTIFICATIONS_REMOVE, (state, payload) => ({
 		...state,
-		notifications: state.notifications.filter((notification: AppNotification) => notification.id !== payload.notificationId),
+		notifications: state.notifications.filter((notification: AppNotification) => notification.id !== payload.notificationId)
 	})],
 	[NotificationActionType.NOTIFICATIONS_UPDATE, (state, payload) => ({
 		...state,
@@ -77,14 +78,14 @@ const reducerConfigMap: ReducerConfigMap<NotificationActionType, NotificationSta
 				return {
 					id: notification.id,
 					type: notification.type,
-					data: payload.notificationData,
+					data: payload.notificationData
 				};
 			} else {
 				return notification;
 			}
-		}),
-	})],
-])
+		})
+	})]
+]);
 
 
 // CONTEXT
@@ -92,17 +93,17 @@ const reducerConfigMap: ReducerConfigMap<NotificationActionType, NotificationSta
 const [
 	stateContext,
 	dispatchContext
-] = buildContext<NotificationActionType, NotificationState>()
+] = buildContext<NotificationActionType, NotificationState>();
 
 export function NotificationStateProvider(props: { children: any }) {
 	return GenericContextProvider(props.children, initialState, reducerConfigMap, stateContext, dispatchContext);
 }
 
 export function useNotificationContext(): IStateHookResultReadWrite<NotificationState, NotificationActionType> {
-	return useGlobalStateReadWrite<NotificationState, NotificationActionType>(stateContext, dispatchContext)
+	return useGlobalStateReadWrite<NotificationState, NotificationActionType>(stateContext, dispatchContext);
 }
 
 export function useNotificationDispatch(): IStateHookResultWriteOnly<NotificationActionType> {
-	return useGlobalStateWriteOnly<NotificationActionType>(dispatchContext)
+	return useGlobalStateWriteOnly<NotificationActionType>(dispatchContext);
 }
 

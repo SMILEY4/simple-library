@@ -5,10 +5,7 @@ import {
 	DragAndDropItems,
 	DragAndDropUtils
 } from "../../../../common/dragAndDrop";
-import {
-	useCollections,
-	useCollectionsState,
-} from "../../../base/collectionHooks";
+import {useCollections, useCollectionsState} from "../../../base/collectionHooks";
 import {useItems} from "../../../base/itemHooks";
 import {CollectionSidebarActionType, useCollectionSidebarState} from "../../../../store/collectionSidebarState";
 import {useMount} from "../../../../../components/utils/commonHooks";
@@ -16,20 +13,20 @@ import {useActiveCollectionState} from "../../../base/activeCollectionHooks";
 
 export function useCollectionSidebarUtils() {
 
-	const NODE_TYPE_COLLECTION = "collection"
-	const NODE_TYPE_GROUP = "group"
+	const NODE_TYPE_COLLECTION = "collection";
+	const NODE_TYPE_GROUP = "group";
 
 	function getNodeId(type: string, id: number): string {
-		return type + "." + id
+		return type + "." + id;
 	}
 
 	function getNodeType(nodeId: string): string {
-		return nodeId.substring(0, nodeId.indexOf("."))
+		return nodeId.substring(0, nodeId.indexOf("."));
 	}
 
 	function getNodeObjectId(nodeId: string): number | null {
 		const id = Number.parseInt(nodeId.substring(nodeId.indexOf(".") + 1, nodeId.length));
-		return Number.isNaN(id) ? null : id
+		return Number.isNaN(id) ? null : id;
 	}
 
 	return {
@@ -38,7 +35,7 @@ export function useCollectionSidebarUtils() {
 		getNodeId: getNodeId,
 		getNodeType: getNodeType,
 		getNodeObjectId: getNodeObjectId
-	}
+	};
 
 }
 
@@ -55,7 +52,7 @@ export function useCollectionSidebar() {
 	const [
 		sidebarState,
 		sidebarDispatch
-	] = useCollectionSidebarState()
+	] = useCollectionSidebarState();
 
 	const {
 		loadGroups,
@@ -65,7 +62,7 @@ export function useCollectionSidebar() {
 
 	const {
 		rootGroup,
-		findCollection,
+		findCollection
 	} = useCollectionsState();
 
 	const {
@@ -76,17 +73,17 @@ export function useCollectionSidebar() {
 	const {
 		loadItems,
 		moveOrCopyItems
-	} = useItems()
+	} = useItems();
 
 	useMount(() => {
-		loadGroups()
-	})
+		loadGroups();
+	});
 
 	function toggleExpandNode(nodeId: string, expanded: boolean) {
 		if (expanded) {
 			sidebarDispatch({
 				type: CollectionSidebarActionType.COLLECTION_SIDEBAR_EXPANDED_ADD,
-				payload: nodeId,
+				payload: nodeId
 			});
 		} else {
 			sidebarDispatch({
@@ -99,11 +96,11 @@ export function useCollectionSidebar() {
 	function handleDragStart(nodeId: string, event: React.DragEvent): void {
 		switch (getNodeType(nodeId)) {
 			case NODE_TYPE_GROUP: {
-				DragAndDropGroups.setDragData(event.dataTransfer, getNodeObjectId(nodeId))
+				DragAndDropGroups.setDragData(event.dataTransfer, getNodeObjectId(nodeId));
 				break;
 			}
 			case NODE_TYPE_COLLECTION: {
-				DragAndDropCollections.setDragData(event.dataTransfer, getNodeObjectId(nodeId))
+				DragAndDropCollections.setDragData(event.dataTransfer, getNodeObjectId(nodeId));
 				break;
 			}
 		}
@@ -111,7 +108,7 @@ export function useCollectionSidebar() {
 
 	function handleDragOver(nodeId: string, event: React.DragEvent): void {
 		const targetType: string = getNodeType(nodeId);
-		const targetId: number | null = getNodeObjectId(nodeId)
+		const targetId: number | null = getNodeObjectId(nodeId);
 		const sourceMetadataMimeType: string = DragAndDropUtils.getMetadataMimeType(event.dataTransfer);
 
 		switch (targetType) {
@@ -139,7 +136,7 @@ export function useCollectionSidebar() {
 				switch (sourceMetadataMimeType) {
 					case DragAndDropItems.META_MIME_TYPE: {
 						// drag 'items' over a 'collection'
-						DragAndDropItems.setDropEffect(event.dataTransfer, findCollection(targetId))
+						DragAndDropItems.setDropEffect(event.dataTransfer, findCollection(targetId));
 						break;
 					}
 					default: {
@@ -154,7 +151,7 @@ export function useCollectionSidebar() {
 
 	function handleDrop(nodeId: string, event: React.DragEvent): void {
 		const targetType: string = getNodeType(nodeId);
-		const targetId: number | null = getNodeObjectId(nodeId)
+		const targetId: number | null = getNodeObjectId(nodeId);
 		const sourceMetadataMimeType: string = DragAndDropUtils.getMetadataMimeType(event.dataTransfer);
 
 		switch (targetType) {
@@ -163,7 +160,7 @@ export function useCollectionSidebar() {
 					case DragAndDropGroups.META_MIME_TYPE: {
 						// drop a 'group' on a 'group'
 						const dropData: DragAndDropGroups.Data = DragAndDropGroups.getDragData(event.dataTransfer);
-						moveGroup(dropData.groupId, targetId)
+						moveGroup(dropData.groupId, targetId);
 						break;
 					}
 					case DragAndDropCollections.META_MIME_TYPE: {
@@ -184,10 +181,10 @@ export function useCollectionSidebar() {
 				switch (sourceMetadataMimeType) {
 					case DragAndDropItems.META_MIME_TYPE: {
 						// drop 'items' on a 'collection'
-						const dropData: DragAndDropItems.Data = DragAndDropItems.getDragData(event.dataTransfer)
+						const dropData: DragAndDropItems.Data = DragAndDropItems.getDragData(event.dataTransfer);
 						moveOrCopyItems(dropData.sourceCollectionId, targetId, dropData.itemIds, dropData.copy)
 							.then(() => loadItems(activeCollectionId))
-							.then(() => loadGroups())
+							.then(() => loadGroups());
 						break;
 					}
 					default: {
@@ -202,11 +199,11 @@ export function useCollectionSidebar() {
 
 	function handleDoubleClick(nodeId: string) {
 		if (getNodeType(nodeId) === NODE_TYPE_COLLECTION) {
-			const collectionId: number = getNodeObjectId(nodeId)
-			openCollection(collectionId)
-			loadItems(collectionId)
+			const collectionId: number = getNodeObjectId(nodeId);
+			openCollection(collectionId);
+			loadItems(collectionId);
 		} else {
-			console.error("Double-Click on unexpected element:", nodeId)
+			console.error("Double-Click on unexpected element:", nodeId);
 		}
 	}
 
@@ -218,7 +215,7 @@ export function useCollectionSidebar() {
 		dragStart: handleDragStart,
 		dragOver: handleDragOver,
 		drop: handleDrop,
-		handleDoubleClick: handleDoubleClick,
-	}
+		handleDoubleClick: handleDoubleClick
+	};
 
 }

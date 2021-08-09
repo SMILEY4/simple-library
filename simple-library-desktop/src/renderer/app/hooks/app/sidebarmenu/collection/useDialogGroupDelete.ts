@@ -1,8 +1,8 @@
 import {useDialogController} from "../../miscApplicationHooks";
 import {useState} from "react";
 import {useCollections, useCollectionsState} from "../../../base/collectionHooks";
-import {Group} from "../../../../../../common/commonModels";
 import {useStateRef} from "../../../../../components/utils/commonHooks";
+import {GroupDTO} from "../../../../../../common/messaging/dtoModels";
 
 export function useDialogGroupDeleteController(): [boolean, (id: number | null) => void, () => void, (number | null)] {
 
@@ -38,7 +38,7 @@ export function useDialogGroupDelete(groupId: number, onFinished: (deleted: bool
 
 	const [keepContent, setKeepContent, refKeepContent] = useStateRef(false)
 
-	const group: Group | null = findGroup(groupId);
+	const group: GroupDTO | null = findGroup(groupId);
 
 	function handleCancel() {
 		onFinished(false)

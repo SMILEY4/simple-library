@@ -1,7 +1,7 @@
 import * as React from "react";
 import {ReactElement, useState} from "react";
 import {Theme} from "../../app/Application";
-import "./showcase.css"
+import "./showcase.css";
 import {ShowcaseSection} from "./ShowcaseSection";
 import {BaseElementRaised} from "../base/element/BaseElementRaised";
 import {BaseElementFlat} from "../base/element/BaseElementFlat";
@@ -15,7 +15,7 @@ import {Box, HBox, VBox} from "../layout/box/Box";
 import {HSplitPane, SLOT_DIVIDER, VSplitPane} from "../layout/splitpane/SplitPane";
 import {SplitPanePanel} from "../layout/splitpane/SplitPanePanel";
 import {Divider} from "../layout/splitpane/Divider";
-import {MenuButton} from "../buttons/menubutton/MenuButton"
+import {MenuButton} from "../buttons/menubutton/MenuButton";
 import {Menu} from "../menu/menu/Menu";
 import {MenuItem} from "../menu/menuitem/MenuItem";
 import {SubMenuItem} from "../menu/submenu/SubMenuItem";
@@ -38,7 +38,6 @@ import {SidebarItem} from "../misc/sidebar/item/SidebarItem";
 import {SidebarSeparator} from "../misc/sidebar/separator/SidebarSeparator";
 import {SidebarGroup} from "../misc/sidebar/group/SidebarGroup";
 import {SidebarTextField} from "../misc/sidebar/textfield/SidebarTextField";
-import {SetApplicationTheme} from "../../../common/messaging/messagesWindow";
 import {SidebarSection} from "../misc/sidebar/section/SidebarSection";
 import {SidebarFooter} from "../misc/sidebar/footer/SidebarFooter";
 import {AppLayout} from "../misc/app/AppLayout";
@@ -51,8 +50,10 @@ import {Toolbar} from "../misc/toolbar/Toolbar";
 import {Spacer} from "../base/spacer/Spacer";
 import {Accordion} from "../misc/accordion/Accordion";
 import {ToggleTextField} from "../input/textfield/ToggleTextField";
+import {ConfigSetThemeChannel} from "../../../common/messaging/channels/channels";
+import {rendererIpcWrapper} from "../../../common/messaging/core/ipcWrapper";
 
-const {ipcRenderer} = window.require('electron');
+const channelSetTheme = new ConfigSetThemeChannel(rendererIpcWrapper(), "r");
 
 interface ComponentShowcaseProps {
 	theme: Theme,
@@ -68,15 +69,11 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 
 			<div className={"showcase-header"}>
 				<div onClick={() => {
-					SetApplicationTheme.request(ipcRenderer, "dark").then(() => {
-						props.onChangeTheme(Theme.DARK);
-					})
+					channelSetTheme.send("dark").then(() => props.onChangeTheme(Theme.DARK));
 				}}>Dark
 				</div>
 				<div onClick={() => {
-					SetApplicationTheme.request(ipcRenderer, "light").then(() => {
-						props.onChangeTheme(Theme.LIGHT);
-					})
+					channelSetTheme.send("light").then(() => props.onChangeTheme(Theme.DARK));
 				}}>Light
 				</div>
 				<div onClick={() => setBackground("0")}>BG-0</div>
@@ -126,7 +123,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 				fillWidth
 			/>
 
-		</ShowcaseSection>
+		</ShowcaseSection>;
 	}
 
 
@@ -136,7 +133,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 				style={{
 					width: "100%",
 					height: "400px",
-					border: "1px solid black",
+					border: "1px solid black"
 				}}
 				spacing="0-5"
 				padding="0-5"
@@ -199,7 +196,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 
 
 			</VBox>
-		</ShowcaseSection>
+		</ShowcaseSection>;
 	}
 
 	function renderDragAndDrop() {
@@ -216,7 +213,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 				}}
 				draggable
 				onDragStart={(e: React.DragEvent) => {
-					e.dataTransfer.setData("application/json", JSON.stringify({value: "Hello"}))
+					e.dataTransfer.setData("application/json", JSON.stringify({value: "Hello"}));
 				}}
 			>
 				Drag Me!
@@ -232,18 +229,18 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 					alignItems: "center"
 				}}
 				onDragOver={(e: React.DragEvent) => {
-					e.preventDefault()
-					e.dataTransfer.dropEffect = "copy"
+					e.preventDefault();
+					e.dataTransfer.dropEffect = "copy";
 				}}
 				onDrop={(e: React.DragEvent) => {
-					e.preventDefault()
-					console.log("drop", e.dataTransfer.getData("application/json"))
+					e.preventDefault();
+					console.log("drop", e.dataTransfer.getData("application/json"));
 				}}
 			>
 				Drag Here!
 			</div>
 
-		</ShowcaseSection>
+		</ShowcaseSection>;
 	}
 
 
@@ -268,7 +265,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 
 			</div>
 
-		</ShowcaseSection>
+		</ShowcaseSection>;
 	}
 
 
@@ -307,7 +304,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 				<IconButton label="Exit" icon={IconType.CLOSE} large variant="warn"/>
 			</div>
 
-		</ShowcaseSection>
+		</ShowcaseSection>;
 	}
 
 	function renderTreeView() {
@@ -348,7 +345,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 				</TreeView>
 
 			</div>
-		</ShowcaseSection>
+		</ShowcaseSection>;
 	}
 
 
@@ -358,9 +355,9 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 
 		function handleToggleExpand(nodeId: string, isExpanded: boolean) {
 			if (isExpanded) {
-				setExpanded([...expanded, nodeId])
+				setExpanded([...expanded, nodeId]);
 			} else {
-				setExpanded(expanded.filter(expandedId => expandedId !== nodeId))
+				setExpanded(expanded.filter(expandedId => expandedId !== nodeId));
 			}
 		}
 
@@ -470,7 +467,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 					</Slot>
 				</AppLayout>
 			</div>
-		</ShowcaseSection>
+		</ShowcaseSection>;
 	}
 
 
@@ -484,13 +481,13 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 				width: "100%",
 				height: "400px",
 				border: "1px solid black",
-				position: "relative",
+				position: "relative"
 			}}>
 				<VSplitPane
 					primaryAsPercentage={false}
 					primaryCollapsed={isMini}
 					onResize={(size: number) => setMini(size && size <= 60)}
-					style={{width: "100%", height: "100%",}}
+					style={{width: "100%", height: "100%"}}
 				>
 					<SplitPanePanel initialSize={"100px"} minSize={"42px"}>
 
@@ -554,23 +551,23 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 			</div>
 
 
-		</ShowcaseSection>
+		</ShowcaseSection>;
 	}
 
 
 	function renderNotificationStack() {
 
-		const [notifications, setNotifications] = useState([])
-		const [notificationIdCounter, setNotificationIdCounter] = useState(0)
+		const [notifications, setNotifications] = useState([]);
+		const [notificationIdCounter, setNotificationIdCounter] = useState(0);
 
 		return <ShowcaseSection title={"NotificationStack"}>
 
 			<Button onAction={() => {
 				setNotifications([...notifications, {
 					id: notificationIdCounter,
-					type: chooseRandom(["info", "success", "warn", "error"]),
-				}])
-				setNotificationIdCounter(notificationIdCounter + 1)
+					type: chooseRandom(["info", "success", "warn", "error"])
+				}]);
+				setNotificationIdCounter(notificationIdCounter + 1);
 			}}>
 				Add Notification
 			</Button>
@@ -594,7 +591,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 				}
 			</NotificationStack>
 
-		</ShowcaseSection>
+		</ShowcaseSection>;
 	}
 
 
@@ -637,7 +634,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 				<li>...and more</li>
 			</Notification>
 
-		</ShowcaseSection>
+		</ShowcaseSection>;
 	}
 
 
@@ -676,7 +673,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 				</Slot>
 			</Dialog>
 
-		</ShowcaseSection>
+		</ShowcaseSection>;
 	}
 
 
@@ -742,7 +739,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 				</Badge>
 			</div>
 
-		</ShowcaseSection>
+		</ShowcaseSection>;
 	}
 
 
@@ -769,14 +766,14 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 				</Slot>
 			</Card>
 
-		</ShowcaseSection>
+		</ShowcaseSection>;
 	}
 
 
 	function renderTextArea() {
 		return <ShowcaseSection title={"TextArea"}>
 			<TextArea placeholder={"TextArea"}/>
-		</ShowcaseSection>
+		</ShowcaseSection>;
 	}
 
 
@@ -804,7 +801,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 			</HBox>
 
 
-		</ShowcaseSection>
+		</ShowcaseSection>;
 	}
 
 
@@ -851,7 +848,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 
 			<ChoiceBox items={items} dynamicSize/>
 
-		</ShowcaseSection>
+		</ShowcaseSection>;
 	}
 
 
@@ -882,7 +879,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 				</SelectionDisplay>
 			</BaseElementFlat>
 
-		</ShowcaseSection>
+		</ShowcaseSection>;
 	}
 
 
@@ -912,7 +909,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 					</Menu>
 				</Slot>
 			</ContextMenuWrapper>
-		</ShowcaseSection>
+		</ShowcaseSection>;
 	}
 
 
@@ -947,7 +944,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 				</Slot>
 			</MenuButton>
 
-		</ShowcaseSection>
+		</ShowcaseSection>;
 
 	}
 
@@ -958,11 +955,11 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 				width: "100%",
 				height: "100px",
 				border: "1px solid black",
-				position: "relative",
+				position: "relative"
 			}}>
 				<VSplitPane
 					primaryAsPercentage={false}
-					style={{width: "100%", height: "100%",}}
+					style={{width: "100%", height: "100%"}}
 				>
 					<SplitPanePanel initialSize={"100px"} minSize={"30%"}>
 						<div style={{backgroundColor: "#ff8585", width: "100%", height: "100%"}}/>
@@ -977,11 +974,11 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 				width: "100%",
 				height: "100px",
 				border: "1px solid black",
-				position: "relative",
+				position: "relative"
 			}}>
 				<VSplitPane
 					primaryAsPercentage={true}
-					style={{width: "100%", height: "100%",}}
+					style={{width: "100%", height: "100%"}}
 				>
 					<SplitPanePanel initialSize={"100px"} minSize={"40px"}>
 						<div style={{backgroundColor: "#ff8585", width: "100%", height: "100%"}}/>
@@ -996,11 +993,11 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 				width: "100%",
 				height: "100px",
 				border: "1px solid black",
-				position: "relative",
+				position: "relative"
 			}}>
 				<HSplitPane
 					primaryAsPercentage={false}
-					style={{width: "100%", height: "100%",}}
+					style={{width: "100%", height: "100%"}}
 				>
 					<SplitPanePanel initialSize={"60px"} minSize={"40px"}>
 						<div style={{backgroundColor: "#ff8585", width: "100%", height: "100%"}}/>
@@ -1016,11 +1013,11 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 				width: "100%",
 				height: "100px",
 				border: "1px solid black",
-				position: "relative",
+				position: "relative"
 			}}>
 				<VSplitPane
 					primaryAsPercentage={false}
-					style={{width: "100%", height: "100%",}}
+					style={{width: "100%", height: "100%"}}
 				>
 
 					<SplitPanePanel initialSize={"60px"} minSize={"40px"}>
@@ -1030,7 +1027,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 					<SplitPanePanel initialSize={"100%"} minSize={"40px"}>
 						<VSplitPane
 							primaryAsPercentage={false}
-							style={{width: "100%", height: "100%",}}
+							style={{width: "100%", height: "100%"}}
 						>
 							<SplitPanePanel initialSize={"100%"}>
 								<div style={{backgroundColor: "#85bcff", width: "100%", height: "100%"}}/>
@@ -1049,9 +1046,9 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 				width: "100%",
 				height: "100px",
 				border: "1px solid black",
-				position: "relative",
+				position: "relative"
 			}}>
-				<VSplitPane style={{width: "100%", height: "100%",}}>
+				<VSplitPane style={{width: "100%", height: "100%"}}>
 					<Slot name={SLOT_DIVIDER}>
 						<Divider style={{
 							minWidth: "10px",
@@ -1068,7 +1065,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 					</SplitPanePanel>
 				</VSplitPane>
 			</div>
-		</ShowcaseSection>
+		</ShowcaseSection>;
 	}
 
 
@@ -1146,7 +1143,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 			</div>
 
 
-		</ShowcaseSection>
+		</ShowcaseSection>;
 	}
 
 
@@ -1178,7 +1175,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 				<CheckBox forceState selected>Forced Checkbox</CheckBox>
 			</div>
 
-		</ShowcaseSection>
+		</ShowcaseSection>;
 	}
 
 
@@ -1231,7 +1228,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 			</div>
 
 
-		</ShowcaseSection>
+		</ShowcaseSection>;
 	}
 
 
@@ -1249,7 +1246,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 				<Icon type={IconType.HOME}/>
 				Invalid Label Box
 			</LabelBox>
-		</ShowcaseSection>
+		</ShowcaseSection>;
 	}
 
 
@@ -1322,7 +1319,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 				<Label overflow="cutoff"><Icon type={IconType.HOME}/>Dont wrap long text, cut off overflow</Label>
 			</BaseElementFlat>
 
-		</ShowcaseSection>
+		</ShowcaseSection>;
 	}
 
 
@@ -1359,7 +1356,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 				<Icon type={IconType.HOME} size="2"/>
 				<Icon type={IconType.HOME} size="3"/>
 			</div>
-		</ShowcaseSection>
+		</ShowcaseSection>;
 	}
 
 
@@ -1418,7 +1415,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 				<BaseElementRaised interactive groupPos="right" style={{padding: "7px"}}>Right</BaseElementRaised>
 			</div>
 
-		</ShowcaseSection>
+		</ShowcaseSection>;
 	}
 
 
@@ -1427,7 +1424,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 			<div style={{
 				minWidth: width + "px",
 				minHeight: height + "px",
-				backgroundColor: "gray",
+				backgroundColor: "gray"
 			}}/>
 		);
 	}

@@ -1,3 +1,12 @@
+# Documentations
+
+ - Electron: https://www.electronjs.org/docs
+ - React: https://reactjs.org/docs
+ - SQLite: https://github.com/mapbox/node-sqlite3/wiki
+ - electron-better-ipc: https://github.com/sindresorhus/electron-better-ipc
+ - Jest: https://jestjs.io/
+ - original boilerplate: https://github.com/abbl/electron-typescript-react-typeorm-sqlite-boilerplate
+
 # Commands
 
     npm start

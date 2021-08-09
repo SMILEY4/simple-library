@@ -6,8 +6,6 @@ import {
 	useGlobalStateReadWrite, useGlobalStateWriteOnly
 } from "../../components/utils/storeUtils";
 import React from "react";
-import {CollectionActiveActionType} from "./collectionActiveState";
-import {ItemSelectionState} from "./itemSelectionState";
 
 
 // STATE

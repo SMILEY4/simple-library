@@ -1,0 +1,69 @@
+import {Collection, CollectionType, rowsToCollections} from "./collectionCommons";
+import {DbAccess} from "../../persistence/dbAcces";
+import {SQL} from "../../persistence/sqlHandler";
+
+
+/**
+ * Get all collections, optionally with item count
+ */
+export class ActionGetAllCollections {
+
+	private readonly dbAccess: DbAccess;
+
+	constructor(dbAccess: DbAccess) {
+		this.dbAccess = dbAccess;
+	}
+
+	public perform(includeItemCount: boolean): Promise<Collection[]> {
+		if (includeItemCount) {
+			return this.getAllWithCounts().then(collections => this.enrichWithFinalCounts(collections));
+		} else {
+			return this.getAll();
+		}
+	}
+
+	private getAllWithCounts(): Promise<Collection[]> {
+		return this.dbAccess.queryAll(SQL.queryAllCollectionsWithItemCount())
+			.then(rowsToCollections);
+	}
+
+	private getAll(): Promise<Collection[]> {
+		return this.dbAccess.queryAll(SQL.queryAllCollections())
+			.then(rowsToCollections);
+	}
+
+	private async enrichWithFinalCounts(collections: Collection[]) {
+		for (let i = 0; i < collections.length; i++) {
+			collections[i].itemCount = await this.getFinalCount(collections[i]);
+		}
+		return collections;
+	}
+
+	private getFinalCount(collection: Collection): Promise<number> {
+		if (collection.type === "smart") {
+			return this.getSmartItemCount(collection);
+		} else if (collection.itemCount) {
+			return Promise.resolve(collection.itemCount);
+		} else {
+			return Promise.resolve(0);
+		}
+	}
+
+	private getSmartItemCount(collection: Collection): Promise<number> {
+		if (collection.type === "smart") {
+			const smartQuery: string = collection.smartQuery;
+			const sqlQuery: string = (smartQuery && smartQuery.trim().length > 0)
+				? SQL.queryItemCountByQuery(smartQuery.trim())
+				: SQL.queryItemCountTotal();
+			return this.dbAccess.querySingle(sqlQuery)
+				.then(this.rowToCount);
+		} else {
+			return Promise.resolve(0);
+		}
+	}
+
+	private rowToCount(row: any | null): number {
+		return row ? row.count : 0;
+	}
+
+}

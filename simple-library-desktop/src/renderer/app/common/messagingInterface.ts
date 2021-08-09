@@ -1,128 +1,148 @@
 import {
-    CollectionType,
-    Group,
-    ImportProcessData,
-    ImportResult,
-    ImportStatus,
-    ItemData,
-    LastOpenedLibraryEntry,
-    MetadataEntry,
-} from '../../../common/commonModels';
+    CollectionCreateChannel,
+    CollectionDeleteChannel,
+    CollectionEditChannel,
+    CollectionMoveChannel,
+    CollectionMoveItemsChannel,
+    CollectionRemoveItemsChannel,
+    ConfigGetExiftoolChannel,
+    ConfigGetThemeChannel,
+    ConfigOpenChannel,
+    ConfigSetThemeChannel,
+    GroupCreateChannel,
+    GroupDeleteChannel,
+    GroupMoveChannel,
+    GroupRenameChannel,
+    GroupsGetTreeChannel,
+    ItemGetByIdChannel,
+    ItemGetMetadataChannel,
+    ItemsDeleteChannel,
+    ItemSetMetadataChannel,
+    ItemsGetByCollectionChannel,
+    ItemsImportChannel,
+    ItemsImportStatusChannel,
+    ItemsOpenExternalChannel,
+    LibrariesGetLastOpenedChannel,
+    LibraryCloseChannel,
+    LibraryCreateChannel,
+    LibraryOpenChannel
+} from "../../../common/messaging/channels/channels";
+import {rendererIpcWrapper} from "../../../common/messaging/core/ipcWrapper";
 import {
-    CreateGroupMessage,
-    DeleteGroupMessage,
-    GetGroupsMessage,
-    MoveGroupMessage,
-    RenameGroupMessage,
-} from '../../../common/messaging/messagesGroups';
-import {
-    DeleteItemsMessage, GetItemByIdMessage,
-    GetItemMetadataMessage,
-    GetItemsMessage,
-    ImportItemsMessage,
-    ImportStatusUpdateCommand,
-    OpenItemsExternalMessage, SetItemMetadataMessage,
-} from '../../../common/messaging/messagesItems';
-import {
-    CreateCollectionMessage,
-    DeleteCollectionMessage,
-    EditCollectionMessage,
-    MoveCollectionMessage,
-    MoveItemsToCollectionsMessage,
-    RemoveItemsFromCollectionsMessage,
-} from '../../../common/messaging/messagesCollections';
-import {
-    CloseLibraryMessage,
-    CreateLibraryMessage,
-    GetLastOpenedLibrariesMessage,
-    OpenLibraryMessage
-} from '../../../common/messaging/messagesLibrary';
-import {GetExiftoolDataMessage, OpenConfigFileMessage} from "../../../common/messaging/messagesApplication";
+    AttributeDTO,
+    CollectionTypeDTO,
+    ExiftoolInfoDTO,
+    GroupDTO,
+    ImportProcessDataDTO,
+    ImportResultDTO,
+    ImportStatusDTO,
+    ItemDTO,
+    LastOpenedLibraryDTO
+} from "../../../common/messaging/dtoModels";
 
-const {ipcRenderer} = window.require('electron');
+const ipcWrapper = rendererIpcWrapper();
 
-export function fetchLastOpenedLibraries(): Promise<LastOpenedLibraryEntry[]> {
-    return GetLastOpenedLibrariesMessage.request(ipcRenderer)
-        .then((response: GetLastOpenedLibrariesMessage.ResponsePayload) => response.lastOpened);
+const channelConfigOpenConfig = new ConfigOpenChannel(ipcWrapper, "r");
+const channelConfigGetExiftoolData = new ConfigGetExiftoolChannel(ipcWrapper, "r");
+const channelConfigGetTheme = new ConfigGetThemeChannel(ipcWrapper, "r");
+const channelConfigSetTheme = new ConfigSetThemeChannel(ipcWrapper, "r");
+
+const channelLibraryGetLastOpened = new LibrariesGetLastOpenedChannel(ipcWrapper, "r");
+const channelLibraryCreate = new LibraryCreateChannel(ipcWrapper, "r");
+const channelLibraryOpen = new LibraryOpenChannel(ipcWrapper, "r");
+const channelLibraryClose = new LibraryCloseChannel(ipcWrapper, "r");
+
+const channelItemsGetByCollection = new ItemsGetByCollectionChannel(ipcWrapper, "r");
+const channelItemsGetById = new ItemGetByIdChannel(ipcWrapper, "r");
+const channelItemsDelete = new ItemsDeleteChannel(ipcWrapper, "r");
+const channelItemsImport = new ItemsImportChannel(ipcWrapper, "r");
+const channelItemsImportStatus = new ItemsImportStatusChannel(ipcWrapper, "r");
+const channelItemsGetMetadata = new ItemGetMetadataChannel(ipcWrapper, "r");
+const channelItemsSetMetadata = new ItemSetMetadataChannel(ipcWrapper, "r");
+const channelItemsOpenExternal = new ItemsOpenExternalChannel(ipcWrapper, "r");
+
+const channelGroupsGetAll = new GroupsGetTreeChannel(ipcWrapper, "r");
+const channelGroupsCreate = new GroupCreateChannel(ipcWrapper, "r");
+const channelGroupsDelete = new GroupDeleteChannel(ipcWrapper, "r");
+const channelGroupsRename = new GroupRenameChannel(ipcWrapper, "r");
+const channelGroupsMove = new GroupMoveChannel(ipcWrapper, "r");
+
+const channelCollectionsCreate = new CollectionCreateChannel(ipcWrapper, "r");
+const channelCollectionsDelete = new CollectionDeleteChannel(ipcWrapper, "r");
+const channelCollectionsEdit = new CollectionEditChannel(ipcWrapper, "r");
+const channelCollectionsMove = new CollectionMoveChannel(ipcWrapper, "r");
+const channelCollectionsMoveItems = new CollectionMoveItemsChannel(ipcWrapper, "r");
+const channelCollectionsRemoveItems = new CollectionRemoveItemsChannel(ipcWrapper, "r");
+
+
+export function addImportStatusListener(listener: (status: ImportStatusDTO) => void): void {
+    channelItemsImportStatus.on(listener);
+}
+
+export function removeImportStatusListener(): void {
+    channelItemsImportStatus.on(null);
+}
+
+export function fetchLastOpenedLibraries(): Promise<LastOpenedLibraryDTO[]> {
+    return channelLibraryGetLastOpened.send();
 }
 
 export function requestOpenLibrary(filepath: string): Promise<void> {
-    return OpenLibraryMessage.request(ipcRenderer, {path: filepath}).then();
+    return channelLibraryOpen.send(filepath);
 }
 
 export function requestCreateLibrary(name: string, targetDir: string): Promise<void> {
-    return CreateLibraryMessage.request(ipcRenderer, {targetDir: targetDir, name: name}).then()
+    return channelLibraryCreate.send({targetDir: targetDir, name: name});
 }
 
-export function fetchRootGroup(): Promise<Group> {
-    return GetGroupsMessage.request(ipcRenderer, {
-        includeCollections: true,
-        includeItemCount: true,
-    }).then((response: GetGroupsMessage.ResponsePayload) => response.groups[0]);
+export function fetchRootGroup(): Promise<GroupDTO> {
+    return channelGroupsGetAll.send({includeItemCount: true, includeCollections: true});
 }
 
-
-export function fetchItems(collectionId: number, itemAttributeKeys: string[]): Promise<ItemData[]> {
-    return GetItemsMessage.request(ipcRenderer, {
-        collectionId: collectionId,
-        itemAttributeKeys: itemAttributeKeys
-    }).then((response: GetItemsMessage.ResponsePayload) => response.items);
+export function fetchItems(collectionId: number, itemAttributeKeys: string[]): Promise<ItemDTO[]> {
+    return channelItemsGetByCollection.send({collectionId: collectionId, itemAttributeKeys: itemAttributeKeys});
 }
 
-export function fetchItemById(itemId: number): Promise<ItemData | null> {
-    return GetItemByIdMessage.request(ipcRenderer, {
-        itemId: itemId
-    }).then((response: GetItemByIdMessage.ResponsePayload) => response.item);
+export function fetchItemById(itemId: number): Promise<ItemDTO | null> {
+    return channelItemsGetById.send(itemId);
 }
 
 export function requestMoveItems(srcCollectionId: number, tgtCollectionId: number, itemIds: number[], copy: boolean): Promise<void> {
-    return MoveItemsToCollectionsMessage.request(ipcRenderer, {
+    return channelCollectionsMoveItems.send({
         sourceCollectionId: srcCollectionId,
         targetCollectionId: tgtCollectionId,
         itemIds: itemIds,
-        copy: copy,
-    }).then();
+        copy: copy
+    });
 }
 
 
 export function requestRemoveItems(collectionId: number, itemIds: number[]): Promise<void> {
-    return RemoveItemsFromCollectionsMessage.request(ipcRenderer, {
-        collectionId: collectionId,
-        itemIds: itemIds,
-    }).then();
+    return channelCollectionsRemoveItems.send({collectionId: collectionId, itemIds: itemIds});
 }
 
 
 export function requestDeleteItems(itemIds: number[]): Promise<void> {
-    return DeleteItemsMessage.request(ipcRenderer, {
-        itemIds: itemIds,
-    }).then();
+    return channelItemsDelete.send(itemIds);
 }
 
 
-export function fetchItemMetadata(itemId: number): Promise<MetadataEntry[]> {
-    return GetItemMetadataMessage.request(ipcRenderer, {
-        itemId: itemId
-    }).then((response: GetItemMetadataMessage.ResponsePayload) => response.metadataEntries);
+export function fetchItemMetadata(itemId: number): Promise<AttributeDTO[]> {
+    return channelItemsGetMetadata.send(itemId);
 }
 
-export function setItemMetadata(itemId: number, entryKey: string, value: string): Promise<MetadataEntry> {
-    return SetItemMetadataMessage.request(ipcRenderer, {
-        itemId: itemId,
-        entryKey: entryKey,
-        newValue: value
-    }).then((response: SetItemMetadataMessage.ResponsePayload) => response.metadataEntry);
+export function setItemMetadata(itemId: number, entryKey: string, value: string): Promise<AttributeDTO> {
+    return channelItemsSetMetadata.send({itemId: itemId, entryKey: entryKey, newValue: value});
 }
 
-export function requestImport(data: ImportProcessData,
-                              callbackSuccess: (result: ImportResult) => void,
-                              callbackFailed: (result: ImportResult) => void,
-                              callbackWithErrors: (result: ImportResult) => void): Promise<ImportResult> {
-    return ImportItemsMessage.request(ipcRenderer, {
-        data: data,
-    })
-        .then((resp: ImportItemsMessage.ResponsePayload) => resp.result)
-        .then((result: ImportResult) => {
+export function requestImport(
+    data: ImportProcessDataDTO,
+    callbackSuccess: (result: ImportResultDTO) => void,
+    callbackFailed: (result: ImportResultDTO) => void,
+    callbackWithErrors: (result: ImportResultDTO) => void
+): Promise<ImportResultDTO> {
+    return channelItemsImport.send(data)
+        .then((result: ImportResultDTO) => {
             if (result.failed) {
                 callbackFailed(result);
             } else if (result.encounteredErrors) {
@@ -134,91 +154,65 @@ export function requestImport(data: ImportProcessData,
         });
 }
 
-
-export function onImportStatusCommands(onStatus: (status: ImportStatus) => void) {
-    ImportStatusUpdateCommand.on(ipcRenderer, (status: ImportStatus) => {
-        onStatus(status);
-    });
-}
-
-
 export function requestCloseLibrary(): Promise<void> {
-    return CloseLibraryMessage.request(ipcRenderer).then();
+    return channelLibraryClose.send();
 }
 
-
-export function requestCreateCollection(name: string, type: CollectionType, query: string | null, parentGroupId: number | null): Promise<void> {
-    return CreateCollectionMessage.request(ipcRenderer, {
+export function requestCreateCollection(name: string, type: CollectionTypeDTO, query: string | null, parentGroupId: number | null): Promise<void> {
+    return channelCollectionsCreate.send({
         name: name,
         type: type,
-        smartQuery: type === CollectionType.SMART ? query : null,
         parentGroupId: parentGroupId,
+        smartQuery: type === "smart" ? query : null
     }).then();
 }
 
-
 export function requestEditCollection(collectionId: number, name: string, query: string | null): Promise<void> {
-    return EditCollectionMessage.request(ipcRenderer, {
-        collectionId: collectionId,
-        newName: name,
-        newSmartQuery: query,
-    }).then();
+    return channelCollectionsEdit.send({collectionId: collectionId, newName: name, newSmartQuery: query});
 }
 
 export function requestDeleteCollection(collectionId: number): Promise<void> {
-    return DeleteCollectionMessage.request(ipcRenderer, {
-        collectionId: collectionId,
-    }).then();
+    return channelCollectionsDelete.send(collectionId);
 }
 
 export function requestCreateGroup(name: string, parentGroupId: number | null): Promise<void> {
-    return CreateGroupMessage.request(ipcRenderer, {
-        name: name,
-        parentGroupId: parentGroupId,
-    }).then();
+    return channelGroupsCreate.send({name: name, parentGroupId: parentGroupId}).then();
 }
 
-
 export function requestRenameGroup(groupId: number, name: string): Promise<void> {
-    return RenameGroupMessage.request(ipcRenderer, {
-        groupId: groupId,
-        newName: name,
-    }).then();
+    return channelGroupsRename.send({groupId: groupId, newName: name});
 }
 
 export function requestDeleteGroup(groupId: number, deleteChildren: boolean): Promise<void> {
-    return DeleteGroupMessage.request(ipcRenderer, {
-        groupId: groupId,
-        deleteChildren: deleteChildren,
-    }).then();
+    return channelGroupsDelete.send({groupId: groupId, deleteChildren: deleteChildren});
 }
 
 export function requestMoveGroup(groupId: number, targetGroupId: number | null): Promise<void> {
-    return MoveGroupMessage.request(ipcRenderer, {
-        groupId: groupId,
-        targetGroupId: targetGroupId,
-    }).then();
+    return channelGroupsMove.send({groupId: groupId, targetGroupId: targetGroupId});
 }
 
-
 export function requestMoveCollection(collectionId: number, targetGroupId: number | null): Promise<void> {
-    return MoveCollectionMessage.request(ipcRenderer, {
-        collectionId: collectionId,
-        targetGroupId: targetGroupId,
-    }).then();
+    return channelCollectionsMove.send({collectionId: collectionId, targetGroupId: targetGroupId});
 }
 
 export function requestOpenItemsExternal(itemIds: number[]): Promise<void> {
-    return OpenItemsExternalMessage.request(ipcRenderer, {
-        itemIds: itemIds
-    }).then();
+    return channelItemsOpenExternal.send(itemIds);
 }
 
 export function requestOpenConfigFile(): Promise<void> {
-    return OpenConfigFileMessage.request(ipcRenderer, {}).then();
+    console.log("request open config");
+    return channelConfigOpenConfig.send();
 }
 
 export function fetchExiftoolData(): Promise<[string | null, boolean]> {
-    return GetExiftoolDataMessage.request(ipcRenderer, {})
-        .then((response: GetExiftoolDataMessage.ResponsePayload) => [response.location, response.defined]);
+    return channelConfigGetExiftoolData.send()
+        .then((data: ExiftoolInfoDTO) => [data.location, data.defined]);
+}
+
+export function setTheme(theme: "dark" | "light"): Promise<void> {
+    return channelConfigSetTheme.send(theme);
+}
+
+export function getTheme(): Promise<"dark" | "light"> {
+    return channelConfigGetTheme.send();
 }

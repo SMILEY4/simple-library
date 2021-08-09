@@ -3,8 +3,7 @@
  * => ALL FIELDS/MODELS MUST BE LOWERCASE
  */
 
-import { Collection, CollectionType, Group } from '../../../common/commonModels';
-import { collectAllDependants } from 'ts-loader/dist/utils';
+import {CollectionDTO, GroupDTO} from "../../../common/messaging/dtoModels";
 
 export const META_MIME_TYPE_PREFIX = "custom/";
 
@@ -60,10 +59,10 @@ export module DragAndDropItems {
         return META_MIME_TYPE + ";meta=" + JSON.stringify(meta);
     }
 
-    export function setDropEffect(dataTransfer: DataTransfer, collectionOver: Collection | null): void {
+    export function setDropEffect(dataTransfer: DataTransfer, collectionOver: CollectionDTO | null): void {
         const meta: DragAndDropItems.Metadata | null = DragAndDropUtils.extractMimeTypeProvidedMetadata(dataTransfer, META_MIME_TYPE);
         let mode: string;
-        if (!meta || !collectionOver || meta.sourcecollection === collectionOver.id || collectionOver.type === CollectionType.SMART) {
+        if (!meta || !collectionOver || meta.sourcecollection === collectionOver.id || collectionOver.type === "smart") {
             mode = "none";
         } else {
             if (meta.copy) {
@@ -162,7 +161,7 @@ export module DragAndDropGroups {
         return META_MIME_TYPE + ";meta=" + JSON.stringify(meta);
     }
 
-    export function setDropEffect(dataTransfer: DataTransfer, targetGroupId: number, rootGroup: Group): void {
+    export function setDropEffect(dataTransfer: DataTransfer, targetGroupId: number, rootGroup: GroupDTO): void {
         const meta: DragAndDropGroups.Metadata | null = DragAndDropUtils.extractMimeTypeProvidedMetadata(dataTransfer, META_MIME_TYPE);
         let mode: string;
         if (!meta) {
@@ -178,7 +177,7 @@ export module DragAndDropGroups {
         dataTransfer.dropEffect = mode;
     }
 
-    export function allowDrop(draggedGroupId: number, targetGroupId: number, rootGroup: Group): boolean {
+    export function allowDrop(draggedGroupId: number, targetGroupId: number, rootGroup: GroupDTO): boolean {
         if (draggedGroupId === targetGroupId) {
             return false;
         } else {
@@ -187,21 +186,21 @@ export module DragAndDropGroups {
 
     }
 
-    function findSubtreeRoot(root: Group, groupId: number): Group | undefined {
+    function findSubtreeRoot(root: GroupDTO, groupId: number): GroupDTO | undefined {
         if (root.id === groupId) {
             return root;
         } else {
             return root.children
-                .map((subtree: Group) => findSubtreeRoot(subtree, groupId))
-                .find((group: Group) => group !== undefined);
+                .map((subtree: GroupDTO) => findSubtreeRoot(subtree, groupId))
+                .find((group: GroupDTO) => group !== undefined);
         }
     }
 
-    function subtreeContainsGroup(root: Group, groupId: number): boolean {
+    function subtreeContainsGroup(root: GroupDTO, groupId: number): boolean {
         if (root.id === groupId) {
             return true;
         } else {
-            return root.children.some((subtree: Group) => subtreeContainsGroup(subtree, groupId));
+            return root.children.some((subtree: GroupDTO) => subtreeContainsGroup(subtree, groupId));
         }
     }
 

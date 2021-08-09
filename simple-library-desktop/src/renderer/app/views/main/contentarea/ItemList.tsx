@@ -1,7 +1,6 @@
 import React from "react";
 import {VBox} from "../../../../components/layout/box/Box";
 import {ItemListEntry} from "./ItemListEntry";
-import {Collection, CollectionType, ItemData} from "../../../../../common/commonModels";
 import {useItemList} from "../../../hooks/app/contentarea/useItemList";
 import {ContextMenuBase} from "../../../../components/menu/contextmenu/ContextMenuBase";
 import {APP_ROOT_ID} from "../../../Application";
@@ -10,9 +9,10 @@ import {useContextMenu} from "../../../../components/menu/contextmenu/contextMen
 import {SelectModifier} from "../../../../components/utils/common";
 import {useDialogItemsDeleteController} from "../../../hooks/app/contentarea/useDialogItemsDelete";
 import {DialogDeleteItems} from "./DialogDeleteItems";
+import {CollectionDTO, ItemDTO} from "../../../../../common/messaging/dtoModels";
 
 interface ItemListProps {
-	activeCollection: Collection
+	activeCollection: CollectionDTO
 }
 
 export const MemoizedItemList = React.memo(ItemList,
@@ -64,7 +64,7 @@ export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.R
 				focusable
 				onKeyDown={handleOnKeyDown}
 			>
-				{items && items.map((itemData: ItemData) => <ItemListEntry
+				{items && items.map((itemData: ItemDTO) => <ItemListEntry
 					key={itemData.id}
 					item={itemData}
 					activeCollectionType={props.activeCollection ? props.activeCollection.type : undefined}
@@ -85,7 +85,7 @@ export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.R
 				onRequestClose={closeContextMenu}
 			>
 				<ItemListEntryContextMenu
-					canRemove={props.activeCollection.type !== CollectionType.SMART}
+					canRemove={props.activeCollection.type !== "smart"}
 					onRemove={handleRemoveSelectedItems}
 					onDelete={() => openDeleteItems(itemIdsSelected)}
 					onOpen={openSelectedItemsExternal}

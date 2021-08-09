@@ -2,7 +2,6 @@ import React from "react";
 import {SidebarTab} from "../../../../components/misc/app/AppLayout";
 import {IconType} from "../../../../components/base/icon/Icon";
 import {TreeView, TreeViewNode} from "../../../../components/misc/tree/TreeView";
-import {Collection, CollectionType, Group} from "../../../../../common/commonModels";
 import {DynamicSlot} from "../../../../components/base/slot/DynamicSlot";
 import {ContextMenuCollection} from "./contextmenues/ContextMenuCollection";
 import {ContextMenuGroup} from "./contextmenues/ContextMenuGroup";
@@ -20,6 +19,7 @@ import {useDialogCollectionEditController} from "../../../hooks/app/sidebarmenu/
 import {useDialogGroupDeleteController} from "../../../hooks/app/sidebarmenu/collection/useDialogGroupDelete";
 import {useDialogGroupEditController} from "../../../hooks/app/sidebarmenu/collection/useDialogGroupEdit";
 import {useDialogGroupCreateController} from "../../../hooks/app/sidebarmenu/collection/useDialogGroupCreate";
+import {CollectionDTO, GroupDTO} from "../../../../../common/messaging/dtoModels";
 
 export const TAB_DATA_COLLECTIONS: SidebarTab = {
 	id: "tab-collections",
@@ -183,11 +183,11 @@ export function CollectionSidebar(props: React.PropsWithChildren<CollectionSideb
 		</>
 	) : null
 
-	function buildTree(group: Group): TreeViewNode {
+	function buildTree(group: GroupDTO): TreeViewNode {
 		return buildGroupTreeNode(group, true);
 	}
 
-	function buildGroupTreeNode(group: Group, isRoot: boolean): TreeViewNode {
+	function buildGroupTreeNode(group: GroupDTO, isRoot: boolean): TreeViewNode {
 		return {
 			id: getNodeId(NODE_TYPE_GROUP, group.id),
 			value: isRoot ? "Collections" : group.name,
@@ -197,20 +197,20 @@ export function CollectionSidebar(props: React.PropsWithChildren<CollectionSideb
 			isLeaf: false,
 			children: [
 				...group.children
-					.sort((a: Group, b: Group) => a.name.localeCompare(b.name))
+					.sort((a: GroupDTO, b: GroupDTO) => a.name.localeCompare(b.name))
 					.map(g => buildGroupTreeNode(g, false)),
 				...group.collections
-					.sort((a: Collection, b: Collection) => a.name.localeCompare(b.name))
+					.sort((a: CollectionDTO, b: CollectionDTO) => a.name.localeCompare(b.name))
 					.map(buildCollectionTreeNode)
 			]
 		}
 	}
 
-	function buildCollectionTreeNode(collection: Collection): TreeViewNode {
+	function buildCollectionTreeNode(collection: CollectionDTO): TreeViewNode {
 		return {
 			id: getNodeId(NODE_TYPE_COLLECTION, collection.id),
 			value: collection.name,
-			icon: collection.type === CollectionType.SMART ? IconType.COLLECTIONS_SMART : IconType.COLLECTION,
+			icon: collection.type === "smart" ? IconType.COLLECTIONS_SMART : IconType.COLLECTION,
 			label: "" + collection.itemCount,
 			draggable: true,
 			droppable: true,

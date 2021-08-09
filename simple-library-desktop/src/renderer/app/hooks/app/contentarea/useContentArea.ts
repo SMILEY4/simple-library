@@ -1,6 +1,6 @@
 import { useCollectionsState} from "../../base/collectionHooks";
-import {Collection} from "../../../../../common/commonModels";
 import {useActiveCollectionState} from "../../base/activeCollectionHooks";
+import {CollectionDTO} from "../../../../../common/messaging/dtoModels";
 
 export function useContentArea() {
 
@@ -13,7 +13,7 @@ export function useContentArea() {
 	} = useCollectionsState();
 
 
-	const activeCollection: Collection | null = findCollection(activeCollectionId);
+	const activeCollection: CollectionDTO | null = findCollection(activeCollectionId);
 
 	return {
 		activeCollection: activeCollection

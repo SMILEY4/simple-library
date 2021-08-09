@@ -1,8 +1,8 @@
 import {useDialogController} from "../../miscApplicationHooks";
 import {useState} from "react";
 import {useCollections, useCollectionsState} from "../../../base/collectionHooks";
-import {CollectionType, Group} from "../../../../../../common/commonModels";
 import {useStateRef, useValidatedState} from "../../../../../components/utils/commonHooks";
+import {CollectionTypeDTO, GroupDTO} from "../../../../../../common/messaging/dtoModels";
 
 export function useDialogCollectionCreateController(): [boolean, (id: number | null) => void, () => void, (number | null)] {
 
@@ -35,7 +35,7 @@ export function useDialogCollectionCreate(parentGroupId: number | null, onFinish
 	} = useCollectionsState();
 
 
-	const parentGroup: Group | null = findGroup(parentGroupId)
+	const parentGroup: GroupDTO | null = findGroup(parentGroupId)
 
 	const [
 		getName,
@@ -48,7 +48,7 @@ export function useDialogCollectionCreate(parentGroupId: number | null, onFinish
 		type,
 		setType,
 		refType
-	] = useStateRef<string>("" + CollectionType.NORMAL)
+	] = useStateRef<CollectionTypeDTO>("normal")
 
 	const [
 		query,
@@ -66,21 +66,10 @@ export function useDialogCollectionCreate(parentGroupId: number | null, onFinish
 
 	function handleCreate() {
 		if (triggerNameValidation()) {
-			createCollection(parentGroupId, getName(), stringToCollectionType(refType.current), refQuery.current)
+			createCollection(parentGroupId, getName(), refType.current, refQuery.current)
 				.catch(() => onFinished(false))
 				.then(() => loadGroups())
 				.then(() => onFinished(true))
-		}
-	}
-
-	function stringToCollectionType(strType: string): CollectionType {
-		switch (strType) {
-			case "" + CollectionType.NORMAL: {
-				return CollectionType.NORMAL
-			}
-			case "" + CollectionType.SMART: {
-				return CollectionType.SMART
-			}
 		}
 	}
 
@@ -88,7 +77,7 @@ export function useDialogCollectionCreate(parentGroupId: number | null, onFinish
 		parentName: parentGroup ? parentGroup.name : null,
 		setName: setName,
 		isNameValid: isNameValid,
-		getType: () => stringToCollectionType(type),
+		getType: () => type,
 		setType: setType,
 		getQuery: () => refQuery.current,
 		setQuery: setQuery,

@@ -5,12 +5,12 @@ import {Slot} from "../../../../../components/base/slot/Slot";
 import {HBox, VBox} from "../../../../../components/layout/box/Box";
 import {Button} from "../../../../../components/buttons/button/Button";
 import {TextField} from "../../../../../components/input/textfield/TextField";
-import {CollectionType} from "../../../../../../common/commonModels";
 import {Spacer} from "../../../../../components/base/spacer/Spacer";
 import {TextArea} from "../../../../../components/input/textarea/TextArea";
 import {ChoiceBox, ChoiceBoxItem} from "../../../../../components/buttons/choicebox/ChoiceBox";
 import {ElementLabel} from "../../../../../components/misc/elementlabel/ElementLabel";
 import {useDialogCollectionCreate} from "../../../../hooks/app/sidebarmenu/collection/useDialogCollectionCreate";
+import {CollectionTypeDTO} from "../../../../../../common/messaging/dtoModels";
 
 interface DialogCreateCollectionProps {
 	parentGroupId: number | null,
@@ -21,11 +21,11 @@ export function DialogCreateCollection(props: React.PropsWithChildren<DialogCrea
 
 	const CB_ITEMS_TYPE: ChoiceBoxItem[] = [
 		{
-			id: CollectionType.NORMAL,
+			id: "normal",
 			text: "Normal"
 		},
 		{
-			id: CollectionType.SMART,
+			id: "smart",
 			text: "Smart"
 		}
 	]
@@ -76,16 +76,16 @@ export function DialogCreateCollection(props: React.PropsWithChildren<DialogCrea
 						<ChoiceBox
 							items={CB_ITEMS_TYPE}
 							selectedItemId={getType()}
-							onAction={setType}
+							onAction={v => setType(v as CollectionTypeDTO)}
 						/>
 					</HBox>
-					<ElementLabel text="Smart-Collection Query:" disabled={getType() !== CollectionType.SMART}>
+					<ElementLabel text="Smart-Collection Query:" disabled={getType() !== "smart"}>
 						<TextArea
 							value={getQuery()}
 							cols={30}
 							rows={4}
 							placeholder={"Empty to select all"}
-							disabled={getType() !== CollectionType.SMART}
+							disabled={getType() !== "smart"}
 							resize="none"
 							onAccept={setQuery}
 						/>

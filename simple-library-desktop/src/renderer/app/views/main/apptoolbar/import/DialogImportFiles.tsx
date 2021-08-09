@@ -8,6 +8,7 @@ import {ImportSelectFilesForm} from "./ImportSelectFilesForm";
 import {ImportTargetDirForm} from "./ImportTargetDirForm";
 import {ImportRenameFilesForm} from "./ImportRenameFilesForm";
 import {useDialogImportFiles} from "../../../../hooks/app/apptoolbar/useDialogImportFiles";
+import {ImportTargetActionDTO} from "../../../../../../common/messaging/dtoModels";
 
 interface DialogImportFilesProps {
 	onClose: () => void,

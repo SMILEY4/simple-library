@@ -1,12 +1,12 @@
 import React from "react";
 import {HBox, VBox} from "../../../../components/layout/box/Box";
-import {CollectionType, ItemData, MetadataEntry} from "../../../../../common/commonModels";
 import {concatClasses, getIf, getSelectModifier, SelectModifier} from "../../../../components/utils/common";
 import "./listItemEntry.css"
+import {AttributeDTO, CollectionTypeDTO, ItemDTO} from "../../../../../common/messaging/dtoModels";
 
 interface ItemListEntryProps {
-	item: ItemData,
-	activeCollectionType: CollectionType,
+	item: ItemDTO,
+	activeCollectionType: CollectionTypeDTO,
 	selected: boolean,
 	onSelect: (itemId: number, selectMod: SelectModifier) => void,
 	onOpen: (itemId: number) => void,
@@ -36,7 +36,7 @@ export function ItemListEntry(props: React.PropsWithChildren<ItemListEntryProps>
 				<VBox padding="1" spacing="0-5" alignMain="center" alignCross="start">
 					<li>{props.item.id}</li>
 					<li>{props.item.filepath}</li>
-					{props.item.metadataEntries.map((entry: MetadataEntry) => {
+					{props.item.attributes.map((entry: AttributeDTO) => {
 						return <li>{entry.key + ":" + entry.type + " = " + entry.value}</li>
 					})}
 				</VBox>

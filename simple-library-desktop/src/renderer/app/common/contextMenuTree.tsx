@@ -1,26 +1,26 @@
-import { Collection, Group } from '../../../common/commonModels';
-import * as React from 'react';
-import { ReactElement } from 'react';
-import { Item, ItemParams, Separator, Submenu } from 'react-contexify';
-import { BiImages, HiOutlineFolder } from 'react-icons/all';
-import { BooleanPredicate } from 'react-contexify/src/types/index';
+import * as React from "react";
+import {ReactElement} from "react";
+import {Item, ItemParams, Separator, Submenu} from "react-contexify";
+import {BiImages, HiOutlineFolder} from "react-icons/all";
+import {BooleanPredicate} from "react-contexify/src/types/index";
+import {CollectionDTO, GroupDTO} from "../../../common/messaging/dtoModels";
 
 
-export function contextMenuTree(group: Group,
+export function contextMenuTree(group: GroupDTO,
                                 rootLabel: string | null,
-                                onAction: (collection: Collection, data: ItemParams) => void,
-                                collectionFilter: (collection: Collection) => boolean): ReactElement {
+                                onAction: (collection: CollectionDTO, data: ItemParams) => void,
+                                collectionFilter: (collection: CollectionDTO) => boolean): ReactElement {
     if (group && hasCollectionsInSubtree(group)) {
         return (
             <Submenu label={
                 rootLabel
                     ? rootLabel
-                    : [<HiOutlineFolder style={{ paddingRight: "var(--s-0-25)" }} />, group.name]
+                    : [<HiOutlineFolder style={{paddingRight: "var(--s-0-25)"}}/>, group.name]
             }>
                 {[
-                    ...group.collections.filter(collectionFilter).map((collection: Collection) => collectionItem(collection, onAction)),
+                    ...group.collections.filter(collectionFilter).map((collection: CollectionDTO) => collectionItem(collection, onAction)),
                     treeSeparator(group, collectionFilter),
-                    ...group.children.map((group: Group) => contextMenuTree(group, null, onAction, collectionFilter)),
+                    ...group.children.map((group: GroupDTO) => contextMenuTree(group, null, onAction, collectionFilter))
                 ]}
             </Submenu>
         );
@@ -29,10 +29,10 @@ export function contextMenuTree(group: Group,
     }
 }
 
-export function contextMenuGroupTree(group: Group,
+export function contextMenuGroupTree(group: GroupDTO,
                                      rootLabel: string | null,
                                      includeNoneGroup: boolean,
-                                     onAction: (group: Group, data: ItemParams) => void,
+                                     onAction: (group: GroupDTO, data: ItemParams) => void,
                                      disabled?: BooleanPredicate): ReactElement {
     if (group && group.children.length > 0) {
         return (
@@ -40,15 +40,15 @@ export function contextMenuGroupTree(group: Group,
                 label={
                     rootLabel
                         ? rootLabel
-                        : [<HiOutlineFolder style={{ paddingRight: "var(--s-0-25)" }} />, group.name]
+                        : [<HiOutlineFolder style={{paddingRight: "var(--s-0-25)"}}/>, group.name]
                 }
                 disabled={disabled}
             >
                 {[
                     (includeNoneGroup ? groupItem(noneGroup(), onAction) : null),
-                    ...group.children.map((group: Group) => groupItem(group, onAction)),
+                    ...group.children.map((group: GroupDTO) => groupItem(group, onAction)),
                     groupTreeSeparator(group),
-                    ...group.children.map((group: Group) => contextMenuGroupTree(group, null, false, onAction)),
+                    ...group.children.map((group: GroupDTO) => contextMenuGroupTree(group, null, false, onAction))
                 ]}
             </Submenu>
         );
@@ -57,37 +57,37 @@ export function contextMenuGroupTree(group: Group,
     }
 }
 
-function treeSeparator(group: Group, collectionFilter: ((collection: Collection) => boolean) | undefined) {
-    return group.collections.filter((c:Collection) => collectionFilter ? collectionFilter(c) : true).length > 0 && group.children.length > 0
-        ? <Separator />
+function treeSeparator(group: GroupDTO, collectionFilter: ((collection: CollectionDTO) => boolean) | undefined) {
+    return group.collections.filter((c: CollectionDTO) => collectionFilter ? collectionFilter(c) : true).length > 0 && group.children.length > 0
+        ? <Separator/>
         : null;
 }
 
-function groupTreeSeparator(group: Group) {
+function groupTreeSeparator(group: GroupDTO) {
     return group.children.length > 0 && group.children.some(c => c.children.length > 0)
-        ? <Separator />
+        ? <Separator/>
         : null;
 }
 
-function collectionItem(collection: Collection, onAction: (collection: Collection, data: ItemParams) => void): ReactElement {
+function collectionItem(collection: CollectionDTO, onAction: (collection: CollectionDTO, data: ItemParams) => void): ReactElement {
     return (
         <Item onClick={(data: ItemParams) => onAction(collection, data)} key={collection.id}>
-            <BiImages style={{ paddingRight: "var(--s-0-25)" }} />
+            <BiImages style={{paddingRight: "var(--s-0-25)"}}/>
             {collection.name}
         </Item>
     );
 }
 
-function groupItem(group: Group | null, onAction: (group: Group, data: ItemParams) => void): ReactElement {
+function groupItem(group: GroupDTO | null, onAction: (group: GroupDTO, data: ItemParams) => void): ReactElement {
     return (
         <Item onClick={(data: ItemParams) => onAction(group, data)} key={group.id}>
-            <HiOutlineFolder style={{ paddingRight: "var(--s-0-25)" }} />
+            <HiOutlineFolder style={{paddingRight: "var(--s-0-25)"}}/>
             {group.name}
         </Item>
     );
 }
 
-function hasCollectionsInSubtree(group: Group): boolean {
+function hasCollectionsInSubtree(group: GroupDTO): boolean {
     if (group.collections.length > 0) {
         return true;
     } else {
@@ -95,11 +95,12 @@ function hasCollectionsInSubtree(group: Group): boolean {
     }
 }
 
-function noneGroup(): Group {
+function noneGroup(): GroupDTO {
     return {
         id: null,
         name: "none",
-        children: [],
+        parentGroupId: null,
         collections: [],
+        children: [],
     };
 }
