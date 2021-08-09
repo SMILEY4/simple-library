@@ -73,7 +73,6 @@ import {ActionGetItemById} from "./service/item/actionGetItemById";
 import {ActionGetItemsByCollection} from "./service/item/actionGetItemsByCollection";
 import {ActionOpenItemsExternal} from "./service/item/actionOpenItemsExternal";
 import {ActionUpdateItemAttribute} from "./service/item/actionUpdateItemAttribute";
-import {ImportProcessDataDTO} from "../common/messaging/dtoModels";
 
 export function initBackgroundWorker(): void {
     console.log("initialize background worker");

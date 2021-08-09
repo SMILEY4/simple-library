@@ -10,7 +10,7 @@ import {Button} from "../../../components/buttons/button/Button";
 import {Image} from "../../../components/base/image/Image";
 import imgWelcome from "./imgWelcome.jpg";
 import {NotificationStack} from "../../../components/modals/notification/NotificationStack";
-import "./welcome.css"
+import "./welcome.css";
 import {APP_ROOT_ID} from "../../Application";
 import {useWelcome} from "../../hooks/app/welcome/useWelcome";
 import {useDialogCreateLibraryController} from "../../hooks/app/welcome/useDialogCreateLibrary";
@@ -24,19 +24,19 @@ interface WelcomeViewControllerProps {
 export function WelcomeView(props: React.PropsWithChildren<WelcomeViewControllerProps>): React.ReactElement {
 
 	const {
-		getNotificationStackEntries,
+		getNotificationStackEntries
 	} = useNotificationsState();
 
 	const {
 		lastOpenedLibraries,
 		browseLibrary,
 		openLibrary
-	} = useWelcome(handleOpenLastUsed)
+	} = useWelcome(handleOpenLastUsed);
 
 	const [
 		showCreateLibrary,
 		openCreateLibrary,
-		closeCreateLibrary,
+		closeCreateLibrary
 	] = useDialogCreateLibraryController();
 
 	const showErrorExiftool = useDialogErrorExiftoolLocationController();
@@ -44,7 +44,7 @@ export function WelcomeView(props: React.PropsWithChildren<WelcomeViewController
 	return (
 		<>
 			<div className="welcome">
-				<Grid columns={['var(--s-12)', '1fr']} rows={['1fr']} fill>
+				<Grid columns={["var(--s-12)", "1fr"]} rows={["1fr"]} fill>
 					<VBox alignMain="center" alignCross="stretch" spacing="0-5" padding="0-5">
 
 						<Label type="header-1" align="center">Simple Library</Label>
@@ -84,18 +84,19 @@ export function WelcomeView(props: React.PropsWithChildren<WelcomeViewController
 	function handleFinishCreatedLibrary(created: boolean) {
 		closeCreateLibrary();
 		if (created) {
-			props.onLoadProject()
+			props.onLoadProject();
 		}
 	}
 
 	function handleOpenLibrary() {
 		browseLibrary()
-			.then(filepath => filepath !== null && props.onLoadProject())
+			.then(filepath => filepath !== null && props.onLoadProject());
 	}
 
 	function handleOpenLastUsed(filepath: string) {
 		openLibrary(filepath)
 			.then(() => props.onLoadProject())
+			.catch(err => console.log("OPEN LIB ERROR: " + err));
 	}
 
 }

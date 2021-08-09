@@ -27,7 +27,6 @@
     "react": "^16.13.1",
     "react-contexify": "^5.0.0",
     "react-dom": "^16.13.1",
-    "react-hot-loader": "^4.12.20",
     "react-icons": "^4.2.0",
     "react-popper": "^2.2.5",
     "reflect-metadata": "^0.1.13",

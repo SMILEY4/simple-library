@@ -2,7 +2,6 @@ import React, {Component, ReactElement} from "react";
 import {ComponentShowcase} from "../components/_showcase/ComponentShowcase";
 import {WelcomeView} from "./views/welcome/WelcomeView";
 import {MainView} from "./views/main/MainView";
-import {hot} from "react-hot-loader/root";
 import {NotificationStateProvider} from "./store/notificationState";
 import {Compose} from "../components/misc/compose/Compose";
 import {CollectionsStateProvider} from "./store/collectionsState";
@@ -111,7 +110,10 @@ export class Application extends Component<any, AppState> {
 				style={{width: "100%", height: "100%"}}
 				id={APP_ROOT_ID}
 			>
-				<WelcomeView onLoadProject={() => this.setState({currentView: View.MAIN})}/>
+				<WelcomeView onLoadProject={() => {
+					console.log("SET STATE MAIN")
+					this.setState({currentView: View.MAIN})
+				}}/>
 			</div>
 		);
 	}
@@ -130,5 +132,3 @@ export class Application extends Component<any, AppState> {
 	}
 
 }
-
-export default hot(Application);

@@ -6,7 +6,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const rendererConfig = {
     mode: 'development',
     target: 'electron-renderer',
-    entry: ['react-hot-loader/patch', './src/renderer/index.tsx'],
+    entry: ['./src/renderer/index.tsx'],
     module: {
         rules: [
             {
@@ -27,11 +27,8 @@ const rendererConfig = {
     devServer: {
         contentBase: false,
         overlay: true,
-        inline: true,
-        hot: true,
-        watchOptions: {
-            ignored: [path.resolve(__dirname, 'src', 'main/**.*')],
-        },
+        inline: false,
+        hot: false,
         proxy: {
             '/': 'http://localhost:8080/renderer/',
         },
@@ -42,9 +39,6 @@ const rendererConfig = {
     },
     resolve: {
         extensions: ['.tsx', '.ts', '.js'],
-        alias: {
-            'react-dom': '@hot-loader/react-dom',
-        },
     },
     output: {
         filename: 'bundle.js',
@@ -56,7 +50,6 @@ const rendererConfig = {
             template: path.resolve(__dirname, 'public', 'index.html'),
             inject: true,
         }),
-        new webpack.HotModuleReplacementPlugin(),
     ],
 };
 

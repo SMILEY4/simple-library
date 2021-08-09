@@ -2,7 +2,7 @@ import {BrowserWindow} from "electron";
 
 const WORKER_WINDOW_CONFIG = (show: boolean) => ({
 	options: {
-		show: show,
+		show: false,  // TODO: temp, = show
 		width: 200,
 		height: 200,
 		title: "SimpleLibrary.Worker",
