@@ -8,6 +8,7 @@ import {ImportStepMetadata} from "./importStepMetadata";
 import {SQL} from "../../persistence/sqlHandler";
 import {ItemsImportStatusChannel} from "../../../common/messaging/channels/channels";
 import {Attribute} from "../item/itemCommon";
+import {ImportStatusDTO} from "../../../common/messaging/dtoModels";
 
 export interface ImportProcessData {
 	files: string[],
@@ -60,6 +61,8 @@ export interface ItemData {
 	attributes?: Attribute[]
 }
 
+export type ImportStatusSender = (status: ImportStatusDTO) => Promise<void>;
+
 export class ImportService {
 
 	private readonly dbAccess: DbAccess;
@@ -69,7 +72,7 @@ export class ImportService {
 	private readonly importStepRename: ImportStepRename;
 	private readonly importStepImportTarget: ImportStepImportTarget;
 	private readonly importStepMetadata: ImportStepMetadata;
-	private readonly channelImportStatus: ItemsImportStatusChannel;
+	private readonly importStatusSender: ImportStatusSender;
 
 	/**
 	 * True, when an import is currently running
@@ -85,7 +88,7 @@ export class ImportService {
 		importStepRename: ImportStepRename,
 		importStepImportTarget: ImportStepImportTarget,
 		importStepMetadata: ImportStepMetadata,
-		channelImportStatus: ItemsImportStatusChannel
+		importStatusSender: ImportStatusSender
 	) {
 		this.dbAccess = dbAccess;
 		this.validator = validator;
@@ -94,7 +97,7 @@ export class ImportService {
 		this.importStepRename = importStepRename;
 		this.importStepImportTarget = importStepImportTarget;
 		this.importStepMetadata = importStepMetadata;
-		this.channelImportStatus = channelImportStatus;
+		this.importStatusSender = importStatusSender;
 	}
 
 
@@ -192,7 +195,7 @@ export class ImportService {
 
 
 	private sendImportStatus(amountImported: number, amountTotal: number): Promise<void> {
-		return this.channelImportStatus.sendAndForget({
+		return this.importStatusSender({
 			totalAmountFiles: amountTotal,
 			completedFiles: amountImported
 		});

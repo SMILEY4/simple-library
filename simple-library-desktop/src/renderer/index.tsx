@@ -5,7 +5,7 @@ import "./components/baseStyle.css";
 import "./components/commonstyle.css";
 import "./components/constants.css";
 import "./components/themes.css";
-import {initBackgroundWorker} from "../background/backgroundConfig";
+import {initWorker} from "../worker/backgroundConfig";
 
 const log = require("electron-log");
 Object.assign(console, log.functions);
@@ -14,7 +14,7 @@ console.log("log filepath (renderer):", log.transports.file.getFile().path);
 const isWorker: boolean = window.process.argv.some(a => a === "--worker");
 
 if (isWorker) {
-	initBackgroundWorker();
+	initWorker();
 } else {
 	ReactDOM.render(<Application/>, document.getElementById("app"));
 }
