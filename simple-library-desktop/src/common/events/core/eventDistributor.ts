@@ -1,4 +1,4 @@
-export class EventDispatcher {
+export class EventDistributor {
 
     private readonly listenerMap = new Map<string, (payload: any) => any>();
 

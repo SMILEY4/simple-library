@@ -29,18 +29,23 @@ import {
     LibraryGetMetadataChannel,
     LibraryOpenChannel
 } from "../common/messaging/channels/channels";
-import {workerIpcWrapper} from "../common/messaging/core/ipcWrapper";
+import {ipcComWith} from "../common/messaging/core/ipcWrapper";
 import {ActionHandler} from "./actionHandler";
-import {EventReceiver} from "../common/events/eventReceiver";
+import {EventReceiver} from "../common/events/core/eventReceiver";
+import {ImportStatusEventSender} from "../common/events/eventSenders";
+import {BrowserWindow} from "electron";
 
-export function initWorker(): void {
+export function initWorker(runInMain?: boolean, targetBrowserWindow?: BrowserWindow | (() => BrowserWindow)): void {
     console.log("initialize worker");
 
-    const channelImportStatus = new ItemsImportStatusChannel(workerIpcWrapper(), "w");
+    const eventPrefix = runInMain === true ? "r" : "w";
+    const ipcWrapper = runInMain === true ? ipcComWith("renderer", targetBrowserWindow) : ipcComWith("main")
+
+    const senderImportStatus = new ImportStatusEventSender(ipcWrapper, eventPrefix)
     const broadcaster = (eventId: string, payload: any) => {
         switch (eventId) {
             case ItemsImportStatusChannel.ID: {
-                return channelImportStatus.sendAndForget(payload);
+                return senderImportStatus.sendAndForget(payload);
             }
             default: {
                 return Promise.resolve();
@@ -49,8 +54,8 @@ export function initWorker(): void {
     }
     const actionHandler = new ActionHandler(broadcaster);
 
-    const eventReceiver = new EventReceiver(workerIpcWrapper(), {
-        idPrefix: "w",
+    const eventReceiver = new EventReceiver(ipcWrapper, {
+        idPrefix: eventPrefix,
         suppressPayloadLog: [
             ItemsGetByCollectionChannel.ID,
             ItemGetByIdChannel.ID

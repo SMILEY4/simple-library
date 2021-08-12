@@ -3,6 +3,7 @@ import {ConfigDataAccess} from "./configDataAccess";
 import {MessageProxy} from "./messageProxy";
 import {WindowHandle} from "./windowHandle";
 import {WorkerHandle} from "./workerHandle";
+import {initWorker} from "../worker/setup";
 
 const isDev: boolean = !app.isPackaged;
 
@@ -12,14 +13,15 @@ console.log("log filepath (main):", log.transports.file.getFile().path);
 
 const configDataAccess: ConfigDataAccess = new ConfigDataAccess();
 const windowHandle: WindowHandle = new WindowHandle(isDev, configDataAccess);
-const workerHandle: WorkerHandle = new WorkerHandle(isDev);
-new MessageProxy(() => workerHandle.getWindow(), () => windowHandle.getWindow());
+// const workerHandle: WorkerHandle = new WorkerHandle(isDev);
+// new MessageProxy(() => workerHandle.getWindow(), () => windowHandle.getWindow());
 
 
 app.whenReady().then(() => {
 	console.debug("ready -> create windows + background-workers");
 	windowHandle.openWindow();
-	workerHandle.create();
+	initWorker(true, () => windowHandle.getWindow())
+	// workerHandle.create();
 });
 
 app.on("window-all-closed", () => {

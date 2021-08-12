@@ -1,4 +1,3 @@
-import {EventDispatcher} from "../common/events/eventDispatcher";
 import {ConfigAccess} from "./persistence/configAccess";
 import {DbAccess} from "./persistence/dbAcces";
 import {FileSystemWrapper} from "./service/fileSystemWrapper";
@@ -74,10 +73,11 @@ import {
     LibraryOpenChannel
 } from "../common/messaging/channels/channels";
 import {voidThen} from "../common/utils";
+import {EventDistributor} from "../common/events/core/eventDistributor";
 
 export class ActionHandler {
 
-    private readonly eventHandler = new EventDispatcher();
+    private readonly eventHandler = new EventDistributor();
     private readonly broadcaster: (eventId: string, payload: any) => Promise<any>;
 
     constructor(broadcaster: (eventId: string, payload: any) => Promise<any>) {

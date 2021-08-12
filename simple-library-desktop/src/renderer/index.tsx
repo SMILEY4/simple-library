@@ -5,7 +5,7 @@ import "./components/baseStyle.css";
 import "./components/commonstyle.css";
 import "./components/constants.css";
 import "./components/themes.css";
-import {initWorker} from "../worker/backgroundConfig";
+import {initWorker} from "../worker/setup";
 
 const log = require("electron-log");
 Object.assign(console, log.functions);

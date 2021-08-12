@@ -1,6 +1,8 @@
-import {IpcWrapper} from "../messaging/core/ipcWrapper";
-import {MsgDefaultEntity, MsgEntity} from "../messaging/core/msgEntity";
+import {IpcWrapper} from "../../messaging/core/ipcWrapper";
+import {MsgDefaultEntity, MsgEntity} from "../../messaging/core/msgEntity";
 import {BrowserWindow} from "electron";
+import {EventSenderOptions} from "./eventSender";
+import {buildId, logHeader, logPayload} from "./eventUtils";
 
 export type EventListener = (eventId: string, payload: any) => any
 
@@ -31,7 +33,7 @@ export class EventReceiver {
             suppressPayloadLog: options.suppressPayloadLog ? options.suppressPayloadLog : DEFAULT_OPTIONS.suppressPayloadLog,
             idPrefix: options.idPrefix ? options.idPrefix : DEFAULT_OPTIONS.idPrefix,
             idSuffix: options.idSuffix ? options.idSuffix : DEFAULT_OPTIONS.idSuffix,
-        } : DEFAULT_OPTIONS
+        } : DEFAULT_OPTIONS;
     }
 
 
@@ -55,7 +57,7 @@ export class EventReceiver {
 
 
     private register(eventId: string) {
-        const id = this.buildId(eventId);
+        const id = buildId(eventId, this.options);
         console.log("REGISTER LISTENER: " + eventId + " - " + id)
         switch (this.ipcWrapper.process) {
             case "main": {
@@ -79,40 +81,21 @@ export class EventReceiver {
     }
 
     private handleEvent(eventId: string, msgEntity: MsgDefaultEntity, window: BrowserWindow): Promise<any> {
-        const logHeader = this.logHeader(eventId, msgEntity.traceId, "in");
-        console.debug(logHeader, "handle", this.logPayload(eventId, msgEntity.body), "from", window ? window.getTitle() : "null");
+        const strLogHeader = logHeader(eventId, msgEntity.traceId, "in", this.ipcWrapper.process);
+        console.debug(strLogHeader, "handle", logPayload(eventId, msgEntity.body, this.options.suppressPayloadLog), "from", window ? window.getTitle() : "null");
         const handlerResult = this.listener(eventId, msgEntity.body);
         return Promise.resolve(handlerResult)
             .then((response: any) => {
-                console.debug(logHeader, "answer", this.logPayload(eventId, response));
+                console.debug(strLogHeader, "answer", logPayload(eventId, response, this.options.suppressPayloadLog));
                 return MsgEntity.entity(msgEntity.traceId, response);
             })
             .catch((err: any) => {
                 const strError: string = (err.toString ? err.toString() : JSON.stringify(err));
-                console.debug(logHeader, "answer error", strError);
+                console.debug(strLogHeader, "answer error", strError);
                 return MsgEntity.error(msgEntity.traceId, strError);
             });
     }
 
 
-    private buildId(eventId: string): string {
-        return (this.options.idPrefix ? (this.options.idPrefix + ".") : "")
-        + eventId
-        + (this.options.idSuffix ? ("." + this.options.idSuffix) : "")
-    }
-
-
-    private logHeader(id: string, traceId: string, dir: "in" | "out"): string {
-        return "(" + traceId + ")[" + (dir === "in" ? ">" : "") + this.ipcWrapper.process + "/" + id + (dir === "out" ? ">" : "") + "]";
-    }
-
-
-    private logPayload(id: string, payload: any): any {
-        if (this.options.suppressPayloadLog.indexOf(id) === -1) {
-            return payload;
-        } else {
-            return "<payload>";
-        }
-    }
 
 }

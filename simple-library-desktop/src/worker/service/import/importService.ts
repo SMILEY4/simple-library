@@ -110,7 +110,6 @@ export class ImportService {
 		return this.tryStartImport(data)
 			.then((ctx) => this.validate(ctx))
 			.then(ctx => this.importFiles(ctx))
-			.catch((ctx => ctx))
 			.then((ctx) => this.finishImport(ctx));
 	}
 
@@ -138,9 +137,11 @@ export class ImportService {
 
 
 	private async importFiles(context: ImportContext): Promise<ImportContext> {
+		console.log("DEBUG: ", context.data)
 		const files = context.data.files;
 		const amountFiles = files.length;
 		for (let i = 0; i < amountFiles; i++) {
+			console.log("DEBUG @" + i +": ", context.data)
 			await Promise.resolve(files[i])
 				.then((currentFile: string) => this.importFile(i, currentFile, context.data))
 				.catch(([file, error]) => context.errors.push([file, error]))
@@ -233,6 +234,7 @@ export class ImportService {
 
 
 	private buildResult(context: ImportContext): ImportResult {
+		console.log("DEBUG RESULT:", context)
 		return {
 			timestamp: context.startTimestamp,
 			amountFiles: context.data.files.length,
