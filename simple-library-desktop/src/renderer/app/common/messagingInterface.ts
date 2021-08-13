@@ -1,33 +1,4 @@
-import {
-    CollectionCreateChannel,
-    CollectionDeleteChannel,
-    CollectionEditChannel,
-    CollectionMoveChannel,
-    CollectionMoveItemsChannel,
-    CollectionRemoveItemsChannel,
-    ConfigGetExiftoolChannel,
-    ConfigGetThemeChannel,
-    ConfigOpenChannel,
-    ConfigSetThemeChannel,
-    GroupCreateChannel,
-    GroupDeleteChannel,
-    GroupMoveChannel,
-    GroupRenameChannel,
-    GroupsGetTreeChannel,
-    ItemGetByIdChannel,
-    ItemGetMetadataChannel,
-    ItemsDeleteChannel,
-    ItemSetMetadataChannel,
-    ItemsGetByCollectionChannel,
-    ItemsImportChannel,
-    ItemsImportStatusChannel,
-    ItemsOpenExternalChannel,
-    LibrariesGetLastOpenedChannel,
-    LibraryCloseChannel,
-    LibraryCreateChannel,
-    LibraryOpenChannel
-} from "../../../common/messaging/channels/channels";
-import {rendererIpcWrapper} from "../../../common/messaging/core/ipcWrapper";
+import {ipcComWith} from "../../../common/events/core/ipcWrapper";
 import {
     AttributeDTO,
     CollectionTypeDTO,
@@ -38,77 +9,123 @@ import {
     ImportStatusDTO,
     ItemDTO,
     LastOpenedLibraryDTO
-} from "../../../common/messaging/dtoModels";
+} from "../../../common/events/dtoModels";
+import {
+    CollectionCreateEventSender,
+    CollectionDeleteEventSender,
+    CollectionEditEventSender,
+    CollectionMoveEventSender,
+    CollectionMoveItemsEventSender,
+    CollectionRemoveItemsEventSender,
+    ConfigGetExiftoolEventSender,
+    ConfigGetThemeEventSender,
+    ConfigOpenEventSender,
+    ConfigSetThemeEventSender,
+    EventIds,
+    GroupCreateEventSender,
+    GroupDeleteEventSender,
+    GroupMoveEventSender,
+    GroupRenameEventSender,
+    GroupsGetTreeEventSender,
+    ItemGetAttributesEventSender,
+    ItemGetByIdEventSender,
+    ItemsDeleteEventSender,
+    ItemSetAttributeEventSender,
+    ItemsGetByCollectionEventSender,
+    ItemsImportEventSender,
+    ItemsOpenExternalEventSender,
+    LibrariesGetLastOpenedEventSender,
+    LibraryCloseEventSender,
+    LibraryCreateEventSender,
+    LibraryOpenEventSender
+} from "../../../common/events/events";
+import {EventReceiver} from "../../../common/events/core/eventReceiver";
+import {EventBroadcaster} from "../../../common/eventsNew/core/eventBroadcaster";
 
-const ipcWrapper = rendererIpcWrapper();
+const ipcWrapper = ipcComWith("main");
 
-const channelConfigOpenConfig = new ConfigOpenChannel(ipcWrapper, "r");
-const channelConfigGetExiftoolData = new ConfigGetExiftoolChannel(ipcWrapper, "r");
-const channelConfigGetTheme = new ConfigGetThemeChannel(ipcWrapper, "r");
-const channelConfigSetTheme = new ConfigSetThemeChannel(ipcWrapper, "r");
+const senderConfigOpenConfig = new ConfigOpenEventSender(ipcWrapper, "r");
+const senderConfigGetExiftoolData = new ConfigGetExiftoolEventSender(ipcWrapper, "r");
+const senderConfigGetTheme = new ConfigGetThemeEventSender(ipcWrapper, "r");
+const senderConfigSetTheme = new ConfigSetThemeEventSender(ipcWrapper, "r");
 
-const channelLibraryGetLastOpened = new LibrariesGetLastOpenedChannel(ipcWrapper, "r");
-const channelLibraryCreate = new LibraryCreateChannel(ipcWrapper, "r");
-const channelLibraryOpen = new LibraryOpenChannel(ipcWrapper, "r");
-const channelLibraryClose = new LibraryCloseChannel(ipcWrapper, "r");
+const senderLibraryGetLastOpened = new LibrariesGetLastOpenedEventSender(ipcWrapper, "r");
+const senderLibraryCreate = new LibraryCreateEventSender(ipcWrapper, "r");
+const senderLibraryOpen = new LibraryOpenEventSender(ipcWrapper, "r");
+const senderLibraryClose = new LibraryCloseEventSender(ipcWrapper, "r");
 
-const channelItemsGetByCollection = new ItemsGetByCollectionChannel(ipcWrapper, "r");
-const channelItemsGetById = new ItemGetByIdChannel(ipcWrapper, "r");
-const channelItemsDelete = new ItemsDeleteChannel(ipcWrapper, "r");
-const channelItemsImport = new ItemsImportChannel(ipcWrapper, "r");
-const channelItemsImportStatus = new ItemsImportStatusChannel(ipcWrapper, "r");
-const channelItemsGetMetadata = new ItemGetMetadataChannel(ipcWrapper, "r");
-const channelItemsSetMetadata = new ItemSetMetadataChannel(ipcWrapper, "r");
-const channelItemsOpenExternal = new ItemsOpenExternalChannel(ipcWrapper, "r");
+const senderItemsGetByCollection = new ItemsGetByCollectionEventSender(ipcWrapper, "r");
+const senderItemsGetById = new ItemGetByIdEventSender(ipcWrapper, "r");
+const senderItemsDelete = new ItemsDeleteEventSender(ipcWrapper, "r");
+const senderItemsImport = new ItemsImportEventSender(ipcWrapper, "r");
+const senderItemsGetMetadata = new ItemGetAttributesEventSender(ipcWrapper, "r");
+const senderItemsSetMetadata = new ItemSetAttributeEventSender(ipcWrapper, "r");
+const senderItemsOpenExternal = new ItemsOpenExternalEventSender(ipcWrapper, "r");
 
-const channelGroupsGetAll = new GroupsGetTreeChannel(ipcWrapper, "r");
-const channelGroupsCreate = new GroupCreateChannel(ipcWrapper, "r");
-const channelGroupsDelete = new GroupDeleteChannel(ipcWrapper, "r");
-const channelGroupsRename = new GroupRenameChannel(ipcWrapper, "r");
-const channelGroupsMove = new GroupMoveChannel(ipcWrapper, "r");
+const senderGroupsGetAll = new GroupsGetTreeEventSender(ipcWrapper, "r");
+const senderGroupsCreate = new GroupCreateEventSender(ipcWrapper, "r");
+const senderGroupsDelete = new GroupDeleteEventSender(ipcWrapper, "r");
+const senderGroupsRename = new GroupRenameEventSender(ipcWrapper, "r");
+const senderGroupsMove = new GroupMoveEventSender(ipcWrapper, "r");
 
-const channelCollectionsCreate = new CollectionCreateChannel(ipcWrapper, "r");
-const channelCollectionsDelete = new CollectionDeleteChannel(ipcWrapper, "r");
-const channelCollectionsEdit = new CollectionEditChannel(ipcWrapper, "r");
-const channelCollectionsMove = new CollectionMoveChannel(ipcWrapper, "r");
-const channelCollectionsMoveItems = new CollectionMoveItemsChannel(ipcWrapper, "r");
-const channelCollectionsRemoveItems = new CollectionRemoveItemsChannel(ipcWrapper, "r");
+const senderCollectionsCreate = new CollectionCreateEventSender(ipcWrapper, "r");
+const senderCollectionsDelete = new CollectionDeleteEventSender(ipcWrapper, "r");
+const senderCollectionsEdit = new CollectionEditEventSender(ipcWrapper, "r");
+const senderCollectionsMove = new CollectionMoveEventSender(ipcWrapper, "r");
+const senderCollectionsMoveItems = new CollectionMoveItemsEventSender(ipcWrapper, "r");
+const senderCollectionsRemoveItems = new CollectionRemoveItemsEventSender(ipcWrapper, "r");
 
+const eventReceiver = new EventReceiver(ipcWrapper, {
+    idPrefix: "r"
+})
+eventReceiver.addEventId([EventIds.IMPORT_STATUS]);
+
+const eventBroadcaster = new EventBroadcaster({
+    comPartner: {
+        partner: "main"
+    },
+    eventIdPrefix: "r",
+    suppressPayloadLog: [EventIds.GET_ITEMS_BY_COLLECTION, EventIds.GET_ITEM_BY_ID],
+});
 
 export function addImportStatusListener(listener: (status: ImportStatusDTO) => void): void {
-    channelItemsImportStatus.on(listener);
+    eventReceiver.setListener((eventId: string, payload: any) => {
+        if (eventId === EventIds.IMPORT_STATUS) {
+            listener(payload);
+        }
+    })
 }
 
 export function removeImportStatusListener(): void {
-    channelItemsImportStatus.on(null);
+    eventReceiver.clearListener();
 }
 
 export function fetchLastOpenedLibraries(): Promise<LastOpenedLibraryDTO[]> {
-    return channelLibraryGetLastOpened.send();
+    return eventBroadcaster.send(EventIds.GET_LAST_OPENED_LIBS);
 }
 
 export function requestOpenLibrary(filepath: string): Promise<void> {
-    return channelLibraryOpen.send(filepath);
+    return senderLibraryOpen.send(filepath);
 }
 
 export function requestCreateLibrary(name: string, targetDir: string): Promise<void> {
-    return channelLibraryCreate.send({targetDir: targetDir, name: name});
+    return senderLibraryCreate.send({targetDir: targetDir, name: name});
 }
 
 export function fetchRootGroup(): Promise<GroupDTO> {
-    return channelGroupsGetAll.send({includeItemCount: true, includeCollections: true});
+    return senderGroupsGetAll.send({includeItemCount: true, includeCollections: true});
 }
 
 export function fetchItems(collectionId: number, itemAttributeKeys: string[]): Promise<ItemDTO[]> {
-    return channelItemsGetByCollection.send({collectionId: collectionId, itemAttributeKeys: itemAttributeKeys});
+    return senderItemsGetByCollection.send({collectionId: collectionId, itemAttributeKeys: itemAttributeKeys});
 }
 
 export function fetchItemById(itemId: number): Promise<ItemDTO | null> {
-    return channelItemsGetById.send(itemId);
+    return senderItemsGetById.send(itemId);
 }
 
 export function requestMoveItems(srcCollectionId: number, tgtCollectionId: number, itemIds: number[], copy: boolean): Promise<void> {
-    return channelCollectionsMoveItems.send({
+    return senderCollectionsMoveItems.send({
         sourceCollectionId: srcCollectionId,
         targetCollectionId: tgtCollectionId,
         itemIds: itemIds,
@@ -118,21 +135,21 @@ export function requestMoveItems(srcCollectionId: number, tgtCollectionId: numbe
 
 
 export function requestRemoveItems(collectionId: number, itemIds: number[]): Promise<void> {
-    return channelCollectionsRemoveItems.send({collectionId: collectionId, itemIds: itemIds});
+    return senderCollectionsRemoveItems.send({collectionId: collectionId, itemIds: itemIds});
 }
 
 
 export function requestDeleteItems(itemIds: number[]): Promise<void> {
-    return channelItemsDelete.send(itemIds);
+    return senderItemsDelete.send(itemIds);
 }
 
 
 export function fetchItemMetadata(itemId: number): Promise<AttributeDTO[]> {
-    return channelItemsGetMetadata.send(itemId);
+    return senderItemsGetMetadata.send(itemId);
 }
 
 export function setItemMetadata(itemId: number, entryKey: string, value: string): Promise<AttributeDTO> {
-    return channelItemsSetMetadata.send({itemId: itemId, entryKey: entryKey, newValue: value});
+    return senderItemsSetMetadata.send({itemId: itemId, entryKey: entryKey, newValue: value});
 }
 
 export function requestImport(
@@ -141,7 +158,7 @@ export function requestImport(
     callbackFailed: (result: ImportResultDTO) => void,
     callbackWithErrors: (result: ImportResultDTO) => void
 ): Promise<ImportResultDTO> {
-    return channelItemsImport.send(data)
+    return senderItemsImport.send(data)
         .then((result: ImportResultDTO) => {
             if (result.failed) {
                 callbackFailed(result);
@@ -155,11 +172,11 @@ export function requestImport(
 }
 
 export function requestCloseLibrary(): Promise<void> {
-    return channelLibraryClose.send();
+    return senderLibraryClose.send();
 }
 
 export function requestCreateCollection(name: string, type: CollectionTypeDTO, query: string | null, parentGroupId: number | null): Promise<void> {
-    return channelCollectionsCreate.send({
+    return senderCollectionsCreate.send({
         name: name,
         type: type,
         parentGroupId: parentGroupId,
@@ -168,51 +185,51 @@ export function requestCreateCollection(name: string, type: CollectionTypeDTO, q
 }
 
 export function requestEditCollection(collectionId: number, name: string, query: string | null): Promise<void> {
-    return channelCollectionsEdit.send({collectionId: collectionId, newName: name, newSmartQuery: query});
+    return senderCollectionsEdit.send({collectionId: collectionId, newName: name, newSmartQuery: query});
 }
 
 export function requestDeleteCollection(collectionId: number): Promise<void> {
-    return channelCollectionsDelete.send(collectionId);
+    return senderCollectionsDelete.send(collectionId);
 }
 
 export function requestCreateGroup(name: string, parentGroupId: number | null): Promise<void> {
-    return channelGroupsCreate.send({name: name, parentGroupId: parentGroupId}).then();
+    return senderGroupsCreate.send({name: name, parentGroupId: parentGroupId}).then();
 }
 
 export function requestRenameGroup(groupId: number, name: string): Promise<void> {
-    return channelGroupsRename.send({groupId: groupId, newName: name});
+    return senderGroupsRename.send({groupId: groupId, newName: name});
 }
 
 export function requestDeleteGroup(groupId: number, deleteChildren: boolean): Promise<void> {
-    return channelGroupsDelete.send({groupId: groupId, deleteChildren: deleteChildren});
+    return senderGroupsDelete.send({groupId: groupId, deleteChildren: deleteChildren});
 }
 
 export function requestMoveGroup(groupId: number, targetGroupId: number | null): Promise<void> {
-    return channelGroupsMove.send({groupId: groupId, targetGroupId: targetGroupId});
+    return senderGroupsMove.send({groupId: groupId, targetGroupId: targetGroupId});
 }
 
 export function requestMoveCollection(collectionId: number, targetGroupId: number | null): Promise<void> {
-    return channelCollectionsMove.send({collectionId: collectionId, targetGroupId: targetGroupId});
+    return senderCollectionsMove.send({collectionId: collectionId, targetGroupId: targetGroupId});
 }
 
 export function requestOpenItemsExternal(itemIds: number[]): Promise<void> {
-    return channelItemsOpenExternal.send(itemIds);
+    return senderItemsOpenExternal.send(itemIds);
 }
 
 export function requestOpenConfigFile(): Promise<void> {
     console.log("request open config");
-    return channelConfigOpenConfig.send();
+    return senderConfigOpenConfig.send();
 }
 
 export function fetchExiftoolData(): Promise<[string | null, boolean]> {
-    return channelConfigGetExiftoolData.send()
+    return senderConfigGetExiftoolData.send()
         .then((data: ExiftoolInfoDTO) => [data.location, data.defined]);
 }
 
 export function setTheme(theme: "dark" | "light"): Promise<void> {
-    return channelConfigSetTheme.send(theme);
+    return senderConfigSetTheme.send(theme);
 }
 
 export function getTheme(): Promise<"dark" | "light"> {
-    return channelConfigGetTheme.send();
+    return senderConfigGetTheme.send();
 }

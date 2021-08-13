@@ -7,7 +7,7 @@ import {Accordion} from "../../../../../components/misc/accordion/Accordion";
 import {TextField} from "../../../../../components/input/textfield/TextField";
 import {MetadataListEntry} from "./MetadataListEntry";
 import {Label} from "../../../../../components/base/label/Label";
-import {AttributeDTO} from "../../../../../../common/messaging/dtoModels";
+import {AttributeDTO} from "../../../../../../common/events/dtoModels";
 
 
 export const TAB_DATA_METADATA: SidebarTab = {

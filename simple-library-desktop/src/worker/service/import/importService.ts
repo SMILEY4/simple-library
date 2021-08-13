@@ -6,9 +6,8 @@ import {ImportStepRename} from "./importStepRename";
 import {ImportStepImportTarget} from "./importStepImportTarget";
 import {ImportStepMetadata} from "./importStepMetadata";
 import {SQL} from "../../persistence/sqlHandler";
-import {ItemsImportStatusChannel} from "../../../common/messaging/channels/channels";
 import {Attribute} from "../item/itemCommon";
-import {ImportStatusDTO} from "../../../common/messaging/dtoModels";
+import {ImportStatusDTO} from "../../../common/events/dtoModels";
 
 export interface ImportProcessData {
 	files: string[],

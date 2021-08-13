@@ -5,7 +5,7 @@ import {useStateRef, useValidatedState} from "../../../../../components/utils/co
 import {useActiveCollectionState} from "../../../base/activeCollectionHooks";
 import {useItems} from "../../../base/itemHooks";
 import {useItemSelection} from "../../../base/itemSelectionHooks";
-import {CollectionDTO} from "../../../../../../common/messaging/dtoModels";
+import {CollectionDTO} from "../../../../../../common/events/dtoModels";
 
 export function useDialogCollectionEditController(): [boolean, (id: number | null) => void, () => void, (number | null)] {
 

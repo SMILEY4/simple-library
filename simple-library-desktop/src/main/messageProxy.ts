@@ -1,4 +1,4 @@
-import {mainIpcWrapper} from "../common/messaging/core/ipcWrapper";
+import {mainIpcWrapper} from "../common/events/core/ipcWrapper";
 import {
 	CollectionCreateChannel,
 	CollectionDeleteChannel,

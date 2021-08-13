@@ -2,7 +2,7 @@ import {useDialogController} from "../../miscApplicationHooks";
 import {useState} from "react";
 import {useCollections, useCollectionsState} from "../../../base/collectionHooks";
 import {useStateRef} from "../../../../../components/utils/commonHooks";
-import {GroupDTO} from "../../../../../../common/messaging/dtoModels";
+import {GroupDTO} from "../../../../../../common/events/dtoModels";
 
 export function useDialogGroupDeleteController(): [boolean, (id: number | null) => void, () => void, (number | null)] {
 

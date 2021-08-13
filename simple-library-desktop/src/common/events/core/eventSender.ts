@@ -1,6 +1,6 @@
-import {getBrowserWindow, IpcWrapper} from "../../messaging/core/ipcWrapper";
-import {MsgTraceId} from "../../messaging/core/msgTraceId";
-import {MsgDefaultEntity, MsgEntity, MsgErrorEntity} from "../../messaging/core/msgEntity";
+import {getBrowserWindow, IpcWrapper} from "./ipcWrapper";
+import {MsgTraceId} from "./msgTraceId";
+import {MsgDefaultEntity, MsgEntity, MsgErrorEntity} from "./msgEntity";
 import {buildId, logHeader, logPayload} from "./eventUtils";
 
 export interface EventSenderOptions {

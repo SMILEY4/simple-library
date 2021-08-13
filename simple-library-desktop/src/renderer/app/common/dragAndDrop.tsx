@@ -3,7 +3,7 @@
  * => ALL FIELDS/MODELS MUST BE LOWERCASE
  */
 
-import {CollectionDTO, GroupDTO} from "../../../common/messaging/dtoModels";
+import {CollectionDTO, GroupDTO} from "../../../common/events/dtoModels";
 
 export const META_MIME_TYPE_PREFIX = "custom/";
 

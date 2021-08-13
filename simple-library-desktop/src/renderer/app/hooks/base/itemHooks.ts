@@ -12,7 +12,7 @@ import {useModifyNotifications} from "./notificationHooks";
 import {genNotificationId} from "./notificationUtils";
 import {AppNotificationType} from "../../store/notificationState";
 import {ItemsActionType, useItemsContext, useItemsDispatch} from "../../store/itemsState";
-import {ImportProcessDataDTO, ImportResultDTO, ImportStatusDTO, ItemDTO} from "../../../../common/messaging/dtoModels";
+import {ImportProcessDataDTO, ImportResultDTO, ImportStatusDTO, ItemDTO} from "../../../../common/events/dtoModels";
 
 export function useItemsState() {
 

@@ -1,4 +1,4 @@
-import {CollectionDTO, GroupDTO, RenamePartTypeDTO} from "../../../common/messaging/dtoModels";
+import {CollectionDTO, GroupDTO, RenamePartTypeDTO} from "../../../common/events/dtoModels";
 
 
 export function renamePartTypeAllowsUserInput(type: RenamePartTypeDTO): boolean {

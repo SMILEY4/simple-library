@@ -10,7 +10,7 @@ import {TextArea} from "../../../../../components/input/textarea/TextArea";
 import {ChoiceBox, ChoiceBoxItem} from "../../../../../components/buttons/choicebox/ChoiceBox";
 import {ElementLabel} from "../../../../../components/misc/elementlabel/ElementLabel";
 import {useDialogCollectionCreate} from "../../../../hooks/app/sidebarmenu/collection/useDialogCollectionCreate";
-import {CollectionTypeDTO} from "../../../../../../common/messaging/dtoModels";
+import {CollectionTypeDTO} from "../../../../../../common/events/dtoModels";
 
 interface DialogCreateCollectionProps {
 	parentGroupId: number | null,

@@ -6,7 +6,7 @@ import {
 } from "../../../base/collectionHooks";
 import {useActiveCollectionState} from "../../../base/activeCollectionHooks";
 import {useItemSelection} from "../../../base/itemSelectionHooks";
-import {CollectionDTO} from "../../../../../../common/messaging/dtoModels";
+import {CollectionDTO} from "../../../../../../common/events/dtoModels";
 
 export function useDialogCollectionDeleteController(): [boolean, (id: number | null) => void, () => void, (number | null)] {
 

@@ -9,7 +9,7 @@ import {
 	ImportProcessDataDTO,
 	ImportTargetActionDTO, RenamePartDTO,
 	RenamePartTypeDTO
-} from "../../../../../common/messaging/dtoModels";
+} from "../../../../../common/events/dtoModels";
 
 export function useDialogImportFilesController(): [boolean, () => void, () => void] {
 	const [show, open, close] = useDialogController();

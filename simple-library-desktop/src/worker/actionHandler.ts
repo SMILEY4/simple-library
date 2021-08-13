@@ -41,39 +41,9 @@ import {ImportStepThumbnail} from "./service/import/importStepThumbnail";
 import {ImportStepRename} from "./service/import/importStepRename";
 import {ImportStepImportTarget} from "./service/import/importStepImportTarget";
 import {ImportStepMetadata} from "./service/import/importStepMetadata";
-import {
-    CollectionCreateChannel,
-    CollectionDeleteChannel,
-    CollectionEditChannel,
-    CollectionMoveChannel,
-    CollectionMoveItemsChannel,
-    CollectionRemoveItemsChannel,
-    CollectionsGetAllChannel,
-    ConfigGetExiftoolChannel,
-    ConfigGetThemeChannel,
-    ConfigOpenChannel,
-    ConfigSetThemeChannel,
-    GroupCreateChannel,
-    GroupDeleteChannel,
-    GroupMoveChannel,
-    GroupRenameChannel,
-    GroupsGetTreeChannel,
-    ItemGetByIdChannel,
-    ItemGetMetadataChannel,
-    ItemsDeleteChannel,
-    ItemSetMetadataChannel,
-    ItemsGetByCollectionChannel,
-    ItemsImportChannel,
-    ItemsImportStatusChannel,
-    ItemsOpenExternalChannel,
-    LibrariesGetLastOpenedChannel,
-    LibraryCloseChannel,
-    LibraryCreateChannel,
-    LibraryGetMetadataChannel,
-    LibraryOpenChannel
-} from "../common/messaging/channels/channels";
 import {voidThen} from "../common/utils";
 import {EventDistributor} from "../common/events/core/eventDistributor";
+import {EventIds} from "../common/events/events";
 
 export class ActionHandler {
 
@@ -133,47 +103,47 @@ export class ActionHandler {
             new ImportStepRename(),
             new ImportStepImportTarget(fsWrapper),
             new ImportStepMetadata(actionGetExiftoolInfo),
-            (status: any) => this.send(ItemsImportStatusChannel.ID, status)
+            (status: any) => this.send(EventIds.IMPORT_STATUS, status)
         );
 
-        this.eventHandler.on(ConfigOpenChannel.ID, () => actionOpenConfig.perform())
-        this.eventHandler.on(ConfigGetExiftoolChannel.ID, () => actionGetExiftoolInfo.perform())
-        this.eventHandler.on(ConfigGetThemeChannel.ID, () => actionGetTheme.perform())
-        this.eventHandler.on(ConfigSetThemeChannel.ID, (theme: "dark" | "light") => actionSetTheme.perform(theme))
+        this.eventHandler.on(EventIds.OPEN_CONFIG, () => actionOpenConfig.perform())
+        this.eventHandler.on(EventIds.GET_EXIFTOOL_INFO, () => actionGetExiftoolInfo.perform())
+        this.eventHandler.on(EventIds.GET_THEME, () => actionGetTheme.perform())
+        this.eventHandler.on(EventIds.SET_THEME, (theme: "dark" | "light") => actionSetTheme.perform(theme))
 
-        this.eventHandler.on(LibrariesGetLastOpenedChannel.ID, () => actionGetLastOpened.perform())
-        this.eventHandler.on(LibraryCreateChannel.ID, (payload) => {
+        this.eventHandler.on(EventIds.GET_LAST_OPENED_LIBS, () => actionGetLastOpened.perform())
+        this.eventHandler.on(EventIds.CREATE_LIBRARY, (payload) => {
             return actionCreateLibrary.perform(payload.name, payload.targetDir, true)
                 .then((library) => actionAddToLastOpened.perform(library.path, library.name));
         })
-        this.eventHandler.on(LibraryOpenChannel.ID, (payload) => {
+        this.eventHandler.on(EventIds.OPEN_LIBRARY, (payload) => {
             return actionOpenLibrary.perform(payload)
                 .then((library) => actionAddToLastOpened.perform(library.path, library.name));
         })
-        this.eventHandler.on(LibraryCloseChannel.ID, () => actionCloseLibrary.perform())
-        this.eventHandler.on(LibraryGetMetadataChannel.ID, () => actionGetLibraryInfo.perform())
+        this.eventHandler.on(EventIds.CLOSE_LIBRARY, () => actionCloseLibrary.perform())
+        this.eventHandler.on(EventIds.GET_LIBRARY_INFO, () => actionGetLibraryInfo.perform())
 
-        this.eventHandler.on(GroupsGetTreeChannel.ID, (payload) => actionGetGroupTree.perform(payload.includeCollections, payload.includeItemCount));
-        this.eventHandler.on(GroupCreateChannel.ID, (payload) => actionCreateGroup.perform(payload.name, payload.parentGroupId));
-        this.eventHandler.on(GroupDeleteChannel.ID, (payload) => actionDeleteGroup.perform(payload.groupId, payload.deleteChildren));
-        this.eventHandler.on(GroupRenameChannel.ID, (payload) => actionRenameGroup.perform(payload.groupId, payload.newName));
-        this.eventHandler.on(GroupMoveChannel.ID, (payload) => actionMoveGroup.perform(payload.groupId, payload.targetGroupId));
+        this.eventHandler.on(EventIds.GET_GROUP_TREE, (payload) => actionGetGroupTree.perform(payload.includeCollections, payload.includeItemCount));
+        this.eventHandler.on(EventIds.CREATE_GROUP, (payload) => actionCreateGroup.perform(payload.name, payload.parentGroupId));
+        this.eventHandler.on(EventIds.DELETE_GROUP, (payload) => actionDeleteGroup.perform(payload.groupId, payload.deleteChildren));
+        this.eventHandler.on(EventIds.RENAME_GROUP, (payload) => actionRenameGroup.perform(payload.groupId, payload.newName));
+        this.eventHandler.on(EventIds.MOVE_GROUP, (payload) => actionMoveGroup.perform(payload.groupId, payload.targetGroupId));
 
-        this.eventHandler.on(CollectionsGetAllChannel.ID, (payload) => actionGetAllCollections.perform(payload));
-        this.eventHandler.on(CollectionCreateChannel.ID, (payload) => actionCreateCollection.perform(payload.type, payload.name, payload.parentGroupId, payload.smartQuery));
-        this.eventHandler.on(CollectionDeleteChannel.ID, (payload) => actionDeleteCollection.perform(payload));
-        this.eventHandler.on(CollectionEditChannel.ID, (payload) => actionEditCollection.perform(payload.collectionId, payload.newName, payload.newSmartQuery));
-        this.eventHandler.on(CollectionMoveChannel.ID, (payload) => actionMoveCollection.perform(payload.collectionId, payload.targetGroupId));
-        this.eventHandler.on(CollectionMoveItemsChannel.ID, (payload) => actionMoveItems.perform(payload.sourceCollectionId, payload.targetCollectionId, payload.itemIds, payload.copy));
-        this.eventHandler.on(CollectionRemoveItemsChannel.ID, (payload) => actionRemoveItems.perform(payload.collectionId, payload.itemIds));
+        this.eventHandler.on(EventIds.GET_ALL_COLLECTIONS, (payload) => actionGetAllCollections.perform(payload));
+        this.eventHandler.on(EventIds.CREATE_COLLECTION, (payload) => actionCreateCollection.perform(payload.type, payload.name, payload.parentGroupId, payload.smartQuery));
+        this.eventHandler.on(EventIds.DELETE_COLLECTION, (payload) => actionDeleteCollection.perform(payload));
+        this.eventHandler.on(EventIds.EDIT_COLLECTION, (payload) => actionEditCollection.perform(payload.collectionId, payload.newName, payload.newSmartQuery));
+        this.eventHandler.on(EventIds.MOVE_COLLECTION, (payload) => actionMoveCollection.perform(payload.collectionId, payload.targetGroupId));
+        this.eventHandler.on(EventIds.MOVE_ITEMS, (payload) => actionMoveItems.perform(payload.sourceCollectionId, payload.targetCollectionId, payload.itemIds, payload.copy));
+        this.eventHandler.on(EventIds.REMOVE_ITEMS, (payload) => actionRemoveItems.perform(payload.collectionId, payload.itemIds));
 
-        this.eventHandler.on(ItemsGetByCollectionChannel.ID, (payload) => actionGetItemsByCollection.perform(payload.collectionId, payload.itemAttributeKeys));
-        this.eventHandler.on(ItemGetByIdChannel.ID, (payload) => actionGetItemById.perform(payload));
-        this.eventHandler.on(ItemsDeleteChannel.ID, (payload) => actionDeleteItems.perform(payload));
-        this.eventHandler.on(ItemsOpenExternalChannel.ID, (payload) => actionOpenItemsExternal.perform(payload));
-        this.eventHandler.on(ItemGetMetadataChannel.ID, (payload) => actionGetItemAttributes.perform(payload));
-        this.eventHandler.on(ItemSetMetadataChannel.ID, (payload) => actionUpdateItemAttribute.perform(payload.itemId, payload.entryKey, payload.newValue));
-        this.eventHandler.on(ItemsImportChannel.ID, (payload) => importService.import(payload));
+        this.eventHandler.on(EventIds.GET_ITEMS_BY_COLLECTION, (payload) => actionGetItemsByCollection.perform(payload.collectionId, payload.itemAttributeKeys));
+        this.eventHandler.on(EventIds.GET_ITEM_BY_ID, (payload) => actionGetItemById.perform(payload));
+        this.eventHandler.on(EventIds.DELETE_ITEMS, (payload) => actionDeleteItems.perform(payload));
+        this.eventHandler.on(EventIds.OPEN_ITEMS, (payload) => actionOpenItemsExternal.perform(payload));
+        this.eventHandler.on(EventIds.GET_ITEM_ATTRIBUTES, (payload) => actionGetItemAttributes.perform(payload));
+        this.eventHandler.on(EventIds.SET_ITEM_ATTRIBUTE, (payload) => actionUpdateItemAttribute.perform(payload.itemId, payload.entryKey, payload.newValue));
+        this.eventHandler.on(EventIds.IMPORT_ITEMS, (payload) => importService.import(payload));
 
     }
 

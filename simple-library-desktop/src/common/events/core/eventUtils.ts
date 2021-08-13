@@ -13,7 +13,7 @@ export function logHeader(id: string, traceId: string, dir: "in" | "out", ipcWra
 }
 
 
-export function logPayload(id: string, payload: any, suppressPayloadLog: boolean | string[]): any {
+export function logPayload(id: string, payload: any, suppressPayloadLog: boolean | "all" | string[]): any {
     if(Array.isArray(suppressPayloadLog)) {
         if ((suppressPayloadLog as string[]).indexOf(id) !== -1) {
             return "<payload>";
@@ -21,7 +21,7 @@ export function logPayload(id: string, payload: any, suppressPayloadLog: boolean
             return payload;
         }
     } else {
-        if (suppressPayloadLog === true) {
+        if (suppressPayloadLog === true || suppressPayloadLog === "all") {
             return "<payload>";
         } else {
             return payload;

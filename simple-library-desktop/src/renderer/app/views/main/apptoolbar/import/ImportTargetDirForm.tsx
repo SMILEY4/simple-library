@@ -3,7 +3,7 @@ import {HBox, VBox} from "../../../../../components/layout/box/Box";
 import {ChoiceBox, ChoiceBoxItem} from "../../../../../components/buttons/choicebox/ChoiceBox";
 import {DirectoryInputField} from "../../../../../components/input/directoryinputfield/DirectoryInputField";
 import {BaseElementFlat} from "../../../../../components/base/element/BaseElementFlat";
-import {ImportTargetActionDTO} from "../../../../../../common/messaging/dtoModels";
+import {ImportTargetActionDTO} from "../../../../../../common/events/dtoModels";
 
 const electron = window.require('electron');
 

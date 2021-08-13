@@ -1,6 +1,6 @@
-import {getBrowserWindow, IpcWrapper} from "./ipcWrapper";
-import {MsgTraceId} from "./msgTraceId";
-import {MsgDefaultEntity, MsgEntity, MsgErrorEntity} from "./msgEntity";
+import {getBrowserWindow, IpcWrapper} from "../../events/core/ipcWrapper";
+import {MsgTraceId} from "../../events/core/msgTraceId";
+import {MsgDefaultEntity, MsgEntity, MsgErrorEntity} from "../../events/core/msgEntity";
 import {BrowserWindow} from "electron";
 
 export type MsgHandler<SEND, RECEIVE> = (payload: SEND, traceId: string) => RECEIVE | Promise<RECEIVE>

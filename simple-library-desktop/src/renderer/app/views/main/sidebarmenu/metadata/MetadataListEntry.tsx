@@ -1,7 +1,7 @@
 import React from "react";
 import {SimpleMetadataEntry} from "./SimpleMetadataEntry";
 import {ToggleTextField} from "../../../../../components/input/textfield/ToggleTextField";
-import {AttributeDTO} from "../../../../../../common/messaging/dtoModels";
+import {AttributeDTO} from "../../../../../../common/events/dtoModels";
 
 interface MetadataListEntryProps {
     entry: AttributeDTO,

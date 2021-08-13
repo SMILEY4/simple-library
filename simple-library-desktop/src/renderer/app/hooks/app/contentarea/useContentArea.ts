@@ -1,6 +1,6 @@
 import { useCollectionsState} from "../../base/collectionHooks";
 import {useActiveCollectionState} from "../../base/activeCollectionHooks";
-import {CollectionDTO} from "../../../../../common/messaging/dtoModels";
+import {CollectionDTO} from "../../../../../common/events/dtoModels";
 
 export function useContentArea() {
 

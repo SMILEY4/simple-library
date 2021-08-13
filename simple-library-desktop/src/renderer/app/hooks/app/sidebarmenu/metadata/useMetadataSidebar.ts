@@ -2,7 +2,7 @@ import {useItemSelectionState} from "../../../base/itemSelectionHooks";
 import {useEffect, useState} from "react";
 import {fetchItemMetadata, setItemMetadata} from "../../../../common/messagingInterface";
 import {useItems} from "../../../base/itemHooks";
-import {AttributeDTO, ItemDTO} from "../../../../../../common/messaging/dtoModels";
+import {AttributeDTO, ItemDTO} from "../../../../../../common/events/dtoModels";
 
 export function useMetadataSidebar() {
 

@@ -1,4 +1,4 @@
-import {IpcWrapper} from "../core/ipcWrapper";
+import {IpcWrapper} from "../../events/core/ipcWrapper";
 import {Channel} from "../core/channel";
 import {
 	AttributeDTO,
@@ -12,7 +12,7 @@ import {
 	LastOpenedLibraryDTO,
 	LibraryInfoDTO,
 	ThemeDTO
-} from "../dtoModels";
+} from "../../events/dtoModels";
 
 export type ComDir = "r" | "w";
 

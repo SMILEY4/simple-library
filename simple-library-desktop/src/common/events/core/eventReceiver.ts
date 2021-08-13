@@ -1,5 +1,5 @@
-import {IpcWrapper} from "../../messaging/core/ipcWrapper";
-import {MsgDefaultEntity, MsgEntity} from "../../messaging/core/msgEntity";
+import {IpcWrapper} from "./ipcWrapper";
+import {MsgDefaultEntity, MsgEntity} from "./msgEntity";
 import {BrowserWindow} from "electron";
 import {EventSenderOptions} from "./eventSender";
 import {buildId, logHeader, logPayload} from "./eventUtils";
@@ -7,7 +7,7 @@ import {buildId, logHeader, logPayload} from "./eventUtils";
 export type EventListener = (eventId: string, payload: any) => any
 
 export interface EventReceiverOptions {
-    suppressPayloadLog?: string[],
+    suppressPayloadLog?: string[] | "all",
     idPrefix?: string | null,
     idSuffix?: string | null
 }
@@ -95,7 +95,5 @@ export class EventReceiver {
                 return MsgEntity.error(msgEntity.traceId, strError);
             });
     }
-
-
 
 }

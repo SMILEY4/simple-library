@@ -8,7 +8,7 @@ import {
 	useGlobalStateWriteOnly
 } from "../../components/utils/storeUtils";
 import React from "react";
-import {GroupDTO} from "../../../common/messaging/dtoModels";
+import {GroupDTO} from "../../../common/events/dtoModels";
 
 
 // STATE

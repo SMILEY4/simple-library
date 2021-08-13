@@ -2,7 +2,7 @@ import React from "react";
 import {HBox, VBox} from "../../../../components/layout/box/Box";
 import {concatClasses, getIf, getSelectModifier, SelectModifier} from "../../../../components/utils/common";
 import "./listItemEntry.css"
-import {AttributeDTO, CollectionTypeDTO, ItemDTO} from "../../../../../common/messaging/dtoModels";
+import {AttributeDTO, CollectionTypeDTO, ItemDTO} from "../../../../../common/events/dtoModels";
 
 interface ItemListEntryProps {
 	item: ItemDTO,

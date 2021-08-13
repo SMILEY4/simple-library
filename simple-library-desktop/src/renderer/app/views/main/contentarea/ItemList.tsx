@@ -9,7 +9,7 @@ import {useContextMenu} from "../../../../components/menu/contextmenu/contextMen
 import {SelectModifier} from "../../../../components/utils/common";
 import {useDialogItemsDeleteController} from "../../../hooks/app/contentarea/useDialogItemsDelete";
 import {DialogDeleteItems} from "./DialogDeleteItems";
-import {CollectionDTO, ItemDTO} from "../../../../../common/messaging/dtoModels";
+import {CollectionDTO, ItemDTO} from "../../../../../common/events/dtoModels";
 
 interface ItemListProps {
 	activeCollection: CollectionDTO

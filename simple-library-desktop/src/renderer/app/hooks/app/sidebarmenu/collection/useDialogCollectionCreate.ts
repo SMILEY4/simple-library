@@ -2,7 +2,7 @@ import {useDialogController} from "../../miscApplicationHooks";
 import {useState} from "react";
 import {useCollections, useCollectionsState} from "../../../base/collectionHooks";
 import {useStateRef, useValidatedState} from "../../../../../components/utils/commonHooks";
-import {CollectionTypeDTO, GroupDTO} from "../../../../../../common/messaging/dtoModels";
+import {CollectionTypeDTO, GroupDTO} from "../../../../../../common/events/dtoModels";
 
 export function useDialogCollectionCreateController(): [boolean, (id: number | null) => void, () => void, (number | null)] {
 

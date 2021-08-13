@@ -7,7 +7,7 @@ import {renamePartTypeAllowsUserInput} from "../../../../common/utils";
 import {TextField} from "../../../../../components/input/textfield/TextField";
 import {BaseElementFlat} from "../../../../../components/base/element/BaseElementFlat";
 import {Label} from "../../../../../components/base/label/Label";
-import {RenamePartDTO, RenamePartTypeDTO} from "../../../../../../common/messaging/dtoModels";
+import {RenamePartDTO, RenamePartTypeDTO} from "../../../../../../common/events/dtoModels";
 
 const CB_ITEMS_RENAME_PART_TYPES: ChoiceBoxItem[] = [
 	{

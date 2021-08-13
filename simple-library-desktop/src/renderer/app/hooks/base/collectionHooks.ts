@@ -13,7 +13,7 @@ import {genNotificationId} from "./notificationUtils";
 import {useModifyNotifications} from "./notificationHooks";
 import {AppNotificationType} from "../../store/notificationState";
 import {CollectionsActionType, useCollectionsContext, useCollectionsDispatch} from "../../store/collectionsState";
-import {CollectionDTO, CollectionTypeDTO, GroupDTO} from "../../../../common/messaging/dtoModels";
+import {CollectionDTO, CollectionTypeDTO, GroupDTO} from "../../../../common/events/dtoModels";
 import {extractCollections, extractGroups} from "../../common/utils";
 
 export function useCollectionsState() {

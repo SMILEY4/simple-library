@@ -3,7 +3,7 @@ import {ReactElement} from "react";
 import {Item, ItemParams, Separator, Submenu} from "react-contexify";
 import {BiImages, HiOutlineFolder} from "react-icons/all";
 import {BooleanPredicate} from "react-contexify/src/types/index";
-import {CollectionDTO, GroupDTO} from "../../../common/messaging/dtoModels";
+import {CollectionDTO, GroupDTO} from "../../../common/events/dtoModels";
 
 
 export function contextMenuTree(group: GroupDTO,

@@ -19,7 +19,7 @@ import {useDialogCollectionEditController} from "../../../hooks/app/sidebarmenu/
 import {useDialogGroupDeleteController} from "../../../hooks/app/sidebarmenu/collection/useDialogGroupDelete";
 import {useDialogGroupEditController} from "../../../hooks/app/sidebarmenu/collection/useDialogGroupEdit";
 import {useDialogGroupCreateController} from "../../../hooks/app/sidebarmenu/collection/useDialogGroupCreate";
-import {CollectionDTO, GroupDTO} from "../../../../../common/messaging/dtoModels";
+import {CollectionDTO, GroupDTO} from "../../../../../common/events/dtoModels";
 
 export const TAB_DATA_COLLECTIONS: SidebarTab = {
 	id: "tab-collections",
