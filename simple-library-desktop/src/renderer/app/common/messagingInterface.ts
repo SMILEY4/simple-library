@@ -1,4 +1,3 @@
-import {ipcComWith} from "../../../common/events/core/ipcWrapper";
 import {
     AttributeDTO,
     CollectionTypeDTO,
@@ -10,75 +9,16 @@ import {
     ItemDTO,
     LastOpenedLibraryDTO
 } from "../../../common/events/dtoModels";
-import {
-    CollectionCreateEventSender,
-    CollectionDeleteEventSender,
-    CollectionEditEventSender,
-    CollectionMoveEventSender,
-    CollectionMoveItemsEventSender,
-    CollectionRemoveItemsEventSender,
-    ConfigGetExiftoolEventSender,
-    ConfigGetThemeEventSender,
-    ConfigOpenEventSender,
-    ConfigSetThemeEventSender,
-    EventIds,
-    GroupCreateEventSender,
-    GroupDeleteEventSender,
-    GroupMoveEventSender,
-    GroupRenameEventSender,
-    GroupsGetTreeEventSender,
-    ItemGetAttributesEventSender,
-    ItemGetByIdEventSender,
-    ItemsDeleteEventSender,
-    ItemSetAttributeEventSender,
-    ItemsGetByCollectionEventSender,
-    ItemsImportEventSender,
-    ItemsOpenExternalEventSender,
-    LibrariesGetLastOpenedEventSender,
-    LibraryCloseEventSender,
-    LibraryCreateEventSender,
-    LibraryOpenEventSender
-} from "../../../common/events/events";
-import {EventReceiver} from "../../../common/events/core/eventReceiver";
-import {EventBroadcaster} from "../../../common/eventsNew/core/eventBroadcaster";
+import {EventIds} from "../../../common/events/events";
+import {EventBroadcaster} from "../../../common/events/core/eventBroadcaster";
+import {EventConsumer} from "../../../common/events/core/eventConsumer";
 
-const ipcWrapper = ipcComWith("main");
-
-const senderConfigOpenConfig = new ConfigOpenEventSender(ipcWrapper, "r");
-const senderConfigGetExiftoolData = new ConfigGetExiftoolEventSender(ipcWrapper, "r");
-const senderConfigGetTheme = new ConfigGetThemeEventSender(ipcWrapper, "r");
-const senderConfigSetTheme = new ConfigSetThemeEventSender(ipcWrapper, "r");
-
-const senderLibraryGetLastOpened = new LibrariesGetLastOpenedEventSender(ipcWrapper, "r");
-const senderLibraryCreate = new LibraryCreateEventSender(ipcWrapper, "r");
-const senderLibraryOpen = new LibraryOpenEventSender(ipcWrapper, "r");
-const senderLibraryClose = new LibraryCloseEventSender(ipcWrapper, "r");
-
-const senderItemsGetByCollection = new ItemsGetByCollectionEventSender(ipcWrapper, "r");
-const senderItemsGetById = new ItemGetByIdEventSender(ipcWrapper, "r");
-const senderItemsDelete = new ItemsDeleteEventSender(ipcWrapper, "r");
-const senderItemsImport = new ItemsImportEventSender(ipcWrapper, "r");
-const senderItemsGetMetadata = new ItemGetAttributesEventSender(ipcWrapper, "r");
-const senderItemsSetMetadata = new ItemSetAttributeEventSender(ipcWrapper, "r");
-const senderItemsOpenExternal = new ItemsOpenExternalEventSender(ipcWrapper, "r");
-
-const senderGroupsGetAll = new GroupsGetTreeEventSender(ipcWrapper, "r");
-const senderGroupsCreate = new GroupCreateEventSender(ipcWrapper, "r");
-const senderGroupsDelete = new GroupDeleteEventSender(ipcWrapper, "r");
-const senderGroupsRename = new GroupRenameEventSender(ipcWrapper, "r");
-const senderGroupsMove = new GroupMoveEventSender(ipcWrapper, "r");
-
-const senderCollectionsCreate = new CollectionCreateEventSender(ipcWrapper, "r");
-const senderCollectionsDelete = new CollectionDeleteEventSender(ipcWrapper, "r");
-const senderCollectionsEdit = new CollectionEditEventSender(ipcWrapper, "r");
-const senderCollectionsMove = new CollectionMoveEventSender(ipcWrapper, "r");
-const senderCollectionsMoveItems = new CollectionMoveItemsEventSender(ipcWrapper, "r");
-const senderCollectionsRemoveItems = new CollectionRemoveItemsEventSender(ipcWrapper, "r");
-
-const eventReceiver = new EventReceiver(ipcWrapper, {
-    idPrefix: "r"
-})
-eventReceiver.addEventId([EventIds.IMPORT_STATUS]);
+// const ipcWrapper = ipcComWith("main");
+//
+// const eventReceiver = new EventReceiver(ipcWrapper, {
+//     idPrefix: "r"
+// })
+// eventReceiver.addEventId([EventIds.IMPORT_STATUS]);
 
 const eventBroadcaster = new EventBroadcaster({
     comPartner: {
@@ -88,16 +28,21 @@ const eventBroadcaster = new EventBroadcaster({
     suppressPayloadLog: [EventIds.GET_ITEMS_BY_COLLECTION, EventIds.GET_ITEM_BY_ID],
 });
 
+const eventConsumer = new EventConsumer({
+    eventIds: [EventIds.IMPORT_STATUS],
+    comPartner: {
+        partner: "main"
+    },
+    eventIdPrefix: "r",
+    suppressPayloadLog: [EventIds.GET_ITEMS_BY_COLLECTION, EventIds.GET_ITEM_BY_ID],
+});
+
 export function addImportStatusListener(listener: (status: ImportStatusDTO) => void): void {
-    eventReceiver.setListener((eventId: string, payload: any) => {
-        if (eventId === EventIds.IMPORT_STATUS) {
-            listener(payload);
-        }
-    })
+    eventConsumer.on<ImportStatusDTO, void>(EventIds.IMPORT_STATUS, listener)
 }
 
 export function removeImportStatusListener(): void {
-    eventReceiver.clearListener();
+    eventConsumer.clear(EventIds.IMPORT_STATUS);
 }
 
 export function fetchLastOpenedLibraries(): Promise<LastOpenedLibraryDTO[]> {
@@ -105,27 +50,30 @@ export function fetchLastOpenedLibraries(): Promise<LastOpenedLibraryDTO[]> {
 }
 
 export function requestOpenLibrary(filepath: string): Promise<void> {
-    return senderLibraryOpen.send(filepath);
+    return eventBroadcaster.send(EventIds.OPEN_LIBRARY, filepath)
 }
 
 export function requestCreateLibrary(name: string, targetDir: string): Promise<void> {
-    return senderLibraryCreate.send({targetDir: targetDir, name: name});
+    return eventBroadcaster.send(EventIds.CREATE_LIBRARY, {targetDir: targetDir, name: name});
 }
 
 export function fetchRootGroup(): Promise<GroupDTO> {
-    return senderGroupsGetAll.send({includeItemCount: true, includeCollections: true});
+    return eventBroadcaster.send(EventIds.GET_GROUP_TREE, {includeItemCount: true, includeCollections: true});
 }
 
 export function fetchItems(collectionId: number, itemAttributeKeys: string[]): Promise<ItemDTO[]> {
-    return senderItemsGetByCollection.send({collectionId: collectionId, itemAttributeKeys: itemAttributeKeys});
+    return eventBroadcaster.send(EventIds.GET_ITEMS_BY_COLLECTION, {
+        collectionId: collectionId,
+        itemAttributeKeys: itemAttributeKeys
+    });
 }
 
 export function fetchItemById(itemId: number): Promise<ItemDTO | null> {
-    return senderItemsGetById.send(itemId);
+    return eventBroadcaster.send(EventIds.GET_ITEM_BY_ID, itemId);
 }
 
 export function requestMoveItems(srcCollectionId: number, tgtCollectionId: number, itemIds: number[], copy: boolean): Promise<void> {
-    return senderCollectionsMoveItems.send({
+    return eventBroadcaster.send(EventIds.MOVE_ITEMS, {
         sourceCollectionId: srcCollectionId,
         targetCollectionId: tgtCollectionId,
         itemIds: itemIds,
@@ -135,21 +83,21 @@ export function requestMoveItems(srcCollectionId: number, tgtCollectionId: numbe
 
 
 export function requestRemoveItems(collectionId: number, itemIds: number[]): Promise<void> {
-    return senderCollectionsRemoveItems.send({collectionId: collectionId, itemIds: itemIds});
+    return eventBroadcaster.send(EventIds.REMOVE_ITEMS, {collectionId: collectionId, itemIds: itemIds});
 }
 
 
 export function requestDeleteItems(itemIds: number[]): Promise<void> {
-    return senderItemsDelete.send(itemIds);
+    return eventBroadcaster.send(EventIds.DELETE_ITEMS, itemIds);
 }
 
 
 export function fetchItemMetadata(itemId: number): Promise<AttributeDTO[]> {
-    return senderItemsGetMetadata.send(itemId);
+    return eventBroadcaster.send(EventIds.GET_ITEM_ATTRIBUTES, itemId);
 }
 
 export function setItemMetadata(itemId: number, entryKey: string, value: string): Promise<AttributeDTO> {
-    return senderItemsSetMetadata.send({itemId: itemId, entryKey: entryKey, newValue: value});
+    return eventBroadcaster.send(EventIds.SET_ITEM_ATTRIBUTE, {itemId: itemId, entryKey: entryKey, newValue: value});
 }
 
 export function requestImport(
@@ -158,7 +106,7 @@ export function requestImport(
     callbackFailed: (result: ImportResultDTO) => void,
     callbackWithErrors: (result: ImportResultDTO) => void
 ): Promise<ImportResultDTO> {
-    return senderItemsImport.send(data)
+    return eventBroadcaster.send(EventIds.IMPORT_ITEMS, data)
         .then((result: ImportResultDTO) => {
             if (result.failed) {
                 callbackFailed(result);
@@ -172,11 +120,11 @@ export function requestImport(
 }
 
 export function requestCloseLibrary(): Promise<void> {
-    return senderLibraryClose.send();
+    return eventBroadcaster.send(EventIds.CLOSE_LIBRARY);
 }
 
 export function requestCreateCollection(name: string, type: CollectionTypeDTO, query: string | null, parentGroupId: number | null): Promise<void> {
-    return senderCollectionsCreate.send({
+    return eventBroadcaster.send(EventIds.CREATE_COLLECTION, {
         name: name,
         type: type,
         parentGroupId: parentGroupId,
@@ -185,51 +133,54 @@ export function requestCreateCollection(name: string, type: CollectionTypeDTO, q
 }
 
 export function requestEditCollection(collectionId: number, name: string, query: string | null): Promise<void> {
-    return senderCollectionsEdit.send({collectionId: collectionId, newName: name, newSmartQuery: query});
+    return eventBroadcaster.send(EventIds.EDIT_COLLECTION, {
+        collectionId: collectionId,
+        newName: name,
+        newSmartQuery: query
+    });
 }
 
 export function requestDeleteCollection(collectionId: number): Promise<void> {
-    return senderCollectionsDelete.send(collectionId);
+    return eventBroadcaster.send(EventIds.DELETE_COLLECTION, collectionId);
 }
 
 export function requestCreateGroup(name: string, parentGroupId: number | null): Promise<void> {
-    return senderGroupsCreate.send({name: name, parentGroupId: parentGroupId}).then();
+    return eventBroadcaster.send(EventIds.CREATE_GROUP, {name: name, parentGroupId: parentGroupId}).then();
 }
 
 export function requestRenameGroup(groupId: number, name: string): Promise<void> {
-    return senderGroupsRename.send({groupId: groupId, newName: name});
+    return eventBroadcaster.send(EventIds.RENAME_GROUP, {groupId: groupId, newName: name});
 }
 
 export function requestDeleteGroup(groupId: number, deleteChildren: boolean): Promise<void> {
-    return senderGroupsDelete.send({groupId: groupId, deleteChildren: deleteChildren});
+    return eventBroadcaster.send(EventIds.DELETE_GROUP, {groupId: groupId, deleteChildren: deleteChildren});
 }
 
 export function requestMoveGroup(groupId: number, targetGroupId: number | null): Promise<void> {
-    return senderGroupsMove.send({groupId: groupId, targetGroupId: targetGroupId});
+    return eventBroadcaster.send(EventIds.MOVE_GROUP, {groupId: groupId, targetGroupId: targetGroupId});
 }
 
 export function requestMoveCollection(collectionId: number, targetGroupId: number | null): Promise<void> {
-    return senderCollectionsMove.send({collectionId: collectionId, targetGroupId: targetGroupId});
+    return eventBroadcaster.send(EventIds.MOVE_COLLECTION, {collectionId: collectionId, targetGroupId: targetGroupId});
 }
 
 export function requestOpenItemsExternal(itemIds: number[]): Promise<void> {
-    return senderItemsOpenExternal.send(itemIds);
+    return eventBroadcaster.send(EventIds.OPEN_ITEMS, itemIds);
 }
 
 export function requestOpenConfigFile(): Promise<void> {
-    console.log("request open config");
-    return senderConfigOpenConfig.send();
+    return eventBroadcaster.send(EventIds.OPEN_CONFIG);
 }
 
 export function fetchExiftoolData(): Promise<[string | null, boolean]> {
-    return senderConfigGetExiftoolData.send()
+    return eventBroadcaster.send(EventIds.GET_EXIFTOOL_INFO)
         .then((data: ExiftoolInfoDTO) => [data.location, data.defined]);
 }
 
 export function setTheme(theme: "dark" | "light"): Promise<void> {
-    return senderConfigSetTheme.send(theme);
+    return eventBroadcaster.send(EventIds.SET_THEME, theme);
 }
 
 export function getTheme(): Promise<"dark" | "light"> {
-    return senderConfigGetTheme.send();
+    return eventBroadcaster.send(EventIds.GET_THEME);
 }

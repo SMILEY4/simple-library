@@ -1,8 +1,6 @@
 import {app} from "electron";
 import {ConfigDataAccess} from "./configDataAccess";
-import {MessageProxy} from "./messageProxy";
 import {WindowHandle} from "./windowHandle";
-import {WorkerHandle} from "./workerHandle";
 import {initWorker} from "../worker/setup";
 
 const isDev: boolean = !app.isPackaged;

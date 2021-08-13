@@ -24,8 +24,7 @@ export class EventBroadcaster {
 
     public send<RESPONSE>(eventId: string, event?: any): Promise<RESPONSE> {
         return this.sendToPartner(eventId, event).then((response: any) => {
-            console.debug("[" + eventId + "] event response: " + JSON.stringify(response))
-            if (response.type === ERR_RESPONSE_TYPE) {
+            if (response && response.type === ERR_RESPONSE_TYPE) {
                 throw (response as ErrorResponse).error
             } else {
                 return response;
@@ -34,7 +33,6 @@ export class EventBroadcaster {
     }
 
     private sendToPartner(eventId: string, event: any): Promise<any> {
-        console.debug("[" + eventId + "] send event: " + JSON.stringify(event))
         switch (this.config.comPartner.partner) {
             case "main":
                 return this.sendToMain(eventId, event);

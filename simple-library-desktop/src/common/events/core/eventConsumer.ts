@@ -71,8 +71,7 @@ export class EventConsumer {
 
     private handleEvent(eventId: string, event: any): any | null {
         if (this.listenerMap.has(eventId)) {
-            const listener = this.listenerMap.get(eventId);
-            return listener(event);
+            return this.listenerMap.get(eventId)(event);
         } else if (this.listenerAll) {
             return this.listenerAll(eventId, event)
         } else {
