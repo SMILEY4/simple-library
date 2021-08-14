@@ -16,6 +16,12 @@ export function ToggleTextField(props: React.PropsWithChildren<ToggleTextFieldPr
     const refInput = useRef(null);
 
     useEffect(() => {
+        if(!editable) {
+            setValue(props.value)
+        }
+    }, [props.value])
+
+    useEffect(() => {
         if (editable) {
             refInput.current.select();
         }

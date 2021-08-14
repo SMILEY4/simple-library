@@ -98,6 +98,17 @@ export function useItems() {
         return fetchItemById(itemId); // todo: error handling -> notification
     }
 
+    function updateItemAttributeState(itemId: number, attributeKey: string, newValue: string): void {
+        itemsDispatch({
+            type: ItemsActionType.UPDATE_ITEM_ATTRIBUTE,
+            payload: {
+                itemId: itemId,
+                key: attributeKey,
+                newValue: newValue
+            }
+        });
+    }
+
     return {
         moveOrCopyItems: moveOrCopy,
         importItems: importItems,
@@ -105,7 +116,8 @@ export function useItems() {
         clearItems: clear,
         removeItems: remove,
         deleteItems: deleteItems,
-        fetchItem: fetchItem
+        fetchItem: fetchItem,
+        updateItemAttributeState: updateItemAttributeState
     };
 
 }

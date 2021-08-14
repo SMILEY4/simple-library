@@ -33,7 +33,8 @@ export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.R
 		openItemExternal,
 		openSelectedItemsExternal,
 		handleDragItem,
-		handleRemoveSelectedItems
+		handleRemoveSelectedItems,
+		handleUpdateItemAttributeValue
 	} = useItemList(props.activeCollection.id)
 
 	const [
@@ -74,7 +75,7 @@ export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.R
 					onOpen={openItemExternal}
 					onDragStart={handleDragItem}
 					onContextMenu={handleOnContextMenu}
-					onUpdateAttributeValue={handleAttributeValue}
+					onUpdateAttributeValue={handleUpdateItemAttributeValue}
 				/>)}
 			</VBox>
 
@@ -108,11 +109,6 @@ export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.R
 			handleSelectItem(itemId, SelectModifier.NONE);
 		}
 		openContextMenuWithEvent(event)
-	}
-
-	function handleAttributeValue(itemId: number, attributeKey: string, prevValue: any, nextValue: any): void {
-		setItemMetadata(itemId, attributeKey, nextValue)
-			.then((newEntry: AttributeDTO) => null); // TODO: reload sidebar if open, maybe reload list-entry
 	}
 
 }

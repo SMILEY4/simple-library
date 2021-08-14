@@ -1,5 +1,5 @@
 import React from "react";
-import {MemoizedItemList} from "./ItemList";
+import {ItemList, MemoizedItemList} from "./ItemList";
 import {VBox} from "../../../../components/layout/box/Box";
 import {useContentArea} from "../../../hooks/app/contentarea/useContentArea";
 
