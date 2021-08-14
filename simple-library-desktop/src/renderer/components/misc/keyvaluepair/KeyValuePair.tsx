@@ -31,7 +31,8 @@ export function KeyValuePair(props: React.PropsWithChildren<KeyValuePairProps>):
 
     function renderKeyLabel(): ReactElement {
         return (
-            <Label bold className={"kv-pair-key-label"} disabled={props.styleType === "focus-value"} overflow="nowrap-hidden">
+            <Label bold className={"kv-pair-key-label"} disabled={props.styleType === "focus-value"}
+                   overflow="nowrap-hidden">
                 {props.keyValue}
             </Label>
         );

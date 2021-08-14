@@ -34,6 +34,12 @@ export function ToggleTextField(props: React.PropsWithChildren<ToggleTextFieldPr
                 "toggle-text-field-input",
                 getIf(props.fillWidth, "toggle-text-field-fill")
             )}
+            onDoubleClick={(e: any) => e.stopPropagation()}
+            draggable
+            onDragStart={(e: any) => {
+                e.stopPropagation();
+                e.preventDefault();
+            }}
         />
     } else {
         return <div
@@ -44,6 +50,7 @@ export function ToggleTextField(props: React.PropsWithChildren<ToggleTextFieldPr
                 getIf(props.fillWidth, "toggle-text-field-fill")
             )}
             onClick={handleClickLabel}
+            onDoubleClick={(e: any) => e.stopPropagation()}
         >
             <Label overflow="cutoff">
                 {value}

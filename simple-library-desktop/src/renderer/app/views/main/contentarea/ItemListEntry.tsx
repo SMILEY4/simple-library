@@ -5,6 +5,7 @@ import "./listItemEntry.css"
 import {AttributeDTO, CollectionTypeDTO, ItemDTO} from "../../../../../common/events/dtoModels";
 import {KeyValuePair} from "../../../../components/misc/keyvaluepair/KeyValuePair";
 import {Label} from "../../../../components/base/label/Label";
+import {ToggleTextField} from "../../../../components/input/textfield/ToggleTextField";
 
 interface ItemListEntryProps {
     item: ItemDTO,
@@ -14,6 +15,7 @@ interface ItemListEntryProps {
     onOpen: (itemId: number) => void,
     onDragStart: (itemId: number, event: React.DragEvent) => void
     onContextMenu: (itemId: number, event: React.MouseEvent) => void,
+    onUpdateAttributeValue: (itemId: number, attribKey: string, prevValue: any, nextValue: any) => void
 }
 
 export function ItemListEntry(props: React.PropsWithChildren<ItemListEntryProps>): React.ReactElement {
@@ -40,11 +42,19 @@ export function ItemListEntry(props: React.PropsWithChildren<ItemListEntryProps>
                     {props.item.attributes
                         .sort((a, b) => a.key.toLowerCase().localeCompare(b.key.toLowerCase()))
                         .map((entry: AttributeDTO) => (
-                            <KeyValuePair key={entry.key} keyValue={attributeKey(entry)} keySize={30}
-                                          styleType="focus-value">
+                            <KeyValuePair
+                                key={entry.key}
+                                keyValue={attributeKey(entry)}
+                                keySize={30}
+                                styleType="focus-value"
+                            >
                                 {entry.type === "none" || entry.value === null || entry.value === undefined
-                                    ? <Label overflow="nowrap-hidden" italic disabled>none</Label>
-                                    : <Label overflow="nowrap-hidden">{entry.value}</Label>}
+                                    ? (<Label overflow="nowrap-hidden" italic disabled>none</Label>)
+                                    : (<ToggleTextField
+                                        fillWidth
+                                        value={entry.value}
+                                        onAccept={value => handleUpdateAttributeValue(entry.key, entry.value, value)}
+                                    />)}
                             </KeyValuePair>
                         ))}
                 </VBox>
@@ -68,6 +78,12 @@ export function ItemListEntry(props: React.PropsWithChildren<ItemListEntryProps>
 
     function handleContextMenu(event: React.MouseEvent): void {
         props.onContextMenu(props.item.id, event)
+    }
+
+    function handleUpdateAttributeValue(key: string, prevValue: any, nextValue: any): void {
+        if (prevValue !== nextValue) {
+            props.onUpdateAttributeValue(props.item.id, key, prevValue, nextValue)
+        }
     }
 
     function attributeKey(attribute: AttributeDTO): string {

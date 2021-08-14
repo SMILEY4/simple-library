@@ -23,6 +23,9 @@ export interface TextFieldProps extends BaseProps {
     onChange?: (value: string) => void,
     onAccept?: (value: string) => void,
     refInputField?: MutableRefObject<any>
+    onDoubleClick?: (event: React.MouseEvent) => void,
+    draggable?: boolean,
+    onDragStart?: (event: React.DragEvent) => void
 }
 
 
@@ -38,6 +41,9 @@ export function TextField(props: React.PropsWithChildren<TextFieldProps>): React
             className={concatClasses(props.className, "text-field")}
             style={props.style}
             forwardRef={props.forwardRef}
+            onDoubleClick={props.onDoubleClick}
+            draggable={props.draggable}
+            onDragStart={props.onDragStart}
         >
             {props.prependIcon && (
                 <Icon

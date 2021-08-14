@@ -9,7 +9,8 @@ import {useContextMenu} from "../../../../components/menu/contextmenu/contextMen
 import {SelectModifier} from "../../../../components/utils/common";
 import {useDialogItemsDeleteController} from "../../../hooks/app/contentarea/useDialogItemsDelete";
 import {DialogDeleteItems} from "./DialogDeleteItems";
-import {CollectionDTO, ItemDTO} from "../../../../../common/events/dtoModels";
+import {AttributeDTO, CollectionDTO, ItemDTO} from "../../../../../common/events/dtoModels";
+import {setItemMetadata} from "../../../common/messagingInterface";
 
 interface ItemListProps {
 	activeCollection: CollectionDTO
@@ -73,6 +74,7 @@ export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.R
 					onOpen={openItemExternal}
 					onDragStart={handleDragItem}
 					onContextMenu={handleOnContextMenu}
+					onUpdateAttributeValue={handleAttributeValue}
 				/>)}
 			</VBox>
 
@@ -106,6 +108,11 @@ export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.R
 			handleSelectItem(itemId, SelectModifier.NONE);
 		}
 		openContextMenuWithEvent(event)
+	}
+
+	function handleAttributeValue(itemId: number, attributeKey: string, prevValue: any, nextValue: any): void {
+		setItemMetadata(itemId, attributeKey, nextValue)
+			.then((newEntry: AttributeDTO) => null); // TODO: reload sidebar if open, maybe reload list-entry
 	}
 
 }
