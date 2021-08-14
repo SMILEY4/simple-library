@@ -111,7 +111,6 @@ export class Application extends Component<any, AppState> {
 				id={APP_ROOT_ID}
 			>
 				<WelcomeView onLoadProject={() => {
-					console.log("SET STATE MAIN")
 					this.setState({currentView: View.MAIN})
 				}}/>
 			</div>

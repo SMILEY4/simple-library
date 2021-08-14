@@ -17,7 +17,7 @@ const configDataAccess: ConfigDataAccess = new ConfigDataAccess();
 const windowHandle: WindowHandle = new WindowHandle(IS_DEV, configDataAccess);
 const workerHandle: WorkerHandle = new WorkerHandle(IS_DEV);
 
-if (WORKER_IN_MAIN) {
+if (!WORKER_IN_MAIN) {
     new EventProxy(
         {
             eventIds: EventIds.ALL_IDS,
