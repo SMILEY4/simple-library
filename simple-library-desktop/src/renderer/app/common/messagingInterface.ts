@@ -9,16 +9,9 @@ import {
     ItemDTO,
     LastOpenedLibraryDTO
 } from "../../../common/events/dtoModels";
-import {EventIds} from "../../../common/events/events";
 import {EventBroadcaster} from "../../../common/events/core/eventBroadcaster";
 import {EventConsumer} from "../../../common/events/core/eventConsumer";
-
-// const ipcWrapper = ipcComWith("main");
-//
-// const eventReceiver = new EventReceiver(ipcWrapper, {
-//     idPrefix: "r"
-// })
-// eventReceiver.addEventId([EventIds.IMPORT_STATUS]);
+import {EventIds} from "../../../common/events/eventIds";
 
 const eventBroadcaster = new EventBroadcaster({
     comPartner: {

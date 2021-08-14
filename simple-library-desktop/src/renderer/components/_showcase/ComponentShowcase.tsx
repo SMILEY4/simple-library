@@ -50,30 +50,40 @@ import {Toolbar} from "../misc/toolbar/Toolbar";
 import {Spacer} from "../base/spacer/Spacer";
 import {Accordion} from "../misc/accordion/Accordion";
 import {ToggleTextField} from "../input/textfield/ToggleTextField";
-import {ipcComWith} from "../../../common/events/core/ipcWrapper";
-import {ConfigSetThemeEventSender} from "../../../common/events/events";
-
-const senderSetTheme = new ConfigSetThemeEventSender(ipcComWith("main"), "r");
+import {EventIds} from "../../../common/events/eventIds";
+import {EventBroadcaster} from "../../../common/events/core/eventBroadcaster";
 
 interface ComponentShowcaseProps {
     theme: Theme,
     onChangeTheme: (theme: Theme) => void
 }
 
+const eventBroadcaster = new EventBroadcaster({
+    comPartner: {
+        partner: "main"
+    },
+    eventIdPrefix: "r",
+    suppressPayloadLog: [EventIds.GET_ITEMS_BY_COLLECTION, EventIds.GET_ITEM_BY_ID],
+});
+
 export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowcaseProps>): ReactElement {
 
     const [background, setBackground] = useState("2");
+
+    function setTheme(theme: "dark" | "light"): Promise<void> {
+        return eventBroadcaster.send(EventIds.SET_THEME, theme);
+    }
 
     return (
         <div className={"showcase theme-" + props.theme + " showcase-background-" + background} id={"showcase-root"}>
 
             <div className={"showcase-header"}>
                 <div onClick={() => {
-                    senderSetTheme.send("dark").then(() => props.onChangeTheme(Theme.DARK));
+                    setTheme("dark").then(() => props.onChangeTheme(Theme.DARK));
                 }}>Dark
                 </div>
                 <div onClick={() => {
-                    senderSetTheme.send("light").then(() => props.onChangeTheme(Theme.DARK));
+                    setTheme("light").then(() => props.onChangeTheme(Theme.DARK));
                 }}>Light
                 </div>
                 <div onClick={() => setBackground("0")}>BG-0</div>

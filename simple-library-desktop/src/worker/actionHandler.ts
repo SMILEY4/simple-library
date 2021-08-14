@@ -43,7 +43,7 @@ import {ImportStepImportTarget} from "./service/import/importStepImportTarget";
 import {ImportStepMetadata} from "./service/import/importStepMetadata";
 import {voidThen} from "../common/utils";
 import {EventDistributor} from "../common/events/eventDistributor";
-import {EventIds} from "../common/events/events";
+import {EventIds} from "../common/events/eventIds";
 
 export class ActionHandler {
 

@@ -1,8 +1,8 @@
 import {ActionHandler} from "./actionHandler";
 import {BrowserWindow} from "electron";
-import {EventIds} from "../common/events/events";
 import {EventConsumer} from "../common/events/core/eventConsumer";
 import {EventBroadcaster} from "../common/events/core/eventBroadcaster";
+import {EventIds} from "../common/events/eventIds";
 
 export function initWorker(runInMain?: boolean, targetBrowserWindow?: BrowserWindow | (() => BrowserWindow)): void {
     console.log("initialize worker");
