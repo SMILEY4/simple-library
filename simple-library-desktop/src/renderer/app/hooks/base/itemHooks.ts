@@ -42,7 +42,7 @@ export function useItems() {
 
     const itemsDispatch = useItemsDispatch();
 
-    const itemAttributeKeys: string[] = ["EXIF.ISO", "EXIF.Model", "IPTC.Keywords"];
+    const itemAttributeKeys: string[] = ["File.FileName", "File.FileCreatedDate", "File.FileSize", "File.FileType"];
 
     function load(collectionId: number): void {
         fetchItems(collectionId, itemAttributeKeys)

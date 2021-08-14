@@ -59,6 +59,7 @@ export function MetadataSidebar(props: React.PropsWithChildren<MetadataSidebarPr
                         .sort((a, b) => a.title.toLowerCase().localeCompare(b.title.toLowerCase()))
                         .map(group => {
                             return <MetadataGroupListEntry
+                                key={group.title}
                                 title={group.title}
                                 entries={group.entries}
                                 searchFilter={search.toLowerCase()}

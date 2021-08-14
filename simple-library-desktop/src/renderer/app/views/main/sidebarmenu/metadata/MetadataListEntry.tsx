@@ -1,7 +1,7 @@
 import React from "react";
-import {SimpleMetadataEntry} from "./SimpleMetadataEntry";
 import {ToggleTextField} from "../../../../../components/input/textfield/ToggleTextField";
 import {AttributeDTO} from "../../../../../../common/events/dtoModels";
+import {KeyValuePair} from "../../../../../components/misc/keyvaluepair/KeyValuePair";
 
 interface MetadataListEntryProps {
     entry: AttributeDTO,
@@ -13,13 +13,13 @@ interface MetadataListEntryProps {
 export function MetadataListEntry(props: React.PropsWithChildren<MetadataListEntryProps>): React.ReactElement {
 
     return (
-        <SimpleMetadataEntry entryKey={props.shortName}>
+        <KeyValuePair keyValue={props.shortName}>
             <ToggleTextField
                 fillWidth
                 value={props.entry.value}
                 onAccept={handleUpdateValue}
             />
-        </SimpleMetadataEntry>
+        </KeyValuePair>
     );
 
     function handleUpdateValue(value: string): void {
