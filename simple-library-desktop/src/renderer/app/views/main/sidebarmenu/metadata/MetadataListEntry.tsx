@@ -13,7 +13,7 @@ interface MetadataListEntryProps {
 export function MetadataListEntry(props: React.PropsWithChildren<MetadataListEntryProps>): React.ReactElement {
 
     return (
-        <KeyValuePair keyValue={props.shortName}>
+        <KeyValuePair keyValue={props.shortName} styleType="focus-key">
             <ToggleTextField
                 fillWidth
                 value={props.entry.value}

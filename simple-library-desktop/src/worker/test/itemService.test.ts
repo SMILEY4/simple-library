@@ -42,7 +42,7 @@ describe("item-service", () => {
 				])
 			]);
 			// when
-			const result: Promise<Item[]> = actionGetByCollection.perform(1, []);
+			const result: Promise<Item[]> = actionGetByCollection.perform(1, [], false);
 			// then
 			await expect(result).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, []),
@@ -76,7 +76,7 @@ describe("item-service", () => {
 				])
 			]);
 			// when
-			const result: Promise<Item[]> = actionGetByCollection.perform(1, ["att1", "att3"]);
+			const result: Promise<Item[]> = actionGetByCollection.perform(1, ["att1", "att3"], false);
 			// then
 			await expect(result).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, [
@@ -115,7 +115,7 @@ describe("item-service", () => {
 				])
 			]);
 			// when
-			const result: Promise<Item[]> = actionGetByCollection.perform(2, ["att1", "att3"]);
+			const result: Promise<Item[]> = actionGetByCollection.perform(2, ["att1", "att3"], false);
 			// then
 			await expect(result).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, [
@@ -153,7 +153,7 @@ describe("item-service", () => {
 				])
 			]);
 			// when
-			const result: Promise<Item[]> = actionGetByCollection.perform(2, ["att1", "att3"]);
+			const result: Promise<Item[]> = actionGetByCollection.perform(2, ["att1", "att3"], false);
 			// then
 			await expect(result).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, [
@@ -193,7 +193,7 @@ describe("item-service", () => {
 				])
 			]);
 			// when
-			const result: Promise<Item[]> = actionGetByCollection.perform(42, ["att1", "att3"]);
+			const result: Promise<Item[]> = actionGetByCollection.perform(42, ["att1", "att3"], false);
 			// then
 			await expect(result).rejects.toBeDefined();
 		});

@@ -42,10 +42,10 @@ export function useItems() {
 
     const itemsDispatch = useItemsDispatch();
 
-    const itemAttributeKeys: string[] = ["File.FileName", "File.FileCreatedDate", "File.FileSize", "File.FileType"];
+    const itemAttributeKeys: string[] = ["File.FileName", "File.FileCreateDate", "File.FileSize", "File.FileType", "JFIF.JFIFVersion", "PNG.Gamma"];
 
     function load(collectionId: number): void {
-        fetchItems(collectionId, itemAttributeKeys)
+        fetchItems(collectionId, itemAttributeKeys, true)
             .catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_FETCH_FAILED, error))
             .then((items: ItemDTO[]) => itemsDispatch({
                 type: ItemsActionType.SET_ITEMS,

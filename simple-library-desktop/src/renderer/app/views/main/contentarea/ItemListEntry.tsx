@@ -28,24 +28,25 @@ export function ItemListEntry(props: React.PropsWithChildren<ItemListEntryProps>
         >
             <HBox
                 alignMain="start"
-                alignCross="stretch"
+                alignCross="center"
                 className={concatClasses(
                     "list-item-entry",
                     getIf(props.selected, "list-item-entry-selected")
                 )}
             >
-                <img src={props.item.thumbnail} alt='img' draggable={false}/>
+                <img src={props.item.thumbnail} alt='img' draggable={false} style={{padding: "var(--s-0-5)"}}/>
 
                 <VBox spacing="0-5" padding="0-75" alignMain="start" alignCross="stretch" fill>
-                    {
-                        props.item.attributes
-                            .sort((a, b) => a.key.toLowerCase().localeCompare(b.key.toLowerCase()))
-                            .map((entry: AttributeDTO) => (
-                                <KeyValuePair key={entry.key} keyValue={entry.key} keySize={30} keyDisabled>
-                                    <Label>{entry.value}</Label>
-                                </KeyValuePair>
-                            ))
-                    }
+                    {props.item.attributes
+                        .sort((a, b) => a.key.toLowerCase().localeCompare(b.key.toLowerCase()))
+                        .map((entry: AttributeDTO) => (
+                            <KeyValuePair key={entry.key} keyValue={attributeKey(entry)} keySize={30}
+                                          styleType="focus-value">
+                                {entry.type === "none" || entry.value === null || entry.value === undefined
+                                    ? <Label overflow="nowrap-hidden" italic disabled>none</Label>
+                                    : <Label overflow="nowrap-hidden">{entry.value}</Label>}
+                            </KeyValuePair>
+                        ))}
                 </VBox>
             </HBox>
         </div>
@@ -67,6 +68,15 @@ export function ItemListEntry(props: React.PropsWithChildren<ItemListEntryProps>
 
     function handleContextMenu(event: React.MouseEvent): void {
         props.onContextMenu(props.item.id, event)
+    }
+
+    function attributeKey(attribute: AttributeDTO): string {
+        const parts: string[] = attribute.key.split(/\.(.+)/);
+        if (parts.length >= 2) {
+            return parts[1];
+        } else {
+            return attribute.key;
+        }
     }
 
 }
