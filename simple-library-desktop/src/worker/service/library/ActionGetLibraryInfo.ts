@@ -1,16 +1,15 @@
-import {DbAccess} from "../../persistence/dbAcces";
-import {SQL} from "../../persistence/sqlHandler";
 import {LibraryInformation} from "./libraryCommons";
+import {DataRepository} from "../dataRepository";
 
 /**
  * Get information / metadata about the current library
  */
 export class ActionGetLibraryInfo {
 
-	private readonly dbAccess: DbAccess;
+	private readonly repository: DataRepository;
 
-	constructor(dbAccess: DbAccess) {
-		this.dbAccess = dbAccess;
+	constructor(repository: DataRepository) {
+		this.repository = repository;
 	}
 
 
@@ -25,7 +24,7 @@ export class ActionGetLibraryInfo {
 
 
 	private queryInfo(): Promise<any[]> {
-		return this.dbAccess.queryAll(SQL.queryLibraryInfo());
+		return this.repository.getLibraryInfo();
 	}
 
 

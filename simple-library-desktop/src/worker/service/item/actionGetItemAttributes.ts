@@ -1,19 +1,18 @@
-import {DbAccess} from "../../persistence/dbAcces";
-import {SQL} from "../../persistence/sqlHandler";
 import {ActionGetItemById} from "./actionGetItemById";
 import {Attribute, Item, rowToAttribute} from "./itemCommon";
+import {DataRepository} from "../dataRepository";
 
 /**
  * Get all attributes of the given item
  */
 export class ActionGetItemAttributes {
 
-	private readonly dbAccess: DbAccess;
+	private readonly repository: DataRepository;
 	private readonly actionGetById: ActionGetItemById;
 
 
-	constructor(dbAccess: DbAccess, actionGetById: ActionGetItemById) {
-		this.dbAccess = dbAccess;
+	constructor(repository: DataRepository, actionGetById: ActionGetItemById) {
+		this.repository = repository;
 		this.actionGetById = actionGetById;
 	}
 
@@ -32,7 +31,7 @@ export class ActionGetItemAttributes {
 
 
 	private getAttributes(item: Item): Promise<Attribute[]> {
-		return this.dbAccess.queryAll(SQL.queryItemAttributes(item.id))
+		return this.repository.getItemAttributesByItem(item.id)
 			.then((rows: any[]) => rows.map(row => rowToAttribute(row)));
 	}
 

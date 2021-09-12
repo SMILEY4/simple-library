@@ -1,6 +1,7 @@
 import {DbAccess} from "../../persistence/dbAcces";
 import {SQL} from "../../persistence/sqlHandler";
 import {Group, rowToMinGroup} from "./groupCommons";
+import {DataRepository} from "../dataRepository";
 
 
 /**
@@ -8,12 +9,11 @@ import {Group, rowToMinGroup} from "./groupCommons";
  */
 export class ActionGetGroupById {
 
-	private readonly dbAccess: DbAccess;
+	private readonly repository: DataRepository;
 
-	constructor(dbAccess: DbAccess) {
-		this.dbAccess = dbAccess;
+	constructor(repository: DataRepository) {
+		this.repository = repository;
 	}
-
 
 	public perform(groupId: number): Promise<Group | null> {
 		return this.query(groupId).then(rowToMinGroup);
@@ -21,7 +21,7 @@ export class ActionGetGroupById {
 
 
 	private query(groupId: number): Promise<any | null> {
-		return this.dbAccess.querySingle(SQL.queryGroupById(groupId));
+		return this.repository.getGroupById(groupId)
 	}
 
 }

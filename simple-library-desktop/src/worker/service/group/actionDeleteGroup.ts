@@ -1,10 +1,8 @@
-import {DbAccess} from "../../persistence/dbAcces";
-import {SQL} from "../../persistence/sqlHandler";
 import {ActionGetGroupById} from "./actionGetGroupById";
 import {ActionMoveAllCollections} from "../collection/actionMoveAllCollections";
-import {voidThen} from "../../../common/utils";
 import {ActionMoveAllGroups} from "./actionMoveAllGroups";
 import {Group} from "./groupCommons";
+import {DataRepository} from "../dataRepository";
 
 /**
  * Delete the group with the given id. Optionally delete all its children and collections.
@@ -12,18 +10,18 @@ import {Group} from "./groupCommons";
  */
 export class ActionDeleteGroup {
 
-	private readonly dbAccess: DbAccess;
+	private readonly repository: DataRepository;
 	private readonly actionGetById: ActionGetGroupById;
 	private readonly actionMoveAllCollections: ActionMoveAllCollections;
 	private readonly actionMoveAllGroups: ActionMoveAllGroups;
 
 	constructor(
-		dbAccess: DbAccess,
+		repository: DataRepository,
 		actionGetGroupById: ActionGetGroupById,
 		actionMoveAllCollections: ActionMoveAllCollections,
 		actionMoveAllGroups: ActionMoveAllGroups
 	) {
-		this.dbAccess = dbAccess;
+		this.repository = repository;
 		this.actionGetById = actionGetGroupById;
 		this.actionMoveAllCollections = actionMoveAllCollections;
 		this.actionMoveAllGroups = actionMoveAllGroups;
@@ -44,7 +42,7 @@ export class ActionDeleteGroup {
 	}
 
 	private deleteGroup(groupId: number): Promise<void> {
-		return this.dbAccess.run(SQL.deleteGroup(groupId)).then(voidThen);
+		return this.repository.deleteGroup(groupId);
 	}
 
 

@@ -1,4 +1,3 @@
-
 export type CollectionType = "normal" | "smart";
 
 

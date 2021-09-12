@@ -3,6 +3,9 @@ import {BrowserWindow} from "electron";
 import {EventConsumer} from "../common/events/core/eventConsumer";
 import {EventBroadcaster} from "../common/events/core/eventBroadcaster";
 import {EventIds} from "../common/events/eventIds";
+import {DataRepository} from "./service/dataRepository";
+import {SQLiteDataRepository} from "./persistence/sqliteRepository";
+import {DbAccess} from "./persistence/dbAcces";
 
 export function initWorker(runInMain?: boolean, targetBrowserWindow?: BrowserWindow | (() => BrowserWindow)): void {
     console.log("initialize worker");
@@ -26,7 +29,8 @@ export function initWorker(runInMain?: boolean, targetBrowserWindow?: BrowserWin
         suppressPayloadLog: [EventIds.GET_ITEMS_BY_COLLECTION, EventIds.GET_ITEM_BY_ID],
     });
 
-    const actionHandler = new ActionHandler((eventId: string, payload: any) => {
+    const dataRepository: DataRepository = new SQLiteDataRepository(new DbAccess());
+    const actionHandler = new ActionHandler(dataRepository, (eventId: string, payload: any) => {
         switch (eventId) {
             case EventIds.IMPORT_STATUS: {
                 return eventBroadcaster.send(EventIds.IMPORT_STATUS, payload)

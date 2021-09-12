@@ -1,20 +1,19 @@
-import {DbAccess} from "../../persistence/dbAcces";
-import {SQL} from "../../persistence/sqlHandler";
 import {ActionGetCollectionById} from "../collection/actionGetCollectionById";
-import {Attribute, AttributeType, Item, rowsToItems} from "./itemCommon";
+import {Attribute, Item, rowsToItems} from "./itemCommon";
 import {Collection} from "../collection/collectionCommons";
+import {DataRepository} from "../dataRepository";
 
 /**
  * Get all items of the given collection (with the attributes of the given keys)
  */
 export class ActionGetItemsByCollection {
 
-    private readonly dbAccess: DbAccess;
+    private readonly repository: DataRepository;
     private readonly actionGetCollectionById: ActionGetCollectionById;
 
 
-    constructor(dbAccess: DbAccess, actionGetCollectionById: ActionGetCollectionById) {
-        this.dbAccess = dbAccess;
+    constructor(repository: DataRepository, actionGetCollectionById: ActionGetCollectionById) {
+        this.repository = repository;
         this.actionGetCollectionById = actionGetCollectionById;
     }
 
@@ -50,15 +49,15 @@ export class ActionGetItemsByCollection {
 
 
     private getItemDataFromNormal(collection: Collection, attributeKeys: string[]): Promise<any[]> {
-        return this.dbAccess.queryAll(SQL.queryItemsByCollection(collection.id, attributeKeys));
+        return this.repository.getItemsByCollection(collection.id, attributeKeys);
     }
 
 
     private getItemDataFromSmart(collection: Collection, attributeKeys: string[]): Promise<any[]> {
         const fetchWithQuery = collection.smartQuery && collection.smartQuery.length > 0;
         return fetchWithQuery
-            ? this.dbAccess.queryAll(SQL.queryItemsByCustomQuery(collection.smartQuery, attributeKeys))
-            : this.dbAccess.queryAll(SQL.queryItemsAll(attributeKeys));
+            ? this.repository.getItemsByCustomQuery(collection.smartQuery, attributeKeys)
+            : this.repository.getItemsAll(attributeKeys);
     }
 
 

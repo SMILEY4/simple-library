@@ -13,6 +13,7 @@ import {MemDbAccess} from "./memDbAccess";
 import {SQL} from "../persistence/sqlHandler";
 import {ActionGetExiftoolInfo} from "../service/config/actionGetExiftoolInfo";
 import {ActionCreateLibrary} from "../service/library/actionCreateLibrary";
+import {SQLiteDataRepository} from "../persistence/sqliteRepository";
 
 describe("import", () => {
 
@@ -937,7 +938,7 @@ function mockImportService(): [ImportService, ActionCreateLibrary, FileSystemWra
     ImportStepMetadata["createExiftoolProcess"] = jest.fn().mockReturnValue(mockExiftoolProcess());
 
     const importService: ImportService = new ImportService(
-        dbAccess,
+        new SQLiteDataRepository(dbAccess),
         new ImportDataValidator(fsWrapper),
         stepHash,
         stepThumbnail,
@@ -946,7 +947,7 @@ function mockImportService(): [ImportService, ActionCreateLibrary, FileSystemWra
         new ImportStepMetadata(new ActionGetExiftoolInfo(configAccess)),
         () => Promise.resolve()
     );
-    const actionCreateLibrary = new ActionCreateLibrary(dbAccess, fsWrapper);
+    const actionCreateLibrary = new ActionCreateLibrary(new SQLiteDataRepository(dbAccess), fsWrapper);
     return [importService, actionCreateLibrary, fsWrapper, dbAccess];
 }
 

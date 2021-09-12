@@ -1,21 +1,20 @@
-import {DbAccess} from "../../persistence/dbAcces";
 import {FileSystemWrapper} from "../fileSystemWrapper";
-import {SQL} from "../../persistence/sqlHandler";
 import {ActionGetLibraryInfo} from "./ActionGetLibraryInfo";
 import {LibraryFileHandle, LibraryInformation} from "./libraryCommons";
+import {DataRepository} from "../dataRepository";
 
 /**
  * "Opens" the library-file at the given location.
  */
 export class ActionOpenLibrary {
 
-	private readonly dbAccess: DbAccess;
+	private readonly repository: DataRepository;
 	private readonly fsWrapper: FileSystemWrapper;
 	private readonly actionGetInfo: ActionGetLibraryInfo;
 
 
-	constructor(dbAccess: DbAccess, fsWrapper: FileSystemWrapper, actionGetInfo: ActionGetLibraryInfo) {
-		this.dbAccess = dbAccess;
+	constructor(repository: DataRepository, fsWrapper: FileSystemWrapper, actionGetInfo: ActionGetLibraryInfo) {
+		this.repository = repository;
 		this.fsWrapper = fsWrapper;
 		this.actionGetInfo = actionGetInfo;
 	}
@@ -39,12 +38,12 @@ export class ActionOpenLibrary {
 
 	private open(filepath: string): Promise<any> {
 		console.log("Opening library: " + filepath);
-		return this.dbAccess.setDatabasePath(filepath, false);
+		return this.repository.open(filepath, false);
 	}
 
 
 	private updateOpenedTimestamp(): Promise<any> {
-		return this.dbAccess.run(SQL.updateLibraryInfoTimestampLastOpened(Date.now()));
+		return this.repository.updateLibraryLastOpened(Date.now());
 	}
 
 

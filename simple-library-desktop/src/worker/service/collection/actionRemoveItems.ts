@@ -1,19 +1,18 @@
-import {DbAccess} from "../../persistence/dbAcces";
 import {ActionGetCollectionById} from "./actionGetCollectionById";
 import {voidThen} from "../../../common/utils";
-import {SQL} from "../../persistence/sqlHandler";
-import {Collection, CollectionType} from "./collectionCommons";
+import {Collection} from "./collectionCommons";
+import {DataRepository} from "../dataRepository";
 
 /**
  * Removes the given items from the given collection
  */
 export class ActionRemoveItems {
 
-	private readonly dbAccess: DbAccess;
+	private readonly repository: DataRepository;
 	private readonly actionGetById: ActionGetCollectionById;
 
-	constructor(dbAccess: DbAccess, actionGetById: ActionGetCollectionById) {
-		this.dbAccess = dbAccess;
+	constructor(repository: DataRepository, actionGetById: ActionGetCollectionById) {
+		this.repository = repository;
 		this.actionGetById = actionGetById;
 	}
 
@@ -42,7 +41,7 @@ export class ActionRemoveItems {
 
 
 	private remove(collection: Collection, itemIds: number[]): Promise<any> {
-		return this.dbAccess.run(SQL.updateRemoveItemsFromCollection(collection.id, itemIds));
+		return this.repository.separateItemsFromCollection(collection.id, itemIds)
 	}
 
 }

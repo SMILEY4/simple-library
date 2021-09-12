@@ -1,19 +1,18 @@
-import {DbAccess} from "../../persistence/dbAcces";
 import {ActionGetCollectionById} from "./actionGetCollectionById";
-import {Collection, CollectionType} from "./collectionCommons";
+import {Collection} from "./collectionCommons";
 import {voidThen} from "../../../common/utils";
-import {SQL} from "../../persistence/sqlHandler";
+import {DataRepository} from "../dataRepository";
 
 /**
  * Edits the collection with the given id, i.e. sets the name and smart-query
  */
 export class ActionEditCollection {
 
-	private readonly dbAccess: DbAccess;
+	private readonly repository: DataRepository;
 	private readonly actionGetById: ActionGetCollectionById;
 
-	constructor(dbAccess: DbAccess, actionGetById: ActionGetCollectionById) {
-		this.dbAccess = dbAccess;
+	constructor(repository: DataRepository, actionGetById: ActionGetCollectionById) {
+		this.repository = repository;
 		this.actionGetById = actionGetById;
 	}
 
@@ -49,7 +48,7 @@ export class ActionEditCollection {
 	}
 
 	private testExecSmartQuery(query: string): Promise<any | null> {
-		return this.dbAccess.querySingle(SQL.queryItemsByCustomQuery(query));
+		return this.repository.getItemByCustomQuery(query, [])
 	}
 
 	private editCollection(collection: Collection, newName: string, newSmartQuery: string | null): Promise<any> {
@@ -62,14 +61,11 @@ export class ActionEditCollection {
 	}
 
 	private editNormalCollection(collection: Collection, newName: string): Promise<any> {
-		return this.dbAccess.run(SQL.updateCollectionName(collection.id, newName));
+		return this.repository.updateCollectionName(collection.id, newName);
 	}
 
 	private editSmartCollection(collection: Collection, newName: string, newSmartQuery: string): Promise<any> {
-		return this.dbAccess.runMultiple([
-			SQL.updateCollectionName(collection.id, newName),
-			SQL.updateCollectionSmartQuery(collection.id, newSmartQuery)
-		]);
+		return this.repository.updateCollectionNameAndQuery(collection.id, newName, newSmartQuery)
 	}
 
 }

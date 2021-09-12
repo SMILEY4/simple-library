@@ -1,20 +1,18 @@
-import {DbAccess} from "../../persistence/dbAcces";
-import {SQL} from "../../persistence/sqlHandler";
-import {voidThen} from "../../../common/utils";
+import {DataRepository} from "../dataRepository";
 
 /**
  * Delete the collection with the given id
  */
 export class ActionDeleteCollection {
 
-	private readonly dbAccess: DbAccess;
+	private readonly repository: DataRepository;
 
-	constructor(dbAccess: DbAccess) {
-		this.dbAccess = dbAccess;
+	constructor(repository: DataRepository) {
+		this.repository = repository;
 	}
 
 	public perform(collectionId: number): Promise<void> {
-		return this.dbAccess.run(SQL.deleteCollection(collectionId)).then(voidThen);
+		return this.repository.deleteCollection(collectionId)
 	}
 
 }

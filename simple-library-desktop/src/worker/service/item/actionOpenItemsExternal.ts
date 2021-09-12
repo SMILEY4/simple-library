@@ -1,19 +1,18 @@
-import {DbAccess} from "../../persistence/dbAcces";
-import {SQL} from "../../persistence/sqlHandler";
 import {voidThen} from "../../../common/utils";
 import {FileSystemWrapper} from "../fileSystemWrapper";
 import {Item, rowsToItems} from "./itemCommon";
+import {DataRepository} from "../dataRepository";
 
 /**
  * Open the given items with the system default application.
  */
 export class ActionOpenItemsExternal {
 
-	private readonly dbAccess: DbAccess;
+	private readonly repository: DataRepository;
 	private readonly fsWrapper: FileSystemWrapper;
 
-	constructor(dbAccess: DbAccess, fsWrapper: FileSystemWrapper) {
-		this.dbAccess = dbAccess;
+	constructor(repository: DataRepository, fsWrapper: FileSystemWrapper) {
+		this.repository = repository;
 		this.fsWrapper = fsWrapper;
 	}
 
@@ -27,7 +26,7 @@ export class ActionOpenItemsExternal {
 
 
 	private getItems(itemIds: number[]): Promise<Item[]> {
-		return this.dbAccess.queryAll(SQL.queryItemsByIds(itemIds))
+		return this.repository.getItemsByIds(itemIds)
 			.then(rowsToItems);
 	}
 

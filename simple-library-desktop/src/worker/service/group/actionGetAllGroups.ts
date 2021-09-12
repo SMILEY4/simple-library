@@ -1,8 +1,7 @@
-import {DbAccess} from "../../persistence/dbAcces";
-import {SQL} from "../../persistence/sqlHandler";
 import {ActionGetAllCollections} from "../collection/actionGetAllCollections";
 import {Collection} from "../collection/collectionCommons";
 import {Group, rowsToMinGroups} from "./groupCommons";
+import {DataRepository} from "../dataRepository";
 
 /**
  * Get all groups as a flat array. Optionally include collections and their item-counts.
@@ -10,11 +9,11 @@ import {Group, rowsToMinGroups} from "./groupCommons";
  */
 export class ActionGetAllGroups {
 
-	private readonly dbAccess: DbAccess;
+	private readonly repository: DataRepository;
 	private readonly actionGetAllCollections: ActionGetAllCollections;
 
-	constructor(dbAccess: DbAccess, actionGetAllCollections: ActionGetAllCollections) {
-		this.dbAccess = dbAccess;
+	constructor(repository: DataRepository, actionGetAllCollections: ActionGetAllCollections) {
+		this.repository = repository;
 		this.actionGetAllCollections = actionGetAllCollections;
 	}
 
@@ -27,7 +26,7 @@ export class ActionGetAllGroups {
 
 
 	private query(): Promise<any | null> {
-		return this.dbAccess.queryAll(SQL.queryAllGroups());
+		return this.repository.getAllGroups();
 	}
 
 

@@ -1,16 +1,15 @@
 import {Collection, CollectionType} from "./collectionCommons";
-import {DbAccess} from "../../persistence/dbAcces";
-import {SQL} from "../../persistence/sqlHandler";
+import {DataRepository} from "../dataRepository";
 
 /**
  * Creates a new collection.
  */
 export class ActionCreateCollection {
 
-	private readonly dbAccess: DbAccess;
+	private readonly repository: DataRepository;
 
-	constructor(dbAccess: DbAccess) {
-		this.dbAccess = dbAccess;
+	constructor(repository: DataRepository) {
+		this.repository = repository;
 	}
 
 	public perform(type: CollectionType, name: string, parentGroupId: number | null, smartQuery: string | null): Promise<Collection> {
@@ -39,7 +38,7 @@ export class ActionCreateCollection {
 		if (!query || query.trim().length === 0) {
 			return Promise.resolve();
 		} else {
-			return this.dbAccess.querySingle(SQL.queryItemsByCustomQuery(query, []));
+			return this.repository.getItemsByCustomQuery(query, []);
 		}
 	}
 
@@ -55,13 +54,12 @@ export class ActionCreateCollection {
 	}
 
 	private insert(collection: Collection): Promise<number | null> {
-		return this.dbAccess.run(SQL.insertCollection(collection.name, collection.type, collection.groupId, collection.smartQuery));
+		return this.repository.insertCollection(collection.name, collection.type, collection.groupId, collection.smartQuery);
 	}
 
 	private appendId(collection: Collection, id: number | null): Collection {
 		collection.id = id;
 		return collection;
 	}
-
 
 }

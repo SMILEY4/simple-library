@@ -14,6 +14,8 @@ import {ActionMoveAllCollections} from "../service/collection/actionMoveAllColle
 import {ActionRemoveItems} from "../service/collection/actionRemoveItems";
 import {ActionCreateLibrary} from "../service/library/actionCreateLibrary";
 import {Collection, CollectionType} from "../service/collection/collectionCommons";
+import {DataRepository} from "../service/dataRepository";
+import {SQLiteDataRepository} from "../persistence/sqliteRepository";
 
 describe("collection-service", () => {
 
@@ -21,8 +23,8 @@ describe("collection-service", () => {
 
 		test("get all without item count when empty", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockCollectionService();
-			const actionGetAll = new ActionGetAllCollections(dbAccess);
+			const [actionCreateLibrary, repository, dbAccess] = mockCollectionService();
+			const actionGetAll = new ActionGetAllCollections(repository);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			// when
 			const result: Promise<Collection[]> = actionGetAll.perform(false);
@@ -33,8 +35,8 @@ describe("collection-service", () => {
 
 		test("get all without item count", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockCollectionService();
-			const actionGetAll = new ActionGetAllCollections(dbAccess);
+			const [actionCreateLibrary, repository, dbAccess] = mockCollectionService();
+			const actionGetAll = new ActionGetAllCollections(repository);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group", null),
@@ -64,8 +66,8 @@ describe("collection-service", () => {
 
 		test("get all with item count", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockCollectionService();
-			const actionGetAll = new ActionGetAllCollections(dbAccess);
+			const [actionCreateLibrary, repository, dbAccess] = mockCollectionService();
+			const actionGetAll = new ActionGetAllCollections(repository);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group", null),
@@ -99,10 +101,10 @@ describe("collection-service", () => {
 
 		test("create normal collection", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockCollectionService();
-			const actionGetAll = new ActionGetAllCollections(dbAccess);
-			const actionCreate = new ActionCreateCollection(dbAccess);
-			const actionGetById = new ActionGetCollectionById(dbAccess);
+			const [actionCreateLibrary, repository, dbAccess] = mockCollectionService();
+			const actionGetAll = new ActionGetAllCollections(repository);
+			const actionCreate = new ActionCreateCollection(repository);
+			const actionGetById = new ActionGetCollectionById(repository);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group", null)
@@ -125,10 +127,10 @@ describe("collection-service", () => {
 
 		test("create smart collection", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockCollectionService();
-			const actionGetAll = new ActionGetAllCollections(dbAccess);
-			const actionCreate = new ActionCreateCollection(dbAccess);
-			const actionGetById = new ActionGetCollectionById(dbAccess);
+			const [actionCreateLibrary, repository, dbAccess] = mockCollectionService();
+			const actionGetAll = new ActionGetAllCollections(repository);
+			const actionCreate = new ActionCreateCollection(repository);
+			const actionGetById = new ActionGetCollectionById(repository);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group", null),
@@ -164,9 +166,9 @@ describe("collection-service", () => {
 
 		test("create smart collection with invalid query", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockCollectionService();
-			const actionGetAll = new ActionGetAllCollections(dbAccess);
-			const actionCreate = new ActionCreateCollection(dbAccess);
+			const [actionCreateLibrary, repository, dbAccess] = mockCollectionService();
+			const actionGetAll = new ActionGetAllCollections(repository);
+			const actionCreate = new ActionCreateCollection(repository);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group", null),
@@ -188,10 +190,10 @@ describe("collection-service", () => {
 
 		test("delete existing normal collection", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockCollectionService();
-			const actionDelete = new ActionDeleteCollection(dbAccess);
-			const actionGetAll = new ActionGetAllCollections(dbAccess);
-			const actionGetById = new ActionGetCollectionById(dbAccess);
+			const [actionCreateLibrary, repository, dbAccess] = mockCollectionService();
+			const actionDelete = new ActionDeleteCollection(repository);
+			const actionGetAll = new ActionGetAllCollections(repository);
+			const actionGetById = new ActionGetCollectionById(repository);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group", null),
@@ -227,10 +229,10 @@ describe("collection-service", () => {
 
 		test("delete existing smart collection", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockCollectionService();
-			const actionDelete = new ActionDeleteCollection(dbAccess);
-			const actionGetAll = new ActionGetAllCollections(dbAccess);
-			const actionGetById = new ActionGetCollectionById(dbAccess);
+			const [actionCreateLibrary, repository, dbAccess] = mockCollectionService();
+			const actionDelete = new ActionDeleteCollection(repository);
+			const actionGetAll = new ActionGetAllCollections(repository);
+			const actionGetById = new ActionGetCollectionById(repository);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group", null),
@@ -265,10 +267,10 @@ describe("collection-service", () => {
 
 		test("delete non-existing collection expect no change", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockCollectionService();
-			const actionDelete = new ActionDeleteCollection(dbAccess);
-			const actionGetAll = new ActionGetAllCollections(dbAccess);
-			const actionGetById = new ActionGetCollectionById(dbAccess);
+			const [actionCreateLibrary, repository, dbAccess] = mockCollectionService();
+			const actionDelete = new ActionDeleteCollection(repository);
+			const actionGetAll = new ActionGetAllCollections(repository);
+			const actionGetById = new ActionGetCollectionById(repository);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group", null),
@@ -297,9 +299,9 @@ describe("collection-service", () => {
 
 		test("edit collection (name and query) expect updated", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockCollectionService();
-			const actionGetById = new ActionGetCollectionById(dbAccess);
-			const actionEdit = new ActionEditCollection(dbAccess, actionGetById);
+			const [actionCreateLibrary, repository, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(repository);
+			const actionEdit = new ActionEditCollection(repository, actionGetById);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group", null),
@@ -321,9 +323,9 @@ describe("collection-service", () => {
 
 		test("edit normal collection query expect no change", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockCollectionService();
-			const actionGetById = new ActionGetCollectionById(dbAccess);
-			const actionEdit = new ActionEditCollection(dbAccess, actionGetById);
+			const [actionCreateLibrary, repository, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(repository);
+			const actionEdit = new ActionEditCollection(repository, actionGetById);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group", null),
@@ -345,9 +347,9 @@ describe("collection-service", () => {
 
 		test("edit collection set fields null", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockCollectionService();
-			const actionGetById = new ActionGetCollectionById(dbAccess);
-			const actionEdit = new ActionEditCollection(dbAccess, actionGetById);
+			const [actionCreateLibrary, repository, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(repository);
+			const actionEdit = new ActionEditCollection(repository, actionGetById);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group", null),
@@ -369,9 +371,9 @@ describe("collection-service", () => {
 
 		test("edit non-existing collection", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockCollectionService();
-			const actionGetById = new ActionGetCollectionById(dbAccess);
-			const actionEdit = new ActionEditCollection(dbAccess, actionGetById);
+			const [actionCreateLibrary, repository, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(repository);
+			const actionEdit = new ActionEditCollection(repository, actionGetById);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group", null),
@@ -385,9 +387,9 @@ describe("collection-service", () => {
 
 		test("edit smart collection set invalid query", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockCollectionService();
-			const actionGetById = new ActionGetCollectionById(dbAccess);
-			const actionEdit = new ActionEditCollection(dbAccess, actionGetById);
+			const [actionCreateLibrary, repository, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(repository);
+			const actionEdit = new ActionEditCollection(repository, actionGetById);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group", null),
@@ -415,9 +417,9 @@ describe("collection-service", () => {
 
 		test("move collection into sub-group", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockCollectionService();
-			const actionGetById = new ActionGetCollectionById(dbAccess);
-			const actionMove = new ActionMoveCollection(dbAccess);
+			const [actionCreateLibrary, repository, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(repository);
+			const actionMove = new ActionMoveCollection(repository);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -440,9 +442,9 @@ describe("collection-service", () => {
 
 		test("move top-level collection into sub-group", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockCollectionService();
-			const actionGetById = new ActionGetCollectionById(dbAccess);
-			const actionMove = new ActionMoveCollection(dbAccess);
+			const [actionCreateLibrary, repository, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(repository);
+			const actionMove = new ActionMoveCollection(repository);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -458,9 +460,9 @@ describe("collection-service", () => {
 
 		test("move collection to top-level", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockCollectionService();
-			const actionGetById = new ActionGetCollectionById(dbAccess);
-			const actionMove = new ActionMoveCollection(dbAccess);
+			const [actionCreateLibrary, repository, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(repository);
+			const actionMove = new ActionMoveCollection(repository);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -475,9 +477,9 @@ describe("collection-service", () => {
 
 		test("move all top level collections into group", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockCollectionService();
-			const actionGetById = new ActionGetCollectionById(dbAccess);
-			const actionMoveAll = new ActionMoveAllCollections(dbAccess);
+			const [actionCreateLibrary, repository, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(repository);
+			const actionMoveAll = new ActionMoveAllCollections(repository);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -500,9 +502,9 @@ describe("collection-service", () => {
 
 		test("move all collections into different group", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockCollectionService();
-			const actionGetById = new ActionGetCollectionById(dbAccess);
-			const actionMoveAll = new ActionMoveAllCollections(dbAccess);
+			const [actionCreateLibrary, repository, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(repository);
+			const actionMoveAll = new ActionMoveAllCollections(repository);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -525,9 +527,9 @@ describe("collection-service", () => {
 
 		test("move no collections into different group", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockCollectionService();
-			const actionGetById = new ActionGetCollectionById(dbAccess);
-			const actionMoveAll = new ActionMoveAllCollections(dbAccess);
+			const [actionCreateLibrary, repository, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(repository);
+			const actionMoveAll = new ActionMoveAllCollections(repository);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -550,9 +552,9 @@ describe("collection-service", () => {
 
 		test("move collections into original group", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockCollectionService();
-			const actionGetById = new ActionGetCollectionById(dbAccess);
-			const actionMoveAll = new ActionMoveAllCollections(dbAccess);
+			const [actionCreateLibrary, repository, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(repository);
+			const actionMoveAll = new ActionMoveAllCollections(repository);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -575,9 +577,9 @@ describe("collection-service", () => {
 
 		test("move collections into non-existing group", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockCollectionService();
-			const actionGetById = new ActionGetCollectionById(dbAccess);
-			const actionMoveAll = new ActionMoveAllCollections(dbAccess);
+			const [actionCreateLibrary, repository, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(repository);
+			const actionMoveAll = new ActionMoveAllCollections(repository);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -605,9 +607,9 @@ describe("collection-service", () => {
 
 		test("move some items to collection", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockCollectionService();
-			const actionGetById = new ActionGetCollectionById(dbAccess);
-			const actionMoveItems = new ActionMoveItems(dbAccess, actionGetById);
+			const [actionCreateLibrary, repository, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(repository);
+			const actionMoveItems = new ActionMoveItems(repository, actionGetById);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -635,9 +637,9 @@ describe("collection-service", () => {
 
 		test("copy items to collection", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockCollectionService();
-			const actionGetById = new ActionGetCollectionById(dbAccess);
-			const actionMoveItems = new ActionMoveItems(dbAccess, actionGetById);
+			const [actionCreateLibrary, repository, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(repository);
+			const actionMoveItems = new ActionMoveItems(repository, actionGetById);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -665,9 +667,9 @@ describe("collection-service", () => {
 
 		test("move items to non-existing collection", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockCollectionService();
-			const actionGetById = new ActionGetCollectionById(dbAccess);
-			const actionMoveItems = new ActionMoveItems(dbAccess, actionGetById);
+			const [actionCreateLibrary, repository, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(repository);
+			const actionMoveItems = new ActionMoveItems(repository, actionGetById);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -691,9 +693,9 @@ describe("collection-service", () => {
 
 		test("move items from non-existing collection", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockCollectionService();
-			const actionGetById = new ActionGetCollectionById(dbAccess);
-			const actionMoveItems = new ActionMoveItems(dbAccess, actionGetById);
+			const [actionCreateLibrary, repository, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(repository);
+			const actionMoveItems = new ActionMoveItems(repository, actionGetById);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -717,9 +719,9 @@ describe("collection-service", () => {
 
 		test("move items same collection", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockCollectionService();
-			const actionGetById = new ActionGetCollectionById(dbAccess);
-			const actionMoveItems = new ActionMoveItems(dbAccess, actionGetById);
+			const [actionCreateLibrary, repository, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(repository);
+			const actionMoveItems = new ActionMoveItems(repository, actionGetById);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -743,9 +745,9 @@ describe("collection-service", () => {
 
 		test("move non-existing items to collection", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockCollectionService();
-			const actionGetById = new ActionGetCollectionById(dbAccess);
-			const actionMoveItems = new ActionMoveItems(dbAccess, actionGetById);
+			const [actionCreateLibrary, repository, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(repository);
+			const actionMoveItems = new ActionMoveItems(repository, actionGetById);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -771,9 +773,9 @@ describe("collection-service", () => {
 
 		test("move items to smart collection", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockCollectionService();
-			const actionGetById = new ActionGetCollectionById(dbAccess);
-			const actionMoveItems = new ActionMoveItems(dbAccess, actionGetById);
+			const [actionCreateLibrary, repository, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(repository);
+			const actionMoveItems = new ActionMoveItems(repository, actionGetById);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -798,9 +800,9 @@ describe("collection-service", () => {
 
 		test("move items from smart collection", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockCollectionService();
-			const actionGetById = new ActionGetCollectionById(dbAccess);
-			const actionMoveItems = new ActionMoveItems(dbAccess, actionGetById);
+			const [actionCreateLibrary, repository, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(repository);
+			const actionMoveItems = new ActionMoveItems(repository, actionGetById);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "smart", null, "item_id > 2"),
@@ -828,9 +830,9 @@ describe("collection-service", () => {
 
 		test("remove some items from collection", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockCollectionService();
-			const actionGetById = new ActionGetCollectionById(dbAccess);
-			const actionRemoveItems = new ActionRemoveItems(dbAccess, actionGetById);
+			const [actionCreateLibrary, repository, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(repository);
+			const actionRemoveItems = new ActionRemoveItems(repository, actionGetById);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -856,9 +858,9 @@ describe("collection-service", () => {
 
 		test("remove some items from non-existing collection", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockCollectionService();
-			const actionGetById = new ActionGetCollectionById(dbAccess);
-			const actionRemoveItems = new ActionRemoveItems(dbAccess, actionGetById);
+			const [actionCreateLibrary, repository, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(repository);
+			const actionRemoveItems = new ActionRemoveItems(repository, actionGetById);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -880,9 +882,9 @@ describe("collection-service", () => {
 
 		test("remove some items from smart collection", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockCollectionService();
-			const actionGetById = new ActionGetCollectionById(dbAccess);
-			const actionRemoveItems = new ActionRemoveItems(dbAccess, actionGetById);
+			const [actionCreateLibrary, repository, dbAccess] = mockCollectionService();
+			const actionGetById = new ActionGetCollectionById(repository);
+			const actionRemoveItems = new ActionRemoveItems(repository, actionGetById);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "smart", null, "item_id > 2"),
@@ -924,10 +926,10 @@ function smartCollection(id: number, groupId: number | null, smartQuery: string 
 	};
 }
 
-function mockCollectionService(): [ActionCreateLibrary, DbAccess] {
+function mockCollectionService(): [ActionCreateLibrary, DataRepository, DbAccess] {
 	const dbAccess = new MemDbAccess();
 	const fsWrapper = mockFileSystemWrapper();
 	fsWrapper.existsFile = jest.fn().mockReturnValue(false) as any;
-	const actionCreateLibrary = new ActionCreateLibrary(dbAccess, fsWrapper);
-	return [actionCreateLibrary, dbAccess];
+	const actionCreateLibrary = new ActionCreateLibrary(new SQLiteDataRepository(dbAccess), fsWrapper);
+	return [actionCreateLibrary, new SQLiteDataRepository(dbAccess), dbAccess];
 }

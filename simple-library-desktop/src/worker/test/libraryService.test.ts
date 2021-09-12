@@ -9,6 +9,7 @@ import {ActionGetLibraryInfo} from "../service/library/ActionGetLibraryInfo";
 import {ActionOpenLibrary} from "../service/library/actionOpenLibrary";
 import {ActionCloseLibrary} from "../service/library/actionCloseLibrary";
 import {LibraryFileHandle} from "../service/library/libraryCommons";
+import {SQLiteDataRepository} from "../persistence/sqliteRepository";
 
 describe("library-service", () => {
 
@@ -21,8 +22,8 @@ describe("library-service", () => {
 			const expectedFilePath = "my\\test\\directory\\My1TestLibrary.db";
 			const expectedTimestamp = Date.now();
 			const [dbAccess, fsWrapper] = mockLibraryService();
-			const actionCreateLibrary = new ActionCreateLibrary(dbAccess, fsWrapper);
-			const actionGetLibraryInfo = new ActionGetLibraryInfo(dbAccess);
+			const actionCreateLibrary = new ActionCreateLibrary(new SQLiteDataRepository(dbAccess), fsWrapper);
+			const actionGetLibraryInfo = new ActionGetLibraryInfo(new SQLiteDataRepository(dbAccess));
 			mockExistsFile(fsWrapper, false);
 			mockDateNow(expectedTimestamp);
 			// when
@@ -41,8 +42,8 @@ describe("library-service", () => {
 		test("dont create new library when file already exists", async () => {
 			// given
 			const [dbAccess, fsWrapper] = mockLibraryService();
-			const actionCreateLibrary = new ActionCreateLibrary(dbAccess, fsWrapper);
-			const actionGetLibraryInfo = new ActionGetLibraryInfo(dbAccess);
+			const actionCreateLibrary = new ActionCreateLibrary(new SQLiteDataRepository(dbAccess), fsWrapper);
+			const actionGetLibraryInfo = new ActionGetLibraryInfo(new SQLiteDataRepository(dbAccess));
 			mockExistsFile(fsWrapper, true);
 			// when
 			const result: Promise<LibraryFileHandle> = actionCreateLibrary.perform("name", "dir", true);
@@ -56,7 +57,7 @@ describe("library-service", () => {
 		test("dont create new library when name is invalid", async () => {
 			// given
 			const [dbAccess, fsWrapper] = mockLibraryService();
-			const actionCreateLibrary = new ActionCreateLibrary(dbAccess, fsWrapper);
+			const actionCreateLibrary = new ActionCreateLibrary(new SQLiteDataRepository(dbAccess), fsWrapper);
 			mockExistsFile(fsWrapper, true);
 			// when
 			const result: Promise<LibraryFileHandle> = actionCreateLibrary.perform("./_", "dir", true);
@@ -77,8 +78,8 @@ describe("library-service", () => {
 			const tsNow = Date.now();
 			const tsCreated = Date.now() - 2000;
 			const [dbAccess, fsWrapper] = mockLibraryService();
-			const actionGetLibraryInfo = new ActionGetLibraryInfo(dbAccess);
-			const actionOpenLibrary = new ActionOpenLibrary(dbAccess, fsWrapper, actionGetLibraryInfo);
+			const actionGetLibraryInfo = new ActionGetLibraryInfo(new SQLiteDataRepository(dbAccess));
+			const actionOpenLibrary = new ActionOpenLibrary(new SQLiteDataRepository(dbAccess), fsWrapper, actionGetLibraryInfo);
 			mockExistsFile(fsWrapper, true);
 			mockDateNow(tsNow);
 			await dbAccess.setDatabasePath(filePath, false);
@@ -100,8 +101,8 @@ describe("library-service", () => {
 			// given
 			const filePath = "my\\test\\directory\\NoLib.db";
 			const [dbAccess, fsWrapper] = mockLibraryService();
-			const actionGetLibraryInfo = new ActionGetLibraryInfo(dbAccess);
-			const actionOpenLibrary = new ActionOpenLibrary(dbAccess, fsWrapper, actionGetLibraryInfo);
+			const actionGetLibraryInfo = new ActionGetLibraryInfo(new SQLiteDataRepository(dbAccess));
+			const actionOpenLibrary = new ActionOpenLibrary(new SQLiteDataRepository(dbAccess), fsWrapper, actionGetLibraryInfo);
 			mockExistsFile(fsWrapper, false);
 			// when
 			const result: Promise<LibraryFileHandle> = actionOpenLibrary.perform(filePath);
@@ -119,7 +120,7 @@ describe("library-service", () => {
 		test("close current library", async () => {
 			// given
 			const [dbAccess] = mockLibraryService();
-			const actionCloseLibrary = new ActionCloseLibrary(dbAccess);
+			const actionCloseLibrary = new ActionCloseLibrary(new SQLiteDataRepository(dbAccess));
 			await dbAccess.setDatabasePath("my/path/to/MyLib.db", false);
 			// when
 			actionCloseLibrary.perform();

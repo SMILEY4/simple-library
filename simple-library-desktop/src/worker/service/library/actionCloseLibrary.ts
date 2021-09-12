@@ -1,19 +1,19 @@
-import {DbAccess} from "../../persistence/dbAcces";
+import {DataRepository} from "../dataRepository";
 
 /**
  * "Closes" the current library
  */
 export class ActionCloseLibrary {
 
-	private readonly dbAccess: DbAccess;
+	private readonly repository: DataRepository;
 
-	constructor(dbAccess: DbAccess) {
-		this.dbAccess = dbAccess;
+	constructor(repository: DataRepository) {
+		this.repository = repository;
 	}
 
 	public perform(): void {
 		console.log("Closing library");
-		this.dbAccess.clearDatabasePath();
+		this.repository.close();
 	}
 
 }

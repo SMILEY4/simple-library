@@ -1,19 +1,18 @@
-import {DbAccess} from "../../persistence/dbAcces";
 import {ActionGetGroupById} from "./actionGetGroupById";
-import {SQL} from "../../persistence/sqlHandler";
 import {voidThen} from "../../../common/utils";
 import {Group} from "./groupCommons";
+import {DataRepository} from "../dataRepository";
 
 /**
  * Move the group with the given id into the given target group.
  */
 export class ActionMoveGroup {
 
-	private readonly dbAccess: DbAccess;
+	private readonly repository: DataRepository;
 	private readonly actionGetById: ActionGetGroupById;
 
-	constructor(dbAccess: DbAccess, actionGetById: ActionGetGroupById) {
-		this.dbAccess = dbAccess;
+	constructor(repository: DataRepository, actionGetById: ActionGetGroupById) {
+		this.repository = repository;
 		this.actionGetById = actionGetById;
 	}
 
@@ -26,7 +25,7 @@ export class ActionMoveGroup {
 
 
 	private move(groupId: number, targetGroupId: number | null): Promise<void> {
-		return this.dbAccess.run(SQL.updateGroupParent(groupId, targetGroupId)).then(voidThen);
+		return this.repository.updateGroupParent(groupId, targetGroupId);
 	}
 
 

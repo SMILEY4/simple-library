@@ -1,8 +1,7 @@
-import {DbAccess} from "../../persistence/dbAcces";
 import {ActionGetCollectionById} from "./actionGetCollectionById";
 import {voidThen} from "../../../common/utils";
-import {SQL} from "../../persistence/sqlHandler";
-import {Collection, CollectionType} from "./collectionCommons";
+import {Collection} from "./collectionCommons";
+import {DataRepository} from "../dataRepository";
 
 interface MoveCollections {
 	src: Collection | null,
@@ -14,12 +13,12 @@ interface MoveCollections {
  */
 export class ActionMoveItems {
 
-	private readonly dbAccess: DbAccess;
+	private readonly repository: DataRepository;
 	private readonly actionGetById: ActionGetCollectionById;
 
 
-	constructor(dbAccess: DbAccess, actionGetById: ActionGetCollectionById) {
-		this.dbAccess = dbAccess;
+	constructor(repository: DataRepository, actionGetById: ActionGetCollectionById) {
+		this.repository = repository;
 		this.actionGetById = actionGetById;
 	}
 
@@ -70,15 +69,12 @@ export class ActionMoveItems {
 
 
 	private copy(collections: MoveCollections, itemIds: number[]): Promise<any> {
-		return this.dbAccess.run(SQL.insertItemsIntoCollection(collections.tgt.id, itemIds));
+		return this.repository.relateItemsToCollection(collections.tgt.id, itemIds)
 	}
 
 
 	private move(collections: MoveCollections, itemIds: number[]): Promise<any> {
-		return this.dbAccess.runMultiple([
-			SQL.updateRemoveItemsFromCollection(collections.src.id, itemIds),
-			SQL.insertItemsIntoCollection(collections.tgt.id, itemIds)
-		]);
+		return this.repository.relateItemsToCollectionUnique(collections.src.id, collections.tgt.id, itemIds)
 	}
 
 }

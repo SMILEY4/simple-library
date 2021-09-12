@@ -1,20 +1,18 @@
-import {DbAccess} from "../../persistence/dbAcces";
-import {SQL} from "../../persistence/sqlHandler";
-import {voidThen} from "../../../common/utils";
+import {DataRepository} from "../dataRepository";
 
 /**
  * Moves the collection with the given id into the given parent-group
  */
 export class ActionMoveCollection {
 
-	private readonly dbAccess: DbAccess;
+	private readonly repository: DataRepository;
 
-	constructor(dbAccess: DbAccess) {
-		this.dbAccess = dbAccess;
+	constructor(repository: DataRepository) {
+		this.repository = repository;
 	}
 
 	public perform(collectionId: number, targetGroupId: number | null): Promise<void> {
-		return this.dbAccess.run(SQL.updateCollectionParent(collectionId, targetGroupId)).then(voidThen);
+		return this.repository.updateCollectionParent(collectionId, targetGroupId)
 	}
 
 }

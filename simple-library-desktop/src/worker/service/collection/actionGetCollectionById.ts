@@ -1,16 +1,15 @@
 import {Collection, rowToCollection} from "./collectionCommons";
-import {DbAccess} from "../../persistence/dbAcces";
-import {SQL} from "../../persistence/sqlHandler";
+import {DataRepository} from "../dataRepository";
 
 /**
  * Find a collection by the given id.
  */
 export class ActionGetCollectionById {
 
-	private readonly dbAccess: DbAccess;
+	private readonly repository: DataRepository;
 
-	constructor(dbAccess: DbAccess) {
-		this.dbAccess = dbAccess;
+	constructor(repository: DataRepository) {
+		this.repository = repository;
 	}
 
 
@@ -19,7 +18,7 @@ export class ActionGetCollectionById {
 	}
 
 	private query(collectionId: number): Promise<any | null> {
-		return this.dbAccess.querySingle(SQL.queryCollectionById(collectionId));
+		return this.repository.getCollectionById(collectionId)
 	}
 
 }

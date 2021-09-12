@@ -1,13 +1,12 @@
-import {DbAccess} from "../../persistence/dbAcces";
 import {ImportDataValidator} from "./importDataValidator";
 import {ImportStepFileHash} from "./importStepFileHash";
 import {ImportStepThumbnail} from "./importStepThumbnail";
 import {ImportStepRename} from "./importStepRename";
 import {ImportStepImportTarget} from "./importStepImportTarget";
 import {ImportStepMetadata} from "./importStepMetadata";
-import {SQL} from "../../persistence/sqlHandler";
 import {Attribute} from "../item/itemCommon";
 import {ImportStatusDTO} from "../../../common/events/dtoModels";
+import {DataRepository} from "../dataRepository";
 
 export interface ImportProcessData {
     files: string[],
@@ -64,7 +63,7 @@ export type ImportStatusSender = (status: ImportStatusDTO) => Promise<void>;
 
 export class ImportService {
 
-    private readonly dbAccess: DbAccess;
+    private readonly repository: DataRepository;
     private readonly validator: ImportDataValidator;
     private readonly importStepFileHash: ImportStepFileHash;
     private readonly importStepThumbnail: ImportStepThumbnail;
@@ -80,7 +79,7 @@ export class ImportService {
 
 
     constructor(
-        dbAccess: DbAccess,
+        repository: DataRepository,
         validator: ImportDataValidator,
         importStepFileHash: ImportStepFileHash,
         importStepThumbnail: ImportStepThumbnail,
@@ -89,7 +88,7 @@ export class ImportService {
         importStepMetadata: ImportStepMetadata,
         importStatusSender: ImportStatusSender
     ) {
-        this.dbAccess = dbAccess;
+        this.repository = repository;
         this.validator = validator;
         this.importStepFileHash = importStepFileHash;
         this.importStepThumbnail = importStepThumbnail;
@@ -183,7 +182,7 @@ export class ImportService {
 
 
     private insertItem(item: ItemData): Promise<number | null> {
-        return this.dbAccess.run(SQL.insertItem(item.filepath, item.timestamp, item.hash, item.thumbnail))
+        return this.repository.insertItem(item.filepath, item.timestamp, item.hash, item.thumbnail)
             .then((itemId: number | null) => itemId
                 ? itemId
                 : Promise.reject("Could not save item: " + item.filepath));
@@ -191,11 +190,11 @@ export class ImportService {
 
 
     private insertAttributes(itemId: number, attributes: Attribute[]) {
-        return this.dbAccess.run(SQL.insertItemAttributes(itemId, attributes.map(att => ({
+        return this.repository.insertItemAttributes(itemId, attributes.map(att => ({
             key: att.key,
             value: att.value,
             type: att.type
-        }))));
+        })));
     }
 
 

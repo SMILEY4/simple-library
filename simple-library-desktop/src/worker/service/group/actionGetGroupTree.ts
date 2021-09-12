@@ -1,4 +1,3 @@
-import {DbAccess} from "../../persistence/dbAcces";
 import {ActionGetAllGroups} from "./actionGetAllGroups";
 import {Group} from "./groupCommons";
 import {Collection} from "../collection/collectionCommons";
@@ -9,11 +8,9 @@ import {Collection} from "../collection/collectionCommons";
  */
 export class ActionGetGroupTree {
 
-	private readonly dbAccess: DbAccess;
 	private readonly actionGetAllGroups: ActionGetAllGroups;
 
-	constructor(dbAccess: DbAccess, actionGetAllGroups: ActionGetAllGroups) {
-		this.dbAccess = dbAccess;
+	constructor(actionGetAllGroups: ActionGetAllGroups) {
 		this.actionGetAllGroups = actionGetAllGroups;
 	}
 

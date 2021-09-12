@@ -1,26 +1,23 @@
-import {DbAccess} from "../../persistence/dbAcces";
-import {SQL} from "../../persistence/sqlHandler";
 import {Item, rowToItem} from "./itemCommon";
+import {DataRepository} from "../dataRepository";
 
 /**
  * Get the item with the given id
  */
 export class ActionGetItemById {
 
-	private readonly dbAccess: DbAccess;
+	private readonly repository: DataRepository;
 
-
-	constructor(dbAccess: DbAccess) {
-		this.dbAccess = dbAccess;
+	constructor(repository: DataRepository) {
+		this.repository = repository;
 	}
 
 	public perform(itemId: number): Promise<Item | null> {
 		return this.query(itemId).then(rowToItem);
 	}
 
-
 	private query(itemId: number): Promise<any | null> {
-		return this.dbAccess.querySingle(SQL.queryItemById(itemId));
+		return this.repository.getItemById(itemId);
 	}
 
 

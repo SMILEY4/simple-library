@@ -1,20 +1,18 @@
-import {DbAccess} from "../../persistence/dbAcces";
-import {SQL} from "../../persistence/sqlHandler";
-import {voidThen} from "../../../common/utils";
+import {DataRepository} from "../dataRepository";
 
 /**
  * Moves all child groups of the given parent group into the new group.
  */
 export class ActionMoveAllGroups {
 
-	private readonly dbAccess: DbAccess;
+	private readonly repository: DataRepository;
 
-	constructor(dbAccess: DbAccess) {
-		this.dbAccess = dbAccess;
+	constructor(repository: DataRepository) {
+		this.repository = repository;
 	}
 
 	public perform(prevParentGroupId: number | null, newParentGroupId: number | null): Promise<void> {
-		return this.dbAccess.run(SQL.updateGroupParents(prevParentGroupId, newParentGroupId)).then(voidThen);
+		return this.repository.updateGroupParents(prevParentGroupId, newParentGroupId);
 	}
 
 }

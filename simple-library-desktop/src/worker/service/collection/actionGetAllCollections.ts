@@ -1,6 +1,5 @@
-import {Collection, CollectionType, rowsToCollections} from "./collectionCommons";
-import {DbAccess} from "../../persistence/dbAcces";
-import {SQL} from "../../persistence/sqlHandler";
+import {Collection, rowsToCollections} from "./collectionCommons";
+import {DataRepository} from "../dataRepository";
 
 
 /**
@@ -8,10 +7,10 @@ import {SQL} from "../../persistence/sqlHandler";
  */
 export class ActionGetAllCollections {
 
-	private readonly dbAccess: DbAccess;
+	private readonly repository: DataRepository;
 
-	constructor(dbAccess: DbAccess) {
-		this.dbAccess = dbAccess;
+	constructor(repository: DataRepository) {
+		this.repository = repository;
 	}
 
 	public perform(includeItemCount: boolean): Promise<Collection[]> {
@@ -23,12 +22,12 @@ export class ActionGetAllCollections {
 	}
 
 	private getAllWithCounts(): Promise<Collection[]> {
-		return this.dbAccess.queryAll(SQL.queryAllCollectionsWithItemCount())
+		return this.repository.getAllCollectionsWithItemCounts()
 			.then(rowsToCollections);
 	}
 
 	private getAll(): Promise<Collection[]> {
-		return this.dbAccess.queryAll(SQL.queryAllCollections())
+		return this.repository.getAllCollections()
 			.then(rowsToCollections);
 	}
 
@@ -52,11 +51,10 @@ export class ActionGetAllCollections {
 	private getSmartItemCount(collection: Collection): Promise<number> {
 		if (collection.type === "smart") {
 			const smartQuery: string = collection.smartQuery;
-			const sqlQuery: string = (smartQuery && smartQuery.trim().length > 0)
-				? SQL.queryItemCountByQuery(smartQuery.trim())
-				: SQL.queryItemCountTotal();
-			return this.dbAccess.querySingle(sqlQuery)
-				.then(this.rowToCount);
+			const queryResult = (smartQuery && smartQuery.trim().length > 0)
+				? this.repository.getItemCountByCustomQuery(smartQuery.trim())
+				: this.repository.getItemCountTotal();
+			return queryResult.then(this.rowToCount);
 		} else {
 			return Promise.resolve(0);
 		}

@@ -1,20 +1,18 @@
-import {DbAccess} from "../../persistence/dbAcces";
 import path from "path";
 import {FileSystemWrapper} from "../fileSystemWrapper";
-import {SQL} from "../../persistence/sqlHandler";
 import {LibraryFileHandle} from "./libraryCommons";
-import {CollectionType} from "../collection/collectionCommons";
+import {DataRepository} from "../dataRepository";
 
 /**
  * Create (and "open") a new library with the given name in the given directory.
  */
 export class ActionCreateLibrary {
 
-	private readonly dbAccess: DbAccess;
+	private readonly repository: DataRepository;
 	private readonly fsWrapper: FileSystemWrapper;
 
-	constructor(dbAccess: DbAccess, fsWrapper: FileSystemWrapper) {
-		this.dbAccess = dbAccess;
+	constructor(repository: DataRepository, fsWrapper: FileSystemWrapper) {
+		this.repository = repository;
 		this.fsWrapper = fsWrapper;
 	}
 
@@ -48,16 +46,12 @@ export class ActionCreateLibrary {
 
 	private create(filepath: string, name: string): Promise<any> {
 		console.log("Creating new library: " + filepath);
-		return this.dbAccess.setDatabasePath(filepath, true);
+		return this.repository.open(filepath, true);
 	}
 
 
 	private initLibrary(name: string, createDefaultCollection: boolean): Promise<any> {
-		const queries = SQL.initializeNewLibrary(name, Date.now());
-		if (createDefaultCollection) {
-			queries.push(SQL.insertCollection("All Items", "smart", null, null));
-		}
-		return this.dbAccess.runMultipleSeq(queries);
+		return this.repository.init(name, createDefaultCollection);
 	}
 
 

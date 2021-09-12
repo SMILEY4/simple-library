@@ -16,6 +16,8 @@ import {ActionMoveAllCollections} from "../service/collection/actionMoveAllColle
 import {ActionCreateGroup} from "../service/group/actionCreateGroup";
 import {Group} from "../service/group/groupCommons";
 import {Collection, CollectionType} from "../service/collection/collectionCommons";
+import {DataRepository} from "../service/dataRepository";
+import {SQLiteDataRepository} from "../persistence/sqliteRepository";
 
 
 describe("group-service", () => {
@@ -24,8 +26,8 @@ describe("group-service", () => {
 
 		test("get by id", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockGroupService();
-			const actionGetById = new ActionGetGroupById(dbAccess);
+			const [actionCreateLibrary, repository, dbAccess] = mockGroupService();
+			const actionGetById = new ActionGetGroupById(repository);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -43,8 +45,8 @@ describe("group-service", () => {
 
 		test("get non-existing by id", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockGroupService();
-			const actionGetById = new ActionGetGroupById(dbAccess);
+			const [actionCreateLibrary, repository, dbAccess] = mockGroupService();
+			const actionGetById = new ActionGetGroupById(repository);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null)
@@ -58,8 +60,8 @@ describe("group-service", () => {
 
 		test("get all empty", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockGroupService();
-			const actionGetAll = new ActionGetAllGroups(dbAccess, new ActionGetAllCollections(dbAccess));
+			const [actionCreateLibrary, repository, dbAccess] = mockGroupService();
+			const actionGetAll = new ActionGetAllGroups(repository, new ActionGetAllCollections(repository));
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", 1, null),
@@ -76,8 +78,8 @@ describe("group-service", () => {
 
 		test("get all empty with collections and count", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockGroupService();
-			const actionGetAll = new ActionGetAllGroups(dbAccess, new ActionGetAllCollections(dbAccess));
+			const [actionCreateLibrary, repository, dbAccess] = mockGroupService();
+			const actionGetAll = new ActionGetAllGroups(repository, new ActionGetAllCollections(repository));
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -96,8 +98,8 @@ describe("group-service", () => {
 
 		test("get all without collections", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockGroupService();
-			const actionGetAll = new ActionGetAllGroups(dbAccess, new ActionGetAllCollections(dbAccess));
+			const [actionCreateLibrary, repository, dbAccess] = mockGroupService();
+			const actionGetAll = new ActionGetAllGroups(repository, new ActionGetAllCollections(repository));
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -127,8 +129,8 @@ describe("group-service", () => {
 
 		test("get all with collections no item counts", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockGroupService();
-			const actionGetAll = new ActionGetAllGroups(dbAccess, new ActionGetAllCollections(dbAccess));
+			const [actionCreateLibrary, repository, dbAccess] = mockGroupService();
+			const actionGetAll = new ActionGetAllGroups(repository, new ActionGetAllCollections(repository));
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -166,8 +168,8 @@ describe("group-service", () => {
 
 		test("get all with collections and item counts", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockGroupService();
-			const actionGetAll = new ActionGetAllGroups(dbAccess, new ActionGetAllCollections(dbAccess));
+			const [actionCreateLibrary, repository, dbAccess] = mockGroupService();
+			const actionGetAll = new ActionGetAllGroups(repository, new ActionGetAllCollections(repository));
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -206,8 +208,8 @@ describe("group-service", () => {
 
 		test("get tree empty", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockGroupService();
-			const actionGetTree = new ActionGetGroupTree(dbAccess, new ActionGetAllGroups(dbAccess, new ActionGetAllCollections(dbAccess)))
+			const [actionCreateLibrary, repository, dbAccess] = mockGroupService();
+			const actionGetTree = new ActionGetGroupTree(new ActionGetAllGroups(repository, new ActionGetAllCollections(repository)))
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", 1, null),
@@ -224,8 +226,8 @@ describe("group-service", () => {
 
 		test("get tree empty with collections", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockGroupService();
-			const actionGetTree = new ActionGetGroupTree(dbAccess, new ActionGetAllGroups(dbAccess, new ActionGetAllCollections(dbAccess)))
+			const [actionCreateLibrary, repository, dbAccess] = mockGroupService();
+			const actionGetTree = new ActionGetGroupTree(new ActionGetAllGroups(repository, new ActionGetAllCollections(repository)))
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -244,8 +246,8 @@ describe("group-service", () => {
 
 		test("get tree", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockGroupService();
-			const actionGetTree = new ActionGetGroupTree(dbAccess, new ActionGetAllGroups(dbAccess, new ActionGetAllCollections(dbAccess)))
+			const [actionCreateLibrary, repository, dbAccess] = mockGroupService();
+			const actionGetTree = new ActionGetGroupTree(new ActionGetAllGroups(repository, new ActionGetAllCollections(repository)))
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -281,8 +283,8 @@ describe("group-service", () => {
 
 		test("get tree with collections and item counts", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockGroupService();
-			const actionGetTree = new ActionGetGroupTree(dbAccess, new ActionGetAllGroups(dbAccess, new ActionGetAllCollections(dbAccess)))
+			const [actionCreateLibrary, repository, dbAccess] = mockGroupService();
+			const actionGetTree = new ActionGetGroupTree(new ActionGetAllGroups(repository, new ActionGetAllCollections(repository)))
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -326,9 +328,9 @@ describe("group-service", () => {
 
 		test("create new top level group", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockGroupService();
-			const actionCreate = new ActionCreateGroup(dbAccess)
-			const actionGetAll = new ActionGetAllGroups(dbAccess, new ActionGetAllCollections(dbAccess));
+			const [actionCreateLibrary, repository, dbAccess] = mockGroupService();
+			const actionCreate = new ActionCreateGroup(repository)
+			const actionGetAll = new ActionGetAllGroups(repository, new ActionGetAllCollections(repository));
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Existing Group", null)
@@ -364,9 +366,9 @@ describe("group-service", () => {
 
 		test("create new child-group", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockGroupService();
-			const actionCreate = new ActionCreateGroup(dbAccess)
-			const actionGetAll = new ActionGetAllGroups(dbAccess, new ActionGetAllCollections(dbAccess));
+			const [actionCreateLibrary, repository, dbAccess] = mockGroupService();
+			const actionCreate = new ActionCreateGroup(repository)
+			const actionGetAll = new ActionGetAllGroups(repository, new ActionGetAllCollections(repository));
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Existing Group", null)
@@ -402,9 +404,9 @@ describe("group-service", () => {
 
 		test("create new child-group of invalid parent", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockGroupService();
-			const actionCreate = new ActionCreateGroup(dbAccess)
-			const actionGetAll = new ActionGetAllGroups(dbAccess, new ActionGetAllCollections(dbAccess));
+			const [actionCreateLibrary, repository, dbAccess] = mockGroupService();
+			const actionCreate = new ActionCreateGroup(repository)
+			const actionGetAll = new ActionGetAllGroups(repository, new ActionGetAllCollections(repository));
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Existing Group", null)
@@ -429,9 +431,9 @@ describe("group-service", () => {
 
 		test("delete top level group", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockGroupService();
-			const actionDelete = new ActionDeleteGroup(dbAccess, new ActionGetGroupById(dbAccess), new ActionMoveAllCollections(dbAccess), new ActionMoveAllGroups(dbAccess))
-			const actionGetAll = new ActionGetAllGroups(dbAccess, new ActionGetAllCollections(dbAccess));
+			const [actionCreateLibrary, repository, dbAccess] = mockGroupService();
+			const actionDelete = new ActionDeleteGroup(repository, new ActionGetGroupById(repository), new ActionMoveAllCollections(repository), new ActionMoveAllGroups(repository))
+			const actionGetAll = new ActionGetAllGroups(repository, new ActionGetAllCollections(repository));
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -449,9 +451,9 @@ describe("group-service", () => {
 
 		test("delete non-existing group", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockGroupService();
-			const actionDelete = new ActionDeleteGroup(dbAccess, new ActionGetGroupById(dbAccess), new ActionMoveAllCollections(dbAccess), new ActionMoveAllGroups(dbAccess))
-			const actionGetAll = new ActionGetAllGroups(dbAccess, new ActionGetAllCollections(dbAccess));
+			const [actionCreateLibrary, repository, dbAccess] = mockGroupService();
+			const actionDelete = new ActionDeleteGroup(repository, new ActionGetGroupById(repository), new ActionMoveAllCollections(repository), new ActionMoveAllGroups(repository))
+			const actionGetAll = new ActionGetAllGroups(repository, new ActionGetAllCollections(repository));
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -472,9 +474,9 @@ describe("group-service", () => {
 
 		test("delete child group", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockGroupService();
-			const actionDelete = new ActionDeleteGroup(dbAccess, new ActionGetGroupById(dbAccess), new ActionMoveAllCollections(dbAccess), new ActionMoveAllGroups(dbAccess))
-			const actionGetAll = new ActionGetAllGroups(dbAccess, new ActionGetAllCollections(dbAccess));
+			const [actionCreateLibrary, repository, dbAccess] = mockGroupService();
+			const actionDelete = new ActionDeleteGroup(repository, new ActionGetGroupById(repository), new ActionMoveAllCollections(repository), new ActionMoveAllGroups(repository))
+			const actionGetAll = new ActionGetAllGroups(repository, new ActionGetAllCollections(repository));
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -492,9 +494,9 @@ describe("group-service", () => {
 
 		test("delete group", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockGroupService();
-			const actionDelete = new ActionDeleteGroup(dbAccess, new ActionGetGroupById(dbAccess), new ActionMoveAllCollections(dbAccess), new ActionMoveAllGroups(dbAccess))
-			const actionGetAll = new ActionGetAllGroups(dbAccess, new ActionGetAllCollections(dbAccess));
+			const [actionCreateLibrary, repository, dbAccess] = mockGroupService();
+			const actionDelete = new ActionDeleteGroup(repository, new ActionGetGroupById(repository), new ActionMoveAllCollections(repository), new ActionMoveAllGroups(repository))
+			const actionGetAll = new ActionGetAllGroups(repository, new ActionGetAllCollections(repository));
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -515,10 +517,10 @@ describe("group-service", () => {
 
 		test("delete child group with children", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockGroupService();
-			const actionDelete = new ActionDeleteGroup(dbAccess, new ActionGetGroupById(dbAccess), new ActionMoveAllCollections(dbAccess), new ActionMoveAllGroups(dbAccess))
-			const actionGetAll = new ActionGetAllGroups(dbAccess, new ActionGetAllCollections(dbAccess));
-			const actionGetAllCollections = new ActionGetAllCollections(dbAccess);
+			const [actionCreateLibrary, repository, dbAccess] = mockGroupService();
+			const actionDelete = new ActionDeleteGroup(repository, new ActionGetGroupById(repository), new ActionMoveAllCollections(repository), new ActionMoveAllGroups(repository))
+			const actionGetAll = new ActionGetAllGroups(repository, new ActionGetAllCollections(repository));
+			const actionGetAllCollections = new ActionGetAllCollections(repository);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -558,9 +560,9 @@ describe("group-service", () => {
 
 		test("rename group", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockGroupService();
-			const actionGetAll = new ActionGetAllGroups(dbAccess, new ActionGetAllCollections(dbAccess));
-			const actionRename = new ActionRenameGroup(dbAccess, new ActionGetGroupById(dbAccess))
+			const [actionCreateLibrary, repository, dbAccess] = mockGroupService();
+			const actionGetAll = new ActionGetAllGroups(repository, new ActionGetAllCollections(repository));
+			const actionRename = new ActionRenameGroup(repository, new ActionGetGroupById(repository))
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -581,9 +583,9 @@ describe("group-service", () => {
 
 		test("rename non-existing group", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockGroupService();
-			const actionGetAll = new ActionGetAllGroups(dbAccess, new ActionGetAllCollections(dbAccess));
-			const actionRename = new ActionRenameGroup(dbAccess, new ActionGetGroupById(dbAccess))
+			const [actionCreateLibrary, repository, dbAccess] = mockGroupService();
+			const actionGetAll = new ActionGetAllGroups(repository, new ActionGetAllCollections(repository));
+			const actionRename = new ActionRenameGroup(repository, new ActionGetGroupById(repository))
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -604,9 +606,9 @@ describe("group-service", () => {
 
 		test("rename to same name", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockGroupService();
-			const actionGetAll = new ActionGetAllGroups(dbAccess, new ActionGetAllCollections(dbAccess));
-			const actionRename = new ActionRenameGroup(dbAccess, new ActionGetGroupById(dbAccess))
+			const [actionCreateLibrary, repository, dbAccess] = mockGroupService();
+			const actionGetAll = new ActionGetAllGroups(repository, new ActionGetAllCollections(repository));
+			const actionRename = new ActionRenameGroup(repository, new ActionGetGroupById(repository))
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -631,9 +633,9 @@ describe("group-service", () => {
 
 		test("move group with all children", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockGroupService();
-			const actionGetAll = new ActionGetAllGroups(dbAccess, new ActionGetAllCollections(dbAccess));
-			const actionMove = new ActionMoveGroup(dbAccess, new ActionGetGroupById(dbAccess))
+			const [actionCreateLibrary, repository, dbAccess] = mockGroupService();
+			const actionGetAll = new ActionGetAllGroups(repository, new ActionGetAllCollections(repository));
+			const actionMove = new ActionMoveGroup(repository, new ActionGetGroupById(repository))
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -660,9 +662,9 @@ describe("group-service", () => {
 
 		test("move group invalid: group does not exist", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockGroupService();
-			const actionGetAll = new ActionGetAllGroups(dbAccess, new ActionGetAllCollections(dbAccess));
-			const actionMove = new ActionMoveGroup(dbAccess, new ActionGetGroupById(dbAccess))
+			const [actionCreateLibrary, repository, dbAccess] = mockGroupService();
+			const actionGetAll = new ActionGetAllGroups(repository, new ActionGetAllCollections(repository));
+			const actionMove = new ActionMoveGroup(repository, new ActionGetGroupById(repository))
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -689,9 +691,9 @@ describe("group-service", () => {
 
 		test("move group invalid: target does not exist", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockGroupService();
-			const actionGetAll = new ActionGetAllGroups(dbAccess, new ActionGetAllCollections(dbAccess));
-			const actionMove = new ActionMoveGroup(dbAccess, new ActionGetGroupById(dbAccess))
+			const [actionCreateLibrary, repository, dbAccess] = mockGroupService();
+			const actionGetAll = new ActionGetAllGroups(repository, new ActionGetAllCollections(repository));
+			const actionMove = new ActionMoveGroup(repository, new ActionGetGroupById(repository))
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -718,9 +720,9 @@ describe("group-service", () => {
 
 		test("move group invalid: group equals target", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockGroupService();
-			const actionGetAll = new ActionGetAllGroups(dbAccess, new ActionGetAllCollections(dbAccess));
-			const actionMove = new ActionMoveGroup(dbAccess, new ActionGetGroupById(dbAccess))
+			const [actionCreateLibrary, repository, dbAccess] = mockGroupService();
+			const actionGetAll = new ActionGetAllGroups(repository, new ActionGetAllCollections(repository));
+			const actionMove = new ActionMoveGroup(repository, new ActionGetGroupById(repository))
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -747,9 +749,9 @@ describe("group-service", () => {
 
 		test("move group invalid: target is in subtree of source", async () => {
 			// given
-			const [actionCreateLibrary, dbAccess] = mockGroupService();
-			const actionGetAll = new ActionGetAllGroups(dbAccess, new ActionGetAllCollections(dbAccess));
-			const actionMove = new ActionMoveGroup(dbAccess, new ActionGetGroupById(dbAccess))
+			const [actionCreateLibrary, repository, dbAccess] = mockGroupService();
+			const actionGetAll = new ActionGetAllGroups(repository, new ActionGetAllCollections(repository));
+			const actionMove = new ActionMoveGroup(repository, new ActionGetGroupById(repository))
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertGroup("Group 1", null),
@@ -778,12 +780,12 @@ describe("group-service", () => {
 });
 
 
-function mockGroupService(): [ActionCreateLibrary, DbAccess] {
+function mockGroupService(): [ActionCreateLibrary, DataRepository, DbAccess] {
 	const dbAccess = new MemDbAccess();
 	const fsWrapper = mockFileSystemWrapper();
 	fsWrapper.existsFile = jest.fn().mockReturnValue(false) as any;
-	const actionCreateLibrary = new ActionCreateLibrary(dbAccess, fsWrapper);
-	return [actionCreateLibrary, dbAccess];
+	const actionCreateLibrary = new ActionCreateLibrary(new SQLiteDataRepository(dbAccess), fsWrapper);
+	return [actionCreateLibrary, new SQLiteDataRepository(dbAccess), dbAccess];
 }
 
 function collectionNormal(id: number, name: string, group: number | null, itemCount: number | null): Collection {

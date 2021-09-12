@@ -1,16 +1,15 @@
-import {DbAccess} from "../../persistence/dbAcces";
-import {SQL} from "../../persistence/sqlHandler";
 import {Group} from "./groupCommons";
+import {DataRepository} from "../dataRepository";
 
 /**
  * Create a new group with the given name and (optionally) the given parent.
  */
 export class ActionCreateGroup {
 
-	private readonly dbAccess: DbAccess;
+	private readonly repository: DataRepository;
 
-	constructor(dbAccess: DbAccess) {
-		this.dbAccess = dbAccess;
+	constructor(repository: DataRepository) {
+		this.repository = repository;
 	}
 
 
@@ -21,7 +20,7 @@ export class ActionCreateGroup {
 
 
 	private insert(name: string, parentGroupId: number | null): Promise<number | null> {
-		return this.dbAccess.run(SQL.insertGroup(name, parentGroupId));
+		return this.repository.insertGroup(name, parentGroupId);
 	}
 
 
