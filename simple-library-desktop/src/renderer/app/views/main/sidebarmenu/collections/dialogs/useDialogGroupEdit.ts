@@ -1,7 +1,8 @@
-import {useDialogController} from "../../miscApplicationHooks";
+import {useDialogController} from "../../../../../hooks/app/miscApplicationHooks";
 import {useState} from "react";
-import {useCollections, useCollectionsState} from "../../../base/collectionHooks";
-import {useValidatedState} from "../../../../../components/utils/commonHooks";
+import {useCollectionsState} from "../../../../../hooks/base/collectionHooks";
+import {useValidatedState} from "../../../../../../components/utils/commonHooks";
+import {useEditGroup} from "../../../../../hooks/logic/core/editGroup";
 
 export function useDialogGroupEditController(): [boolean, (id: number | null) => void, () => void, (number | null)] {
 
@@ -26,14 +27,8 @@ export function useDialogGroupEditController(): [boolean, (id: number | null) =>
 
 export function useDialogGroupEdit(groupId: number, onClose: () => void) {
 
-	const {
-		renameGroup
-	} = useCollections();
-
-	const {
-		findGroup,
-	} = useCollectionsState();
-
+	const editGroup = useEditGroup();
+	const {findGroup} = useCollectionsState();
 	const prevName: string = findGroup(groupId).name;
 
 	const [
@@ -54,7 +49,7 @@ export function useDialogGroupEdit(groupId: number, onClose: () => void) {
 	function handleEdit() {
 		if (triggerNameValidation()) {
 			if (getName() !== prevName) {
-				renameGroup(groupId, getName());
+				editGroup(groupId, getName());
 			}
 			onClose();
 		}

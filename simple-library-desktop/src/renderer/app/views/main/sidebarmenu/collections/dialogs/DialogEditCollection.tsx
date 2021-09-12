@@ -1,14 +1,14 @@
 import React from "react";
-import {Dialog} from "../../../../../components/modals/dialog/Dialog";
-import {APP_ROOT_ID} from "../../../../Application";
-import {Slot} from "../../../../../components/base/slot/Slot";
-import {VBox} from "../../../../../components/layout/box/Box";
-import {Button} from "../../../../../components/buttons/button/Button";
-import {Label} from "../../../../../components/base/label/Label";
-import {TextField} from "../../../../../components/input/textfield/TextField";
-import {Spacer} from "../../../../../components/base/spacer/Spacer";
-import {TextArea} from "../../../../../components/input/textarea/TextArea";
-import {useDialogCollectionEdit} from "../../../../hooks/app/sidebarmenu/collection/useDialogCollectionEdit";
+import {Dialog} from "../../../../../../components/modals/dialog/Dialog";
+import {APP_ROOT_ID} from "../../../../../Application";
+import {Slot} from "../../../../../../components/base/slot/Slot";
+import {VBox} from "../../../../../../components/layout/box/Box";
+import {Button} from "../../../../../../components/buttons/button/Button";
+import {Label} from "../../../../../../components/base/label/Label";
+import {TextField} from "../../../../../../components/input/textfield/TextField";
+import {Spacer} from "../../../../../../components/base/spacer/Spacer";
+import {TextArea} from "../../../../../../components/input/textarea/TextArea";
+import {useDialogCollectionEdit} from "./useDialogCollectionEdit";
 
 interface DialogEditCollectionProps {
 	collectionId: number,

@@ -1,16 +1,16 @@
 import React from "react";
-import {Dialog} from "../../../../../components/modals/dialog/Dialog";
-import {APP_ROOT_ID} from "../../../../Application";
-import {Slot} from "../../../../../components/base/slot/Slot";
-import {HBox, VBox} from "../../../../../components/layout/box/Box";
-import {Button} from "../../../../../components/buttons/button/Button";
-import {TextField} from "../../../../../components/input/textfield/TextField";
-import {Spacer} from "../../../../../components/base/spacer/Spacer";
-import {TextArea} from "../../../../../components/input/textarea/TextArea";
-import {ChoiceBox, ChoiceBoxItem} from "../../../../../components/buttons/choicebox/ChoiceBox";
-import {ElementLabel} from "../../../../../components/misc/elementlabel/ElementLabel";
-import {useDialogCollectionCreate} from "../../../../hooks/app/sidebarmenu/collection/useDialogCollectionCreate";
-import {CollectionTypeDTO} from "../../../../../../common/events/dtoModels";
+import {Dialog} from "../../../../../../components/modals/dialog/Dialog";
+import {APP_ROOT_ID} from "../../../../../Application";
+import {Slot} from "../../../../../../components/base/slot/Slot";
+import {HBox, VBox} from "../../../../../../components/layout/box/Box";
+import {Button} from "../../../../../../components/buttons/button/Button";
+import {TextField} from "../../../../../../components/input/textfield/TextField";
+import {Spacer} from "../../../../../../components/base/spacer/Spacer";
+import {TextArea} from "../../../../../../components/input/textarea/TextArea";
+import {ChoiceBox, ChoiceBoxItem} from "../../../../../../components/buttons/choicebox/ChoiceBox";
+import {ElementLabel} from "../../../../../../components/misc/elementlabel/ElementLabel";
+import {useDialogCollectionCreate} from "./useDialogCollectionCreate";
+import {CollectionTypeDTO} from "../../../../../../../common/events/dtoModels";
 
 interface DialogCreateCollectionProps {
 	parentGroupId: number | null,

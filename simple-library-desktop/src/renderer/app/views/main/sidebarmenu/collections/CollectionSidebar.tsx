@@ -1,25 +1,26 @@
 import React from "react";
-import {SidebarTab} from "../../../../components/misc/app/AppLayout";
-import {IconType} from "../../../../components/base/icon/Icon";
-import {TreeView, TreeViewNode} from "../../../../components/misc/tree/TreeView";
-import {DynamicSlot} from "../../../../components/base/slot/DynamicSlot";
+import {SidebarTab} from "../../../../../components/misc/app/AppLayout";
+import {IconType} from "../../../../../components/base/icon/Icon";
+import {TreeView, TreeViewNode} from "../../../../../components/misc/tree/TreeView";
+import {DynamicSlot} from "../../../../../components/base/slot/DynamicSlot";
 import {ContextMenuCollection} from "./contextmenues/ContextMenuCollection";
 import {ContextMenuGroup} from "./contextmenues/ContextMenuGroup";
-import {APP_ROOT_ID} from "../../../Application";
+import {APP_ROOT_ID} from "../../../../Application";
 import {DialogDeleteCollection} from "./dialogs/DialogDeleteCollection";
-import {useCollectionSidebar, useCollectionSidebarUtils} from "../../../hooks/app/sidebarmenu/collection/useCollectionSidebar";
+import {useCollectionSidebar} from "./useCollectionSidebar";
 import {DialogDeleteGroup} from "./dialogs/DialogDeleteGroup";
 import {DialogEditGroup} from "./dialogs/DialogEditGroup";
 import {DialogEditCollection} from "./dialogs/DialogEditCollection";
 import {DialogCreateGroup} from "./dialogs/DialogCreateGroup";
 import {DialogCreateCollection} from "./dialogs/DialogCreateCollection";
-import {useDialogCollectionDeleteController} from "../../../hooks/app/sidebarmenu/collection/useDialogCollectionDelete";
-import {useDialogCollectionCreateController} from "../../../hooks/app/sidebarmenu/collection/useDialogCollectionCreate";
-import {useDialogCollectionEditController} from "../../../hooks/app/sidebarmenu/collection/useDialogCollectionEdit";
-import {useDialogGroupDeleteController} from "../../../hooks/app/sidebarmenu/collection/useDialogGroupDelete";
-import {useDialogGroupEditController} from "../../../hooks/app/sidebarmenu/collection/useDialogGroupEdit";
-import {useDialogGroupCreateController} from "../../../hooks/app/sidebarmenu/collection/useDialogGroupCreate";
-import {CollectionDTO, GroupDTO} from "../../../../../common/events/dtoModels";
+import {useDialogCollectionDeleteController} from "./dialogs/useDialogCollectionDelete";
+import {useDialogCollectionCreateController} from "./dialogs/useDialogCollectionCreate";
+import {useDialogCollectionEditController} from "./dialogs/useDialogCollectionEdit";
+import {useDialogGroupDeleteController} from "./dialogs/useDialogGroupDelete";
+import {useDialogGroupEditController} from "./dialogs/useDialogGroupEdit";
+import {useDialogGroupCreateController} from "./dialogs/useDialogGroupCreate";
+import {CollectionDTO, GroupDTO} from "../../../../../../common/events/dtoModels";
+import {useCollectionSidebarUtils} from "../../../../hooks/logic/collectionSidebarUtils";
 
 export const TAB_DATA_COLLECTIONS: SidebarTab = {
 	id: "tab-collections",

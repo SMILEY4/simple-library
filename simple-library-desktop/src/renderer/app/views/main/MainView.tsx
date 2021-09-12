@@ -4,7 +4,7 @@ import {DynamicSlot} from "../../../components/base/slot/DynamicSlot";
 import {Slot} from "../../../components/base/slot/Slot";
 import {AppLayout} from "../../../components/misc/app/AppLayout";
 import {AppToolbar} from "./apptoolbar/AppToolbar";
-import {CollectionSidebar, TAB_DATA_COLLECTIONS} from "./sidebarmenu/CollectionSidebar";
+import {CollectionSidebar, TAB_DATA_COLLECTIONS} from "./sidebarmenu/collections/CollectionSidebar";
 import {NotificationStack} from "../../../components/modals/notification/NotificationStack";
 import {useNotificationsState} from "../../hooks/base/notificationHooks";
 import {APP_ROOT_ID} from "../../Application";

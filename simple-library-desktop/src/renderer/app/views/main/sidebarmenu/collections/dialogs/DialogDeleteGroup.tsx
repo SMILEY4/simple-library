@@ -1,12 +1,12 @@
 import React from "react";
-import {Dialog} from "../../../../../components/modals/dialog/Dialog";
-import {APP_ROOT_ID} from "../../../../Application";
-import {Slot} from "../../../../../components/base/slot/Slot";
-import {VBox} from "../../../../../components/layout/box/Box";
-import {Button} from "../../../../../components/buttons/button/Button";
-import {Label} from "../../../../../components/base/label/Label";
-import {CheckBox} from "../../../../../components/buttons/checkbox/CheckBox";
-import {useDialogGroupDelete} from "../../../../hooks/app/sidebarmenu/collection/useDialogGroupDelete";
+import {Dialog} from "../../../../../../components/modals/dialog/Dialog";
+import {APP_ROOT_ID} from "../../../../../Application";
+import {Slot} from "../../../../../../components/base/slot/Slot";
+import {VBox} from "../../../../../../components/layout/box/Box";
+import {Button} from "../../../../../../components/buttons/button/Button";
+import {Label} from "../../../../../../components/base/label/Label";
+import {CheckBox} from "../../../../../../components/buttons/checkbox/CheckBox";
+import {useDialogGroupDelete} from "./useDialogGroupDelete";
 
 interface DialogDeleteGroupProps {
 	groupId: number,

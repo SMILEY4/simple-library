@@ -1,8 +1,8 @@
 import React from "react";
-import {Menu} from "../../../../../components/menu/menu/Menu";
-import {SubMenuItem} from "../../../../../components/menu/submenu/SubMenuItem";
-import {Slot} from "../../../../../components/base/slot/Slot";
-import {MenuItem} from "../../../../../components/menu/menuitem/MenuItem";
+import {Menu} from "../../../../../../components/menu/menu/Menu";
+import {SubMenuItem} from "../../../../../../components/menu/submenu/SubMenuItem";
+import {Slot} from "../../../../../../components/base/slot/Slot";
+import {MenuItem} from "../../../../../../components/menu/menuitem/MenuItem";
 
 interface ContextMenuGroupProps {
 	groupId: number | null,

@@ -1,8 +1,9 @@
-import {useDialogController} from "../../miscApplicationHooks";
+import {useDialogController} from "../../../../../hooks/app/miscApplicationHooks";
 import {useState} from "react";
-import {useCollections, useCollectionsState} from "../../../base/collectionHooks";
-import {useValidatedState} from "../../../../../components/utils/commonHooks";
-import {GroupDTO} from "../../../../../../common/events/dtoModels";
+import {useCollectionsState} from "../../../../../hooks/base/collectionHooks";
+import {useValidatedState} from "../../../../../../components/utils/commonHooks";
+import {GroupDTO} from "../../../../../../../common/events/dtoModels";
+import {useCreateGroup} from "../../../../../hooks/logic/core/createGroup";
 
 export function useDialogGroupCreateController(): [boolean, (id: number | null) => void, () => void, (number | null)] {
 
@@ -23,15 +24,10 @@ export function useDialogGroupCreateController(): [boolean, (id: number | null) 
 }
 
 
-export function useDialogGroupCreate(parentGroupId: number | null, onFinished: (created: boolean) => void) {
+export function useDialogGroupCreate(parentGroupId: number | null, onFinished: () => void) {
 
-	const {
-		createGroup
-	} = useCollections();
-
-	const {
-		findGroup,
-	} = useCollectionsState();
+	const createGroup = useCreateGroup();
+	const {findGroup} = useCollectionsState();
 
 	const [
 		getName,
@@ -47,13 +43,13 @@ export function useDialogGroupCreate(parentGroupId: number | null, onFinished: (
 	}
 
 	function handleCancel() {
-		onFinished(false)
+		onFinished()
 	}
 
 	function handleCreate() {
 		if (triggerNameValidation()) {
-			createGroup(parentGroupId, getName());
-			onFinished(true)
+			createGroup(getName(), parentGroupId)
+				.then(() => onFinished())
 		}
 	}
 

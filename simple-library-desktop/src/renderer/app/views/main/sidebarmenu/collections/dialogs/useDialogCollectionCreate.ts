@@ -1,8 +1,9 @@
-import {useDialogController} from "../../miscApplicationHooks";
+import {useDialogController} from "../../../../../hooks/app/miscApplicationHooks";
 import {useState} from "react";
-import {useCollections, useCollectionsState} from "../../../base/collectionHooks";
-import {useStateRef, useValidatedState} from "../../../../../components/utils/commonHooks";
-import {CollectionTypeDTO, GroupDTO} from "../../../../../../common/events/dtoModels";
+import {useCollectionsState} from "../../../../../hooks/base/collectionHooks";
+import {useStateRef, useValidatedState} from "../../../../../../components/utils/commonHooks";
+import {CollectionTypeDTO, GroupDTO} from "../../../../../../../common/events/dtoModels";
+import {useCreateCollection} from "../../../../../hooks/logic/core/createCollection";
 
 export function useDialogCollectionCreateController(): [boolean, (id: number | null) => void, () => void, (number | null)] {
 
@@ -23,18 +24,10 @@ export function useDialogCollectionCreateController(): [boolean, (id: number | n
 }
 
 
-export function useDialogCollectionCreate(parentGroupId: number | null, onFinished: (created: boolean) => void) {
+export function useDialogCollectionCreate(parentGroupId: number | null, onFinished: () => void) {
 
-	const {
-		loadGroups,
-		createCollection
-	} = useCollections();
-
-	const {
-		findGroup,
-	} = useCollectionsState();
-
-
+	const createCollection = useCreateCollection();
+	const {findGroup} = useCollectionsState();
 	const parentGroup: GroupDTO | null = findGroup(parentGroupId)
 
 	const [
@@ -61,15 +54,13 @@ export function useDialogCollectionCreate(parentGroupId: number | null, onFinish
 	}
 
 	function handleCancel() {
-		onFinished(false)
+		onFinished()
 	}
 
 	function handleCreate() {
 		if (triggerNameValidation()) {
-			createCollection(parentGroupId, getName(), refType.current, refQuery.current)
-				.catch(() => onFinished(false))
-				.then(() => loadGroups())
-				.then(() => onFinished(true))
+			createCollection(getName(), refType.current, refQuery.current, parentGroupId)
+				.then(() => onFinished())
 		}
 	}
 

@@ -1,11 +1,9 @@
-import {useDialogController} from "../../miscApplicationHooks";
+import {useDialogController} from "../../../../../hooks/app/miscApplicationHooks";
 import {useState} from "react";
-import { useCollections, useCollectionsState,} from "../../../base/collectionHooks";
-import {useStateRef, useValidatedState} from "../../../../../components/utils/commonHooks";
-import {useActiveCollectionState} from "../../../base/activeCollectionHooks";
-import {useItems} from "../../../base/itemHooks";
-import {useItemSelection} from "../../../base/itemSelectionHooks";
-import {CollectionDTO} from "../../../../../../common/events/dtoModels";
+import {useCollectionsState,} from "../../../../../hooks/base/collectionHooks";
+import {useStateRef, useValidatedState} from "../../../../../../components/utils/commonHooks";
+import {CollectionDTO} from "../../../../../../../common/events/dtoModels";
+import {useEditCollection} from "../../../../../hooks/logic/core/editCollection";
 
 export function useDialogCollectionEditController(): [boolean, (id: number | null) => void, () => void, (number | null)] {
 
@@ -30,27 +28,8 @@ export function useDialogCollectionEditController(): [boolean, (id: number | nul
 
 export function useDialogCollectionEdit(collectionId: number, onClose: () => void) {
 
-	const {
-		loadGroups,
-		editCollection
-	} = useCollections()
-
-	const {
-		findCollection,
-	} = useCollectionsState()
-
-	const {
-		activeCollectionId,
-	} = useActiveCollectionState()
-
-	const {
-		loadItems
-	} = useItems();
-
-	const {
-		clearSelection
-	} = useItemSelection()
-
+	const editCollection = useEditCollection();
+	const {findCollection,} = useCollectionsState()
 	const collection: CollectionDTO = findCollection(collectionId);
 
 	const [
@@ -77,13 +56,6 @@ export function useDialogCollectionEdit(collectionId: number, onClose: () => voi
 	function handleEdit() {
 		if (triggerNameValidation()) {
 			editCollection(collectionId, getName(), collection.type === "smart" ? refQuery.current : null)
-				.then(() => loadGroups())
-				.then(() => {
-					if (activeCollectionId === collectionId) {
-						clearSelection();
-						loadItems(collectionId);
-					}
-				})
 				.then(() => onClose())
 		}
 	}

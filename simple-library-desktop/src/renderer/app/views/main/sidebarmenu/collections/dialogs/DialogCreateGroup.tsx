@@ -1,13 +1,13 @@
 import React from "react";
-import {Dialog} from "../../../../../components/modals/dialog/Dialog";
-import {APP_ROOT_ID} from "../../../../Application";
-import {Slot} from "../../../../../components/base/slot/Slot";
-import {VBox} from "../../../../../components/layout/box/Box";
-import {Button} from "../../../../../components/buttons/button/Button";
-import {Label} from "../../../../../components/base/label/Label";
-import {TextField} from "../../../../../components/input/textfield/TextField";
-import {Spacer} from "../../../../../components/base/spacer/Spacer";
-import {useDialogGroupCreate} from "../../../../hooks/app/sidebarmenu/collection/useDialogGroupCreate";
+import {Dialog} from "../../../../../../components/modals/dialog/Dialog";
+import {APP_ROOT_ID} from "../../../../../Application";
+import {Slot} from "../../../../../../components/base/slot/Slot";
+import {VBox} from "../../../../../../components/layout/box/Box";
+import {Button} from "../../../../../../components/buttons/button/Button";
+import {Label} from "../../../../../../components/base/label/Label";
+import {TextField} from "../../../../../../components/input/textfield/TextField";
+import {Spacer} from "../../../../../../components/base/spacer/Spacer";
+import {useDialogGroupCreate} from "./useDialogGroupCreate";
 
 interface DialogCreateGroupProps {
 	parentGroupId: number | null,

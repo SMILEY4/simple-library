@@ -65,9 +65,9 @@ function useCollectionSidebarStateDispatch(): IStateHookResultWriteOnly<Collecti
 	return useGlobalStateWriteOnly<CollectionSidebarActionType>(dispatchContext)
 }
 
-export function useDispatchExpandNode(): (nodeId: number) => void {
+export function useDispatchExpandNode(): (nodeId: string) => void {
 	const dispatch = useCollectionSidebarStateDispatch();
-	return (nodeId: number) => {
+	return (nodeId: string) => {
 		dispatch({
 			type: CollectionSidebarActionType.COLLECTION_SIDEBAR_EXPANDED_ADD,
 			payload: nodeId
@@ -75,9 +75,9 @@ export function useDispatchExpandNode(): (nodeId: number) => void {
 	}
 }
 
-export function useDispatchCollapseNode(): (nodeId: number) => void {
+export function useDispatchCollapseNode(): (nodeId: string) => void {
 	const dispatch = useCollectionSidebarStateDispatch();
-	return (nodeId: number) => {
+	return (nodeId: string) => {
 		dispatch({
 			type: CollectionSidebarActionType.COLLECTION_SIDEBAR_EXPANDED_REMOVE,
 			payload: nodeId
@@ -85,9 +85,9 @@ export function useDispatchCollapseNode(): (nodeId: number) => void {
 	}
 }
 
-export function useDispatchSetExpandedNodes(): (nodeIds: number[]) => void {
+export function useDispatchSetExpandedNodes(): (nodeIds: string[]) => void {
 	const dispatch = useCollectionSidebarStateDispatch();
-	return (nodeIds: number[]) => {
+	return (nodeIds: string[]) => {
 		dispatch({
 			type: CollectionSidebarActionType.COLLECTION_SIDEBAR_EXPANDED_SET,
 			payload: nodeIds

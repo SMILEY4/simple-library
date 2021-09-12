@@ -102,6 +102,13 @@ export function useDispatchItemSelectionRemove(): (itemIds: number[]) => void {
 	}
 }
 
+export function useDispatchItemSelectionClear(): () => void {
+	const dispatchSet = useDispatchItemSelectionSet();
+	return () => {
+		dispatchSet([]);
+	}
+}
+
 export function useDispatchItemSelectionSetLast(): (itemId: number | null) => void {
 	const dispatch = useItemSelectionDispatch();
 	return (itemId: number | null) => {

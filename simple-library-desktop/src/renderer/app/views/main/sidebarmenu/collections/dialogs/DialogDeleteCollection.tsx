@@ -1,11 +1,11 @@
 import React from "react";
-import {Dialog} from "../../../../../components/modals/dialog/Dialog";
-import {APP_ROOT_ID} from "../../../../Application";
-import {Slot} from "../../../../../components/base/slot/Slot";
-import {VBox} from "../../../../../components/layout/box/Box";
-import {Button} from "../../../../../components/buttons/button/Button";
-import {Label} from "../../../../../components/base/label/Label";
-import {useDialogCollectionDelete} from "../../../../hooks/app/sidebarmenu/collection/useDialogCollectionDelete";
+import {Dialog} from "../../../../../../components/modals/dialog/Dialog";
+import {APP_ROOT_ID} from "../../../../../Application";
+import {Slot} from "../../../../../../components/base/slot/Slot";
+import {VBox} from "../../../../../../components/layout/box/Box";
+import {Button} from "../../../../../../components/buttons/button/Button";
+import {Label} from "../../../../../../components/base/label/Label";
+import {useDialogCollectionDelete} from "./useDialogCollectionDelete";
 
 interface DialogDeleteCollectionProps {
 	collectionId: number,
