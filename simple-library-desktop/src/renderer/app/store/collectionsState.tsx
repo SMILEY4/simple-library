@@ -24,7 +24,7 @@ const initialState: CollectionsState = {
 
 // REDUCER
 
-export enum CollectionsActionType {
+enum CollectionsActionType {
 	SET_ROOT_GROUP = "rootgroup.set",
 }
 
@@ -51,6 +51,16 @@ export function useCollectionsContext(): IStateHookResultReadWrite<CollectionsSt
 	return useGlobalStateReadWrite<CollectionsState, CollectionsActionType>(stateContext, dispatchContext);
 }
 
-export function useCollectionsDispatch(): IStateHookResultWriteOnly<CollectionsActionType> {
+function useCollectionsDispatch(): IStateHookResultWriteOnly<CollectionsActionType> {
 	return useGlobalStateWriteOnly<CollectionsActionType>(dispatchContext);
+}
+
+export function useDispatchSetRootGroup(): (group: GroupDTO) => void {
+	const collectionsDispatch = useCollectionsDispatch();
+	return (group: GroupDTO) => {
+		collectionsDispatch({
+			type: CollectionsActionType.SET_ROOT_GROUP,
+			payload: group,
+		});
+	}
 }

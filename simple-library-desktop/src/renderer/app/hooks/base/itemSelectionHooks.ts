@@ -1,7 +1,9 @@
 import {
-	ItemSelectionActionType,
+	useDispatchItemSelectionAdd,
+	useDispatchItemSelectionRemove,
+	useDispatchItemSelectionSet,
+	useDispatchItemSelectionSetLast,
 	useItemSelectionContext,
-	useItemSelectionDispatch
 } from "../../store/itemSelectionState";
 
 
@@ -23,39 +25,25 @@ export function useItemSelectionState() {
 
 export function useItemSelection() {
 
-	const itemSelectionDispatch = useItemSelectionDispatch();
+	const dispatchSelectionSet = useDispatchItemSelectionSet();
+	const dispatchSelectionAdd = useDispatchItemSelectionAdd();
+	const dispatchSelectionRemove = useDispatchItemSelectionRemove();
+	const dispatchSelectionSetLast = useDispatchItemSelectionSetLast();
+
 
 	function setSelection(itemIds: number[]) {
-		itemSelectionDispatch({
-			type: ItemSelectionActionType.ITEM_SELECTION_SET,
-			payload: itemIds,
-		});
-		itemSelectionDispatch({
-			type: ItemSelectionActionType.ITEM_SELECTION_SET_LAST,
-			payload: itemIds.length > 0 ? itemIds[0] : null,
-		});
+		dispatchSelectionSet(itemIds);
+		dispatchSelectionSetLast(itemIds.length > 0 ? itemIds[0] : null)
 	}
 
 	function addToSelection(itemIds: number[]) {
-		itemSelectionDispatch({
-			type: ItemSelectionActionType.ITEM_SELECTION_ADD,
-			payload: itemIds,
-		});
-		itemSelectionDispatch({
-			type: ItemSelectionActionType.ITEM_SELECTION_SET_LAST,
-			payload: itemIds.length > 0 ? itemIds[0] : null,
-		});
+		dispatchSelectionAdd(itemIds);
+		dispatchSelectionSetLast(itemIds.length > 0 ? itemIds[0] : null)
 	}
 
 	function removeFromSelection(itemIds: number[]) {
-		itemSelectionDispatch({
-			type: ItemSelectionActionType.ITEM_SELECTION_REMOVE,
-			payload: itemIds,
-		});
-		itemSelectionDispatch({
-			type: ItemSelectionActionType.ITEM_SELECTION_SET_LAST,
-			payload: itemIds.length > 0 ? itemIds[0] : null,
-		});
+		dispatchSelectionRemove(itemIds);
+		dispatchSelectionSetLast(itemIds.length > 0 ? itemIds[0] : null)
 	}
 
 	function toggleSelection(itemIds: number[], selectedItemIds: number[]) {
@@ -66,10 +54,7 @@ export function useItemSelection() {
 			}
 		});
 		setSelection(newSelection);
-		itemSelectionDispatch({
-			type: ItemSelectionActionType.ITEM_SELECTION_SET_LAST,
-			payload: itemIds.length > 0 ? itemIds[0] : null,
-		});
+		dispatchSelectionSetLast(itemIds.length > 0 ? itemIds[0] : null)
 	}
 
 	function selectRangeTo(itemId: number, additive: boolean, allItemIds: number[], selectedItemIds: number[], lastSelectedItemId: number) {
@@ -83,41 +68,24 @@ export function useItemSelection() {
 				const indexEnd: number = Math.max(indexTo, indexLast);
 				const idsInRange: number[] = allItemIds.slice(indexStart, indexEnd + 1);
 				if (additive) {
-					itemSelectionDispatch({
-						type: ItemSelectionActionType.ITEM_SELECTION_ADD,
-						payload: idsInRange,
-					});
+					dispatchSelectionAdd(idsInRange);
 				} else {
-					itemSelectionDispatch({
-						type: ItemSelectionActionType.ITEM_SELECTION_SET,
-						payload: idsInRange,
-					});
+					dispatchSelectionSet(idsInRange);
 				}
 			}
 		} else {
 			if (additive) {
 				if (selectedItemIds.indexOf(itemId) === -1) {
-					itemSelectionDispatch({
-						type: ItemSelectionActionType.ITEM_SELECTION_ADD,
-						payload: [itemId],
-					});
+					dispatchSelectionAdd([itemId]);
 				} else {
-					itemSelectionDispatch({
-						type: ItemSelectionActionType.ITEM_SELECTION_REMOVE,
-						payload: [itemId],
-					});
+					dispatchSelectionRemove([itemId]);
 				}
 			} else {
-				itemSelectionDispatch({
-					type: ItemSelectionActionType.ITEM_SELECTION_SET,
-					payload: [itemId],
-				});
+				dispatchSelectionSet([itemId]);
 			}
 		}
-		itemSelectionDispatch({
-			type: ItemSelectionActionType.ITEM_SELECTION_SET_LAST,
-			payload: pivotItemId,
-		});
+
+		dispatchSelectionSetLast(pivotItemId);
 	}
 
 	function clearSelection() {

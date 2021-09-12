@@ -24,7 +24,7 @@ const initialState: ItemsState = {
 
 // REDUCER
 
-export enum ItemsActionType {
+enum ItemsActionType {
     SET_ITEMS = "items.set",
     UPDATE_ITEM_ATTRIBUTE = "items.update-attribute"
 }
@@ -77,6 +77,35 @@ export function useItemsContext(): IStateHookResultReadWrite<ItemsState, ItemsAc
     return useGlobalStateReadWrite<ItemsState, ItemsActionType>(stateContext, dispatchContext);
 }
 
-export function useItemsDispatch(): IStateHookResultWriteOnly<ItemsActionType> {
+function useItemsDispatch(): IStateHookResultWriteOnly<ItemsActionType> {
     return useGlobalStateWriteOnly<ItemsActionType>(dispatchContext);
+}
+
+export function useDispatchSetItems(): (items: ItemDTO[]) => void {
+    const dispatch = useItemsDispatch();
+    return (items: ItemDTO[]) => {
+        dispatch({
+            type: ItemsActionType.SET_ITEMS,
+            payload: items
+        })
+    }
+}
+
+export function useDispatchClearItems(): () => void {
+    const dispatchSetItems = useDispatchSetItems();
+    return () => dispatchSetItems([]);
+}
+
+export function useDispatchUpdateItemAttribute(): (itemId: number, attributeKey: string, newValue: string) => void {
+    const dispatch = useItemsDispatch();
+    return (itemId: number, attributeKey: string, newValue: string) => {
+        dispatch({
+            type: ItemsActionType.UPDATE_ITEM_ATTRIBUTE,
+            payload: {
+                itemId: itemId,
+                key: attributeKey,
+                newValue: newValue
+            }
+        })
+    }
 }

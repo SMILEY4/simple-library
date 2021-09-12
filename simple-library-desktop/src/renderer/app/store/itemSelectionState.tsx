@@ -26,7 +26,7 @@ const initialState: ItemSelectionState = {
 
 // REDUCER
 
-export enum ItemSelectionActionType {
+enum ItemSelectionActionType {
 	ITEM_SELECTION_SET = "items.selection.set",
 	ITEM_SELECTION_ADD = "items.selection.add",
 	ITEM_SELECTION_REMOVE = "items.selection.remove",
@@ -68,6 +68,46 @@ export function useItemSelectionContext(): IStateHookResultReadWrite<ItemSelecti
 	return useGlobalStateReadWrite<ItemSelectionState, ItemSelectionActionType>(stateContext, dispatchContext);
 }
 
-export function useItemSelectionDispatch(): IStateHookResultWriteOnly<ItemSelectionActionType> {
+function useItemSelectionDispatch(): IStateHookResultWriteOnly<ItemSelectionActionType> {
 	return useGlobalStateWriteOnly<ItemSelectionActionType>(dispatchContext);
+}
+
+export function useDispatchItemSelectionSet(): (itemIds: number[]) => void {
+	const dispatch = useItemSelectionDispatch();
+	return (itemIds: number[]) => {
+		dispatch({
+			type: ItemSelectionActionType.ITEM_SELECTION_SET,
+			payload: itemIds,
+		});
+	}
+}
+
+export function useDispatchItemSelectionAdd(): (itemIds: number[]) => void {
+	const dispatch = useItemSelectionDispatch();
+	return (itemIds: number[]) => {
+		dispatch({
+			type: ItemSelectionActionType.ITEM_SELECTION_ADD,
+			payload: itemIds,
+		});
+	}
+}
+
+export function useDispatchItemSelectionRemove(): (itemIds: number[]) => void {
+	const dispatch = useItemSelectionDispatch();
+	return (itemIds: number[]) => {
+		dispatch({
+			type: ItemSelectionActionType.ITEM_SELECTION_REMOVE,
+			payload: itemIds,
+		});
+	}
+}
+
+export function useDispatchItemSelectionSetLast(): (itemId: number | null) => void {
+	const dispatch = useItemSelectionDispatch();
+	return (itemId: number | null) => {
+		dispatch({
+			type: ItemSelectionActionType.ITEM_SELECTION_SET_LAST,
+			payload: itemId,
+		});
+	}
 }

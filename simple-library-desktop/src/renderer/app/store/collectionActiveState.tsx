@@ -21,7 +21,7 @@ const initialState: CollectionActiveState = {
 
 // REDUCER
 
-export enum CollectionActiveActionType {
+enum CollectionActiveActionType {
 	SET_CURRENT_COLLECTION_ID = "collection.set",
 }
 
@@ -49,7 +49,26 @@ export function useCollectionActiveContext(): IStateHookResultReadWrite<Collecti
 	return useGlobalStateReadWrite<CollectionActiveState, CollectionActiveActionType>(stateContext, dispatchContext)
 }
 
-export function useCollectionActiveDispatch(): IStateHookResultWriteOnly<CollectionActiveActionType> {
+function useCollectionActiveDispatch(): IStateHookResultWriteOnly<CollectionActiveActionType> {
 	return useGlobalStateWriteOnly<CollectionActiveActionType>(dispatchContext)
 }
 
+export function useDispatchSetActiveCollection(): (collectionId: number) => void {
+	const dispatch = useCollectionActiveDispatch();
+	return (collectionId: number) => {
+		dispatch({
+			type: CollectionActiveActionType.SET_CURRENT_COLLECTION_ID,
+			payload: collectionId
+		});
+	}
+}
+
+export function useDispatchClearActiveCollection(): () => void {
+	const dispatch = useCollectionActiveDispatch();
+	return () => {
+		dispatch({
+			type: CollectionActiveActionType.SET_CURRENT_COLLECTION_ID,
+			payload: null
+		});
+	}
+}

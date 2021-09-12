@@ -11,7 +11,12 @@ import {
 import {useModifyNotifications} from "./notificationHooks";
 import {genNotificationId} from "./notificationUtils";
 import {AppNotificationType} from "../../store/notificationState";
-import {ItemsActionType, useItemsContext, useItemsDispatch} from "../../store/itemsState";
+import {
+    useDispatchClearItems,
+    useDispatchSetItems,
+    useDispatchUpdateItemAttribute,
+    useItemsContext
+} from "../../store/itemsState";
 import {ImportProcessDataDTO, ImportResultDTO, ImportStatusDTO, ItemDTO} from "../../../../common/events/dtoModels";
 
 export function useItemsState() {
@@ -40,24 +45,20 @@ export function useItems() {
         removeNotification
     } = useModifyNotifications();
 
-    const itemsDispatch = useItemsDispatch();
+    const dispatchSetItems = useDispatchSetItems();
+    const dispatchClearItems = useDispatchClearItems();
+    const dispatchUpdateItemAttribute = useDispatchUpdateItemAttribute();
 
     const itemAttributeKeys: string[] = ["File.FileName", "File.FileCreateDate", "File.FileSize", "File.FileType", "JFIF.JFIFVersion", "PNG.Gamma"];
 
     function load(collectionId: number): void {
         fetchItems(collectionId, itemAttributeKeys, true)
             .catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_FETCH_FAILED, error))
-            .then((items: ItemDTO[]) => itemsDispatch({
-                type: ItemsActionType.SET_ITEMS,
-                payload: items
-            }));
+            .then((items: ItemDTO[]) => dispatchSetItems(items));
     }
 
     function clear(): void {
-        itemsDispatch({
-            type: ItemsActionType.SET_ITEMS,
-            payload: []
-        });
+        dispatchClearItems()
     }
 
     function remove(collectionId: number, itemIds: number[]): Promise<void> {
@@ -99,14 +100,7 @@ export function useItems() {
     }
 
     function updateItemAttributeState(itemId: number, attributeKey: string, newValue: string): void {
-        itemsDispatch({
-            type: ItemsActionType.UPDATE_ITEM_ATTRIBUTE,
-            payload: {
-                itemId: itemId,
-                key: attributeKey,
-                newValue: newValue
-            }
-        });
+        dispatchUpdateItemAttribute(itemId, attributeKey, newValue);
     }
 
     return {

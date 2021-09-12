@@ -12,7 +12,7 @@ import {
 import {genNotificationId} from "./notificationUtils";
 import {useModifyNotifications} from "./notificationHooks";
 import {AppNotificationType} from "../../store/notificationState";
-import {CollectionsActionType, useCollectionsContext, useCollectionsDispatch} from "../../store/collectionsState";
+import {useCollectionsContext, useDispatchSetRootGroup} from "../../store/collectionsState";
 import {CollectionDTO, CollectionTypeDTO, GroupDTO} from "../../../../common/events/dtoModels";
 import {extractCollections, extractGroups} from "../../common/utils";
 
@@ -43,18 +43,14 @@ export function useCollectionsState() {
 
 export function useCollections() {
 
-	const collectionsDispatch = useCollectionsDispatch();
+	const dispatchSetRootGroup = useDispatchSetRootGroup();
 	const {throwErrorNotification} = useModifyNotifications()
+
 
 	function loadGroups(): Promise<void> {
 		return fetchRootGroup()
 			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ROOT_GROUP_FETCH_FAILED, error))
-			.then((group: GroupDTO) => {
-				collectionsDispatch({
-					type: CollectionsActionType.SET_ROOT_GROUP,
-					payload: group,
-				});
-			})
+			.then((group: GroupDTO) => dispatchSetRootGroup(group))
 	}
 
 	function moveGroup(groupId: number, targetGroupId: number | null): Promise<void> {

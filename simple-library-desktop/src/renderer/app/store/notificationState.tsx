@@ -8,6 +8,7 @@ import {
 	useGlobalStateWriteOnly
 } from "../../components/utils/storeUtils";
 import React from "react";
+import {genNotificationId} from "../hooks/base/notificationUtils";
 
 
 // STATE
@@ -103,7 +104,45 @@ export function useNotificationContext(): IStateHookResultReadWrite<Notification
 	return useGlobalStateReadWrite<NotificationState, NotificationActionType>(stateContext, dispatchContext);
 }
 
-export function useNotificationDispatch(): IStateHookResultWriteOnly<NotificationActionType> {
+function useNotificationDispatch(): IStateHookResultWriteOnly<NotificationActionType> {
 	return useGlobalStateWriteOnly<NotificationActionType>(dispatchContext);
 }
 
+export function useDispatchAddNotification(): (notificationId: string, type: AppNotificationType, data: any) => void {
+	const dispatch = useNotificationDispatch();
+	return (notificationId: string, type: AppNotificationType, data: any) => {
+		dispatch({
+			type: NotificationActionType.NOTIFICATIONS_ADD,
+			payload: {
+				notificationId: notificationId ? notificationId : genNotificationId(),
+				notificationType: type,
+				notificationData: data,
+			},
+		});
+	}
+}
+
+export function useDispatchRemoveNotification(): (notificationId: string) => void {
+	const dispatch = useNotificationDispatch();
+	return (notificationId: string) => {
+		dispatch({
+			type: NotificationActionType.NOTIFICATIONS_REMOVE,
+			payload: {
+				notificationId: notificationId,
+			},
+		});
+	}
+}
+
+export function useDispatchUpdateNotification(): (notificationId: string, data: any) => void {
+	const dispatch = useNotificationDispatch();
+	return (notificationId: string, data: any) => {
+		dispatch({
+			type: NotificationActionType.NOTIFICATIONS_UPDATE,
+			payload: {
+				notificationId: notificationId,
+				notificationData: data,
+			},
+		});
+	}
+}

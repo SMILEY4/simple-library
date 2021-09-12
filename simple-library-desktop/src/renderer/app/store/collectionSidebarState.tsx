@@ -1,11 +1,14 @@
 import {
 	buildContext,
 	GenericContextProvider,
-	IStateHookResultReadWrite, IStateHookResultWriteOnly,
+	IStateHookResultReadWrite,
+	IStateHookResultWriteOnly,
 	ReducerConfigMap,
-	useGlobalStateReadWrite, useGlobalStateWriteOnly
+	useGlobalStateReadWrite,
+	useGlobalStateWriteOnly
 } from "../../components/utils/storeUtils";
 import React from "react";
+import {unique} from "../common/arrayUtils";
 
 
 // STATE
@@ -25,7 +28,6 @@ export enum CollectionSidebarActionType {
 	COLLECTION_SIDEBAR_EXPANDED_SET = "ui.sidebar.collections.expanded.set",
 	COLLECTION_SIDEBAR_EXPANDED_ADD = "ui.sidebar.collections.expanded.add",
 	COLLECTION_SIDEBAR_EXPANDED_REMOVE = "ui.sidebar.collections.expanded.remove",
-
 }
 
 const reducerConfigMap: ReducerConfigMap<CollectionSidebarActionType, CollectionSidebarState> = new ReducerConfigMap([
@@ -35,7 +37,7 @@ const reducerConfigMap: ReducerConfigMap<CollectionSidebarActionType, Collection
 	})],
 	[CollectionSidebarActionType.COLLECTION_SIDEBAR_EXPANDED_ADD, (state, payload) => ({
 		...state,
-		expandedNodes: [...state.expandedNodes, payload],
+		expandedNodes: unique<number>([...state.expandedNodes, payload]),
 	})],
 	[CollectionSidebarActionType.COLLECTION_SIDEBAR_EXPANDED_REMOVE, (state, payload) => ({
 		...state,
@@ -59,6 +61,36 @@ export function useCollectionSidebarState(): IStateHookResultReadWrite<Collectio
 	return useGlobalStateReadWrite<CollectionSidebarState, CollectionSidebarActionType>(stateContext, dispatchContext)
 }
 
-export function useCollectionSidebarStateDispatch(): IStateHookResultWriteOnly<CollectionSidebarActionType> {
+function useCollectionSidebarStateDispatch(): IStateHookResultWriteOnly<CollectionSidebarActionType> {
 	return useGlobalStateWriteOnly<CollectionSidebarActionType>(dispatchContext)
+}
+
+export function useDispatchExpandNode(): (nodeId: number) => void {
+	const dispatch = useCollectionSidebarStateDispatch();
+	return (nodeId: number) => {
+		dispatch({
+			type: CollectionSidebarActionType.COLLECTION_SIDEBAR_EXPANDED_ADD,
+			payload: nodeId
+		});
+	}
+}
+
+export function useDispatchCollapseNode(): (nodeId: number) => void {
+	const dispatch = useCollectionSidebarStateDispatch();
+	return (nodeId: number) => {
+		dispatch({
+			type: CollectionSidebarActionType.COLLECTION_SIDEBAR_EXPANDED_REMOVE,
+			payload: nodeId
+		});
+	}
+}
+
+export function useDispatchSetExpandedNodes(): (nodeIds: number[]) => void {
+	const dispatch = useCollectionSidebarStateDispatch();
+	return (nodeIds: number[]) => {
+		dispatch({
+			type: CollectionSidebarActionType.COLLECTION_SIDEBAR_EXPANDED_SET,
+			payload: nodeIds
+		});
+	}
 }

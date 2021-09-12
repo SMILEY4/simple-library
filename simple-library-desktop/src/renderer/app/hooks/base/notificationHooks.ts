@@ -1,10 +1,11 @@
-import {genNotificationId, toNotificationEntry} from "./notificationUtils";
+import {toNotificationEntry} from "./notificationUtils";
 import {NotificationStackEntry} from "../../../components/modals/notification/NotificationStack";
 import {
 	AppNotificationType,
-	NotificationActionType,
-	useNotificationContext,
-	useNotificationDispatch
+	useDispatchAddNotification,
+	useDispatchRemoveNotification,
+	useDispatchUpdateNotification,
+	useNotificationContext
 } from "../../store/notificationState";
 
 
@@ -30,7 +31,9 @@ export function useNotificationsState() {
 
 export function useModifyNotifications() {
 
-	const dispatch = useNotificationDispatch();
+	const dispatchAdd = useDispatchAddNotification();
+	const dispatchRemove = useDispatchRemoveNotification();
+	const dispatchUpdate = useDispatchUpdateNotification();
 
 	function throwError(notificationId: string, type: AppNotificationType, error: any) {
 		add(notificationId, type, error);
@@ -38,33 +41,15 @@ export function useModifyNotifications() {
 	}
 
 	function add(notificationId: string, type: AppNotificationType, data: any) {
-		dispatch({
-			type: NotificationActionType.NOTIFICATIONS_ADD,
-			payload: {
-				notificationId: notificationId ? notificationId : genNotificationId(),
-				notificationType: type,
-				notificationData: data,
-			},
-		});
+		dispatchAdd(notificationId, type, data);
 	}
 
 	function remove(notificationId: string) {
-		dispatch({
-			type: NotificationActionType.NOTIFICATIONS_REMOVE,
-			payload: {
-				notificationId: notificationId,
-			},
-		});
+		dispatchRemove(notificationId);
 	}
 
 	function update(notificationId: string, data: any) {
-		dispatch({
-			type: NotificationActionType.NOTIFICATIONS_UPDATE,
-			payload: {
-				notificationId: notificationId,
-				notificationData: data,
-			},
-		});
+		dispatchUpdate(notificationId, data);
 	}
 
 	return {

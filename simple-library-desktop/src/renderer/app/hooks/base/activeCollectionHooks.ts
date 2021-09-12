@@ -1,24 +1,25 @@
-import {CollectionActiveActionType, useCollectionActiveContext} from "../../store/collectionActiveState";
+import {
+	useCollectionActiveContext,
+	useDispatchClearActiveCollection,
+	useDispatchSetActiveCollection
+} from "../../store/collectionActiveState";
 
 
 export function useActiveCollectionState() {
 
-	const [activeCollectionState, activeCollectionDispatch] = useCollectionActiveContext();
+	const [activeCollectionState] = useCollectionActiveContext();
+	const dispatchSetActiveCollection = useDispatchSetActiveCollection();
+	const dispatchClearActiveCollection = useDispatchClearActiveCollection();
+
 
 	function open(collectionId: number): void {
 		if (activeCollectionState.activeCollectionId !== collectionId) {
-			activeCollectionDispatch({
-				type: CollectionActiveActionType.SET_CURRENT_COLLECTION_ID,
-				payload: collectionId
-			});
+			dispatchSetActiveCollection(collectionId);
 		}
 	}
 
 	function close(): void {
-		activeCollectionDispatch({
-			type: CollectionActiveActionType.SET_CURRENT_COLLECTION_ID,
-			payload: null
-		});
+		dispatchClearActiveCollection();
 	}
 
 	return {
