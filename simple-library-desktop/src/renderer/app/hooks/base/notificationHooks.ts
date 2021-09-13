@@ -29,6 +29,19 @@ export function useNotificationsState() {
 }
 
 
+export function useThrowErrorWithNotification() {
+
+	const dispatchAdd = useDispatchAddNotification();
+
+	function throwError(notificationId: string, type: AppNotificationType, error: any) {
+		dispatchAdd(notificationId, type, error);
+		throw error
+	}
+
+	return throwError;
+}
+
+
 export function useModifyNotifications() {
 
 	const dispatchAdd = useDispatchAddNotification();

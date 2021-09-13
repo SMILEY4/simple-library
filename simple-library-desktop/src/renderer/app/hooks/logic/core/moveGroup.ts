@@ -2,13 +2,19 @@ import {fetchRootGroup, requestMoveGroup} from "../../../common/messagingInterfa
 import {genNotificationId} from "../../base/notificationUtils";
 import {AppNotificationType} from "../../../store/notificationState";
 import {useDispatchSetRootGroup} from "../../../store/collectionsState";
-import {useModifyNotifications} from "../../base/notificationHooks";
+import {useThrowErrorWithNotification} from "../../base/notificationHooks";
 import {GroupDTO} from "../../../../../common/events/dtoModels";
 
 export function useMoveGroup() {
 
 	const dispatchSetRootGroup = useDispatchSetRootGroup();
-	const {throwErrorNotification} = useModifyNotifications()
+	const throwErrorNotification = useThrowErrorWithNotification();
+
+	function hookFunction(groupId: number, targetGroupId: number | null) {
+		Promise.resolve()
+			.then(() => moveGroup(groupId, targetGroupId))
+			.then(() => updateGroupState())
+	}
 
 	function moveGroup(groupId: number, targetGroupId: number | null): Promise<any> {
 		return requestMoveGroup(groupId, targetGroupId)
@@ -21,9 +27,5 @@ export function useMoveGroup() {
 			.then((group: GroupDTO) => dispatchSetRootGroup(group));
 	}
 
-	return (groupId: number, targetGroupId: number | null) => {
-		Promise.resolve()
-			.then(() => moveGroup(groupId, targetGroupId))
-			.then(() => updateGroupState())
-	}
+	return hookFunction;
 }

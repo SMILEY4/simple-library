@@ -1,4 +1,4 @@
-import {useModifyNotifications} from "../../base/notificationHooks";
+import {useModifyNotifications, useThrowErrorWithNotification} from "../../base/notificationHooks";
 import {useDispatchSetRootGroup} from "../../../store/collectionsState";
 import {fetchRootGroup, requestDeleteCollection} from "../../../common/messagingInterface";
 import {genNotificationId} from "../../base/notificationUtils";
@@ -14,7 +14,14 @@ export function useDeleteCollection() {
 	const dispatchSetRootGroup = useDispatchSetRootGroup();
 	const dispatchClearSelection = useDispatchItemSelectionClear()
 	const dispatchClearActiveCollection = useDispatchClearActiveCollection();
-	const {throwErrorNotification} = useModifyNotifications();
+	const throwErrorNotification = useThrowErrorWithNotification();
+
+	function hookFunction(collectionId: number) {
+		return Promise.resolve()
+			.then(() => deleteCollection(collectionId))
+			.then(() => updateGroupState())
+			.then(() => handleActiveCollection(collectionId))
+	}
 
 	function deleteCollection(collectionId: number): Promise<void> {
 		return requestDeleteCollection(collectionId)
@@ -34,10 +41,5 @@ export function useDeleteCollection() {
 		}
 	}
 
-	return (collectionId: number) => {
-		return Promise.resolve()
-			.then(() => deleteCollection(collectionId))
-			.then(() => updateGroupState())
-			.then(() => handleActiveCollection(collectionId))
-	}
+	return hookFunction;
 }

@@ -1,10 +1,10 @@
 import {useCollectionsState} from "../../../../hooks/base/collectionHooks";
-import {useExpandCollapseSidebarNode} from "../../../../hooks/logic/expandCollapseGroupNode";
-import {useDragNode} from "../../../../hooks/logic/dragNode";
-import {useDragOverNode} from "../../../../hooks/logic/dragOverNode";
-import {useDropOnNode} from "../../../../hooks/logic/dropOnNode";
-import {useActivateNode} from "../../../../hooks/logic/activateNode";
-import {useInitCollectionSidebar} from "../../../../hooks/logic/initCollectionSidebar";
+import {useExpandCollapseSidebarNode} from "../../../../hooks/logic/collectionsidebar/expandCollapseGroupNode";
+import {useDragNode} from "../../../../hooks/logic/collectionsidebar/dragNode";
+import {useDragOverNode} from "../../../../hooks/logic/collectionsidebar/dragOverNode";
+import {useDropOnNode} from "../../../../hooks/logic/collectionsidebar/dropOnNode";
+import {useActivateNode} from "../../../../hooks/logic/collectionsidebar/activateNode";
+import {useInitCollectionSidebar} from "../../../../hooks/logic/collectionsidebar/initCollectionSidebar";
 
 export function useCollectionSidebar() {
 

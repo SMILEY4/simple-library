@@ -7,7 +7,7 @@ import {
 import {genNotificationId} from "../../base/notificationUtils";
 import {AppNotificationType} from "../../../store/notificationState";
 import {CollectionTypeDTO, GroupDTO, ItemDTO} from "../../../../../common/events/dtoModels";
-import {useModifyNotifications} from "../../base/notificationHooks";
+import {useModifyNotifications, useThrowErrorWithNotification} from "../../base/notificationHooks";
 import {useDispatchSetRootGroup} from "../../../store/collectionsState";
 import {useActiveCollectionState} from "../../base/activeCollectionHooks";
 import {useDispatchItemSelectionClear} from "../../../store/itemSelectionState";
@@ -15,13 +15,20 @@ import {useDispatchSetItems} from "../../../store/itemsState";
 
 export function useEditCollection() {
 
+	const {activeCollectionId} = useActiveCollectionState();
 	const dispatchSetRootGroup = useDispatchSetRootGroup();
 	const dispatchSetItems = useDispatchSetItems();
 	const dispatchClearSelection = useDispatchItemSelectionClear()
-	const {activeCollectionId} = useActiveCollectionState();
-	const {throwErrorNotification} = useModifyNotifications();
+	const throwErrorNotification = useThrowErrorWithNotification();
 
 	const itemAttributeKeys: string[] = ["File.FileName", "File.FileCreateDate", "File.FileSize", "File.FileType", "JFIF.JFIFVersion", "PNG.Gamma"];
+
+	function hookFunction(collectionId: number, name: string, query: string | null) {
+		return Promise.resolve()
+			.then(() => edit(collectionId, name, query))
+			.then(() => updateGroupState())
+			.then(() => handleActiveCollection(collectionId))
+	}
 
 	function edit(collectionId: number, name: string, query: string | null) {
 		return requestEditCollection(collectionId, name, query)
@@ -48,10 +55,5 @@ export function useEditCollection() {
 			.then((items: ItemDTO[]) => dispatchSetItems(items));
 	}
 
-	return (collectionId: number, name: string, query: string | null) => {
-		return Promise.resolve()
-			.then(() => edit(collectionId, name, query))
-			.then(() => updateGroupState())
-			.then(() => handleActiveCollection(collectionId))
-	}
+	return hookFunction;
 }

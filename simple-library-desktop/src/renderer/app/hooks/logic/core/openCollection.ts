@@ -3,7 +3,7 @@ import {fetchItems} from "../../../common/messagingInterface";
 import {genNotificationId} from "../../base/notificationUtils";
 import {AppNotificationType} from "../../../store/notificationState";
 import {ItemDTO} from "../../../../../common/events/dtoModels";
-import {useModifyNotifications} from "../../base/notificationHooks";
+import {useThrowErrorWithNotification} from "../../base/notificationHooks";
 import {useDispatchSetItems} from "../../../store/itemsState";
 import {useDispatchItemSelectionClear} from "../../../store/itemSelectionState";
 
@@ -13,9 +13,17 @@ export function useOpenCollection() {
 	const dispatchSetItems = useDispatchSetItems();
 	const dispatchSetActiveCollection = useDispatchSetActiveCollection();
 	const dispatchClearSelection = useDispatchItemSelectionClear();
-	const {throwErrorNotification} = useModifyNotifications();
+	const throwErrorNotification = useThrowErrorWithNotification();
 
 	const itemAttributeKeys: string[] = ["File.FileName", "File.FileCreateDate", "File.FileSize", "File.FileType", "JFIF.JFIFVersion", "PNG.Gamma"];
+
+	function hookFunction(collectionId: number) {
+		if (activeCollectionState.activeCollectionId !== collectionId) {
+			dispatchSetActiveCollection(collectionId);
+			dispatchClearSelection();
+			loadItemState(collectionId);
+		}
+	}
 
 	function loadItemState(collectionId: number) {
 		fetchItems(collectionId, itemAttributeKeys, true)
@@ -23,11 +31,5 @@ export function useOpenCollection() {
 			.then((items: ItemDTO[]) => dispatchSetItems(items));
 	}
 
-	return (collectionId: number) => {
-		if (activeCollectionState.activeCollectionId !== collectionId) {
-			dispatchSetActiveCollection(collectionId);
-			dispatchClearSelection();
-			loadItemState(collectionId);
-		}
-	}
+	return hookFunction;
 }

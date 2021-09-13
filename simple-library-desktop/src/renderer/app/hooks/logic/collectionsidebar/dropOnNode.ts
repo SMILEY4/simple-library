@@ -1,12 +1,12 @@
 import React from "react";
-import {DragAndDropCollections, DragAndDropGroups, DragAndDropItems, DragAndDropUtils} from "../../common/dragAndDrop";
-import {useCollections} from "../base/collectionHooks";
-import {useItems} from "../base/itemHooks";
-import {useActiveCollectionState} from "../base/activeCollectionHooks";
+import {DragAndDropCollections, DragAndDropGroups, DragAndDropItems, DragAndDropUtils} from "../../../common/dragAndDrop";
+import {useCollections} from "../../base/collectionHooks";
+import {useItems} from "../../base/itemHooks";
+import {useActiveCollectionState} from "../../base/activeCollectionHooks";
 import {useCollectionSidebarUtils} from "./collectionSidebarUtils";
-import {useMoveGroup} from "./core/moveGroup";
-import {useMoveCollection} from "./core/moveCollection";
-import {useMoveItems} from "./core/moveItems";
+import {useMoveGroup} from "../core/moveGroup";
+import {useMoveCollection} from "../core/moveCollection";
+import {useMoveItems} from "../core/moveItems";
 
 export function useDropOnNode() {
 

@@ -2,13 +2,19 @@ import {fetchRootGroup, requestCreateGroup} from "../../../common/messagingInter
 import {genNotificationId} from "../../base/notificationUtils";
 import {AppNotificationType} from "../../../store/notificationState";
 import {GroupDTO} from "../../../../../common/events/dtoModels";
-import {useModifyNotifications} from "../../base/notificationHooks";
+import {useThrowErrorWithNotification} from "../../base/notificationHooks";
 import {useDispatchSetRootGroup} from "../../../store/collectionsState";
 
 export function useCreateGroup() {
 
 	const dispatchSetRootGroup = useDispatchSetRootGroup();
-	const {throwErrorNotification} = useModifyNotifications();
+	const throwErrorNotification = useThrowErrorWithNotification();
+
+	function hookFunction(name: string, parentGroupId: number | null) {
+		return Promise.resolve()
+			.then(() => create(name, parentGroupId))
+			.then(() => updateGroupState())
+	}
 
 	function create(name: string, parentGroupId: number | null) {
 		return requestCreateGroup(name, parentGroupId)
@@ -21,9 +27,5 @@ export function useCreateGroup() {
 			.then((group: GroupDTO) => dispatchSetRootGroup(group));
 	}
 
-	return (name: string, parentGroupId: number | null) => {
-		return Promise.resolve()
-			.then(() => create(name, parentGroupId))
-			.then(() => updateGroupState())
-	}
+	return hookFunction;
 }

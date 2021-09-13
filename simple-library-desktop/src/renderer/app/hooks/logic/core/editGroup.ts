@@ -2,13 +2,19 @@ import {fetchRootGroup, requestRenameGroup} from "../../../common/messagingInter
 import {genNotificationId} from "../../base/notificationUtils";
 import {AppNotificationType} from "../../../store/notificationState";
 import {GroupDTO} from "../../../../../common/events/dtoModels";
-import {useModifyNotifications} from "../../base/notificationHooks";
+import {useThrowErrorWithNotification} from "../../base/notificationHooks";
 import {useDispatchSetRootGroup} from "../../../store/collectionsState";
 
 export function useEditGroup() {
 
 	const dispatchSetRootGroup = useDispatchSetRootGroup();
-	const {throwErrorNotification} = useModifyNotifications();
+	const throwErrorNotification = useThrowErrorWithNotification();
+
+	function hookFunction(groupId: number, newName: string) {
+		Promise.resolve()
+			.then(() => rename(groupId, newName))
+			.then(() => updateGroupState())
+	}
 
 	function rename(groupId: number, newName: string) {
 		return requestRenameGroup(groupId, newName)
@@ -21,9 +27,5 @@ export function useEditGroup() {
 			.then((group: GroupDTO) => dispatchSetRootGroup(group));
 	}
 
-	return (groupId: number, newName: string) => {
-		Promise.resolve()
-			.then(() => rename(groupId, newName))
-			.then(() => updateGroupState())
-	}
+	return hookFunction;
 }

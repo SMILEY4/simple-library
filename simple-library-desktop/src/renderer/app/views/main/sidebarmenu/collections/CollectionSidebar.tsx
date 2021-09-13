@@ -20,7 +20,7 @@ import {useDialogGroupDeleteController} from "./dialogs/useDialogGroupDelete";
 import {useDialogGroupEditController} from "./dialogs/useDialogGroupEdit";
 import {useDialogGroupCreateController} from "./dialogs/useDialogGroupCreate";
 import {CollectionDTO, GroupDTO} from "../../../../../../common/events/dtoModels";
-import {useCollectionSidebarUtils} from "../../../../hooks/logic/collectionSidebarUtils";
+import {useCollectionSidebarUtils} from "../../../../hooks/logic/collectionsidebar/collectionSidebarUtils";
 
 export const TAB_DATA_COLLECTIONS: SidebarTab = {
 	id: "tab-collections",

@@ -2,13 +2,19 @@ import {fetchRootGroup, requestCreateCollection} from "../../../common/messaging
 import {genNotificationId} from "../../base/notificationUtils";
 import {AppNotificationType} from "../../../store/notificationState";
 import {CollectionTypeDTO, GroupDTO} from "../../../../../common/events/dtoModels";
-import {useModifyNotifications} from "../../base/notificationHooks";
+import {useThrowErrorWithNotification} from "../../base/notificationHooks";
 import {useDispatchSetRootGroup} from "../../../store/collectionsState";
 
 export function useCreateCollection() {
 
 	const dispatchSetRootGroup = useDispatchSetRootGroup();
-	const {throwErrorNotification} = useModifyNotifications();
+	const throwErrorNotification = useThrowErrorWithNotification();
+
+	function hookFunction(name: string, type: CollectionTypeDTO, query: string | null, parentGroupId: number | null) {
+		return Promise.resolve()
+			.then(() => create(name, type, query, parentGroupId))
+			.then(() => updateGroupState());
+	}
 
 	function create(name: string, type: CollectionTypeDTO, query: string | null, parentGroupId: number | null) {
 		return requestCreateCollection(name, type, type === "smart" ? query : null, parentGroupId)
@@ -21,9 +27,5 @@ export function useCreateCollection() {
 			.then((group: GroupDTO) => dispatchSetRootGroup(group));
 	}
 
-	return (name: string, type: CollectionTypeDTO, query: string | null, parentGroupId: number | null) => {
-		return Promise.resolve()
-			.then(() => create(name, type, query, parentGroupId))
-			.then(() => updateGroupState())
-	}
+	return hookFunction;
 }

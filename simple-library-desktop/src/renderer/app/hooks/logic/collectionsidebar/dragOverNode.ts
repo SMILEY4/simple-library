@@ -1,7 +1,7 @@
 import React from "react";
-import {DragAndDropCollections, DragAndDropGroups, DragAndDropItems, DragAndDropUtils} from "../../common/dragAndDrop";
-import {GroupDTO} from "../../../../common/events/dtoModels";
-import {useCollectionsState} from "../base/collectionHooks";
+import {DragAndDropCollections, DragAndDropGroups, DragAndDropItems, DragAndDropUtils} from "../../../common/dragAndDrop";
+import {GroupDTO} from "../../../../../common/events/dtoModels";
+import {useCollectionsState} from "../../base/collectionHooks";
 import {useCollectionSidebarUtils} from "./collectionSidebarUtils";
 
 export function useDragOverNode() {

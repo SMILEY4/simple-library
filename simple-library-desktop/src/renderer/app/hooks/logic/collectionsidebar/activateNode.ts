@@ -1,6 +1,6 @@
-import {useActiveCollectionState} from "../base/activeCollectionHooks";
+import {useActiveCollectionState} from "../../base/activeCollectionHooks";
 import {useCollectionSidebarUtils} from "./collectionSidebarUtils";
-import {useOpenCollection} from "./core/openCollection";
+import {useOpenCollection} from "../core/openCollection";
 
 export function useActivateNode(): [string | undefined, (nodeId: string) => void] {
 

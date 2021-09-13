@@ -2,7 +2,7 @@ import {
 	useCollectionSidebarState,
 	useDispatchCollapseNode,
 	useDispatchExpandNode
-} from "../../store/collectionSidebarState";
+} from "../../../store/collectionSidebarState";
 
 export function useExpandCollapseSidebarNode(): [string[], (nodeId: string, expand: boolean) => void] {
 

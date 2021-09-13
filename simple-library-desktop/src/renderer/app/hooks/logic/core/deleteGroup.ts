@@ -1,4 +1,4 @@
-import {useModifyNotifications} from "../../base/notificationHooks";
+import {useThrowErrorWithNotification} from "../../base/notificationHooks";
 import {useDispatchSetRootGroup} from "../../../store/collectionsState";
 import {fetchRootGroup, requestDeleteGroup} from "../../../common/messagingInterface";
 import {genNotificationId} from "../../base/notificationUtils";
@@ -8,7 +8,14 @@ import {GroupDTO} from "../../../../../common/events/dtoModels";
 export function useDeleteGroup() {
 
 	const dispatchSetRootGroup = useDispatchSetRootGroup();
-	const {throwErrorNotification} = useModifyNotifications();
+	const throwErrorNotification = useThrowErrorWithNotification();
+
+	function hookFunction(groupId: number, keepContent: boolean) {
+		return Promise.resolve()
+			.then(() => deleteGroup(groupId, keepContent))
+			// TODO - Bug: what happens when keepContent = false -> deleting active collection ?
+			.then(() => updateGroupState())
+	}
 
 	function deleteGroup(groupId: number, keepContent: boolean): Promise<void> {
 		return requestDeleteGroup(groupId, !keepContent)
@@ -21,10 +28,5 @@ export function useDeleteGroup() {
 			.then((group: GroupDTO) => dispatchSetRootGroup(group));
 	}
 
-	return (groupId: number, keepContent: boolean) => {
-		return Promise.resolve()
-			.then(() => deleteGroup(groupId, keepContent))
-			// TODO - Bug: what happens when keepContent = false -> deleting active collection ?
-			.then(() => updateGroupState())
-	}
+	return hookFunction;
 }

@@ -2,7 +2,7 @@ import {fetchItems, fetchRootGroup, requestMoveItems} from "../../../common/mess
 import {genNotificationId} from "../../base/notificationUtils";
 import {AppNotificationType} from "../../../store/notificationState";
 import {useDispatchSetRootGroup} from "../../../store/collectionsState";
-import {useModifyNotifications} from "../../base/notificationHooks";
+import {useThrowErrorWithNotification} from "../../base/notificationHooks";
 import {GroupDTO, ItemDTO} from "../../../../../common/events/dtoModels";
 import {useDispatchSetItems} from "../../../store/itemsState";
 import {useActiveCollectionState} from "../../base/activeCollectionHooks";
@@ -12,9 +12,18 @@ export function useMoveItems() {
 	const {activeCollectionId} = useActiveCollectionState();
 	const dispatchSetItems = useDispatchSetItems();
 	const dispatchSetRootGroup = useDispatchSetRootGroup();
-	const {throwErrorNotification} = useModifyNotifications()
+	const throwErrorNotification = useThrowErrorWithNotification();
 
 	const itemAttributeKeys: string[] = ["File.FileName", "File.FileCreateDate", "File.FileSize", "File.FileType", "JFIF.JFIFVersion", "PNG.Gamma"];
+
+	function hookFunction(itemIds: number[], srcCollectionId: number, tgtCollectionId: number, copy: boolean) {
+		Promise.resolve()
+			.then(() => moveItems(itemIds, srcCollectionId, tgtCollectionId, copy))
+			.then(() => Promise.all([
+				updateItemState(activeCollectionId),
+				updateGroupState()
+			]));
+	}
 
 	function moveItems(itemIds: number[], srcCollectionId: number, tgtCollectionId: number, copy: boolean) {
 		return requestMoveItems(srcCollectionId, tgtCollectionId, itemIds, copy)
@@ -33,12 +42,6 @@ export function useMoveItems() {
 			.then((group: GroupDTO) => dispatchSetRootGroup(group))
 	}
 
-	return (itemIds: number[], srcCollectionId: number, tgtCollectionId: number, copy: boolean) => {
-		Promise.resolve()
-			.then(() => moveItems(itemIds, srcCollectionId, tgtCollectionId, copy))
-			.then(() => Promise.all([
-				updateItemState(activeCollectionId),
-				updateGroupState()
-			]));
-	}
+
+	return hookFunction;
 }

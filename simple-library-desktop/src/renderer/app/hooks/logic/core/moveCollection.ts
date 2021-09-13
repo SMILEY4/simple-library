@@ -1,14 +1,20 @@
 import {fetchRootGroup, requestMoveCollection} from "../../../common/messagingInterface";
 import {genNotificationId} from "../../base/notificationUtils";
 import {AppNotificationType} from "../../../store/notificationState";
-import {useModifyNotifications} from "../../base/notificationHooks";
+import {useThrowErrorWithNotification} from "../../base/notificationHooks";
 import {GroupDTO} from "../../../../../common/events/dtoModels";
 import {useDispatchSetRootGroup} from "../../../store/collectionsState";
 
 export function useMoveCollection() {
 
 	const dispatchSetRootGroup = useDispatchSetRootGroup();
-	const {throwErrorNotification} = useModifyNotifications()
+	const throwErrorNotification = useThrowErrorWithNotification();
+
+	function hookFunction(collectionId: number, targetGroupId: number | null) {
+		Promise.resolve()
+			.then(() => moveCollection(collectionId, targetGroupId))
+			.then(() => updateGroupState());
+	}
 
 	function moveCollection(collectionId: number, targetGroupId: number | null): Promise<any> {
 		return requestMoveCollection(collectionId, targetGroupId)
@@ -21,9 +27,5 @@ export function useMoveCollection() {
 			.then((group: GroupDTO) => dispatchSetRootGroup(group));
 	}
 
-	return (collectionId: number, targetGroupId: number | null) => {
-		Promise.resolve()
-			.then(() => moveCollection(collectionId, targetGroupId))
-			.then(() => updateGroupState());
-	}
+	return hookFunction;
 }

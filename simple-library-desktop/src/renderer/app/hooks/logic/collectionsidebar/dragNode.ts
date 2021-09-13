@@ -1,5 +1,5 @@
 import React from "react";
-import {DragAndDropCollections, DragAndDropGroups} from "../../common/dragAndDrop";
+import {DragAndDropCollections, DragAndDropGroups} from "../../../common/dragAndDrop";
 import {useCollectionSidebarUtils} from "./collectionSidebarUtils";
 
 export function useDragNode() {
