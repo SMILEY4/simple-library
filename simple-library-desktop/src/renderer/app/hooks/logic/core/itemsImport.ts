@@ -20,12 +20,12 @@ import {
 	requestImport
 } from "../../../common/messagingInterface";
 import {useDispatchSetRootGroup} from "../../../store/collectionsState";
-import {useActiveCollectionState} from "../../base/activeCollectionHooks";
 import {useDispatchSetItems} from "../../../store/itemsState";
+import {useActiveCollection} from "../../../store/collectionActiveState";
 
 export function useImportItems() {
 
-	const {activeCollectionId} = useActiveCollectionState()
+	const activeCollectionId = useActiveCollection();
 	const dispatchSetRootGroup = useDispatchSetRootGroup();
 	const dispatchSetItems = useDispatchSetItems();
 	const notificationAdd = useDispatchAddNotification();

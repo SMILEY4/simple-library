@@ -1,9 +1,9 @@
 import {useDialogController} from "../../../../../hooks/base/miscApplicationHooks";
 import {useState} from "react";
-import {useCollectionsState} from "../../../../../hooks/base/collectionHooks";
 import {useStateRef, useValidatedState} from "../../../../../../components/utils/commonHooks";
 import {CollectionTypeDTO, GroupDTO} from "../../../../../../../common/events/dtoModels";
 import {useCreateCollection} from "../../../../../hooks/logic/core/collectionCreate";
+import {useFindGroup} from "../../../../../store/collectionsState";
 
 export function useDialogCollectionCreateController(): [boolean, (id: number | null) => void, () => void, (number | null)] {
 
@@ -27,7 +27,7 @@ export function useDialogCollectionCreateController(): [boolean, (id: number | n
 export function useDialogCollectionCreate(parentGroupId: number | null, onFinished: () => void) {
 
 	const createCollection = useCreateCollection();
-	const {findGroup} = useCollectionsState();
+	const findGroup = useFindGroup();
 	const parentGroup: GroupDTO | null = findGroup(parentGroupId)
 
 	const [

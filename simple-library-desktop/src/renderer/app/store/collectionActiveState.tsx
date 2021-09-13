@@ -72,3 +72,8 @@ export function useDispatchClearActiveCollection(): () => void {
 		});
 	}
 }
+
+export function useActiveCollection() {
+	const [activeCollectionState] = useCollectionActiveContext();
+	return activeCollectionState.activeCollectionId;
+}

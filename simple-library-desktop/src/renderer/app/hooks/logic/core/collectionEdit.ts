@@ -3,13 +3,13 @@ import {genNotificationId} from "../../base/notificationUtils";
 import {AppNotificationType, useThrowErrorWithNotification} from "../../../store/notificationState";
 import {GroupDTO, ItemDTO} from "../../../../../common/events/dtoModels";
 import {useDispatchSetRootGroup} from "../../../store/collectionsState";
-import {useActiveCollectionState} from "../../base/activeCollectionHooks";
 import {useDispatchItemSelectionClear} from "../../../store/itemSelectionState";
 import {useDispatchSetItems} from "../../../store/itemsState";
+import {useActiveCollection} from "../../../store/collectionActiveState";
 
 export function useEditCollection() {
 
-	const {activeCollectionId} = useActiveCollectionState();
+	const activeCollectionId = useActiveCollection();
 	const dispatchSetRootGroup = useDispatchSetRootGroup();
 	const dispatchSetItems = useDispatchSetItems();
 	const dispatchClearSelection = useDispatchItemSelectionClear()

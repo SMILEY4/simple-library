@@ -1,16 +1,11 @@
-import { useCollectionsState} from "../../../hooks/base/collectionHooks";
-import {useActiveCollectionState} from "../../../hooks/base/activeCollectionHooks";
 import {CollectionDTO} from "../../../../../common/events/dtoModels";
+import {useActiveCollection} from "../../../store/collectionActiveState";
+import {useFindCollection} from "../../../store/collectionsState";
 
 export function useContentArea() {
 
-	const {
-		activeCollectionId,
-	} = useActiveCollectionState();
-
-	const {
-		findCollection
-	} = useCollectionsState();
+	const activeCollectionId = useActiveCollection();
+	const findCollection = useFindCollection();
 
 	const activeCollection: CollectionDTO | null = findCollection(activeCollectionId);
 

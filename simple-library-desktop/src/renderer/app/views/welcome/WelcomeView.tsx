@@ -1,6 +1,5 @@
 import React from "react";
 import {DialogCreateLibrary} from "./DialogCreateLibrary";
-import {useNotificationsState} from "../../hooks/base/notificationHooks";
 import {Grid} from "../../../components/layout/grid/Grid";
 import {VBox} from "../../../components/layout/box/Box";
 import {Label} from "../../../components/base/label/Label";
@@ -14,7 +13,9 @@ import {APP_ROOT_ID} from "../../Application";
 import {useDialogCreateLibraryController} from "./useDialogCreateLibrary";
 import {useDialogErrorExiftoolLocationController} from "./useDialogErrorExiftoolLocation";
 import {DialogErrorExiftoolLocation} from "./DialogErrorExiftoolLocation";
-import {LastOpenedLibrary, useWelcomeView} from "./welcomeViewHooks";
+import {LastOpenedLibrary} from "../../hooks/logic/core/librariesGetLastOpened";
+import {useWelcomeView} from "./useWelcomeView";
+import {useGetNotificationStackEntries} from "../../store/notificationState";
 
 interface WelcomeViewControllerProps {
 	onLoadProject: () => void
@@ -22,9 +23,7 @@ interface WelcomeViewControllerProps {
 
 export function WelcomeView(props: React.PropsWithChildren<WelcomeViewControllerProps>): React.ReactElement {
 
-	const {
-		getNotificationStackEntries
-	} = useNotificationsState();
+	const getNotificationStackEntries = useGetNotificationStackEntries();
 
 	const {
 		lastOpenedLibraries,

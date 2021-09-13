@@ -1,38 +1,43 @@
-import {useItemSelectionState} from "../../../../hooks/base/itemSelectionHooks";
 import {useEffect, useState} from "react";
-import {fetchItemMetadata, setItemMetadata} from "../../../../common/messagingInterface";
-import {useItems} from "../../../../hooks/base/itemHooks";
+import {fetchItemById, fetchItemMetadata, setItemMetadata} from "../../../../common/messagingInterface";
 import {AttributeDTO, ItemDTO} from "../../../../../../common/events/dtoModels";
+import {useDispatchUpdateItemAttribute} from "../../../../store/itemsState";
+import {useSelectedItemIds} from "../../../../store/itemSelectionState";
 
 export function useMetadataSidebar() {
 
     const [item, setItem] = useState<ItemDTO | null>(null);
     const [metadata, setMetadata] = useState<AttributeDTO[]>([]);
+    useListenSelectionChanges(setItem, setMetadata)
 
-    const {
-        selectedItemIds
-    } = useItemSelectionState();
+    return {
+        displayedItem: item,
+        metadataEntries: metadata,
+        updateMetadataEntry: useUpdateEntry(item, metadata, setMetadata)
+    };
+}
 
-    const {
-        fetchItem,
-        updateItemAttributeState
-    } = useItems();
 
-    useEffect(() => onSelectionChanged(), [selectedItemIds]);
-
-    function onSelectionChanged() {
+function useListenSelectionChanges(setItem: (item: ItemDTO | null) => void, setMetadata: (attribs: AttributeDTO[]) => void) {
+    const selectedItemIds = useSelectedItemIds();
+    useEffect(() => {
         if (selectedItemIds && selectedItemIds.length === 1) {
             fetchItemMetadata(selectedItemIds[0])
                 .then((entries: AttributeDTO[]) => setMetadata(entries))
-                .then(() => fetchItem(selectedItemIds[0]))
+                .then(() => fetchItemById(selectedItemIds[0]))
                 .then(setItem);
         } else {
             setMetadata([]);
             setItem(null);
         }
-    }
+    }, [selectedItemIds]);
+}
 
-    function updateEntry(entryKey: string, prevValue: string, newValue: string) {
+
+function useUpdateEntry(item: ItemDTO | null, metadata: AttributeDTO[], setMetadata: (attribs: AttributeDTO[]) => void) {
+    const dispatchUpdateItemAttribute = useDispatchUpdateItemAttribute();
+
+    function hookFunction(entryKey: string, prevValue: string, newValue: string) {
         if (item) {
             setItemMetadata(item.id, entryKey, newValue)
                 .then((newEntry: AttributeDTO) => {
@@ -44,15 +49,10 @@ export function useMetadataSidebar() {
                         }
                     });
                     setMetadata(newMetadata);
-                    updateItemAttributeState(item.id, newEntry.key, newEntry.value);
+                    dispatchUpdateItemAttribute(item.id, newEntry.key, newEntry.value)
                 });
         }
     }
 
-    return {
-        displayedItem: item,
-        metadataEntries: metadata,
-        updateMetadataEntry: updateEntry
-    };
-
+    return hookFunction;
 }

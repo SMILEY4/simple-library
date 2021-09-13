@@ -109,3 +109,13 @@ export function useDispatchUpdateItemAttribute(): (itemId: number, attributeKey:
         })
     }
 }
+
+export function useItems() {
+    const [itemsState] = useItemsContext();
+    return itemsState.items;
+}
+
+export function useGetItemIds() {
+    const [itemsState] = useItemsContext();
+    return () => itemsState.items.map((item: ItemDTO) => item.id);
+}

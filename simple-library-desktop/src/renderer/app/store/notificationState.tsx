@@ -8,7 +8,8 @@ import {
 	useGlobalStateWriteOnly
 } from "../../components/utils/storeUtils";
 import React from "react";
-import {genNotificationId} from "../hooks/base/notificationUtils";
+import {genNotificationId, toNotificationEntry} from "../hooks/base/notificationUtils";
+import {NotificationStackEntry} from "../../components/modals/notification/NotificationStack";
 
 
 // STATE
@@ -148,7 +149,6 @@ export function useDispatchUpdateNotification(): (notificationId: string, data: 
 }
 
 export function useThrowErrorWithNotification() {
-
 	const dispatchAdd = useDispatchAddNotification();
 
 	function throwError(notificationId: string, type: AppNotificationType, error: any) {
@@ -158,3 +158,14 @@ export function useThrowErrorWithNotification() {
 
 	return throwError;
 }
+
+export function useGetNotificationStackEntries() {
+	const [state] = useNotificationContext();
+	const dispatchRemove = useDispatchRemoveNotification();
+	function getNotificationStackEntries() {
+		return state.notifications
+			.map(notification => toNotificationEntry(notification, () => dispatchRemove(notification.id)))
+	}
+	return getNotificationStackEntries;
+}
+

@@ -4,12 +4,12 @@ import {AppNotificationType, useThrowErrorWithNotification} from "../../../store
 import {useDispatchItemSelectionRemove} from "../../../store/itemSelectionState";
 import {GroupDTO, ItemDTO} from "../../../../../common/events/dtoModels";
 import {useDispatchSetItems} from "../../../store/itemsState";
-import {useActiveCollectionState} from "../../base/activeCollectionHooks";
 import {useDispatchSetRootGroup} from "../../../store/collectionsState";
+import {useActiveCollection} from "../../../store/collectionActiveState";
 
 export function useRemoveItems() {
 
-	const {activeCollectionId} = useActiveCollectionState()
+	const activeCollectionId = useActiveCollection();
 	const throwErrorNotification = useThrowErrorWithNotification();
 	const dispatchSetRootGroup = useDispatchSetRootGroup();
 	const dispatchSetItems = useDispatchSetItems();

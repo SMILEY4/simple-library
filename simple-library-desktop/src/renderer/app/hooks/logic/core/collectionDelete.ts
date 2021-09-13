@@ -3,13 +3,12 @@ import {fetchRootGroup, requestDeleteCollection} from "../../../common/messaging
 import {genNotificationId} from "../../base/notificationUtils";
 import {AppNotificationType, useThrowErrorWithNotification} from "../../../store/notificationState";
 import {GroupDTO} from "../../../../../common/events/dtoModels";
-import {useActiveCollectionState} from "../../base/activeCollectionHooks";
 import {useDispatchItemSelectionClear} from "../../../store/itemSelectionState";
-import {useDispatchClearActiveCollection} from "../../../store/collectionActiveState";
+import {useActiveCollection, useDispatchClearActiveCollection} from "../../../store/collectionActiveState";
 
 export function useDeleteCollection() {
 
-	const {activeCollectionId} = useActiveCollectionState();
+	const activeCollectionId = useActiveCollection();
 	const dispatchSetRootGroup = useDispatchSetRootGroup();
 	const dispatchClearSelection = useDispatchItemSelectionClear()
 	const dispatchClearActiveCollection = useDispatchClearActiveCollection();

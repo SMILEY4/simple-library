@@ -1,9 +1,9 @@
 import {useDialogController} from "../../../../../hooks/base/miscApplicationHooks";
 import {useState} from "react";
-import {useCollectionsState} from "../../../../../hooks/base/collectionHooks";
 import {useStateRef} from "../../../../../../components/utils/commonHooks";
 import {GroupDTO} from "../../../../../../../common/events/dtoModels";
 import {useDeleteGroup} from "../../../../../hooks/logic/core/groupDelete";
+import {useFindGroup} from "../../../../../store/collectionsState";
 
 export function useDialogGroupDeleteController(): [boolean, (id: number | null) => void, () => void, (number | null)] {
 
@@ -29,7 +29,7 @@ export function useDialogGroupDeleteController(): [boolean, (id: number | null) 
 export function useDialogGroupDelete(groupId: number, onFinished: () => void) {
 
 	const deleteGroup = useDeleteGroup();
-	const {findGroup} = useCollectionsState()
+	const findGroup = useFindGroup()
 	const group: GroupDTO | null = findGroup(groupId);
 
 	const [

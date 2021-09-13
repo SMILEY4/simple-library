@@ -1,8 +1,6 @@
-import {useItemsState} from "../../../hooks/base/itemHooks";
 import React, {useEffect} from "react";
 import {isCopyMode, isShortcut, SelectModifier} from "../../../../components/utils/common";
 import {DragAndDropItems} from "../../../common/dragAndDrop";
-import {useItemSelectionState} from "../../../hooks/base/itemSelectionHooks";
 import {useItemSelectionSet} from "../../../hooks/logic/core/itemSelectionSet";
 import {useItemSelectionToggle} from "../../../hooks/logic/core/itemSelectionToggle";
 import {useItemSelectionRangeTo} from "../../../hooks/logic/core/itemSelectionRange";
@@ -10,12 +8,15 @@ import {useItemSelectionClear} from "../../../hooks/logic/core/itemSelectionClea
 import {useOpenItemsExternal} from "../../../hooks/logic/core/itemsOpenExternal";
 import {useRemoveItems} from "../../../hooks/logic/core/itemsRemove";
 import {useUpdateAttribute} from "../../../hooks/logic/core/attributeUpdate";
-import {useActiveCollectionState} from "../../../hooks/base/activeCollectionHooks";
+import {useActiveCollection} from "../../../store/collectionActiveState";
+import {useGetItemIds, useItems} from "../../../store/itemsState";
+import {useIsItemSelected, useSelectedItemIds} from "../../../store/itemSelectionState";
 
 export function useItemList(activeCollectionId: number) {
 
-	const {items} = useItemsState();
-	const {selectedItemIds, isSelected} = useItemSelectionState();
+	const items = useItems();
+	const selectedItemIds = useSelectedItemIds();
+	const isSelected = useIsItemSelected();
 	const itemSelectionClear = useItemSelectionClear();
 
 	useEffect(() => {
@@ -51,7 +52,7 @@ function useOpenItemExternal() {
 
 function useOpenSelectedItemsExternal() {
 	const openItemsExternal = useOpenItemsExternal();
-	const {selectedItemIds} = useItemSelectionState();
+	const selectedItemIds = useSelectedItemIds();
 
 	function hookFunction() {
 		openItemsExternal(selectedItemIds)
@@ -62,7 +63,7 @@ function useOpenSelectedItemsExternal() {
 
 
 function useRemoveSelectedItems() {
-	const {selectedItemIds} = useItemSelectionState();
+	const selectedItemIds = useSelectedItemIds();
 	const removeItems = useRemoveItems();
 
 	function hookFunction() {
@@ -86,14 +87,14 @@ function useUpdateItemAttribute() {
 
 function useKeyboardShortcuts() {
 
-	const {getItemsIds} = useItemsState();
+	const getItemIds = useGetItemIds();
 	const itemSelectionSet = useItemSelectionSet();
 
 	function hookFunction(event: React.KeyboardEvent): void {
 		if (isShortcut(event) && event.keyCode === 65) {
 			event.preventDefault();
 			event.stopPropagation();
-			itemSelectionSet(getItemsIds())
+			itemSelectionSet(getItemIds())
 		}
 	}
 
@@ -132,8 +133,9 @@ function useSelectItems() {
 
 
 function useDragItems() {
-	const {activeCollectionId} = useActiveCollectionState();
-	const {selectedItemIds, isSelected} = useItemSelectionState();
+	const activeCollectionId = useActiveCollection();
+	const selectedItemIds = useSelectedItemIds();
+	const isSelected = useIsItemSelected();
 	const itemSelectionSet = useItemSelectionSet();
 
 	function hookFunction(itemId: number, event: React.DragEvent): void {

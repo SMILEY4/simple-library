@@ -4,11 +4,11 @@ import {AppNotificationType, useThrowErrorWithNotification} from "../../../store
 import {useDispatchSetRootGroup} from "../../../store/collectionsState";
 import {GroupDTO, ItemDTO} from "../../../../../common/events/dtoModels";
 import {useDispatchSetItems} from "../../../store/itemsState";
-import {useActiveCollectionState} from "../../base/activeCollectionHooks";
+import {useActiveCollection} from "../../../store/collectionActiveState";
 
 export function useMoveItems() {
 
-	const {activeCollectionId} = useActiveCollectionState();
+	const activeCollectionId = useActiveCollection();
 	const dispatchSetItems = useDispatchSetItems();
 	const dispatchSetRootGroup = useDispatchSetRootGroup();
 	const throwErrorNotification = useThrowErrorWithNotification();

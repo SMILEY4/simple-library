@@ -1,9 +1,9 @@
 import {useDialogController} from "../../../../../hooks/base/miscApplicationHooks";
 import {useState} from "react";
-import {useCollectionsState,} from "../../../../../hooks/base/collectionHooks";
 import {useStateRef, useValidatedState} from "../../../../../../components/utils/commonHooks";
 import {CollectionDTO} from "../../../../../../../common/events/dtoModels";
 import {useEditCollection} from "../../../../../hooks/logic/core/collectionEdit";
+import {useFindCollection} from "../../../../../store/collectionsState";
 
 export function useDialogCollectionEditController(): [boolean, (id: number | null) => void, () => void, (number | null)] {
 
@@ -29,7 +29,7 @@ export function useDialogCollectionEditController(): [boolean, (id: number | nul
 export function useDialogCollectionEdit(collectionId: number, onClose: () => void) {
 
 	const editCollection = useEditCollection();
-	const {findCollection,} = useCollectionsState()
+	const findCollection = useFindCollection();
 	const collection: CollectionDTO = findCollection(collectionId);
 
 	const [

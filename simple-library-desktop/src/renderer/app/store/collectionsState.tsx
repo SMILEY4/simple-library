@@ -8,7 +8,8 @@ import {
 	useGlobalStateWriteOnly
 } from "../../components/utils/storeUtils";
 import React from "react";
-import {GroupDTO} from "../../../common/events/dtoModels";
+import {CollectionDTO, GroupDTO} from "../../../common/events/dtoModels";
+import {extractCollections, extractGroups} from "../common/utils";
 
 
 // STATE
@@ -63,4 +64,36 @@ export function useDispatchSetRootGroup(): (group: GroupDTO) => void {
 			payload: group,
 		});
 	}
+}
+
+export function useRootGroup() {
+	const [collectionsState] = useCollectionsContext();
+	return collectionsState.rootGroup;
+}
+
+export function useFindCollection() {
+	const [collectionsState] = useCollectionsContext();
+
+	function find(collectionId: number): CollectionDTO | null {
+		if (collectionId) {
+			const result: CollectionDTO | undefined = extractCollections(collectionsState.rootGroup).find(collection => collection.id === collectionId);
+			return result ? result : null;
+		} else {
+			return null;
+		}
+	}
+
+	return find;
+}
+
+
+export function useFindGroup() {
+	const [collectionsState] = useCollectionsContext();
+
+	function find(groupId: number): GroupDTO | null {
+		const result: GroupDTO | undefined = extractGroups(collectionsState.rootGroup).find(group => group.id === groupId);
+		return result ? result : null;
+	}
+
+	return find;
 }

@@ -1,8 +1,8 @@
 import {useDialogController} from "../../../../../hooks/base/miscApplicationHooks";
 import {useState} from "react";
-import {useCollectionsState} from "../../../../../hooks/base/collectionHooks";
 import {useValidatedState} from "../../../../../../components/utils/commonHooks";
 import {useEditGroup} from "../../../../../hooks/logic/core/groupEdit";
+import {useFindGroup} from "../../../../../store/collectionsState";
 
 export function useDialogGroupEditController(): [boolean, (id: number | null) => void, () => void, (number | null)] {
 
@@ -28,7 +28,7 @@ export function useDialogGroupEditController(): [boolean, (id: number | null) =>
 export function useDialogGroupEdit(groupId: number, onClose: () => void) {
 
 	const editGroup = useEditGroup();
-	const {findGroup} = useCollectionsState();
+	const findGroup = useFindGroup()
 	const prevName: string = findGroup(groupId).name;
 
 	const [

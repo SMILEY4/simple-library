@@ -1,8 +1,8 @@
 import {useDialogController} from "../../../../../hooks/base/miscApplicationHooks";
 import {useState} from "react";
-import {useCollectionsState,} from "../../../../../hooks/base/collectionHooks";
 import {CollectionDTO} from "../../../../../../../common/events/dtoModels";
 import {useDeleteCollection} from "../../../../../hooks/logic/core/collectionDelete";
+import {useFindCollection} from "../../../../../store/collectionsState";
 
 export function useDialogCollectionDeleteController(): [boolean, (id: number | null) => void, () => void, (number | null)] {
 
@@ -28,7 +28,7 @@ export function useDialogCollectionDeleteController(): [boolean, (id: number | n
 export function useDialogCollectionDelete(collectionId: number, onFinished: () => void) {
 
 	const deleteCollection = useDeleteCollection();
-	const {findCollection} = useCollectionsState();
+	const findCollection = useFindCollection();
 	const collection: CollectionDTO | null = findCollection(collectionId);
 
 	function handleCancel() {

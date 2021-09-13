@@ -1,15 +1,9 @@
 import {useState} from "react";
 import {useMount} from "../../../components/utils/commonHooks";
-import {fetchLastOpenedLibraries} from "../../common/messagingInterface";
 import {useOpenLibrary} from "../../hooks/logic/core/libraryOpen";
+import {LastOpenedLibrary, useGetLastOpenedLibraries} from "../../hooks/logic/core/librariesGetLastOpened";
 
 const electron = window.require('electron');
-
-export interface LastOpenedLibrary {
-	name: string,
-	filePath: string,
-	onAction: () => void,
-}
 
 
 export function useWelcomeView(openedCallback: () => void) {
@@ -28,15 +22,11 @@ export function useWelcomeView(openedCallback: () => void) {
 }
 
 
-function useInitLastOpened(openFunc: (path: string) => Promise<any>, setLastOpened: (e: LastOpenedLibrary[]) => void) {
+function useInitLastOpened(openLibrary: (path: string) => Promise<any>, setLastOpened: (e: LastOpenedLibrary[]) => void) {
+	const getLastOpened = useGetLastOpenedLibraries(openLibrary)
+
 	useMount(() => {
-		fetchLastOpenedLibraries()
-			.then(entries => entries.map(entry => ({
-				name: entry.name,
-				filePath: entry.path,
-				onAction: () => openFunc(entry.path)
-			})))
-			.then(setLastOpened)
+		getLastOpened().then(setLastOpened)
 	});
 }
 

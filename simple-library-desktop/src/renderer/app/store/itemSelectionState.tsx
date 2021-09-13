@@ -144,3 +144,13 @@ export function useDispatchItemSelectionSetLast(): (itemId: number | null) => vo
 		});
 	}
 }
+
+export function useSelectedItemIds() {
+	const [itemSelectionState] = useItemSelectionContext();
+	return itemSelectionState.selectedItemIds;
+}
+
+export function useIsItemSelected() {
+	const [itemSelectionState] = useItemSelectionContext();
+	return (itemId: number) => itemSelectionState.selectedItemIds.indexOf(itemId) !== -1;
+}

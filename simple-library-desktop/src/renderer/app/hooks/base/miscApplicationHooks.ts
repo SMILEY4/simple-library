@@ -1,6 +1,4 @@
 import {useState} from "react";
-import {useItems} from "./itemHooks";
-import {useActiveCollectionState} from "./activeCollectionHooks";
 
 export function useDialogController(): [boolean, () => void, () => void] {
 

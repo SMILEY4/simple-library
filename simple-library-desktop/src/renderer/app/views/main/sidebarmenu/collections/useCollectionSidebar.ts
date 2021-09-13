@@ -1,4 +1,3 @@
-import {useCollectionsState} from "../../../../hooks/base/collectionHooks";
 import React from "react";
 import {
 	DragAndDropCollections,
@@ -7,12 +6,11 @@ import {
 	DragAndDropUtils
 } from "../../../../common/dragAndDrop";
 import {GroupDTO} from "../../../../../../common/events/dtoModels";
-import {useDispatchSetRootGroup} from "../../../../store/collectionsState";
+import {useDispatchSetRootGroup, useFindCollection, useRootGroup} from "../../../../store/collectionsState";
 import {useMount} from "../../../../../components/utils/commonHooks";
 import {fetchRootGroup} from "../../../../common/messagingInterface";
 import {genNotificationId} from "../../../../hooks/base/notificationUtils";
 import {AppNotificationType, useThrowErrorWithNotification} from "../../../../store/notificationState";
-import {useActiveCollectionState} from "../../../../hooks/base/activeCollectionHooks";
 import {
 	useCollectionSidebarState,
 	useDispatchCollapseNode,
@@ -22,8 +20,38 @@ import {useMoveGroup} from "../../../../hooks/logic/core/groupMove";
 import {useMoveCollection} from "../../../../hooks/logic/core/collectionMove";
 import {useMoveItems} from "../../../../hooks/logic/core/itemsMove";
 import {useOpenCollection} from "../../../../hooks/logic/core/collectionOpen";
+import {useActiveCollection} from "../../../../store/collectionActiveState";
 
-export function useCollectionSidebarUtils() {
+export function useCollectionSidebar() {
+
+	const rootGroup = useRootGroup();
+	const [expandedNodes, expandCollapseNode] = useExpandCollapseSidebarNode();
+	const [activeNode, activateNode] = useOpenNode();
+	const dispatchSetRootGroup = useDispatchSetRootGroup();
+	const throwErrorNotification = useThrowErrorWithNotification()
+
+	useMount(() => {
+			fetchRootGroup()
+				.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ROOT_GROUP_FETCH_FAILED, error))
+				.then((group: GroupDTO) => dispatchSetRootGroup(group))
+		}
+	);
+
+	return {
+		activeNode: activeNode,
+		expandedNodes: expandedNodes,
+		toggleExpandNode: expandCollapseNode,
+		rootGroup: rootGroup,
+		dragStart: useDragNode(),
+		dragOver: useDragOverNode(),
+		drop: useDropOnNode(),
+		handleDoubleClick: activateNode
+	};
+
+}
+
+
+function useCollectionSidebarUtils() {
 
 	const NODE_TYPE_COLLECTION = "collection";
 	const NODE_TYPE_GROUP = "group";
@@ -47,39 +75,6 @@ export function useCollectionSidebarUtils() {
 		getNodeId: getNodeId,
 		getNodeType: getNodeType,
 		getNodeObjectId: getNodeObjectId
-	};
-
-}
-
-
-export function useCollectionSidebar() {
-
-	const {rootGroup} = useCollectionsState();
-	const [expandedNodes, expandCollapseNode] = useExpandCollapseSidebarNode();
-	const [activeNode, activateNode] = useOpenNode();
-	const dragNode = useDragNode();
-	const dragOverNode = useDragOverNode();
-	const dropOnNode = useDropOnNode();
-
-	const dispatchSetRootGroup = useDispatchSetRootGroup();
-	const throwErrorNotification = useThrowErrorWithNotification()
-
-	useMount(() => {
-			fetchRootGroup()
-				.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ROOT_GROUP_FETCH_FAILED, error))
-				.then((group: GroupDTO) => dispatchSetRootGroup(group))
-		}
-	);
-
-	return {
-		activeNode: activeNode,
-		expandedNodes: expandedNodes,
-		toggleExpandNode: expandCollapseNode,
-		rootGroup: rootGroup,
-		dragStart: dragNode,
-		dragOver: dragOverNode,
-		drop: dropOnNode,
-		handleDoubleClick: activateNode
 	};
 
 }
@@ -121,11 +116,8 @@ function useDragOverNode() {
 		getNodeType,
 		getNodeObjectId
 	} = useCollectionSidebarUtils();
-
-	const {
-		rootGroup,
-		findCollection
-	} = useCollectionsState();
+	const rootGroup = useRootGroup();
+	const findCollection = useFindCollection();
 
 	function dragOverGroup(groupId: number, event: React.DragEvent, rootGroup: GroupDTO): void {
 		const metaMimeType: string = DragAndDropUtils.getMetadataMimeType(event.dataTransfer);
@@ -250,9 +242,7 @@ function useDropOnNode() {
 
 function useOpenNode(): [string | undefined, (nodeId: string) => void] {
 
-	const {
-		activeCollectionId,
-	} = useActiveCollectionState();
+	const activeCollectionId = useActiveCollection();
 
 	const {
 		NODE_TYPE_COLLECTION,
