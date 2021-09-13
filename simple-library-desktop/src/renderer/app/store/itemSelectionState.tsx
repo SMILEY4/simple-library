@@ -30,6 +30,7 @@ enum ItemSelectionActionType {
 	ITEM_SELECTION_SET = "items.selection.set",
 	ITEM_SELECTION_ADD = "items.selection.add",
 	ITEM_SELECTION_REMOVE = "items.selection.remove",
+	ITEM_SELECTION_TOGGLE = "items.selection.toggle",
 	ITEM_SELECTION_SET_LAST = "item.selection.set-last",
 }
 
@@ -46,11 +47,26 @@ const reducerConfigMap: ReducerConfigMap<ItemSelectionActionType, ItemSelectionS
 		...state,
 		selectedItemIds: state.selectedItemIds.filter(itemId => payload.indexOf(itemId) === -1)
 	})],
+	[ItemSelectionActionType.ITEM_SELECTION_TOGGLE, (state, payload) => ({
+		...state,
+		selectedItemIds: calculateSelectionToggled(state, payload)
+	})],
 	[ItemSelectionActionType.ITEM_SELECTION_SET_LAST, (state, payload) => ({
 		...state,
 		lastSelectedItemId: payload
 	})]
 ]);
+
+
+function calculateSelectionToggled(state: ItemSelectionState, idsToSelect: number[]) {
+	const newSelection: number[] = state.selectedItemIds.filter(itemId => idsToSelect.indexOf(itemId) === -1);
+	idsToSelect.forEach(itemId => {
+		if (newSelection.indexOf(itemId) === -1) {
+			newSelection.push(itemId);
+		}
+	});
+	return newSelection;
+}
 
 
 // CONTEXT
@@ -97,6 +113,16 @@ export function useDispatchItemSelectionRemove(): (itemIds: number[]) => void {
 	return (itemIds: number[]) => {
 		dispatch({
 			type: ItemSelectionActionType.ITEM_SELECTION_REMOVE,
+			payload: itemIds,
+		});
+	}
+}
+
+export function useDispatchItemSelectionToggle(): (itemIds: number[]) => void {
+	const dispatch = useItemSelectionDispatch();
+	return (itemIds: number[]) => {
+		dispatch({
+			type: ItemSelectionActionType.ITEM_SELECTION_TOGGLE,
 			payload: itemIds,
 		});
 	}

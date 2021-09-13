@@ -1,13 +1,13 @@
 import React, {useState} from "react";
 import {SidebarTab} from "../../../../../components/misc/app/AppLayout";
 import {IconType} from "../../../../../components/base/icon/Icon";
-import {useMetadataSidebar} from "../../../../hooks/app/sidebarmenu/metadata/useMetadataSidebar";
 import {VBox} from "../../../../../components/layout/box/Box";
 import {Accordion} from "../../../../../components/misc/accordion/Accordion";
 import {TextField} from "../../../../../components/input/textfield/TextField";
 import {MetadataListEntry} from "./MetadataListEntry";
 import {Label} from "../../../../../components/base/label/Label";
 import {AttributeDTO} from "../../../../../../common/events/dtoModels";
+import {useMetadataSidebar} from "./metadataSidebarHooks";
 
 
 export const TAB_DATA_METADATA: SidebarTab = {

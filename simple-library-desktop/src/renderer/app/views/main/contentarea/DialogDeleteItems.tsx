@@ -1,5 +1,5 @@
 import React from "react";
-import {useDialogItemsDelete} from "../../../hooks/app/contentarea/useDialogItemsDelete";
+import {useDialogItemsDelete} from "./useDialogItemsDelete";
 import {Dialog} from "../../../../components/modals/dialog/Dialog";
 import {APP_ROOT_ID} from "../../../Application";
 import {Slot} from "../../../../components/base/slot/Slot";

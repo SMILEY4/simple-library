@@ -1,7 +1,7 @@
 import React from "react";
-import {ItemList, MemoizedItemList} from "./ItemList";
+import {MemoizedItemList} from "./ItemList";
 import {VBox} from "../../../../components/layout/box/Box";
-import {useContentArea} from "../../../hooks/app/contentarea/useContentArea";
+import {useContentArea} from "./contentAreaHooks";
 
 interface ContentAreaProps {
 }

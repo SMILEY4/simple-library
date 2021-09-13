@@ -1,9 +1,9 @@
-import {useDialogController} from "../../../../../hooks/app/miscApplicationHooks";
+import {useDialogController} from "../../../../../hooks/base/miscApplicationHooks";
 import {useState} from "react";
 import {useCollectionsState,} from "../../../../../hooks/base/collectionHooks";
 import {useStateRef, useValidatedState} from "../../../../../../components/utils/commonHooks";
 import {CollectionDTO} from "../../../../../../../common/events/dtoModels";
-import {useEditCollection} from "../../../../../hooks/logic/core/editCollection";
+import {useEditCollection} from "../../../../../hooks/logic/core/collectionEdit";
 
 export function useDialogCollectionEditController(): [boolean, (id: number | null) => void, () => void, (number | null)] {
 

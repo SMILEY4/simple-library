@@ -1,7 +1,6 @@
 import React from "react";
 import {DialogCreateLibrary} from "./DialogCreateLibrary";
 import {useNotificationsState} from "../../hooks/base/notificationHooks";
-import {LastOpenedLibrary} from "../../hooks/base/libraryHooks";
 import {Grid} from "../../../components/layout/grid/Grid";
 import {VBox} from "../../../components/layout/box/Box";
 import {Label} from "../../../components/base/label/Label";
@@ -12,10 +11,10 @@ import imgWelcome from "./imgWelcome.jpg";
 import {NotificationStack} from "../../../components/modals/notification/NotificationStack";
 import "./welcome.css";
 import {APP_ROOT_ID} from "../../Application";
-import {useWelcome} from "../../hooks/app/welcome/useWelcome";
-import {useDialogCreateLibraryController} from "../../hooks/app/welcome/useDialogCreateLibrary";
-import {useDialogErrorExiftoolLocationController} from "../../hooks/app/welcome/useDialogErrorExiftoolLocation";
+import {useDialogCreateLibraryController} from "./useDialogCreateLibrary";
+import {useDialogErrorExiftoolLocationController} from "./useDialogErrorExiftoolLocation";
 import {DialogErrorExiftoolLocation} from "./DialogErrorExiftoolLocation";
+import {LastOpenedLibrary, useWelcomeView} from "./welcomeViewHooks";
 
 interface WelcomeViewControllerProps {
 	onLoadProject: () => void
@@ -29,9 +28,8 @@ export function WelcomeView(props: React.PropsWithChildren<WelcomeViewController
 
 	const {
 		lastOpenedLibraries,
-		browseLibrary,
-		openLibrary
-	} = useWelcome(handleOpenLastUsed);
+		browseLibraryAndOpen,
+	} = useWelcomeView(props.onLoadProject);
 
 	const [
 		showCreateLibrary,
@@ -51,7 +49,7 @@ export function WelcomeView(props: React.PropsWithChildren<WelcomeViewController
 						<Spacer size="1" dir="horizontal"/>
 
 						<Button onAction={openCreateLibrary}>New Library</Button>
-						<Button onAction={handleOpenLibrary}>Open Library</Button>
+						<Button onAction={browseLibraryAndOpen}>Open Library</Button>
 
 						<Spacer size="0-5" dir="horizontal" line/>
 						<Label type="header-4" align="center">Recently Used</Label>
@@ -86,17 +84,6 @@ export function WelcomeView(props: React.PropsWithChildren<WelcomeViewController
 		if (created) {
 			props.onLoadProject();
 		}
-	}
-
-	function handleOpenLibrary() {
-		browseLibrary()
-			.then(filepath => filepath !== null && props.onLoadProject());
-	}
-
-	function handleOpenLastUsed(filepath: string) {
-		openLibrary(filepath)
-			.then(() => props.onLoadProject())
-			.catch(err => console.log("OPEN LIB ERROR: " + err));
 	}
 
 }

@@ -6,7 +6,7 @@ import {TextField} from "../../../components/input/textfield/TextField";
 import {VBox} from "../../../components/layout/box/Box";
 import {DirectoryInputField} from "../../../components/input/directoryinputfield/DirectoryInputField";
 import {APP_ROOT_ID} from "../../Application";
-import {useDialogCreateLibrary} from "../../hooks/app/welcome/useDialogCreateLibrary";
+import {useDialogCreateLibrary} from "./useDialogCreateLibrary";
 
 interface DialogCreateLibraryProps {
 	onFinished: (created: boolean) => void

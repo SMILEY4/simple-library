@@ -1,16 +1,15 @@
 import React from "react";
 import {VBox} from "../../../../components/layout/box/Box";
 import {ItemListEntry} from "./ItemListEntry";
-import {useItemList} from "../../../hooks/app/contentarea/useItemList";
 import {ContextMenuBase} from "../../../../components/menu/contextmenu/ContextMenuBase";
 import {APP_ROOT_ID} from "../../../Application";
 import {ItemListEntryContextMenu} from "./ItemListEntryContextMenu";
 import {useContextMenu} from "../../../../components/menu/contextmenu/contextMenuHook";
 import {SelectModifier} from "../../../../components/utils/common";
-import {useDialogItemsDeleteController} from "../../../hooks/app/contentarea/useDialogItemsDelete";
+import {useDialogItemsDeleteController} from "./useDialogItemsDelete";
 import {DialogDeleteItems} from "./DialogDeleteItems";
-import {AttributeDTO, CollectionDTO, ItemDTO} from "../../../../../common/events/dtoModels";
-import {setItemMetadata} from "../../../common/messagingInterface";
+import {CollectionDTO, ItemDTO} from "../../../../../common/events/dtoModels";
+import {useItemList} from "./itemListHooks";
 
 interface ItemListProps {
 	activeCollection: CollectionDTO

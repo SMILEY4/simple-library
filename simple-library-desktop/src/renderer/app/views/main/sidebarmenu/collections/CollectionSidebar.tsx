@@ -7,7 +7,6 @@ import {ContextMenuCollection} from "./contextmenues/ContextMenuCollection";
 import {ContextMenuGroup} from "./contextmenues/ContextMenuGroup";
 import {APP_ROOT_ID} from "../../../../Application";
 import {DialogDeleteCollection} from "./dialogs/DialogDeleteCollection";
-import {useCollectionSidebar} from "./useCollectionSidebar";
 import {DialogDeleteGroup} from "./dialogs/DialogDeleteGroup";
 import {DialogEditGroup} from "./dialogs/DialogEditGroup";
 import {DialogEditCollection} from "./dialogs/DialogEditCollection";
@@ -20,7 +19,7 @@ import {useDialogGroupDeleteController} from "./dialogs/useDialogGroupDelete";
 import {useDialogGroupEditController} from "./dialogs/useDialogGroupEdit";
 import {useDialogGroupCreateController} from "./dialogs/useDialogGroupCreate";
 import {CollectionDTO, GroupDTO} from "../../../../../../common/events/dtoModels";
-import {useCollectionSidebarUtils} from "../../../../hooks/logic/collectionsidebar/collectionSidebarUtils";
+import {useCollectionSidebar, useCollectionSidebarUtils} from "./collectionSidebarHooks";
 
 export const TAB_DATA_COLLECTIONS: SidebarTab = {
 	id: "tab-collections",

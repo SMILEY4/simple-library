@@ -8,9 +8,13 @@ import {
     requestMoveItems,
     requestRemoveItems
 } from "../../common/messagingInterface";
-import {useModifyNotifications} from "./notificationHooks";
 import {genNotificationId} from "./notificationUtils";
-import {AppNotificationType} from "../../store/notificationState";
+import {
+    AppNotificationType,
+    useDispatchAddNotification,
+    useDispatchRemoveNotification,
+    useDispatchUpdateNotification, useThrowErrorWithNotification
+} from "../../store/notificationState";
 import {
     useDispatchClearItems,
     useDispatchSetItems,
@@ -38,12 +42,10 @@ export function useItemsState() {
 
 export function useItems() {
 
-    const {
-        throwErrorNotification,
-        addNotification,
-        updateNotification,
-        removeNotification
-    } = useModifyNotifications();
+    const throwErrorNotification = useThrowErrorWithNotification();
+    const notificationAdd = useDispatchAddNotification();
+    const notificationUpdate = useDispatchUpdateNotification();
+    const notificationRemove = useDispatchRemoveNotification();
 
     const dispatchSetItems = useDispatchSetItems();
     const dispatchClearItems = useDispatchClearItems();
@@ -79,18 +81,18 @@ export function useItems() {
 
     function importItems(data: ImportProcessDataDTO): Promise<void> {
         const importStatusNotificationId = genNotificationId();
-        addNotification(importStatusNotificationId, AppNotificationType.IMPORT_STATUS, null);
+        notificationAdd(importStatusNotificationId, AppNotificationType.IMPORT_STATUS, null);
 
-        const statusListener = (status: ImportStatusDTO) => updateNotification(importStatusNotificationId, status);
+        const statusListener = (status: ImportStatusDTO) => notificationUpdate(importStatusNotificationId, status);
         addImportStatusListener(statusListener);
         return requestImport(
             data,
-            (result: ImportResultDTO) => addNotification(genNotificationId(), AppNotificationType.IMPORT_SUCCESSFUL, result),
-            (result: ImportResultDTO) => addNotification(genNotificationId(), AppNotificationType.IMPORT_FAILED, result),
-            (result: ImportResultDTO) => addNotification(genNotificationId(), AppNotificationType.IMPORT_WITH_ERRORS, result)
+            (result: ImportResultDTO) => notificationAdd(genNotificationId(), AppNotificationType.IMPORT_SUCCESSFUL, result),
+            (result: ImportResultDTO) => notificationAdd(genNotificationId(), AppNotificationType.IMPORT_FAILED, result),
+            (result: ImportResultDTO) => notificationAdd(genNotificationId(), AppNotificationType.IMPORT_WITH_ERRORS, result)
         )
             .catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.IMPORT_FAILED_UNKNOWN, error))
-            .then(() => removeNotification(importStatusNotificationId))
+            .then(() => notificationRemove(importStatusNotificationId))
             .finally(() => removeImportStatusListener());
     }
 

@@ -1,8 +1,8 @@
-import {useDialogController} from "../../../../../hooks/app/miscApplicationHooks";
+import {useDialogController} from "../../../../../hooks/base/miscApplicationHooks";
 import {useState} from "react";
 import {useCollectionsState,} from "../../../../../hooks/base/collectionHooks";
 import {CollectionDTO} from "../../../../../../../common/events/dtoModels";
-import {useDeleteCollection} from "../../../../../hooks/logic/core/deleteCollection";
+import {useDeleteCollection} from "../../../../../hooks/logic/core/collectionDelete";
 
 export function useDialogCollectionDeleteController(): [boolean, (id: number | null) => void, () => void, (number | null)] {
 

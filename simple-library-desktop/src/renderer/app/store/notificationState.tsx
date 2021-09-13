@@ -146,3 +146,15 @@ export function useDispatchUpdateNotification(): (notificationId: string, data: 
 		});
 	}
 }
+
+export function useThrowErrorWithNotification() {
+
+	const dispatchAdd = useDispatchAddNotification();
+
+	function throwError(notificationId: string, type: AppNotificationType, error: any) {
+		dispatchAdd(notificationId, type, error);
+		throw error
+	}
+
+	return throwError;
+}
