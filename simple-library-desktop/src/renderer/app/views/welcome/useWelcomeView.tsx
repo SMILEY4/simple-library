@@ -1,7 +1,7 @@
 import {useState} from "react";
 import {useMount} from "../../../components/utils/commonHooks";
-import {useOpenLibrary} from "../../hooks/logic/core/libraryOpen";
-import {LastOpenedLibrary, useGetLastOpenedLibraries} from "../../hooks/logic/core/librariesGetLastOpened";
+import {useOpenLibrary} from "../../hooks/core/libraryOpen";
+import {LastOpenedLibrary, useGetLastOpenedLibraries} from "../../hooks/core/librariesGetLastOpened";
 
 const electron = window.require('electron');
 

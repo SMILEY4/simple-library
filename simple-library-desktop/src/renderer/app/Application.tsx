@@ -2,14 +2,14 @@ import React, {Component, ReactElement} from "react";
 import {ComponentShowcase} from "../components/_showcase/ComponentShowcase";
 import {WelcomeView} from "./views/welcome/WelcomeView";
 import {MainView} from "./views/main/MainView";
-import {NotificationStateProvider} from "./store/notificationState";
+import {NotificationStateProvider} from "./hooks/store/notificationState";
 import {Compose} from "../components/misc/compose/Compose";
-import {CollectionsStateProvider} from "./store/collectionsState";
-import {ItemSelectionStateProvider} from "./store/itemSelectionState";
-import {ItemsStateProvider} from "./store/itemsState";
-import {CollectionSidebarStateProvider} from "./store/collectionSidebarState";
-import {CollectionActiveStateProvider} from "./store/collectionActiveState";
-import {getTheme, setTheme} from "./common/messagingInterface";
+import {CollectionsStateProvider} from "./hooks/store/collectionsState";
+import {ItemSelectionStateProvider} from "./hooks/store/itemSelectionState";
+import {ItemsStateProvider} from "./hooks/store/itemsState";
+import {CollectionSidebarStateProvider} from "./hooks/store/collectionSidebarState";
+import {CollectionActiveStateProvider} from "./hooks/store/collectionActiveState";
+import {getTheme, setTheme} from "./common/eventInterface";
 
 export enum Theme {
 	LIGHT = "light",

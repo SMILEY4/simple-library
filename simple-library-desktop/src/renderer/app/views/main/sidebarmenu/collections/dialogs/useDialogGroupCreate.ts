@@ -1,9 +1,9 @@
-import {useDialogController} from "../../../../../hooks/base/miscApplicationHooks";
+import {useDialogController} from "../../../../../hooks/miscApplicationHooks";
 import {useState} from "react";
 import {useValidatedState} from "../../../../../../components/utils/commonHooks";
 import {GroupDTO} from "../../../../../../../common/events/dtoModels";
-import {useCreateGroup} from "../../../../../hooks/logic/core/groupCreate";
-import {useFindGroup} from "../../../../../store/collectionsState";
+import {useCreateGroup} from "../../../../../hooks/core/groupCreate";
+import {useFindGroup} from "../../../../../hooks/store/collectionsState";
 
 export function useDialogGroupCreateController(): [boolean, (id: number | null) => void, () => void, (number | null)] {
 

@@ -6,21 +6,21 @@ import {
 	DragAndDropUtils
 } from "../../../../common/dragAndDrop";
 import {GroupDTO} from "../../../../../../common/events/dtoModels";
-import {useDispatchSetRootGroup, useFindCollection, useRootGroup} from "../../../../store/collectionsState";
+import {useDispatchSetRootGroup, useFindCollection, useRootGroup} from "../../../../hooks/store/collectionsState";
 import {useMount} from "../../../../../components/utils/commonHooks";
-import {fetchRootGroup} from "../../../../common/messagingInterface";
-import {genNotificationId} from "../../../../hooks/base/notificationUtils";
-import {AppNotificationType, useThrowErrorWithNotification} from "../../../../store/notificationState";
+import {fetchRootGroup} from "../../../../common/eventInterface";
+import {genNotificationId} from "../../../../common/notificationUtils";
+import {AppNotificationType, useThrowErrorWithNotification} from "../../../../hooks/store/notificationState";
 import {
 	useCollectionSidebarState,
 	useDispatchCollapseNode,
 	useDispatchExpandNode
-} from "../../../../store/collectionSidebarState";
-import {useMoveGroup} from "../../../../hooks/logic/core/groupMove";
-import {useMoveCollection} from "../../../../hooks/logic/core/collectionMove";
-import {useMoveItems} from "../../../../hooks/logic/core/itemsMove";
-import {useOpenCollection} from "../../../../hooks/logic/core/collectionOpen";
-import {useActiveCollection} from "../../../../store/collectionActiveState";
+} from "../../../../hooks/store/collectionSidebarState";
+import {useMoveGroup} from "../../../../hooks/core/groupMove";
+import {useMoveCollection} from "../../../../hooks/core/collectionMove";
+import {useMoveItems} from "../../../../hooks/core/itemsMove";
+import {useOpenCollection} from "../../../../hooks/core/collectionOpen";
+import {useActiveCollection} from "../../../../hooks/store/collectionActiveState";
 
 export function useCollectionSidebar() {
 
@@ -51,7 +51,7 @@ export function useCollectionSidebar() {
 }
 
 
-function useCollectionSidebarUtils() {
+export function useCollectionSidebarUtils() {
 
 	const NODE_TYPE_COLLECTION = "collection";
 	const NODE_TYPE_GROUP = "group";

@@ -3,11 +3,14 @@ import {ElementLabel} from "../../../../../components/misc/elementlabel/ElementL
 import {HBox, VBox} from "../../../../../components/layout/box/Box";
 import {CheckBox} from "../../../../../components/buttons/checkbox/CheckBox";
 import {ChoiceBox, ChoiceBoxItem} from "../../../../../components/buttons/choicebox/ChoiceBox";
-import {renamePartTypeAllowsUserInput} from "../../../../common/utils";
 import {TextField} from "../../../../../components/input/textfield/TextField";
 import {BaseElementFlat} from "../../../../../components/base/element/BaseElementFlat";
 import {Label} from "../../../../../components/base/label/Label";
-import {RenamePartDTO, RenamePartTypeDTO} from "../../../../../../common/events/dtoModels";
+import {
+	RenamePartDTO,
+	renamePartTypeAllowsUserInput,
+	RenamePartTypeDTO
+} from "../../../../../../common/events/dtoModels";
 
 const CB_ITEMS_RENAME_PART_TYPES: ChoiceBoxItem[] = [
 	{

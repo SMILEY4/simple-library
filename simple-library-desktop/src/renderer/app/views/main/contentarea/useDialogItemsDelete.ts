@@ -1,6 +1,6 @@
-import {useDialogController} from "../../../hooks/base/miscApplicationHooks";
+import {useDialogController} from "../../../hooks/miscApplicationHooks";
 import {useState} from "react";
-import {useDeleteItems} from "../../../hooks/logic/core/itemsDelete";
+import {useDeleteItems} from "../../../hooks/core/itemsDelete";
 
 export function useDialogItemsDeleteController(): [boolean, (id: number[] | null) => void, () => void, (number[] | null)] {
 

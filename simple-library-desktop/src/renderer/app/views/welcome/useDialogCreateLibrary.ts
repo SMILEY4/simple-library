@@ -1,6 +1,6 @@
-import {useDialogController} from "../../hooks/base/miscApplicationHooks";
+import {useDialogController} from "../../hooks/miscApplicationHooks";
 import {useValidatedForm, useValidatedState} from "../../../components/utils/commonHooks";
-import {useCreateLibrary} from "../../hooks/logic/core/libraryCreate";
+import {useCreateLibrary} from "../../hooks/core/libraryCreate";
 
 const electron = window.require('electron');
 

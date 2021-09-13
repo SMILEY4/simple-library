@@ -1,5 +1,5 @@
-import {useDialogController} from "../../hooks/base/miscApplicationHooks";
-import {fetchExiftoolData} from "../../common/messagingInterface";
+import {useDialogController} from "../../hooks/miscApplicationHooks";
+import {fetchExiftoolData} from "../../common/eventInterface";
 import {useEffect} from "react";
 
 export function useDialogErrorExiftoolLocationController() {

@@ -13,9 +13,9 @@ import {APP_ROOT_ID} from "../../Application";
 import {useDialogCreateLibraryController} from "./useDialogCreateLibrary";
 import {useDialogErrorExiftoolLocationController} from "./useDialogErrorExiftoolLocation";
 import {DialogErrorExiftoolLocation} from "./DialogErrorExiftoolLocation";
-import {LastOpenedLibrary} from "../../hooks/logic/core/librariesGetLastOpened";
+import {LastOpenedLibrary} from "../../hooks/core/librariesGetLastOpened";
 import {useWelcomeView} from "./useWelcomeView";
-import {useGetNotificationStackEntries} from "../../store/notificationState";
+import {useGetNotificationStackEntries} from "../../hooks/store/notificationState";
 
 interface WelcomeViewControllerProps {
 	onLoadProject: () => void

@@ -1,9 +1,9 @@
-import {useDialogController} from "../../../../../hooks/base/miscApplicationHooks";
+import {useDialogController} from "../../../../../hooks/miscApplicationHooks";
 import {useState} from "react";
 import {useStateRef, useValidatedState} from "../../../../../../components/utils/commonHooks";
 import {CollectionTypeDTO, GroupDTO} from "../../../../../../../common/events/dtoModels";
-import {useCreateCollection} from "../../../../../hooks/logic/core/collectionCreate";
-import {useFindGroup} from "../../../../../store/collectionsState";
+import {useCreateCollection} from "../../../../../hooks/core/collectionCreate";
+import {useFindGroup} from "../../../../../hooks/store/collectionsState";
 
 export function useDialogCollectionCreateController(): [boolean, (id: number | null) => void, () => void, (number | null)] {
 

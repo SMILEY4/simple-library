@@ -108,3 +108,16 @@ export interface RenamePartDTO {
 
 
 export type RenamePartTypeDTO = "nothing" | "text" | "number_from" | "original_filename";
+
+export function renamePartTypeAllowsUserInput(type: RenamePartTypeDTO): boolean {
+	switch (type) {
+		case "nothing":
+			return false;
+		case "text":
+			return true;
+		case "number_from":
+			return true;
+		case "original_filename":
+			return false;
+	}
+}

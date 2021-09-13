@@ -5,7 +5,7 @@ import {Slot} from "../../../components/base/slot/Slot";
 import {VBox} from "../../../components/layout/box/Box";
 import {Label} from "../../../components/base/label/Label";
 import {Button} from "../../../components/buttons/button/Button";
-import {requestOpenConfigFile} from "../../common/messagingInterface";
+import {requestOpenConfigFile} from "../../common/eventInterface";
 
 const shell = require("electron").shell
 

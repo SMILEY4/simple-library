@@ -4,7 +4,7 @@ import {IconButton} from "../../../../components/buttons/iconbutton/IconButton";
 import {IconType} from "../../../../components/base/icon/Icon";
 import {DialogImportFiles} from "./import/DialogImportFiles";
 import {useDialogImportFilesController} from "./import/useDialogImportFiles";
-import {useAppToolbar} from "./appToolbarHooks";
+import {useAppToolbar} from "./useAppToolbar";
 
 interface AppToolbarProps {
 	onClosedLibrary: () => void

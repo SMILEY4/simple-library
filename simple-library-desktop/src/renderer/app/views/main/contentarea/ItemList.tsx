@@ -9,7 +9,7 @@ import {SelectModifier} from "../../../../components/utils/common";
 import {useDialogItemsDeleteController} from "./useDialogItemsDelete";
 import {DialogDeleteItems} from "./DialogDeleteItems";
 import {CollectionDTO, ItemDTO} from "../../../../../common/events/dtoModels";
-import {useItemList} from "./itemListHooks";
+import {useItemList} from "./useItemList";
 
 interface ItemListProps {
 	activeCollection: CollectionDTO

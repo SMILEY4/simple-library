@@ -7,7 +7,7 @@ import {TextField} from "../../../../../components/input/textfield/TextField";
 import {MetadataListEntry} from "./MetadataListEntry";
 import {Label} from "../../../../../components/base/label/Label";
 import {AttributeDTO} from "../../../../../../common/events/dtoModels";
-import {useMetadataSidebar} from "./metadataSidebarHooks";
+import {useMetadataSidebar} from "./useMetadataSidebar";
 
 
 export const TAB_DATA_METADATA: SidebarTab = {
