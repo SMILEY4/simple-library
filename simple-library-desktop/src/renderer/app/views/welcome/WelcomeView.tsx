@@ -1,5 +1,4 @@
 import React from "react";
-import {DialogCreateLibrary} from "./DialogCreateLibrary";
 import {Grid} from "../../../components/layout/grid/Grid";
 import {VBox} from "../../../components/layout/box/Box";
 import {Label} from "../../../components/base/label/Label";
@@ -10,12 +9,13 @@ import imgWelcome from "./imgWelcome.jpg";
 import {NotificationStack} from "../../../components/modals/notification/NotificationStack";
 import "./welcome.css";
 import {APP_ROOT_ID} from "../../Application";
-import {useDialogCreateLibraryController} from "./useDialogCreateLibrary";
 import {useDialogErrorExiftoolLocationController} from "./useDialogErrorExiftoolLocation";
 import {DialogErrorExiftoolLocation} from "./DialogErrorExiftoolLocation";
 import {LastOpenedLibrary} from "../../hooks/core/librariesGetLastOpened";
 import {useWelcomeView} from "./useWelcomeView";
 import {useGetNotificationStackEntries} from "../../hooks/store/notificationState";
+import {useDispatchCloseDialog, useDispatchOpenDialog} from "../../hooks/store/dialogState";
+import {DialogCreateLibraryNew} from "./DialogCreateLibraryNew";
 
 interface WelcomeViewControllerProps {
 	onLoadProject: () => void
@@ -25,16 +25,13 @@ export function WelcomeView(props: React.PropsWithChildren<WelcomeViewController
 
 	const getNotificationStackEntries = useGetNotificationStackEntries();
 
+	const openDialog = useDispatchOpenDialog();
+	const closeDialog = useDispatchCloseDialog();
+
 	const {
 		lastOpenedLibraries,
 		browseLibraryAndOpen,
 	} = useWelcomeView(props.onLoadProject);
-
-	const [
-		showCreateLibrary,
-		openCreateLibrary,
-		closeCreateLibrary
-	] = useDialogCreateLibraryController();
 
 	const showErrorExiftool = useDialogErrorExiftoolLocationController();
 
@@ -69,20 +66,25 @@ export function WelcomeView(props: React.PropsWithChildren<WelcomeViewController
 				entries={getNotificationStackEntries()}
 			/>
 
-			{showCreateLibrary && (
-				<DialogCreateLibrary onFinished={handleFinishCreatedLibrary}/>
-			)}
 			{showErrorExiftool && (
 				<DialogErrorExiftoolLocation/>
 			)}
 		</>
 	);
 
-	function handleFinishCreatedLibrary(created: boolean) {
-		closeCreateLibrary();
+	function openCreateLibrary() {
+		openDialog(id => ({
+			blockOutside: true,
+			content: <DialogCreateLibraryNew onFinished={(created: boolean) => handleFinishCreatedLibrary(id, created)}/>
+		}));
+	}
+
+	function handleFinishCreatedLibrary(dialogId: string, created: boolean) {
+		closeDialog(dialogId);
 		if (created) {
 			props.onLoadProject();
 		}
 	}
+
 
 }

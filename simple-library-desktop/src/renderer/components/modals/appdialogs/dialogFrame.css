@@ -1,0 +1,30 @@
+.dialog-frame {
+	position:       absolute;
+	top:            0;
+	bottom:         0;
+	left:           0;
+	right:          0;
+	pointer-events: none;
+}
+
+
+.dialog-container {
+	position:        absolute;
+	top:             0;
+	bottom:          0;
+	left:            0;
+	right:           0;
+	display:         flex;
+	justify-content: center;
+	align-items:     center;
+	pointer-events:  none;
+}
+
+.dialog-container-blocking {
+	background:     var(--overlay-color);
+	pointer-events: auto;
+}
+
+.dialog-container > * {
+	pointer-events: auto;
+}

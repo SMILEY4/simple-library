@@ -10,6 +10,9 @@ import {ItemsStateProvider} from "./hooks/store/itemsState";
 import {CollectionSidebarStateProvider} from "./hooks/store/collectionSidebarState";
 import {CollectionActiveStateProvider} from "./hooks/store/collectionActiveState";
 import {getTheme, setTheme} from "./common/eventInterface";
+import {DialogFrame} from "../components/modals/appdialogs/DialogFrame";
+import {AppDialogFrame} from "./views/AppDialogFrame";
+import {DialogStateProvider} from "./hooks/store/dialogState";
 
 export enum Theme {
 	LIGHT = "light",
@@ -62,20 +65,20 @@ export class Application extends Component<any, AppState> {
 		});
 	}
 
-	render(): any {
+	render(): ReactElement {
 		if (this.state.displayComponentShowcase) {
 			return this.renderComponentShowcase();
 		} else {
 			if (this.state.currentView === View.WELCOME) {
-				return this.renderWithGlobalStates(this.renderWelcomeView());
+				return this.renderAppView(this.renderWelcomeView());
 			}
 			if (this.state.currentView === View.MAIN) {
-				return this.renderWithGlobalStates(this.renderMainView());
+				return this.renderAppView(this.renderMainView());
 			}
 		}
 	}
 
-	renderWithGlobalStates(element: ReactElement): ReactElement {
+	renderAppView(element: ReactElement): ReactElement {
 		return (
 			<Compose components={[
 				CollectionActiveStateProvider,
@@ -83,7 +86,8 @@ export class Application extends Component<any, AppState> {
 				CollectionsStateProvider,
 				ItemSelectionStateProvider,
 				ItemsStateProvider,
-				NotificationStateProvider
+				NotificationStateProvider,
+				DialogStateProvider
 			]}>
 				{element}
 			</Compose>
@@ -113,6 +117,7 @@ export class Application extends Component<any, AppState> {
 				<WelcomeView onLoadProject={() => {
 					this.setState({currentView: View.MAIN})
 				}}/>
+				<AppDialogFrame/>
 			</div>
 		);
 	}
@@ -126,6 +131,7 @@ export class Application extends Component<any, AppState> {
 				id={APP_ROOT_ID}
 			>
 				<MainView onClosed={() => this.setState({currentView: View.WELCOME})}/>
+				<AppDialogFrame/>
 			</div>
 		);
 	}

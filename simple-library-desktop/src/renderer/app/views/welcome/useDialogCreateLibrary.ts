@@ -1,18 +1,15 @@
-import {useDialogController} from "../../hooks/miscApplicationHooks";
 import {useValidatedForm, useValidatedState} from "../../../components/utils/commonHooks";
 import {useCreateLibrary} from "../../hooks/core/libraryCreate";
+import {useDispatchOpenConfirmationDialog} from "../../hooks/store/dialogState";
 
 const electron = window.require('electron');
-
-
-export function useDialogCreateLibraryController() {
-	return useDialogController();
-}
 
 
 export function useDialogCreateLibrary(onFinished: (created: boolean) => void) {
 
 	const createLibrary = useCreateLibrary();
+
+	const openConfirmation = useDispatchOpenConfirmationDialog();
 
 	const {
 		registerAtForm,
@@ -61,8 +58,11 @@ export function useDialogCreateLibrary(onFinished: (created: boolean) => void) {
 
 	function create(): void {
 		if (triggerFormValidation()) {
-			createLibrary(getName(), getTargetDir())
-				.then(() => onFinished(true))
+			openConfirmation("Confirm", "Really create library with name " + getName(), "Yes!",
+				() => {
+					createLibrary(getName(), getTargetDir())
+						.then(() => onFinished(true));
+				});
 		}
 	}
 
