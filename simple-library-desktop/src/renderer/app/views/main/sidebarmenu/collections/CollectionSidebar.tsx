@@ -12,14 +12,9 @@ import {DialogEditGroup} from "./dialogs/DialogEditGroup";
 import {DialogEditCollection} from "./dialogs/DialogEditCollection";
 import {DialogCreateGroup} from "./dialogs/DialogCreateGroup";
 import {DialogCreateCollection} from "./dialogs/DialogCreateCollection";
-import {useDialogCollectionDeleteController} from "./dialogs/useDialogCollectionDelete";
-import {useDialogCollectionCreateController} from "./dialogs/useDialogCollectionCreate";
-import {useDialogCollectionEditController} from "./dialogs/useDialogCollectionEdit";
-import {useDialogGroupDeleteController} from "./dialogs/useDialogGroupDelete";
-import {useDialogGroupEditController} from "./dialogs/useDialogGroupEdit";
-import {useDialogGroupCreateController} from "./dialogs/useDialogGroupCreate";
 import {CollectionDTO, GroupDTO} from "../../../../../../common/events/dtoModels";
 import {useCollectionSidebar, useCollectionSidebarUtils} from "./useCollectionSidebar";
+import {useDispatchCloseDialog, useDispatchOpenDialog} from "../../../../hooks/store/dialogState";
 
 export const TAB_DATA_COLLECTIONS: SidebarTab = {
 	id: "tab-collections",
@@ -31,6 +26,9 @@ interface CollectionSidebarProps {
 }
 
 export function CollectionSidebar(props: React.PropsWithChildren<CollectionSidebarProps>): React.ReactElement {
+
+	const openDialog = useDispatchOpenDialog();
+	const closeDialog = useDispatchCloseDialog();
 
 	const {
 		NODE_TYPE_COLLECTION,
@@ -51,136 +49,91 @@ export function CollectionSidebar(props: React.PropsWithChildren<CollectionSideb
 		handleDoubleClick,
 	} = useCollectionSidebar();
 
-	const [
-		showDeleteCollection,
-		openDeleteCollection,
-		closeDeleteCollection,
-		idDeleteCollection
-	] = useDialogCollectionDeleteController()
+	// const [
+	// 	showDeleteCollection,
+	// 	openDeleteCollection,
+	// 	closeDeleteCollection,
+	// 	idDeleteCollection
+	// ] = useDialogCollectionDeleteController()
 
-	const [
-		showCreateCollection,
-		openCreateCollection,
-		closeCreateCollection,
-		idCreateCollectionParent
-	] = useDialogCollectionCreateController()
-
-	const [
-		showEditCollection,
-		openEditCollection,
-		closeEditCollection,
-		idEditCollection
-	] = useDialogCollectionEditController()
-
-	const [
-		showDeleteGroup,
-		openDeleteGroup,
-		closeDeleteGroup,
-		idDeleteGroup
-	] = useDialogGroupDeleteController()
-
-	const [
-		showCreateGroup,
-		openCreateGroup,
-		closeCreateGroup,
-		idCreateGroupParent
-	] = useDialogGroupCreateController()
-
-	const [
-		showEditGroup,
-		openEditGroup,
-		closeEditGroup,
-		idEditGroup
-	] = useDialogGroupEditController()
+	// const [
+	// 	showCreateCollection,
+	// 	openCreateCollection,
+	// 	closeCreateCollection,
+	// 	idCreateCollectionParent
+	// ] = useDialogCollectionCreateController()
+	//
+	// const [
+	// 	showEditCollection,
+	// 	openEditCollection,
+	// 	closeEditCollection,
+	// 	idEditCollection
+	// ] = useDialogCollectionEditController()
+	//
+	// const [
+	// 	showDeleteGroup,
+	// 	openDeleteGroup,
+	// 	closeDeleteGroup,
+	// 	idDeleteGroup
+	// ] = useDialogGroupDeleteController()
+	//
+	// const [
+	// 	showCreateGroup,
+	// 	openCreateGroup,
+	// 	closeCreateGroup,
+	// 	idCreateGroupParent
+	// ] = useDialogGroupCreateController()
+	//
+	// const [
+	// 	showEditGroup,
+	// 	openEditGroup,
+	// 	closeEditGroup,
+	// 	idEditGroup
+	// ] = useDialogGroupEditController()
 
 
 	return !!rootGroup ? (
-		<>
-			<TreeView
-				rootNode={buildTree(rootGroup)}
-				modalRootId={APP_ROOT_ID}
-				forceExpanded={expandedNodes}
-				withSearch
-				onToggleExpand={toggleExpandNode}
-				onDoubleClick={handleDoubleClick}
-				onDragStart={dragStart}
-				onDragOver={dragOver}
-				onDrop={drop}
-				activeNodeId={activeNode}
-			>
-				<DynamicSlot name={"context-menu"}>
-					{(nodeId: string) => {
-						const objectId: number | null = getNodeObjectId(nodeId)
-						switch (getNodeType(nodeId)) {
-							case NODE_TYPE_COLLECTION: {
-								return <ContextMenuCollection
-									collectionId={objectId}
-									onDelete={() => openDeleteCollection(objectId)}
-									onEdit={() => {
-										openEditCollection(objectId)
-									}}
-								/>
-							}
-							case NODE_TYPE_GROUP: {
-								return <ContextMenuGroup
-									groupId={objectId}
-									onDelete={() => openDeleteGroup(objectId)}
-									onEdit={() => openEditGroup(objectId)}
-									onCreateCollection={() => openCreateCollection(objectId)}
-									onCreateGroup={() => openCreateGroup(objectId)}/>
-							}
-							default: {
-								console.error("Cant open context menu - unexpected node type: ", nodeId);
-								return null;
-							}
+		<TreeView
+			rootNode={buildTree(rootGroup)}
+			modalRootId={APP_ROOT_ID}
+			forceExpanded={expandedNodes}
+			withSearch
+			onToggleExpand={toggleExpandNode}
+			onDoubleClick={handleDoubleClick}
+			onDragStart={dragStart}
+			onDragOver={dragOver}
+			onDrop={drop}
+			activeNodeId={activeNode}
+		>
+			<DynamicSlot name={"context-menu"}>
+				{(nodeId: string) => {
+					const objectId: number | null = getNodeObjectId(nodeId)
+					switch (getNodeType(nodeId)) {
+						case NODE_TYPE_COLLECTION: {
+							return <ContextMenuCollection
+								collectionId={objectId}
+								onDelete={() => openDialogDeleteCollection(objectId)}
+								onEdit={() => {
+									openDialogEditCollection(objectId)
+								}}
+							/>
 						}
-					}}
-				</DynamicSlot>
-			</TreeView>
-
-			{showDeleteCollection && (
-				<DialogDeleteCollection
-					collectionId={idDeleteCollection}
-					onClose={closeDeleteCollection}
-				/>
-			)}
-
-			{showEditCollection && (
-				<DialogEditCollection
-					collectionId={idEditCollection}
-					onClose={closeEditCollection}
-				/>
-			)}
-
-			{showDeleteGroup && (
-				<DialogDeleteGroup
-					groupId={idDeleteGroup}
-					onClose={closeDeleteGroup}
-				/>
-			)}
-
-			{showEditGroup && (
-				<DialogEditGroup
-					groupId={idEditGroup}
-					onClose={closeEditGroup}
-				/>
-			)}
-
-			{showCreateGroup && (
-				<DialogCreateGroup
-					parentGroupId={idCreateGroupParent}
-					onClose={closeCreateGroup}
-				/>
-			)}
-
-			{showCreateCollection && (
-				<DialogCreateCollection
-					parentGroupId={idCreateCollectionParent}
-					onClose={closeCreateCollection}
-				/>
-			)}
-
-		</>
+						case NODE_TYPE_GROUP: {
+							return <ContextMenuGroup
+								groupId={objectId}
+								onDelete={() => openDialogDeleteGroup(objectId)}
+								onEdit={() => openDialogEditGroup(objectId)}
+								onCreateCollection={() => openDialogCreateCollection(objectId)}
+								onCreateGroup={() => openDialogCreateGroup(objectId)}/>
+						}
+						default: {
+							console.error("Cant open context menu - unexpected node type: ", nodeId);
+							return null;
+						}
+					}
+				}}
+			</DynamicSlot>
+		</TreeView>
 	) : null
 
 	function buildTree(group: GroupDTO): TreeViewNode {
@@ -216,6 +169,66 @@ export function CollectionSidebar(props: React.PropsWithChildren<CollectionSideb
 			droppable: true,
 			isLeaf: true
 		}
+	}
+
+	function openDialogDeleteCollection(collectionId: number) {
+		openDialog(id => ({
+			blockOutside: true,
+			content: <DialogDeleteCollection
+				collectionId={collectionId}
+				onClose={() => closeDialog(id)}
+			/>
+		}));
+	}
+
+	function openDialogEditCollection(collectionId: number) {
+		openDialog(id => ({
+			blockOutside: true,
+			content: <DialogEditCollection
+				collectionId={collectionId}
+				onClose={() => closeDialog(id)}
+			/>
+		}));
+	}
+
+	function openDialogDeleteGroup(groupId: number) {
+		openDialog(id => ({
+			blockOutside: true,
+			content: <DialogDeleteGroup
+				groupId={groupId}
+				onClose={() => closeDialog(id)}
+			/>
+		}));
+	}
+
+	function openDialogEditGroup(groupId: number) {
+		openDialog(id => ({
+			blockOutside: true,
+			content: <DialogEditGroup
+				groupId={groupId}
+				onClose={() => closeDialog(id)}
+			/>
+		}));
+	}
+
+	function openDialogCreateGroup(parentGroupId: number | null) {
+		openDialog(id => ({
+			blockOutside: true,
+			content: <DialogCreateGroup
+				parentGroupId={parentGroupId}
+				onClose={() => closeDialog(id)}
+			/>
+		}));
+	}
+
+	function openDialogCreateCollection(parentGroupId: number | null) {
+		openDialog(id => ({
+			blockOutside: true,
+			content: <DialogCreateCollection
+				parentGroupId={parentGroupId}
+				onClose={() => closeDialog(id)}
+			/>
+		}));
 	}
 
 }

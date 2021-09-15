@@ -1,6 +1,4 @@
 import React from "react";
-import {Dialog} from "../../../../../components/modals/dialog/Dialog";
-import {APP_ROOT_ID} from "../../../../Application";
 import {Slot} from "../../../../../components/base/slot/Slot";
 import {Button} from "../../../../../components/buttons/button/Button";
 import {VBox} from "../../../../../components/layout/box/Box";
@@ -8,6 +6,7 @@ import {ImportSelectFilesForm} from "./ImportSelectFilesForm";
 import {ImportTargetDirForm} from "./ImportTargetDirForm";
 import {ImportRenameFilesForm} from "./ImportRenameFilesForm";
 import {useDialogImportFiles} from "./useDialogImportFiles";
+import {Card} from "../../../../../components/layout/card/Card";
 
 interface DialogImportFilesProps {
 	onClose: () => void,
@@ -30,15 +29,10 @@ export function DialogImportFiles(props: React.PropsWithChildren<DialogImportFil
 	} = useDialogImportFiles(props.onClose)
 
 	return (
-		<Dialog
-			show={true}
-			modalRootId={APP_ROOT_ID}
-			icon={undefined}
+		<Card
 			title={"Import Files"}
 			onClose={handleCancel}
-			withOverlay
 			closable
-			closeOnClickOutside
 		>
 			<Slot name={"body"}>
 				<VBox alignMain="center" alignCross="stretch" spacing="1-5" style={{
@@ -72,7 +66,7 @@ export function DialogImportFiles(props: React.PropsWithChildren<DialogImportFil
 				<Button onAction={handleCancel}>Cancel</Button>
 				<Button variant="info" disabled={!areAllValid(dataValid)} onAction={handleImport}>Import</Button>
 			</Slot>
-		</Dialog>
+		</Card>
 	);
 
 }

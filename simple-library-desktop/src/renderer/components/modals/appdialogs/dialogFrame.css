@@ -5,6 +5,7 @@
 	left:           0;
 	right:          0;
 	pointer-events: none;
+	overflow:       hidden;
 }
 
 
@@ -27,4 +28,5 @@
 
 .dialog-container > * {
 	pointer-events: auto;
+	max-height:     80vh;
 }

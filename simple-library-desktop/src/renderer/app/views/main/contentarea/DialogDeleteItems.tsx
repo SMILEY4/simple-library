@@ -1,11 +1,10 @@
 import React from "react";
 import {useDialogItemsDelete} from "./useDialogItemsDelete";
-import {Dialog} from "../../../../components/modals/dialog/Dialog";
-import {APP_ROOT_ID} from "../../../Application";
 import {Slot} from "../../../../components/base/slot/Slot";
 import {VBox} from "../../../../components/layout/box/Box";
 import {Label} from "../../../../components/base/label/Label";
 import {Button} from "../../../../components/buttons/button/Button";
+import {Card} from "../../../../components/layout/card/Card";
 
 interface DialogDeleteItemsProps {
 	itemIds: number[],
@@ -21,15 +20,10 @@ export function DialogDeleteItems(props: React.PropsWithChildren<DialogDeleteIte
 	} = useDialogItemsDelete(props.itemIds, props.activeCollectionId, props.onClose)
 
 	return (
-		<Dialog
-			show={true}
-			modalRootId={APP_ROOT_ID}
-			icon={undefined}
+		<Card
 			title={"Delete Group"}
 			onClose={handleCancel}
-			withOverlay
 			closable
-			closeOnClickOutside
 		>
 			<Slot name={"body"}>
 				<VBox alignMain="center" alignCross="stretch" spacing="0-5">
@@ -42,7 +36,7 @@ export function DialogDeleteItems(props: React.PropsWithChildren<DialogDeleteIte
 				<Button onAction={handleCancel}>Cancel</Button>
 				<Button onAction={handleDelete} variant="error">Delete</Button>
 			</Slot>
-		</Dialog>
+		</Card>
 	);
 
 }

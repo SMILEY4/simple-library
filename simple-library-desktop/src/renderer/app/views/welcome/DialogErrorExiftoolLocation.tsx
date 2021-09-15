@@ -1,11 +1,10 @@
 import React from "react";
-import {Dialog} from "../../../components/modals/dialog/Dialog";
-import {APP_ROOT_ID} from "../../Application";
 import {Slot} from "../../../components/base/slot/Slot";
 import {VBox} from "../../../components/layout/box/Box";
 import {Label} from "../../../components/base/label/Label";
 import {Button} from "../../../components/buttons/button/Button";
 import {requestOpenConfigFile} from "../../common/eventInterface";
+import {Card} from "../../../components/layout/card/Card";
 
 const shell = require("electron").shell
 
@@ -15,15 +14,9 @@ interface DialogErrorExiftoolLocationProps {
 export function DialogErrorExiftoolLocation(props: React.PropsWithChildren<DialogErrorExiftoolLocationProps>): React.ReactElement {
 
 	return (
-		<Dialog
-			show={true}
-			modalRootId={APP_ROOT_ID}
-			icon={undefined}
+		<Card
 			title={"Error"}
-			onClose={undefined}
-			withOverlay
 			closable={false}
-			closeOnClickOutside={false}
 		>
 			<Slot name={"body"}>
 				<VBox alignMain="center" alignCross="stretch" spacing="0-5">
@@ -54,7 +47,7 @@ export function DialogErrorExiftoolLocation(props: React.PropsWithChildren<Dialo
 				</VBox>
 			</Slot>
 			<Slot name={"footer"}/>
-		</Dialog>
+		</Card>
 	);
 
 	function handleOpenLink() {

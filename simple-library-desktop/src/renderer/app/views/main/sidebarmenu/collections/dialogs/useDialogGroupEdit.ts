@@ -1,29 +1,6 @@
-import {useDialogController} from "../../../../../hooks/miscApplicationHooks";
-import {useState} from "react";
 import {useValidatedState} from "../../../../../../components/utils/commonHooks";
 import {useEditGroup} from "../../../../../hooks/core/groupEdit";
 import {useFindGroup} from "../../../../../hooks/store/collectionsState";
-
-export function useDialogGroupEditController(): [boolean, (id: number | null) => void, () => void, (number | null)] {
-
-	const [show, open, close] = useDialogController();
-	const [id, setId] = useState<number | null>(null)
-
-	function openDialog(id: number | null): void {
-		if (id) {
-			setId(id)
-			open()
-		}
-	}
-
-	function closeDialog(): void {
-		close()
-		setId(null)
-	}
-
-	return [show, openDialog, closeDialog, id]
-}
-
 
 export function useDialogGroupEdit(groupId: number, onClose: () => void) {
 

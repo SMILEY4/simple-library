@@ -1,18 +1,12 @@
-import {useDialogController} from "../../../../hooks/miscApplicationHooks";
 import {useComplexValidatedState} from "../../../../../components/utils/commonHooks";
 import {
 	ImportProcessDataDTO,
 	ImportTargetActionDTO,
-	RenamePartDTO, renamePartTypeAllowsUserInput,
+	RenamePartDTO,
+	renamePartTypeAllowsUserInput,
 	RenamePartTypeDTO
 } from "../../../../../../common/events/dtoModels";
 import {useImportItems} from "../../../../hooks/core/itemsImport";
-
-export function useDialogImportFilesController(): [boolean, () => void, () => void] {
-	const [show, open, close] = useDialogController();
-	return [show, open, close];
-}
-
 
 interface ImportValidationData {
 	validFiles: boolean,

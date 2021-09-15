@@ -1,6 +1,4 @@
 import React from "react";
-import {Dialog} from "../../../../../../components/modals/dialog/Dialog";
-import {APP_ROOT_ID} from "../../../../../Application";
 import {Slot} from "../../../../../../components/base/slot/Slot";
 import {HBox, VBox} from "../../../../../../components/layout/box/Box";
 import {Button} from "../../../../../../components/buttons/button/Button";
@@ -11,6 +9,7 @@ import {ChoiceBox, ChoiceBoxItem} from "../../../../../../components/buttons/cho
 import {ElementLabel} from "../../../../../../components/misc/elementlabel/ElementLabel";
 import {useDialogCollectionCreate} from "./useDialogCollectionCreate";
 import {CollectionTypeDTO} from "../../../../../../../common/events/dtoModels";
+import {Card} from "../../../../../../components/layout/card/Card";
 
 interface DialogCreateCollectionProps {
 	parentGroupId: number | null,
@@ -43,16 +42,11 @@ export function DialogCreateCollection(props: React.PropsWithChildren<DialogCrea
 	} = useDialogCollectionCreate(props.parentGroupId, props.onClose);
 
 	return (
-		<Dialog
-			show={true}
-			modalRootId={APP_ROOT_ID}
-			icon={undefined}
+		<Card
 			title={"Create Collection"}
 			subtitle={props.parentGroupId ? "Create in '" + parentName + "'" : undefined}
 			onClose={handleCancel}
-			withOverlay
 			closable
-			closeOnClickOutside
 		>
 			<Slot name={"body"}>
 				<VBox alignMain="center" alignCross="stretch" spacing="0-5">
@@ -95,7 +89,7 @@ export function DialogCreateCollection(props: React.PropsWithChildren<DialogCrea
 				<Button onAction={handleCancel}>Cancel</Button>
 				<Button variant="info" disabled={!isNameValid()} onAction={handleCreate}>Create</Button>
 			</Slot>
-		</Dialog>
+		</Card>
 	);
 
 }

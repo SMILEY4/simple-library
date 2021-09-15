@@ -6,10 +6,10 @@ import {APP_ROOT_ID} from "../../../Application";
 import {ItemListEntryContextMenu} from "./ItemListEntryContextMenu";
 import {useContextMenu} from "../../../../components/menu/contextmenu/contextMenuHook";
 import {SelectModifier} from "../../../../components/utils/common";
-import {useDialogItemsDeleteController} from "./useDialogItemsDelete";
 import {DialogDeleteItems} from "./DialogDeleteItems";
 import {CollectionDTO, ItemDTO} from "../../../../../common/events/dtoModels";
 import {useItemList} from "./useItemList";
+import {useDispatchCloseDialog, useDispatchOpenDialog} from "../../../hooks/store/dialogState";
 
 interface ItemListProps {
 	activeCollection: CollectionDTO
@@ -23,6 +23,9 @@ export const MemoizedItemList = React.memo(ItemList,
 
 export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.ReactElement {
 
+	const openDialog = useDispatchOpenDialog();
+	const closeDialog = useDispatchCloseDialog();
+
 	const {
 		items,
 		isSelected,
@@ -35,13 +38,6 @@ export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.R
 		handleRemoveSelectedItems,
 		handleUpdateItemAttributeValue
 	} = useItemList(props.activeCollection.id)
-
-	const [
-		showDeleteItems,
-		openDeleteItems,
-		closeDeleteItems,
-		itemIdsDelete
-	] = useDialogItemsDeleteController();
 
 	const {
 		showContextMenu,
@@ -89,19 +85,24 @@ export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.R
 				<ItemListEntryContextMenu
 					canRemove={props.activeCollection.type !== "smart"}
 					onRemove={handleRemoveSelectedItems}
-					onDelete={() => openDeleteItems(itemIdsSelected)}
+					onDelete={() => openDialogDeleteItems(itemIdsSelected, props.activeCollection.id)}
 					onOpen={openSelectedItemsExternal}
 				/>
 			</ContextMenuBase>
 
-			{showDeleteItems && (<DialogDeleteItems
-				itemIds={itemIdsDelete}
-				activeCollectionId={props.activeCollection.id}
-				onClose={closeDeleteItems}
-			/>)}
-
 		</>
 	);
+
+	function openDialogDeleteItems(itemIds: number[], activeCollectionId: number | null) {
+		openDialog(id => ({
+			blockOutside: true,
+			content: <DialogDeleteItems
+				itemIds={itemIds}
+				activeCollectionId={activeCollectionId}
+				onClose={() => closeDialog(id)}
+			/>
+		}));
+	}
 
 	function handleOnContextMenu(itemId: number, event: React.MouseEvent): void {
 		if (!isSelected(itemId)) {

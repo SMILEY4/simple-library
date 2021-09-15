@@ -13,6 +13,7 @@
 
 .card-body {
 	overscroll-behavior: contain;
+	overflow: auto;
 }
 
 .card-footer {

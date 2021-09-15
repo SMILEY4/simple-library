@@ -1,6 +1,4 @@
 import React from "react";
-import {Dialog} from "../../../../../../components/modals/dialog/Dialog";
-import {APP_ROOT_ID} from "../../../../../Application";
 import {Slot} from "../../../../../../components/base/slot/Slot";
 import {VBox} from "../../../../../../components/layout/box/Box";
 import {Button} from "../../../../../../components/buttons/button/Button";
@@ -8,6 +6,7 @@ import {Label} from "../../../../../../components/base/label/Label";
 import {TextField} from "../../../../../../components/input/textfield/TextField";
 import {Spacer} from "../../../../../../components/base/spacer/Spacer";
 import {useDialogGroupCreate} from "./useDialogGroupCreate";
+import {Card} from "../../../../../../components/layout/card/Card";
 
 interface DialogCreateGroupProps {
 	parentGroupId: number | null,
@@ -25,16 +24,11 @@ export function DialogCreateGroup(props: React.PropsWithChildren<DialogCreateGro
 	} = useDialogGroupCreate(props.parentGroupId, props.onClose)
 
 	return (
-		<Dialog
-			show={true}
-			modalRootId={APP_ROOT_ID}
-			icon={undefined}
+		<Card
 			title={"Create Group"}
 			subtitle={props.parentGroupId ? "Create in '" + parentName + "'" : undefined}
 			onClose={handleCancel}
-			withOverlay
 			closable
-			closeOnClickOutside
 		>
 			<Slot name={"body"}>
 				<VBox alignMain="center" alignCross="stretch" spacing="0-25">
@@ -59,7 +53,7 @@ export function DialogCreateGroup(props: React.PropsWithChildren<DialogCreateGro
 				<Button onAction={handleCancel}>Cancel</Button>
 				<Button variant="info" disabled={!isNameValid()} onAction={handleCreate}>Create</Button>
 			</Slot>
-		</Dialog>
+		</Card>
 	);
 
 }

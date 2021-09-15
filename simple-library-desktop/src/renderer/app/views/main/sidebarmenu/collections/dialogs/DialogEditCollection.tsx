@@ -1,6 +1,4 @@
 import React from "react";
-import {Dialog} from "../../../../../../components/modals/dialog/Dialog";
-import {APP_ROOT_ID} from "../../../../../Application";
 import {Slot} from "../../../../../../components/base/slot/Slot";
 import {VBox} from "../../../../../../components/layout/box/Box";
 import {Button} from "../../../../../../components/buttons/button/Button";
@@ -9,6 +7,7 @@ import {TextField} from "../../../../../../components/input/textfield/TextField"
 import {Spacer} from "../../../../../../components/base/spacer/Spacer";
 import {TextArea} from "../../../../../../components/input/textarea/TextArea";
 import {useDialogCollectionEdit} from "./useDialogCollectionEdit";
+import {Card} from "../../../../../../components/layout/card/Card";
 
 interface DialogEditCollectionProps {
 	collectionId: number,
@@ -29,15 +28,10 @@ export function DialogEditCollection(props: React.PropsWithChildren<DialogEditCo
 	} = useDialogCollectionEdit(props.collectionId, props.onClose);
 
 	return (
-		<Dialog
-			show={true}
-			modalRootId={APP_ROOT_ID}
-			icon={undefined}
+		<Card
 			title={"Edit Collection"}
 			onClose={handleCancel}
-			withOverlay
 			closable
-			closeOnClickOutside
 		>
 			<Slot name={"body"}>
 				<VBox alignMain="center" alignCross="stretch" spacing="0-5">
@@ -82,7 +76,7 @@ export function DialogEditCollection(props: React.PropsWithChildren<DialogEditCo
 				<Button onAction={handleCancel}>Cancel</Button>
 				<Button variant="info" disabled={!isNameValid()} onAction={handleEdit}>Save</Button>
 			</Slot>
-		</Dialog>
+		</Card>
 	);
 
 }

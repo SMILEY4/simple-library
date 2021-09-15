@@ -1,12 +1,11 @@
 import React from "react";
-import {Dialog} from "../../../../../../components/modals/dialog/Dialog";
-import {APP_ROOT_ID} from "../../../../../Application";
 import {Slot} from "../../../../../../components/base/slot/Slot";
 import {VBox} from "../../../../../../components/layout/box/Box";
 import {Button} from "../../../../../../components/buttons/button/Button";
 import {Label} from "../../../../../../components/base/label/Label";
 import {CheckBox} from "../../../../../../components/buttons/checkbox/CheckBox";
 import {useDialogGroupDelete} from "./useDialogGroupDelete";
+import {Card} from "../../../../../../components/layout/card/Card";
 
 interface DialogDeleteGroupProps {
 	groupId: number,
@@ -24,15 +23,10 @@ export function DialogDeleteGroup(props: React.PropsWithChildren<DialogDeleteGro
 	} = useDialogGroupDelete(props.groupId, props.onClose)
 
 	return groupName && (
-		<Dialog
-			show={true}
-			modalRootId={APP_ROOT_ID}
-			icon={undefined}
+		<Card
 			title={"Delete Group"}
 			onClose={handleCancel}
-			withOverlay
 			closable
-			closeOnClickOutside
 		>
 			<Slot name={"body"}>
 				<VBox alignMain="center" alignCross="stretch" spacing="0-5">
@@ -46,7 +40,7 @@ export function DialogDeleteGroup(props: React.PropsWithChildren<DialogDeleteGro
 				<Button onAction={handleCancel}>Cancel</Button>
 				<Button onAction={handleDelete} variant="error">Delete</Button>
 			</Slot>
-		</Dialog>
+		</Card>
 	);
 
 }

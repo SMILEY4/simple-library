@@ -1,15 +1,14 @@
 import React from "react";
-import {Dialog} from "../../../components/modals/dialog/Dialog";
 import {Slot} from "../../../components/base/slot/Slot";
 import {Button} from "../../../components/buttons/button/Button";
 import {TextField} from "../../../components/input/textfield/TextField";
 import {VBox} from "../../../components/layout/box/Box";
 import {DirectoryInputField} from "../../../components/input/directoryinputfield/DirectoryInputField";
-import {APP_ROOT_ID} from "../../Application";
 import {useDialogCreateLibrary} from "./useDialogCreateLibrary";
+import {Card} from "../../../components/layout/card/Card";
 
 interface DialogCreateLibraryProps {
-	onFinished: (created: boolean) => void
+	onFinished: (created: boolean) => void,
 }
 
 export function DialogCreateLibrary(props: React.PropsWithChildren<DialogCreateLibraryProps>): React.ReactElement {
@@ -25,15 +24,10 @@ export function DialogCreateLibrary(props: React.PropsWithChildren<DialogCreateL
 	} = useDialogCreateLibrary(props.onFinished);
 
 	return (
-		<Dialog
-			show={true}
-			modalRootId={APP_ROOT_ID}
-			icon={undefined}
+		<Card
 			title={"Create New Library"}
+			closable={true}
 			onClose={cancel}
-			withOverlay
-			closable
-			closeOnClickOutside
 		>
 			<Slot name={"body"}>
 				<VBox alignMain="center" alignCross="stretch" spacing="0-5">
@@ -55,7 +49,7 @@ export function DialogCreateLibrary(props: React.PropsWithChildren<DialogCreateL
 				<Button onAction={cancel}>Cancel</Button>
 				<Button onAction={create} variant="info">Create</Button>
 			</Slot>
-		</Dialog>
+		</Card>
 	);
 
 }

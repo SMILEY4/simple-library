@@ -664,8 +664,6 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
                 icon={IconType.HOME}
                 title={"My Dialog Title"}
                 onClose={() => setShow(false)}
-                onEscape={() => setShow(false)}
-                onEnter={() => setShow(false)}
                 withOverlay
                 closable
                 closeOnClickOutside

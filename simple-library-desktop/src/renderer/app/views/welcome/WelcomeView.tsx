@@ -9,13 +9,13 @@ import imgWelcome from "./imgWelcome.jpg";
 import {NotificationStack} from "../../../components/modals/notification/NotificationStack";
 import "./welcome.css";
 import {APP_ROOT_ID} from "../../Application";
-import {useDialogErrorExiftoolLocationController} from "./useDialogErrorExiftoolLocation";
 import {DialogErrorExiftoolLocation} from "./DialogErrorExiftoolLocation";
 import {LastOpenedLibrary} from "../../hooks/core/librariesGetLastOpened";
 import {useWelcomeView} from "./useWelcomeView";
 import {useGetNotificationStackEntries} from "../../hooks/store/notificationState";
 import {useDispatchCloseDialog, useDispatchOpenDialog} from "../../hooks/store/dialogState";
-import {DialogCreateLibraryNew} from "./DialogCreateLibraryNew";
+import {DialogCreateLibrary} from "./DialogCreateLibrary";
+import {useExiftoolMissingError} from "./useExiftoolMissingError";
 
 interface WelcomeViewControllerProps {
 	onLoadProject: () => void
@@ -24,7 +24,6 @@ interface WelcomeViewControllerProps {
 export function WelcomeView(props: React.PropsWithChildren<WelcomeViewControllerProps>): React.ReactElement {
 
 	const getNotificationStackEntries = useGetNotificationStackEntries();
-
 	const openDialog = useDispatchOpenDialog();
 	const closeDialog = useDispatchCloseDialog();
 
@@ -33,7 +32,10 @@ export function WelcomeView(props: React.PropsWithChildren<WelcomeViewController
 		browseLibraryAndOpen,
 	} = useWelcomeView(props.onLoadProject);
 
-	const showErrorExiftool = useDialogErrorExiftoolLocationController();
+	const showErrorExiftool = useExiftoolMissingError();
+	if (showErrorExiftool) {
+		openDialogExiftoolMissing();
+	}
 
 	return (
 		<>
@@ -44,7 +46,7 @@ export function WelcomeView(props: React.PropsWithChildren<WelcomeViewController
 						<Label type="header-1" align="center">Simple Library</Label>
 						<Spacer size="1" dir="horizontal"/>
 
-						<Button onAction={openCreateLibrary}>New Library</Button>
+						<Button onAction={openDialogCreateLibrary}>New Library</Button>
 						<Button onAction={browseLibraryAndOpen}>Open Library</Button>
 
 						<Spacer size="0-5" dir="horizontal" line/>
@@ -66,16 +68,20 @@ export function WelcomeView(props: React.PropsWithChildren<WelcomeViewController
 				entries={getNotificationStackEntries()}
 			/>
 
-			{showErrorExiftool && (
-				<DialogErrorExiftoolLocation/>
-			)}
 		</>
 	);
 
-	function openCreateLibrary() {
+	function openDialogExiftoolMissing() {
 		openDialog(id => ({
 			blockOutside: true,
-			content: <DialogCreateLibraryNew onFinished={(created: boolean) => handleFinishCreatedLibrary(id, created)}/>
+			content: <DialogErrorExiftoolLocation/>
+		}));
+	}
+
+	function openDialogCreateLibrary() {
+		openDialog(id => ({
+			blockOutside: true,
+			content: <DialogCreateLibrary onFinished={(created: boolean) => handleFinishCreatedLibrary(id, created)}/>
 		}));
 	}
 
@@ -85,6 +91,5 @@ export function WelcomeView(props: React.PropsWithChildren<WelcomeViewController
 			props.onLoadProject();
 		}
 	}
-
 
 }
