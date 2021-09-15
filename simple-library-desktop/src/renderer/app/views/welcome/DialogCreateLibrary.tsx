@@ -31,8 +31,6 @@ export function DialogCreateLibrary(props: React.PropsWithChildren<DialogCreateL
 			icon={undefined}
 			title={"Create New Library"}
 			onClose={cancel}
-			onEscape={cancel}
-			onEnter={create}
 			withOverlay
 			closable
 			closeOnClickOutside

@@ -17,8 +17,6 @@ export interface DialogProps extends BaseProps {
     closable?: boolean,
     closeOnClickOutside?: boolean,
     onClose?: () => void
-    onEnter?: () => void,
-    onEscape?: () => void,
 }
 
 export function Dialog(props: React.PropsWithChildren<DialogProps>) {
@@ -40,8 +38,6 @@ export function Dialog(props: React.PropsWithChildren<DialogProps>) {
                 noBodyPadding={props.noBodyPadding}
                 closable={props.closable}
                 onClose={props.onClose}
-                onEnter={props.onEnter}
-                onEscape={props.onEscape}
                 className={concatClasses(props.className, "dialog")}
                 style={props.style}
                 forwardRef={props.forwardRef}

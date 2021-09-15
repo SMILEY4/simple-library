@@ -19,27 +19,10 @@ export interface CardProps extends BaseProps {
     fitHeight?: boolean,
     closable?: boolean,
     onClose?: () => void
-    onEnter?: () => void,
-    onEscape?: () => void,
 }
 
 export function Card(props: React.PropsWithChildren<CardProps>) {
 
-    // useKeyListener("Enter", (event: KeyboardEvent) => {
-    //     // @ts-ignore
-    //     if (props.onEnter && event.target.tagName === "BODY") {
-    //         event.preventDefault();
-    //         props.onEnter();
-    //     }
-    // })
-    //
-    // useKeyListener("Escape", (event: KeyboardEvent) => {
-    //     // @ts-ignore
-    //     if (props.onEscape && event.target.tagName === "BODY") {
-    //         event.preventDefault();
-    //         props.onEscape();
-    //     }
-    // })
 
     return (
         <div

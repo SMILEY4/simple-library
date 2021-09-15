@@ -30,8 +30,6 @@ export function DialogEditGroup(props: React.PropsWithChildren<DialogEditGroupPr
 			icon={undefined}
 			title={"Rename Group"}
 			onClose={handleCancel}
-			onEscape={handleCancel}
-			onEnter={handleEdit}
 			withOverlay
 			closable
 			closeOnClickOutside

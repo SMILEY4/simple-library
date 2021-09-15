@@ -35,8 +35,6 @@ export function DialogEditCollection(props: React.PropsWithChildren<DialogEditCo
 			icon={undefined}
 			title={"Edit Collection"}
 			onClose={handleCancel}
-			onEscape={handleCancel}
-			onEnter={handleEdit}
 			withOverlay
 			closable
 			closeOnClickOutside

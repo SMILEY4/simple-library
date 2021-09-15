@@ -21,8 +21,6 @@ export function DialogErrorExiftoolLocation(props: React.PropsWithChildren<Dialo
 			icon={undefined}
 			title={"Error"}
 			onClose={undefined}
-			onEscape={undefined}
-			onEnter={undefined}
 			withOverlay
 			closable={false}
 			closeOnClickOutside={false}

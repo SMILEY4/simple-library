@@ -21,8 +21,6 @@ export function ConfirmationDialog(props: React.PropsWithChildren<ConfirmationDi
 			title={props.title}
 			closable={true}
 			onClose={onCancel}
-			onEnter={onAccept}
-			onEscape={onCancel}
 		>
 			<Slot name={"body"}>
 				{

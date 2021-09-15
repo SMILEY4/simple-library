@@ -32,8 +32,6 @@ export function DialogCreateGroup(props: React.PropsWithChildren<DialogCreateGro
 			title={"Create Group"}
 			subtitle={props.parentGroupId ? "Create in '" + parentName + "'" : undefined}
 			onClose={handleCancel}
-			onEscape={handleCancel}
-			onEnter={handleCreate}
 			withOverlay
 			closable
 			closeOnClickOutside

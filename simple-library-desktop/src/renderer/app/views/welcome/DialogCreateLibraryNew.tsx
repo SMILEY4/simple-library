@@ -9,7 +9,6 @@ import {Card} from "../../../components/layout/card/Card";
 
 interface DialogCreateLibraryNewProps {
 	onFinished: (created: boolean) => void,
-	isFocused?: boolean,
 }
 
 export function DialogCreateLibraryNew(props: React.PropsWithChildren<DialogCreateLibraryNewProps>): React.ReactElement {
@@ -29,14 +28,6 @@ export function DialogCreateLibraryNew(props: React.PropsWithChildren<DialogCrea
 			title={"Create New Library"}
 			closable={true}
 			onClose={cancel}
-			onEnter={() => {
-				console.log("create: on enter", props.isFocused)
-				props.isFocused && create()
-			}}
-			onEscape={() => {
-				console.log("create: on esc", props.isFocused)
-				props.isFocused && cancel()
-			}}
 		>
 			<Slot name={"body"}>
 				<VBox alignMain="center" alignCross="stretch" spacing="0-5">

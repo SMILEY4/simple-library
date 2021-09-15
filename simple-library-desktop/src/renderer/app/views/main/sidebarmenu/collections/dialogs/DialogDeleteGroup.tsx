@@ -30,8 +30,6 @@ export function DialogDeleteGroup(props: React.PropsWithChildren<DialogDeleteGro
 			icon={undefined}
 			title={"Delete Group"}
 			onClose={handleCancel}
-			onEscape={handleCancel}
-			onEnter={handleDelete}
 			withOverlay
 			closable
 			closeOnClickOutside

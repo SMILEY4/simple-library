@@ -27,8 +27,6 @@ export function DialogDeleteCollection(props: React.PropsWithChildren<DialogDele
 			icon={undefined}
 			title={"Delete Collection"}
 			onClose={handleCancel}
-			onEscape={handleCancel}
-			onEnter={handleDelete}
 			withOverlay
 			closable
 			closeOnClickOutside

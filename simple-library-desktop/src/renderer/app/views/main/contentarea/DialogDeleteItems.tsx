@@ -27,8 +27,6 @@ export function DialogDeleteItems(props: React.PropsWithChildren<DialogDeleteIte
 			icon={undefined}
 			title={"Delete Group"}
 			onClose={handleCancel}
-			onEscape={handleCancel}
-			onEnter={handleDelete}
 			withOverlay
 			closable
 			closeOnClickOutside

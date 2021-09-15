@@ -36,8 +36,6 @@ export function DialogImportFiles(props: React.PropsWithChildren<DialogImportFil
 			icon={undefined}
 			title={"Import Files"}
 			onClose={handleCancel}
-			onEscape={handleCancel}
-			onEnter={handleImport}
 			withOverlay
 			closable
 			closeOnClickOutside
