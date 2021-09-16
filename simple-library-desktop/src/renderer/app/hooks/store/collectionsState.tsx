@@ -85,7 +85,6 @@ export function useFindCollection() {
 	return find;
 }
 
-
 export function useFindGroup() {
 	const [collectionsState] = useCollectionsContext();
 
