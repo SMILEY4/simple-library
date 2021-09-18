@@ -15,7 +15,7 @@ interface ItemListEntryProps {
     onOpen: (itemId: number) => void,
     onDragStart: (itemId: number, event: React.DragEvent) => void
     onContextMenu: (itemId: number, event: React.MouseEvent) => void,
-    onUpdateAttributeValue: (itemId: number, attribKey: string, prevValue: any, nextValue: any) => void
+    onUpdateAttributeValue: (itemId: number, attribKey: string, prevValue: any, nextValue: any) => Promise<void>
 }
 
 export function ItemListEntry(props: React.PropsWithChildren<ItemListEntryProps>): React.ReactElement {
@@ -80,9 +80,11 @@ export function ItemListEntry(props: React.PropsWithChildren<ItemListEntryProps>
         props.onContextMenu(props.item.id, event)
     }
 
-    function handleUpdateAttributeValue(key: string, prevValue: any, nextValue: any): void {
+    function handleUpdateAttributeValue(key: string, prevValue: any, nextValue: any): Promise<void> {
         if (prevValue !== nextValue) {
-            props.onUpdateAttributeValue(props.item.id, key, prevValue, nextValue)
+            return props.onUpdateAttributeValue(props.item.id, key, prevValue, nextValue)
+        } else {
+            return Promise.resolve();
         }
     }
 

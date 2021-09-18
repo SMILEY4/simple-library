@@ -260,7 +260,9 @@ function isNull(): string {
 }
 
 function str(value: any): string {
-	return !!value ? "'" + (""+value).replace(/'/g, "''") + "'" : "null";
+	return value === null || value === undefined
+		? "null"
+		: "'" + (""+value).replace(/'/g, "''") + "'";
 }
 
 function num(value: number | null): string {

@@ -10,6 +10,16 @@ export function genNotificationId(): string {
 export function toNotificationEntry(notificationData: AppNotification, onClose: () => void): NotificationStackEntry {
 
     switch (notificationData.type) {
+        case AppNotificationType.GENERIC: {
+            return {
+                id: notificationData.id,
+                type: "error",
+                title: "An unexpected error occurred",
+                content: errorToString(notificationData.data),
+                closable: true,
+                onClose: () => onClose(),
+            };
+        }
         case AppNotificationType.OPEN_LIBRARY_FAILED: {
             return {
                 id: notificationData.id,
