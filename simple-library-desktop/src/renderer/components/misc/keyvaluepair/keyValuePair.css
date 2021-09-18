@@ -2,17 +2,19 @@
 	display:        flex;
 	flex-direction: row;
 	position:       relative;
-	gap:            var(--s-0-5)
+	gap:            var(--s-0-5);
+	min-height:     var(--s-1-5);
 }
 
 .kv-pair > * {
-	flex:      1;
+	flex:     1;
 	/*min-width: 50%;*/
 	position: relative;
 }
 
 .kv-pair > .kv-pair-value {
 	overflow: hidden;
+	display:  flex;
 }
 
 .kv-pair-key > .badge-wrapper,

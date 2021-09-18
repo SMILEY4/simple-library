@@ -46,6 +46,8 @@ export interface DataRepository {
 
     updateItemAttributeValue(itemId: number, attributeKey: string, newValue: string): CommandResultSingle
 
+    deleteItemAttribute(itemId: number, attributeKey: string): VoidResult
+
 
     relateItemsToCollection(collectionId: number, itemIds: number[]): CommandResultSingle;
 

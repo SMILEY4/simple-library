@@ -9,8 +9,6 @@ export function useDialogCreateLibrary(onFinished: (created: boolean) => void) {
 
 	const createLibrary = useCreateLibrary();
 
-	const openConfirmation = useDispatchOpenConfirmationDialog();
-
 	const {
 		registerAtForm,
 		triggerFormValidation,
@@ -58,11 +56,8 @@ export function useDialogCreateLibrary(onFinished: (created: boolean) => void) {
 
 	function create(): void {
 		if (triggerFormValidation()) {
-			openConfirmation("Confirm", "Really create library with name " + getName(), "Yes!",
-				() => {
-					createLibrary(getName(), getTargetDir())
-						.then(() => onFinished(true));
-				});
+			createLibrary(getName(), getTargetDir())
+				.then(() => onFinished(true))
 		}
 	}
 

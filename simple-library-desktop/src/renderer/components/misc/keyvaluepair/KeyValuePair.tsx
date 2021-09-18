@@ -9,12 +9,13 @@ interface KeyValuePairProps {
     keySize?: number,
     styleType?: "focus-key" | "focus-value",
     modified?: boolean,
+    onContextMenu?: (event: React.MouseEvent) => void,
 }
 
 export function KeyValuePair(props: React.PropsWithChildren<KeyValuePairProps>): React.ReactElement {
 
     return (
-        <div className="kv-pair">
+        <div className="kv-pair" onContextMenu={props.onContextMenu}>
 
             <div className="kv-pair-key" style={{minWidth: orDefault(props.keySize, 50) + "%"}}>
                 {props.modified === true

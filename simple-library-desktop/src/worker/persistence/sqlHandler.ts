@@ -33,6 +33,7 @@ import sqlQueryItemAttributes from "./sqlfiles/items/query_item_attributes.sql";
 import sqlQueryItemAttribute from "./sqlfiles/item_attributes/query_item_attribute.sql";
 import sqlInsertItemAttributes from "./sqlfiles/item_attributes/insert_item_attribute.sql";
 import sqlUpdateItemAttribute from "./sqlfiles/item_attributes/update_item_attribute.sql";
+import sqlDeleteItemAttribute from "./sqlfiles/item_attributes/delete_item_attribute.sql"
 import sqlInsertItem from "./sqlfiles/items/insert_item.sql";
 
 export module SQL {
@@ -233,6 +234,12 @@ export module SQL {
 			.replace(v("itemId"), num(itemId))
 			.replace(v("key"), str(attributeKey))
 			.replace(v("value"), str(value));
+	}
+
+	export function deleteItemAttribute(itemId: number, attributeKey: string): string {
+		return sql(sqlDeleteItemAttribute)
+			.replace(v("itemId"), num(itemId))
+			.replace(v("key"), str(attributeKey));
 	}
 
 	export function insertItemAttributes(itemId: number, attributes: ({ key: string, value: string, type: string })[]): string {

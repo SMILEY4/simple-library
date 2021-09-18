@@ -8,8 +8,8 @@ import {genNotificationId} from "../../common/notificationUtils";
 export function useUpdateAttribute() {
 
 	const throwErrorNotification = useThrowErrorWithNotification();
-	const dispatchUpdateItemAttribute = useDispatchUpdateItemAttribute();
 	const dispatchUpdateAttribute = useDispatchUpdateAttribute();
+	const dispatchUpdateItemAttribute = useDispatchUpdateItemAttribute();
 
 
 	function hookFunction(itemId: number, attributeKey: string, newValue: string): Promise<void> {

@@ -4,6 +4,7 @@ import {AttributeDTO, ItemDTO} from "../../../../../../common/events/dtoModels";
 import {useSelectedItemIds} from "../../../../hooks/store/itemSelectionState";
 import {useDispatchSetAttributes, useStateAttributes} from "../../../../hooks/store/attributeStore";
 import {useUpdateAttribute} from "../../../../hooks/core/attributeUpdate";
+import {useDeleteAttribute} from "../../../../hooks/core/attributeDelete";
 
 export function useMetadataSidebar() {
 
@@ -18,7 +19,9 @@ export function useMetadataSidebar() {
 	return {
 		displayedItem: item,
 		metadataEntries: attributes,
-		updateMetadataEntry: (key: string, prevValue: string, newValue: string) => updateAttribute(item.id, key, newValue)
+		updateMetadataEntry: (key: string, prevValue: string, newValue: string) => updateAttribute(item.id, key, newValue),
+		copyAttributeValueToClipboard: useCopyAttributeValueToClipboard(attributes),
+		deleteAttribute: useDeleteAttributeEntry(item ? item.id : null)
 	};
 }
 
@@ -36,4 +39,30 @@ function useListenSelectionChanges(setItem: (item: ItemDTO | null) => void, setM
 			setItem(null);
 		}
 	}, [selectedItemIds]);
+}
+
+
+function useCopyAttributeValueToClipboard(attributes: AttributeDTO[]) {
+
+	function hookFunction(attributeKey: string) {
+		const attribute: AttributeDTO | undefined = attributes.find(a => a.key === attributeKey);
+		const attribValue: string = attribute ? attribute.value : "";
+		navigator.clipboard.writeText(attribValue).then();
+	}
+
+	return hookFunction;
+}
+
+
+function useDeleteAttributeEntry(itemId: number | null) {
+
+	const deleteAttribute = useDeleteAttribute();
+
+	function hookFunction(attributeKey: string) {
+		if(itemId && attributeKey) {
+			deleteAttribute(itemId, attributeKey).then();
+		}
+	}
+
+	return hookFunction;
 }
