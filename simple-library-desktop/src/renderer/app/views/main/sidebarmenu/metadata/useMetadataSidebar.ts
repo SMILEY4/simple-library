@@ -3,17 +3,21 @@ import {fetchItemById, fetchItemMetadata, setItemMetadata} from "../../../../com
 import {AttributeDTO, ItemDTO} from "../../../../../../common/events/dtoModels";
 import {useDispatchUpdateItemAttribute} from "../../../../hooks/store/itemsState";
 import {useSelectedItemIds} from "../../../../hooks/store/itemSelectionState";
+import {useDispatchSetAttributes, useStateAttributes} from "../../../../hooks/store/attributeStore";
 
 export function useMetadataSidebar() {
 
     const [item, setItem] = useState<ItemDTO | null>(null);
-    const [metadata, setMetadata] = useState<AttributeDTO[]>([]);
-    useListenSelectionChanges(setItem, setMetadata)
+
+    const attributes = useStateAttributes();
+    const setAttributes = useDispatchSetAttributes();
+
+    useListenSelectionChanges(setItem, setAttributes)
 
     return {
         displayedItem: item,
-        metadataEntries: metadata,
-        updateMetadataEntry: useUpdateEntry(item, metadata, setMetadata)
+        metadataEntries: attributes,
+        updateMetadataEntry: useUpdateEntry(item, attributes, setAttributes)
     };
 }
 

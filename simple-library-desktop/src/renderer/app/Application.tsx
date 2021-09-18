@@ -10,9 +10,9 @@ import {ItemsStateProvider} from "./hooks/store/itemsState";
 import {CollectionSidebarStateProvider} from "./hooks/store/collectionSidebarState";
 import {CollectionActiveStateProvider} from "./hooks/store/collectionActiveState";
 import {getTheme, setTheme} from "./common/eventInterface";
-import {DialogFrame} from "../components/modals/appdialogs/DialogFrame";
 import {AppDialogFrame} from "./views/AppDialogFrame";
 import {DialogStateProvider} from "./hooks/store/dialogState";
+import {AttributeStateProvider} from "./hooks/store/attributeStore";
 
 export enum Theme {
 	LIGHT = "light",
@@ -86,8 +86,9 @@ export class Application extends Component<any, AppState> {
 				CollectionsStateProvider,
 				ItemSelectionStateProvider,
 				ItemsStateProvider,
+				AttributeStateProvider,
 				NotificationStateProvider,
-				DialogStateProvider
+				DialogStateProvider,
 			]}>
 				{element}
 			</Compose>
