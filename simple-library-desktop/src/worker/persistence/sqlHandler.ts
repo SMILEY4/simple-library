@@ -33,6 +33,7 @@ import sqlQueryItemAttributes from "./sqlfiles/items/query_item_attributes.sql";
 import sqlQueryItemAttribute from "./sqlfiles/item_attributes/query_item_attribute.sql";
 import sqlInsertItemAttributes from "./sqlfiles/item_attributes/insert_item_attribute.sql";
 import sqlUpdateItemAttribute from "./sqlfiles/item_attributes/update_item_attribute.sql";
+import sqlDeleteItemAttribute from "./sqlfiles/item_attributes/delete_item_attribute.sql"
 import sqlInsertItem from "./sqlfiles/items/insert_item.sql";
 
 export module SQL {
@@ -235,6 +236,12 @@ export module SQL {
 			.replace(v("value"), str(value));
 	}
 
+	export function deleteItemAttribute(itemId: number, attributeKey: string): string {
+		return sql(sqlDeleteItemAttribute)
+			.replace(v("itemId"), num(itemId))
+			.replace(v("key"), str(attributeKey));
+	}
+
 	export function insertItemAttributes(itemId: number, attributes: ({ key: string, value: string, type: string })[]): string {
 		const entries: string[] = attributes.map(att => `(${str(att.key)}, ${str(att.value)}, ${str(att.type)}, ${num(itemId)})`)
 		return sql(sqlInsertItemAttributes)
@@ -260,7 +267,9 @@ function isNull(): string {
 }
 
 function str(value: any): string {
-	return !!value ? "'" + (""+value).replace(/'/g, "''") + "'" : "null";
+	return value === null || value === undefined
+		? "null"
+		: "'" + (""+value).replace(/'/g, "''") + "'";
 }
 
 function num(value: number | null): string {

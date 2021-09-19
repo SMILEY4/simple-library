@@ -44,6 +44,7 @@ import {voidThen} from "../common/utils";
 import {EventDistributor} from "../common/events/eventDistributor";
 import {EventIds} from "../common/events/eventIds";
 import {DataRepository} from "./service/dataRepository";
+import {ActionDeleteItemAttribute} from "./service/item/actionDeleteItemAttribute";
 
 export class ActionHandler {
 
@@ -84,6 +85,7 @@ export class ActionHandler {
 		const actionGetItemsByCollection = new ActionGetItemsByCollection(dataRepository, actionGetCollectionById);
 		const actionOpenItemsExternal = new ActionOpenItemsExternal(dataRepository, fsWrapper);
 		const actionUpdateItemAttribute = new ActionUpdateItemAttribute(dataRepository);
+		const actionDeleteItemAttribute = new ActionDeleteItemAttribute(dataRepository);
 
 		const actionAddToLastOpened = new ActionAddToLastOpened(configAccess);
 		const actionGetExiftoolInfo = new ActionGetExiftoolInfo(configAccess);
@@ -145,6 +147,7 @@ export class ActionHandler {
 		this.eventHandler.on(EventIds.OPEN_ITEMS, (payload) => actionOpenItemsExternal.perform(payload));
 		this.eventHandler.on(EventIds.GET_ITEM_ATTRIBUTES, (payload) => actionGetItemAttributes.perform(payload));
 		this.eventHandler.on(EventIds.SET_ITEM_ATTRIBUTE, (payload) => actionUpdateItemAttribute.perform(payload.itemId, payload.entryKey, payload.newValue));
+		this.eventHandler.on(EventIds.DELETE_ITEM_ATTRIBUTE, (payload) => actionDeleteItemAttribute.perform(payload.itemId, payload.entryKey));
 		this.eventHandler.on(EventIds.IMPORT_ITEMS, (payload) => importService.import(payload));
 
 	}

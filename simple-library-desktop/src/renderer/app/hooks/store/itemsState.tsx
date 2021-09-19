@@ -14,7 +14,7 @@ import {AttributeDTO, ItemDTO} from "../../../../common/events/dtoModels";
 // STATE
 
 export interface ItemsState {
-    items: ItemDTO[]
+    items: ItemDTO[];
 }
 
 const initialState: ItemsState = {
@@ -26,7 +26,8 @@ const initialState: ItemsState = {
 
 enum ItemsActionType {
     SET_ITEMS = "items.set",
-    UPDATE_ITEM_ATTRIBUTE = "items.update-attribute"
+    UPDATE_ITEM_ATTRIBUTE = "items.attributes.update",
+    REMOVE_ITEM_ATTRIBUTE = "items.attributes.remove"
 }
 
 const reducerConfigMap: ReducerConfigMap<ItemsActionType, ItemsState> = new ReducerConfigMap([
@@ -44,7 +45,33 @@ const reducerConfigMap: ReducerConfigMap<ItemsActionType, ItemsState> = new Redu
                             return {
                                 ...attribute,
                                 value: payload.newValue
-                            }
+                            };
+                        } else {
+                            return attribute;
+                        }
+                    })
+                };
+            } else {
+                return item;
+            }
+        });
+        return {
+            ...state,
+            items: newItems
+        };
+    }],
+    [ItemsActionType.REMOVE_ITEM_ATTRIBUTE, (state, payload) => {
+        const newItems: ItemDTO[] = state.items.map((item: ItemDTO) => {
+            if (item.id === payload.itemId) {
+                return {
+                    ...item,
+                    attributes: item.attributes.map((attribute: AttributeDTO) => {
+                        if (attribute.key === payload.key) {
+                            return {
+                                key: attribute.key,
+                                value: null,
+                                type: "none"
+                            };
                         } else {
                             return attribute;
                         }
@@ -87,8 +114,8 @@ export function useDispatchSetItems(): (items: ItemDTO[]) => void {
         dispatch({
             type: ItemsActionType.SET_ITEMS,
             payload: items
-        })
-    }
+        });
+    };
 }
 
 export function useDispatchClearItems(): () => void {
@@ -106,8 +133,21 @@ export function useDispatchUpdateItemAttribute(): (itemId: number, attributeKey:
                 key: attributeKey,
                 newValue: newValue
             }
-        })
-    }
+        });
+    };
+}
+
+export function useDispatchRemoveItemAttribute(): (itemId: number, attributeKey: string) => void {
+    const dispatch = useItemsDispatch();
+    return (itemId: number, attributeKey: string) => {
+        dispatch({
+            type: ItemsActionType.REMOVE_ITEM_ATTRIBUTE,
+            payload: {
+                itemId: itemId,
+                key: attributeKey
+            }
+        });
+    };
 }
 
 export function useItems() {

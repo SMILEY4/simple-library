@@ -1,4 +1,4 @@
-import React, {MutableRefObject, useEffect, useState} from 'react';
+import React, {MutableRefObject, useEffect, useState} from "react";
 import {useClickOutside} from "../../utils/commonHooks";
 
 export function useContextMenu() {
@@ -7,6 +7,7 @@ export function useContextMenu() {
     const [x, setX] = useState(0);
     const [y, setY] = useState(0);
     const [show, setShow] = useState(false);
+    const [payload, setPayload] = useState<any>(undefined);
 
     useEffect(() => {
         if (show && menuRef && menuRef.current) {
@@ -19,20 +20,22 @@ export function useContextMenu() {
         }
     });
 
-    function openWithEvent(event: React.MouseEvent) {
+    function openWithEvent(event: React.MouseEvent, payload?: any) {
         event.preventDefault();
         event.stopPropagation();
-        open(event.pageX, event.pageY);
+        open(event.pageX, event.pageY, payload);
     }
 
-    function open(pageX: number, pageY: number) {
+    function open(pageX: number, pageY: number, payload?: any) {
         setX(pageX);
         setY(pageY);
         setShow(true);
+        setPayload(payload);
     }
 
     function close() {
         setShow(false);
+        setPayload(undefined);
     }
 
     function elementOverflowOffset(el: any, overflowSide: string): number[] {
@@ -85,6 +88,7 @@ export function useContextMenu() {
 
     return {
         showContextMenu: show,
+        contextMenuPayload: payload,
         contextMenuX: x,
         contextMenuY: y,
         contextMenuRef: menuRef,

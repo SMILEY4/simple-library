@@ -100,6 +100,10 @@ export class SQLiteDataRepository implements DataRepository {
         return this.dbAccess.run(SQL.updateItemAttribute(itemId, attributeKey, newValue))
     }
 
+    public deleteItemAttribute(itemId: number, attributeKey: string): VoidResult {
+        return this.dbAccess.run(SQL.deleteItemAttribute(itemId, attributeKey)).then(voidThen);
+    }
+
     relateItemsToCollection(collectionId: number, itemIds: number[]): CommandResultSingle {
         return this.dbAccess.run(SQL.insertItemsIntoCollection(collectionId, itemIds));
     }

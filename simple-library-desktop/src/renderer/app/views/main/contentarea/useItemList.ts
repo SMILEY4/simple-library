@@ -77,8 +77,8 @@ function useRemoveSelectedItems() {
 function useUpdateItemAttribute() {
 	const updateAttribute = useUpdateAttribute();
 
-	function hookFunction(itemId: number, attributeKey: string, prevValue: any, nextValue: any) {
-		updateAttribute(itemId, attributeKey, nextValue)
+	function hookFunction(itemId: number, attributeKey: string, prevValue: any, nextValue: any): Promise<void> {
+		return updateAttribute(itemId, attributeKey, nextValue)
 	}
 
 	return hookFunction;

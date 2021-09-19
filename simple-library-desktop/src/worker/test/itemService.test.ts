@@ -15,6 +15,7 @@ import {ActionUpdateItemAttribute} from "../service/item/actionUpdateItemAttribu
 import {Attribute, AttributeType, Item} from "../service/item/itemCommon";
 import {SQLiteDataRepository} from "../persistence/sqliteRepository";
 import {DataRepository} from "../service/dataRepository";
+import {ActionDeleteItemAttribute} from "../service/item/actionDeleteItemAttribute";
 
 describe("item-service", () => {
 
@@ -533,6 +534,68 @@ describe("item-service", () => {
 			const result: Promise<Attribute> = actionUpdateAttrib.perform(1, "invalid", "new value");
 			// then
 			await expect(result).rejects.toBeDefined();
+			await expect(actionGetAttribs.perform(1)).resolves.toEqual([
+				attribute("att1", "value1", "text"),
+				attribute("att2", "value2", "text"),
+				attribute("att3a", "3", "number")
+			]);
+		});
+
+	});
+
+
+	describe("delete attribute", () => {
+
+		test("delete attribute", async () => {
+			// given
+			const [actionCreateLibrary, repository, dbAccess] = mockItemService();
+			const actionDeleteAttrib = new ActionDeleteItemAttribute(repository);
+			const actionGetAttribs = new ActionGetItemAttributes(repository, new ActionGetItemById(repository));
+			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
+			await dbAccess.runMultipleSeq([
+				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
+				SQL.insertItem("/path/to/file/2", 2000, "hash2", "thumbnail2"),
+				SQL.insertItemAttributes(1, [
+					{key: "att1", value: "value1", type: "text"},
+					{key: "att2", value: "value2", type: "text"},
+					{key: "att3a", value: "3", type: "number"}
+				]),
+				SQL.insertItemAttributes(2, [
+					{key: "att2", value: "value2", type: "text"},
+				])
+			]);
+			// when
+			const result: Promise<Attribute | null> = actionDeleteAttrib.perform(1, "att2");
+			// then
+			await expect(result).resolves.toEqual(attribute("att2", "value2", "text"));
+			await expect(actionGetAttribs.perform(1)).resolves.toEqual([
+				attribute("att1", "value1", "text"),
+				attribute("att3a", "3", "number")
+			]);
+			await expect(actionGetAttribs.perform(2)).resolves.toEqual([
+				attribute("att2", "value2", "text"),
+			]);
+		});
+
+
+		test("delete not existing attribute", async () => {
+			// given
+			const [actionCreateLibrary, repository, dbAccess] = mockItemService();
+			const actionDeleteAttrib = new ActionDeleteItemAttribute(repository);
+			const actionGetAttribs = new ActionGetItemAttributes(repository, new ActionGetItemById(repository));
+			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
+			await dbAccess.runMultipleSeq([
+				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
+				SQL.insertItemAttributes(1, [
+					{key: "att1", value: "value1", type: "text"},
+					{key: "att2", value: "value2", type: "text"},
+					{key: "att3a", value: "3", type: "number"}
+				])
+			]);
+			// when
+			const result: Promise<Attribute | null> = actionDeleteAttrib.perform(1, "notExists");
+			// then
+			await expect(result).resolves.toEqual(null);
 			await expect(actionGetAttribs.perform(1)).resolves.toEqual([
 				attribute("att1", "value1", "text"),
 				attribute("att2", "value2", "text"),

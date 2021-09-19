@@ -25,6 +25,7 @@ export interface AppNotification {
 }
 
 export enum AppNotificationType {
+	GENERIC,
 	OPEN_LIBRARY_FAILED,
 	CREATE_LIBRARY_FAILED,
 	ROOT_GROUP_FETCH_FAILED,

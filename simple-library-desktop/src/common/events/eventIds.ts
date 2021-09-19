@@ -24,6 +24,7 @@ export module EventIds {
     export const IMPORT_ITEMS = "item.import";
     export const GET_ITEM_ATTRIBUTES = "item.metadata.get";
     export const SET_ITEM_ATTRIBUTE = "item.metadata.set";
+    export const DELETE_ITEM_ATTRIBUTE = "item.metadata.delete";
     export const OPEN_ITEMS = "item.open-external";
     export const GET_LAST_OPENED_LIBS = "library.last-opened.get";
     export const CREATE_LIBRARY = "library.create";
@@ -55,6 +56,7 @@ export module EventIds {
         IMPORT_ITEMS,
         GET_ITEM_ATTRIBUTES,
         SET_ITEM_ATTRIBUTE,
+        DELETE_ITEM_ATTRIBUTE,
         OPEN_ITEMS,
         GET_LAST_OPENED_LIBS,
         CREATE_LIBRARY,

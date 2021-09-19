@@ -94,6 +94,10 @@ export function setItemMetadata(itemId: number, entryKey: string, value: string)
     return eventBroadcaster.send(EventIds.SET_ITEM_ATTRIBUTE, {itemId: itemId, entryKey: entryKey, newValue: value});
 }
 
+export function deleteItemMetadata(itemId: number, entryKey: string): Promise<AttributeDTO | null> {
+    return eventBroadcaster.send(EventIds.DELETE_ITEM_ATTRIBUTE, {itemId: itemId, entryKey: entryKey})
+}
+
 export function requestImport(
     data: ImportProcessDataDTO,
     callbackSuccess: (result: ImportResultDTO) => void,
