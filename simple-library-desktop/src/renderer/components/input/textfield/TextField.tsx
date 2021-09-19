@@ -1,9 +1,11 @@
 import * as React from "react";
-import {MutableRefObject, ReactElement, useState} from "react";
+import {MutableRefObject, ReactElement, useRef, useState} from "react";
 import {BaseElementInset} from "../../base/element/BaseElementInset";
 import {BaseProps, concatClasses} from "../../utils/common";
 import {Icon, IconType} from "../../base/icon/Icon";
 import "./textfield.css";
+
+export type TFAcceptCause = "blur" | "escape" | "enter" | "change"
 
 export interface TextFieldProps extends BaseProps {
 	value?: string,
@@ -20,17 +22,17 @@ export interface TextFieldProps extends BaseProps {
 	dir?: "rtl"
 	fixed?: boolean,
 	onChange?: (value: string) => void | Promise<void>,
-	onAccept?: (value: string) => void | Promise<void>,
+	onAccept?: (value: string, cause?: TFAcceptCause) => void | Promise<void>,
 	refInputField?: MutableRefObject<any>
 	onDoubleClick?: (event: React.MouseEvent) => void,
 	draggable?: boolean,
 	onDragStart?: (event: React.DragEvent) => void
 }
 
-
 export function TextField(props: React.PropsWithChildren<TextFieldProps>): ReactElement {
 
 	const [value, setValue] = useState(props.value ? props.value : "");
+	const shouldIgnoreBlur = useRef(false);
 
 	return (
 		<BaseElementInset
@@ -77,40 +79,43 @@ export function TextField(props: React.PropsWithChildren<TextFieldProps>): React
 	);
 
 	function handleOnChange(event: any) {
-		handleChange(event.target.value, props.onChange);
+		handleChange("change", event.target.value, props.onChange);
 	}
 
 
 	function handleOnBlur(event: any) {
-		handleChange(event.target.value, props.onAccept);
+		if (!shouldIgnoreBlur.current) {
+			handleChange("blur", event.target.value, props.onAccept);
+		}
+		shouldIgnoreBlur.current = false;
 	}
 
 
 	function handleOnKeyDown(event: any) {
 		if (event.key === "Enter") {
 			event.stopPropagation();
+			shouldIgnoreBlur.current = true;
 			event.target.blur();
-			// onAccept triggered by blur
-			handleChange(event.target.value, () => undefined);
+			handleChange("enter", event.target.value, props.onAccept);
 		}
 		if (event.key === "Escape") {
 			event.stopPropagation();
 			setValue(props.value);
 			event.target.value = props.value;
+			shouldIgnoreBlur.current = true;
 			event.target.blur();
-			// onAccept triggered by blur
-			handleChange(event.target.value, () => undefined);
+			handleChange("escape", event.target.value, props.onAccept);
 		}
 	}
 
-	function handleChange(newValue: string, callback: (v: string) => void | Promise<void>) {
+	function handleChange(cause: TFAcceptCause, newValue: string, callback: (v: string, cause?: string) => void | Promise<void>) {
 		if (!props.disabled) {
 			if (!props.forceState) {
 				setValue(newValue);
 			}
 			if (callback) {
-				Promise.resolve(callback(newValue))
-					.catch(() => setValue(props.value))
+				Promise.resolve(callback(newValue, cause))
+					.catch(() => setValue(props.value));
 			}
 		}
 	}

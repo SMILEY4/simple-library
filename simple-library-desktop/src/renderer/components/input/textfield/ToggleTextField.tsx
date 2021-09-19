@@ -1,6 +1,6 @@
 import * as React from "react";
 import {ReactElement, useEffect, useRef, useState} from "react";
-import {TextField, TextFieldProps} from "./TextField";
+import {TextField, TextFieldProps, TFAcceptCause} from "./TextField";
 import {Label} from "../../base/label/Label";
 import {concatClasses, getIf} from "../../utils/common";
 import "./toggleTextField.css";
@@ -68,8 +68,8 @@ export function ToggleTextField(props: React.PropsWithChildren<ToggleTextFieldPr
 		setEditable(true);
 	}
 
-	function handleAccept(newValue: string): Promise<void> | void {
-		if (props.onAccept) {
+	function handleAccept(newValue: string, cause: TFAcceptCause): Promise<void> | void {
+		if ((cause === "enter" || cause === "blur")  && props.onAccept) {
 			return Promise.resolve(props.onAccept(newValue))
 				.then(() => lockField(newValue))
 				.catch(() => lockField(value));
