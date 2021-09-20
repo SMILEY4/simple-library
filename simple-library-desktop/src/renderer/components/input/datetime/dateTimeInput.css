@@ -1,0 +1,113 @@
+.datetimeinput-calendar {
+	background-color: var(--color-background-0);
+	border-radius:    var(--radius-0);
+	border:           1px solid var(--color-border);
+}
+
+/*DIALOG TRIANGLE*/
+
+.datetimeinput-calendar > .react-datepicker__triangle::before {
+	border-bottom-color: var(--color-border) !important;
+}
+
+.datetimeinput-calendar > .react-datepicker__triangle::after {
+	border-bottom-color: var(--color-background-0) !important;
+}
+
+/*DIALOG HEADER*/
+
+.datetimeinput-calendar > .react-datepicker__month-container > .react-datepicker__header {
+	background-color: var(--color-background-0);
+	border-bottom:    1px solid var(--color-border);
+}
+
+.datetimeinput-calendar > .react-datepicker__month-container > .react-datepicker__header > .react-datepicker__current-month {
+	color: var(--color-text-primary);
+}
+
+/*PREV/NEXT BUTTON ICON*/
+
+.datetimeinput-calendar > .react-datepicker__month-container > .react-datepicker__navigation > .react-datepicker__navigation-icon::before {
+	border-color: var(--color-text-primary) !important;
+}
+
+/*GRID HEADER*/
+
+.datetimeinput-calendar > .react-datepicker__month-container > .react-datepicker__header {
+	color: var(--color-text-primary);
+}
+
+.datetimeinput-calendar > .react-datepicker__month-container > .react-datepicker__header > .react-datepicker__day-names {
+	margin-top: 8px;
+}
+
+.datetimeinput-calendar > .react-datepicker__month-container > .react-datepicker__header > .react-datepicker__day-names > * {
+	color: var(--color-text-primary);
+}
+
+/*GRID*/
+
+.datetimeinput-calendar > .react-datepicker__month-container > .react-datepicker__month > .react-datepicker__week > .react-datepicker__day {
+	color: var(--color-text-primary);
+}
+
+.datetimeinput-calendar > .react-datepicker__month-container > .react-datepicker__month > .react-datepicker__week > .react-datepicker__day:hover {
+	background-color: var(--color-background-1);
+}
+
+.datetimeinput-calendar > .react-datepicker__month-container > .react-datepicker__month > .react-datepicker__week > .react-datepicker__day--selected {
+	background-color: var(--color-bg-info);
+	color:            var(--color-text-on-variant);
+}
+
+.datetimeinput-calendar > .react-datepicker__month-container > .react-datepicker__month > .react-datepicker__week > .react-datepicker__day--keyboard-selected {
+	background-color: var(--color-bg-info-disabled);
+	color:            var(--color-text-on-variant);
+}
+
+/*TODAY BUTTON*/
+
+.datetimeinput-calendar > .react-datepicker__today-button {
+	background-color: var(--color-background-0);
+	color:            var(--color-text-primary);
+	border-top:       1px solid var(--color-border);
+	border-bottom:    1px solid var(--color-border);
+}
+
+.datetimeinput-calendar > .react-datepicker__today-button:active,
+.datetimeinput-calendar > .react-datepicker__today-button:hover {
+	background-color: var(--color-background-1);
+}
+
+/*TIME INPUT*/
+
+.datetimeinput-calendar > .react-datepicker__input-time-container {
+	display:        flex;
+	align-items:    center;
+	padding-top:    10px;
+	padding-bottom: 10px;
+	margin: unset;
+}
+
+.datetimeinput-calendar > .react-datepicker__input-time-container > .react-datepicker-time__caption {
+	padding-left: 5px;
+}
+
+.datetimeinput-calendar > .react-datepicker__input-time-container > .react-datepicker-time__input-container {
+	padding-right: 5px;
+	flex-grow: 1;
+}
+
+.datetimeinput-calendar > .react-datepicker__input-time-container > .react-datepicker-time__input-container > .react-datepicker-time__input {
+	display: flex;
+}
+
+.datetimeinput-calendar > .react-datepicker__input-time-container > .react-datepicker-time__input-container > .react-datepicker-time__input > * {
+	flex-grow: 1;
+}
+
+/*SAVE BUTTON*/
+
+.datetimeinput-save-btn {
+	margin: var(--s-0-25);
+}

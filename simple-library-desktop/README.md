@@ -5,7 +5,9 @@
  - SQLite: https://github.com/mapbox/node-sqlite3/wiki
  - electron-better-ipc: https://github.com/sindresorhus/electron-better-ipc
  - Jest: https://jestjs.io/
+ - Date-Picker: https://reactdatepicker.com
  - original boilerplate: https://github.com/abbl/electron-typescript-react-typeorm-sqlite-boilerplate
+
 
 # Commands
 
