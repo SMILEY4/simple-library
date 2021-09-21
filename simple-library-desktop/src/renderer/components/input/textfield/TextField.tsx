@@ -31,6 +31,7 @@ export interface TextFieldProps extends BaseProps {
 	onClickAppendIcon?: () => void,
 	dir?: "rtl"
 	fixed?: boolean,
+	onFocus?: () => void,
 	onChange?: (value: string) => void | Promise<void>,
 	onAccept?: (value: string, cause?: TFAcceptCause) => void | Promise<void>,
 	refInputField?: MutableRefObject<any>
@@ -65,6 +66,7 @@ export function TextField(props: React.PropsWithChildren<TextFieldProps>): React
 				/>
 			)}
 			<input
+				onFocus={props.onFocus}
 				type="text"
 				value={props.forceState ? props.value : value}
 				autoFocus={props.autofocus}

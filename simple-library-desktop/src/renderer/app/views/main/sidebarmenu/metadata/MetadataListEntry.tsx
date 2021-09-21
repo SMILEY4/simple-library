@@ -4,6 +4,7 @@ import {AttributeDTO} from "../../../../../../common/events/dtoModels";
 import {KeyValuePair} from "../../../../../components/misc/keyvaluepair/KeyValuePair";
 import {CheckBox} from "../../../../../components/buttons/checkbox/CheckBox";
 import {NUMERIC_INPUT} from "../../../../../components/input/textfield/TextField";
+import {DateTimeInput} from "../../../../../components/input/datetime/DateTimeInput";
 
 interface MetadataListEntryProps {
 	entry: AttributeDTO,
@@ -20,6 +21,7 @@ export function MetadataListEntry(props: React.PropsWithChildren<MetadataListEnt
 			keyValue={props.shortName}
 			styleType="focus-key"
 			onContextMenu={event => props.onContextMenu(props.entry.key, event)}
+			showOverflow={props.entry.type === "date"}
 		>
 			{renderInputField()}
 		</KeyValuePair>
@@ -72,7 +74,13 @@ export function MetadataListEntry(props: React.PropsWithChildren<MetadataListEnt
 	}
 
 	function renderInputDate(): ReactElement {
-		return null;
+		return (
+			<DateTimeInput
+				value={new Date()} // Todo
+				onAccept={value => handleUpdateValue(value + "")}  // Todo
+				showTimeSelect
+			/>
+		);
 	}
 
 	function renderInputList(): ReactElement {

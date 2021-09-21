@@ -2,13 +2,13 @@ import {BaseProps} from "../../utils/common";
 import React, {forwardRef, ReactElement, useState} from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import {LabelBox} from "../../base/labelbox/LabelBox";
 import "./dateTimeInput.css";
 import {TextField, TIME_INPUT_ACCEPT, TIME_INPUT_CHANGE} from "../textfield/TextField";
 import {Button} from "../../buttons/button/Button";
 import {HBox} from "../../layout/box/Box";
 import {Icon, IconType} from "../../base/icon/Icon";
 import {Label} from "../../base/label/Label";
+import {LabelBox} from "../../base/labelbox/LabelBox";
 
 interface DateTimeInputProps extends BaseProps {
 	value?: Date,
@@ -44,15 +44,12 @@ export function DateTimeInput(props: React.PropsWithChildren<DateTimeInputProps>
 	const [value, setValue] = useState(initDateTime);
 	const [open, setOpen] = useState(false);
 
-	const [wipDate, setWipDate] = useState(initDateTime);
-	const [wipTime, setWipTime] = useState<[number, number]>(dateToTime(initDateTime));
-
-
 	const CustomInput = forwardRef((inputProps: any, ref: any) => (
 		<LabelBox
 			error={props.error}
 			type={"body"}
 			variant={"primary"}
+			overflow={"cutoff"}
 			groupPos={props.groupPos}
 			forwardRef={ref}
 			onClick={() => {
@@ -67,7 +64,7 @@ export function DateTimeInput(props: React.PropsWithChildren<DateTimeInputProps>
 	const CustomTimeInput = () => (
 		<TextField
 			style={{marginRight: "var(-s-0-5)"}}
-			value={toTimeString(wipTime)}
+			value={toTimeString(getTime(value))}
 			onAccept={handleOnChangeTime}
 			regexChange={TIME_INPUT_CHANGE}
 			regexAccept={TIME_INPUT_ACCEPT}
@@ -78,12 +75,13 @@ export function DateTimeInput(props: React.PropsWithChildren<DateTimeInputProps>
 
 	return (
 		<DatePicker
-			calendarClassName={"datetimeinput-calendar"}
+			calendarClassName={"datetimeinput-calendar with-shadow-1"}
 			selected={value}
 			open={open}
 			dateFormat="yyyy-MM-dd HH:mm"
 			todayButton={"Today"}
 			shouldCloseOnSelect={false}
+			disabledKeyboardNavigation
 			showTimeInput={props.showTimeSelect}
 			onChange={handleOnChangeDate}
 			onMonthChange={handleChangeMonth}
@@ -103,7 +101,7 @@ export function DateTimeInput(props: React.PropsWithChildren<DateTimeInputProps>
 	function customHeader(headerProps: any): ReactElement {
 		return (
 			<HBox spacing="0-15" style={{paddingLeft: "5px", paddingRight: "5px"}}>
-				<Button square onAction={() => headerProps.changeYear(wipDate.getFullYear() - 1)}><Icon type={IconType.CHEVRON_DOUBLE_LEFT}/></Button>
+				<Button square onAction={() => headerProps.changeYear(value.getFullYear() - 1)}><Icon type={IconType.CHEVRON_DOUBLE_LEFT}/></Button>
 				<Button square onAction={headerProps.decreaseMonth}><Icon type={IconType.CHEVRON_LEFT}/></Button>
 				<Label bold style={{
 					paddingLeft: "var(--s-0-15)",
@@ -114,29 +112,29 @@ export function DateTimeInput(props: React.PropsWithChildren<DateTimeInputProps>
 					{MONTHS[headerProps.date.getMonth()] + " " + headerProps.date.getFullYear()}
 				</Label>
 				<Button square onAction={headerProps.increaseMonth}><Icon type={IconType.CHEVRON_RIGHT}/></Button>
-				<Button square onAction={() => headerProps.changeYear(wipDate.getFullYear() + 1)}><Icon type={IconType.CHEVRON_DOUBLE_RIGHT}/></Button>
+				<Button square onAction={() => headerProps.changeYear(value.getFullYear() + 1)}><Icon type={IconType.CHEVRON_DOUBLE_RIGHT}/></Button>
 			</HBox>
 		);
 	}
 
 	function handleOnChangeDate(date: Date) {
-		setWipDate(date);
+		setValue(combineDateTime(date, getTime(value)));
 	}
 
 	function handleChangeMonth(date: Date) {
-		setWipDate(combineDateMonthYear(wipDate, date));
+		setValue(combineDateMonthYear(value, date));
 	}
 
 	function handleChangeYear(date: Date) {
-		setWipDate(combineDateYear(wipDate, date));
+		setValue(combineDateYear(value, date));
 	}
 
 	function handleOnChangeTime(strTime: string) {
 		const strParts = strTime.split(":");
-		setWipTime([
+		setValue(combineDateTime(value, [
 			parseInt(strParts[0]),
 			parseInt(strParts[1])
-		]);
+		]));
 	}
 
 	function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
@@ -147,19 +145,17 @@ export function DateTimeInput(props: React.PropsWithChildren<DateTimeInputProps>
 	}
 
 	function handleSave() {
-		const finalDate = combineDateTime(wipDate, props.showTimeSelect ? wipTime : [0, 0]);
-		setValue(finalDate);
+		const finalDate = props.showTimeSelect ? value : combineDateTime(value, [0, 0]);
 		props.onAccept && props.onAccept(finalDate);
 		setOpen(false);
 	}
 
 	function handleCancel() {
-		setWipDate(initDateTime);
-		setWipTime(dateToTime(initDateTime));
+		setValue(initDateTime);
 		setOpen(false);
 	}
 
-	function dateToTime(date: Date): [number, number] {
+	function getTime(date: Date): [number, number] {
 		return [date.getHours(), date.getMinutes()];
 	}
 

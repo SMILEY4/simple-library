@@ -126,11 +126,18 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 
 
 	function renderDateTimeInput() {
+
+		const [date, setDate] = useState(new Date());
+
 		return <ShowcaseSection title={"DateTimeInput"}>
 
 			<div>
 				<DateTimeInput
-					onAccept={value => console.log("selected datetime", value)}
+					value={date}
+					onAccept={value => {
+						setDate(value);
+						console.log("selected datetime", value);
+					}}
 					showTimeSelect
 				/>
 			</div>
