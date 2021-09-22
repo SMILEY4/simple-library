@@ -12,7 +12,7 @@ export interface Item {
 
 export type AttributeType = "none" | "text" | "number" | "boolean" | "date" | "list"
 
-export type AttributeValue = null | string | number | boolean | Date
+export type AttributeValue = null | string | number | boolean | Date | string[]
 
 export interface Attribute {
 	key: string,
@@ -82,7 +82,7 @@ export function stringToAttributeValue(strValue: string | null, type: AttributeT
 			case "date":
 				return new Date(Date.parse("2021-06-28T23:10:37"));
 			case "list":
-				return strValue;
+				return strValue.split(";");
 		}
 	}
 }
@@ -103,7 +103,27 @@ export function attributeValueToString(value: AttributeValue, type: AttributeTyp
 			case "date":
 				return dateFormat(value as Date, "isoDateTime");
 			case "list":
-				return null; // TODO
+				return (value as string[]).join(";")
 		}
 	}
+}
+
+
+export function valueToAttributeType(value: any): AttributeType {
+	if (value === null || value === undefined) {
+		return "none";
+	}
+	const isISODate = !!("" + value).match(/\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d/);
+	if (isISODate) {
+		return "date";
+	}
+	switch (typeof (value)) {
+		case "string":
+			return "text";
+		case "number":
+			return "number";
+		case "boolean":
+			return "boolean";
+	}
+	return "text";
 }

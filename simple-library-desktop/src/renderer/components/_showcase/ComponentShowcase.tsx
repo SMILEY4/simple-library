@@ -53,6 +53,7 @@ import {ToggleTextField} from "../input/textfield/ToggleTextField";
 import {EventIds} from "../../../common/events/eventIds";
 import {EventBroadcaster} from "../../../common/events/core/eventBroadcaster";
 import {DateTimeInput} from "../input/datetime/DateTimeInput";
+import {ListInputCard} from "../input/listinput/ListInputDialog";
 
 interface ComponentShowcaseProps {
 	theme: Theme,
@@ -92,6 +93,7 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 				<div onClick={() => setBackground("2")}>BG-2</div>
 			</div>
 
+			{renderListInputCard()}
 			{renderDateTimeInput()}
 			{renderToggleTextField()}
 			{renderAccordion()}
@@ -125,12 +127,17 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 	);
 
 
+	function renderListInputCard() {
+		return <ShowcaseSection title={"ListInputCard"}>
+			<ListInputCard
+				listName={"MyList"}
+			/>
+		</ShowcaseSection>;
+	}
+
 	function renderDateTimeInput() {
-
 		const [date, setDate] = useState(new Date());
-
 		return <ShowcaseSection title={"DateTimeInput"}>
-
 			<div>
 				<DateTimeInput
 					value={date}
@@ -141,7 +148,6 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 					showTimeSelect
 				/>
 			</div>
-
 		</ShowcaseSection>;
 	}
 

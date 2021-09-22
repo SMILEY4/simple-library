@@ -16,6 +16,8 @@ interface MetadataListEntryProps {
 
 export function MetadataListEntry(props: React.PropsWithChildren<MetadataListEntryProps>): React.ReactElement {
 
+	console.log("entry:", props.entry.key, props.entry.type, props.entry.value, typeof props.entry.value)
+
 	return (
 		<KeyValuePair
 			keyValue={props.shortName}
@@ -86,7 +88,13 @@ export function MetadataListEntry(props: React.PropsWithChildren<MetadataListEnt
 	}
 
 	function renderInputList(): ReactElement {
-		return null; // todo
+		return (
+			<ToggleTextField
+				fillWidth
+				value={(props.entry.value as string[]).join(" | ")}
+				onAccept={handleUpdateValue}
+			/>
+		);
 	}
 
 	function handleUpdateValue(value: AttributeValueDTO): void {

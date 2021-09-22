@@ -1,0 +1,21 @@
+.list-container {
+	overflow: auto;
+}
+
+.list-item {
+	height: var(--s-1);
+	padding-left: var(--s-0-25);
+	padding-right: var(--s-0-25);
+}
+
+.list-item:hover {
+	background-color: var(--color-bg-raised-hover);
+}
+
+.list-item-even {
+	background-color: var(--color-background-0);
+}
+
+.list-item-uneven {
+	background-color: var(--color-bg-inset);
+}
