@@ -8,7 +8,7 @@ import {
 	useGlobalStateWriteOnly
 } from "../../../components/utils/storeUtils";
 import React from "react";
-import {AttributeDTO} from "../../../../common/events/dtoModels";
+import {AttributeDTO, AttributeValueDTO} from "../../../../common/events/dtoModels";
 
 
 // STATE
@@ -118,7 +118,7 @@ export function useDispatchRemoveAttribute() {
 
 export function useDispatchUpdateAttribute() {
 	const dispatch = useAttributeDispatch();
-	return (key: string, value: string) => {
+	return (key: string, value: AttributeValueDTO) => {
 		dispatch({
 			type: AttributeActionType.UPDATE,
 			payload: {

@@ -1,6 +1,6 @@
 import {ItemData} from "./importService";
 import {ActionGetExiftoolInfo} from "../config/actionGetExiftoolInfo";
-import {Attribute, AttributeType} from "../item/itemCommon";
+import {Attribute, AttributeType, stringToAttributeValue} from "../item/itemCommon";
 
 const exiftool = require("node-exiftool");
 
@@ -77,7 +77,7 @@ export class ImportStepMetadata {
 		const type = this.extractType(value);
 		return {
 			key: key,
-			value: type === "none" ? "" : value,
+			value: type === stringToAttributeValue("" + value, type),
 			type: type
 		};
 	}

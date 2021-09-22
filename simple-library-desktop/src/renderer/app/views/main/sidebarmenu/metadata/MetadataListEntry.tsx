@@ -1,6 +1,6 @@
 import React, {ReactElement} from "react";
 import {ToggleTextField} from "../../../../../components/input/textfield/ToggleTextField";
-import {AttributeDTO} from "../../../../../../common/events/dtoModels";
+import {AttributeDTO, AttributeValueDTO} from "../../../../../../common/events/dtoModels";
 import {KeyValuePair} from "../../../../../components/misc/keyvaluepair/KeyValuePair";
 import {CheckBox} from "../../../../../components/buttons/checkbox/CheckBox";
 import {NUMERIC_INPUT} from "../../../../../components/input/textfield/TextField";
@@ -9,7 +9,7 @@ import {DateTimeInput} from "../../../../../components/input/datetime/DateTimeIn
 interface MetadataListEntryProps {
 	entry: AttributeDTO,
 	shortName: string,
-	onUpdateValue: (prev: string, next: string) => void,
+	onUpdateValue: (prev: AttributeValueDTO, next: AttributeValueDTO) => void,
 	onContextMenu: (attributeKey: string, event: React.MouseEvent) => void,
 }
 
@@ -46,7 +46,7 @@ export function MetadataListEntry(props: React.PropsWithChildren<MetadataListEnt
 		return (
 			<ToggleTextField
 				fillWidth
-				value={props.entry.value}
+				value={props.entry.value as string}
 				onAccept={handleUpdateValue}
 			/>
 		);
@@ -58,7 +58,7 @@ export function MetadataListEntry(props: React.PropsWithChildren<MetadataListEnt
 				fillWidth
 				regexChange={NUMERIC_INPUT}
 				regexAccept={NUMERIC_INPUT}
-				value={props.entry.value}
+				value={(props.entry.value as number).toString()}
 				onAccept={handleUpdateValue}
 			/>
 		);
@@ -67,8 +67,8 @@ export function MetadataListEntry(props: React.PropsWithChildren<MetadataListEnt
 	function renderInputBoolean(): ReactElement {
 		return (
 			<CheckBox
-				selected={props.entry.value.toLowerCase() === "true"}
-				onToggle={(selected: boolean) => handleUpdateValue(selected ? "true" : "false")}
+				selected={props.entry.value as boolean}
+				onToggle={(selected: boolean) => handleUpdateValue(selected)}
 			/>
 		);
 	}
@@ -76,18 +76,20 @@ export function MetadataListEntry(props: React.PropsWithChildren<MetadataListEnt
 	function renderInputDate(): ReactElement {
 		return (
 			<DateTimeInput
-				value={new Date()} // Todo
-				onAccept={value => handleUpdateValue(value + "")}  // Todo
+				value={props.entry.value as Date}
+				onAccept={value => handleUpdateValue(value)}
 				showTimeSelect
+				toggleInputField
+				labelFillWidth
 			/>
 		);
 	}
 
 	function renderInputList(): ReactElement {
-		return null;
+		return null; // todo
 	}
 
-	function handleUpdateValue(value: string): void {
+	function handleUpdateValue(value: AttributeValueDTO): void {
 		props.onUpdateValue(props.entry.value, value);
 	}
 

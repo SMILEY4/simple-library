@@ -1,4 +1,4 @@
-import {BaseProps} from "../../utils/common";
+import {BaseProps, concatClasses, getIf} from "../../utils/common";
 import React, {forwardRef, ReactElement, useState} from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -9,14 +9,17 @@ import {HBox} from "../../layout/box/Box";
 import {Icon, IconType} from "../../base/icon/Icon";
 import {Label} from "../../base/label/Label";
 import {LabelBox} from "../../base/labelbox/LabelBox";
+import dateFormat from "dateformat";
 
-interface DateTimeInputProps extends BaseProps {
+export interface DateTimeInputProps extends BaseProps {
 	value?: Date,
 	disabled?: boolean,
 	error?: boolean,
 	groupPos?: "left" | "right" | "center",
 	onAccept?: (value: Date) => void | Promise<void>,
-	showTimeSelect?: boolean
+	showTimeSelect?: boolean,
+	toggleInputField?: boolean,
+	labelFillWidth?: boolean
 }
 
 const MONTHS = [
@@ -34,6 +37,9 @@ const MONTHS = [
 	"December"
 ];
 
+const DATE_FORMAT_PICKER = "yyyy-MM-dd HH:mm"
+const DATE_FORMAT_LABEL = "yyyy-mm-dd HH:MM"
+
 export function DateTimeInput(props: React.PropsWithChildren<DateTimeInputProps>): React.ReactElement {
 
 	const initDateTime = props.value ? props.value : new Date();
@@ -44,22 +50,46 @@ export function DateTimeInput(props: React.PropsWithChildren<DateTimeInputProps>
 	const [value, setValue] = useState(initDateTime);
 	const [open, setOpen] = useState(false);
 
-	const CustomInput = forwardRef((inputProps: any, ref: any) => (
-		<LabelBox
-			error={props.error}
-			type={"body"}
-			variant={"primary"}
-			overflow={"cutoff"}
-			groupPos={props.groupPos}
-			forwardRef={ref}
-			onClick={() => {
-				inputProps.onClick;
-				setOpen(!open);
-			}}
-		>
-			{inputProps.value}
-		</LabelBox>
-	));
+	const CustomInput = forwardRef((inputProps: any, ref: any) => {
+		if (!props.toggleInputField || open) {
+			return (
+				<LabelBox
+					error={props.error}
+					type={"body"}
+					variant={"primary"}
+					overflow={"cutoff"}
+					groupPos={props.groupPos}
+					forwardRef={ref}
+					onClick={() => {
+						inputProps.onClick;
+						setOpen(!open);
+					}}
+				>
+					{inputProps.value}
+				</LabelBox>
+			);
+		} else {
+			return (
+				<div
+					className={concatClasses(
+						props.className,
+						"toggle-text-field",
+						"toggle-text-field-label",
+						getIf(props.labelFillWidth, "toggle-text-field-fill")
+					)}
+					onClick={() => {
+						inputProps.onClick;
+						setOpen(!open);
+					}}
+					onDoubleClick={(e: any) => e.stopPropagation()}
+				>
+					<Label overflow="cutoff">
+						{dateFormat(value, DATE_FORMAT_LABEL)}
+					</Label>
+				</div>
+			);
+		}
+	});
 
 	const CustomTimeInput = () => (
 		<TextField
@@ -78,7 +108,7 @@ export function DateTimeInput(props: React.PropsWithChildren<DateTimeInputProps>
 			calendarClassName={"datetimeinput-calendar with-shadow-1"}
 			selected={value}
 			open={open}
-			dateFormat="yyyy-MM-dd HH:mm"
+			dateFormat={DATE_FORMAT_PICKER}
 			todayButton={"Today"}
 			shouldCloseOnSelect={false}
 			disabledKeyboardNavigation

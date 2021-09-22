@@ -8,7 +8,7 @@ import {
     useGlobalStateWriteOnly
 } from "../../../components/utils/storeUtils";
 import React from "react";
-import {AttributeDTO, ItemDTO} from "../../../../common/events/dtoModels";
+import {AttributeDTO, AttributeValueDTO, ItemDTO} from "../../../../common/events/dtoModels";
 
 
 // STATE
@@ -123,9 +123,9 @@ export function useDispatchClearItems(): () => void {
     return () => dispatchSetItems([]);
 }
 
-export function useDispatchUpdateItemAttribute(): (itemId: number, attributeKey: string, newValue: string) => void {
+export function useDispatchUpdateItemAttribute(): (itemId: number, attributeKey: string, newValue: AttributeValueDTO) => void {
     const dispatch = useItemsDispatch();
-    return (itemId: number, attributeKey: string, newValue: string) => {
+    return (itemId: number, attributeKey: string, newValue: AttributeValueDTO) => {
         dispatch({
             type: ItemsActionType.UPDATE_ITEM_ATTRIBUTE,
             payload: {

@@ -11,6 +11,7 @@ import {useUpdateAttribute} from "../../../hooks/core/attributeUpdate";
 import {useActiveCollection} from "../../../hooks/store/collectionActiveState";
 import {useGetItemIds, useItems} from "../../../hooks/store/itemsState";
 import {useIsItemSelected, useSelectedItemIds} from "../../../hooks/store/itemSelectionState";
+import {AttributeValueDTO} from "../../../../../common/events/dtoModels";
 
 export function useItemList(activeCollectionId: number) {
 
@@ -77,7 +78,7 @@ function useRemoveSelectedItems() {
 function useUpdateItemAttribute() {
 	const updateAttribute = useUpdateAttribute();
 
-	function hookFunction(itemId: number, attributeKey: string, prevValue: any, nextValue: any): Promise<void> {
+	function hookFunction(itemId: number, attributeKey: string, prevValue: AttributeValueDTO, nextValue: AttributeValueDTO): Promise<void> {
 		return updateAttribute(itemId, attributeKey, nextValue)
 	}
 

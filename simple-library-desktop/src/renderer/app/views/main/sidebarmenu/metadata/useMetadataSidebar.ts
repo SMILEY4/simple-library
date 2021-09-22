@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {fetchItemById, fetchItemMetadata} from "../../../../common/eventInterface";
-import {AttributeDTO, ItemDTO} from "../../../../../../common/events/dtoModels";
+import {AttributeDTO, AttributeValueDTO, ItemDTO} from "../../../../../../common/events/dtoModels";
 import {useSelectedItemIds} from "../../../../hooks/store/itemSelectionState";
 import {useDispatchSetAttributes, useStateAttributes} from "../../../../hooks/store/attributeStore";
 import {useUpdateAttribute} from "../../../../hooks/core/attributeUpdate";
@@ -19,7 +19,7 @@ export function useMetadataSidebar() {
 	return {
 		displayedItem: item,
 		metadataEntries: attributes,
-		updateMetadataEntry: (key: string, prevValue: string, newValue: string) => updateAttribute(item.id, key, newValue),
+		updateMetadataEntry: (key: string, prevValue: AttributeValueDTO, newValue: AttributeValueDTO) => updateAttribute(item.id, key, newValue),
 		copyAttributeValueToClipboard: useCopyAttributeValueToClipboard(attributes),
 		deleteAttribute: useDeleteAttributeEntry(item ? item.id : null)
 	};
@@ -46,7 +46,7 @@ function useCopyAttributeValueToClipboard(attributes: AttributeDTO[]) {
 
 	function hookFunction(attributeKey: string) {
 		const attribute: AttributeDTO | undefined = attributes.find(a => a.key === attributeKey);
-		const attribValue: string = attribute ? attribute.value : "";
+		const attribValue: string = (attribute && attribute.value) ? attribute.value.toString() : "";
 		navigator.clipboard.writeText(attribValue).then();
 	}
 

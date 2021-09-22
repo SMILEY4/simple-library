@@ -6,6 +6,7 @@
  - electron-better-ipc: https://github.com/sindresorhus/electron-better-ipc
  - Jest: https://jestjs.io/
  - Date-Picker: https://reactdatepicker.com
+ - DateFormat: https://www.npmjs.com/package/dateformat
  - original boilerplate: https://github.com/abbl/electron-typescript-react-typeorm-sqlite-boilerplate
 
 

@@ -2,7 +2,7 @@ import React from "react";
 import {HBox, VBox} from "../../../../components/layout/box/Box";
 import {concatClasses, getIf, getSelectModifier, SelectModifier} from "../../../../components/utils/common";
 import "./listItemEntry.css"
-import {AttributeDTO, CollectionTypeDTO, ItemDTO} from "../../../../../common/events/dtoModels";
+import {AttributeDTO, AttributeValueDTO, CollectionTypeDTO, ItemDTO} from "../../../../../common/events/dtoModels";
 import {KeyValuePair} from "../../../../components/misc/keyvaluepair/KeyValuePair";
 import {Label} from "../../../../components/base/label/Label";
 import {ToggleTextField} from "../../../../components/input/textfield/ToggleTextField";
@@ -15,7 +15,7 @@ interface ItemListEntryProps {
     onOpen: (itemId: number) => void,
     onDragStart: (itemId: number, event: React.DragEvent) => void
     onContextMenu: (itemId: number, event: React.MouseEvent) => void,
-    onUpdateAttributeValue: (itemId: number, attribKey: string, prevValue: any, nextValue: any) => Promise<void>
+    onUpdateAttributeValue: (itemId: number, attribKey: string, prevValue: AttributeValueDTO, nextValue: AttributeValueDTO) => Promise<void>
 }
 
 export function ItemListEntry(props: React.PropsWithChildren<ItemListEntryProps>): React.ReactElement {
@@ -52,7 +52,7 @@ export function ItemListEntry(props: React.PropsWithChildren<ItemListEntryProps>
                                     ? (<Label overflow="nowrap-hidden" italic disabled>none</Label>)
                                     : (<ToggleTextField
                                         fillWidth
-                                        value={entry.value}
+                                        value={"TODO"}//{entry.value} // TODO: also render diff input methods here
                                         onAccept={value => handleUpdateAttributeValue(entry.key, entry.value, value)}
                                     />)}
                             </KeyValuePair>
@@ -80,7 +80,7 @@ export function ItemListEntry(props: React.PropsWithChildren<ItemListEntryProps>
         props.onContextMenu(props.item.id, event)
     }
 
-    function handleUpdateAttributeValue(key: string, prevValue: any, nextValue: any): Promise<void> {
+    function handleUpdateAttributeValue(key: string, prevValue: any, nextValue: AttributeValueDTO): Promise<void> {
         if (prevValue !== nextValue) {
             return props.onUpdateAttributeValue(props.item.id, key, prevValue, nextValue)
         } else {
