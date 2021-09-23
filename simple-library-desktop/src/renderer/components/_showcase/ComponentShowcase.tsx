@@ -53,7 +53,7 @@ import {ToggleTextField} from "../input/textfield/ToggleTextField";
 import {EventIds} from "../../../common/events/eventIds";
 import {EventBroadcaster} from "../../../common/events/core/eventBroadcaster";
 import {DateTimeInput} from "../input/datetime/DateTimeInput";
-import {ListInputCard} from "../input/listinput/ListInputDialog";
+import {ListInputCard} from "../input/listinput/ListInputCard";
 
 interface ComponentShowcaseProps {
 	theme: Theme,
@@ -128,9 +128,16 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 
 
 	function renderListInputCard() {
+		const items = "Ancient;Architecture;Bell Tower;Blue;Building Exterior;Campanile;Clear Sky;Close-Up;Copy Space;Day;Famous Place;History;Horizontal;International Landmark;Italian Culture;National Landmark;No People;Outdoors;Renaissance;Sunny;Symbol;Tourism;Tower;Town;Travel;Travel Destinations;UNESCO;UNESCO World Heritage Site;Veneto;Venice".split(";");
+
 		return <ShowcaseSection title={"ListInputCard"}>
 			<ListInputCard
 				listName={"MyList"}
+				initItems={items}
+				enforceUnique
+				uniquenessCaseSensitive
+				onCancel={() => console.log("Cancel")}
+				onSave={items => console.log("save", items)}
 			/>
 		</ShowcaseSection>;
 	}
