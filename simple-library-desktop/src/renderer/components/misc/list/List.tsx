@@ -22,7 +22,12 @@ export function List(props: React.PropsWithChildren<ListProps>): React.ReactElem
 		>
 			{props.items.map((item, index) => {
 				return (
-					<HBox className={"list-item " + ((index % 2 === 0) ? "list-item-even" : "list-item-uneven")} alignMain="start" spacing={"0-25"}>
+					<HBox
+						key={index}
+						className={"list-item " + ((index % 2 === 0) ? "list-item-even" : "list-item-uneven")}
+						alignMain="start"
+						spacing={"0-25"}
+					>
 						<Icon className={"list-item-remove"}
 							  type={IconType.CLOSE}
 							  size="1"
