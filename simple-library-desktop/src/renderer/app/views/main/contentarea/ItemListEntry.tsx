@@ -41,6 +41,7 @@ export function ItemListEntry(props: React.PropsWithChildren<ItemListEntryProps>
                         .sort((a, b) => a.key.toLowerCase().localeCompare(b.key.toLowerCase()))
                         .map((entry: AttributeDTO) => (
                             <MetadataListEntry
+                                key={entry.key}
                                 isEmpty={entry.type === "none" || entry.value === null || entry.value === undefined }
                                 entry={entry}
                                 shortName={attributeKey(entry)}
