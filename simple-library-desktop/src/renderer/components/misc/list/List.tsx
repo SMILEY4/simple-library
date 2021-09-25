@@ -28,9 +28,9 @@ export function List(props: React.PropsWithChildren<ListProps>): React.ReactElem
 							  size="1"
 							  onClick={() => props.onRemove && props.onRemove(item, index)}
 						/>
-						<Label className={"list-item-label"}>
-							{item}
-						</Label>
+							<Label overflow="nowrap-hidden" className={"list-item-label"}>
+								{item}
+							</Label>
 					</HBox>
 				);
 			})}

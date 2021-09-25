@@ -53,7 +53,7 @@ import {ToggleTextField} from "../input/textfield/ToggleTextField";
 import {EventIds} from "../../../common/events/eventIds";
 import {EventBroadcaster} from "../../../common/events/core/eventBroadcaster";
 import {DateTimeInput} from "../input/datetime/DateTimeInput";
-import {ListInputCard} from "../input/listinput/ListInputCard";
+import {ListInputCard} from "../input/list/ListInputCard";
 
 interface ComponentShowcaseProps {
 	theme: Theme,

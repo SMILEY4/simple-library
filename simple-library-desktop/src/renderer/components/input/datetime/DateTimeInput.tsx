@@ -37,8 +37,8 @@ const MONTHS = [
 	"December"
 ];
 
-const DATE_FORMAT_PICKER = "yyyy-MM-dd HH:mm"
-const DATE_FORMAT_LABEL = "yyyy-mm-dd HH:MM"
+const DATE_FORMAT_PICKER = "yyyy-MM-dd HH:mm";
+const DATE_FORMAT_LABEL = "yyyy-mm-dd HH:MM";
 
 export function DateTimeInput(props: React.PropsWithChildren<DateTimeInputProps>): React.ReactElement {
 
@@ -60,10 +60,6 @@ export function DateTimeInput(props: React.PropsWithChildren<DateTimeInputProps>
 					overflow={"cutoff"}
 					groupPos={props.groupPos}
 					forwardRef={ref}
-					onClick={() => {
-						inputProps.onClick;
-						setOpen(!open);
-					}}
 				>
 					{inputProps.value}
 				</LabelBox>
@@ -79,7 +75,7 @@ export function DateTimeInput(props: React.PropsWithChildren<DateTimeInputProps>
 					)}
 					onClick={() => {
 						inputProps.onClick;
-						setOpen(!open);
+						setOpen(true);
 					}}
 					onDoubleClick={(e: any) => e.stopPropagation()}
 				>

@@ -49,49 +49,6 @@ export function CollectionSidebar(props: React.PropsWithChildren<CollectionSideb
 		handleDoubleClick,
 	} = useCollectionSidebar();
 
-	// const [
-	// 	showDeleteCollection,
-	// 	openDeleteCollection,
-	// 	closeDeleteCollection,
-	// 	idDeleteCollection
-	// ] = useDialogCollectionDeleteController()
-
-	// const [
-	// 	showCreateCollection,
-	// 	openCreateCollection,
-	// 	closeCreateCollection,
-	// 	idCreateCollectionParent
-	// ] = useDialogCollectionCreateController()
-	//
-	// const [
-	// 	showEditCollection,
-	// 	openEditCollection,
-	// 	closeEditCollection,
-	// 	idEditCollection
-	// ] = useDialogCollectionEditController()
-	//
-	// const [
-	// 	showDeleteGroup,
-	// 	openDeleteGroup,
-	// 	closeDeleteGroup,
-	// 	idDeleteGroup
-	// ] = useDialogGroupDeleteController()
-	//
-	// const [
-	// 	showCreateGroup,
-	// 	openCreateGroup,
-	// 	closeCreateGroup,
-	// 	idCreateGroupParent
-	// ] = useDialogGroupCreateController()
-	//
-	// const [
-	// 	showEditGroup,
-	// 	openEditGroup,
-	// 	closeEditGroup,
-	// 	idEditGroup
-	// ] = useDialogGroupEditController()
-
-
 	return !!rootGroup ? (
 		<TreeView
 			rootNode={buildTree(rootGroup)}

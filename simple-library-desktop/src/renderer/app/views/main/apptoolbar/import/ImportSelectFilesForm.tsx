@@ -1,5 +1,5 @@
 import React from "react";
-import {FileInputField} from "../../../../../components/input/fileinputfield/FileInputField";
+import {FileInputField} from "../../../../../components/input/file/FileInputField";
 import {ElementLabel} from "../../../../../components/misc/elementlabel/ElementLabel";
 
 const electron = window.require('electron');

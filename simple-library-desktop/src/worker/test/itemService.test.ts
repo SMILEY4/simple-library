@@ -84,7 +84,7 @@ describe("item-service", () => {
 			await expect(result).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, [
 					attribute("att1", "value1", "text"),
-					attribute("att3", "3", "number")
+					attribute("att3", 3, "number")
 				]),
 				item(2, "/path/to/file/2", "thumbnail2", "hash2", 1001, [
 					attribute("att1", "value1", "text")
@@ -123,7 +123,7 @@ describe("item-service", () => {
 			await expect(result).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, [
 					attribute("att1", "value1", "text"),
-					attribute("att3", "3", "number")
+					attribute("att3", 3, "number")
 				]),
 				item(2, "/path/to/file/2", "thumbnail2", "hash2", 1001, [
 					attribute("att1", "value1", "text")
@@ -161,7 +161,7 @@ describe("item-service", () => {
 			await expect(result).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, [
 					attribute("att1", "value1", "text"),
-					attribute("att3", "3", "number")
+					attribute("att3", 3, "number")
 				]),
 				item(2, "/path/to/file/2", "thumbnail2", "hash2", 1001, [
 					attribute("att1", "value1", "text")
@@ -429,7 +429,7 @@ describe("item-service", () => {
 			await expect(result).resolves.toEqual([
 				attribute("att1", "value1", "text"),
 				attribute("att2", "value2", "text"),
-				attribute("att3b", "false", "boolean")
+				attribute("att3b", false, "boolean")
 			]);
 		});
 
@@ -485,7 +485,7 @@ describe("item-service", () => {
 			await expect(actionGetAttribs.perform(1)).resolves.toEqual([
 				attribute("att1", "value1", "text"),
 				attribute("att2", "new value", "text"),
-				attribute("att3a", "3", "number")
+				attribute("att3a", 3, "number")
 			]);
 		});
 
@@ -511,7 +511,7 @@ describe("item-service", () => {
 			await expect(actionGetAttribs.perform(1)).resolves.toEqual([
 				attribute("att1", "value1", "text"),
 				attribute("att2", "value2", "text"),
-				attribute("att3a", "3", "number")
+				attribute("att3a", 3, "number")
 			]);
 		});
 
@@ -537,7 +537,7 @@ describe("item-service", () => {
 			await expect(actionGetAttribs.perform(1)).resolves.toEqual([
 				attribute("att1", "value1", "text"),
 				attribute("att2", "value2", "text"),
-				attribute("att3a", "3", "number")
+				attribute("att3a", 3, "number")
 			]);
 		});
 
@@ -570,7 +570,7 @@ describe("item-service", () => {
 			await expect(result).resolves.toEqual(attribute("att2", "value2", "text"));
 			await expect(actionGetAttribs.perform(1)).resolves.toEqual([
 				attribute("att1", "value1", "text"),
-				attribute("att3a", "3", "number")
+				attribute("att3a", 3, "number")
 			]);
 			await expect(actionGetAttribs.perform(2)).resolves.toEqual([
 				attribute("att2", "value2", "text"),
@@ -599,7 +599,7 @@ describe("item-service", () => {
 			await expect(actionGetAttribs.perform(1)).resolves.toEqual([
 				attribute("att1", "value1", "text"),
 				attribute("att2", "value2", "text"),
-				attribute("att3a", "3", "number")
+				attribute("att3a", 3, "number")
 			]);
 		});
 
@@ -620,7 +620,7 @@ function item(id: number, path: string, thumbnail: string, hash: string, timesta
 	};
 }
 
-function attribute(key: string, value: string, type: AttributeType) {
+function attribute(key: string, value: any, type: AttributeType): Attribute {
 	return {
 		key: key,
 		value: value,

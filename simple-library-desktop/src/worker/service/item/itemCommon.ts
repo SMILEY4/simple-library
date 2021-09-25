@@ -1,5 +1,3 @@
-import dateFormat from "dateformat";
-
 export interface Item {
 	id: number,
 	timestamp: number,
@@ -80,7 +78,7 @@ export function stringToAttributeValue(strValue: string | null, type: AttributeT
 			case "boolean":
 				return strValue.toLowerCase() === "true";
 			case "date":
-				return new Date(Date.parse("2021-06-28T23:10:37"));
+				return new Date(Date.parse(strValue));
 			case "list":
 				return strValue.split(";");
 		}
@@ -101,7 +99,7 @@ export function attributeValueToString(value: AttributeValue, type: AttributeTyp
 			case "boolean":
 				return (value as boolean) ? "true" : "false";
 			case "date":
-				return dateFormat(value as Date, "isoDateTime");
+				return dateToString(value as Date);
 			case "list":
 				return (value as string[]).join(";")
 		}
@@ -126,4 +124,17 @@ export function valueToAttributeType(value: any): AttributeType {
 			return "boolean";
 	}
 	return "text";
+}
+
+function dateToString(date: Date): string {
+	return date.getFullYear() + "-"
+		+ twoDigits(date.getMonth()+1) + "-"
+		+ twoDigits(date.getDate()) + "T"
+		+ twoDigits(date.getHours()) + ":"
+		+ twoDigits(date.getMinutes()) + ":"
+		+ twoDigits(date.getSeconds());
+}
+
+function twoDigits(value: number): string {
+	return (value < 10 ? "0" : "") + value;
 }

@@ -8,10 +8,12 @@ import {TextField, TFAcceptCause} from "../textfield/TextField";
 import {Icon, IconType} from "../../base/icon/Icon";
 import {List} from "../../misc/list/List";
 import {Label} from "../../base/label/Label";
+import "./listInputCard.css"
 
 interface ListInputCardProps extends BaseProps {
 	listName: string,
 	initItems: string[]
+	nVisibleItems?: number
 	enforceUnique?: boolean,
 	uniquenessCaseSensitive?: boolean,
 	onCancel?: () => void,
@@ -27,12 +29,14 @@ export function ListInputCard(props: React.PropsWithChildren<ListInputCardProps>
 
 	return (
 		<Card
+			className={"list-input-card"}
 			title={"Edit '" + props.listName + "'"}
 			onClose={handleCancel}
 			closable
 		>
 			<Slot name={"body"}>
 				<VBox alignMain="center" alignCross="stretch" spacing="0-5">
+
 					<HBox>
 						<TextField
 							value={value}
@@ -52,12 +56,14 @@ export function ListInputCard(props: React.PropsWithChildren<ListInputCardProps>
 							<Icon type={IconType.PLUS}/>
 						</Button>
 					</HBox>
+
 					<List
 						forwardRef={refList}
 						items={items}
-						nVisibleItems={5}
+						nVisibleItems={props.nVisibleItems}
 						onRemove={handleOnRemove}
 					/>
+
 					<HBox alignMain="space-between" alignCross="center" spacing={"0-25"}>
 						<Button onAction={handleOnSort}>
 							Sort
@@ -70,6 +76,7 @@ export function ListInputCard(props: React.PropsWithChildren<ListInputCardProps>
 							{items.length + (items.length === 1 ? " Item" : " Items")}
 						</Label>
 					</HBox>
+
 				</VBox>
 			</Slot>
 			<Slot name={"footer"}>
