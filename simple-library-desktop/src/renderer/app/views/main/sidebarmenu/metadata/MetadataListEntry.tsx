@@ -15,7 +15,7 @@ interface MetadataListEntryProps {
 	keySize?: number,
 	styleType?: "focus-key" | "focus-value",
 	onUpdateValue: (prev: AttributeValueDTO, next: AttributeValueDTO) => void,
-	onContextMenu: (attributeKey: string, event: React.MouseEvent) => void,
+	onContextMenu?: (attributeKey: string, event: React.MouseEvent) => void,
 }
 
 
@@ -25,7 +25,7 @@ export function MetadataListEntry(props: React.PropsWithChildren<MetadataListEnt
 		<KeyValuePair
 			keyValue={props.shortName}
 			styleType={props.styleType ? props.styleType : "focus-key"}
-			onContextMenu={event => props.onContextMenu(props.entry.key, event)}
+			onContextMenu={event => props.onContextMenu && props.onContextMenu(props.entry.key, event)}
 			showOverflow={props.entry.type === "date"}
 			keySize={props.keySize}
 		>

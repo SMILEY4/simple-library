@@ -21,7 +21,7 @@ export function useDeleteItems() {
 	function hookFunction(itemIds: number[]) {
 		deleteItems(itemIds)
 			.then(() => clearSelection())
-			.then(() => updateItemState)
+			.then(() => updateItemState())
 			.then(() => updateGroupState())
 	}
 

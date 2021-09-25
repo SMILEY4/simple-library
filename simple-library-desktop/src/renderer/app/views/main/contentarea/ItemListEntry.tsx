@@ -47,22 +47,7 @@ export function ItemListEntry(props: React.PropsWithChildren<ItemListEntryProps>
                                 keySize={30}
                                 styleType="focus-value"
                                 onUpdateValue={(prev, next) => handleUpdateAttributeValue(entry.key, prev, next)}
-                                onContextMenu={undefined} // TODO
                             />
-                            // <KeyValuePair
-                            //     key={entry.key}
-                            //     keyValue={attributeKey(entry)}
-                            //     keySize={30}
-                            //     styleType="focus-value"
-                            // >
-                            //     {entry.type === "none" || entry.value === null || entry.value === undefined
-                            //         ? (<Label overflow="nowrap-hidden" italic disabled>none</Label>)
-                            //         : (<ToggleTextField
-                            //             fillWidth
-                            //             value={"TODO"}//{entry.value} // TODO: also render diff input methods here
-                            //             onAccept={value => handleUpdateAttributeValue(entry.key, entry.value, value)}
-                            //         />)}
-                            // </KeyValuePair>
                         ))}
                 </VBox>
             </HBox>
