@@ -1,6 +1,6 @@
 import {ItemData} from "./importService";
 import {ActionGetExiftoolInfo} from "../config/actionGetExiftoolInfo";
-import {Attribute, AttributeType} from "../item/itemCommon";
+import {Attribute, stringToAttributeValue, valueToAttributeType} from "../item/itemCommon";
 
 const exiftool = require("node-exiftool");
 
@@ -26,8 +26,11 @@ export class ImportStepMetadata {
 			.then(() => this.exiftoolProcess.readMetadata(itemData.sourceFilepath, this.EXIFTOOL_OPTIONS))
 			.then((data: any) => this.flatten(data.data[0]))
 			.then((entries: Attribute[]) => itemData.attributes = entries)
-			.catch(() => this.exiftoolProcess.close())
 			.then(() => this.exiftoolProcess.close())
+			.catch((e: any) => {
+				this.exiftoolProcess.close();
+				throw "Error during metadata-extraction: " + e;
+			})
 			.then(() => itemData);
 	}
 
@@ -57,7 +60,7 @@ export class ImportStepMetadata {
 	private attribList(key: string, values: any[]): Attribute {
 		return {
 			key: key,
-			value: values.join(";"),
+			value: values.map(v => "" + v),
 			type: "list"
 		};
 	}
@@ -74,32 +77,12 @@ export class ImportStepMetadata {
 
 
 	private attribValue(key: string, value: any) {
-		const type = this.extractType(value);
+		const type = valueToAttributeType(value);
 		return {
 			key: key,
-			value: type === "none" ? "" : value,
+			value: stringToAttributeValue(value === null || value === undefined ? null : "" + value, type),
 			type: type
 		};
-	}
-
-
-	private extractType(value: any): AttributeType {
-		if (value === null || value === undefined) {
-			return "none";
-		}
-		const isISODate = !!("" + value).match(/\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d/);
-		if (isISODate) {
-			return "date";
-		}
-		switch (typeof (value)) {
-			case "string":
-				return "text";
-			case "number":
-				return "number";
-			case "boolean":
-				return "boolean";
-		}
-		return "text";
 	}
 
 }

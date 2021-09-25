@@ -242,7 +242,7 @@ export module SQL {
 			.replace(v("key"), str(attributeKey));
 	}
 
-	export function insertItemAttributes(itemId: number, attributes: ({ key: string, value: string, type: string })[]): string {
+	export function insertItemAttributes(itemId: number, attributes: ({ key: string, value: any, type: string })[]): string {
 		const entries: string[] = attributes.map(att => `(${str(att.key)}, ${str(att.value)}, ${str(att.type)}, ${num(itemId)})`)
 		return sql(sqlInsertItemAttributes)
 			.replace(v("entries"), entries.join(", "));

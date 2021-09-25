@@ -7,12 +7,22 @@ import "./textfield.css";
 
 export type TFAcceptCause = "blur" | "escape" | "enter" | "change"
 
+export const NUMERIC_INPUT = /^[\d.]*$/;
+
+export const TIME_INPUT_CHANGE = /^[\d:]*$/;
+export const TIME_INPUT_ACCEPT = /^[0-2]\d:[0-5]\d$/;
+
+
 export interface TextFieldProps extends BaseProps {
 	value?: string,
 	placeholder?: string
 	disabled?: boolean,
 	autofocus?: boolean,
 	forceState?: boolean,
+	regexChange?: RegExp,
+	regexAccept?: RegExp,
+	maxlength?: number,
+	size?: number,
 	error?: boolean,
 	groupPos?: "left" | "right" | "center",
 	prependIcon?: IconType,
@@ -21,6 +31,7 @@ export interface TextFieldProps extends BaseProps {
 	onClickAppendIcon?: () => void,
 	dir?: "rtl"
 	fixed?: boolean,
+	onFocus?: () => void,
 	onChange?: (value: string) => void | Promise<void>,
 	onAccept?: (value: string, cause?: TFAcceptCause) => void | Promise<void>,
 	refInputField?: MutableRefObject<any>
@@ -55,12 +66,15 @@ export function TextField(props: React.PropsWithChildren<TextFieldProps>): React
 				/>
 			)}
 			<input
+				onFocus={props.onFocus}
 				type="text"
 				value={props.forceState ? props.value : value}
 				autoFocus={props.autofocus}
 				disabled={props.disabled || props.fixed}
 				placeholder={props.placeholder}
 				dir={props.dir}
+				maxLength={props.maxlength}
+				size={props.size}
 				onChange={handleOnChange}
 				onBlur={handleOnBlur}
 				onKeyDown={handleOnKeyDown}
@@ -79,13 +93,19 @@ export function TextField(props: React.PropsWithChildren<TextFieldProps>): React
 	);
 
 	function handleOnChange(event: any) {
-		handleChange("change", event.target.value, props.onChange);
+		if (isValidWipValue(event.target.value)) {
+			handleChange("change", event.target.value, props.onChange);
+		}
 	}
 
 
 	function handleOnBlur(event: any) {
 		if (!shouldIgnoreBlur.current) {
-			handleChange("blur", event.target.value, props.onAccept);
+			if (isValidAcceptValue(event.target.value)) {
+				handleChange("blur", event.target.value, props.onAccept);
+			} else {
+				setValue(props.value);
+			}
 		}
 		shouldIgnoreBlur.current = false;
 	}
@@ -94,9 +114,13 @@ export function TextField(props: React.PropsWithChildren<TextFieldProps>): React
 	function handleOnKeyDown(event: any) {
 		if (event.key === "Enter") {
 			event.stopPropagation();
-			shouldIgnoreBlur.current = true;
-			event.target.blur();
-			handleChange("enter", event.target.value, props.onAccept);
+			if (isValidAcceptValue(event.target.value)) {
+				shouldIgnoreBlur.current = true;
+				event.target.blur();
+				handleChange("enter", event.target.value, props.onAccept);
+			} else {
+				setValue(props.value);
+			}
 		}
 		if (event.key === "Escape") {
 			event.stopPropagation();
@@ -118,6 +142,14 @@ export function TextField(props: React.PropsWithChildren<TextFieldProps>): React
 					.catch(() => setValue(props.value));
 			}
 		}
+	}
+
+	function isValidWipValue(value: string) {
+		return !props.regexChange || props.regexChange.test(value);
+	}
+
+	function isValidAcceptValue(value: string) {
+		return !props.regexAccept || props.regexAccept.test(value);
 	}
 
 }

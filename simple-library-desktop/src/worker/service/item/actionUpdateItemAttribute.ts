@@ -1,4 +1,4 @@
-import {Attribute, rowToAttribute} from "./itemCommon";
+import {Attribute, AttributeValue, attributeValueToString, rowToAttribute} from "./itemCommon";
 import {DataRepository} from "../dataRepository";
 
 /**
@@ -13,7 +13,7 @@ export class ActionUpdateItemAttribute {
 		this.repository = repository;
 	}
 
-	public perform(itemId: number, attributeKey: string, newValue: string): Promise<Attribute> {
+	public perform(itemId: number, attributeKey: string, newValue: AttributeValue): Promise<Attribute> {
 		return this.findAttribute(itemId, attributeKey)
 			.then((attrib: Attribute) => this.update(attrib, itemId, attributeKey, newValue))
 			.then((attrib: Attribute) => this.buildUpdatedAttribute(attrib, newValue));
@@ -29,13 +29,13 @@ export class ActionUpdateItemAttribute {
 	}
 
 
-	private update(attribute: Attribute, itemId: number, attributeKey: string, newValue: string): Promise<Attribute> {
-		return this.repository.updateItemAttributeValue(itemId, attributeKey, newValue)
+	private update(attribute: Attribute, itemId: number, attributeKey: string, newValue: AttributeValue): Promise<Attribute> {
+		return this.repository.updateItemAttributeValue(itemId, attributeKey, attributeValueToString(newValue, attribute.type))
 			.then(() => attribute);
 	}
 
 
-	private buildUpdatedAttribute(attribute: Attribute, newValue: string): Attribute {
+	private buildUpdatedAttribute(attribute: Attribute, newValue: AttributeValue): Attribute {
 		return {
 			key: attribute.key,
 			value: newValue,

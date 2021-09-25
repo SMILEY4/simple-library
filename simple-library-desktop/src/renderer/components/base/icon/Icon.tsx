@@ -6,7 +6,7 @@ import {
     AiOutlineFileText,
     AiOutlineFolder, AiOutlineSearch, AiOutlineTags,
     BiImages,
-    BiImport,
+    BiImport, BiPlus,
     BsChevronDoubleLeft,
     BsChevronDoubleRight,
     BsChevronDown,
@@ -15,13 +15,14 @@ import {
     BsChevronUp,
     FaCheck,
     FiSettings,
-    VscClose,
-} from 'react-icons/all';
+    VscClose
+} from "react-icons/all";
 import {BaseProps, concatClasses, getIf, map, Size} from "../../utils/common";
 import {BiImagesSmart} from "./BiImagesSmart";
 import {IconBaseProps} from "react-icons/lib/cjs/iconBase";
 
 export enum IconType {
+    PLUS,
     CHEVRON_UP,
     CHEVRON_DOWN,
     CHEVRON_LEFT,
@@ -56,6 +57,7 @@ const SVG_FILLED = "filled";
 
 
 const ICON_COLOR_TYPE = new Map<IconType, string>([
+    [IconType.PLUS, SVG_FILLED],
     [IconType.CLOSE, SVG_FILLED],
     [IconType.FOLDER, SVG_FILLED],
     [IconType.FILE, SVG_OUTLINED],
@@ -94,6 +96,8 @@ export function Icon(props: React.PropsWithChildren<IconProps>): React.ReactElem
         onClick: props.onClick
     };
     switch (props.type) {
+        case IconType.PLUS:
+            return <BiPlus {...iconProps}/>;
         case IconType.CLOSE:
             return <VscClose {...iconProps} />;
         case IconType.HOME:

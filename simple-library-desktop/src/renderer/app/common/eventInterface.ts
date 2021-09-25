@@ -1,5 +1,5 @@
 import {
-    AttributeDTO,
+    AttributeDTO, AttributeValueDTO,
     CollectionTypeDTO,
     ExiftoolInfoDTO,
     GroupDTO,
@@ -90,7 +90,7 @@ export function fetchItemMetadata(itemId: number): Promise<AttributeDTO[]> {
     return eventBroadcaster.send(EventIds.GET_ITEM_ATTRIBUTES, itemId);
 }
 
-export function setItemMetadata(itemId: number, entryKey: string, value: string): Promise<AttributeDTO> {
+export function setItemMetadata(itemId: number, entryKey: string, value: AttributeValueDTO): Promise<AttributeDTO> {
     return eventBroadcaster.send(EventIds.SET_ITEM_ATTRIBUTE, {itemId: itemId, entryKey: entryKey, newValue: value});
 }
 

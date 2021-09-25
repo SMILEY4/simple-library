@@ -3,7 +3,7 @@ import {Slot} from "../../../components/base/slot/Slot";
 import {Button} from "../../../components/buttons/button/Button";
 import {TextField} from "../../../components/input/textfield/TextField";
 import {VBox} from "../../../components/layout/box/Box";
-import {DirectoryInputField} from "../../../components/input/directoryinputfield/DirectoryInputField";
+import {DirectoryInputField} from "../../../components/input/directory/DirectoryInputField";
 import {useDialogCreateLibrary} from "./useDialogCreateLibrary";
 import {Card} from "../../../components/layout/card/Card";
 

@@ -36,6 +36,7 @@ b {
 
 *::-webkit-scrollbar {
 	width: var(--s-0-75);
+	height: var(--s-0-75);
 }
 
 *::-webkit-scrollbar-corner {

@@ -1,6 +1,3 @@
-import {DbAccess} from "../../persistence/dbAcces";
-import {SQL} from "../../persistence/sqlHandler";
-import {voidThen} from "../../../common/utils";
 import {DataRepository} from "../dataRepository";
 
 /**
@@ -16,7 +13,7 @@ export class ActionDeleteItems {
 	}
 
 	public perform(itemIds: number[]): Promise<void> {
-		return this.repository.deleteItems(itemIds)
+		return this.repository.deleteItems(itemIds);
 	}
 
 }

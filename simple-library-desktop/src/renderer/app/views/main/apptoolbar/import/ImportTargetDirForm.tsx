@@ -1,7 +1,7 @@
 import React from "react";
 import {HBox, VBox} from "../../../../../components/layout/box/Box";
 import {ChoiceBox, ChoiceBoxItem} from "../../../../../components/buttons/choicebox/ChoiceBox";
-import {DirectoryInputField} from "../../../../../components/input/directoryinputfield/DirectoryInputField";
+import {DirectoryInputField} from "../../../../../components/input/directory/DirectoryInputField";
 import {BaseElementFlat} from "../../../../../components/base/element/BaseElementFlat";
 import {ImportTargetActionDTO} from "../../../../../../common/events/dtoModels";
 

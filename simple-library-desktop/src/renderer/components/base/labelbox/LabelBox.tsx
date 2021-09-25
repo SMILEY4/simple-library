@@ -2,10 +2,10 @@ import React from "react";
 import "./labelbox.css"
 import {Label} from "../label/Label";
 import {BaseElementFlat} from "../element/BaseElementFlat";
-import {BaseProps} from "../../utils/common";
+import {BaseProps, ClickableProps} from "../../utils/common";
 import {concatClasses} from "../../utils/common";
 
-export interface LabelBoxProps extends BaseProps {
+export interface LabelBoxProps extends BaseProps, ClickableProps {
 	error?: boolean,
 	type?: "header-1" | "header-2" | "header-3" | "header-4" | "body" | "caption"
 	variant?: "primary" | "secondary" | "info" | "success" | "error" | "warn" | "on-variant"
@@ -33,6 +33,7 @@ export function LabelBox(props: React.PropsWithChildren<LabelBoxProps>): React.R
 				italic={props.italic}
 				noSelect={props.noSelect}
 				overflow={props.overflow}
+				onClick={props.onClick}
 			>
 				{props.children}
 			</Label>

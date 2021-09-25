@@ -913,7 +913,7 @@ function item(id: number, path: string, timestampImported: number): any {
     };
 }
 
-function attribute(key: string, value: string, type: string) {
+function attribute(key: string, value: any, type: string) {
     return {
         key: key,
         value: value,

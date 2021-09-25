@@ -6,7 +6,7 @@ import {Accordion} from "../../../../../components/misc/accordion/Accordion";
 import {TextField} from "../../../../../components/input/textfield/TextField";
 import {MetadataListEntry} from "./MetadataListEntry";
 import {Label} from "../../../../../components/base/label/Label";
-import {AttributeDTO} from "../../../../../../common/events/dtoModels";
+import {AttributeDTO, AttributeValueDTO} from "../../../../../../common/events/dtoModels";
 import {useMetadataSidebar} from "./useMetadataSidebar";
 import {useContextMenu} from "../../../../../components/menu/contextmenu/contextMenuHook";
 import {APP_ROOT_ID} from "../../../../Application";
@@ -122,7 +122,7 @@ export function MetadataSidebar(props: React.PropsWithChildren<MetadataSidebarPr
         closeContextMenu();
     }
 
-    function handleOnUpdateEntryValue(entry: AttributeDTO, prev: string, next: string) {
+    function handleOnUpdateEntryValue(entry: AttributeDTO, prev: AttributeValueDTO, next: AttributeValueDTO) {
         return updateMetadataEntry(entry.key, prev, next);
     }
 
@@ -159,7 +159,7 @@ interface MetadataGroupListEntryProps {
     searchFilter: string,
     title: string,
     entries: ([string, AttributeDTO])[];
-    onUpdateValue: (entry: AttributeDTO, prev: string, next: string) => void,
+    onUpdateValue: (entry: AttributeDTO, prev: AttributeValueDTO, next: AttributeValueDTO) => void,
     onContextMenu: (attributeKey: string, event: React.MouseEvent) => void,
 }
 

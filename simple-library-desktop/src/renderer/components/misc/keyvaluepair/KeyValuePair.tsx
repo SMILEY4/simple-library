@@ -10,12 +10,13 @@ interface KeyValuePairProps {
     styleType?: "focus-key" | "focus-value",
     modified?: boolean,
     onContextMenu?: (event: React.MouseEvent) => void,
+    showOverflow?: boolean,
 }
 
 export function KeyValuePair(props: React.PropsWithChildren<KeyValuePairProps>): React.ReactElement {
 
     return (
-        <div className="kv-pair" onContextMenu={props.onContextMenu}>
+        <div className="kv-pair " onContextMenu={props.onContextMenu}>
 
             <div className="kv-pair-key" style={{minWidth: orDefault(props.keySize, 50) + "%"}}>
                 {props.modified === true
@@ -23,7 +24,9 @@ export function KeyValuePair(props: React.PropsWithChildren<KeyValuePairProps>):
                     : renderKeyLabel()}
             </div>
 
-            <div className="kv-pair-value" style={{minWidth: orDefault(100 - props.keySize, 50) + "%"}}>
+            <div
+                className={"kv-pair-value" + (props.showOverflow === true ? " kv-pair-value-show-overflow" : "")}
+                style={{minWidth: orDefault(100 - props.keySize, 50) + "%"}}>
                 {props.children}
             </div>
 

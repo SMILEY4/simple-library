@@ -1,5 +1,5 @@
 import {setItemMetadata} from "../../common/eventInterface";
-import {AttributeDTO} from "../../../../common/events/dtoModels";
+import {AttributeDTO, AttributeValueDTO} from "../../../../common/events/dtoModels";
 import {useDispatchUpdateItemAttribute} from "../store/itemsState";
 import {useDispatchUpdateAttribute} from "../store/attributeStore";
 import {AppNotificationType, useThrowErrorWithNotification} from "../store/notificationState";
@@ -12,9 +12,9 @@ export function useUpdateAttribute() {
 	const dispatchUpdateItemAttribute = useDispatchUpdateItemAttribute();
 
 
-	function hookFunction(itemId: number, attributeKey: string, newValue: string): Promise<void> {
-		return Promise.resolve(newValue && newValue.trim().length > 0 ? newValue.trim() : "")
-			.then((value: string | null) => setItemMetadata(itemId, attributeKey, value))
+	function hookFunction(itemId: number, attributeKey: string, newValue: AttributeValueDTO): Promise<void> {
+		return Promise.resolve(newValue)
+			.then((value: AttributeValueDTO) => setItemMetadata(itemId, attributeKey, value))
 			.then((newEntry: AttributeDTO) => updateAttributeState(newEntry))
 			.then((newEntry: AttributeDTO) => updateItemState(newEntry, itemId))
 			.then(() => undefined)
