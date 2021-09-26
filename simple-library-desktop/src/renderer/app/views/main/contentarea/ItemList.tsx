@@ -1,6 +1,5 @@
-import React from "react";
+import React, {ReactElement} from "react";
 import {VBox} from "../../../../components/layout/box/Box";
-import {ItemListEntry} from "./ItemListEntry";
 import {ContextMenuBase} from "../../../../components/menu/contextmenu/ContextMenuBase";
 import {APP_ROOT_ID} from "../../../Application";
 import {ItemListEntryContextMenu} from "./ItemListEntryContextMenu";
@@ -10,16 +9,23 @@ import {DialogDeleteItems} from "./DialogDeleteItems";
 import {CollectionDTO, ItemDTO} from "../../../../../common/events/dtoModels";
 import {useItemList} from "./useItemList";
 import {useDispatchCloseDialog, useDispatchOpenDialog} from "../../../hooks/store/dialogState";
+import {AutoSizer, CellMeasurer, CellMeasurerCache, List} from "react-virtualized";
+import {ItemListEntry} from "./ItemListEntry";
 
 interface ItemListProps {
-	activeCollection: CollectionDTO
+	activeCollection: CollectionDTO;
 }
 
 export const MemoizedItemList = React.memo(ItemList,
 	(prev: ItemListProps, next: ItemListProps) => {
 		// dont re-render when active-collection is same (might be diff reference but same value)
 		return prev.activeCollection.id === next.activeCollection.id;
-	})
+	});
+
+const cache = new CellMeasurerCache({
+	fixedWidth: true,
+	defaultHeight: 226
+});
 
 export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.ReactElement {
 
@@ -37,7 +43,7 @@ export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.R
 		handleDragItem,
 		handleRemoveSelectedItems,
 		handleUpdateItemAttributeValue
-	} = useItemList(props.activeCollection.id)
+	} = useItemList(props.activeCollection.id);
 
 	const {
 		showContextMenu,
@@ -46,7 +52,7 @@ export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.R
 		contextMenuRef,
 		openContextMenuWithEvent,
 		closeContextMenu
-	} = useContextMenu()
+	} = useContextMenu();
 
 	return (
 		<>
@@ -57,21 +63,24 @@ export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.R
 				spacing="0-5"
 				alignMain="start"
 				alignCross="stretch"
-				overflow="auto"
 				focusable
 				onKeyDown={handleOnKeyDown}
 			>
-				{items && items.map((itemData: ItemDTO) => <ItemListEntry
-					key={itemData.id}
-					item={itemData}
-					activeCollectionType={props.activeCollection ? props.activeCollection.type : undefined}
-					selected={isSelected(itemData.id)}
-					onSelect={handleSelectItem}
-					onOpen={openItemExternal}
-					onDragStart={handleDragItem}
-					onContextMenu={handleOnContextMenu}
-					onUpdateAttributeValue={handleUpdateItemAttributeValue}
-				/>)}
+				<div style={{flex: "1 1 auto"}}>
+					<AutoSizer>
+						{({height, width}) => (
+							<List
+								width={width}
+								height={height}
+								deferredMeasurementCache={cache}
+								estimatedRowSize={226}
+								rowHeight={cache.rowHeight}
+								rowCount={items.length}
+								rowRenderer={renderRow}
+							/>
+						)}
+					</AutoSizer>
+				</div>
 			</VBox>
 
 			<ContextMenuBase
@@ -93,6 +102,36 @@ export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.R
 		</>
 	);
 
+	function renderRow(data: { index: number, key: string, style: any, parent: any }): ReactElement {
+		const item: ItemDTO = items[data.index];
+		return (
+			<CellMeasurer
+				cache={cache}
+				key={data.key}
+				columnIndex={0}
+				rowIndex={data.index}
+				parent={data.parent}
+			>
+				{({ measure, registerChild }) => (
+					<div ref={registerChild} style={data.style}>
+						<ItemListEntry
+							item={item}
+							activeCollectionType={props.activeCollection ? props.activeCollection.type : undefined}
+							selected={isSelected(item.id)}
+							onSelect={handleSelectItem}
+							onOpen={openItemExternal}
+							onDragStart={handleDragItem}
+							onContextMenu={handleOnContextMenu}
+							onUpdateAttributeValue={handleUpdateItemAttributeValue}
+							onLoadImage={measure}
+						/>
+					</div>
+				)}
+
+			</CellMeasurer>
+		);
+	}
+
 	function openDialogDeleteItems(itemIds: number[], activeCollectionId: number | null) {
 		openDialog(id => ({
 			blockOutside: true,
@@ -108,7 +147,7 @@ export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.R
 		if (!isSelected(itemId)) {
 			handleSelectItem(itemId, SelectModifier.NONE);
 		}
-		openContextMenuWithEvent(event)
+		openContextMenuWithEvent(event);
 	}
 
 }
