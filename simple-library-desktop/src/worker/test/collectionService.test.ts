@@ -13,7 +13,7 @@ import {ActionMoveCollection} from "../service/collection/actionMoveCollection";
 import {ActionMoveAllCollections} from "../service/collection/actionMoveAllCollections";
 import {ActionRemoveItems} from "../service/collection/actionRemoveItems";
 import {ActionCreateLibrary} from "../service/library/actionCreateLibrary";
-import {Collection, CollectionType} from "../service/collection/collectionCommons";
+import {Collection} from "../service/collection/collectionCommons";
 import {DataRepository} from "../service/dataRepository";
 import {SQLiteDataRepository} from "../persistence/sqliteRepository";
 

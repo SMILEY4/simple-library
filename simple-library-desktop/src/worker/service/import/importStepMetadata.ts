@@ -61,7 +61,8 @@ export class ImportStepMetadata {
 		return {
 			key: key,
 			value: values.map(v => "" + v),
-			type: "list"
+			type: "list",
+			modified: false
 		};
 	}
 
@@ -71,17 +72,19 @@ export class ImportStepMetadata {
 			.map((flat: Attribute) => ({
 				key: key + "." + flat.key,
 				value: flat.value,
-				type: flat.type
+				type: flat.type,
+				modified: false
 			}));
 	}
 
 
-	private attribValue(key: string, value: any) {
+	private attribValue(key: string, value: any): Attribute {
 		const type = valueToAttributeType(value);
 		return {
 			key: key,
 			value: stringToAttributeValue(value === null || value === undefined ? null : "" + value, type),
-			type: type
+			type: type,
+			modified: false
 		};
 	}
 

@@ -14,6 +14,7 @@ import {SQL} from "../persistence/sqlHandler";
 import {ActionGetExiftoolInfo} from "../service/config/actionGetExiftoolInfo";
 import {ActionCreateLibrary} from "../service/library/actionCreateLibrary";
 import {SQLiteDataRepository} from "../persistence/sqliteRepository";
+import {AttributeType} from "../service/item/itemCommon";
 
 describe("import", () => {
 
@@ -613,17 +614,17 @@ describe("import", () => {
                 item(3, "path\\to\\file3.png", TIMESTAMP)
             ]);
             await expect(dbAccess.queryAll(SQL.queryItemAttributes(1))).resolves.toEqual([
-                attribute("attribText", "text value", "text"),
-                attribute("attribNumber", "42.1", "number"),
-                attribute("attribBool", "true", "boolean"),
-                attribute("attribDate", "2021-08-01T18:22:13", "date"),
-                attribute("attribList", "entry1;entry2;42;true", "list"),
-                attribute("attribObj.subAttribText", "text value", "text"),
-                attribute("attribObj.subAttribNumber", "42.1", "number"),
-                attribute("attribObj.subAttribBool", "true", "boolean"),
-                attribute("attribObj.subAttribDate", "2021-08-01T18:22:13", "date"),
-                attribute("attribObj.subAttribList", "entry1;entry2;42;true", "list")
-            ])
+                attribute("attribText", "text value", "text", 0),
+                attribute("attribNumber", "42.1", "number", 0),
+                attribute("attribBool", "true", "boolean", 0),
+                attribute("attribDate", "2021-08-01T18:22:13", "date", 0),
+                attribute("attribList", "entry1;entry2;42;true", "list", 0),
+                attribute("attribObj.subAttribText", "text value", "text", 0),
+                attribute("attribObj.subAttribNumber", "42.1", "number", 0),
+                attribute("attribObj.subAttribBool", "true", "boolean", 0),
+                attribute("attribObj.subAttribDate", "2021-08-01T18:22:13", "date", 0),
+                attribute("attribObj.subAttribList", "entry1;entry2;42;true", "list", 0)
+            ]);
             await expect(dbAccess.queryAll(SQL.queryItemAttributes(2))).resolves.toHaveLength(10);
             await expect(dbAccess.queryAll(SQL.queryItemAttributes(3))).resolves.toHaveLength(10);
         });
@@ -913,12 +914,13 @@ function item(id: number, path: string, timestampImported: number): any {
     };
 }
 
-function attribute(key: string, value: any, type: string) {
+function attribute(key: string, value: any, type: AttributeType, modified: boolean | number) {
     return {
         key: key,
         value: value,
-        type: type
-    }
+        type: type,
+        modified: modified
+    };
 }
 
 function mockImportService(): [ImportService, ActionCreateLibrary, FileSystemWrapper, DbAccess] {
@@ -970,7 +972,7 @@ function mockExiftoolProcess(): any {
                     subAttribDate: "2021-08-01T18:22:13",
                     subAttribList: [
                         "entry1", "entry2", 42, true
-                    ],
+                    ]
                 }
             }]
         }),

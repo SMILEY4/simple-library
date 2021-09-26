@@ -80,7 +80,8 @@ export class ActionGetItemsByCollection {
         return {
             key: key,
             value: null,
-            type: "none"
+            type: "none",
+            modified: false
         };
     }
 
