@@ -2,16 +2,33 @@
 	background-color: var(--color-background-0);
 	border-radius:    var(--radius-0);
 	border:           1px solid var(--color-border);
+	margin-bottom: var(--s-0-5);
 }
 
 .list-item-entry-selected {
 	background-color: var(--color-bg-info-faded);
 }
 
-.list-item-entry > div {
-	min-width: 0;
-}
-
 .list-item-entry * {
 	user-select: none
+}
+
+.list-item-thumbnail-container {
+	min-width: 200px;
+	min-height: 200px;
+	width: 200px;
+	height: 200px;
+	max-width: 200px;
+	max-height: 200px;
+
+	padding: var(--s-0-5);
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.list-item-thumbnail {
+	max-width: 200px;
+	max-height: 200px;
 }
