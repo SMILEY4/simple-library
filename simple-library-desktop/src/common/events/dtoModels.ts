@@ -61,7 +61,7 @@ export interface AttributeDTO {
 	key: string,
 	value: AttributeValueDTO,
 	type: AttributeTypeDTO,
-	// TODO: modified
+	modified: boolean,
 }
 
 

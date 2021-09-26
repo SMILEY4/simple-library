@@ -36,7 +36,6 @@ export function rowToItem(row: any | null): Item | null {
 }
 
 export function rowsToItems(rows: any[]): Item[] {
-	console.log("    ROWS: ", rows)
 	return rows.map(row => rowToItem(row));
 }
 

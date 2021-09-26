@@ -22,12 +22,12 @@ export function useUpdateAttribute() {
 	}
 
 	function updateAttributeState(newEntry: AttributeDTO): AttributeDTO {
-		dispatchUpdateAttribute(newEntry.key, newEntry.value);
+		dispatchUpdateAttribute(newEntry);
 		return newEntry;
 	}
 
 	function updateItemState(newEntry: AttributeDTO, itemId: number): AttributeDTO {
-		dispatchUpdateItemAttribute(itemId, newEntry.key, newEntry.value);
+		dispatchUpdateItemAttribute(itemId, newEntry);
 		return newEntry;
 	}
 

@@ -1,6 +1,5 @@
 import React, {ReactElement} from "react";
-import "./keyValuePair.css"
-import {Badge} from "../badge/Badge";
+import "./keyValuePair.css";
 import {Label} from "../../base/label/Label";
 import {orDefault} from "../../utils/common";
 
@@ -19,9 +18,7 @@ export function KeyValuePair(props: React.PropsWithChildren<KeyValuePairProps>):
         <div className="kv-pair " onContextMenu={props.onContextMenu}>
 
             <div className="kv-pair-key" style={{minWidth: orDefault(props.keySize, 50) + "%"}}>
-                {props.modified === true
-                    ? <Badge variant={"info"}>{renderKeyLabel()}</Badge>
-                    : renderKeyLabel()}
+                {renderKeyLabel()}
             </div>
 
             <div
@@ -35,8 +32,13 @@ export function KeyValuePair(props: React.PropsWithChildren<KeyValuePairProps>):
 
     function renderKeyLabel(): ReactElement {
         return (
-            <Label bold className={"kv-pair-key-label"} disabled={props.styleType === "focus-value"}
-                   overflow="nowrap-hidden">
+            <Label
+                bold
+                variant={props.modified === true ? "info" : "primary"}
+                className={"kv-pair-key-label"}
+                disabled={props.styleType === "focus-value" && !props.modified}
+                overflow="nowrap-hidden"
+            >
                 {props.keyValue}
             </Label>
         );
