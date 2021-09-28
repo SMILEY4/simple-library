@@ -3,6 +3,7 @@
  - Electron: https://www.electronjs.org/docs
  - React: https://reactjs.org/docs
  - SQLite: https://github.com/mapbox/node-sqlite3/wiki
+ - Node-Exiftool: https://github.com/Sobesednik/node-exiftool
  - electron-better-ipc: https://github.com/sindresorhus/electron-better-ipc
  - Jest: https://jestjs.io/
  - react-virtualized: https://github.com/bvaughn/react-virtualized/tree/master/docs

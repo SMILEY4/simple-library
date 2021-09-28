@@ -1,34 +1,26 @@
 import {ItemData} from "./importService";
 import {ActionGetExiftoolInfo} from "../config/actionGetExiftoolInfo";
 import {Attribute, stringToAttributeValue, valueToAttributeType} from "../item/itemCommon";
-
-const exiftool = require("node-exiftool");
+import {ExifHandler} from "../exifHandler";
 
 export class ImportStepMetadata {
 
-	private readonly EXIFTOOL_OPTIONS = ["g", "d %Y-%m-%dT%H:%M:%S"];
+	private readonly exifHandler: ExifHandler;
 
-	exiftoolProcess: any;
 
 	constructor(actionGetExiftoolInfo: ActionGetExiftoolInfo) {
-		this.exiftoolProcess = ImportStepMetadata.createExiftoolProcess(actionGetExiftoolInfo);
-	}
-
-
-	private static createExiftoolProcess(actionGetExiftoolInfo: ActionGetExiftoolInfo): any {
-		return new exiftool.ExiftoolProcess(actionGetExiftoolInfo.perform().defined ? actionGetExiftoolInfo.perform().defined : "");
+		this.exifHandler = new ExifHandler(actionGetExiftoolInfo, false);
 	}
 
 
 	public handle(itemData: ItemData): Promise<ItemData> {
-		return this.exiftoolProcess
-			.open()
-			.then(() => this.exiftoolProcess.readMetadata(itemData.sourceFilepath, this.EXIFTOOL_OPTIONS))
+		return this.exifHandler.open()
+			.readMetadata(itemData.sourceFilepath)
 			.then((data: any) => this.flatten(data.data[0]))
 			.then((entries: Attribute[]) => itemData.attributes = entries)
-			.then(() => this.exiftoolProcess.close())
+			.then(() => this.exifHandler.close())
 			.catch((e: any) => {
-				this.exiftoolProcess.close();
+				this.exifHandler.close();
 				throw "Error during metadata-extraction: " + e;
 			})
 			.then(() => itemData);

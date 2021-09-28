@@ -2,6 +2,7 @@ import {jest} from "@jest/globals";
 import {DbAccess} from "../persistence/dbAcces";
 import {FileSystemWrapper} from "../service/fileSystemWrapper";
 import {ConfigAccess} from "../persistence/configAccess";
+import {ExifHandler} from "../service/exifHandler";
 
 
 export function mockFileSystemWrapper(): FileSystemWrapper {
@@ -33,6 +34,19 @@ export function mockConfigAccess(): ConfigAccess {
 	configAccess["setValue"] = jest.fn().mockReturnValue(undefined) as any;
 	return configAccess;
 }
+
+export function mockExiftoolProcess(readMetadataResult: any) {
+	// @ts-ignore
+	ExifHandler["createExiftoolProcess"] = jest.fn().mockReturnValue(
+		{
+			open: () => Promise.resolve(),
+			readMetadata: (path: any, options: any) => readMetadataResult,
+			writeMetadata: (path: string, replaceAll: boolean, data: any) => {throw "todo";},
+			close: () => Promise.resolve()
+		}
+	);
+}
+
 
 export function mockDateNow(timestamp: number): number {
 	Date.now = () => timestamp;

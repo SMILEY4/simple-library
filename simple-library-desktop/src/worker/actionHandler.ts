@@ -45,6 +45,7 @@ import {EventDistributor} from "../common/events/eventDistributor";
 import {EventIds} from "../common/events/eventIds";
 import {DataRepository} from "./service/dataRepository";
 import {ActionDeleteItemAttribute} from "./service/item/actionDeleteItemAttribute";
+import {ActionEmbedItemAttributes} from "./service/item/actionEmbedItemAttributes";
 
 export class ActionHandler {
 
@@ -59,6 +60,13 @@ export class ActionHandler {
 
 		const configAccess: ConfigAccess = new ConfigAccess();
 		const fsWrapper: FileSystemWrapper = new FileSystemWrapper();
+
+		const actionAddToLastOpened = new ActionAddToLastOpened(configAccess);
+		const actionGetExiftoolInfo = new ActionGetExiftoolInfo(configAccess);
+		const actionGetLastOpened = new ActionGetLastOpened(configAccess);
+		const actionGetTheme = new ActionGetTheme(configAccess);
+		const actionOpenConfig = new ActionOpenConfig(configAccess, fsWrapper);
+		const actionSetTheme = new ActionSetTheme(configAccess);
 
 		const actionGetAllCollections = new ActionGetAllCollections(dataRepository);
 		const actionGetCollectionById = new ActionGetCollectionById(dataRepository);
@@ -86,13 +94,7 @@ export class ActionHandler {
 		const actionOpenItemsExternal = new ActionOpenItemsExternal(dataRepository, fsWrapper);
 		const actionUpdateItemAttribute = new ActionUpdateItemAttribute(dataRepository);
 		const actionDeleteItemAttribute = new ActionDeleteItemAttribute(dataRepository);
-
-		const actionAddToLastOpened = new ActionAddToLastOpened(configAccess);
-		const actionGetExiftoolInfo = new ActionGetExiftoolInfo(configAccess);
-		const actionGetLastOpened = new ActionGetLastOpened(configAccess);
-		const actionGetTheme = new ActionGetTheme(configAccess);
-		const actionOpenConfig = new ActionOpenConfig(configAccess, fsWrapper);
-		const actionSetTheme = new ActionSetTheme(configAccess);
+		const actionEmbedItemAttributes = new ActionEmbedItemAttributes(actionGetExiftoolInfo, dataRepository);
 
 		const actionCloseLibrary = new ActionCloseLibrary(dataRepository);
 		const actionCreateLibrary = new ActionCreateLibrary(dataRepository, fsWrapper);
@@ -110,22 +112,22 @@ export class ActionHandler {
 			(status: any) => this.send(EventIds.IMPORT_STATUS, status)
 		);
 
-		this.eventHandler.on(EventIds.OPEN_CONFIG, () => actionOpenConfig.perform())
-		this.eventHandler.on(EventIds.GET_EXIFTOOL_INFO, () => actionGetExiftoolInfo.perform())
-		this.eventHandler.on(EventIds.GET_THEME, () => actionGetTheme.perform())
-		this.eventHandler.on(EventIds.SET_THEME, (theme: "dark" | "light") => actionSetTheme.perform(theme))
+		this.eventHandler.on(EventIds.OPEN_CONFIG, () => actionOpenConfig.perform());
+		this.eventHandler.on(EventIds.GET_EXIFTOOL_INFO, () => actionGetExiftoolInfo.perform());
+		this.eventHandler.on(EventIds.GET_THEME, () => actionGetTheme.perform());
+		this.eventHandler.on(EventIds.SET_THEME, (theme: "dark" | "light") => actionSetTheme.perform(theme));
 
-		this.eventHandler.on(EventIds.GET_LAST_OPENED_LIBS, () => actionGetLastOpened.perform())
+		this.eventHandler.on(EventIds.GET_LAST_OPENED_LIBS, () => actionGetLastOpened.perform());
 		this.eventHandler.on(EventIds.CREATE_LIBRARY, (payload) => {
 			return actionCreateLibrary.perform(payload.name, payload.targetDir, true)
 				.then((library) => actionAddToLastOpened.perform(library.path, library.name));
-		})
+		});
 		this.eventHandler.on(EventIds.OPEN_LIBRARY, (payload) => {
 			return actionOpenLibrary.perform(payload)
 				.then((library) => actionAddToLastOpened.perform(library.path, library.name));
-		})
-		this.eventHandler.on(EventIds.CLOSE_LIBRARY, () => actionCloseLibrary.perform())
-		this.eventHandler.on(EventIds.GET_LIBRARY_INFO, () => actionGetLibraryInfo.perform())
+		});
+		this.eventHandler.on(EventIds.CLOSE_LIBRARY, () => actionCloseLibrary.perform());
+		this.eventHandler.on(EventIds.GET_LIBRARY_INFO, () => actionGetLibraryInfo.perform());
 
 		this.eventHandler.on(EventIds.GET_GROUP_TREE, (payload) => actionGetGroupTree.perform(payload.includeCollections, payload.includeItemCount));
 		this.eventHandler.on(EventIds.CREATE_GROUP, (payload) => actionCreateGroup.perform(payload.name, payload.parentGroupId));
@@ -140,6 +142,7 @@ export class ActionHandler {
 		this.eventHandler.on(EventIds.MOVE_COLLECTION, (payload) => actionMoveCollection.perform(payload.collectionId, payload.targetGroupId));
 		this.eventHandler.on(EventIds.MOVE_ITEMS, (payload) => actionMoveItems.perform(payload.sourceCollectionId, payload.targetCollectionId, payload.itemIds, payload.copy));
 		this.eventHandler.on(EventIds.REMOVE_ITEMS, (payload) => actionRemoveItems.perform(payload.collectionId, payload.itemIds));
+		this.eventHandler.on(EventIds.IMPORT_ITEMS, (payload) => importService.import(payload));
 
 		this.eventHandler.on(EventIds.GET_ITEMS_BY_COLLECTION, (payload) => actionGetItemsByCollection.perform(payload.collectionId, payload.itemAttributeKeys, payload.includeMissingAttributes));
 		this.eventHandler.on(EventIds.GET_ITEM_BY_ID, (payload) => actionGetItemById.perform(payload));
@@ -148,7 +151,8 @@ export class ActionHandler {
 		this.eventHandler.on(EventIds.GET_ITEM_ATTRIBUTES, (payload) => actionGetItemAttributes.perform(payload));
 		this.eventHandler.on(EventIds.SET_ITEM_ATTRIBUTE, (payload) => actionUpdateItemAttribute.perform(payload.itemId, payload.entryKey, payload.newValue));
 		this.eventHandler.on(EventIds.DELETE_ITEM_ATTRIBUTE, (payload) => actionDeleteItemAttribute.perform(payload.itemId, payload.entryKey));
-		this.eventHandler.on(EventIds.IMPORT_ITEMS, (payload) => importService.import(payload));
+		this.eventHandler.on(EventIds.EMBED_ITEM_ATTRIBUTES, (payload) => actionEmbedItemAttributes.perform(payload.itemIds, payload.allAttributes));
+
 
 	}
 
@@ -159,7 +163,7 @@ export class ActionHandler {
 
 
 	private send(eventId: string, payload: any): Promise<void> {
-		return this.broadcaster(eventId, payload).then(voidThen)
+		return this.broadcaster(eventId, payload).then(voidThen);
 	}
 
 }

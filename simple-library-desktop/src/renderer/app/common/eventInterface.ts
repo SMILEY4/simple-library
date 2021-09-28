@@ -1,5 +1,6 @@
 import {
-    AttributeDTO, AttributeValueDTO,
+    AttributeDTO,
+    AttributeValueDTO,
     CollectionTypeDTO,
     ExiftoolInfoDTO,
     GroupDTO,
@@ -18,7 +19,7 @@ const eventBroadcaster = new EventBroadcaster({
         partner: "main"
     },
     eventIdPrefix: "r",
-    suppressPayloadLog: [EventIds.GET_ITEMS_BY_COLLECTION, EventIds.GET_ITEM_BY_ID],
+    suppressPayloadLog: [EventIds.GET_ITEMS_BY_COLLECTION, EventIds.GET_ITEM_BY_ID]
 });
 
 const eventConsumer = new EventConsumer({
@@ -27,11 +28,11 @@ const eventConsumer = new EventConsumer({
         partner: "main"
     },
     eventIdPrefix: "r",
-    suppressPayloadLog: [EventIds.GET_ITEMS_BY_COLLECTION, EventIds.GET_ITEM_BY_ID],
+    suppressPayloadLog: [EventIds.GET_ITEMS_BY_COLLECTION, EventIds.GET_ITEM_BY_ID]
 });
 
 export function addImportStatusListener(listener: (status: ImportStatusDTO) => void): void {
-    eventConsumer.on<ImportStatusDTO, void>(EventIds.IMPORT_STATUS, listener)
+    eventConsumer.on<ImportStatusDTO, void>(EventIds.IMPORT_STATUS, listener);
 }
 
 export function removeImportStatusListener(): void {
@@ -43,7 +44,7 @@ export function fetchLastOpenedLibraries(): Promise<LastOpenedLibraryDTO[]> {
 }
 
 export function requestOpenLibrary(filepath: string): Promise<void> {
-    return eventBroadcaster.send(EventIds.OPEN_LIBRARY, filepath)
+    return eventBroadcaster.send(EventIds.OPEN_LIBRARY, filepath);
 }
 
 export function requestCreateLibrary(name: string, targetDir: string): Promise<void> {
@@ -95,7 +96,7 @@ export function setItemMetadata(itemId: number, entryKey: string, value: Attribu
 }
 
 export function deleteItemMetadata(itemId: number, entryKey: string): Promise<AttributeDTO | null> {
-    return eventBroadcaster.send(EventIds.DELETE_ITEM_ATTRIBUTE, {itemId: itemId, entryKey: entryKey})
+    return eventBroadcaster.send(EventIds.DELETE_ITEM_ATTRIBUTE, {itemId: itemId, entryKey: entryKey});
 }
 
 export function requestImport(
@@ -143,23 +144,39 @@ export function requestDeleteCollection(collectionId: number): Promise<void> {
 }
 
 export function requestCreateGroup(name: string, parentGroupId: number | null): Promise<void> {
-    return eventBroadcaster.send(EventIds.CREATE_GROUP, {name: name, parentGroupId: parentGroupId}).then();
+    return eventBroadcaster.send(EventIds.CREATE_GROUP, {
+            name: name,
+            parentGroupId: parentGroupId
+        }
+    ).then();
 }
 
 export function requestRenameGroup(groupId: number, name: string): Promise<void> {
-    return eventBroadcaster.send(EventIds.RENAME_GROUP, {groupId: groupId, newName: name});
+    return eventBroadcaster.send(EventIds.RENAME_GROUP, {
+        groupId: groupId,
+        newName: name
+    });
 }
 
 export function requestDeleteGroup(groupId: number, deleteChildren: boolean): Promise<void> {
-    return eventBroadcaster.send(EventIds.DELETE_GROUP, {groupId: groupId, deleteChildren: deleteChildren});
+    return eventBroadcaster.send(EventIds.DELETE_GROUP, {
+        groupId: groupId,
+        deleteChildren: deleteChildren
+    });
 }
 
 export function requestMoveGroup(groupId: number, targetGroupId: number | null): Promise<void> {
-    return eventBroadcaster.send(EventIds.MOVE_GROUP, {groupId: groupId, targetGroupId: targetGroupId});
+    return eventBroadcaster.send(EventIds.MOVE_GROUP, {
+        groupId: groupId,
+        targetGroupId: targetGroupId
+    });
 }
 
 export function requestMoveCollection(collectionId: number, targetGroupId: number | null): Promise<void> {
-    return eventBroadcaster.send(EventIds.MOVE_COLLECTION, {collectionId: collectionId, targetGroupId: targetGroupId});
+    return eventBroadcaster.send(EventIds.MOVE_COLLECTION, {
+        collectionId: collectionId,
+        targetGroupId: targetGroupId
+    });
 }
 
 export function requestOpenItemsExternal(itemIds: number[]): Promise<void> {
@@ -181,4 +198,11 @@ export function setTheme(theme: "dark" | "light"): Promise<void> {
 
 export function getTheme(): Promise<"dark" | "light"> {
     return eventBroadcaster.send(EventIds.GET_THEME);
+}
+
+export function requestEmbedAttributes(itemIds: number[] | null, allAttributes: boolean): Promise<any> { // Todo: any ?
+    return eventBroadcaster.send(EventIds.SET_THEME, {
+        itemIds: itemIds,
+        allAttributes: allAttributes
+    });
 }
