@@ -39,7 +39,8 @@ export class ActionUpdateItemAttribute {
 		return {
 			key: attribute.key,
 			value: newValue,
-			type: attribute.type
+			type: attribute.type,
+			modified: true
 		};
 	}
 

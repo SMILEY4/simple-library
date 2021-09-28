@@ -8,7 +8,7 @@ import {
     useGlobalStateWriteOnly
 } from "../../../components/utils/storeUtils";
 import React from "react";
-import {AttributeDTO, AttributeValueDTO, ItemDTO} from "../../../../common/events/dtoModels";
+import {AttributeDTO, ItemDTO} from "../../../../common/events/dtoModels";
 
 
 // STATE
@@ -44,7 +44,8 @@ const reducerConfigMap: ReducerConfigMap<ItemsActionType, ItemsState> = new Redu
                         if (attribute.key === payload.key) {
                             return {
                                 ...attribute,
-                                value: payload.newValue
+                                value: payload.newValue,
+                                modified: payload.modified
                             };
                         } else {
                             return attribute;
@@ -70,7 +71,8 @@ const reducerConfigMap: ReducerConfigMap<ItemsActionType, ItemsState> = new Redu
                             return {
                                 key: attribute.key,
                                 value: null,
-                                type: "none"
+                                type: "none",
+                                modified: false
                             };
                         } else {
                             return attribute;
@@ -123,15 +125,16 @@ export function useDispatchClearItems(): () => void {
     return () => dispatchSetItems([]);
 }
 
-export function useDispatchUpdateItemAttribute(): (itemId: number, attributeKey: string, newValue: AttributeValueDTO) => void {
+export function useDispatchUpdateItemAttribute(): (itemId: number, attribute: AttributeDTO) => void {
     const dispatch = useItemsDispatch();
-    return (itemId: number, attributeKey: string, newValue: AttributeValueDTO) => {
+    return (itemId: number, attribute: AttributeDTO) => {
         dispatch({
             type: ItemsActionType.UPDATE_ITEM_ATTRIBUTE,
             payload: {
                 itemId: itemId,
-                key: attributeKey,
-                newValue: newValue
+                key: attribute.key,
+                newValue: attribute.value,
+                modified: attribute.modified
             }
         });
     };

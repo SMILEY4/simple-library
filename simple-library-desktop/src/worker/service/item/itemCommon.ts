@@ -16,6 +16,7 @@ export interface Attribute {
 	key: string,
 	value: AttributeValue,
 	type: AttributeType,
+	modified: boolean,
 }
 
 export function rowToItem(row: any | null): Item | null {
@@ -40,14 +41,15 @@ export function rowsToItems(rows: any[]): Item[] {
 
 export function concatAttributeColumnToEntries(str: string): Attribute[] {
 	if (str) {
-		const regexGlobal: RegExp = /"(.+?)"="(.+?)"-"(.+?)"/g;
-		const regex: RegExp = /"(.+?)"="(.+?)"-"(.+?)"/;
+		const regexGlobal: RegExp = /"(.+?)"="(.+?)"-"(.+?)"-"(.+?)"/g;
+		const regex: RegExp = /"(.+?)"="(.+?)"-"(.+?)"-"(.+?)"/;
 		return str.match(regexGlobal).map((strEntry: string) => {
 			const strEntryParts: string[] = strEntry.match(regex);
 			const entry: Attribute = {
 				key: strEntryParts[1],
 				value: stringToAttributeValue(strEntryParts[2], strEntryParts[3] as AttributeType),
-				type: strEntryParts[3] as AttributeType
+				type: strEntryParts[3] as AttributeType,
+				modified: strEntryParts[4] === "1"
 			};
 			return entry;
 		});
@@ -60,7 +62,8 @@ export function rowToAttribute(row: any): Attribute {
 	return {
 		key: row.key,
 		value: stringToAttributeValue(row.value, row.type),
-		type: row.type
+		type: row.type,
+		modified: row.modified === 1
 	};
 }
 
@@ -101,11 +104,10 @@ export function attributeValueToString(value: AttributeValue, type: AttributeTyp
 			case "date":
 				return dateToString(value as Date);
 			case "list":
-				return (value as string[]).join(";")
+				return (value as string[]).join(";");
 		}
 	}
 }
-
 
 export function valueToAttributeType(value: any): AttributeType {
 	if (value === null || value === undefined) {
@@ -128,7 +130,7 @@ export function valueToAttributeType(value: any): AttributeType {
 
 function dateToString(date: Date): string {
 	return date.getFullYear() + "-"
-		+ twoDigits(date.getMonth()+1) + "-"
+		+ twoDigits(date.getMonth() + 1) + "-"
 		+ twoDigits(date.getDate()) + "T"
 		+ twoDigits(date.getHours()) + ":"
 		+ twoDigits(date.getMinutes()) + ":"

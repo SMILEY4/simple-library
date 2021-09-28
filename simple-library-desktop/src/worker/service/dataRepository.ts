@@ -7,88 +7,88 @@ export type VoidResult = Promise<void>
 
 export interface DataRepository {
 
-    open(filepath: string, create: boolean): Promise<void>;
+	open(filepath: string, create: boolean): Promise<void>;
 
-    close(): void;
+	close(): void;
 
-    init(name: string, createDefaultCollection: boolean): Promise<any>;
+	init(name: string, createDefaultCollection: boolean): Promise<any>;
 
-    getLibraryInfo(): QueryResultMany;
+	getLibraryInfo(): QueryResultMany;
 
-    updateLibraryLastOpened(timestamp: number): CommandResultSingle;
+	updateLibraryLastOpened(timestamp: number): CommandResultSingle;
 
-    getItemById(itemId: number): QueryResultSingle;
+	getItemById(itemId: number): QueryResultSingle;
 
-    getItemsByIds(itemIds: number[]): QueryResultMany;
+	getItemsByIds(itemIds: number[]): QueryResultMany;
 
-    getItemsAll(attributeKeys: string[]): QueryResultMany;
+	getItemsAll(attributeKeys: string[]): QueryResultMany;
 
-    getItemsByCollection(collectionId: number, attributeKeys: string[]): QueryResultMany;
+	getItemsByCollection(collectionId: number, attributeKeys: string[]): QueryResultMany;
 
-    getItemsByCustomQuery(query: string, attributeKeys: string[]): QueryResultMany;
+	getItemsByCustomQuery(query: string, attributeKeys: string[]): QueryResultMany;
 
-    getItemByCustomQuery(query: string, attributeKeys: string[]): QueryResultSingle;
+	getItemByCustomQuery(query: string, attributeKeys: string[]): QueryResultSingle;
 
-    getItemCountTotal(): QueryResultSingle;
+	getItemCountTotal(): QueryResultSingle;
 
-    getItemCountByCustomQuery(query: string): QueryResultSingle;
+	getItemCountByCustomQuery(query: string): QueryResultSingle;
 
-    insertItem(filepath: string, timestamp: number, hash: string, thumbnail: string): CommandResultSingle;
+	insertItem(filepath: string, timestamp: number, hash: string, thumbnail: string): CommandResultSingle;
 
-    deleteItems(itemIds: number[]): VoidResult;
-
-
-    getItemAttribute(itemId: number, attributeKey: string): QueryResultSingle;
-
-    getItemAttributesByItem(itemId: number): QueryResultMany;
-
-    insertItemAttributes(itemId: number, attributes: ({ key: string, value: string, type: string })[]): CommandResultSingle;
-
-    updateItemAttributeValue(itemId: number, attributeKey: string, newValue: string): CommandResultSingle
-
-    deleteItemAttribute(itemId: number, attributeKey: string): VoidResult
+	deleteItems(itemIds: number[]): VoidResult;
 
 
-    relateItemsToCollection(collectionId: number, itemIds: number[]): CommandResultSingle;
+	getItemAttribute(itemId: number, attributeKey: string): QueryResultSingle;
 
-    relateItemsToCollectionUnique(srcCollectionId: number, tgtCollectionId: number, itemIds: number[]): CommandResultMany;
+	getItemAttributesByItem(itemId: number): QueryResultMany;
 
-    separateItemsFromCollection(collectionId: number, itemIds: number[]): CommandResultSingle;
+	insertItemAttributes(itemId: number, attributes: ({ key: string, value: string, type: string })[]): CommandResultSingle;
 
+	updateItemAttributeValue(itemId: number, attributeKey: string, newValue: string): CommandResultSingle;
 
+	clearItemAttributeModifiedFlag(itemId: number, attributeKey: string): CommandResultSingle;
 
-    getCollectionById(collectionId: number): QueryResultSingle;
-
-    getAllCollections(): QueryResultMany;
-
-    getAllCollectionsWithItemCounts(): QueryResultMany;
-
-    insertCollection(name: string, type: string, groupId: number | null, query: string | null): CommandResultSingle;
-
-    deleteCollection(collectionId: number): VoidResult;
-
-    updateCollectionName(collectionId: number, newName: string): CommandResultSingle;
-
-    updateCollectionNameAndQuery(collectionId: number, newName: string, newSmartQuery: string | null): CommandResultMany;
-
-    updateCollectionParent(collectionId: number, newParentGroupId: number | null): VoidResult;
-
-    updateCollectionParents(prevParentGroupId: number | null, newParentGroupId: number | null): VoidResult;
+	deleteItemAttribute(itemId: number, attributeKey: string): VoidResult;
 
 
+	relateItemsToCollection(collectionId: number, itemIds: number[]): CommandResultSingle;
 
-    getAllGroups(): QueryResultMany;
+	relateItemsToCollectionUnique(srcCollectionId: number, tgtCollectionId: number, itemIds: number[]): CommandResultMany;
 
-    getGroupById(groupId: number): QueryResultSingle;
+	separateItemsFromCollection(collectionId: number, itemIds: number[]): CommandResultSingle;
 
-    insertGroup(name: string, parentGroupId: number | null): CommandResultSingle;
 
-    deleteGroup(groupId: number): VoidResult;
+	getCollectionById(collectionId: number): QueryResultSingle;
 
-    updateGroupName(groupId: number, newName: string): CommandResultSingle;
+	getAllCollections(): QueryResultMany;
 
-    updateGroupParents(prevParentGroupId: number | null, newParentGroupId: number | null): VoidResult
+	getAllCollectionsWithItemCounts(): QueryResultMany;
 
-    updateGroupParent(groupId: number, newParentGroupId: number | null): VoidResult;
+	insertCollection(name: string, type: string, groupId: number | null, query: string | null): CommandResultSingle;
+
+	deleteCollection(collectionId: number): VoidResult;
+
+	updateCollectionName(collectionId: number, newName: string): CommandResultSingle;
+
+	updateCollectionNameAndQuery(collectionId: number, newName: string, newSmartQuery: string | null): CommandResultMany;
+
+	updateCollectionParent(collectionId: number, newParentGroupId: number | null): VoidResult;
+
+	updateCollectionParents(prevParentGroupId: number | null, newParentGroupId: number | null): VoidResult;
+
+
+	getAllGroups(): QueryResultMany;
+
+	getGroupById(groupId: number): QueryResultSingle;
+
+	insertGroup(name: string, parentGroupId: number | null): CommandResultSingle;
+
+	deleteGroup(groupId: number): VoidResult;
+
+	updateGroupName(groupId: number, newName: string): CommandResultSingle;
+
+	updateGroupParents(prevParentGroupId: number | null, newParentGroupId: number | null): VoidResult;
+
+	updateGroupParent(groupId: number, newParentGroupId: number | null): VoidResult;
 
 }

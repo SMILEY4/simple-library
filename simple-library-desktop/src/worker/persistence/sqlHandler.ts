@@ -33,8 +33,9 @@ import sqlQueryItemAttributes from "./sqlfiles/items/query_item_attributes.sql";
 import sqlQueryItemAttribute from "./sqlfiles/item_attributes/query_item_attribute.sql";
 import sqlInsertItemAttributes from "./sqlfiles/item_attributes/insert_item_attribute.sql";
 import sqlUpdateItemAttribute from "./sqlfiles/item_attributes/update_item_attribute.sql";
-import sqlDeleteItemAttribute from "./sqlfiles/item_attributes/delete_item_attribute.sql"
+import sqlDeleteItemAttribute from "./sqlfiles/item_attributes/delete_item_attribute.sql";
 import sqlInsertItem from "./sqlfiles/items/insert_item.sql";
+import sqlUpdateItemAttributeClearModified from "./sqlfiles/item_attributes/clear_item_attribute_modified.sql";
 
 export module SQL {
 
@@ -236,14 +237,20 @@ export module SQL {
 			.replace(v("value"), str(value));
 	}
 
+	export function updateItemAttributeClearModified(itemId: number, attributeKey: string): string {
+		return sql(sqlUpdateItemAttributeClearModified)
+			.replace(v("itemId"), num(itemId))
+			.replace(v("key"), str(attributeKey));
+	}
+
 	export function deleteItemAttribute(itemId: number, attributeKey: string): string {
 		return sql(sqlDeleteItemAttribute)
 			.replace(v("itemId"), num(itemId))
 			.replace(v("key"), str(attributeKey));
 	}
 
-	export function insertItemAttributes(itemId: number, attributes: ({ key: string, value: any, type: string })[]): string {
-		const entries: string[] = attributes.map(att => `(${str(att.key)}, ${str(att.value)}, ${str(att.type)}, ${num(itemId)})`)
+	export function insertItemAttributes(itemId: number, attributes: ({ key: string, value: any, type: string, modified?: boolean })[]): string {
+		const entries: string[] = attributes.map(att => `(${str(att.key)}, ${str(att.value)}, ${str(att.type)}, ${num(itemId)}, ${bool(att.modified)})`);
 		return sql(sqlInsertItemAttributes)
 			.replace(v("entries"), entries.join(", "));
 	}
@@ -269,7 +276,7 @@ function isNull(): string {
 function str(value: any): string {
 	return value === null || value === undefined
 		? "null"
-		: "'" + (""+value).replace(/'/g, "''") + "'";
+		: "'" + ("" + value).replace(/'/g, "''") + "'";
 }
 
 function num(value: number | null): string {
@@ -286,6 +293,10 @@ function strCsv(values: any[]): string {
 
 function numCsv(values: number[]): string {
 	return !!values ? values.map((value: number) => num(value)).join(", ") : "null";
+}
+
+function bool(value?: boolean): string {
+	return value === true ? "1" : "0";
 }
 
 

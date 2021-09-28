@@ -8,13 +8,13 @@ import {
 	useGlobalStateWriteOnly
 } from "../../../components/utils/storeUtils";
 import React from "react";
-import {AttributeDTO, AttributeValueDTO} from "../../../../common/events/dtoModels";
+import {AttributeDTO} from "../../../../common/events/dtoModels";
 
 
 // STATE
 
 export interface AttributeState {
-	attributes: AttributeDTO[]
+	attributes: AttributeDTO[];
 }
 
 const initialState: AttributeState = {
@@ -52,13 +52,14 @@ const reducerConfigMap: ReducerConfigMap<AttributeActionType, AttributeState> = 
 					key: att.key,
 					type: att.type,
 					value: payload.value,
+					modified: payload.modified
 				};
 			} else {
 				return att;
 			}
 		})
-	})],
-])
+	})]
+]);
 
 
 // CONTEXT
@@ -66,7 +67,7 @@ const reducerConfigMap: ReducerConfigMap<AttributeActionType, AttributeState> = 
 const [
 	stateContext,
 	dispatchContext
-] = buildContext<AttributeActionType, AttributeState>()
+] = buildContext<AttributeActionType, AttributeState>();
 
 
 export function AttributeStateProvider(props: { children: any }) {
@@ -74,11 +75,11 @@ export function AttributeStateProvider(props: { children: any }) {
 }
 
 export function useAttributeContext(): IStateHookResultReadWrite<AttributeState, AttributeActionType> {
-	return useGlobalStateReadWrite<AttributeState, AttributeActionType>(stateContext, dispatchContext)
+	return useGlobalStateReadWrite<AttributeState, AttributeActionType>(stateContext, dispatchContext);
 }
 
 function useAttributeDispatch(): IStateHookResultWriteOnly<AttributeActionType> {
-	return useGlobalStateWriteOnly<AttributeActionType>(dispatchContext)
+	return useGlobalStateWriteOnly<AttributeActionType>(dispatchContext);
 }
 
 export function useStateAttributes() {
@@ -91,9 +92,9 @@ export function useDispatchSetAttributes() {
 	return (attributes: AttributeDTO[]) => {
 		dispatch({
 			type: AttributeActionType.SET,
-			payload: attributes,
+			payload: attributes
 		});
-	}
+	};
 }
 
 export function useDispatchAddAttribute() {
@@ -101,9 +102,9 @@ export function useDispatchAddAttribute() {
 	return (attribute: AttributeDTO) => {
 		dispatch({
 			type: AttributeActionType.ADD,
-			payload: attribute,
+			payload: attribute
 		});
-	}
+	};
 }
 
 export function useDispatchRemoveAttribute() {
@@ -111,20 +112,21 @@ export function useDispatchRemoveAttribute() {
 	return (key: string) => {
 		dispatch({
 			type: AttributeActionType.REMOVE,
-			payload: key,
+			payload: key
 		});
-	}
+	};
 }
 
 export function useDispatchUpdateAttribute() {
 	const dispatch = useAttributeDispatch();
-	return (key: string, value: AttributeValueDTO) => {
+	return (attribute: AttributeDTO) => {
 		dispatch({
 			type: AttributeActionType.UPDATE,
 			payload: {
-				key: key,
-				value: value
-			},
+				key: attribute.key,
+				value: attribute.value,
+				modified: attribute.modified
+			}
 		});
-	}
+	};
 }

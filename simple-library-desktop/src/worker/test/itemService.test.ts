@@ -69,13 +69,13 @@ describe("item-service", () => {
 				SQL.insertItem("/path/to/file/4", 1003, "hash4", "thumbnail4"),
 				SQL.insertItemsIntoCollection(1, [1, 2, 3]),
 				SQL.insertItemAttributes(1, [
-					{key: "att1", value: "value1", type: "text"},
-					{key: "att2", value: "value2", type: "text"},
-					{key: "att3", value: "3", type: "number"}
+					{key: "att1", value: "value1", type: "text", modified: false},
+					{key: "att2", value: "value2", type: "text", modified: false},
+					{key: "att3", value: "3", type: "number", modified: true}
 				]),
 				SQL.insertItemAttributes(2, [
-					{key: "att1", value: "value1", type: "text"},
-					{key: "att2", value: "value2", type: "text"}
+					{key: "att1", value: "value1", type: "text", modified: false},
+					{key: "att2", value: "value2", type: "text", modified: false}
 				])
 			]);
 			// when
@@ -83,11 +83,11 @@ describe("item-service", () => {
 			// then
 			await expect(result).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, [
-					attribute("att1", "value1", "text"),
-					attribute("att3", 3, "number")
+					attribute("att1", "value1", "text", false),
+					attribute("att3", 3, "number", true)
 				]),
 				item(2, "/path/to/file/2", "thumbnail2", "hash2", 1001, [
-					attribute("att1", "value1", "text")
+					attribute("att1", "value1", "text", false)
 				]),
 				item(3, "/path/to/file/3", "thumbnail3", "hash3", 1002)
 			]);
@@ -108,13 +108,13 @@ describe("item-service", () => {
 				SQL.insertItem("/path/to/file/4", 1003, "hash4", "thumbnail4"),
 				SQL.insertItemsIntoCollection(1, [1, 2, 3]),
 				SQL.insertItemAttributes(1, [
-					{key: "att1", value: "value1", type: "text"},
-					{key: "att2", value: "value2", type: "text"},
-					{key: "att3", value: "3", type: "number"}
+					{key: "att1", value: "value1", type: "text", modified: false},
+					{key: "att2", value: "value2", type: "text", modified: false},
+					{key: "att3", value: "3", type: "number", modified: true}
 				]),
 				SQL.insertItemAttributes(2, [
-					{key: "att1", value: "value1", type: "text"},
-					{key: "att2", value: "value2", type: "text"}
+					{key: "att1", value: "value1", type: "text", modified: false},
+					{key: "att2", value: "value2", type: "text", modified: false}
 				])
 			]);
 			// when
@@ -122,11 +122,11 @@ describe("item-service", () => {
 			// then
 			await expect(result).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, [
-					attribute("att1", "value1", "text"),
-					attribute("att3", 3, "number")
+					attribute("att1", "value1", "text", false),
+					attribute("att3", 3, "number", true)
 				]),
 				item(2, "/path/to/file/2", "thumbnail2", "hash2", 1001, [
-					attribute("att1", "value1", "text")
+					attribute("att1", "value1", "text", false)
 				])
 			]);
 		});
@@ -146,13 +146,13 @@ describe("item-service", () => {
 				SQL.insertItem("/path/to/file/4", 1003, "hash4", "thumbnail4"),
 				SQL.insertItemsIntoCollection(1, [1, 2, 3]),
 				SQL.insertItemAttributes(1, [
-					{key: "att1", value: "value1", type: "text"},
-					{key: "att2", value: "value2", type: "text"},
-					{key: "att3", value: "3", type: "number"}
+					{key: "att1", value: "value1", type: "text",modified: false},
+					{key: "att2", value: "value2", type: "text",modified: false},
+					{key: "att3", value: "3", type: "number",modified: true}
 				]),
 				SQL.insertItemAttributes(2, [
-					{key: "att1", value: "value1", type: "text"},
-					{key: "att2", value: "value2", type: "text"}
+					{key: "att1", value: "value1", type: "text",modified: false},
+					{key: "att2", value: "value2", type: "text",modified: false}
 				])
 			]);
 			// when
@@ -160,11 +160,11 @@ describe("item-service", () => {
 			// then
 			await expect(result).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, [
-					attribute("att1", "value1", "text"),
-					attribute("att3", 3, "number")
+					attribute("att1", "value1", "text", false),
+					attribute("att3", 3, "number", true)
 				]),
 				item(2, "/path/to/file/2", "thumbnail2", "hash2", 1001, [
-					attribute("att1", "value1", "text")
+					attribute("att1", "value1", "text", false)
 				]),
 				item(3, "/path/to/file/3", "thumbnail3", "hash3", 1002, []),
 				item(4, "/path/to/file/4", "thumbnail4", "hash4", 1003, [])
@@ -413,23 +413,23 @@ describe("item-service", () => {
 				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
 				SQL.insertItem("/path/to/file/2", 1001, "hash2", "thumbnail2"),
 				SQL.insertItemAttributes(1, [
-					{key: "att1", value: "value1", type: "text"},
-					{key: "att2", value: "value2", type: "text"},
-					{key: "att3a", value: "3", type: "number"}
+					{key: "att1", value: "value1", type: "text", modified: true},
+					{key: "att2", value: "value2", type: "text", modified: false},
+					{key: "att3a", value: "3", type: "number", modified: false}
 				]),
 				SQL.insertItemAttributes(2, [
-					{key: "att1", value: "value1", type: "text"},
-					{key: "att2", value: "value2", type: "text"},
-					{key: "att3b", value: "false", type: "boolean"}
+					{key: "att1", value: "value1", type: "text", modified: false},
+					{key: "att2", value: "value2", type: "text", modified: true},
+					{key: "att3b", value: "false", type: "boolean", modified: false}
 				])
 			]);
 			// when
 			const result: Promise<Attribute[]> = actionGetAttribs.perform(2);
 			// then
 			await expect(result).resolves.toEqual([
-				attribute("att1", "value1", "text"),
-				attribute("att2", "value2", "text"),
-				attribute("att3b", false, "boolean")
+				attribute("att1", "value1", "text", false),
+				attribute("att2", "value2", "text", true),
+				attribute("att3b", false, "boolean", false)
 			]);
 		});
 
@@ -473,19 +473,19 @@ describe("item-service", () => {
 			await dbAccess.runMultipleSeq([
 				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
 				SQL.insertItemAttributes(1, [
-					{key: "att1", value: "value1", type: "text"},
-					{key: "att2", value: "value2", type: "text"},
-					{key: "att3a", value: "3", type: "number"}
+					{key: "att1", value: "value1", type: "text", modified: false},
+					{key: "att2", value: "value2", type: "text", modified: false},
+					{key: "att3a", value: "3", type: "number", modified: false}
 				])
 			]);
 			// when
 			const result: Promise<Attribute> = actionUpdateAttrib.perform(1, "att2", "new value");
 			// then
-			await expect(result).resolves.toEqual(attribute("att2", "new value", "text"));
+			await expect(result).resolves.toEqual(attribute("att2", "new value", "text", true));
 			await expect(actionGetAttribs.perform(1)).resolves.toEqual([
-				attribute("att1", "value1", "text"),
-				attribute("att2", "new value", "text"),
-				attribute("att3a", 3, "number")
+				attribute("att1", "value1", "text", false),
+				attribute("att2", "new value", "text", true),
+				attribute("att3a", 3, "number", false)
 			]);
 		});
 
@@ -499,9 +499,9 @@ describe("item-service", () => {
 			await dbAccess.runMultipleSeq([
 				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
 				SQL.insertItemAttributes(1, [
-					{key: "att1", value: "value1", type: "text"},
-					{key: "att2", value: "value2", type: "text"},
-					{key: "att3a", value: "3", type: "number"}
+					{key: "att1", value: "value1", type: "text", modified: false},
+					{key: "att2", value: "value2", type: "text", modified: true},
+					{key: "att3a", value: "3", type: "number", modified: false}
 				])
 			]);
 			// when
@@ -509,9 +509,9 @@ describe("item-service", () => {
 			// then
 			await expect(result).rejects.toBeDefined();
 			await expect(actionGetAttribs.perform(1)).resolves.toEqual([
-				attribute("att1", "value1", "text"),
-				attribute("att2", "value2", "text"),
-				attribute("att3a", 3, "number")
+				attribute("att1", "value1", "text", false),
+				attribute("att2", "value2", "text", true),
+				attribute("att3a", 3, "number", false)
 			]);
 		});
 
@@ -525,9 +525,9 @@ describe("item-service", () => {
 			await dbAccess.runMultipleSeq([
 				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
 				SQL.insertItemAttributes(1, [
-					{key: "att1", value: "value1", type: "text"},
-					{key: "att2", value: "value2", type: "text"},
-					{key: "att3a", value: "3", type: "number"}
+					{key: "att1", value: "value1", type: "text", modified: false},
+					{key: "att2", value: "value2", type: "text", modified: true},
+					{key: "att3a", value: "3", type: "number", modified: false}
 				])
 			]);
 			// when
@@ -535,9 +535,9 @@ describe("item-service", () => {
 			// then
 			await expect(result).rejects.toBeDefined();
 			await expect(actionGetAttribs.perform(1)).resolves.toEqual([
-				attribute("att1", "value1", "text"),
-				attribute("att2", "value2", "text"),
-				attribute("att3a", 3, "number")
+				attribute("att1", "value1", "text", false),
+				attribute("att2", "value2", "text", true),
+				attribute("att3a", 3, "number", false)
 			]);
 		});
 
@@ -556,24 +556,24 @@ describe("item-service", () => {
 				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
 				SQL.insertItem("/path/to/file/2", 2000, "hash2", "thumbnail2"),
 				SQL.insertItemAttributes(1, [
-					{key: "att1", value: "value1", type: "text"},
-					{key: "att2", value: "value2", type: "text"},
-					{key: "att3a", value: "3", type: "number"}
+					{key: "att1", value: "value1", type: "text", modified: false},
+					{key: "att2", value: "value2", type: "text", modified: false},
+					{key: "att3a", value: "3", type: "number", modified: true}
 				]),
 				SQL.insertItemAttributes(2, [
-					{key: "att2", value: "value2", type: "text"},
+					{key: "att2", value: "value2", type: "text", modified: false},
 				])
 			]);
 			// when
 			const result: Promise<Attribute | null> = actionDeleteAttrib.perform(1, "att2");
 			// then
-			await expect(result).resolves.toEqual(attribute("att2", "value2", "text"));
+			await expect(result).resolves.toEqual(attribute("att2", "value2", "text", false));
 			await expect(actionGetAttribs.perform(1)).resolves.toEqual([
-				attribute("att1", "value1", "text"),
-				attribute("att3a", 3, "number")
+				attribute("att1", "value1", "text", false),
+				attribute("att3a", 3, "number", true)
 			]);
 			await expect(actionGetAttribs.perform(2)).resolves.toEqual([
-				attribute("att2", "value2", "text"),
+				attribute("att2", "value2", "text", false),
 			]);
 		});
 
@@ -587,9 +587,9 @@ describe("item-service", () => {
 			await dbAccess.runMultipleSeq([
 				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
 				SQL.insertItemAttributes(1, [
-					{key: "att1", value: "value1", type: "text"},
-					{key: "att2", value: "value2", type: "text"},
-					{key: "att3a", value: "3", type: "number"}
+					{key: "att1", value: "value1", type: "text", modified: false},
+					{key: "att2", value: "value2", type: "text", modified: true},
+					{key: "att3a", value: "3", type: "number", modified: false}
 				])
 			]);
 			// when
@@ -597,9 +597,9 @@ describe("item-service", () => {
 			// then
 			await expect(result).resolves.toEqual(null);
 			await expect(actionGetAttribs.perform(1)).resolves.toEqual([
-				attribute("att1", "value1", "text"),
-				attribute("att2", "value2", "text"),
-				attribute("att3a", 3, "number")
+				attribute("att1", "value1", "text", false),
+				attribute("att2", "value2", "text", true),
+				attribute("att3a", 3, "number", false)
 			]);
 		});
 
@@ -620,11 +620,12 @@ function item(id: number, path: string, thumbnail: string, hash: string, timesta
 	};
 }
 
-function attribute(key: string, value: any, type: AttributeType): Attribute {
+function attribute(key: string, value: any, type: AttributeType, modified: boolean): Attribute {
 	return {
 		key: key,
 		value: value,
-		type: type
+		type: type,
+		modified: modified
 	};
 }
 

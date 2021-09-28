@@ -147,7 +147,7 @@ export class ImportService {
 		for (let i = 0; i < amountFiles; i++) {
 			await Promise.resolve(files[i])
 				.then((currentFile: string) => this.importFile(i, currentFile, context.data))
-				.catch(([file, error]) => context.errors.push([file, error]))
+				.catch(([file, error]) => context.errors.push([file, error.toString()]))
 				.then(() => this.sendImportStatus(i + 1, amountFiles));
 		}
 		return context;
