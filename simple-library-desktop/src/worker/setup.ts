@@ -35,6 +35,9 @@ export function initWorker(runInMain?: boolean, targetBrowserWindow?: BrowserWin
             case EventIds.IMPORT_STATUS: {
                 return eventBroadcaster.send(EventIds.IMPORT_STATUS, payload)
             }
+            case EventIds.EMBED_ITEM_ATTRIBUTES_STATUS: {
+                return eventBroadcaster.send(EventIds.EMBED_ITEM_ATTRIBUTES_STATUS, payload)
+            }
             default: {
                 return Promise.resolve();
             }

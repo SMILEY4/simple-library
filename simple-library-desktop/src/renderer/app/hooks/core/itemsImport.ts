@@ -49,6 +49,7 @@ export function useImportItems() {
 
 		const statusListener = (status: ImportStatusDTO) => notificationUpdate(importStatusNotificationId, status);
 		addImportStatusListener(statusListener);
+
 		return requestImport(
 			data,
 			(result: ImportResultDTO) => notificationAdd(genNotificationId(), AppNotificationType.IMPORT_SUCCESSFUL, result),

@@ -296,7 +296,8 @@ function mockEmbedAction(): [ActionEmbedItemAttributes, ActionCreateLibrary, DbA
 	const embedAction = new ActionEmbedItemAttributes(
 		new ActionGetExiftoolInfo(configAccess),
 		fsWrapper,
-		new SQLiteDataRepository(dbAccess));
+		new SQLiteDataRepository(dbAccess),
+		() => Promise.resolve());
 	embedAction["embedItem"] = jest.fn().mockReturnValue(Promise.resolve(undefined)) as any;
 
 	const actionCreateLibrary = new ActionCreateLibrary(new SQLiteDataRepository(dbAccess), fsWrapper);

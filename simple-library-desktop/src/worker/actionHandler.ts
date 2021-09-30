@@ -46,6 +46,7 @@ import {EventIds} from "../common/events/eventIds";
 import {DataRepository} from "./service/dataRepository";
 import {ActionDeleteItemAttribute} from "./service/item/actionDeleteItemAttribute";
 import {ActionEmbedItemAttributes} from "./service/item/actionEmbedItemAttributes";
+import {EmbedStatusDTO, ImportStatusDTO} from "../common/events/dtoModels";
 
 export class ActionHandler {
 
@@ -94,7 +95,12 @@ export class ActionHandler {
 		const actionOpenItemsExternal = new ActionOpenItemsExternal(dataRepository, fsWrapper);
 		const actionUpdateItemAttribute = new ActionUpdateItemAttribute(dataRepository);
 		const actionDeleteItemAttribute = new ActionDeleteItemAttribute(dataRepository);
-		const actionEmbedItemAttributes = new ActionEmbedItemAttributes(actionGetExiftoolInfo, dataRepository);
+		const actionEmbedItemAttributes = new ActionEmbedItemAttributes(
+			actionGetExiftoolInfo,
+			fsWrapper,
+			dataRepository,
+			(status: EmbedStatusDTO) => this.send(EventIds.EMBED_ITEM_ATTRIBUTES_STATUS, status)
+		);
 
 		const actionCloseLibrary = new ActionCloseLibrary(dataRepository);
 		const actionCreateLibrary = new ActionCreateLibrary(dataRepository, fsWrapper);
@@ -109,7 +115,7 @@ export class ActionHandler {
 			new ImportStepRename(),
 			new ImportStepImportTarget(fsWrapper),
 			new ImportStepMetadata(actionGetExiftoolInfo),
-			(status: any) => this.send(EventIds.IMPORT_STATUS, status)
+			(status: ImportStatusDTO) => this.send(EventIds.IMPORT_STATUS, status)
 		);
 
 		this.eventHandler.on(EventIds.OPEN_CONFIG, () => actionOpenConfig.perform());

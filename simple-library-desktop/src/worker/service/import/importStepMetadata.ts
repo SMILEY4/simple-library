@@ -15,15 +15,30 @@ export class ImportStepMetadata {
 
 	public handle(itemData: ItemData): Promise<ItemData> {
 		return this.exifHandler.open()
-			.readMetadata(itemData.sourceFilepath)
-			.then((data: any) => this.flatten(data.data[0]))
-			.then((entries: Attribute[]) => itemData.attributes = entries)
-			.then(() => this.exifHandler.close())
-			.catch((e: any) => {
-				this.exifHandler.close();
-				throw "Error during metadata-extraction: " + e;
-			})
-			.then(() => itemData);
+			.then(handler => {
+				return handler
+					.readMetadata(itemData.sourceFilepath)
+					.then((data: any) => this.flatten(data.data[0]))
+					.then((entries: Attribute[]) => itemData.attributes = entries)
+					.then(() => handler.close())
+					.catch((e: any) => {
+						handler.close();
+						throw "Error during metadata-extraction: " + e;
+					})
+					.then(() => itemData);
+			});
+
+
+		// return this.exifHandler.open()
+		// 	.readMetadata(itemData.sourceFilepath)
+		// 	.then((data: any) => this.flatten(data.data[0]))
+		// 	.then((entries: Attribute[]) => itemData.attributes = entries)
+		// 	.then(() => this.exifHandler.close())
+		// 	.catch((e: any) => {
+		// 		this.exifHandler.close();
+		// 		throw "Error during metadata-extraction: " + e;
+		// 	})
+		// 	.then(() => itemData);
 	}
 
 

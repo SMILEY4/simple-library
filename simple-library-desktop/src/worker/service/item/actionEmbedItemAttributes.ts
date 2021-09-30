@@ -3,11 +3,14 @@ import {ActionGetExiftoolInfo} from "../config/actionGetExiftoolInfo";
 import {ExifHandler} from "../exifHandler";
 import {ExtendedAttribute, rowToExtendedAttribute} from "./itemCommon";
 import {FileSystemWrapper} from "../fileSystemWrapper";
+import {EmbedStatusDTO} from "../../../common/events/dtoModels";
 
 export interface EmbedReport {
 	amountProcessedItems: number,
 	errors: ({ itemId: number, filepath: string, error: string })[]
 }
+
+export type EmbedStatusSender = (status: EmbedStatusDTO) => Promise<void>;
 
 /**
  * write the attributes of the given items into their files.
@@ -17,21 +20,31 @@ export class ActionEmbedItemAttributes {
 	private readonly actionGetExiftoolInfo: ActionGetExiftoolInfo;
 	private readonly fsWrapper: FileSystemWrapper;
 	private readonly repository: DataRepository;
+	private readonly embedStatusSender: EmbedStatusSender;
 
 
-	constructor(actionGetExiftoolInfo: ActionGetExiftoolInfo, fsWrapper: FileSystemWrapper, repository: DataRepository) {
+	constructor(actionGetExiftoolInfo: ActionGetExiftoolInfo,
+				fsWrapper: FileSystemWrapper,
+				repository: DataRepository,
+				embedStatusSender: EmbedStatusSender
+	) {
 		this.actionGetExiftoolInfo = actionGetExiftoolInfo;
 		this.fsWrapper = fsWrapper;
 		this.repository = repository;
+		this.embedStatusSender = embedStatusSender;
 	}
 
 
 	public perform(itemIds: number[] | null, allAttributes: boolean): Promise<EmbedReport> {
-		const exifHandler = new ExifHandler(this.actionGetExiftoolInfo, true);
-		return this.getItemAttributes(itemIds, !allAttributes)
-			.then(attribs => this.attributesToMetadataGroups(attribs))
-			.then(itemGroups => this.embedItems(itemGroups, exifHandler))
-			.finally(() => exifHandler.close());
+		return new ExifHandler(this.actionGetExiftoolInfo, false)
+			.open()
+			.then(exifHandler => {
+				return this.getItemAttributes(itemIds, !allAttributes)
+					.then(attribs => this.attributesToMetadataGroups(attribs))
+					.then(itemGroups => this.embedItems(itemGroups, exifHandler))
+					.then(() => null)
+					.finally(() => exifHandler.close());
+			});
 	}
 
 
@@ -89,6 +102,7 @@ export class ActionEmbedItemAttributes {
 
 
 	private async embedItems(items: ({ itemId: number, filepath: string, metadata: object })[], exifHandler: ExifHandler): Promise<EmbedReport> {
+		console.log("Start embedding attributes of " + items.length + " items.")
 		const report: EmbedReport = {
 			amountProcessedItems: items.length,
 			errors: []
@@ -111,12 +125,23 @@ export class ActionEmbedItemAttributes {
 					error: "File not found."
 				});
 			}
+			await this.sendStatus(items.length, i + 1);
 		}
+		console.log("Finished embedding attributes of " + items.length + " items.")
 		return report;
 	}
 
+
 	private embedItem(filepath: string, metadata: object, exifHandler: ExifHandler): Promise<void> {
 		return exifHandler.writeMetadata(filepath, false, true, metadata);
+	}
+
+
+	private sendStatus(totalAmount: number, completedAmount: number): Promise<void> {
+		return this.embedStatusSender({
+			totalAmountItems: totalAmount,
+			completedItems: completedAmount
+		});
 	}
 
 }

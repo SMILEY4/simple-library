@@ -19,10 +19,11 @@ export class ExifHandler {
 		return new exiftool.ExiftoolProcess(actionGetExiftoolInfo.perform().defined ? actionGetExiftoolInfo.perform().location : "");
 	}
 
-	public open(): ExifHandler {
+	public open(): Promise<ExifHandler> {
 		if (this.exiftoolProcess) {
-			this.exiftoolProcess.open();
-			return this;
+			const instanceThis: ExifHandler = this;
+			return this.exiftoolProcess.open()
+				.then(() => instanceThis);
 		} else {
 			throw "Can`t open exiftool: exiftoolProcess missing.";
 		}
@@ -54,7 +55,7 @@ export class ExifHandler {
 			.then(() => this.writeMetadataSync(filepath, replaceAll, overwrite, data));
 	}
 
-	public writeMetadataSync(filepath: string, replaceAll: boolean, overwrite: boolean, data: any): void {
+	public writeMetadataSync(filepath: string, replaceAll: boolean, overwrite: boolean, data: any): any {
 		const options: string[] = [
 			"codedcharacterset=utf8",
 			"charset filename=utf8"
@@ -62,7 +63,7 @@ export class ExifHandler {
 		if (overwrite) {
 			options.push("overwrite_original");
 		}
-		this.exiftoolProcess.writeMetadata(
+		return this.exiftoolProcess.writeMetadata(
 			filepath,
 			{
 				all: replaceAll ? "" : undefined,

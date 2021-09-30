@@ -239,6 +239,28 @@ export function toNotificationEntry(notificationData: AppNotification, onClose: 
                 onClose: () => onClose()
             };
         }
+        case AppNotificationType.ATTRIBUTES_EMBED_STATUS: {
+            return {
+                id: notificationData.id,
+                type: "info",
+                title: "Embedding...",
+                content: notificationData.data
+                    ? (notificationData.data.completedItems + "/" + notificationData.data.totalAmountItems + " files embedded.")
+                    : null,
+                closable: true,
+                onClose: () => onClose()
+            };
+        }
+        case AppNotificationType.ATTRIBUTES_EMBED_FINISHED: {
+            return {
+                id: notificationData.id,
+                type: "success",
+                title: "Finished Embedding",
+                content: "Embedded data of " + notificationData.data.totalAmountItems + " files.",
+                closable: true,
+                onClose: () => onClose()
+            };
+        }
     }
 }
 

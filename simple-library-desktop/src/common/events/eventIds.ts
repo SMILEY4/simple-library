@@ -25,7 +25,8 @@ export module EventIds {
     export const GET_ITEM_ATTRIBUTES = "item.attributes.get";
     export const SET_ITEM_ATTRIBUTE = "item.attributes.set";
     export const DELETE_ITEM_ATTRIBUTE = "item.attributes.delete";
-    export const EMBED_ITEM_ATTRIBUTES = "item.attributes.embed"
+    export const EMBED_ITEM_ATTRIBUTES = "item.attributes.embed";
+    export const EMBED_ITEM_ATTRIBUTES_STATUS = "item.attributes.embed.status"
     export const OPEN_ITEMS = "item.open-external";
     export const GET_LAST_OPENED_LIBS = "library.last-opened.get";
     export const CREATE_LIBRARY = "library.create";

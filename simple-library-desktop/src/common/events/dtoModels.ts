@@ -123,3 +123,13 @@ export function renamePartTypeAllowsUserInput(type: RenamePartTypeDTO): boolean 
 			return false;
 	}
 }
+
+export interface EmbedStatusDTO {
+	totalAmountItems: number,
+	completedItems: number,
+}
+
+export interface EmbedReportDTO {
+	amountProcessedItems: number,
+	errors: ({ itemId: number, filepath: string, error: string })[]
+}
