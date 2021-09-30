@@ -50,7 +50,8 @@ export class ExifHandler {
 	}
 
 	public writeMetadata(filepath: string, replaceAll: boolean, overwrite: boolean, data: any): Promise<void> {
-		return Promise.resolve(this.writeMetadata(filepath, replaceAll, overwrite, data));
+		return Promise.resolve()
+			.then(() => this.writeMetadataSync(filepath, replaceAll, overwrite, data));
 	}
 
 	public writeMetadataSync(filepath: string, replaceAll: boolean, overwrite: boolean, data: any): void {

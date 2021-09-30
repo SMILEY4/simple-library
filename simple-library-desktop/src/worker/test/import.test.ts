@@ -15,7 +15,6 @@ import {ActionGetExiftoolInfo} from "../service/config/actionGetExiftoolInfo";
 import {ActionCreateLibrary} from "../service/library/actionCreateLibrary";
 import {SQLiteDataRepository} from "../persistence/sqliteRepository";
 import {AttributeType} from "../service/item/itemCommon";
-import {ExifHandler} from "../service/exifHandler";
 
 describe("import", () => {
 

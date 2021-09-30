@@ -42,6 +42,10 @@ export interface DataRepository {
 
 	getItemAttributesByItem(itemId: number): QueryResultMany;
 
+	getAllExtendedItemAttributes(onlyModified: boolean): QueryResultMany;
+
+	getExtendedItemAttributesByItemIds(itemIds: number[], onlyModified: boolean): QueryResultMany;
+
 	insertItemAttributes(itemId: number, attributes: ({ key: string, value: string, type: string })[]): CommandResultSingle;
 
 	updateItemAttributeValue(itemId: number, attributeKey: string, newValue: string): CommandResultSingle;
@@ -49,7 +53,6 @@ export interface DataRepository {
 	clearItemAttributeModifiedFlag(itemId: number, attributeKey: string): CommandResultSingle;
 
 	deleteItemAttribute(itemId: number, attributeKey: string): VoidResult;
-
 
 	relateItemsToCollection(collectionId: number, itemIds: number[]): CommandResultSingle;
 

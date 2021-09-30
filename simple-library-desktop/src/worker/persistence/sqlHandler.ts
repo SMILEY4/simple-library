@@ -36,6 +36,11 @@ import sqlUpdateItemAttribute from "./sqlfiles/item_attributes/update_item_attri
 import sqlDeleteItemAttribute from "./sqlfiles/item_attributes/delete_item_attribute.sql";
 import sqlInsertItem from "./sqlfiles/items/insert_item.sql";
 import sqlUpdateItemAttributeClearModified from "./sqlfiles/item_attributes/clear_item_attribute_modified.sql";
+import sqlQueryItemAttributesAll from "./sqlfiles/item_attributes/query_item_attributes_all.sql";
+import sqlQueryItemAttributesAllModified from "./sqlfiles/item_attributes/query_item_attributes_all_modified.sql";
+import sqlQueryItemAttributesByItems from "./sqlfiles/item_attributes/query_item_attributes_by_items.sql";
+import sqlQueryItemAttributesModifiedByItems
+	from "./sqlfiles/item_attributes/query_item_attributes_modified_by_items.sql";
 
 export module SQL {
 
@@ -253,6 +258,24 @@ export module SQL {
 		const entries: string[] = attributes.map(att => `(${str(att.key)}, ${str(att.value)}, ${str(att.type)}, ${num(itemId)}, ${bool(att.modified)})`);
 		return sql(sqlInsertItemAttributes)
 			.replace(v("entries"), entries.join(", "));
+	}
+
+	export function queryExtendedItemAttributesAll(onlyModified: boolean): string {
+		if (onlyModified) {
+			return sql(sqlQueryItemAttributesAllModified);
+		} else {
+			return sql(sqlQueryItemAttributesAll);
+		}
+	}
+
+	export function queryExtendedItemAttributesByItemIds(itemIds: number[], onlyModified: boolean): string {
+		if (onlyModified) {
+			return sql(sqlQueryItemAttributesModifiedByItems)
+				.replace(v("itemIds"), numCsv(itemIds));
+		} else {
+			return sql(sqlQueryItemAttributesByItems)
+				.replace(v("itemIds"), numCsv(itemIds));
+		}
 	}
 
 }

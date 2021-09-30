@@ -3,7 +3,7 @@ import {ImportTargetAction, ItemData} from "./importService";
 
 export class ImportStepImportTarget {
 
-	fsWrapper: FileSystemWrapper;
+	private readonly fsWrapper: FileSystemWrapper;
 
 	constructor(fsWrapper: FileSystemWrapper) {
 		this.fsWrapper = fsWrapper;

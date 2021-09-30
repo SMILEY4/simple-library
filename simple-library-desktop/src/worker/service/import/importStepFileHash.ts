@@ -6,7 +6,7 @@ const crypto = require('crypto');
 
 export class ImportStepFileHash {
 
-    fsWrapper: FileSystemWrapper;
+    private readonly fsWrapper: FileSystemWrapper;
 
     constructor(fsWrapper: FileSystemWrapper) {
         this.fsWrapper = fsWrapper;

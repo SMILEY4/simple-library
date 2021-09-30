@@ -19,6 +19,11 @@ export interface Attribute {
 	modified: boolean,
 }
 
+export interface ExtendedAttribute extends Attribute {
+	itemId: number,
+	filepath: string
+}
+
 export function rowToItem(row: any | null): Item | null {
 	if (row) {
 		return {
@@ -64,6 +69,17 @@ export function rowToAttribute(row: any): Attribute {
 		value: stringToAttributeValue(row.value, row.type),
 		type: row.type,
 		modified: row.modified === 1
+	};
+}
+
+export function rowToExtendedAttribute(row: any): ExtendedAttribute {
+	return {
+		key: row.key,
+		value: stringToAttributeValue(row.value, row.type),
+		type: row.type,
+		modified: row.modified === 1,
+		itemId: row.item_id,
+		filepath: row.filepath
 	};
 }
 

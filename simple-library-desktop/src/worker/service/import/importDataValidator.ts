@@ -4,7 +4,7 @@ import {BulkRenameInstruction, ImportFileTarget, ImportProcessData, RenamePartTy
 
 export class ImportDataValidator {
 
-    fsWrapper: FileSystemWrapper;
+    private readonly fsWrapper: FileSystemWrapper;
 
 
     constructor(fsWrapper: FileSystemWrapper) {
