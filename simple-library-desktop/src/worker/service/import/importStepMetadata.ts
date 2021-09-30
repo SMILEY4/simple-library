@@ -5,28 +5,38 @@ import {ExifHandler} from "../exifHandler";
 
 export class ImportStepMetadata {
 
-	private readonly exifHandler: ExifHandler;
-
+	// private readonly exifHandler: ExifHandler;
+	private readonly actionGetExiftoolInfo: ActionGetExiftoolInfo;
 
 	constructor(actionGetExiftoolInfo: ActionGetExiftoolInfo) {
-		this.exifHandler = new ExifHandler(actionGetExiftoolInfo, false);
+		this.actionGetExiftoolInfo = actionGetExiftoolInfo;
+		// this.exifHandler = new ExifHandler(actionGetExiftoolInfo, false);
 	}
 
 
 	public handle(itemData: ItemData): Promise<ItemData> {
-		return this.exifHandler.open()
-			.then(handler => {
-				return handler
-					.readMetadata(itemData.sourceFilepath)
-					.then((data: any) => this.flatten(data.data[0]))
-					.then((entries: Attribute[]) => itemData.attributes = entries)
-					.then(() => handler.close())
-					.catch((e: any) => {
-						handler.close();
-						throw "Error during metadata-extraction: " + e;
-					})
-					.then(() => itemData);
-			});
+		return new ExifHandler(this.actionGetExiftoolInfo)
+			.readMetadata(itemData.sourceFilepath)
+			.then((data: any) => this.flatten(data.data[0]))
+			.then((entries: Attribute[]) => itemData.attributes = entries)
+			.catch((e: any) => {
+				throw "Error during metadata-extraction: " + e;
+			})
+			.then(() => itemData);
+
+		// return this.exifHandler.open()
+		// 	.then(handler => {
+		// 		return handler
+		// 			.readMetadata(itemData.sourceFilepath)
+		// 			.then((data: any) => this.flatten(data.data[0]))
+		// 			.then((entries: Attribute[]) => itemData.attributes = entries)
+		// 			.then(() => handler.close())
+		// 			.catch((e: any) => {
+		// 				handler.close();
+		// 				throw "Error during metadata-extraction: " + e;
+		// 			})
+		// 			.then(() => itemData);
+		// 	});
 
 
 		// return this.exifHandler.open()

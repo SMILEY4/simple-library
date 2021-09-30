@@ -55,6 +55,7 @@ describe("embed attributes", () => {
 		expect(funcWriteMetadata).toHaveBeenNthCalledWith(3, "/path/to/file/3", {
 			att4: true
 		}, expect.anything());
+		await expect(dbAccess.queryAll(SQL.queryExtendedItemAttributesAll(true)).then(attribs => attribs.length)).resolves.toEqual(0)
 	});
 
 	test("embed modified attributes of all items", async () => {
@@ -95,6 +96,7 @@ describe("embed attributes", () => {
 		expect(funcWriteMetadata).toHaveBeenNthCalledWith(2, "/path/to/file/3", {
 			att4: true
 		}, expect.anything());
+		await expect(dbAccess.queryAll(SQL.queryExtendedItemAttributesAll(true)).then(attribs => attribs.length)).resolves.toEqual(0)
 	});
 
 	test("embed all attributes of given items", async () => {
@@ -137,6 +139,7 @@ describe("embed attributes", () => {
 			att1: ["e1", "e2", "e3"],
 			att2: "value2"
 		}, expect.anything());
+		await expect(dbAccess.queryAll(SQL.queryExtendedItemAttributesAll(true)).then(attribs => attribs.length)).resolves.toEqual(0)
 	});
 
 	test("embed modified attributes of given items", async () => {
@@ -174,6 +177,7 @@ describe("embed attributes", () => {
 			att2: "value2",
 			att3: 3
 		}, expect.anything());
+		await expect(dbAccess.queryAll(SQL.queryExtendedItemAttributesAll(true)).then(attribs => attribs.length)).resolves.toEqual(0)
 	});
 
 	test("embed attributes missing files", async () => {
@@ -219,6 +223,7 @@ describe("embed attributes", () => {
 		expect(funcWriteMetadata).toHaveBeenNthCalledWith(2, "/path/to/file/3", {
 			att4: true
 		}, expect.anything());
+		await expect(dbAccess.queryAll(SQL.queryExtendedItemAttributesAll(true)).then(attribs => attribs.length)).resolves.toEqual(0)
 	});
 
 	test("embed attributes exiftool exception", async () => {
@@ -281,6 +286,7 @@ describe("embed attributes", () => {
 		expect(funcWriteMetadataException).toHaveBeenNthCalledWith(3, "/path/to/file/3", {
 			att4: true
 		}, expect.anything());
+		await expect(dbAccess.queryAll(SQL.queryExtendedItemAttributesAll(true)).then(attribs => attribs.length)).resolves.toEqual(0)
 	});
 
 });

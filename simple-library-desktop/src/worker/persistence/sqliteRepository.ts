@@ -109,11 +109,11 @@ export class SQLiteDataRepository implements DataRepository {
         return this.dbAccess.run(SQL.updateItemAttribute(itemId, attributeKey, newValue));
     }
 
-    public clearItemAttributeModifiedFlag(itemId: number, attributeKey: string): CommandResultSingle {
+    clearItemAttributeModifiedFlag(itemId: number, attributeKey: string): CommandResultSingle {
         return this.dbAccess.run(SQL.updateItemAttributeClearModified(itemId, attributeKey));
     }
 
-    public deleteItemAttribute(itemId: number, attributeKey: string): VoidResult {
+    deleteItemAttribute(itemId: number, attributeKey: string): VoidResult {
         return this.dbAccess.run(SQL.deleteItemAttribute(itemId, attributeKey)).then(voidThen);
     }
 

@@ -8,69 +8,32 @@ export class ExifHandler {
 
 	exiftoolProcess: any;
 
-	constructor(actionGetExiftoolInfo: ActionGetExiftoolInfo, openImmediately: boolean) {
+	constructor(actionGetExiftoolInfo: ActionGetExiftoolInfo) {
 		this.exiftoolProcess = ExifHandler.createExiftoolProcess(actionGetExiftoolInfo);
-		if (openImmediately) {
-			this.open();
-		}
+
 	}
+
 
 	private static createExiftoolProcess(actionGetExiftoolInfo: ActionGetExiftoolInfo): any {
 		return new exiftool.ExiftoolProcess(actionGetExiftoolInfo.perform().defined ? actionGetExiftoolInfo.perform().location : "");
 	}
 
-	public open(): Promise<ExifHandler> {
-		if (this.exiftoolProcess) {
-			const instanceThis: ExifHandler = this;
-			return this.exiftoolProcess.open()
-				.then(() => instanceThis);
-		} else {
-			throw "Can`t open exiftool: exiftoolProcess missing.";
-		}
-
-	}
-
-	public close(): Promise<void> {
-		if (this.exiftoolProcess) {
-			return this.exiftoolProcess.close();
-		} else {
-			throw "Can`t close exiftool: exiftoolProcess missing.";
-		}
-	}
-
-	public getProcess(): any {
-		return this.exiftoolProcess;
-	}
 
 	public readMetadata(filepath: string): Promise<any> {
-		return Promise.resolve(this.readMetadataSync(filepath));
+		return this.exiftoolProcess
+			.open()
+			.then(() => this.exiftoolProcess.readMetadata(filepath, this.EXIFTOOL_OPTIONS))
+			.finally(() => this.exiftoolProcess.close());
 	}
 
-	public readMetadataSync(filepath: string): any {
-		return this.exiftoolProcess.readMetadata(filepath, this.EXIFTOOL_OPTIONS);
-	}
 
-	public writeMetadata(filepath: string, replaceAll: boolean, overwrite: boolean, data: any): Promise<void> {
-		return Promise.resolve()
-			.then(() => this.writeMetadataSync(filepath, replaceAll, overwrite, data));
-	}
-
-	public writeMetadataSync(filepath: string, replaceAll: boolean, overwrite: boolean, data: any): any {
-		const options: string[] = [
-			"codedcharacterset=utf8",
-			"charset filename=utf8"
-		];
-		if (overwrite) {
-			options.push("overwrite_original");
-		}
-		return this.exiftoolProcess.writeMetadata(
-			filepath,
-			{
-				all: replaceAll ? "" : undefined,
-				...data
-			},
-			options
-		);
+	public writeMetadata(filepath: string, metadata: object): Promise<any> {
+		return this.exiftoolProcess
+			.open()
+			.then(() => this.exiftoolProcess.writeMetadata(filepath, {...metadata}, ['overwrite_original'], false))
+			.then(console.log, console.error)
+			.then(() => this.exiftoolProcess.close())
+			.catch(console.error);
 	}
 
 }

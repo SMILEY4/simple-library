@@ -36,15 +36,9 @@ export class ActionEmbedItemAttributes {
 
 
 	public perform(itemIds: number[] | null, allAttributes: boolean): Promise<EmbedReport> {
-		return new ExifHandler(this.actionGetExiftoolInfo, false)
-			.open()
-			.then(exifHandler => {
-				return this.getItemAttributes(itemIds, !allAttributes)
-					.then(attribs => this.attributesToMetadataGroups(attribs))
-					.then(itemGroups => this.embedItems(itemGroups, exifHandler))
-					.then(() => null)
-					.finally(() => exifHandler.close());
-			});
+		return this.getItemAttributes(itemIds, !allAttributes)
+			.then(attribs => this.attributesToMetadataGroups(attribs))
+			.then(itemGroups => this.embedItems(itemGroups));
 	}
 
 
@@ -95,14 +89,14 @@ export class ActionEmbedItemAttributes {
 
 	private attributesToMetadataObj(attributes: ExtendedAttribute[]): object {
 		return attributes.reduce((metadataObj, attr) => {
-			(metadataObj as any)[attr.key] = attr.value;
+			(metadataObj as any)[attr.key.split(".")[1]] = attr.value;
 			return metadataObj;
 		}, {});
 	}
 
 
-	private async embedItems(items: ({ itemId: number, filepath: string, metadata: object })[], exifHandler: ExifHandler): Promise<EmbedReport> {
-		console.log("Start embedding attributes of " + items.length + " items.")
+	private async embedItems(items: ({ itemId: number, filepath: string, metadata: object })[]): Promise<EmbedReport> {
+		console.log("Start embedding attributes of " + items.length + " items.");
 		const report: EmbedReport = {
 			amountProcessedItems: items.length,
 			errors: []
@@ -110,7 +104,7 @@ export class ActionEmbedItemAttributes {
 		for (let i = 0; i < items.length; i++) {
 			const item = items[i];
 			if (this.fsWrapper.existsFile(item.filepath)) {
-				await this.embedItem(item.filepath, item.metadata, exifHandler)
+				await this.embedItem(item.filepath, item.metadata)
 					.catch(err => {
 						report.errors.push({
 							itemId: item.itemId,
@@ -127,13 +121,13 @@ export class ActionEmbedItemAttributes {
 			}
 			await this.sendStatus(items.length, i + 1);
 		}
-		console.log("Finished embedding attributes of " + items.length + " items.")
+		console.log("Finished embedding attributes of " + items.length + " items.");
 		return report;
 	}
 
 
-	private embedItem(filepath: string, metadata: object, exifHandler: ExifHandler): Promise<void> {
-		return exifHandler.writeMetadata(filepath, false, true, metadata);
+	private embedItem(filepath: string, metadata: object): Promise<void> {
+		return new ExifHandler(this.actionGetExiftoolInfo).writeMetadata(filepath, metadata);
 	}
 
 
