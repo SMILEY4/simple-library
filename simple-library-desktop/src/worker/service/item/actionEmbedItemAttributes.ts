@@ -4,6 +4,11 @@ import {ExifHandler} from "../exifHandler";
 import {ExtendedAttribute, rowToExtendedAttribute} from "./itemCommon";
 import {FileSystemWrapper} from "../fileSystemWrapper";
 
+export interface EmbedReport {
+	amountProcessedItems: number,
+	errors: ({ itemId: number, filepath: string, error: string })[]
+}
+
 /**
  * write the attributes of the given items into their files.
  */
@@ -21,7 +26,7 @@ export class ActionEmbedItemAttributes {
 	}
 
 
-	public perform(itemIds: number[] | null, allAttributes: boolean): Promise<void> {
+	public perform(itemIds: number[] | null, allAttributes: boolean): Promise<EmbedReport> {
 		const exifHandler = new ExifHandler(this.actionGetExiftoolInfo, true);
 		return this.getItemAttributes(itemIds, !allAttributes)
 			.then(attribs => this.attributesToMetadataGroups(attribs))
@@ -83,13 +88,31 @@ export class ActionEmbedItemAttributes {
 	}
 
 
-	private async embedItems(items: ({ itemId: number, filepath: string, metadata: object })[], exifHandler: ExifHandler): Promise<void> {
+	private async embedItems(items: ({ itemId: number, filepath: string, metadata: object })[], exifHandler: ExifHandler): Promise<EmbedReport> {
+		const report: EmbedReport = {
+			amountProcessedItems: items.length,
+			errors: []
+		};
 		for (let i = 0; i < items.length; i++) {
 			const item = items[i];
 			if (this.fsWrapper.existsFile(item.filepath)) {
-				await this.embedItem(item.filepath, item.metadata, exifHandler);
+				await this.embedItem(item.filepath, item.metadata, exifHandler)
+					.catch(err => {
+						report.errors.push({
+							itemId: item.itemId,
+							filepath: item.filepath,
+							error: "Error: " + err.toString()
+						});
+					});
+			} else {
+				report.errors.push({
+					itemId: item.itemId,
+					filepath: item.filepath,
+					error: "File not found."
+				});
 			}
 		}
+		return report;
 	}
 
 	private embedItem(filepath: string, metadata: object, exifHandler: ExifHandler): Promise<void> {
