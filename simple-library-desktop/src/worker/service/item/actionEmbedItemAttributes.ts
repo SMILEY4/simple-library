@@ -38,7 +38,8 @@ export class ActionEmbedItemAttributes {
 	public perform(itemIds: number[] | null, allAttributes: boolean): Promise<EmbedReport> {
 		return this.getItemAttributes(itemIds, !allAttributes)
 			.then(attribs => this.attributesToMetadataGroups(attribs))
-			.then(itemGroups => this.embedItems(itemGroups));
+			.then(itemGroups => this.embedItems(itemGroups))
+			.then(report => this.clearModifiedFlags(report, itemIds));
 	}
 
 
@@ -137,5 +138,11 @@ export class ActionEmbedItemAttributes {
 			completedItems: completedAmount
 		});
 	}
+
+	private clearModifiedFlags(report: EmbedReport, itemIds: number[] | null): Promise<EmbedReport> {
+		// TODO: clear modified flag in db
+		return report;
+	}
+
 
 }
