@@ -28,6 +28,7 @@ export function MetadataListEntry(props: React.PropsWithChildren<MetadataListEnt
 			onContextMenu={event => props.onContextMenu && props.onContextMenu(props.entry.key, event)}
 			showOverflow={props.entry.type === "date"}
 			keySize={props.keySize}
+			modified={props.entry.modified}
 		>
 			{props.isEmpty === true
 				? <Label overflow="nowrap-hidden" italic disabled>none</Label>
