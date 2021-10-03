@@ -2,6 +2,7 @@ import path from "path";
 import {FileSystemWrapper} from "../fileSystemWrapper";
 import {LibraryFileHandle} from "./libraryCommons";
 import {DataRepository} from "../dataRepository";
+import {AttributeMetadata} from "../../persistence/attributeMetadata";
 
 /**
  * Create (and "open") a new library with the given name in the given directory.
@@ -24,6 +25,7 @@ export class ActionCreateLibrary {
 		} else {
 			return this.create(filepath, name)
 				.then(() => this.initLibrary(name, createDefaultCollection))
+				.then(() => this.insertStaticTagData())
 				.then(() => this.resultCreated(filepath, name));
 		}
 	}
@@ -52,6 +54,15 @@ export class ActionCreateLibrary {
 
 	private initLibrary(name: string, createDefaultCollection: boolean): Promise<any> {
 		return this.repository.init(name, createDefaultCollection);
+	}
+
+
+	private async insertStaticTagData(): Promise<any> {
+		const blocks: (AttributeMetadata.AttribMetaEntry[])[] = [];
+		AttributeMetadata.getDataAsBlocks(25, block => blocks.push(block));
+		for (let block of blocks) {
+			await this.repository.insertAttributeMeta(block);
+		}
 	}
 
 

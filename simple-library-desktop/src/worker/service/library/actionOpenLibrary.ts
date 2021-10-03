@@ -1,5 +1,5 @@
 import {FileSystemWrapper} from "../fileSystemWrapper";
-import {ActionGetLibraryInfo} from "./ActionGetLibraryInfo";
+import {ActionGetLibraryInfo} from "./actionGetLibraryInfo";
 import {LibraryFileHandle, LibraryInformation} from "./libraryCommons";
 import {DataRepository} from "../dataRepository";
 

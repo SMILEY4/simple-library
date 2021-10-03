@@ -31,7 +31,7 @@ import {ActionOpenConfig} from "./service/config/actionOpenConfig";
 import {ActionSetTheme} from "./service/config/actionSetTheme";
 import {ActionCloseLibrary} from "./service/library/actionCloseLibrary";
 import {ActionCreateLibrary} from "./service/library/actionCreateLibrary";
-import {ActionGetLibraryInfo} from "./service/library/ActionGetLibraryInfo";
+import {ActionGetLibraryInfo} from "./service/library/actionGetLibraryInfo";
 import {ActionOpenLibrary} from "./service/library/actionOpenLibrary";
 import {ImportService} from "./service/import/importService";
 import {ImportDataValidator} from "./service/import/importDataValidator";

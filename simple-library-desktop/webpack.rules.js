@@ -18,4 +18,8 @@ module.exports = rules = [
         test: /\.sql$/,
         use: 'raw-loader',
     },
+    {
+        test: /\.xml$/,
+        use: 'raw-loader',
+    },
 ];

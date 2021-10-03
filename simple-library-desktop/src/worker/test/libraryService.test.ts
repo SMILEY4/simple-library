@@ -5,7 +5,7 @@ import {FileSystemWrapper} from "../service/fileSystemWrapper";
 import {MemDbAccess} from "./memDbAccess";
 import {SQL} from "../persistence/sqlHandler";
 import {ActionCreateLibrary} from "../service/library/actionCreateLibrary";
-import {ActionGetLibraryInfo} from "../service/library/ActionGetLibraryInfo";
+import {ActionGetLibraryInfo} from "../service/library/actionGetLibraryInfo";
 import {ActionOpenLibrary} from "../service/library/actionOpenLibrary";
 import {ActionCloseLibrary} from "../service/library/actionCloseLibrary";
 import {LibraryFileHandle} from "../service/library/libraryCommons";

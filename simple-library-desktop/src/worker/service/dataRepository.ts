@@ -13,6 +13,8 @@ export interface DataRepository {
 
 	init(name: string, createDefaultCollection: boolean): Promise<any>;
 
+	insertAttributeMeta(entries: {name: string, type: string, writable: boolean, g0: string | undefined, g1: string | undefined, g2: string | undefined }[]): VoidResult;
+
 	getLibraryInfo(): QueryResultMany;
 
 	updateLibraryLastOpened(timestamp: number): CommandResultSingle;

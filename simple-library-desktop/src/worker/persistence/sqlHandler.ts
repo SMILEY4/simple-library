@@ -1,41 +1,42 @@
-import sqlQueryLibraryInfo from "./sqlfiles/library/query_library_info.sql";
-import sqlUpdateLibraryLastOpened from "./sqlfiles/library/update_library_last_opened.sql";
-import sqlInitLibrary from "./sqlfiles/library/init_library.sql";
-import sqlQueryAllGroups from "./sqlfiles/groups/query_all_groups.sql";
-import sqlQueryGroupById from "./sqlfiles/groups/query_group_by_id.sql";
-import sqlInsertGroup from "./sqlfiles/groups/insert_group.sql";
-import sqlDeleteGroup from "./sqlfiles/groups/delete_group.sql";
-import sqlUpdateGroupParentsAll from "./sqlfiles/groups/update_groups_parents_all.sql";
-import sqlUpdateGroupParent from "./sqlfiles/groups/update_group_parent.sql";
-import sqlQueryAllCollections from "./sqlfiles/collections/query_all_collections.sql";
-import sqlQueryAllCollectionsWithItemCount from "./sqlfiles/collections/query_all_collections_with_itemcount.sql";
-import sqlQueryItemCountByQuery from "./sqlfiles/items/query_itemcount_by_query.sql";
-import sqlQueryItemCountTotal from "./sqlfiles/items/query_itemcount_total.sql";
-import sqlQueryItemsByCustomQuery from "./sqlfiles/items/query_items_by_query.sql";
-import sqlQueryItemById from "./sqlfiles/items/query_item_by_id.sql";
-import sqlQueryItemsByCollectionWithAttribs from "./sqlfiles/items/query_items_by_collections_with_attribs.sql";
-import sqlQueryItemsAllWithAttribs from "./sqlfiles/items/query_all_items_with_attribs.sql";
-import sqlQueryItemsByCustomQueryWithAttribs from "./sqlfiles/items/query_items_by_query_with_attribs.sql";
-import sqlDeleteItems from "./sqlfiles/items/delete_items.sql";
-import sqlQueryItemsByIds from "./sqlfiles/items/query_items_by_ids.sql";
-import sqlDeleteItemsFromCollections from "./sqlfiles/collection_items/delete_items_from_collections.sql";
-import sqlUpdateCollectionParents from "./sqlfiles/collections/update_collection_parents.sql";
-import sqlInsertCollection from "./sqlfiles/collections/insert_collection.sql";
-import sqlDeleteCollection from "./sqlfiles/collections/delete_collection.sql";
-import sqlUpdateCollectionName from "./sqlfiles/collections/update_collection_name.sql";
-import sqlUpdateCollectionSmartQuery from "./sqlfiles/collections/update_collection_smart_query.sql";
-import sqlUpdateCollectionParent from "./sqlfiles/collections/update_collection_parent.sql";
-import sqlQueryCollectionById from "./sqlfiles/collections/query_collection_by_id.sql";
-import sqlUpdateGroupName from "./sqlfiles/groups/update_group_name.sql";
-import sqlInsertItemsIntoCollection from "./sqlfiles/collection_items/insert_items_into_collection.sql";
-import sqlRemoveItemsFromCollection from "./sqlfiles/collection_items/remove_items_from_collection.sql";
-import sqlQueryItemAttributes from "./sqlfiles/items/query_item_attributes.sql";
-import sqlQueryItemAttribute from "./sqlfiles/item_attributes/query_item_attribute.sql";
-import sqlInsertItemAttributes from "./sqlfiles/item_attributes/insert_item_attribute.sql";
-import sqlUpdateItemAttribute from "./sqlfiles/item_attributes/update_item_attribute.sql";
-import sqlDeleteItemAttribute from "./sqlfiles/item_attributes/delete_item_attribute.sql";
-import sqlInsertItem from "./sqlfiles/items/insert_item.sql";
-import sqlUpdateItemAttributeClearModified from "./sqlfiles/item_attributes/clear_item_attribute_modified.sql";
+import sqlQueryLibraryInfo from "./files/library/query_library_info.sql";
+import sqlUpdateLibraryLastOpened from "./files/library/update_library_last_opened.sql";
+import sqlInitLibrary from "./files/library/init_library.sql";
+import sqlQueryAllGroups from "./files/groups/query_all_groups.sql";
+import sqlQueryGroupById from "./files/groups/query_group_by_id.sql";
+import sqlInsertGroup from "./files/groups/insert_group.sql";
+import sqlDeleteGroup from "./files/groups/delete_group.sql";
+import sqlUpdateGroupParentsAll from "./files/groups/update_groups_parents_all.sql";
+import sqlUpdateGroupParent from "./files/groups/update_group_parent.sql";
+import sqlQueryAllCollections from "./files/collections/query_all_collections.sql";
+import sqlQueryAllCollectionsWithItemCount from "./files/collections/query_all_collections_with_itemcount.sql";
+import sqlQueryItemCountByQuery from "./files/items/query_itemcount_by_query.sql";
+import sqlQueryItemCountTotal from "./files/items/query_itemcount_total.sql";
+import sqlQueryItemsByCustomQuery from "./files/items/query_items_by_query.sql";
+import sqlQueryItemById from "./files/items/query_item_by_id.sql";
+import sqlQueryItemsByCollectionWithAttribs from "./files/items/query_items_by_collections_with_attribs.sql";
+import sqlQueryItemsAllWithAttribs from "./files/items/query_all_items_with_attribs.sql";
+import sqlQueryItemsByCustomQueryWithAttribs from "./files/items/query_items_by_query_with_attribs.sql";
+import sqlDeleteItems from "./files/items/delete_items.sql";
+import sqlQueryItemsByIds from "./files/items/query_items_by_ids.sql";
+import sqlDeleteItemsFromCollections from "./files/collection_items/delete_items_from_collections.sql";
+import sqlUpdateCollectionParents from "./files/collections/update_collection_parents.sql";
+import sqlInsertCollection from "./files/collections/insert_collection.sql";
+import sqlDeleteCollection from "./files/collections/delete_collection.sql";
+import sqlUpdateCollectionName from "./files/collections/update_collection_name.sql";
+import sqlUpdateCollectionSmartQuery from "./files/collections/update_collection_smart_query.sql";
+import sqlUpdateCollectionParent from "./files/collections/update_collection_parent.sql";
+import sqlQueryCollectionById from "./files/collections/query_collection_by_id.sql";
+import sqlUpdateGroupName from "./files/groups/update_group_name.sql";
+import sqlInsertItemsIntoCollection from "./files/collection_items/insert_items_into_collection.sql";
+import sqlRemoveItemsFromCollection from "./files/collection_items/remove_items_from_collection.sql";
+import sqlQueryItemAttributes from "./files/items/query_item_attributes.sql";
+import sqlQueryItemAttribute from "./files/item_attributes/query_item_attribute.sql";
+import sqlInsertItemAttributes from "./files/item_attributes/insert_item_attribute.sql";
+import sqlUpdateItemAttribute from "./files/item_attributes/update_item_attribute.sql";
+import sqlDeleteItemAttribute from "./files/item_attributes/delete_item_attribute.sql";
+import sqlInsertItem from "./files/items/insert_item.sql";
+import sqlUpdateItemAttributeClearModified from "./files/item_attributes/clear_item_attribute_modified.sql";
+import sqlInsertAttributeMeta from "./files/library/insert_attribute_meta.sql";
 
 export module SQL {
 
@@ -46,6 +47,12 @@ export module SQL {
 			.map((stmt: string) => stmt
 				.replace(v("name"), str(name))
 				.replace(v("timestamp"), num(timestamp)));
+	}
+
+	export function insertAttributeMeta(entries: {name: string, type: string, writable: boolean, g0: string | undefined, g1: string | undefined, g2: string | undefined }[]): string {
+		const entriesStr: string[] = entries.map(e => `(${str(e.name)}, ${str(e.type)}, ${bool(e.writable)}, ${str(e.g0)}, ${str(e.g1)}, ${str(e.g2)})`);
+		return sql(sqlInsertAttributeMeta)
+			.replace(v("entries"), entriesStr.join(", "));
 	}
 
 	export function queryLibraryInfo(): string {
