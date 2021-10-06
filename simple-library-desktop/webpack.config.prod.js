@@ -25,6 +25,10 @@ const rendererConfig = {
     resolve: {
         extensions: ['.tsx', '.ts', '.js'],
     },
+    externals: {
+        sharp: 'commonjs sharp',
+        sqlite3: 'commonjs sqlite3' //Sqlite3 won't work without this line.
+    },
     output: {
         filename: 'bundle.js',
         path: path.resolve(__dirname, '.webpack', 'renderer'),
