@@ -1,6 +1,6 @@
 import {BrowserWindow} from "electron";
 
-const WORKER_WINDOW_CONFIG = (show: boolean) => ({
+const WORKER_WINDOW_CONFIG = (show: boolean, isDev: boolean) => ({
 	options: {
 		show: false,  // TODO: temp, = show
 		width: 200,
@@ -10,7 +10,7 @@ const WORKER_WINDOW_CONFIG = (show: boolean) => ({
 			nodeIntegration: true,
 			devTools: true,
 			backgroundThrottling: false,
-			additionalArguments: ["--worker"]
+			additionalArguments: ["--worker", isDev ? "--dev" : "--prod"]
 		}
 	}
 });
@@ -38,7 +38,7 @@ export class WorkerHandle {
 
 
 	private createWindow(): BrowserWindow {
-		const window: BrowserWindow = new BrowserWindow(WORKER_WINDOW_CONFIG(this.devMode).options);
+		const window: BrowserWindow = new BrowserWindow(WORKER_WINDOW_CONFIG(this.devMode, this.devMode).options);
 		this.loadContent(window);
 		if (this.devMode) {
 			this.enableAutoOpenDevTools(window);

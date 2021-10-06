@@ -7,7 +7,7 @@ import {DataRepository} from "./service/dataRepository";
 import {SQLiteDataRepository} from "./persistence/sqliteRepository";
 import {DbAccess} from "./persistence/dbAcces";
 
-export function initWorker(runInMain?: boolean, targetBrowserWindow?: BrowserWindow | (() => BrowserWindow)): void {
+export function initWorker(isDev: boolean, runInMain?: boolean, targetBrowserWindow?: BrowserWindow | (() => BrowserWindow)): void {
     console.log("initialize worker");
 
     const eventConsumer = new EventConsumer({

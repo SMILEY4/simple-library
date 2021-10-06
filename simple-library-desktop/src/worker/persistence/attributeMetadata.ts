@@ -1,4 +1,5 @@
-import attributeMetadataXML from "./files/attributeMetadata.xml";
+import {FileSystemWrapper} from "../service/fileSystemWrapper";
+import path from "path";
 
 const htmlparser2 = require("htmlparser2");
 
@@ -13,7 +14,18 @@ export module AttributeMetadata {
 		g2: string | undefined
 	}
 
-	export function getDataAsBlocks(blockSize: number, consumeBlock: (data: AttribMetaEntry[]) => void): void {
+	export function getDataCollected(fsWrapper: FileSystemWrapper, isDev: boolean): AttribMetaEntry[] {
+		const entries: AttribMetaEntry[] = [];
+		getDataAsBlocks(fsWrapper, isDev, 100, data => entries.push(...data));
+		return entries;
+	}
+
+	export function getDataAsBlocks(
+		fsWrapper: FileSystemWrapper,
+		isDev: boolean,
+		blockSize: number,
+		consumeBlock: (data: AttribMetaEntry[]) => void
+	): void {
 		let tags: AttribMetaEntry[] = [];
 		const lastGroup = {
 			name: "",
@@ -48,11 +60,17 @@ export module AttributeMetadata {
 			{
 				xmlMode: true
 			});
-		parser.write(attributeMetadataXML);
+		parser.write(getAttributeMetadataXml(fsWrapper, isDev));
 		parser.end();
 		if (tags.length > 0) {
 			consumeBlock(tags);
 		}
+	}
+
+	export function getAttributeMetadataXml(fsWrapper: FileSystemWrapper, isDev: boolean): string {
+		const filepath = path.join(__dirname, "files", "attributeMetadata.xml");
+		console.log("Read AttributeMetadataXml at ", filepath);
+		return fsWrapper.readFile(isDev ? filepath : "todo.xml"); // Todo: prod path
 	}
 
 }

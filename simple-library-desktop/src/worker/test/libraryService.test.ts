@@ -16,6 +16,7 @@ describe("library-service", () => {
 	describe("create", () => {
 
 		test("create new valid library", async () => {
+			const EXPECTED_ATTRIB_META_TAG_COUNT = 24654;
 			// given
 			const name = "My 1. Test Library!";
 			const dir = "my/test/directory";
@@ -36,6 +37,8 @@ describe("library-service", () => {
 				"timestampLastOpened": expectedTimestamp
 			});
 			expect(dbAccess.getDatabaseUrl()).toBe(expectedFilePath);
+			await expect(dbAccess.querySingle("SELECT count(*) AS count FROM attribute_meta;"))
+				.resolves.toEqual({count: EXPECTED_ATTRIB_META_TAG_COUNT});
 		});
 
 

@@ -1,4 +1,4 @@
-import {mockFileSystemWrapper} from "./mockSetup";
+import { mockFileSystemWrapper} from "./mockSetup";
 import {DbAccess} from "../persistence/dbAcces";
 import {SQL} from "../persistence/sqlHandler";
 import {MemDbAccess} from "./memDbAccess";

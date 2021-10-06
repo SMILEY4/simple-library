@@ -63,7 +63,7 @@ app.whenReady().then(() => {
     console.debug("ready -> create windows + background-workers");
     windowHandle.openWindow();
     if (WORKER_IN_MAIN) {
-        initWorker(true, () => windowHandle.getWindow())
+        initWorker(IS_DEV, true, () => windowHandle.getWindow())
     } else {
         workerHandle.create();
     }

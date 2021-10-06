@@ -11,10 +11,12 @@ export class ActionCreateLibrary {
 
 	private readonly repository: DataRepository;
 	private readonly fsWrapper: FileSystemWrapper;
+	private readonly isDev: boolean;
 
-	constructor(repository: DataRepository, fsWrapper: FileSystemWrapper) {
+	constructor(repository: DataRepository, fsWrapper: FileSystemWrapper, isDev?: boolean) {
 		this.repository = repository;
 		this.fsWrapper = fsWrapper;
+		this.isDev = isDev || isDev === undefined || isDev === null;
 	}
 
 
@@ -23,13 +25,12 @@ export class ActionCreateLibrary {
 		if (this.doesFileExist(filepath)) {
 			return this.resultFileAlreadyExists(filepath);
 		} else {
-			return this.create(filepath, name)
+			return this.create(filepath)
 				.then(() => this.initLibrary(name, createDefaultCollection))
 				.then(() => this.insertStaticTagData())
-				.then(() => this.resultCreated(filepath, name));
+				.then(() => this.resultCreated(filepath, name))
 		}
 	}
-
 
 	private toFilePath(dir: string, name: string): string {
 		const filename: string = name
@@ -46,7 +47,7 @@ export class ActionCreateLibrary {
 	}
 
 
-	private create(filepath: string, name: string): Promise<any> {
+	private create(filepath: string): Promise<any> {
 		console.log("Creating new library: " + filepath);
 		return this.repository.open(filepath, true);
 	}
@@ -59,7 +60,7 @@ export class ActionCreateLibrary {
 
 	private async insertStaticTagData(): Promise<any> {
 		const blocks: (AttributeMetadata.AttribMetaEntry[])[] = [];
-		AttributeMetadata.getDataAsBlocks(25, block => blocks.push(block));
+		AttributeMetadata.getDataAsBlocks(this.fsWrapper, this.isDev, 25, block => blocks.push(block));
 		for (let block of blocks) {
 			await this.repository.insertAttributeMeta(block);
 		}
