@@ -256,8 +256,8 @@ export module SQL {
 			.replace(v("key"), str(attributeKey));
 	}
 
-	export function insertItemAttributes(itemId: number, attributes: ({ key: string, value: any, type: string, modified?: boolean })[]): string {
-		const entries: string[] = attributes.map(att => `(${str(att.key)}, ${str(att.value)}, ${str(att.type)}, ${num(itemId)}, ${bool(att.modified)})`);
+	export function insertItemAttributes(itemId: number, attributes: ({ key: string, g0: string, g1: string, g2: string, value: any, modified?: boolean })[]): string {
+		const entries: string[] = attributes.map(att => `(${str(att.key)}, ${str(att.g0)}, ${str(att.g1)}, ${str(att.g2)}, ${str(att.value)}, ${num(itemId)}, ${bool(att.modified)})`);
 		return sql(sqlInsertItemAttributes)
 			.replace(v("entries"), entries.join(", "));
 	}

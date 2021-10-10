@@ -44,7 +44,7 @@ export interface DataRepository {
 
 	getItemAttributesByItem(itemId: number): QueryResultMany;
 
-	insertItemAttributes(itemId: number, attributes: ({ key: string, value: string, type: string })[]): CommandResultSingle;
+	insertItemAttributes(itemId: number, attributes: ({ key: string, g0: string, g1: string, g2: string, value: string })[]): CommandResultSingle;
 
 	updateItemAttributeValue(itemId: number, attributeKey: string, newValue: string): CommandResultSingle;
 

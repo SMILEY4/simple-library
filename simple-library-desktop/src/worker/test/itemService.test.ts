@@ -35,13 +35,13 @@ describe("item-service", () => {
 				SQL.insertItem("/path/to/file/4", 1003, "hash4", "thumbnail4"),
 				SQL.insertItemsIntoCollection(1, [1, 2, 3]),
 				SQL.insertItemAttributes(1, [
-					{key: "att1", value: "value1", type: "text"},
-					{key: "att2", value: "value2", type: "text"},
-					{key: "att3", value: "3", type: "number"}
+					sqlAttribute("att1", "g0", "g1", "g2", "value1"),
+					sqlAttribute("att2", "g0", "g1", "g2", "value2"),
+					sqlAttribute("att3", "g0", "g1", "g2", "3"),
 				]),
 				SQL.insertItemAttributes(2, [
-					{key: "att1", value: "value1", type: "text"},
-					{key: "att2", value: "value2", type: "text"}
+					sqlAttribute("att1", "g0", "g1", "g2", "value1"),
+					sqlAttribute("att2", "g0", "g1", "g2", "value1"),
 				])
 			]);
 			// when
@@ -69,13 +69,13 @@ describe("item-service", () => {
 				SQL.insertItem("/path/to/file/4", 1003, "hash4", "thumbnail4"),
 				SQL.insertItemsIntoCollection(1, [1, 2, 3]),
 				SQL.insertItemAttributes(1, [
-					{key: "att1", value: "value1", type: "text", modified: false},
-					{key: "att2", value: "value2", type: "text", modified: false},
-					{key: "att3", value: "3", type: "number", modified: true}
+					sqlAttribute("att1", "g0", "g1", "g2", "value1", false),
+					sqlAttribute("att2", "g0", "g1", "g2", "value2", false),
+					sqlAttribute("att3", "g0", "g1", "g2", "3", true),
 				]),
 				SQL.insertItemAttributes(2, [
-					{key: "att1", value: "value1", type: "text", modified: false},
-					{key: "att2", value: "value2", type: "text", modified: false}
+					sqlAttribute("att1", "g0", "g1", "g2", "value1", false),
+					sqlAttribute("att2", "g0", "g1", "g2", "value2", false),
 				])
 			]);
 			// when
@@ -108,13 +108,13 @@ describe("item-service", () => {
 				SQL.insertItem("/path/to/file/4", 1003, "hash4", "thumbnail4"),
 				SQL.insertItemsIntoCollection(1, [1, 2, 3]),
 				SQL.insertItemAttributes(1, [
-					{key: "att1", value: "value1", type: "text", modified: false},
-					{key: "att2", value: "value2", type: "text", modified: false},
-					{key: "att3", value: "3", type: "number", modified: true}
+					sqlAttribute("att1", "g0", "g1", "g2", "value1", false),
+					sqlAttribute("att2", "g0", "g1", "g2", "value2", false),
+					sqlAttribute("att3", "g0", "g1", "g2", "3", true),
 				]),
 				SQL.insertItemAttributes(2, [
-					{key: "att1", value: "value1", type: "text", modified: false},
-					{key: "att2", value: "value2", type: "text", modified: false}
+					sqlAttribute("att1", "g0", "g1", "g2", "value1", false),
+					sqlAttribute("att2", "g0", "g1", "g2", "value2", false),
 				])
 			]);
 			// when
@@ -146,13 +146,13 @@ describe("item-service", () => {
 				SQL.insertItem("/path/to/file/4", 1003, "hash4", "thumbnail4"),
 				SQL.insertItemsIntoCollection(1, [1, 2, 3]),
 				SQL.insertItemAttributes(1, [
-					{key: "att1", value: "value1", type: "text",modified: false},
-					{key: "att2", value: "value2", type: "text",modified: false},
-					{key: "att3", value: "3", type: "number",modified: true}
+					sqlAttribute("att1", "g0", "g1", "g2", "value1", false),
+					sqlAttribute("att2", "g0", "g1", "g2", "value2", false),
+					sqlAttribute("att3", "g0", "g1", "g2", "3", true),
 				]),
 				SQL.insertItemAttributes(2, [
-					{key: "att1", value: "value1", type: "text",modified: false},
-					{key: "att2", value: "value2", type: "text",modified: false}
+					sqlAttribute("att1", "g0", "g1", "g2", "value1", false),
+					sqlAttribute("att2", "g0", "g1", "g2", "value2", false),
 				])
 			]);
 			// when
@@ -186,13 +186,13 @@ describe("item-service", () => {
 				SQL.insertItem("/path/to/file/4", 1003, "hash4", "thumbnail4"),
 				SQL.insertItemsIntoCollection(1, [1, 2, 3]),
 				SQL.insertItemAttributes(1, [
-					{key: "att1", value: "value1", type: "text"},
-					{key: "att2", value: "value2", type: "text"},
-					{key: "att3", value: "3", type: "number"}
+					sqlAttribute("att1", "g0", "g1", "g2", "value1"),
+					sqlAttribute("att2", "g0", "g1", "g2", "value2"),
+					sqlAttribute("att3", "g0", "g1", "g2", "3"),
 				]),
 				SQL.insertItemAttributes(2, [
-					{key: "att1", value: "value1", type: "text"},
-					{key: "att2", value: "value2", type: "text"}
+					sqlAttribute("att1", "g0", "g1", "g2", "value1"),
+					sqlAttribute("att2", "g0", "g1", "g2", "value2"),
 				])
 			]);
 			// when
@@ -211,13 +211,13 @@ describe("item-service", () => {
 				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
 				SQL.insertItem("/path/to/file/2", 1001, "hash2", "thumbnail2"),
 				SQL.insertItemAttributes(1, [
-					{key: "att1", value: "value1", type: "text"},
-					{key: "att2", value: "value2", type: "text"},
-					{key: "att3", value: "3", type: "number"}
+					sqlAttribute("att1", "g0", "g1", "g2", "value1"),
+					sqlAttribute("att2", "g0", "g1", "g2", "value2"),
+					sqlAttribute("att3", "g0", "g1", "g2", "3"),
 				]),
 				SQL.insertItemAttributes(2, [
-					{key: "att1", value: "value1", type: "text"},
-					{key: "att2", value: "value2", type: "text"}
+					sqlAttribute("att1", "g0", "g1", "g2", "value1"),
+					sqlAttribute("att2", "g0", "g1", "g2", "value2"),
 				])
 			]);
 			// when
@@ -236,13 +236,13 @@ describe("item-service", () => {
 				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
 				SQL.insertItem("/path/to/file/2", 1001, "hash2", "thumbnail2"),
 				SQL.insertItemAttributes(1, [
-					{key: "att1", value: "value1", type: "text"},
-					{key: "att2", value: "value2", type: "text"},
-					{key: "att3", value: "3", type: "number"}
+					sqlAttribute("att1", "g0", "g1", "g2", "value1"),
+					sqlAttribute("att2", "g0", "g1", "g2", "value2"),
+					sqlAttribute("att3", "g0", "g1", "g2", "3"),
 				]),
 				SQL.insertItemAttributes(2, [
-					{key: "att1", value: "value1", type: "text"},
-					{key: "att2", value: "value2", type: "text"}
+					sqlAttribute("att1", "g0", "g1", "g2", "value1"),
+					sqlAttribute("att2", "g0", "g1", "g2", "value2"),
 				])
 			]);
 			// when
@@ -271,13 +271,13 @@ describe("item-service", () => {
 				SQL.insertItemsIntoCollection(1, [1, 2, 3]),
 				SQL.insertItemsIntoCollection(2, [3, 4]),
 				SQL.insertItemAttributes(1, [
-					{key: "att1", value: "value1", type: "text"},
-					{key: "att2", value: "value2", type: "text"},
-					{key: "att3", value: "3", type: "number"}
+					sqlAttribute("att1", "g0", "g1", "g2", "value1"),
+					sqlAttribute("att2", "g0", "g1", "g2", "value2"),
+					sqlAttribute("att3", "g0", "g1", "g2", "3"),
 				]),
 				SQL.insertItemAttributes(2, [
-					{key: "att1", value: "value1", type: "text"},
-					{key: "att2", value: "value2", type: "text"}
+					sqlAttribute("att1", "g0", "g1", "g2", "value1"),
+					sqlAttribute("att2", "g0", "g1", "g2", "value2"),
 				])
 			]);
 			// when
@@ -308,13 +308,13 @@ describe("item-service", () => {
 				SQL.insertItemsIntoCollection(1, [1, 2, 3]),
 				SQL.insertItemsIntoCollection(2, [3, 4]),
 				SQL.insertItemAttributes(1, [
-					{key: "att1", value: "value1", type: "text"},
-					{key: "att2", value: "value2", type: "text"},
-					{key: "att3", value: "3", type: "number"}
+					sqlAttribute("att1", "g0", "g1", "g2", "value1"),
+					sqlAttribute("att2", "g0", "g1", "g2", "value2"),
+					sqlAttribute("att3", "g0", "g1", "g2", "3"),
 				]),
 				SQL.insertItemAttributes(2, [
-					{key: "att1", value: "value1", type: "text"},
-					{key: "att2", value: "value2", type: "text"}
+					sqlAttribute("att1", "g0", "g1", "g2", "value1"),
+					sqlAttribute("att2", "g0", "g1", "g2", "value2"),
 				])
 			]);
 			// when
@@ -413,23 +413,23 @@ describe("item-service", () => {
 				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
 				SQL.insertItem("/path/to/file/2", 1001, "hash2", "thumbnail2"),
 				SQL.insertItemAttributes(1, [
-					{key: "att1", value: "value1", type: "text", modified: true},
-					{key: "att2", value: "value2", type: "text", modified: false},
-					{key: "att3a", value: "3", type: "number", modified: false}
+					sqlAttribute("att1", "g0", "g1", "g2", "value1", true),
+					sqlAttribute("att2", "g0", "g1", "g2", "value2", false),
+					sqlAttribute("att3", "g0", "g1", "g2", "3", false),
 				]),
 				SQL.insertItemAttributes(2, [
-					{key: "att1", value: "value1", type: "text", modified: false},
-					{key: "att2", value: "value2", type: "text", modified: true},
-					{key: "att3b", value: "false", type: "boolean", modified: false}
+					sqlAttribute("att1", "g0", "g1", "g2", "value2", false),
+					sqlAttribute("att2", "g0", "g1", "g2", "value2", true),
+					sqlAttribute("att3b", "g0", "g1", "g2", "false", false),
 				])
 			]);
 			// when
 			const result: Promise<Attribute[]> = actionGetAttribs.perform(2);
 			// then
 			await expect(result).resolves.toEqual([
-				attribute("att1", "value1", "text", false),
-				attribute("att2", "value2", "text", true),
-				attribute("att3b", false, "boolean", false)
+				sqlAttribute("att1", "g0", "g1", "g2", "value1", false),
+				sqlAttribute("att2", "g0", "g1", "g2", "value1", true),
+				sqlAttribute("att3b", "g0", "g1", "g2", false, false),
 			]);
 		});
 
@@ -443,14 +443,14 @@ describe("item-service", () => {
 				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
 				SQL.insertItem("/path/to/file/2", 1001, "hash2", "thumbnail2"),
 				SQL.insertItemAttributes(1, [
-					{key: "att1", value: "value1", type: "text"},
-					{key: "att2", value: "value2", type: "text"},
-					{key: "att3a", value: "3", type: "number"}
+					sqlAttribute("att1", "g0", "g1", "g2", "value1"),
+					sqlAttribute("att2", "g0", "g1", "g2", "value2"),
+					sqlAttribute("att3a", "g0", "g1", "g2", "3"),
 				]),
 				SQL.insertItemAttributes(2, [
-					{key: "att1", value: "value1", type: "text"},
-					{key: "att2", value: "value2", type: "text"},
-					{key: "att3b", value: "false", type: "boolean"}
+					sqlAttribute("att1", "g0", "g1", "g2", "value1"),
+					sqlAttribute("att2", "g0", "g1", "g2", "value2"),
+					sqlAttribute("att3b", "g0", "g1", "g2", "false"),
 				])
 			]);
 			// when
@@ -473,9 +473,9 @@ describe("item-service", () => {
 			await dbAccess.runMultipleSeq([
 				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
 				SQL.insertItemAttributes(1, [
-					{key: "att1", value: "value1", type: "text", modified: false},
-					{key: "att2", value: "value2", type: "text", modified: false},
-					{key: "att3a", value: "3", type: "number", modified: false}
+					sqlAttribute("att1", "g0", "g1", "g2", "value1", false),
+					sqlAttribute("att2", "g0", "g1", "g2", "value2", false),
+					sqlAttribute("att3a", "g0", "g1", "g2", "3", false),
 				])
 			]);
 			// when
@@ -499,9 +499,9 @@ describe("item-service", () => {
 			await dbAccess.runMultipleSeq([
 				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
 				SQL.insertItemAttributes(1, [
-					{key: "att1", value: "value1", type: "text", modified: false},
-					{key: "att2", value: "value2", type: "text", modified: true},
-					{key: "att3a", value: "3", type: "number", modified: false}
+					sqlAttribute("att1", "g0", "g1", "g2", "value1", false),
+					sqlAttribute("att2", "g0", "g1", "g2", "value2", true),
+					sqlAttribute("att3a", "g0", "g1", "g2", "3", false),
 				])
 			]);
 			// when
@@ -525,9 +525,9 @@ describe("item-service", () => {
 			await dbAccess.runMultipleSeq([
 				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
 				SQL.insertItemAttributes(1, [
-					{key: "att1", value: "value1", type: "text", modified: false},
-					{key: "att2", value: "value2", type: "text", modified: true},
-					{key: "att3a", value: "3", type: "number", modified: false}
+					sqlAttribute("att1", "g0", "g1", "g2", "value1", false),
+					sqlAttribute("att2", "g0", "g1", "g2", "value2", true),
+					sqlAttribute("att3a", "g0", "g1", "g2", "3", false),
 				])
 			]);
 			// when
@@ -556,12 +556,12 @@ describe("item-service", () => {
 				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
 				SQL.insertItem("/path/to/file/2", 2000, "hash2", "thumbnail2"),
 				SQL.insertItemAttributes(1, [
-					{key: "att1", value: "value1", type: "text", modified: false},
-					{key: "att2", value: "value2", type: "text", modified: false},
-					{key: "att3a", value: "3", type: "number", modified: true}
+					sqlAttribute("att1", "g0", "g1", "g2", "value1", false),
+					sqlAttribute("att2", "g0", "g1", "g2", "value2", false),
+					sqlAttribute("att3a", "g0", "g1", "g2", "3", true),
 				]),
 				SQL.insertItemAttributes(2, [
-					{key: "att2", value: "value2", type: "text", modified: false},
+					sqlAttribute("att2", "g0", "g1", "g2", "value2", false),
 				])
 			]);
 			// when
@@ -587,9 +587,9 @@ describe("item-service", () => {
 			await dbAccess.runMultipleSeq([
 				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
 				SQL.insertItemAttributes(1, [
-					{key: "att1", value: "value1", type: "text", modified: false},
-					{key: "att2", value: "value2", type: "text", modified: true},
-					{key: "att3a", value: "3", type: "number", modified: false}
+					sqlAttribute("att1", "g0", "g1", "g2", "value1", false),
+					sqlAttribute("att2", "g0", "g1", "g2", "value2", true),
+					sqlAttribute("att3a", "g0", "g1", "g2", "3", false),
 				])
 			]);
 			// when
@@ -617,6 +617,17 @@ function item(id: number, path: string, thumbnail: string, hash: string, timesta
 		thumbnail: thumbnail,
 		hash: hash,
 		timestamp: timestamp
+	};
+}
+
+function sqlAttribute(key: string, g0: string, g1: string, g2: string, value: any, modified?: boolean) {
+	return {
+		key: key,
+		g0: g0,
+		g1: g1,
+		g2: g2,
+		value: value,
+		modified: modified
 	};
 }
 

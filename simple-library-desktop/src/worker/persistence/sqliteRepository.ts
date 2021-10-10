@@ -34,7 +34,7 @@ export class SQLiteDataRepository implements DataRepository {
         return this.dbAccess.runMultipleSeq(queries);
     }
 
-    insertAttributeMeta(entries: {name: string, type: string, writable: boolean, g0: string | undefined, g1: string | undefined, g2: string | undefined }[]): VoidResult {
+    insertAttributeMeta(entries: { name: string, type: string, writable: boolean, g0: string | undefined, g1: string | undefined, g2: string | undefined }[]): VoidResult {
         return this.dbAccess.run(SQL.insertAttributeMeta(entries))
             .then(voidThen);
     }
@@ -98,8 +98,12 @@ export class SQLiteDataRepository implements DataRepository {
         return this.dbAccess.queryAll(SQL.queryItemAttributes(itemId));
     }
 
-    insertItemAttributes(itemId: number, attributes: { key: string; value: string; type: string }[]): CommandResultSingle {
-        return this.dbAccess.run(SQL.insertItemAttributes(itemId, attributes));
+    insertItemAttributes(itemId: number, attributes: { key: string, g0: string, g1: string, g2: string, value: string }[]): CommandResultSingle {
+        if (attributes && attributes.length > 0) {
+            return this.dbAccess.run(SQL.insertItemAttributes(itemId, attributes));
+        } else {
+            return Promise.resolve(null);
+        }
     }
 
     updateItemAttributeValue(itemId: number, attributeKey: string, newValue: string): CommandResultSingle {

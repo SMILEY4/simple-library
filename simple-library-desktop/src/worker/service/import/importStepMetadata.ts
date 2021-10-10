@@ -1,14 +1,14 @@
 import {ItemData} from "./importService";
 import {ActionGetExiftoolInfo} from "../config/actionGetExiftoolInfo";
-import {Attribute, stringToAttributeValue, valueToAttributeType} from "../item/itemCommon";
+import {Attribute} from "../item/itemCommon";
+import {iterateObj} from "../../../common/utils";
 
 const exiftool = require("node-exiftool");
 
 export class ImportStepMetadata {
 
-	private readonly EXIFTOOL_OPTIONS = ["g", "d %Y-%m-%dT%H:%M:%S"];
-
-	exiftoolProcess: any;
+	private readonly EXIFTOOL_OPTIONS = ["G0:1:2", "d %Y-%m-%dT%H:%M:%S"];
+	private exiftoolProcess: any;
 
 	constructor(actionGetExiftoolInfo: ActionGetExiftoolInfo) {
 		this.exiftoolProcess = ImportStepMetadata.createExiftoolProcess(actionGetExiftoolInfo);
@@ -24,7 +24,7 @@ export class ImportStepMetadata {
 		return this.exiftoolProcess
 			.open()
 			.then(() => this.exiftoolProcess.readMetadata(itemData.sourceFilepath, this.EXIFTOOL_OPTIONS))
-			.then((data: any) => this.flatten(data.data[0]))
+			.then((data: any) => this.dataToAttributes(data.data[0]))
 			.then((entries: Attribute[]) => itemData.attributes = entries)
 			.then(() => this.exiftoolProcess.close())
 			.catch((e: any) => {
@@ -35,57 +35,38 @@ export class ImportStepMetadata {
 	}
 
 
-	private flatten(obj: any): Attribute[] {
-		const map: Attribute[] = [];
-		for (let key in obj) {
-			if (obj.hasOwnProperty(key)) {
-				map.push(...this.attributes(key, obj[key]));
-			}
-		}
-		return map;
+	private dataToAttributes(obj: any): Attribute[] {
+		const attributes: Attribute[] = [];
+		iterateObj(obj, (key, value) => attributes.push(this.entryToAttribute(key, value)));
+		return attributes;
 	}
 
 
-	private attributes(key: string, value: any): Attribute[] {
-		if (Array.isArray(value)) {
-			return [this.attribList(key, value)];
-		} else if ((typeof value) == "object") {
-			return this.attribObject(key, value);
+	private entryToAttribute(key: string, value: any): Attribute {
+		const groups = key.split(":");
+		return {
+			g0: this.findGroup(groups, 0),
+			g1: this.findGroup(groups, 1),
+			g2: this.findGroup(groups, 2),
+			key: this.findGroup(groups, 3),
+			value: (value === null || value === undefined) ? null : "" + value,
+			modified: false
+		};
+	}
+
+
+	private findGroup(groups: string[], groupNum: number): string | null {
+		if (!groups || groups.length === 0) {
+			return null;
+		} else if (groups.length === 4) {
+			return groups[groupNum];
 		} else {
-			return [this.attribValue(key, value)];
+			let groupsFilled: string[] = groups;
+			while (groupsFilled.length < 4) {
+				groupsFilled = [groupsFilled[0], ...groupsFilled];
+			}
+			return groupsFilled[groupNum];
 		}
-	}
-
-
-	private attribList(key: string, values: any[]): Attribute {
-		return {
-			key: key,
-			value: values.map(v => "" + v),
-			type: "list",
-			modified: false
-		};
-	}
-
-
-	private attribObject(key: string, value: any): Attribute[] {
-		return this.flatten(value)
-			.map((flat: Attribute) => ({
-				key: key + "." + flat.key,
-				value: flat.value,
-				type: flat.type,
-				modified: false
-			}));
-	}
-
-
-	private attribValue(key: string, value: any): Attribute {
-		const type = valueToAttributeType(value);
-		return {
-			key: key,
-			value: stringToAttributeValue(value === null || value === undefined ? null : "" + value, type),
-			type: type,
-			modified: false
-		};
 	}
 
 }

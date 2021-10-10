@@ -14,9 +14,13 @@ export type AttributeValue = null | string | number | boolean | Date | string[]
 
 export interface Attribute {
 	key: string,
+	g0?: string,
+	g1?: string,
+	g2?: string
 	value: AttributeValue,
-	type: AttributeType,
 	modified: boolean,
+
+	type?: AttributeType, // deprecated
 }
 
 export function rowToItem(row: any | null): Item | null {

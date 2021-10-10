@@ -30,15 +30,18 @@ CREATE TABLE attribute_meta
 CREATE TABLE item_attributes
 (
 	key      TEXT    NOT NULL,
+	G0       TEXT,
+	G1       TEXT,
+	G2       TEXT,
 	value    TEXT    NOT NULL,
-	type     TEXT    NOT NULL,
 	modified BOOLEAN,
 	item_id  INTEGER NOT NULL
 		CONSTRAINT fk_item_id
 			REFERENCES items
 			ON DELETE CASCADE,
+	type     TEXT,
 	CHECK (modified IN (0, 1)),
-	PRIMARY KEY (key, item_id)
+	PRIMARY KEY (key, g0, g1, g2, item_id)
 );
 
 CREATE TABLE collections

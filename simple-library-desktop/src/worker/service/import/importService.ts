@@ -190,11 +190,13 @@ export class ImportService {
 
 
 	private insertAttributes(itemId: number, attributes: Attribute[]) {
-		return this.repository.insertItemAttributes(itemId, attributes.map(att => ({
-			key: att.key,
-			value: attributeValueToString(att.value, att.type),
-			type: att.type
-		})));
+			return this.repository.insertItemAttributes(itemId, attributes.map(att => ({
+				key: att.key,
+				g0: att.g0,
+				g1: att.g1,
+				g2: att.g2,
+				value: attributeValueToString(att.value, "text"), // Todo
+			})));
 	}
 
 
