@@ -17,6 +17,16 @@ CREATE TABLE items
 	thumbnail          TEXT    NOT NULL
 );
 
+CREATE TABLE attribute_meta
+(
+	name     TEXT    NOT NULL,
+	TYPE     TEXT    NOT NULL,
+	WRITABLE BOOLEAN NOT NULL,
+	G0       TEXT,
+	G1       TEXT,
+	G2       TEXT
+);
+
 CREATE TABLE item_attributes
 (
 	key      TEXT    NOT NULL,

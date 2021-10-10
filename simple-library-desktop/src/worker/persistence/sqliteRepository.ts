@@ -34,6 +34,11 @@ export class SQLiteDataRepository implements DataRepository {
         return this.dbAccess.runMultipleSeq(queries);
     }
 
+    insertAttributeMeta(entries: {name: string, type: string, writable: boolean, g0: string | undefined, g1: string | undefined, g2: string | undefined }[]): VoidResult {
+        return this.dbAccess.run(SQL.insertAttributeMeta(entries))
+            .then(voidThen);
+    }
+
     getLibraryInfo(): QueryResultMany {
         return this.dbAccess.queryAll(SQL.queryLibraryInfo());
     }
@@ -47,7 +52,8 @@ export class SQLiteDataRepository implements DataRepository {
     }
 
     getItemsByIds(itemIds: number[]): QueryResultMany {
-        return this.dbAccess.queryAll(SQL.queryItemsByIds(itemIds))    }
+        return this.dbAccess.queryAll(SQL.queryItemsByIds(itemIds));
+    }
 
     getItemsAll(attributeKeys: string[]): QueryResultMany {
         return this.dbAccess.queryAll(SQL.queryItemsAll(attributeKeys));
@@ -58,7 +64,7 @@ export class SQLiteDataRepository implements DataRepository {
     }
 
     getItemsByCustomQuery(query: string, attributeKeys: string[]): QueryResultMany {
-        return this.dbAccess.queryAll(SQL.queryItemsByCustomQuery(query, attributeKeys))
+        return this.dbAccess.queryAll(SQL.queryItemsByCustomQuery(query, attributeKeys));
     }
 
     getItemByCustomQuery(query: string, attributeKeys: string[]): QueryResultSingle {
@@ -66,15 +72,15 @@ export class SQLiteDataRepository implements DataRepository {
     }
 
     getItemCountTotal(): QueryResultSingle {
-        return this.dbAccess.querySingle(SQL.queryItemCountTotal())
+        return this.dbAccess.querySingle(SQL.queryItemCountTotal());
     }
 
     getItemCountByCustomQuery(query: string): QueryResultSingle {
-        return this.dbAccess.querySingle(SQL.queryItemCountByQuery(query))
+        return this.dbAccess.querySingle(SQL.queryItemCountByQuery(query));
     }
 
     insertItem(filepath: string, timestamp: number, hash: string, thumbnail: string): CommandResultSingle {
-        return this.dbAccess.run(SQL.insertItem(filepath, timestamp, hash, thumbnail))
+        return this.dbAccess.run(SQL.insertItem(filepath, timestamp, hash, thumbnail));
     }
 
     deleteItems(itemIds: number[]): VoidResult {
@@ -85,11 +91,11 @@ export class SQLiteDataRepository implements DataRepository {
     }
 
     getItemAttribute(itemId: number, attributeKey: string): QueryResultSingle {
-        return this.dbAccess.querySingle(SQL.queryItemAttribute(itemId, attributeKey))
+        return this.dbAccess.querySingle(SQL.queryItemAttribute(itemId, attributeKey));
     }
 
     getItemAttributesByItem(itemId: number): QueryResultMany {
-        return this.dbAccess.queryAll(SQL.queryItemAttributes(itemId))
+        return this.dbAccess.queryAll(SQL.queryItemAttributes(itemId));
     }
 
     insertItemAttributes(itemId: number, attributes: { key: string; value: string; type: string }[]): CommandResultSingle {
@@ -97,11 +103,11 @@ export class SQLiteDataRepository implements DataRepository {
     }
 
     updateItemAttributeValue(itemId: number, attributeKey: string, newValue: string): CommandResultSingle {
-        return this.dbAccess.run(SQL.updateItemAttribute(itemId, attributeKey, newValue))
+        return this.dbAccess.run(SQL.updateItemAttribute(itemId, attributeKey, newValue));
     }
 
     public clearItemAttributeModifiedFlag(itemId: number, attributeKey: string): CommandResultSingle {
-        return this.dbAccess.run(SQL.updateItemAttributeClearModified(itemId, attributeKey))
+        return this.dbAccess.run(SQL.updateItemAttributeClearModified(itemId, attributeKey));
     }
 
     public deleteItemAttribute(itemId: number, attributeKey: string): VoidResult {
@@ -128,7 +134,7 @@ export class SQLiteDataRepository implements DataRepository {
     }
 
     getAllCollections(): QueryResultMany {
-        return this.dbAccess.queryAll(SQL.queryAllCollections())
+        return this.dbAccess.queryAll(SQL.queryAllCollections());
     }
 
     getAllCollectionsWithItemCounts(): QueryResultMany {
@@ -179,7 +185,7 @@ export class SQLiteDataRepository implements DataRepository {
     }
 
     updateGroupName(groupId: number, newName: string): CommandResultSingle {
-        return this.dbAccess.run(SQL.updateGroupName(groupId, newName))
+        return this.dbAccess.run(SQL.updateGroupName(groupId, newName));
     }
 
     updateGroupParents(prevParentGroupId: number | null, newParentGroupId: number | null): VoidResult {

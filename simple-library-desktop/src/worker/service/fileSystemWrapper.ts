@@ -42,11 +42,20 @@ export class FileSystemWrapper {
 
 	/**
 	 * Opens a {@link ReadStream} from the given file
-	 * @param filepath the path of the file to
+	 * @param filepath the path of the file to read
 	 * @return the created stream
 	 */
 	public createReadStream(filepath: string): ReadStream {
 		return fs.createReadStream(filepath);
+	}
+
+	/**
+	 * Reads a file and returns the content as a string (utf8)
+	 * @param filepath the path of the file to read
+	 * @return the content of the file
+	 */
+	public readFile(filepath: string): string {
+		return fs.readFileSync(filepath, "utf8");
 	}
 
 	/**

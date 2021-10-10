@@ -16,6 +16,17 @@
     "start:electron": "npm run build:dev && electron ./.webpack/main/bundle.js",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
+  "build": {
+    "extraResources": [
+      {
+        "from": "./src/resourcefiles",
+        "to": "resourcefiles",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ]
+  },
   "dependencies": {
     "@hot-loader/react-dom": "^16.13.0",
     "@popperjs/core": "^2.9.2",
@@ -24,6 +35,8 @@
     "electron-better-ipc": "^2.0.1",
     "electron-log": "^4.3.1",
     "electron-store": "^7.0.0",
+    "fast-xml-parser": "^3.20.3",
+    "htmlparser2": "^7.1.2",
     "node-exiftool": "^2.3.0",
     "react": "^16.13.1",
     "react-contexify": "^5.0.0",
@@ -35,7 +48,9 @@
     "reflect-metadata": "^0.1.13",
     "sharp": "^0.27.1",
     "sqlite3": "^5.0.2",
-    "typeorm": "^0.2.32"
+    "typeorm": "^0.2.32",
+    "xml-js": "^1.6.11",
+    "xml-js-pro": "^1.6.12"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",

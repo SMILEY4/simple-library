@@ -7,7 +7,7 @@ import {EventIds} from "../common/events/eventIds";
 import {initWorker} from "../worker/setup";
 
 const IS_DEV: boolean = !app.isPackaged;
-const WORKER_IN_MAIN = IS_DEV || true;
+const WORKER_IN_MAIN: boolean = IS_DEV;
 
 const log = require("electron-log");
 Object.assign(console, log.functions);
@@ -63,16 +63,9 @@ app.whenReady().then(() => {
     console.debug("ready -> create windows + background-workers");
     windowHandle.openWindow();
     if (WORKER_IN_MAIN) {
-        initWorker(true, () => windowHandle.getWindow())
+        initWorker(IS_DEV, true, () => windowHandle.getWindow())
     } else {
         workerHandle.create();
-    }
-});
-
-app.on("window-all-closed", () => {
-    if (process.platform !== "darwin") {
-        console.debug("main window closed -> quit");
-        app.quit();
     }
 });
 

@@ -14,7 +14,8 @@ console.log("log filepath (renderer):", log.transports.file.getFile().path);
 const isWorker: boolean = window.process.argv.some(a => a === "--worker");
 
 if (isWorker) {
-	initWorker();
+	const isDev: boolean = window.process.argv.some(a => a === "--dev");
+	initWorker(isDev);
 } else {
 	ReactDOM.render(<Application/>, document.getElementById("app"));
 }

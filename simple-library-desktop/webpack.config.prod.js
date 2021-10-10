@@ -6,6 +6,9 @@ const rendererConfig = {
     mode: 'production',
     target: 'electron-renderer',
     entry: ['./src/renderer/index.tsx'],
+    node: {
+        __dirname: true
+    },
     module: {
         rules: [
             {
@@ -25,6 +28,10 @@ const rendererConfig = {
     resolve: {
         extensions: ['.tsx', '.ts', '.js'],
     },
+    externals: {
+        sharp: 'commonjs sharp',
+        sqlite3: 'commonjs sqlite3' //Sqlite3 won't work without this line.
+    },
     output: {
         filename: 'bundle.js',
         path: path.resolve(__dirname, '.webpack', 'renderer'),
@@ -42,6 +49,9 @@ const mainConfig = {
     mode: 'production',
     target: 'electron-main',
     entry: './src/main/index.ts',
+    node: {
+        __dirname: true
+    },
     module: {
         rules: [
             {

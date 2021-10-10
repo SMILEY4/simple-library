@@ -2,6 +2,7 @@ import path from "path";
 import {FileSystemWrapper} from "../fileSystemWrapper";
 import {LibraryFileHandle} from "./libraryCommons";
 import {DataRepository} from "../dataRepository";
+import {AttribMetaEntry, AttributeMetadataProvider} from "../../persistence/attributeMetadata";
 
 /**
  * Create (and "open") a new library with the given name in the given directory.
@@ -10,10 +11,12 @@ export class ActionCreateLibrary {
 
 	private readonly repository: DataRepository;
 	private readonly fsWrapper: FileSystemWrapper;
+	private readonly attribMetaProvider: AttributeMetadataProvider;
 
-	constructor(repository: DataRepository, fsWrapper: FileSystemWrapper) {
+	constructor(repository: DataRepository, fsWrapper: FileSystemWrapper, attribMetaProvider: AttributeMetadataProvider) {
 		this.repository = repository;
 		this.fsWrapper = fsWrapper;
+		this.attribMetaProvider = attribMetaProvider;
 	}
 
 
@@ -22,12 +25,12 @@ export class ActionCreateLibrary {
 		if (this.doesFileExist(filepath)) {
 			return this.resultFileAlreadyExists(filepath);
 		} else {
-			return this.create(filepath, name)
+			return this.create(filepath)
 				.then(() => this.initLibrary(name, createDefaultCollection))
+				.then(() => this.insertStaticTagData())
 				.then(() => this.resultCreated(filepath, name));
 		}
 	}
-
 
 	private toFilePath(dir: string, name: string): string {
 		const filename: string = name
@@ -44,7 +47,7 @@ export class ActionCreateLibrary {
 	}
 
 
-	private create(filepath: string, name: string): Promise<any> {
+	private create(filepath: string): Promise<any> {
 		console.log("Creating new library: " + filepath);
 		return this.repository.open(filepath, true);
 	}
@@ -52,6 +55,15 @@ export class ActionCreateLibrary {
 
 	private initLibrary(name: string, createDefaultCollection: boolean): Promise<any> {
 		return this.repository.init(name, createDefaultCollection);
+	}
+
+
+	private async insertStaticTagData(): Promise<any> {
+		const blocks: (AttribMetaEntry[])[] = [];
+		this.attribMetaProvider.getDataAsBlocks(this.fsWrapper, 25, block => blocks.push(block));
+		for (let block of blocks) {
+			await this.repository.insertAttributeMeta(block);
+		}
 	}
 
 

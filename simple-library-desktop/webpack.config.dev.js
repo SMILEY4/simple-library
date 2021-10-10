@@ -1,5 +1,4 @@
 const path = require('path');
-const webpack = require('webpack');
 const rules = require('./webpack.rules');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
@@ -7,6 +6,9 @@ const rendererConfig = {
     mode: 'development',
     target: 'electron-renderer',
     entry: ['./src/renderer/index.tsx'],
+    node: {
+        __dirname: true
+    },
     module: {
         rules: [
             {
@@ -57,6 +59,9 @@ const mainConfig = {
     mode: 'development',
     target: 'electron-main',
     entry: './src/main/index.ts',
+    node: {
+        __dirname: true
+    },
     module: {
         rules: [
             {

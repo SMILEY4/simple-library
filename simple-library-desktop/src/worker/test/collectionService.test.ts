@@ -1,4 +1,4 @@
-import {mockFileSystemWrapper} from "./mockSetup";
+import {mockAttributeMetadataProvider, mockFileSystemWrapper} from "./mockSetup";
 import {DbAccess} from "../persistence/dbAcces";
 import {SQL} from "../persistence/sqlHandler";
 import {MemDbAccess} from "./memDbAccess";
@@ -930,6 +930,6 @@ function mockCollectionService(): [ActionCreateLibrary, DataRepository, DbAccess
 	const dbAccess = new MemDbAccess();
 	const fsWrapper = mockFileSystemWrapper();
 	fsWrapper.existsFile = jest.fn().mockReturnValue(false) as any;
-	const actionCreateLibrary = new ActionCreateLibrary(new SQLiteDataRepository(dbAccess), fsWrapper);
+	const actionCreateLibrary = new ActionCreateLibrary(new SQLiteDataRepository(dbAccess), fsWrapper, mockAttributeMetadataProvider());
 	return [actionCreateLibrary, new SQLiteDataRepository(dbAccess), dbAccess];
 }
