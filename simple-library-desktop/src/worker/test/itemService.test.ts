@@ -1,6 +1,6 @@
 import {DbAccess} from "../persistence/dbAcces";
 import {MemDbAccess} from "./memDbAccess";
-import {mockFileSystemWrapper} from "./mockSetup";
+import {mockAttributeMetadataProvider, mockFileSystemWrapper} from "./mockSetup";
 import {jest} from "@jest/globals";
 import {SQL} from "../persistence/sqlHandler";
 import {FileSystemWrapper} from "../service/fileSystemWrapper";
@@ -633,6 +633,6 @@ function mockItemService(): [ActionCreateLibrary, DataRepository, DbAccess, File
 	const dbAccess = new MemDbAccess();
 	const fsWrapper = mockFileSystemWrapper();
 	fsWrapper.existsFile = jest.fn().mockReturnValue(false) as any;
-	const actionCreateLibrary = new ActionCreateLibrary(new SQLiteDataRepository(dbAccess), fsWrapper);
+	const actionCreateLibrary = new ActionCreateLibrary(new SQLiteDataRepository(dbAccess), fsWrapper, mockAttributeMetadataProvider());
 	return [actionCreateLibrary, new SQLiteDataRepository(dbAccess), dbAccess, fsWrapper];
 }

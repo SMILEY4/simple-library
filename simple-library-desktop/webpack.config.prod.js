@@ -6,6 +6,9 @@ const rendererConfig = {
     mode: 'production',
     target: 'electron-renderer',
     entry: ['./src/renderer/index.tsx'],
+    node: {
+        __dirname: true
+    },
     module: {
         rules: [
             {
@@ -46,6 +49,9 @@ const mainConfig = {
     mode: 'production',
     target: 'electron-main',
     entry: './src/main/index.ts',
+    node: {
+        __dirname: true
+    },
     module: {
         rules: [
             {

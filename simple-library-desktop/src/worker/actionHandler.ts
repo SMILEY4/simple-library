@@ -45,6 +45,7 @@ import {EventDistributor} from "../common/events/eventDistributor";
 import {EventIds} from "../common/events/eventIds";
 import {DataRepository} from "./service/dataRepository";
 import {ActionDeleteItemAttribute} from "./service/item/actionDeleteItemAttribute";
+import {AttributeMetadataProvider} from "./persistence/attributeMetadata";
 
 export class ActionHandler {
 
@@ -53,7 +54,9 @@ export class ActionHandler {
 
 	constructor(
 		dataRepository: DataRepository,
-		broadcaster: (eventId: string, payload: any) => Promise<any>
+		broadcaster: (eventId: string, payload: any) => Promise<any>,
+		isDev: boolean,
+		isRemoteWorker: boolean
 	) {
 		this.broadcaster = broadcaster;
 
@@ -95,7 +98,11 @@ export class ActionHandler {
 		const actionSetTheme = new ActionSetTheme(configAccess);
 
 		const actionCloseLibrary = new ActionCloseLibrary(dataRepository);
-		const actionCreateLibrary = new ActionCreateLibrary(dataRepository, fsWrapper);
+		const actionCreateLibrary = new ActionCreateLibrary(
+			dataRepository,
+			fsWrapper,
+			new AttributeMetadataProvider(isDev || isDev === undefined || isDev === null, isRemoteWorker === true)
+		);
 		const actionGetLibraryInfo = new ActionGetLibraryInfo(dataRepository);
 		const actionOpenLibrary = new ActionOpenLibrary(dataRepository, fsWrapper, actionGetLibraryInfo);
 
@@ -110,22 +117,22 @@ export class ActionHandler {
 			(status: any) => this.send(EventIds.IMPORT_STATUS, status)
 		);
 
-		this.eventHandler.on(EventIds.OPEN_CONFIG, () => actionOpenConfig.perform())
-		this.eventHandler.on(EventIds.GET_EXIFTOOL_INFO, () => actionGetExiftoolInfo.perform())
-		this.eventHandler.on(EventIds.GET_THEME, () => actionGetTheme.perform())
-		this.eventHandler.on(EventIds.SET_THEME, (theme: "dark" | "light") => actionSetTheme.perform(theme))
+		this.eventHandler.on(EventIds.OPEN_CONFIG, () => actionOpenConfig.perform());
+		this.eventHandler.on(EventIds.GET_EXIFTOOL_INFO, () => actionGetExiftoolInfo.perform());
+		this.eventHandler.on(EventIds.GET_THEME, () => actionGetTheme.perform());
+		this.eventHandler.on(EventIds.SET_THEME, (theme: "dark" | "light") => actionSetTheme.perform(theme));
 
-		this.eventHandler.on(EventIds.GET_LAST_OPENED_LIBS, () => actionGetLastOpened.perform())
+		this.eventHandler.on(EventIds.GET_LAST_OPENED_LIBS, () => actionGetLastOpened.perform());
 		this.eventHandler.on(EventIds.CREATE_LIBRARY, (payload) => {
 			return actionCreateLibrary.perform(payload.name, payload.targetDir, true)
 				.then((library) => actionAddToLastOpened.perform(library.path, library.name));
-		})
+		});
 		this.eventHandler.on(EventIds.OPEN_LIBRARY, (payload) => {
 			return actionOpenLibrary.perform(payload)
 				.then((library) => actionAddToLastOpened.perform(library.path, library.name));
-		})
-		this.eventHandler.on(EventIds.CLOSE_LIBRARY, () => actionCloseLibrary.perform())
-		this.eventHandler.on(EventIds.GET_LIBRARY_INFO, () => actionGetLibraryInfo.perform())
+		});
+		this.eventHandler.on(EventIds.CLOSE_LIBRARY, () => actionCloseLibrary.perform());
+		this.eventHandler.on(EventIds.GET_LIBRARY_INFO, () => actionGetLibraryInfo.perform());
 
 		this.eventHandler.on(EventIds.GET_GROUP_TREE, (payload) => actionGetGroupTree.perform(payload.includeCollections, payload.includeItemCount));
 		this.eventHandler.on(EventIds.CREATE_GROUP, (payload) => actionCreateGroup.perform(payload.name, payload.parentGroupId));
@@ -159,7 +166,7 @@ export class ActionHandler {
 
 
 	private send(eventId: string, payload: any): Promise<void> {
-		return this.broadcaster(eventId, payload).then(voidThen)
+		return this.broadcaster(eventId, payload).then(voidThen);
 	}
 
 }

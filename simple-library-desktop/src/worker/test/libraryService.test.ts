@@ -1,5 +1,5 @@
 import {jest} from "@jest/globals";
-import {mockDateNow, mockFileSystemWrapper} from "./mockSetup";
+import {mockAttributeMetadataProvider, mockDateNow, mockFileSystemWrapper} from "./mockSetup";
 import {DbAccess} from "../persistence/dbAcces";
 import {FileSystemWrapper} from "../service/fileSystemWrapper";
 import {MemDbAccess} from "./memDbAccess";
@@ -23,7 +23,7 @@ describe("library-service", () => {
 			const expectedFilePath = "my\\test\\directory\\My1TestLibrary.db";
 			const expectedTimestamp = Date.now();
 			const [dbAccess, fsWrapper] = mockLibraryService();
-			const actionCreateLibrary = new ActionCreateLibrary(new SQLiteDataRepository(dbAccess), fsWrapper);
+			const actionCreateLibrary = new ActionCreateLibrary(new SQLiteDataRepository(dbAccess), fsWrapper, mockAttributeMetadataProvider(true));
 			const actionGetLibraryInfo = new ActionGetLibraryInfo(new SQLiteDataRepository(dbAccess));
 			mockExistsFile(fsWrapper, false);
 			mockDateNow(expectedTimestamp);
@@ -45,7 +45,7 @@ describe("library-service", () => {
 		test("dont create new library when file already exists", async () => {
 			// given
 			const [dbAccess, fsWrapper] = mockLibraryService();
-			const actionCreateLibrary = new ActionCreateLibrary(new SQLiteDataRepository(dbAccess), fsWrapper);
+			const actionCreateLibrary = new ActionCreateLibrary(new SQLiteDataRepository(dbAccess), fsWrapper, mockAttributeMetadataProvider());
 			const actionGetLibraryInfo = new ActionGetLibraryInfo(new SQLiteDataRepository(dbAccess));
 			mockExistsFile(fsWrapper, true);
 			// when
@@ -60,7 +60,7 @@ describe("library-service", () => {
 		test("dont create new library when name is invalid", async () => {
 			// given
 			const [dbAccess, fsWrapper] = mockLibraryService();
-			const actionCreateLibrary = new ActionCreateLibrary(new SQLiteDataRepository(dbAccess), fsWrapper);
+			const actionCreateLibrary = new ActionCreateLibrary(new SQLiteDataRepository(dbAccess), fsWrapper, mockAttributeMetadataProvider());
 			mockExistsFile(fsWrapper, true);
 			// when
 			const result: Promise<LibraryFileHandle> = actionCreateLibrary.perform("./_", "dir", true);

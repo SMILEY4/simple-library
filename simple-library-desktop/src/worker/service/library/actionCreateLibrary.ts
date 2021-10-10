@@ -2,7 +2,7 @@ import path from "path";
 import {FileSystemWrapper} from "../fileSystemWrapper";
 import {LibraryFileHandle} from "./libraryCommons";
 import {DataRepository} from "../dataRepository";
-import {AttributeMetadata} from "../../persistence/attributeMetadata";
+import {AttribMetaEntry, AttributeMetadataProvider} from "../../persistence/attributeMetadata";
 
 /**
  * Create (and "open") a new library with the given name in the given directory.
@@ -11,12 +11,12 @@ export class ActionCreateLibrary {
 
 	private readonly repository: DataRepository;
 	private readonly fsWrapper: FileSystemWrapper;
-	private readonly isDev: boolean;
+	private readonly attribMetaProvider: AttributeMetadataProvider;
 
-	constructor(repository: DataRepository, fsWrapper: FileSystemWrapper, isDev?: boolean) {
+	constructor(repository: DataRepository, fsWrapper: FileSystemWrapper, attribMetaProvider: AttributeMetadataProvider) {
 		this.repository = repository;
 		this.fsWrapper = fsWrapper;
-		this.isDev = isDev || isDev === undefined || isDev === null;
+		this.attribMetaProvider = attribMetaProvider;
 	}
 
 
@@ -28,7 +28,7 @@ export class ActionCreateLibrary {
 			return this.create(filepath)
 				.then(() => this.initLibrary(name, createDefaultCollection))
 				.then(() => this.insertStaticTagData())
-				.then(() => this.resultCreated(filepath, name))
+				.then(() => this.resultCreated(filepath, name));
 		}
 	}
 
@@ -59,8 +59,8 @@ export class ActionCreateLibrary {
 
 
 	private async insertStaticTagData(): Promise<any> {
-		const blocks: (AttributeMetadata.AttribMetaEntry[])[] = [];
-		AttributeMetadata.getDataAsBlocks(this.fsWrapper, this.isDev, 25, block => blocks.push(block));
+		const blocks: (AttribMetaEntry[])[] = [];
+		this.attribMetaProvider.getDataAsBlocks(this.fsWrapper, 25, block => blocks.push(block));
 		for (let block of blocks) {
 			await this.repository.insertAttributeMeta(block);
 		}

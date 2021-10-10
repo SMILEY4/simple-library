@@ -10,6 +10,7 @@ const WORKER_WINDOW_CONFIG = (show: boolean, isDev: boolean) => ({
 			nodeIntegration: true,
 			devTools: true,
 			backgroundThrottling: false,
+			enableRemoteModule: true,
 			additionalArguments: ["--worker", isDev ? "--dev" : "--prod"]
 		}
 	}

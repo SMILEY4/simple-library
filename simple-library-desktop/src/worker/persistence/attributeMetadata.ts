@@ -3,26 +3,33 @@ import path from "path";
 
 const htmlparser2 = require("htmlparser2");
 
-export module AttributeMetadata {
+export interface AttribMetaEntry {
+	name: string,
+	type: string,
+	writable: boolean,
+	g0: string | undefined,
+	g1: string | undefined,
+	g2: string | undefined
+}
 
-	export interface AttribMetaEntry {
-		name: string,
-		type: string,
-		writable: boolean,
-		g0: string | undefined,
-		g1: string | undefined,
-		g2: string | undefined
+export class AttributeMetadataProvider {
+
+	private readonly isDev: boolean;
+	private readonly isRemoteWorker: boolean;
+
+	constructor(isDev: boolean, isRemoveWorker: boolean) {
+		this.isDev = isDev;
+		this.isRemoteWorker = isRemoveWorker;
 	}
 
-	export function getDataCollected(fsWrapper: FileSystemWrapper, isDev: boolean): AttribMetaEntry[] {
+	public getDataCollected(fsWrapper: FileSystemWrapper): AttribMetaEntry[] {
 		const entries: AttribMetaEntry[] = [];
-		getDataAsBlocks(fsWrapper, isDev, 100, data => entries.push(...data));
+		this.getDataAsBlocks(fsWrapper,100, data => entries.push(...data));
 		return entries;
 	}
 
-	export function getDataAsBlocks(
+	public getDataAsBlocks(
 		fsWrapper: FileSystemWrapper,
-		isDev: boolean,
 		blockSize: number,
 		consumeBlock: (data: AttribMetaEntry[]) => void
 	): void {
@@ -60,17 +67,32 @@ export module AttributeMetadata {
 			{
 				xmlMode: true
 			});
-		parser.write(getAttributeMetadataXml(fsWrapper, isDev));
+		parser.write(this.getAttributeMetadataXml(fsWrapper));
 		parser.end();
 		if (tags.length > 0) {
 			consumeBlock(tags);
 		}
 	}
 
-	export function getAttributeMetadataXml(fsWrapper: FileSystemWrapper, isDev: boolean): string {
-		const filepath = path.join(__dirname, "files", "attributeMetadata.xml");
+
+	private getAttributeMetadataXml(fsWrapper: FileSystemWrapper): string {
+		const filepath = this.getPath(this.isDev, this.isRemoteWorker);
 		console.log("Read AttributeMetadataXml at ", filepath);
-		return fsWrapper.readFile(isDev ? filepath : "todo.xml"); // Todo: prod path
+		return fsWrapper.readFile(filepath);
+	}
+
+	private getPath(isDev: boolean, isRemoteWorker: boolean): string {
+		const app = isRemoteWorker
+			? require("electron").remote.app
+			: require("electron").app;
+		const pathBase = isDev
+			? path.dirname(app.getAppPath())
+			: path.dirname(app.getPath("exe"));
+		const pathRes = isDev
+			? "../src/resourcefiles"
+			: "resources/resourcefiles";
+		const filename = "attributeMetadata.xml";
+		return path.join(pathBase, pathRes, filename);
 	}
 
 }

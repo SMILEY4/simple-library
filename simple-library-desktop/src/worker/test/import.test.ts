@@ -1,6 +1,6 @@
 import {ImportProcessData, ImportResult, ImportService} from "../service/import/importService";
 import {FileSystemWrapper} from "../service/fileSystemWrapper";
-import {mockConfigAccess, mockDateNow, mockFileSystemWrapper} from "./mockSetup";
+import {mockAttributeMetadataProvider, mockConfigAccess, mockDateNow, mockFileSystemWrapper} from "./mockSetup";
 import {DbAccess} from "../persistence/dbAcces";
 import {ImportDataValidator} from "../service/import/importDataValidator";
 import {ImportStepFileHash} from "../service/import/importStepFileHash";
@@ -949,7 +949,7 @@ function mockImportService(): [ImportService, ActionCreateLibrary, FileSystemWra
         new ImportStepMetadata(new ActionGetExiftoolInfo(configAccess)),
         () => Promise.resolve()
     );
-    const actionCreateLibrary = new ActionCreateLibrary(new SQLiteDataRepository(dbAccess), fsWrapper);
+    const actionCreateLibrary = new ActionCreateLibrary(new SQLiteDataRepository(dbAccess), fsWrapper, mockAttributeMetadataProvider());
     return [importService, actionCreateLibrary, fsWrapper, dbAccess];
 }
 

@@ -16,6 +16,17 @@
     "start:electron": "npm run build:dev && electron ./.webpack/main/bundle.js",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
+  "build": {
+    "extraResources": [
+      {
+        "from": "./src/resourcefiles",
+        "to": "resourcefiles",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ]
+  },
   "dependencies": {
     "@hot-loader/react-dom": "^16.13.0",
     "@popperjs/core": "^2.9.2",

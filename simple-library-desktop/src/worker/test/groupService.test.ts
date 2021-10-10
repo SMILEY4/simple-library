@@ -1,7 +1,7 @@
 import {DbAccess} from "../persistence/dbAcces";
 import {MemDbAccess} from "./memDbAccess";
 import {SQL} from "../persistence/sqlHandler";
-import {mockFileSystemWrapper} from "./mockSetup";
+import {mockAttributeMetadataProvider, mockFileSystemWrapper} from "./mockSetup";
 import {jest} from "@jest/globals";
 import {ActionGetAllCollections} from "../service/collection/actionGetAllCollections";
 import {ActionCreateLibrary} from "../service/library/actionCreateLibrary";
@@ -784,7 +784,7 @@ function mockGroupService(): [ActionCreateLibrary, DataRepository, DbAccess] {
 	const dbAccess = new MemDbAccess();
 	const fsWrapper = mockFileSystemWrapper();
 	fsWrapper.existsFile = jest.fn().mockReturnValue(false) as any;
-	const actionCreateLibrary = new ActionCreateLibrary(new SQLiteDataRepository(dbAccess), fsWrapper);
+	const actionCreateLibrary = new ActionCreateLibrary(new SQLiteDataRepository(dbAccess), fsWrapper, mockAttributeMetadataProvider());
 	return [actionCreateLibrary, new SQLiteDataRepository(dbAccess), dbAccess];
 }
 

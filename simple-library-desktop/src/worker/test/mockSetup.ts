@@ -2,6 +2,7 @@ import {jest} from "@jest/globals";
 import {DbAccess} from "../persistence/dbAcces";
 import {FileSystemWrapper} from "../service/fileSystemWrapper";
 import {ConfigAccess} from "../persistence/configAccess";
+import {AttributeMetadataProvider} from "../persistence/attributeMetadata";
 
 
 export function mockFileSystemWrapper(): FileSystemWrapper {
@@ -57,5 +58,18 @@ export function mockQuerySingle(dbAccess: DbAccess, queryMocks: QueryMockEntry[]
 		const mock = queryMocks.find(entry => entry.id.trim() === sql.trim());
 		return mock ? Promise.resolve(mock.result) : undefined;
 	}) as any;
+}
+
+export function mockAttributeMetadataProvider(returnReal?: boolean) {
+	const attribMetaProvider = new AttributeMetadataProvider(true, false);
+	if (returnReal) {
+		attribMetaProvider["getAttributeMetadataXml"] = jest.fn().mockImplementation(() => {
+			console.log("DIRNAME", __dirname)
+			return require("fs").readFileSync(require('path').join(__dirname, "../../resourcefiles/attributeMetadata.xml"), "utf8");
+		}) as any;
+	} else {
+		attribMetaProvider["getAttributeMetadataXml"] = jest.fn().mockReturnValue("") as any;
+	}
+	return attribMetaProvider;
 }
 
