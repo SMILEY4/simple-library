@@ -1,10 +1,11 @@
--- entries: the attributes in the following format: "(key1, value1, type1, item_id1, modified1), (key2, value3, type4, item_id5, modified2), ..."
+-- entries: the attributes in the following format: "(name1,g01,g11,g21,itemId1,value1,modified1), (name2,g02,g12,g22,itemId2,value2,modified2), ..."
 INSERT INTO item_attributes
-(key,
+(id,
+ name,
  g0,
  g1,
  g2,
- value,
  item_id,
+ value,
  modified)
 VALUES $entries;

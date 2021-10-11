@@ -58,12 +58,18 @@ export type AttributeTypeDTO = "none" | "text" | "number" | "boolean" | "date" |
 export type AttributeValueDTO = null | string | number | boolean | Date | string[]
 
 export interface AttributeDTO {
-	key: string,
+	key: AttributeKeyDTO,
 	value: AttributeValueDTO,
-	type: AttributeTypeDTO,
 	modified: boolean,
 }
 
+export interface AttributeKeyDTO {
+	id: string,
+	name: string,
+	g0: string,
+	g1: string,
+	g2: string,
+}
 
 export interface ImportStatusDTO {
 	totalAmountFiles: number,

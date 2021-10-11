@@ -7,7 +7,7 @@ const exiftool = require("node-exiftool");
 
 export class ImportStepMetadata {
 
-	private readonly EXIFTOOL_OPTIONS = ["G0:1:2", "d %Y-%m-%dT%H:%M:%S"];
+	private readonly EXIFTOOL_OPTIONS = ["G0:1:2", "D", "d %Y-%m-%dT%H:%M:%S"];
 	private exiftoolProcess: any;
 
 	constructor(actionGetExiftoolInfo: ActionGetExiftoolInfo) {
@@ -42,14 +42,20 @@ export class ImportStepMetadata {
 	}
 
 
-	private entryToAttribute(key: string, value: any): Attribute {
+	private entryToAttribute(key: string, entry: any): Attribute {
 		const groups = key.split(":");
+		const value = entry.val;
+		const id = entry.id;
 		return {
-			g0: this.findGroup(groups, 0),
-			g1: this.findGroup(groups, 1),
-			g2: this.findGroup(groups, 2),
-			key: this.findGroup(groups, 3),
+			key: {
+				id: id,
+				name: this.findGroup(groups, 3),
+				g0: this.findGroup(groups, 0),
+				g1: this.findGroup(groups, 1),
+				g2: this.findGroup(groups, 2)
+			},
 			value: (value === null || value === undefined) ? null : "" + value,
+			type: "?",
 			modified: false
 		};
 	}

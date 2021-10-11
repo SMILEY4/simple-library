@@ -4,7 +4,7 @@ import {ImportStepThumbnail} from "./importStepThumbnail";
 import {ImportStepRename} from "./importStepRename";
 import {ImportStepImportTarget} from "./importStepImportTarget";
 import {ImportStepMetadata} from "./importStepMetadata";
-import {Attribute, attributeValueToString} from "../item/itemCommon";
+import {Attribute} from "../item/itemCommon";
 import {ImportStatusDTO} from "../../../common/events/dtoModels";
 import {DataRepository} from "../dataRepository";
 
@@ -190,13 +190,15 @@ export class ImportService {
 
 
 	private insertAttributes(itemId: number, attributes: Attribute[]) {
-			return this.repository.insertItemAttributes(itemId, attributes.map(att => ({
-				key: att.key,
-				g0: att.g0,
-				g1: att.g1,
-				g2: att.g2,
-				value: attributeValueToString(att.value, "text"), // Todo
-			})));
+		console.log("insert", itemId, attributes)
+		return this.repository.insertItemAttributes(itemId, attributes.map(att => ({
+			id: att.key.id,
+			name: att.key.name,
+			g0: att.key.g0,
+			g1: att.key.g1,
+			g2: att.key.g2,
+			value: "" + att.value // Todo
+		})));
 	}
 
 

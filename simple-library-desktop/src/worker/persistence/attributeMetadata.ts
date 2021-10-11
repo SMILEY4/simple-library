@@ -4,12 +4,13 @@ import path from "path";
 const htmlparser2 = require("htmlparser2");
 
 export interface AttribMetaEntry {
+	id: string,
 	name: string,
-	type: string,
-	writable: boolean,
 	g0: string | undefined,
 	g1: string | undefined,
 	g2: string | undefined
+	type: string,
+	writable: boolean,
 }
 
 export class AttributeMetadataProvider {
@@ -50,6 +51,7 @@ export class AttributeMetadataProvider {
 					}
 					if (name === "tag") {
 						tags.push({
+							id: attribs.id,
 							name: attribs.name,
 							type: attribs.type,
 							writable: attribs.writable === "true",

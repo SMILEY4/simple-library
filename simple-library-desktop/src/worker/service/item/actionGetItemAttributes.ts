@@ -16,6 +16,7 @@ export class ActionGetItemAttributes {
 		this.actionGetById = actionGetById;
 	}
 
+
 	public perform(itemId: number): Promise<Attribute[]> {
 		return this.findItem(itemId)
 			.then(item => this.getAttributes(item));

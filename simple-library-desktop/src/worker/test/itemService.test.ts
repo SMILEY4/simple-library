@@ -12,7 +12,7 @@ import {ActionDeleteItems} from "../service/item/actionDeleteItems";
 import {ActionOpenItemsExternal} from "../service/item/actionOpenItemsExternal";
 import {ActionGetItemAttributes} from "../service/item/actionGetItemAttributes";
 import {ActionUpdateItemAttribute} from "../service/item/actionUpdateItemAttribute";
-import {Attribute, AttributeType, Item} from "../service/item/itemCommon";
+import {Attribute, attributeKeyFromArray, Item} from "../service/item/itemCommon";
 import {SQLiteDataRepository} from "../persistence/sqliteRepository";
 import {DataRepository} from "../service/dataRepository";
 import {ActionDeleteItemAttribute} from "../service/item/actionDeleteItemAttribute";
@@ -35,13 +35,13 @@ describe("item-service", () => {
 				SQL.insertItem("/path/to/file/4", 1003, "hash4", "thumbnail4"),
 				SQL.insertItemsIntoCollection(1, [1, 2, 3]),
 				SQL.insertItemAttributes(1, [
-					sqlAttribute("att1", "g0", "g1", "g2", "value1"),
-					sqlAttribute("att2", "g0", "g1", "g2", "value2"),
-					sqlAttribute("att3", "g0", "g1", "g2", "3"),
+					sqlAttribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "?", false),
+					sqlAttribute(keyFileExtension(), "jpg", "?", false),
+					sqlAttribute(keyMIMEType(), "image/jpeg", "?", false)
 				]),
 				SQL.insertItemAttributes(2, [
-					sqlAttribute("att1", "g0", "g1", "g2", "value1"),
-					sqlAttribute("att2", "g0", "g1", "g2", "value1"),
+					sqlAttribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "?", false),
+					sqlAttribute(keyFileExtension(), "jpg", "?", false)
 				])
 			]);
 			// when
@@ -69,25 +69,26 @@ describe("item-service", () => {
 				SQL.insertItem("/path/to/file/4", 1003, "hash4", "thumbnail4"),
 				SQL.insertItemsIntoCollection(1, [1, 2, 3]),
 				SQL.insertItemAttributes(1, [
-					sqlAttribute("att1", "g0", "g1", "g2", "value1", false),
-					sqlAttribute("att2", "g0", "g1", "g2", "value2", false),
-					sqlAttribute("att3", "g0", "g1", "g2", "3", true),
+					sqlAttribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "?", false),
+					sqlAttribute(keyFileExtension(), "jpg", "?", false),
+					sqlAttribute(keyMIMEType(), "image/jpeg", "?", true)
 				]),
 				SQL.insertItemAttributes(2, [
-					sqlAttribute("att1", "g0", "g1", "g2", "value1", false),
-					sqlAttribute("att2", "g0", "g1", "g2", "value2", false),
+					sqlAttribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "?", false),
+					sqlAttribute(keyFileExtension(), "jpg", "?", false)
 				])
 			]);
 			// when
-			const result: Promise<Item[]> = actionGetByCollection.perform(1, ["att1", "att3"], false);
+			const requestedAttributeKeys = [attributeKeyFromArray(keyFileAccessDate()), attributeKeyFromArray(keyMIMEType())];
+			const result: Promise<Item[]> = actionGetByCollection.perform(1, requestedAttributeKeys, false);
 			// then
 			await expect(result).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, [
-					attribute("att1", "value1", "text", false),
-					attribute("att3", 3, "number", true)
+					attribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "?", false),
+					attribute(keyMIMEType(), "image/jpeg", "?", true)
 				]),
 				item(2, "/path/to/file/2", "thumbnail2", "hash2", 1001, [
-					attribute("att1", "value1", "text", false)
+					attribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "?", false)
 				]),
 				item(3, "/path/to/file/3", "thumbnail3", "hash3", 1002)
 			]);
@@ -101,32 +102,33 @@ describe("item-service", () => {
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
-				SQL.insertCollection("Collection 2", "smart", null, "item_id <= 2"),
+				SQL.insertCollection("Collection 2", "smart", null, "items.item_id <= 2"),
 				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
 				SQL.insertItem("/path/to/file/2", 1001, "hash2", "thumbnail2"),
 				SQL.insertItem("/path/to/file/3", 1002, "hash3", "thumbnail3"),
 				SQL.insertItem("/path/to/file/4", 1003, "hash4", "thumbnail4"),
 				SQL.insertItemsIntoCollection(1, [1, 2, 3]),
 				SQL.insertItemAttributes(1, [
-					sqlAttribute("att1", "g0", "g1", "g2", "value1", false),
-					sqlAttribute("att2", "g0", "g1", "g2", "value2", false),
-					sqlAttribute("att3", "g0", "g1", "g2", "3", true),
+					sqlAttribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "?", false),
+					sqlAttribute(keyFileExtension(), "jpg", "?", false),
+					sqlAttribute(keyMIMEType(), "image/jpeg", "?", true)
 				]),
 				SQL.insertItemAttributes(2, [
-					sqlAttribute("att1", "g0", "g1", "g2", "value1", false),
-					sqlAttribute("att2", "g0", "g1", "g2", "value2", false),
+					sqlAttribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "?", false),
+					sqlAttribute(keyFileExtension(), "jpg", "?", false)
 				])
 			]);
 			// when
-			const result: Promise<Item[]> = actionGetByCollection.perform(2, ["att1", "att3"], false);
+			const requestedAttributeKeys = [attributeKeyFromArray(keyFileAccessDate()), attributeKeyFromArray(keyMIMEType())];
+			const result: Promise<Item[]> = actionGetByCollection.perform(2, requestedAttributeKeys, false);
 			// then
 			await expect(result).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, [
-					attribute("att1", "value1", "text", false),
-					attribute("att3", 3, "number", true)
+					attribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "?", false),
+					attribute(keyMIMEType(), "image/jpeg", "?", true)
 				]),
 				item(2, "/path/to/file/2", "thumbnail2", "hash2", 1001, [
-					attribute("att1", "value1", "text", false)
+					attribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "?", false)
 				])
 			]);
 		});
@@ -146,25 +148,26 @@ describe("item-service", () => {
 				SQL.insertItem("/path/to/file/4", 1003, "hash4", "thumbnail4"),
 				SQL.insertItemsIntoCollection(1, [1, 2, 3]),
 				SQL.insertItemAttributes(1, [
-					sqlAttribute("att1", "g0", "g1", "g2", "value1", false),
-					sqlAttribute("att2", "g0", "g1", "g2", "value2", false),
-					sqlAttribute("att3", "g0", "g1", "g2", "3", true),
+					sqlAttribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "?", false),
+					sqlAttribute(keyFileExtension(), "jpg", "?", false),
+					sqlAttribute(keyMIMEType(), "image/jpeg", "?", true)
 				]),
 				SQL.insertItemAttributes(2, [
-					sqlAttribute("att1", "g0", "g1", "g2", "value1", false),
-					sqlAttribute("att2", "g0", "g1", "g2", "value2", false),
+					sqlAttribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "?", false),
+					sqlAttribute(keyFileExtension(), "jpg", "?", false)
 				])
 			]);
 			// when
-			const result: Promise<Item[]> = actionGetByCollection.perform(2, ["att1", "att3"], false);
+			const requestedAttributeKeys = [attributeKeyFromArray(keyFileAccessDate()), attributeKeyFromArray(keyMIMEType())];
+			const result: Promise<Item[]> = actionGetByCollection.perform(2, requestedAttributeKeys, false);
 			// then
 			await expect(result).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, [
-					attribute("att1", "value1", "text", false),
-					attribute("att3", 3, "number", true)
+					attribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "?", false),
+					attribute(keyMIMEType(), "image/jpeg", "?", true)
 				]),
 				item(2, "/path/to/file/2", "thumbnail2", "hash2", 1001, [
-					attribute("att1", "value1", "text", false)
+					attribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "?", false)
 				]),
 				item(3, "/path/to/file/3", "thumbnail3", "hash3", 1002, []),
 				item(4, "/path/to/file/4", "thumbnail4", "hash4", 1003, [])
@@ -186,17 +189,18 @@ describe("item-service", () => {
 				SQL.insertItem("/path/to/file/4", 1003, "hash4", "thumbnail4"),
 				SQL.insertItemsIntoCollection(1, [1, 2, 3]),
 				SQL.insertItemAttributes(1, [
-					sqlAttribute("att1", "g0", "g1", "g2", "value1"),
-					sqlAttribute("att2", "g0", "g1", "g2", "value2"),
-					sqlAttribute("att3", "g0", "g1", "g2", "3"),
+					sqlAttribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "?", false),
+					sqlAttribute(keyFileExtension(), "jpg", "?", false),
+					sqlAttribute(keyMIMEType(), "image/jpeg", "?", false)
 				]),
 				SQL.insertItemAttributes(2, [
-					sqlAttribute("att1", "g0", "g1", "g2", "value1"),
-					sqlAttribute("att2", "g0", "g1", "g2", "value2"),
+					sqlAttribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "?", false),
+					sqlAttribute(keyFileExtension(), "jpg", "?", false)
 				])
 			]);
 			// when
-			const result: Promise<Item[]> = actionGetByCollection.perform(42, ["att1", "att3"], false);
+			const requestedAttributeKeys = [attributeKeyFromArray(keyFileAccessDate()), attributeKeyFromArray(keyMIMEType())];
+			const result: Promise<Item[]> = actionGetByCollection.perform(42, requestedAttributeKeys, false);
 			// then
 			await expect(result).rejects.toBeDefined();
 		});
@@ -211,13 +215,13 @@ describe("item-service", () => {
 				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
 				SQL.insertItem("/path/to/file/2", 1001, "hash2", "thumbnail2"),
 				SQL.insertItemAttributes(1, [
-					sqlAttribute("att1", "g0", "g1", "g2", "value1"),
-					sqlAttribute("att2", "g0", "g1", "g2", "value2"),
-					sqlAttribute("att3", "g0", "g1", "g2", "3"),
+					sqlAttribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "?", false),
+					sqlAttribute(keyFileExtension(), "jpg", "?", false),
+					sqlAttribute(keyMIMEType(), "image/jpeg", "?", false)
 				]),
 				SQL.insertItemAttributes(2, [
-					sqlAttribute("att1", "g0", "g1", "g2", "value1"),
-					sqlAttribute("att2", "g0", "g1", "g2", "value2"),
+					sqlAttribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "?", false),
+					sqlAttribute(keyFileExtension(), "jpg", "?", false)
 				])
 			]);
 			// when
@@ -236,13 +240,13 @@ describe("item-service", () => {
 				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
 				SQL.insertItem("/path/to/file/2", 1001, "hash2", "thumbnail2"),
 				SQL.insertItemAttributes(1, [
-					sqlAttribute("att1", "g0", "g1", "g2", "value1"),
-					sqlAttribute("att2", "g0", "g1", "g2", "value2"),
-					sqlAttribute("att3", "g0", "g1", "g2", "3"),
+					sqlAttribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "?", false),
+					sqlAttribute(keyFileExtension(), "jpg", "?", false),
+					sqlAttribute(keyMIMEType(), "image/jpeg", "?", false)
 				]),
 				SQL.insertItemAttributes(2, [
-					sqlAttribute("att1", "g0", "g1", "g2", "value1"),
-					sqlAttribute("att2", "g0", "g1", "g2", "value2"),
+					sqlAttribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "?", false),
+					sqlAttribute(keyFileExtension(), "jpg", "?", false)
 				])
 			]);
 			// when
@@ -271,13 +275,13 @@ describe("item-service", () => {
 				SQL.insertItemsIntoCollection(1, [1, 2, 3]),
 				SQL.insertItemsIntoCollection(2, [3, 4]),
 				SQL.insertItemAttributes(1, [
-					sqlAttribute("att1", "g0", "g1", "g2", "value1"),
-					sqlAttribute("att2", "g0", "g1", "g2", "value2"),
-					sqlAttribute("att3", "g0", "g1", "g2", "3"),
+					sqlAttribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "?", false),
+					sqlAttribute(keyFileExtension(), "jpg", "?", false),
+					sqlAttribute(keyMIMEType(), "image/jpeg", "?", false)
 				]),
 				SQL.insertItemAttributes(2, [
-					sqlAttribute("att1", "g0", "g1", "g2", "value1"),
-					sqlAttribute("att2", "g0", "g1", "g2", "value2"),
+					sqlAttribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "?", false),
+					sqlAttribute(keyFileExtension(), "jpg", "?", false)
 				])
 			]);
 			// when
@@ -308,13 +312,13 @@ describe("item-service", () => {
 				SQL.insertItemsIntoCollection(1, [1, 2, 3]),
 				SQL.insertItemsIntoCollection(2, [3, 4]),
 				SQL.insertItemAttributes(1, [
-					sqlAttribute("att1", "g0", "g1", "g2", "value1"),
-					sqlAttribute("att2", "g0", "g1", "g2", "value2"),
-					sqlAttribute("att3", "g0", "g1", "g2", "3"),
+					sqlAttribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "?", false),
+					sqlAttribute(keyFileExtension(), "jpg", "?", false),
+					sqlAttribute(keyMIMEType(), "image/jpeg", "?", false)
 				]),
 				SQL.insertItemAttributes(2, [
-					sqlAttribute("att1", "g0", "g1", "g2", "value1"),
-					sqlAttribute("att2", "g0", "g1", "g2", "value2"),
+					sqlAttribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "?", false),
+					sqlAttribute(keyFileExtension(), "jpg", "?", false)
 				])
 			]);
 			// when
@@ -413,23 +417,23 @@ describe("item-service", () => {
 				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
 				SQL.insertItem("/path/to/file/2", 1001, "hash2", "thumbnail2"),
 				SQL.insertItemAttributes(1, [
-					sqlAttribute("att1", "g0", "g1", "g2", "value1", true),
-					sqlAttribute("att2", "g0", "g1", "g2", "value2", false),
-					sqlAttribute("att3", "g0", "g1", "g2", "3", false),
+					sqlAttribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "?", true),
+					sqlAttribute(keyFileExtension(), "jpg", "?", false),
+					sqlAttribute(keyMIMEType(), "image/jpeg", "?", false)
 				]),
 				SQL.insertItemAttributes(2, [
-					sqlAttribute("att1", "g0", "g1", "g2", "value2", false),
-					sqlAttribute("att2", "g0", "g1", "g2", "value2", true),
-					sqlAttribute("att3b", "g0", "g1", "g2", "false", false),
+					sqlAttribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "?", false),
+					sqlAttribute(keyFileExtension(), "jpg", "?", true),
+					sqlAttribute(keyFileModifyDate(), "2021:10:12 21:00:12+02:00", "?", false)
 				])
 			]);
 			// when
 			const result: Promise<Attribute[]> = actionGetAttribs.perform(2);
 			// then
 			await expect(result).resolves.toEqual([
-				sqlAttribute("att1", "g0", "g1", "g2", "value1", false),
-				sqlAttribute("att2", "g0", "g1", "g2", "value1", true),
-				sqlAttribute("att3b", "g0", "g1", "g2", false, false),
+				attribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "?", false),
+				attribute(keyFileModifyDate(), "2021:10:12 21:00:12+02:00", "?", false),
+				attribute(keyFileExtension(), "jpg", "?", true)
 			]);
 		});
 
@@ -443,14 +447,14 @@ describe("item-service", () => {
 				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
 				SQL.insertItem("/path/to/file/2", 1001, "hash2", "thumbnail2"),
 				SQL.insertItemAttributes(1, [
-					sqlAttribute("att1", "g0", "g1", "g2", "value1"),
-					sqlAttribute("att2", "g0", "g1", "g2", "value2"),
-					sqlAttribute("att3a", "g0", "g1", "g2", "3"),
+					sqlAttribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "?", true),
+					sqlAttribute(keyFileExtension(), "jpg", "?", false),
+					sqlAttribute(keyMIMEType(), "image/jpeg", "?", false)
 				]),
 				SQL.insertItemAttributes(2, [
-					sqlAttribute("att1", "g0", "g1", "g2", "value1"),
-					sqlAttribute("att2", "g0", "g1", "g2", "value2"),
-					sqlAttribute("att3b", "g0", "g1", "g2", "false"),
+					sqlAttribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "?", false),
+					sqlAttribute(keyFileExtension(), "jpg", "?", true),
+					sqlAttribute(keyFileModifyDate(), "2021:10:12 21:00:12+02:00", "?", false)
 				])
 			]);
 			// when
@@ -473,19 +477,20 @@ describe("item-service", () => {
 			await dbAccess.runMultipleSeq([
 				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
 				SQL.insertItemAttributes(1, [
-					sqlAttribute("att1", "g0", "g1", "g2", "value1", false),
-					sqlAttribute("att2", "g0", "g1", "g2", "value2", false),
-					sqlAttribute("att3a", "g0", "g1", "g2", "3", false),
+					sqlAttribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "?", false),
+					sqlAttribute(keyFileExtension(), "jpg", "?", false),
+					sqlAttribute(keyMIMEType(), "image/jpeg", "?", false)
 				])
 			]);
 			// when
-			const result: Promise<Attribute> = actionUpdateAttrib.perform(1, "att2", "new value");
+			const updatedAttributeKey = attributeKeyFromArray(keyFileAccessDate());
+			const result: Promise<Attribute> = actionUpdateAttrib.perform(1, updatedAttributeKey, "new value");
 			// then
-			await expect(result).resolves.toEqual(attribute("att2", "new value", "text", true));
+			await expect(result).resolves.toEqual(attribute(keyFileAccessDate(), "new value", "?", true));
 			await expect(actionGetAttribs.perform(1)).resolves.toEqual([
-				attribute("att1", "value1", "text", false),
-				attribute("att2", "new value", "text", true),
-				attribute("att3a", 3, "number", false)
+				attribute(keyFileAccessDate(), "new value", "?", true),
+				attribute(keyFileExtension(), "jpg", "?", false),
+				attribute(keyMIMEType(), "image/jpeg", "?", false)
 			]);
 		});
 
@@ -499,19 +504,20 @@ describe("item-service", () => {
 			await dbAccess.runMultipleSeq([
 				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
 				SQL.insertItemAttributes(1, [
-					sqlAttribute("att1", "g0", "g1", "g2", "value1", false),
-					sqlAttribute("att2", "g0", "g1", "g2", "value2", true),
-					sqlAttribute("att3a", "g0", "g1", "g2", "3", false),
+					sqlAttribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "?", false),
+					sqlAttribute(keyFileExtension(), "jpg", "?", false),
+					sqlAttribute(keyMIMEType(), "image/jpeg", "?", false)
 				])
 			]);
 			// when
-			const result: Promise<Attribute> = actionUpdateAttrib.perform(100, "att2", "new value");
+			const updatedAttributeKey = attributeKeyFromArray(keyFileAccessDate());
+			const result: Promise<Attribute> = actionUpdateAttrib.perform(100, updatedAttributeKey, "new value");
 			// then
 			await expect(result).rejects.toBeDefined();
 			await expect(actionGetAttribs.perform(1)).resolves.toEqual([
-				attribute("att1", "value1", "text", false),
-				attribute("att2", "value2", "text", true),
-				attribute("att3a", 3, "number", false)
+				attribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "?", false),
+				attribute(keyFileExtension(), "jpg", "?", false),
+				attribute(keyMIMEType(), "image/jpeg", "?", false)
 			]);
 		});
 
@@ -525,19 +531,20 @@ describe("item-service", () => {
 			await dbAccess.runMultipleSeq([
 				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
 				SQL.insertItemAttributes(1, [
-					sqlAttribute("att1", "g0", "g1", "g2", "value1", false),
-					sqlAttribute("att2", "g0", "g1", "g2", "value2", true),
-					sqlAttribute("att3a", "g0", "g1", "g2", "3", false),
+					sqlAttribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "?", false),
+					sqlAttribute(keyFileExtension(), "jpg", "?", true),
+					sqlAttribute(keyMIMEType(), "image/jpeg", "?", false)
 				])
 			]);
 			// when
-			const result: Promise<Attribute> = actionUpdateAttrib.perform(1, "invalid", "new value");
+			const updatedAttributeKey = attributeKeyFromArray(keyFileModifyDate());
+			const result: Promise<Attribute> = actionUpdateAttrib.perform(1, updatedAttributeKey, "new value");
 			// then
 			await expect(result).rejects.toBeDefined();
 			await expect(actionGetAttribs.perform(1)).resolves.toEqual([
-				attribute("att1", "value1", "text", false),
-				attribute("att2", "value2", "text", true),
-				attribute("att3a", 3, "number", false)
+				attribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "?", false),
+				attribute(keyFileExtension(), "jpg", "?", true),
+				attribute(keyMIMEType(), "image/jpeg", "?", false)
 			]);
 		});
 
@@ -556,24 +563,25 @@ describe("item-service", () => {
 				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
 				SQL.insertItem("/path/to/file/2", 2000, "hash2", "thumbnail2"),
 				SQL.insertItemAttributes(1, [
-					sqlAttribute("att1", "g0", "g1", "g2", "value1", false),
-					sqlAttribute("att2", "g0", "g1", "g2", "value2", false),
-					sqlAttribute("att3a", "g0", "g1", "g2", "3", true),
+					sqlAttribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "?", false),
+					sqlAttribute(keyFileExtension(), "jpg", "?", false),
+					sqlAttribute(keyMIMEType(), "image/jpeg", "?", true)
 				]),
 				SQL.insertItemAttributes(2, [
-					sqlAttribute("att2", "g0", "g1", "g2", "value2", false),
+					sqlAttribute(keyFileExtension(), "jpg", "?", false)
 				])
 			]);
 			// when
-			const result: Promise<Attribute | null> = actionDeleteAttrib.perform(1, "att2");
+			const deleteAttributeKey = attributeKeyFromArray(keyFileExtension());
+			const result: Promise<void> = actionDeleteAttrib.perform(1, deleteAttributeKey);
 			// then
-			await expect(result).resolves.toEqual(attribute("att2", "value2", "text", false));
+			await expect(result).resolves.toBeUndefined();
 			await expect(actionGetAttribs.perform(1)).resolves.toEqual([
-				attribute("att1", "value1", "text", false),
-				attribute("att3a", 3, "number", true)
+				attribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "?", false),
+				attribute(keyMIMEType(), "image/jpeg", "?", true)
 			]);
 			await expect(actionGetAttribs.perform(2)).resolves.toEqual([
-				attribute("att2", "value2", "text", false),
+				attribute(keyFileExtension(), "jpg", "?", false)
 			]);
 		});
 
@@ -587,19 +595,20 @@ describe("item-service", () => {
 			await dbAccess.runMultipleSeq([
 				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
 				SQL.insertItemAttributes(1, [
-					sqlAttribute("att1", "g0", "g1", "g2", "value1", false),
-					sqlAttribute("att2", "g0", "g1", "g2", "value2", true),
-					sqlAttribute("att3a", "g0", "g1", "g2", "3", false),
+					sqlAttribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "?", false),
+					sqlAttribute(keyFileExtension(), "jpg", "?", true),
+					sqlAttribute(keyMIMEType(), "image/jpeg", "?", false)
 				])
 			]);
 			// when
-			const result: Promise<Attribute | null> = actionDeleteAttrib.perform(1, "notExists");
+			const deleteAttributeKey = attributeKeyFromArray(keyFileModifyDate());
+			const result: Promise<void> = actionDeleteAttrib.perform(1, deleteAttributeKey);
 			// then
-			await expect(result).resolves.toEqual(null);
+			await expect(result).resolves.toBeUndefined();
 			await expect(actionGetAttribs.perform(1)).resolves.toEqual([
-				attribute("att1", "value1", "text", false),
-				attribute("att2", "value2", "text", true),
-				attribute("att3a", 3, "number", false)
+				attribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "?", false),
+				attribute(keyFileExtension(), "jpg", "?", true),
+				attribute(keyMIMEType(), "image/jpeg", "?", false)
 			]);
 		});
 
@@ -620,20 +629,48 @@ function item(id: number, path: string, thumbnail: string, hash: string, timesta
 	};
 }
 
-function sqlAttribute(key: string, g0: string, g1: string, g2: string, value: any, modified?: boolean) {
+function sqlAttribute(key: [string, string, string, string, string], value: any, type: string, modified: boolean) {
 	return {
-		key: key,
-		g0: g0,
-		g1: g1,
-		g2: g2,
+		id: key[0],
+		name: key[1],
+		g0: key[2],
+		g1: key[3],
+		g2: key[4],
 		value: value,
+		type: type,
 		modified: modified
 	};
 }
 
-function attribute(key: string, value: any, type: AttributeType, modified: boolean): Attribute {
+function keyFileAccessDate(): [string, string, string, string, string] {
+	return ["FileAccessDate", "FileAccessDate", "File", "System", "Time"];
+}
+
+function keyFileCreateDate(): [string, string, string, string, string] {
+	return ["FileCreateDate", "FileCreateDate", "File", "System", "Time"];
+}
+
+function keyFileModifyDate(): [string, string, string, string, string] {
+	return ["FileModifyDate", "FileModifyDate", "File", "System", "Time"];
+}
+
+function keyFileType(): [string, string, string, string, string] {
+	return ["FileType", "FileType", "File", "File", "Other"];
+}
+
+
+function keyFileExtension(): [string, string, string, string, string] {
+	return ["FileTypeExtension", "FileTypeExtension", "File", "File", "Other"];
+}
+
+
+function keyMIMEType(): [string, string, string, string, string] {
+	return ["MIMEType", "MIMEType", "File", "File", "Other"];
+}
+
+function attribute(key: [string, string, string, string, string], value: any, type: string, modified: boolean): Attribute {
 	return {
-		key: key,
+		key: attributeKeyFromArray(key),
 		value: value,
 		type: type,
 		modified: modified
@@ -644,6 +681,6 @@ function mockItemService(): [ActionCreateLibrary, DataRepository, DbAccess, File
 	const dbAccess = new MemDbAccess();
 	const fsWrapper = mockFileSystemWrapper();
 	fsWrapper.existsFile = jest.fn().mockReturnValue(false) as any;
-	const actionCreateLibrary = new ActionCreateLibrary(new SQLiteDataRepository(dbAccess), fsWrapper, mockAttributeMetadataProvider());
+	const actionCreateLibrary = new ActionCreateLibrary(new SQLiteDataRepository(dbAccess), fsWrapper, mockAttributeMetadataProvider(true));
 	return [actionCreateLibrary, new SQLiteDataRepository(dbAccess), dbAccess, fsWrapper];
 }

@@ -2,5 +2,5 @@
 -- key (string): the key of the attribute
 UPDATE item_attributes
 SET modified = 0
-WHERE key = $key
+WHERE name = $key
   AND item_id = $itemId

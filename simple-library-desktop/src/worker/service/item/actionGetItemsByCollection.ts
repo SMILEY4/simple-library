@@ -1,5 +1,5 @@
 import {ActionGetCollectionById} from "../collection/actionGetCollectionById";
-import {Attribute, Item, rowsToItems} from "./itemCommon";
+import {Attribute, AttributeKey, Item, packAttributeKey, rowsToItems} from "./itemCommon";
 import {Collection} from "../collection/collectionCommons";
 import {DataRepository} from "../dataRepository";
 
@@ -8,81 +8,87 @@ import {DataRepository} from "../dataRepository";
  */
 export class ActionGetItemsByCollection {
 
-    private readonly repository: DataRepository;
-    private readonly actionGetCollectionById: ActionGetCollectionById;
+	private readonly repository: DataRepository;
+	private readonly actionGetCollectionById: ActionGetCollectionById;
 
 
-    constructor(repository: DataRepository, actionGetCollectionById: ActionGetCollectionById) {
-        this.repository = repository;
-        this.actionGetCollectionById = actionGetCollectionById;
-    }
+	constructor(repository: DataRepository, actionGetCollectionById: ActionGetCollectionById) {
+		this.repository = repository;
+		this.actionGetCollectionById = actionGetCollectionById;
+	}
 
 
-    public perform(collectionId: number, attributeKeys: string[], includeMissingAttributes: boolean): Promise<Item[]> {
-        return this.findCollection(collectionId)
-            .then(collection => this.getItemData(collection, attributeKeys))
-            .then(rowsToItems)
-            .then(items => includeMissingAttributes ? this.appendMissingAttributes(items, attributeKeys) : items)
-    }
+	public perform(collectionId: number, attributeKeys: AttributeKey[], includeMissingAttributes: boolean): Promise<Item[]> {
+		return this.findCollection(collectionId)
+			.then(collection => this.getItemData(collection, attributeKeys))
+			.then(rowsToItems)
+			.then(items => includeMissingAttributes ? this.appendMissingAttributes(items, attributeKeys) : items);
+	}
 
 
-    private findCollection(collectionId: number): Promise<Collection> {
-        return this.actionGetCollectionById.perform(collectionId)
-            .then((collection: Collection | null) => !collection
-                ? Promise.reject("Cant fetch items: collection with id " + collectionId + " not found")
-                : collection
-            );
-    }
+	private findCollection(collectionId: number): Promise<Collection> {
+		return this.actionGetCollectionById.perform(collectionId)
+			.then((collection: Collection | null) => !collection
+				? Promise.reject("Cant fetch items: collection with id " + collectionId + " not found")
+				: collection
+			);
+	}
 
 
-    private getItemData(collection: Collection, attributeKeys: string[]): Promise<any[]> {
-        switch (collection.type) {
-            case "normal":
-                return this.getItemDataFromNormal(collection, attributeKeys);
-            case "smart":
-                return this.getItemDataFromSmart(collection, attributeKeys);
-            default: {
-                throw "Unexpected collection type: " + collection.type;
-            }
-        }
-    }
+	private getItemData(collection: Collection, attributeKeys: AttributeKey[]): Promise<any[]> {
+		switch (collection.type) {
+			case "normal":
+				return this.getItemDataFromNormal(collection, attributeKeys);
+			case "smart":
+				return this.getItemDataFromSmart(collection, attributeKeys);
+			default: {
+				throw "Unexpected collection type: " + collection.type;
+			}
+		}
+	}
 
 
-    private getItemDataFromNormal(collection: Collection, attributeKeys: string[]): Promise<any[]> {
-        return this.repository.getItemsByCollection(collection.id, attributeKeys);
-    }
+	private getItemDataFromNormal(collection: Collection, attributeKeys: AttributeKey[]): Promise<any[]> {
+		return this.repository.getItemsByCollection(collection.id, attributeKeys.map(k => packAttributeKey(k)));
+	}
 
 
-    private getItemDataFromSmart(collection: Collection, attributeKeys: string[]): Promise<any[]> {
-        const fetchWithQuery = collection.smartQuery && collection.smartQuery.length > 0;
-        return fetchWithQuery
-            ? this.repository.getItemsByCustomQuery(collection.smartQuery, attributeKeys)
-            : this.repository.getItemsAll(attributeKeys);
-    }
+	private getItemDataFromSmart(collection: Collection, attributeKeys: AttributeKey[]): Promise<any[]> {
+		const fetchWithQuery = collection.smartQuery && collection.smartQuery.length > 0;
+		const keys: ([string, string, string, string, string])[] = attributeKeys.map(k => packAttributeKey(k));
+		return fetchWithQuery
+			? this.repository.getItemsByCustomQuery(collection.smartQuery, keys)
+			: this.repository.getItemsAll(keys);
+	}
 
 
-    private appendMissingAttributes(items: Item[], attributeKeys: string[]): Item[] {
-        return items.map(item => this.appendMissingAttributesToItem(item, attributeKeys));
-    }
+	private appendMissingAttributes(items: Item[], attributeKeys: AttributeKey[]): Item[] {
+		return items.map(item => this.appendMissingAttributesToItem(item, attributeKeys));
+	}
 
 
-    private appendMissingAttributesToItem(item: Item, attributeKeys: string[]): Item {
-        const itemKeys: string[] = item.attributes.map(att => att.key);
-        const missingAttributes: Attribute[] = attributeKeys
-            .filter(key => !itemKeys.find(k => k === key))
-            .map(key => this.buildMissingAttribute(key))
-        item.attributes.push(...missingAttributes);
-        return item;
-    }
+	private appendMissingAttributesToItem(item: Item, attributeKeys: AttributeKey[]): Item {
+		const existingKeys: AttributeKey[] = item.attributes.map(att => att.key);
+		const missingAttributes: Attribute[] = attributeKeys
+			.filter(key => !existingKeys.find(k => this.keysEquals(k, key)))
+			.map(key => this.buildMissingAttribute(key));
+		item.attributes.push(...missingAttributes);
+		return item;
+	}
 
 
-    private buildMissingAttribute(key: string): Attribute {
-        return {
-            key: key,
-            value: null,
-            type: "none",
-            modified: false
-        };
-    }
+	private buildMissingAttribute(key: AttributeKey): Attribute {
+		return {
+			key: key,
+			value: null,
+			type: "?",
+			modified: false
+		};
+	}
+
+
+	private keysEquals(a: AttributeKey, b: AttributeKey): boolean {
+		return a.id === b.id && a.name === b.name && a.g0 === b.g0 && a.g1 === b.g1 && a.g2 === b.g2;
+	}
 
 }

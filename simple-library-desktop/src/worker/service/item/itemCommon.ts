@@ -13,15 +13,53 @@ export type AttributeType = "none" | "text" | "number" | "boolean" | "date" | "l
 export type AttributeValue = null | string | number | boolean | Date | string[]
 
 export interface Attribute {
-	key: string,
-	g0?: string,
-	g1?: string,
-	g2?: string
+	key: AttributeKey,
 	value: AttributeValue,
+	type: string,
 	modified: boolean,
-
-	type?: AttributeType, // deprecated
 }
+
+export interface AttributeKey {
+	id: string,
+	name: string,
+	g0: string,
+	g1: string,
+	g2: string,
+}
+
+export function attributeKey(id: string, name: string, g0: string, g1: string, g2: string): AttributeKey {
+	return {
+		id: id,
+		name: name,
+		g0: g0,
+		g1: g1,
+		g2: g2
+	};
+}
+
+export function attributeKeyFromArray(keyParts: string[]): AttributeKey {
+	if (keyParts.length !== 5) {
+		return null;
+	} else {
+		return {
+			id: keyParts[0],
+			name: keyParts[1],
+			g0: keyParts[2],
+			g1: keyParts[3],
+			g2: keyParts[4]
+		};
+	}
+}
+
+export function packAttributeKey(key: AttributeKey): [string, string, string, string, string,] {
+	return [key.id, key.name, key.g0, key.g1, key.g2];
+}
+
+
+export function rowsToItems(rows: any[]): Item[] {
+	return rows.map(row => rowToItem(row));
+}
+
 
 export function rowToItem(row: any | null): Item | null {
 	if (row) {
@@ -32,28 +70,31 @@ export function rowToItem(row: any | null): Item | null {
 			sourceFilepath: row.filepath,
 			hash: row.hash,
 			thumbnail: row.thumbnail,
-			attributes: concatAttributeColumnToEntries(row.attributes)
+			attributes: concatAttributeColumnToEntries(row.csv_attributes)
 		};
 	} else {
 		return null;
 	}
 }
 
-export function rowsToItems(rows: any[]): Item[] {
-	return rows.map(row => rowToItem(row));
-}
 
 export function concatAttributeColumnToEntries(str: string): Attribute[] {
 	if (str) {
-		const regexGlobal: RegExp = /"(.+?)"="(.+?)"-"(.+?)"-"(.+?)"/g;
-		const regex: RegExp = /"(.+?)"="(.+?)"-"(.+?)"-"(.+?)"/;
+		const regexGlobal: RegExp = /"(.+?):(.+?):(.+?):(.+?):(.+?)-(.+?)"="(.+?)"-"(.+?)"/g;
+		const regex: RegExp = /"(.+?):(.+?):(.+?):(.+?):(.+?)-(.+?)"="(.+?)"-"(.+?)"/;
 		return str.match(regexGlobal).map((strEntry: string) => {
 			const strEntryParts: string[] = strEntry.match(regex);
 			const entry: Attribute = {
-				key: strEntryParts[1],
-				value: stringToAttributeValue(strEntryParts[2], strEntryParts[3] as AttributeType),
-				type: strEntryParts[3] as AttributeType,
-				modified: strEntryParts[4] === "1"
+				key: {
+					id: strEntryParts[1],
+					name: strEntryParts[2],
+					g0: strEntryParts[3],
+					g1: strEntryParts[4],
+					g2: strEntryParts[5]
+				},
+				type: strEntryParts[6],
+				value: strEntryParts[7], // TODO
+				modified: strEntryParts[8] === "1"
 			};
 			return entry;
 		});
@@ -64,8 +105,14 @@ export function concatAttributeColumnToEntries(str: string): Attribute[] {
 
 export function rowToAttribute(row: any): Attribute {
 	return {
-		key: row.key,
-		value: stringToAttributeValue(row.value, row.type),
+		key: {
+			id: row.id,
+			name: row.name,
+			g0: row.g0,
+			g1: row.g1,
+			g2: row.g2
+		},
+		value: row.value, // TODO
 		type: row.type,
 		modified: row.modified === 1
 	};
