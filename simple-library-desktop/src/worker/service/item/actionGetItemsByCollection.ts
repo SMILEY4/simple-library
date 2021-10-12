@@ -1,5 +1,5 @@
 import {ActionGetCollectionById} from "../collection/actionGetCollectionById";
-import {Attribute, AttributeKey, Item, packAttributeKey, rowsToItems} from "./itemCommon";
+import {Attribute, AttributeKey, attributeKeysEquals, Item, packAttributeKey, rowsToItems} from "./itemCommon";
 import {Collection} from "../collection/collectionCommons";
 import {DataRepository} from "../dataRepository";
 
@@ -70,7 +70,7 @@ export class ActionGetItemsByCollection {
 	private appendMissingAttributesToItem(item: Item, attributeKeys: AttributeKey[]): Item {
 		const existingKeys: AttributeKey[] = item.attributes.map(att => att.key);
 		const missingAttributes: Attribute[] = attributeKeys
-			.filter(key => !existingKeys.find(k => this.keysEquals(k, key)))
+			.filter(key => !existingKeys.find(k => attributeKeysEquals(k, key)))
 			.map(key => this.buildMissingAttribute(key));
 		item.attributes.push(...missingAttributes);
 		return item;
@@ -84,11 +84,6 @@ export class ActionGetItemsByCollection {
 			type: "?",
 			modified: false
 		};
-	}
-
-
-	private keysEquals(a: AttributeKey, b: AttributeKey): boolean {
-		return a.id === b.id && a.name === b.name && a.g0 === b.g0 && a.g1 === b.g1 && a.g2 === b.g2;
 	}
 
 }

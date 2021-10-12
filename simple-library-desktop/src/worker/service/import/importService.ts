@@ -190,7 +190,6 @@ export class ImportService {
 
 
 	private insertAttributes(itemId: number, attributes: Attribute[]) {
-		console.log("insert", itemId, attributes)
 		return this.repository.insertItemAttributes(itemId, attributes.map(att => ({
 			id: att.key.id,
 			name: att.key.name,

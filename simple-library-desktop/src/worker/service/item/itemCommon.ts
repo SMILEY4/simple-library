@@ -27,6 +27,10 @@ export interface AttributeKey {
 	g2: string,
 }
 
+export function attributeKeysEquals(a: AttributeKey, b: AttributeKey): boolean {
+	return a.id === b.id && a.name === b.name && a.g0 === b.g0 && a.g1 === b.g1 && a.g2 === b.g2;
+}
+
 export function attributeKey(id: string, name: string, g0: string, g1: string, g2: string): AttributeKey {
 	return {
 		id: id,

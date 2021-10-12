@@ -1,11 +1,12 @@
 import React from "react";
 import {Menu} from "../../../../../components/menu/menu/Menu";
 import {MenuItem} from "../../../../../components/menu/menuitem/MenuItem";
+import {AttributeKeyDTO} from "../../../../../../common/events/dtoModels";
 
 interface MetadataListEntryContextMenuProps {
-	attributeKey: string,
-	onCopy: (attributeKey: string) => void,
-	onDelete: (attributeKey: string) => void,
+	attributeKey: AttributeKeyDTO,
+	onCopy: (attributeKey: AttributeKeyDTO) => void,
+	onDelete: (attributeKey: AttributeKeyDTO) => void,
 	__onActionInternal?: (itemId: string) => void,
 }
 

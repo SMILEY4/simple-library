@@ -1,3 +1,5 @@
+import {AttributeKey} from "../../worker/service/item/itemCommon";
+
 export interface ExiftoolInfoDTO {
 	location: string | null;
 	defined: boolean;
@@ -59,7 +61,8 @@ export type AttributeValueDTO = null | string | number | boolean | Date | string
 
 export interface AttributeDTO {
 	key: AttributeKeyDTO,
-	value: AttributeValueDTO,
+	value: string,
+	type: string,
 	modified: boolean,
 }
 
@@ -69,6 +72,14 @@ export interface AttributeKeyDTO {
 	g0: string,
 	g1: string,
 	g2: string,
+}
+
+export function attributeKeysDtoEquals(a: AttributeKeyDTO, b: AttributeKeyDTO): boolean {
+	return a.id === b.id && a.name === b.name && a.g0 === b.g0 && a.g1 === b.g1 && a.g2 === b.g2;
+}
+
+export function attributeKeyString(key: AttributeKeyDTO) {
+	return key.id + "-" + key.name + "-" + key.g0 + "-" + key.g1 + "-" + key.g2;
 }
 
 export interface ImportStatusDTO {

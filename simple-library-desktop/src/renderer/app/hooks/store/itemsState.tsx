@@ -8,7 +8,7 @@ import {
     useGlobalStateWriteOnly
 } from "../../../components/utils/storeUtils";
 import React from "react";
-import {AttributeDTO, ItemDTO} from "../../../../common/events/dtoModels";
+import {AttributeDTO, AttributeKeyDTO, attributeKeysDtoEquals, ItemDTO} from "../../../../common/events/dtoModels";
 
 
 // STATE
@@ -41,7 +41,7 @@ const reducerConfigMap: ReducerConfigMap<ItemsActionType, ItemsState> = new Redu
                 return {
                     ...item,
                     attributes: item.attributes.map((attribute: AttributeDTO) => {
-                        if (attribute.key === payload.key) {
+                        if (attributeKeysDtoEquals(attribute.key, payload.key)) {
                             return {
                                 ...attribute,
                                 value: payload.newValue,
@@ -67,7 +67,7 @@ const reducerConfigMap: ReducerConfigMap<ItemsActionType, ItemsState> = new Redu
                 return {
                     ...item,
                     attributes: item.attributes.map((attribute: AttributeDTO) => {
-                        if (attribute.key === payload.key) {
+                        if (attributeKeysDtoEquals(attribute.key, payload.key)) {
                             return {
                                 key: attribute.key,
                                 value: null,
@@ -140,9 +140,9 @@ export function useDispatchUpdateItemAttribute(): (itemId: number, attribute: At
     };
 }
 
-export function useDispatchRemoveItemAttribute(): (itemId: number, attributeKey: string) => void {
+export function useDispatchRemoveItemAttribute(): (itemId: number, attributeKey: AttributeKeyDTO) => void {
     const dispatch = useItemsDispatch();
-    return (itemId: number, attributeKey: string) => {
+    return (itemId: number, attributeKey: AttributeKeyDTO) => {
         dispatch({
             type: ItemsActionType.REMOVE_ITEM_ATTRIBUTE,
             payload: {

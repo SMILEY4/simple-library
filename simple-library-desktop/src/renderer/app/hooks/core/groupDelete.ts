@@ -12,7 +12,7 @@ export function useDeleteGroup() {
 	function hookFunction(groupId: number, keepContent: boolean) {
 		return Promise.resolve()
 			.then(() => deleteGroup(groupId, keepContent))
-			// TODO - Bug: what happens when keepContent = false -> deleting active collection ?
+			// TODO - Bug?: what happens when keepContent = false -> deleting active collection ?
 			.then(() => updateGroupState())
 	}
 

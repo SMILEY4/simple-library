@@ -5,6 +5,7 @@ import {useDispatchSetRootGroup} from "../store/collectionsState";
 import {GroupDTO, ItemDTO} from "../../../../common/events/dtoModels";
 import {useDispatchSetItems} from "../store/itemsState";
 import {useActiveCollection} from "../store/collectionActiveState";
+import {TEMP_ATTRIBUTE_KEYS} from "./temp";
 
 export function useMoveItems() {
 
@@ -12,8 +13,6 @@ export function useMoveItems() {
 	const dispatchSetItems = useDispatchSetItems();
 	const dispatchSetRootGroup = useDispatchSetRootGroup();
 	const throwErrorNotification = useThrowErrorWithNotification();
-
-	const itemAttributeKeys: string[] = ["File.FileName", "File.FileCreateDate", "File.FileSize", "File.FileType", "JFIF.JFIFVersion", "PNG.Gamma"];
 
 	function hookFunction(itemIds: number[], srcCollectionId: number, tgtCollectionId: number, copy: boolean) {
 		Promise.resolve()
@@ -30,7 +29,7 @@ export function useMoveItems() {
 	}
 
 	function updateItemState(collectionId: number) {
-		return fetchItems(collectionId, itemAttributeKeys, true)
+		return fetchItems(collectionId, TEMP_ATTRIBUTE_KEYS, true)
 			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_FETCH_FAILED, error))
 			.then((items: ItemDTO[]) => dispatchSetItems(items));
 	}
@@ -40,7 +39,6 @@ export function useMoveItems() {
 			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ROOT_GROUP_FETCH_FAILED, error))
 			.then((group: GroupDTO) => dispatchSetRootGroup(group))
 	}
-
 
 	return hookFunction;
 }

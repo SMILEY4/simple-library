@@ -1,5 +1,5 @@
 import {
-    AttributeDTO, AttributeValueDTO,
+    AttributeDTO, AttributeKeyDTO, AttributeValueDTO,
     CollectionTypeDTO,
     ExiftoolInfoDTO,
     GroupDTO,
@@ -54,7 +54,7 @@ export function fetchRootGroup(): Promise<GroupDTO> {
     return eventBroadcaster.send(EventIds.GET_GROUP_TREE, {includeItemCount: true, includeCollections: true});
 }
 
-export function fetchItems(collectionId: number, itemAttributeKeys: string[], includeMissingAttribs: boolean): Promise<ItemDTO[]> {
+export function fetchItems(collectionId: number, itemAttributeKeys: AttributeKeyDTO[], includeMissingAttribs: boolean): Promise<ItemDTO[]> {
     return eventBroadcaster.send(EventIds.GET_ITEMS_BY_COLLECTION, {
         collectionId: collectionId,
         itemAttributeKeys: itemAttributeKeys,
@@ -90,11 +90,11 @@ export function fetchItemMetadata(itemId: number): Promise<AttributeDTO[]> {
     return eventBroadcaster.send(EventIds.GET_ITEM_ATTRIBUTES, itemId);
 }
 
-export function setItemMetadata(itemId: number, entryKey: string, value: AttributeValueDTO): Promise<AttributeDTO> {
+export function setItemMetadata(itemId: number, entryKey: AttributeKeyDTO, value: AttributeValueDTO): Promise<AttributeDTO> {
     return eventBroadcaster.send(EventIds.SET_ITEM_ATTRIBUTE, {itemId: itemId, entryKey: entryKey, newValue: value});
 }
 
-export function deleteItemMetadata(itemId: number, entryKey: string): Promise<AttributeDTO | null> {
+export function deleteItemMetadata(itemId: number, entryKey: AttributeKeyDTO): Promise<AttributeDTO | null> {
     return eventBroadcaster.send(EventIds.DELETE_ITEM_ATTRIBUTE, {itemId: itemId, entryKey: entryKey})
 }
 

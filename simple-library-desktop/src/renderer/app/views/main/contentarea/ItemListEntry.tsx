@@ -2,7 +2,13 @@ import React, {CSSProperties} from "react";
 import {HBox, VBox} from "../../../../components/layout/box/Box";
 import {concatClasses, getIf, getSelectModifier, SelectModifier} from "../../../../components/utils/common";
 import "./listItemEntry.css";
-import {AttributeDTO, AttributeValueDTO, CollectionTypeDTO, ItemDTO} from "../../../../../common/events/dtoModels";
+import {
+	AttributeDTO,
+	AttributeKeyDTO, attributeKeyString,
+	AttributeValueDTO,
+	CollectionTypeDTO,
+	ItemDTO
+} from "../../../../../common/events/dtoModels";
 import {MetadataListEntry} from "../sidebarmenu/metadata/MetadataListEntry";
 
 interface ItemListEntryProps {
@@ -13,7 +19,7 @@ interface ItemListEntryProps {
 	onOpen: (itemId: number) => void,
 	onDragStart: (itemId: number, event: React.DragEvent) => void
 	onContextMenu: (itemId: number, event: React.MouseEvent) => void,
-	onUpdateAttributeValue: (itemId: number, attribKey: string, prevValue: AttributeValueDTO, nextValue: AttributeValueDTO) => Promise<void>
+	onUpdateAttributeValue: (itemId: number, attribKey: AttributeKeyDTO, prevValue: AttributeValueDTO, nextValue: AttributeValueDTO) => Promise<void>
 	onLoadImage?: () => void,
 	style?: CSSProperties
 }
@@ -49,14 +55,14 @@ export function ItemListEntry(props: React.PropsWithChildren<ItemListEntryProps>
 
 				<VBox spacing="0-5" padding="0-75" alignMain="start" alignCross="stretch" fill>
 					{props.item.attributes
-						.sort((a, b) => a.key.toLowerCase().localeCompare(b.key.toLowerCase()))
+						.sort((a, b) => a.key.name.toLowerCase().localeCompare(b.key.name.toLowerCase()))
 						.map((entry: AttributeDTO) => (
 							<MetadataListEntry
-								key={entry.key}
+								key={attributeKeyString(entry.key)}
 								isEmpty={entry.type === "none" || entry.value === null || entry.value === undefined}
 								entry={entry}
-								shortName={attributeKey(entry)}
-								keySize={30}
+								shortName={entry.key.name}
+								keyDisplayLength={30}
 								styleType="focus-value"
 								onUpdateValue={(prev, next) => handleUpdateAttributeValue(entry.key, prev, next)}
 							/>
@@ -84,20 +90,11 @@ export function ItemListEntry(props: React.PropsWithChildren<ItemListEntryProps>
 		props.onContextMenu(props.item.id, event);
 	}
 
-	function handleUpdateAttributeValue(key: string, prevValue: AttributeValueDTO, nextValue: AttributeValueDTO): Promise<void> {
+	function handleUpdateAttributeValue(key: AttributeKeyDTO, prevValue: AttributeValueDTO, nextValue: AttributeValueDTO): Promise<void> {
 		if (prevValue !== nextValue) {
 			return props.onUpdateAttributeValue(props.item.id, key, prevValue, nextValue);
 		} else {
 			return Promise.resolve();
-		}
-	}
-
-	function attributeKey(attribute: AttributeDTO): string {
-		const parts: string[] = attribute.key.split(/\.(.+)/);
-		if (parts.length >= 2) {
-			return parts[1];
-		} else {
-			return attribute.key;
 		}
 	}
 

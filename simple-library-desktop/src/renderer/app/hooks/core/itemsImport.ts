@@ -22,6 +22,7 @@ import {
 import {useDispatchSetRootGroup} from "../store/collectionsState";
 import {useDispatchSetItems} from "../store/itemsState";
 import {useActiveCollection} from "../store/collectionActiveState";
+import {TEMP_ATTRIBUTE_KEYS} from "./temp";
 
 export function useImportItems() {
 
@@ -32,8 +33,6 @@ export function useImportItems() {
 	const notificationRemove = useDispatchRemoveNotification();
 	const notificationUpdate = useDispatchUpdateNotification();
 	const throwErrorNotification = useThrowErrorWithNotification();
-
-	const itemAttributeKeys: string[] = ["File.FileName", "File.FileCreateDate", "File.FileSize", "File.FileType", "JFIF.JFIFVersion", "PNG.Gamma"];
 
 
 	function hookFunction(data: ImportProcessDataDTO) {
@@ -70,7 +69,7 @@ export function useImportItems() {
 
 	function updateItemState() {
 		if (activeCollectionId) {
-			return fetchItems(activeCollectionId, itemAttributeKeys, true)
+			return fetchItems(activeCollectionId, TEMP_ATTRIBUTE_KEYS, true)
 				.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_FETCH_FAILED, error))
 				.then((items: ItemDTO[]) => dispatchSetItems(items));
 		} else {

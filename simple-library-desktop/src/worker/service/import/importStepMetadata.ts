@@ -48,7 +48,7 @@ export class ImportStepMetadata {
 		const id = entry.id;
 		return {
 			key: {
-				id: id,
+				id: id ? id : this.findGroup(groups, 3),
 				name: this.findGroup(groups, 3),
 				g0: this.findGroup(groups, 0),
 				g1: this.findGroup(groups, 1),
