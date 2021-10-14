@@ -15,10 +15,6 @@ export class ActionUpdateItemAttribute {
 
 	public perform(itemId: number, attributeKey: AttributeKey, newValue: AttributeValue): Promise<Attribute> {
 		return this.findAttribute(itemId, attributeKey)
-			.then(att => {
-				console.log("ATT: ", JSON.stringify(att, null, "   "))
-				return att;
-			})
 			.then((attrib: Attribute) => this.update(attrib, itemId, attributeKey, newValue))
 			.then((attrib: Attribute) => this.buildUpdatedAttribute(attrib, newValue));
 	}
@@ -27,7 +23,6 @@ export class ActionUpdateItemAttribute {
 	private findAttribute(itemId: number, attributeKey: AttributeKey): Promise<Attribute> {
 		return this.repository.getItemAttribute(itemId, packAttributeKey(attributeKey))
 			.then((row: any | null) => {
-				console.log("ROW", JSON.stringify(row, null, "   "))
 				return row
 						? rowToAttribute(row)
 						: Promise.reject("No attribute with key " + attributeKey + " found for item with id " + itemId)

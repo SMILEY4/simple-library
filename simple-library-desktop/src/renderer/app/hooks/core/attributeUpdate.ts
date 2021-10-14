@@ -13,13 +13,17 @@ export function useUpdateAttribute() {
 	const dispatchUpdateItemAttribute = useDispatchUpdateItemAttribute();
 
 
-	function hookFunction(itemId: number, attributeKey: AttributeKeyDTO, newValue: AttributeValueDTO): Promise<void> {
-		return Promise.resolve(newValue)
-			.then((value: AttributeValueDTO) => setItemMetadata(itemId, attributeKey, value))
-			.then((newEntry: AttributeDTO) => updateAttributeState(newEntry))
-			.then((newEntry: AttributeDTO) => updateItemState(newEntry, itemId))
-			.then(voidThen)
-			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.GENERIC, error))
+	function hookFunction(itemId: number, attributeKey: AttributeKeyDTO, prevValue: AttributeValueDTO, newValue: AttributeValueDTO): Promise<void> {
+		if (prevValue === newValue) {
+			return Promise.resolve();
+		} else {
+			return Promise.resolve(newValue)
+				.then((value: AttributeValueDTO) => setItemMetadata(itemId, attributeKey, value))
+				.then((newEntry: AttributeDTO) => updateAttributeState(newEntry))
+				.then((newEntry: AttributeDTO) => updateItemState(newEntry, itemId))
+				.then(voidThen)
+				.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.GENERIC, error));
+		}
 	}
 
 	function updateAttributeState(newEntry: AttributeDTO): AttributeDTO {

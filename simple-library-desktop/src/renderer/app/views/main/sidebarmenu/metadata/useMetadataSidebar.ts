@@ -15,17 +15,15 @@ import {useDeleteAttribute} from "../../../../hooks/core/attributeDelete";
 export function useMetadataSidebar() {
 
 	const [item, setItem] = useState<ItemDTO | null>(null);
-
 	const attributes: AttributeDTO[] = useStateAttributes();
 	const setAttributes = useDispatchSetAttributes();
-	const updateAttribute = useUpdateAttribute();
 
 	useListenSelectionChanges(setItem, setAttributes);
 
 	return {
 		displayedItem: item,
 		metadataEntries: attributes,
-		updateMetadataEntry: (key: AttributeKeyDTO, prevValue: AttributeValueDTO, newValue: AttributeValueDTO) => updateAttribute(item.id, key, newValue),
+		updateMetadataEntry: useUpdateMetadataEntry(item ? item.id : null),
 		copyAttributeValueToClipboard: useCopyAttributeValueToClipboard(attributes),
 		deleteAttribute: useDeleteAttributeEntry(item ? item.id : null)
 	};
@@ -67,6 +65,22 @@ function useDeleteAttributeEntry(itemId: number | null) {
 	function hookFunction(attributeKey: AttributeKeyDTO) {
 		if (itemId && attributeKey) {
 			deleteAttribute(itemId, attributeKey).then();
+		}
+	}
+
+	return hookFunction;
+}
+
+
+function useUpdateMetadataEntry(itemId: number | null) {
+
+	const updateAttribute = useUpdateAttribute();
+
+	function hookFunction(attributeKey: AttributeKeyDTO, prevValue: AttributeValueDTO, newValue: AttributeValueDTO) {
+		if (itemId && attributeKey) {
+			return updateAttribute(itemId, attributeKey, prevValue, newValue);
+		} else {
+			return Promise.resolve();
 		}
 	}
 

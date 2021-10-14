@@ -79,7 +79,7 @@ function useUpdateItemAttribute() {
 	const updateAttribute = useUpdateAttribute();
 
 	function hookFunction(itemId: number, attributeKey: AttributeKeyDTO, prevValue: AttributeValueDTO, nextValue: AttributeValueDTO): Promise<void> {
-		return updateAttribute(itemId, attributeKey, nextValue);
+		return updateAttribute(itemId, attributeKey, prevValue, nextValue);
 	}
 
 	return hookFunction;
