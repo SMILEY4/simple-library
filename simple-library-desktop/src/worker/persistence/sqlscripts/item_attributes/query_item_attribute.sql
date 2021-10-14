@@ -4,7 +4,7 @@
 -- g0 (string): the identifier of group 0 of the attribute
 -- g1 (string): the identifier of group 1 of the attribute
 -- g2 (string): the identifier of group 2 of the attribute
-SELECT item_attributes.*, attribute_meta.type
+SELECT item_attributes.*, attribute_meta.type, attribute_meta.writable
 FROM item_attributes,
 	 attribute_meta
 WHERE item_id = $itemId

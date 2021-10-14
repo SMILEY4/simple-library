@@ -5,7 +5,7 @@ SELECT attribute_meta.id        as id,
 	   attribute_meta.g1        as g1,
 	   attribute_meta.g2        as g2,
 	   attribute_meta.type      as type,
-	   attribute_meta.writable  as writeable,
+	   attribute_meta.writable  as writable,
 	   item_attributes.value    as value,
 	   item_attributes.modified as modified
 FROM item_attributes,

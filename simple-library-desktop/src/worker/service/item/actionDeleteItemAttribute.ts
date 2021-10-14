@@ -32,8 +32,7 @@ export class ActionDeleteItemAttribute {
 		if (!exists) {
 			return Promise.resolve();
 		} else {
-			return Promise.resolve()
-				.then(() => this.repository.deleteItemAttribute(itemId, packAttributeKey(key)));
+			return this.repository.deleteItemAttribute(itemId, packAttributeKey(key));
 		}
 	}
 

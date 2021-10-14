@@ -1,5 +1,14 @@
 import {ActionGetCollectionById} from "../collection/actionGetCollectionById";
-import {Attribute, AttributeKey, attributeKeysEquals, Item, packAttributeKey, rowsToItems} from "./itemCommon";
+import {
+	Attribute,
+	AttributeKey,
+	attributeKeysEquals,
+	AttributeMetadata,
+	Item,
+	packAttributeKey,
+	rowsToAttributeMeta,
+	rowsToItems
+} from "./itemCommon";
 import {Collection} from "../collection/collectionCommons";
 import {DataRepository} from "../dataRepository";
 
@@ -62,26 +71,38 @@ export class ActionGetItemsByCollection {
 	}
 
 
-	private appendMissingAttributes(items: Item[], attributeKeys: AttributeKey[]): Item[] {
-		return items.map(item => this.appendMissingAttributesToItem(item, attributeKeys));
+	private appendMissingAttributes(items: Item[], attributeKeys: AttributeKey[]): Promise<Item[]> {
+		return Promise.resolve(items)
+			.then(async items => {
+				for (let item of items) {
+					const missingAttribs = await this.getMissingAttributesForItem(item, attributeKeys);
+					item.attributes.push(...missingAttribs);
+				}
+				return items;
+			});
 	}
 
 
-	private appendMissingAttributesToItem(item: Item, attributeKeys: AttributeKey[]): Item {
+	private getMissingAttributesForItem(item: Item, attributeKeys: AttributeKey[]): Promise<Attribute[]> {
+
 		const existingKeys: AttributeKey[] = item.attributes.map(att => att.key);
-		const missingAttributes: Attribute[] = attributeKeys
+
+		const missingKeysPacked: ([string, string, string, string, string,])[] = attributeKeys
 			.filter(key => !existingKeys.find(k => attributeKeysEquals(k, key)))
-			.map(key => this.buildMissingAttribute(key));
-		item.attributes.push(...missingAttributes);
-		return item;
+			.map(key => packAttributeKey(key));
+
+		return this.repository.queryAttributeMeta(missingKeysPacked)
+			.then(rowsToAttributeMeta)
+			.then(attMeta => attMeta.map(e => this.buildMissingAttribute(e)));
 	}
 
 
-	private buildMissingAttribute(key: AttributeKey): Attribute {
+	private buildMissingAttribute(attribMeta: AttributeMetadata): Attribute {
 		return {
-			key: key,
+			key: attribMeta.key,
+			type: attribMeta.type,
+			writable: attribMeta.writable,
 			value: null,
-			type: "?",
 			modified: false
 		};
 	}

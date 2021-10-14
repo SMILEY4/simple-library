@@ -25,7 +25,8 @@ CREATE TABLE attribute_meta
 	g1       TEXT    NOT NULL,
 	g2       TEXT    NOT NULL,
 	type     TEXT    NOT NULL,
-	writable BOOLEAN NOT NULL
+	writable BOOLEAN NOT NULL,
+	PRIMARY KEY (id, name, g0, g1, g2)
 );
 
 CREATE TABLE item_attributes

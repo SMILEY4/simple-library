@@ -34,11 +34,6 @@ export class SQLiteDataRepository implements DataRepository {
         return this.dbAccess.runMultipleSeq(queries);
     }
 
-    insertAttributeMeta(entries: { id: string, name: string, type: string, writable: boolean, g0: string | undefined, g1: string | undefined, g2: string | undefined }[]): VoidResult {
-        return this.dbAccess.run(SQL.insertAttributeMeta(entries))
-            .then(voidThen);
-    }
-
     getLibraryInfo(): QueryResultMany {
         return this.dbAccess.queryAll(SQL.queryLibraryInfo());
     }
@@ -90,6 +85,17 @@ export class SQLiteDataRepository implements DataRepository {
         ]).then(voidThen);
     }
 
+
+    insertAttributeMeta(entries: { id: string, name: string, type: string, writable: boolean, g0: string | undefined, g1: string | undefined, g2: string | undefined }[]): VoidResult {
+        return this.dbAccess.run(SQL.insertAttributeMeta(entries))
+            .then(voidThen);
+    }
+
+    queryAttributeMeta(attributeKeys: ([string, string, string, string, string])[]): QueryResultMany {
+        return this.dbAccess.queryAll(SQL.queryAttributeMeta(attributeKeys));
+    }
+
+
     existsItemAttribute(itemId: number, attributeKey: ([string, string, string, string, string])): QueryResultSingle {
         return this.dbAccess.querySingle(SQL.queryExistsItemAttribute(itemId, attributeKey))
             .then((row: any | null) => row ? row.count > 0 : false);
@@ -113,10 +119,6 @@ export class SQLiteDataRepository implements DataRepository {
 
     updateItemAttributeValue(itemId: number, attributeKey: ([string, string, string, string, string]), newValue: string): CommandResultSingle {
         return this.dbAccess.run(SQL.updateItemAttribute(itemId, attributeKey, newValue));
-    }
-
-    public clearItemAttributeModifiedFlag(itemId: number, attributeKey: string): CommandResultSingle {
-        return this.dbAccess.run(SQL.updateItemAttributeClearModified(itemId, attributeKey));
     }
 
     public deleteItemAttribute(itemId: number, attributeKey: ([string, string, string, string, string])): VoidResult {

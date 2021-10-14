@@ -69,9 +69,8 @@ const reducerConfigMap: ReducerConfigMap<ItemsActionType, ItemsState> = new Redu
                     attributes: item.attributes.map((attribute: AttributeDTO) => {
                         if (attributeKeysDtoEquals(attribute.key, payload.key)) {
                             return {
-                                key: attribute.key,
+                                ...attribute,
                                 value: null,
-                                type: "none",
                                 modified: false
                             };
                         } else {

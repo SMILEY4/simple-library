@@ -35,9 +35,9 @@ import sqlInsertItemAttributes from "./sqlscripts/item_attributes/insert_item_at
 import sqlUpdateItemAttribute from "./sqlscripts/item_attributes/update_item_attribute.sql";
 import sqlDeleteItemAttribute from "./sqlscripts/item_attributes/delete_item_attribute.sql";
 import sqlInsertItem from "./sqlscripts/items/insert_item.sql";
-import sqlUpdateItemAttributeClearModified from "./sqlscripts/item_attributes/clear_item_attribute_modified.sql";
-import sqlInsertAttributeMeta from "./sqlscripts/library/insert_attribute_meta.sql";
+import sqlInsertAttributeMeta from "./sqlscripts/item_attributes/insert_attribute_meta.sql";
 import sqlQueryExistsItemAttribute from "./sqlscripts/item_attributes/query_exists_item_attribute.sql";
+import sqlQueryAttributeMetadata from "./sqlscripts/item_attributes/query_item_attribute_meta.sql"
 
 export module SQL {
 
@@ -48,12 +48,6 @@ export module SQL {
 			.map((stmt: string) => stmt
 				.replace(v("name"), str(name))
 				.replace(v("timestamp"), num(timestamp)));
-	}
-
-	export function insertAttributeMeta(entries: { id: string, name: string, type: string, writable: boolean, g0: string | undefined, g1: string | undefined, g2: string | undefined }[]): string {
-		const entriesStr: string[] = entries.map(e => `(${str(e.id)}, ${str(e.name)}, ${str(e.type)}, ${bool(e.writable)}, ${str(e.g0)}, ${str(e.g1)}, ${str(e.g2)})`);
-		return sql(sqlInsertAttributeMeta)
-			.replace(v("entries"), entriesStr.join(", "));
 	}
 
 	export function queryLibraryInfo(): string {
@@ -227,6 +221,17 @@ export module SQL {
 			.replace(v("itemIds"), numCsv(itemIds));
 	}
 
+	export function insertAttributeMeta(entries: { id: string, name: string, type: string, writable: boolean, g0: string | undefined, g1: string | undefined, g2: string | undefined }[]): string {
+		const entriesStr: string[] = entries.map(e => `(${str(e.id)}, ${str(e.name)}, ${str(e.type)}, ${bool(e.writable)}, ${str(e.g0)}, ${str(e.g1)}, ${str(e.g2)})`);
+		return sql(sqlInsertAttributeMeta)
+			.replace(v("entries"), entriesStr.join(", "));
+	}
+
+	export function queryAttributeMeta(keys: ([string, string, string, string, string])[]): string {
+		return sql(sqlQueryAttributeMetadata)
+			.replace(v("keys"), attribKeyList(keys));
+	}
+
 	export function queryItemAttributes(itemId: number): string {
 		return sql(sqlQueryItemAttributes)
 			.replace(v("itemId"), num(itemId));
@@ -261,12 +266,6 @@ export module SQL {
 			.replace(v("g1"), str(attributeKey[3]))
 			.replace(v("g2"), str(attributeKey[4]))
 			.replace(v("value"), str(value));
-	}
-
-	export function updateItemAttributeClearModified(itemId: number, attributeKey: string): string {
-		return sql(sqlUpdateItemAttributeClearModified)
-			.replace(v("itemId"), num(itemId))
-			.replace(v("key"), str(attributeKey));
 	}
 
 	export function deleteItemAttribute(itemId: number, attributeKey: ([string, string, string, string, string])): string {

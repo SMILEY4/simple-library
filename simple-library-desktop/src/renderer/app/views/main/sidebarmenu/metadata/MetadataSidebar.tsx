@@ -122,7 +122,6 @@ export function MetadataSidebar(props: React.PropsWithChildren<MetadataSidebarPr
     }
 
     function handleOnUpdateEntryValue(entry: AttributeDTO, prev: AttributeValueDTO, next: AttributeValueDTO) {
-        console.log("UPDATE", prev, "->", next)
         return updateMetadataEntry(entry.key, prev, next);
     }
 

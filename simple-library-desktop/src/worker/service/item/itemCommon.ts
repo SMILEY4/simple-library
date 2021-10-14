@@ -16,7 +16,14 @@ export interface Attribute {
 	key: AttributeKey,
 	value: AttributeValue,
 	type: string,
+	writable: boolean,
 	modified: boolean,
+}
+
+export interface AttributeMetadata {
+	key: AttributeKey,
+	type: string,
+	writable: boolean,
 }
 
 export interface AttributeKey {
@@ -84,8 +91,8 @@ export function rowToItem(row: any | null): Item | null {
 
 export function concatAttributeColumnToEntries(str: string): Attribute[] {
 	if (str) {
-		const regexGlobal: RegExp = /"(.+?):(.+?):(.+?):(.+?):(.+?)-(.+?)"="(.+?)"-"(.+?)"/g;
-		const regex: RegExp = /"(.+?):(.+?):(.+?):(.+?):(.+?)-(.+?)"="(.+?)"-"(.+?)"/;
+		const regexGlobal: RegExp = /"(.+?):(.+?):(.+?):(.+?):(.+?)-(.+?)-(.+?)"="(.+?)"-"(.+?)"/g;
+		const regex: RegExp = /"(.+?):(.+?):(.+?):(.+?):(.+?)-(.+?)-(.+?)"="(.+?)"-"(.+?)"/;
 		return str.match(regexGlobal).map((strEntry: string) => {
 			const strEntryParts: string[] = strEntry.match(regex);
 			const entry: Attribute = {
@@ -97,8 +104,9 @@ export function concatAttributeColumnToEntries(str: string): Attribute[] {
 					g2: strEntryParts[5]
 				},
 				type: strEntryParts[6],
-				value: strEntryParts[7], // TODO
-				modified: strEntryParts[8] === "1"
+				writable: strEntryParts[7] == "1",
+				value: strEntryParts[8], // TODO
+				modified: strEntryParts[9] === "1"
 			};
 			return entry;
 		});
@@ -106,6 +114,7 @@ export function concatAttributeColumnToEntries(str: string): Attribute[] {
 		return [];
 	}
 }
+
 
 export function rowToAttribute(row: any): Attribute {
 	return {
@@ -118,80 +127,27 @@ export function rowToAttribute(row: any): Attribute {
 		},
 		value: row.value, // TODO
 		type: row.type,
+		writable: row.writable === 1,
 		modified: row.modified === 1
 	};
 }
 
-export function stringToAttributeValue(strValue: string | null, type: AttributeType): AttributeValue {
-	if (strValue === null || strValue === undefined) {
-		return null;
-	} else {
-		switch (type) {
-			case "none":
-				return null;
-			case "text":
-				return strValue;
-			case "number":
-				return Number(strValue);
-			case "boolean":
-				return strValue.toLowerCase() === "true";
-			case "date":
-				return new Date(Date.parse(strValue));
-			case "list":
-				return strValue.split(";");
-		}
-	}
+
+export function rowsToAttributeMeta(rows: any[]): AttributeMetadata[] {
+	return rows.map(row => rowToAttributeMeta(row));
 }
 
-export function attributeValueToString(value: AttributeValue, type: AttributeType): string {
-	if (value === null || value === undefined) {
-		return null;
-	} else {
-		switch (type) {
-			case "none":
-				return null;
-			case "text":
-				return value as string;
-			case "number":
-				return (value as number).toString();
-			case "boolean":
-				return (value as boolean) ? "true" : "false";
-			case "date":
-				return dateToString(value as Date);
-			case "list":
-				return (value as string[]).join(";");
-		}
-	}
-}
 
-export function valueToAttributeType(value: any): AttributeType {
-	if (value === null || value === undefined) {
-		return "none";
-	}
-	const isISODate = !!("" + value).match(/\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d/);
-	if (isISODate) {
-		return "date";
-	}
-	switch (typeof (value)) {
-		case "string":
-			return "text";
-		case "number":
-			return "number";
-		case "boolean":
-			return "boolean";
-	}
-	return "text";
-}
-
-function dateToString(date: Date): string {
-	return date.getFullYear() + "-"
-		+ twoDigits(date.getMonth() + 1) + "-"
-		+ twoDigits(date.getDate()) + "T"
-		+ twoDigits(date.getHours()) + ":"
-		+ twoDigits(date.getMinutes()) + ":"
-		+ twoDigits(date.getSeconds());
-}
-
-function twoDigits(value: number): string {
-	return (value < 10 ? "0" : "") + value;
+export function rowToAttributeMeta(row: any): AttributeMetadata {
+	return {
+		key: {
+			id: row.id,
+			name: row.name,
+			g0: row.g0,
+			g1: row.g1,
+			g2: row.g2
+		},
+		type: row.type,
+		writable: row.writable === 1
+	};
 }

@@ -13,8 +13,6 @@ export interface DataRepository {
 
 	init(name: string, createDefaultCollection: boolean): Promise<any>;
 
-	insertAttributeMeta(entries: {id: string, name: string, g0: string | undefined, g1: string | undefined, g2: string | undefined, type: string, writable: boolean }[]): VoidResult;
-
 	getLibraryInfo(): QueryResultMany;
 
 	updateLibraryLastOpened(timestamp: number): CommandResultSingle;
@@ -40,6 +38,10 @@ export interface DataRepository {
 	deleteItems(itemIds: number[]): VoidResult;
 
 
+	insertAttributeMeta(entries: {id: string, name: string, g0: string | undefined, g1: string | undefined, g2: string | undefined, type: string, writable: boolean }[]): VoidResult;
+
+	queryAttributeMeta(attributeKeys: ([string, string, string, string, string])[]): QueryResultMany;
+
 	existsItemAttribute(itemId: number, attributeKey: ([string, string, string, string, string])): QueryResultSingle;
 
 	getItemAttribute(itemId: number, attributeKey: ([string, string, string, string, string])): QueryResultSingle;
@@ -49,8 +51,6 @@ export interface DataRepository {
 	insertItemAttributes(itemId: number, attributes: ({ id: string, name: string, g0: string, g1: string, g2: string, value: string })[]): CommandResultSingle;
 
 	updateItemAttributeValue(itemId: number, attributeKey: ([string, string, string, string, string]), newValue: string): CommandResultSingle;
-
-	clearItemAttributeModifiedFlag(itemId: number, attributeKey: string): CommandResultSingle;
 
 	deleteItemAttribute(itemId: number, attributeKey: ([string, string, string, string, string])): VoidResult;
 

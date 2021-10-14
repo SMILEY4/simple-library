@@ -17,12 +17,14 @@ FROM collection_items,
 					|| attribute_meta.g2
 					|| '-'
 					|| attribute_meta.type
+					|| '-'
+					|| attribute_meta.writable
 					|| '"="'
 					|| item_attributes.value
 					|| '"-"'
 					|| item_attributes.modified
 					|| '"'
-					AS str_attribute -- "id:name:g0:g1:g2-type=myValue-1"
+					AS str_attribute -- "id:name:g0:g1:g2-type-writable"="myValue-1"
 		 FROM item_attributes,
 			  attribute_meta
 		 WHERE item_attributes.id = attribute_meta.id

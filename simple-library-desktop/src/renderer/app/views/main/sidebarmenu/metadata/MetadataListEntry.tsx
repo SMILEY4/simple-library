@@ -28,12 +28,16 @@ export function MetadataListEntry(props: React.PropsWithChildren<MetadataListEnt
 		>
 			{props.isEmpty === true
 				? <Label overflow="nowrap-hidden" italic disabled>none</Label>
-				: renderInputField()}
+				: renderInputField(props.entry)}
 		</KeyValuePair>
 	);
 
-	function renderInputField(): ReactElement {
-		return renderInputText();
+	function renderInputField(attribute: AttributeDTO): ReactElement {
+		if (attribute.writable) {
+			return renderInputText(attribute);
+		} else {
+			return renderReadOnly(attribute);
+		}
 		// TODO: types
 		// switch (props.entry.type) {
 		// 	case "text":
@@ -49,14 +53,19 @@ export function MetadataListEntry(props: React.PropsWithChildren<MetadataListEnt
 		// }
 	}
 
-	function renderInputText(): ReactElement {
+	function renderInputText(attribute: AttributeDTO): ReactElement {
 		return (
 			<ToggleTextField
 				fillWidth
-				value={props.entry.value as string}
+				underline
+				value={attribute.value as string}
 				onAccept={handleUpdateValue}
 			/>
 		);
+	}
+
+	function renderReadOnly(attribute: AttributeDTO): ReactElement {
+		return <Label overflow="nowrap-hidden">{attribute.value}</Label>;
 	}
 
 	//

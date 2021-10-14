@@ -7,6 +7,7 @@ import "./toggleTextField.css";
 
 export interface ToggleTextFieldProps extends Omit<TextFieldProps, "refInputField" | "autofocus"> {
 	fillWidth?: boolean;
+	underline?: boolean,
 }
 
 export function ToggleTextField(props: React.PropsWithChildren<ToggleTextFieldProps>): ReactElement {
@@ -58,7 +59,7 @@ export function ToggleTextField(props: React.PropsWithChildren<ToggleTextFieldPr
 			onClick={handleClickLabel}
 			onDoubleClick={(e: any) => e.stopPropagation()}
 		>
-			<Label overflow="cutoff">
+			<Label overflow="cutoff" underline={props.underline}>
 				{value}
 			</Label>
 		</div>;

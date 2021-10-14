@@ -918,7 +918,7 @@ function attribute(key: [string,string,string,string,string], value: any, modifi
 		g2: key[4],
 		value: value,
 		modified: modified,
-		writeable: writable ? 1 : 0,
+		writable: writable ? 1 : 0,
 		type: "?"
 	};
 }

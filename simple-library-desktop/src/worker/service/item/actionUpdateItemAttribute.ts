@@ -23,9 +23,9 @@ export class ActionUpdateItemAttribute {
 	private findAttribute(itemId: number, attributeKey: AttributeKey): Promise<Attribute> {
 		return this.repository.getItemAttribute(itemId, packAttributeKey(attributeKey))
 			.then((row: any | null) => {
-				return row
+					return row
 						? rowToAttribute(row)
-						: Promise.reject("No attribute with key " + attributeKey + " found for item with id " + itemId)
+						: Promise.reject("No attribute with key " + attributeKey + " found for item with id " + itemId);
 				}
 			);
 	}
@@ -39,9 +39,8 @@ export class ActionUpdateItemAttribute {
 
 	private buildUpdatedAttribute(attribute: Attribute, newValue: AttributeValue): Attribute {
 		return {
-			key: attribute.key,
+			...attribute,
 			value: newValue,
-			type: attribute.type,
 			modified: true
 		};
 	}
