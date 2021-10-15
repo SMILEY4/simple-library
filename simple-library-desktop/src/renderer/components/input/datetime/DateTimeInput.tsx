@@ -15,6 +15,7 @@ export interface DateTimeInputProps extends BaseProps {
 	value?: Date,
 	disabled?: boolean,
 	error?: boolean,
+	underline?: boolean,
 	groupPos?: "left" | "right" | "center",
 	onAccept?: (value: Date) => void | Promise<void>,
 	showTimeSelect?: boolean,
@@ -79,7 +80,7 @@ export function DateTimeInput(props: React.PropsWithChildren<DateTimeInputProps>
 					}}
 					onDoubleClick={(e: any) => e.stopPropagation()}
 				>
-					<Label overflow="cutoff">
+					<Label overflow="cutoff" underline={props.underline}>
 						{dateFormat(value, DATE_FORMAT_LABEL)}
 					</Label>
 				</div>

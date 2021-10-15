@@ -3,6 +3,9 @@ import {ToggleTextField} from "../../../../../components/input/textfield/ToggleT
 import {AttributeDTO, AttributeKeyDTO, AttributeValueDTO} from "../../../../../../common/events/dtoModels";
 import {KeyValuePair} from "../../../../../components/misc/keyvaluepair/KeyValuePair";
 import {Label} from "../../../../../components/base/label/Label";
+import {NUMERIC_INPUT} from "../../../../../components/input/textfield/TextField";
+import {CheckBox} from "../../../../../components/buttons/checkbox/CheckBox";
+import {DateTimeInput} from "../../../../../components/input/datetime/DateTimeInput";
 
 interface MetadataListEntryProps {
 	isEmpty?: boolean,
@@ -19,10 +22,10 @@ export function MetadataListEntry(props: React.PropsWithChildren<MetadataListEnt
 
 	return (
 		<KeyValuePair
-			keyValue={props.shortName}
+			keyValue={props.shortName + " (" + props.entry.type.charAt(1) + ")"}
 			styleType={props.styleType ? props.styleType : "focus-key"}
 			onContextMenu={event => props.onContextMenu && props.onContextMenu(props.entry.key, event)}
-			showOverflow={props.entry.type === "date"}
+			showOverflow={props.entry.type === "_date"}
 			keySize={props.keyDisplayLength}
 			modified={props.entry.modified}
 		>
@@ -32,25 +35,29 @@ export function MetadataListEntry(props: React.PropsWithChildren<MetadataListEnt
 		</KeyValuePair>
 	);
 
+
 	function renderInputField(attribute: AttributeDTO): ReactElement {
 		if (attribute.writable) {
-			return renderInputText(attribute);
+			switch (props.entry.type) {
+				case "_text":
+					return renderInputText(attribute);
+				case "_number":
+					return renderInputNumber(attribute);
+				case "_boolean":
+					return renderInputBoolean(attribute);
+				case "_date":
+					return renderInputDate(attribute);
+				default:
+					return renderInputText(attribute);
+			}
 		} else {
 			return renderReadOnly(attribute);
 		}
-		// TODO: types
-		// switch (props.entry.type) {
-		// 	case "text":
-		// 		return renderInputText();
-		// 	case "number":
-		// 		return renderInputNumber();
-		// 	case "boolean":
-		// 		return renderInputBoolean();
-		// 	case "date":
-		// 		return renderInputDate();
-		// 	case "list":
-		// 		return renderInputList();
-		// }
+	}
+
+
+	function renderReadOnly(attribute: AttributeDTO): ReactElement {
+		return <Label overflow="nowrap-hidden">{attribute.value}</Label>;
 	}
 
 	function renderInputText(attribute: AttributeDTO): ReactElement {
@@ -64,47 +71,49 @@ export function MetadataListEntry(props: React.PropsWithChildren<MetadataListEnt
 		);
 	}
 
-	function renderReadOnly(attribute: AttributeDTO): ReactElement {
-		return <Label overflow="nowrap-hidden">{attribute.value}</Label>;
+	function renderInputNumber(attribute: AttributeDTO): ReactElement {
+		return (
+			<ToggleTextField
+				fillWidth
+				underline
+				regexChange={NUMERIC_INPUT}
+				regexAccept={NUMERIC_INPUT}
+				value={(Number(attribute.value)).toString()}
+				onAccept={handleUpdateValue}
+			/>
+		);
 	}
 
-	//
-	// function renderInputNumber(): ReactElement {
-	// 	return (
-	// 		<ToggleTextField
-	// 			fillWidth
-	// 			regexChange={NUMERIC_INPUT}
-	// 			regexAccept={NUMERIC_INPUT}
-	// 			value={(props.entry.value as number).toString()}
-	// 			onAccept={handleUpdateValue}
-	// 		/>
-	// 	);
-	// }
-	//
-	// function renderInputBoolean(): ReactElement {
-	// 	return (
-	// 		<CheckBox
-	// 			selected={props.entry.value as boolean}
-	// 			onToggle={(selected: boolean) => handleUpdateValue(selected)}
-	// 		/>
-	// 	);
-	// }
-	//
-	// function renderInputDate(): ReactElement {
-	// 	if (isNaN((props.entry.value as Date).getTime())) {
-	// 		return renderInvalid();
-	// 	} else {
-	// 		return (
-	// 			<DateTimeInput
-	// 				value={props.entry.value as Date}
-	// 				onAccept={value => handleUpdateValue(value)}
-	// 				showTimeSelect
-	// 				toggleInputField
-	// 				labelFillWidth
-	// 			/>
-	// 		);
-	// 	}
-	// }
+	function renderInputBoolean(attribute: AttributeDTO): ReactElement {
+		return (
+			<CheckBox
+				selected={attribute.value.toLowerCase() === "true"}
+				onToggle={(selected: boolean) => handleUpdateValue(selected)}
+			/>
+		);
+	}
+
+	function renderInputDate(attribute: AttributeDTO): ReactElement {
+		if (isNaN(new Date(Date.parse(attribute.value)).getTime())) {
+			return renderInvalid();
+		} else {
+			return (
+				<DateTimeInput
+					value={new Date(Date.parse(attribute.value))}
+					onAccept={value => handleUpdateValue(value)}
+					showTimeSelect
+					toggleInputField
+					labelFillWidth
+					underline
+				/>
+			);
+		}
+	}
+
+	function renderInvalid(): ReactElement {
+		return <Label overflow="nowrap-hidden" italic disabled>invalid</Label>;
+	}
+
 	//
 	// function renderInputList(): ReactElement {
 	// 	return (
@@ -117,9 +126,6 @@ export function MetadataListEntry(props: React.PropsWithChildren<MetadataListEnt
 	// 	);
 	// }
 	//
-	// function renderInvalid(): ReactElement {
-	// 	return <Label overflow="nowrap-hidden" italic disabled>invalid</Label>;
-	// }
 
 	function handleUpdateValue(value: AttributeValueDTO): void {
 		props.onUpdateValue(props.entry.value, value);

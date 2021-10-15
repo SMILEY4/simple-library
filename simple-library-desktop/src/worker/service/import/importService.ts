@@ -196,7 +196,7 @@ export class ImportService {
 			g0: att.key.g0,
 			g1: att.key.g1,
 			g2: att.key.g2,
-			value: "" + att.value // Todo
+			value: "" + att.value
 		})));
 	}
 

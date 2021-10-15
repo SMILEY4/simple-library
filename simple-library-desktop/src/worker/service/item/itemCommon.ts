@@ -8,13 +8,9 @@ export interface Item {
 	attributes?: Attribute[]
 }
 
-export type AttributeType = "none" | "text" | "number" | "boolean" | "date" | "list"
-
-export type AttributeValue = null | string | number | boolean | Date | string[]
-
 export interface Attribute {
 	key: AttributeKey,
-	value: AttributeValue,
+	value: string | null,
 	type: string,
 	writable: boolean,
 	modified: boolean,
@@ -151,3 +147,25 @@ export function rowToAttributeMeta(row: any): AttributeMetadata {
 		writable: row.writable === 1
 	};
 }
+
+export function estimateSimpleTypeFromAttributeValue(value: string): string {
+	if (value === null || value === undefined || value.trim().length === 0) {
+		return "_unknown";
+	}
+
+	if (["true", "false"].indexOf(value.toLowerCase()) !== -1) {
+		return "_boolean";
+	}
+
+	if (!!("" + value).match(/\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d/)) {
+		return "_date";
+	}
+
+	if (!Number.isNaN(Number(value))) {
+		return "_number";
+	}
+
+	return "_text";
+
+}
+

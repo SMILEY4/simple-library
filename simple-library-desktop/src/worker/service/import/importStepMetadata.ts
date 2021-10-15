@@ -54,10 +54,10 @@ export class ImportStepMetadata {
 				g1: this.findGroup(groups, 1),
 				g2: this.findGroup(groups, 2)
 			},
-			type: "?",
-			writable: false,
 			value: (value === null || value === undefined) ? null : "" + value,
-			modified: false
+			modified: false,
+			writable: undefined,
+			type: undefined
 		};
 	}
 

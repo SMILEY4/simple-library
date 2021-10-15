@@ -4,6 +4,7 @@ import {
 	AttributeKey,
 	attributeKeysEquals,
 	AttributeMetadata,
+	estimateSimpleTypeFromAttributeValue,
 	Item,
 	packAttributeKey,
 	rowsToAttributeMeta,
@@ -31,7 +32,8 @@ export class ActionGetItemsByCollection {
 		return this.findCollection(collectionId)
 			.then(collection => this.getItemData(collection, attributeKeys))
 			.then(rowsToItems)
-			.then(items => includeMissingAttributes ? this.appendMissingAttributes(items, attributeKeys) : items);
+			.then(items => includeMissingAttributes ? this.appendMissingAttributes(items, attributeKeys) : items)
+			.then(items => this.estimateSimpleAttributeTypes(items));
 	}
 
 
@@ -105,6 +107,15 @@ export class ActionGetItemsByCollection {
 			value: null,
 			modified: false
 		};
+	}
+
+	private estimateSimpleAttributeTypes(items: Item[]): Promise<Item[]> {
+		items.forEach(item => {
+			item.attributes.forEach(att => {
+				att.type = estimateSimpleTypeFromAttributeValue(att.value);
+			});
+		});
+		return Promise.resolve(items);
 	}
 
 }

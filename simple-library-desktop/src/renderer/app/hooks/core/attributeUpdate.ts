@@ -18,7 +18,7 @@ export function useUpdateAttribute() {
 			return Promise.resolve();
 		} else {
 			return Promise.resolve(newValue)
-				.then((value: AttributeValueDTO) => setItemMetadata(itemId, attributeKey, value))
+				.then((value: AttributeValueDTO) => setItemMetadata(itemId, attributeKey, ""+value))
 				.then((newEntry: AttributeDTO) => updateAttributeState(newEntry))
 				.then((newEntry: AttributeDTO) => updateItemState(newEntry, itemId))
 				.then(voidThen)

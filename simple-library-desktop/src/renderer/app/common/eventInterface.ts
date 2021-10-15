@@ -90,7 +90,7 @@ export function fetchItemMetadata(itemId: number): Promise<AttributeDTO[]> {
     return eventBroadcaster.send(EventIds.GET_ITEM_ATTRIBUTES, itemId);
 }
 
-export function setItemMetadata(itemId: number, entryKey: AttributeKeyDTO, value: AttributeValueDTO): Promise<AttributeDTO> {
+export function setItemMetadata(itemId: number, entryKey: AttributeKeyDTO, value: string): Promise<AttributeDTO> {
     return eventBroadcaster.send(EventIds.SET_ITEM_ATTRIBUTE, {itemId: itemId, entryKey: entryKey, newValue: value});
 }
 
