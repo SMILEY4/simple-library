@@ -84,11 +84,11 @@ describe("item-service", () => {
 			// then
 			await expect(result).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, [
-					attribute(keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "?", true, false),
-					attribute(keyMIMEType(), "image/jpeg", "?", false, true)
+					attribute(keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "_text", true, false),
+					attribute(keyMIMEType(), "image/jpeg", "_text", false, true)
 				]),
 				item(2, "/path/to/file/2", "thumbnail2", "hash2", 1001, [
-					attribute(keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "?", true, false)
+					attribute(keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "_text", true, false)
 				]),
 				item(3, "/path/to/file/3", "thumbnail3", "hash3", 1002)
 			]);
@@ -124,16 +124,16 @@ describe("item-service", () => {
 			// then
 			await expect(result).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, [
-					attribute(keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "?", true, false),
-					attribute(keyMIMEType(), "image/jpeg", "?", false, true)
+					attribute(keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "_text", true, false),
+					attribute(keyMIMEType(), "image/jpeg", "_text", false, true)
 				]),
 				item(2, "/path/to/file/2", "thumbnail2", "hash2", 1001, [
-					attribute(keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "?", true, false),
-					attribute(keyMIMEType(), null, "?", false, false)
+					attribute(keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "_text", true, false),
+					attribute(keyMIMEType(), null, "_unknown", false, false)
 				]),
 				item(3, "/path/to/file/3", "thumbnail3", "hash3", 1002, [
-					attribute(keyFileModifyDate(), null, "?", true, false),
-					attribute(keyMIMEType(), null, "?", false, false)
+					attribute(keyFileModifyDate(), null, "_unknown", true, false),
+					attribute(keyMIMEType(), null, "_unknown", false, false)
 				])
 			]);
 		});
@@ -167,11 +167,11 @@ describe("item-service", () => {
 			// then
 			await expect(result).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, [
-					attribute(keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "?", true, false),
-					attribute(keyMIMEType(), "image/jpeg", "?", false, true)
+					attribute(keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "_text", true, false),
+					attribute(keyMIMEType(), "image/jpeg", "_text", false, true)
 				]),
 				item(2, "/path/to/file/2", "thumbnail2", "hash2", 1001, [
-					attribute(keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "?", true, false)
+					attribute(keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "_text", true, false)
 				])
 			]);
 		});
@@ -206,11 +206,11 @@ describe("item-service", () => {
 			// then
 			await expect(result).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, [
-					attribute(keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "?", true, false),
-					attribute(keyMIMEType(), "image/jpeg", "?", false, true)
+					attribute(keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "_text", true, false),
+					attribute(keyMIMEType(), "image/jpeg", "_text", false, true)
 				]),
 				item(2, "/path/to/file/2", "thumbnail2", "hash2", 1001, [
-					attribute(keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "?", true, false)
+					attribute(keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "_text", true, false)
 				]),
 				item(3, "/path/to/file/3", "thumbnail3", "hash3", 1002, []),
 				item(4, "/path/to/file/4", "thumbnail4", "hash4", 1003, [])
@@ -474,9 +474,9 @@ describe("item-service", () => {
 			const result: Promise<Attribute[]> = actionGetAttribs.perform(2);
 			// then
 			await expect(result).resolves.toEqual([
-				attribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "?", false, false),
-				attribute(keyFileModifyDate(), "2021:10:12 21:00:12+02:00", "?", true, false),
-				attribute(keyFileExtension(), "jpg", "?", false, true)
+				attribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "_text", false, false),
+				attribute(keyFileExtension(), "jpg", "_text", false, true),
+				attribute(keyFileModifyDate(), "2021:10:12 21:00:12+02:00", "_text", true, false),
 			]);
 		});
 
@@ -531,9 +531,9 @@ describe("item-service", () => {
 			// then
 			await expect(result).resolves.toEqual(attribute(keyFileModifyDate(), "new value", "?", true, true));
 			await expect(actionGetAttribs.perform(1)).resolves.toEqual([
-				attribute(keyFileModifyDate(), "new value", "?", true, true),
-				attribute(keyFileExtension(), "jpg", "?", false, false),
-				attribute(keyMIMEType(), "image/jpeg", "?", false, false)
+				attribute(keyFileModifyDate(), "new value", "_text", true, true),
+				attribute(keyFileExtension(), "jpg", "_text", false, false),
+				attribute(keyMIMEType(), "image/jpeg", "_text", false, false)
 			]);
 		});
 
@@ -558,9 +558,9 @@ describe("item-service", () => {
 			// then
 			await expect(result).rejects.toBeDefined();
 			await expect(actionGetAttribs.perform(1)).resolves.toEqual([
-				attribute(keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "?", true, false),
-				attribute(keyFileExtension(), "jpg", "?", false, false),
-				attribute(keyMIMEType(), "image/jpeg", "?", false, false)
+				attribute(keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "_text", true, false),
+				attribute(keyFileExtension(), "jpg", "_text", false, false),
+				attribute(keyMIMEType(), "image/jpeg", "_text", false, false)
 			]);
 		});
 
@@ -585,9 +585,9 @@ describe("item-service", () => {
 			// then
 			await expect(result).rejects.toBeDefined();
 			await expect(actionGetAttribs.perform(1)).resolves.toEqual([
-				attribute(keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "?", true, false),
-				attribute(keyFileExtension(), "jpg", "?", false, true),
-				attribute(keyMIMEType(), "image/jpeg", "?", false, false)
+				attribute(keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "_text", true, false),
+				attribute(keyFileExtension(), "jpg", "_text", false, true),
+				attribute(keyMIMEType(), "image/jpeg", "_text", false, false)
 			]);
 		});
 
@@ -620,11 +620,11 @@ describe("item-service", () => {
 			// then
 			await expect(result).resolves.toBeUndefined();
 			await expect(actionGetAttribs.perform(1)).resolves.toEqual([
-				attribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "?", false, false),
-				attribute(keyMIMEType(), "image/jpeg", "?", false, true)
+				attribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "_text", false, false),
+				attribute(keyMIMEType(), "image/jpeg", "_text", false, true)
 			]);
 			await expect(actionGetAttribs.perform(2)).resolves.toEqual([
-				attribute(keyFileExtension(), "jpg", "?", false, false)
+				attribute(keyFileExtension(), "jpg", "_text", false, false)
 			]);
 		});
 
@@ -649,9 +649,9 @@ describe("item-service", () => {
 			// then
 			await expect(result).resolves.toBeUndefined();
 			await expect(actionGetAttribs.perform(1)).resolves.toEqual([
-				attribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "?", false, false),
-				attribute(keyFileExtension(), "jpg", "?", false, true),
-				attribute(keyMIMEType(), "image/jpeg", "?", false, false)
+				attribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "_text", false, false),
+				attribute(keyFileExtension(), "jpg", "_text", false, true),
+				attribute(keyMIMEType(), "image/jpeg", "_text", false, false)
 			]);
 		});
 

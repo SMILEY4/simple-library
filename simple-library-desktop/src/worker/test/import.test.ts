@@ -613,9 +613,9 @@ describe("import", () => {
 				item(3, "path\\to\\file3.png", TIMESTAMP)
 			]);
 			await expect(dbAccess.queryAll(SQL.queryItemAttributes(1))).resolves.toEqual([
+				attribute(["FileModifyDate", "FileModifyDate", "File", "System", "Time"], "2020:08:08 19:55:50+02:00", 0, true),
 				attribute(["FileAccessDate", "FileAccessDate", "File", "System", "Time"], "2021:10:11 21:00:12+02:00", 0, false),
 				attribute(["FileCreateDate", "FileCreateDate", "File", "System", "Time"], "2021:10:10 21:23:43+02:00", 0, true),
-				attribute(["FileModifyDate", "FileModifyDate", "File", "System", "Time"], "2020:08:08 19:55:50+02:00", 0, true),
 				attribute(["FileType", "FileType", "File", "File", "Other"], "JPEG", 0, false),
 				attribute(["FileTypeExtension", "FileTypeExtension", "File", "File", "Other"], "jpg", 0, false),
 				attribute(["MIMEType", "MIMEType", "File", "File", "Other"], "image/jpeg", 0, false),
