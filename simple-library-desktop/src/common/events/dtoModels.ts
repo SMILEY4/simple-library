@@ -55,9 +55,7 @@ export interface ItemDTO {
 }
 
 
-export type AttributeTypeDTO = "none" | "text" | "number" | "boolean" | "date" | "list"
-
-export type AttributeValueDTO = null | string | number | boolean | Date | string[]
+export type AttributeValueDTO = null | string
 
 export interface AttributeDTO {
 	key: AttributeKeyDTO,

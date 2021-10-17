@@ -101,7 +101,7 @@ export function concatAttributeColumnToEntries(str: string): Attribute[] {
 				},
 				type: strEntryParts[6],
 				writable: strEntryParts[7] == "1",
-				value: strEntryParts[8], // TODO
+				value: strEntryParts[8],
 				modified: strEntryParts[9] === "1"
 			};
 			return entry;
@@ -121,7 +121,7 @@ export function rowToAttribute(row: any): Attribute {
 			g1: row.g1,
 			g2: row.g2
 		},
-		value: row.value, // TODO
+		value: row.value,
 		type: row.type,
 		writable: row.writable === 1,
 		modified: row.modified === 1

@@ -49,8 +49,7 @@ const reducerConfigMap: ReducerConfigMap<AttributeActionType, AttributeState> = 
 		attributes: state.attributes.map(att => {
 			if (attributeKeysDtoEquals(att.key, payload.key)) {
 				return {
-					key: att.key,
-					type: att.type,
+					...att,
 					value: payload.value,
 					modified: payload.modified
 				};
