@@ -11,7 +11,7 @@ import {useUpdateAttribute} from "../../../hooks/core/attributeUpdate";
 import {useActiveCollection} from "../../../hooks/store/collectionActiveState";
 import {useGetItemIds, useItems} from "../../../hooks/store/itemsState";
 import {useIsItemSelected, useSelectedItemIds} from "../../../hooks/store/itemSelectionState";
-import {AttributeValueDTO} from "../../../../../common/events/dtoModels";
+import {AttributeKeyDTO, AttributeValueDTO} from "../../../../../common/events/dtoModels";
 
 export function useItemList(activeCollectionId: number) {
 
@@ -22,7 +22,7 @@ export function useItemList(activeCollectionId: number) {
 
 	useEffect(() => {
 		itemSelectionClear();
-	}, [activeCollectionId])
+	}, [activeCollectionId]);
 
 	return {
 		items: items,
@@ -35,7 +35,7 @@ export function useItemList(activeCollectionId: number) {
 		handleDragItem: useDragItems(),
 		handleRemoveSelectedItems: useRemoveSelectedItems(),
 		handleUpdateItemAttributeValue: useUpdateItemAttribute()
-	}
+	};
 
 }
 
@@ -44,7 +44,7 @@ function useOpenItemExternal() {
 	const openItemsExternal = useOpenItemsExternal();
 
 	function hookFunction(itemId: number) {
-		openItemsExternal([itemId])
+		openItemsExternal([itemId]);
 	}
 
 	return hookFunction;
@@ -56,7 +56,7 @@ function useOpenSelectedItemsExternal() {
 	const selectedItemIds = useSelectedItemIds();
 
 	function hookFunction() {
-		openItemsExternal(selectedItemIds)
+		openItemsExternal(selectedItemIds);
 	}
 
 	return hookFunction;
@@ -68,7 +68,7 @@ function useRemoveSelectedItems() {
 	const removeItems = useRemoveItems();
 
 	function hookFunction() {
-		removeItems(selectedItemIds)
+		removeItems(selectedItemIds);
 	}
 
 	return hookFunction;
@@ -78,8 +78,8 @@ function useRemoveSelectedItems() {
 function useUpdateItemAttribute() {
 	const updateAttribute = useUpdateAttribute();
 
-	function hookFunction(itemId: number, attributeKey: string, prevValue: AttributeValueDTO, nextValue: AttributeValueDTO): Promise<void> {
-		return updateAttribute(itemId, attributeKey, nextValue)
+	function hookFunction(itemId: number, attributeKey: AttributeKeyDTO, prevValue: AttributeValueDTO, nextValue: AttributeValueDTO): Promise<void> {
+		return updateAttribute(itemId, attributeKey, prevValue, nextValue);
 	}
 
 	return hookFunction;
@@ -92,10 +92,11 @@ function useKeyboardShortcuts() {
 	const itemSelectionSet = useItemSelectionSet();
 
 	function hookFunction(event: React.KeyboardEvent): void {
+		// Ctrl + A => select all
 		if (isShortcut(event) && event.keyCode === 65) {
 			event.preventDefault();
 			event.stopPropagation();
-			itemSelectionSet(getItemIds())
+			itemSelectionSet(getItemIds());
 		}
 	}
 
@@ -111,19 +112,19 @@ function useSelectItems() {
 	function hookFunction(itemId: number, selectMod: SelectModifier): void {
 		switch (selectMod) {
 			case SelectModifier.NONE: {
-				itemSelectionSet([itemId])
+				itemSelectionSet([itemId]);
 				break;
 			}
 			case SelectModifier.TOGGLE: {
-				itemSelectionToggle([itemId])
+				itemSelectionToggle([itemId]);
 				break;
 			}
 			case SelectModifier.RANGE: {
-				itemSelectionRangeTo(itemId, false)
+				itemSelectionRangeTo(itemId, false);
 				break;
 			}
 			case SelectModifier.ADD_RANGE: {
-				itemSelectionRangeTo(itemId, true)
+				itemSelectionRangeTo(itemId, true);
 				break;
 			}
 		}
@@ -145,8 +146,8 @@ function useDragItems() {
 		if (isSelected(itemId)) {
 			dragItemIds = selectedItemIds;
 		} else {
-			itemSelectionSet([itemId])
-			dragItemIds = [itemId]
+			itemSelectionSet([itemId]);
+			dragItemIds = [itemId];
 		}
 		DragAndDropItems.setDragData(event.dataTransfer, activeCollectionId, dragItemIds, copyMode);
 		DragAndDropItems.setDragLabel(event.dataTransfer, copyMode, dragItemIds.length);

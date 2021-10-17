@@ -19,26 +19,31 @@ CREATE TABLE items
 
 CREATE TABLE attribute_meta
 (
+	id       TEXT    NOT NULL,
 	name     TEXT    NOT NULL,
-	TYPE     TEXT    NOT NULL,
-	WRITABLE BOOLEAN NOT NULL,
-	G0       TEXT,
-	G1       TEXT,
-	G2       TEXT
+	g0       TEXT    NOT NULL,
+	g1       TEXT    NOT NULL,
+	g2       TEXT    NOT NULL,
+	type     TEXT    NOT NULL,
+	writable BOOLEAN NOT NULL,
+	PRIMARY KEY (id, name, g0, g1, g2)
 );
 
 CREATE TABLE item_attributes
 (
-	key      TEXT    NOT NULL,
+	id       TEXT    NOT NULL,
+	name     TEXT    NOT NULL,
+	g0       TEXT    NOT NULL,
+	g1       TEXT    NOT NULL,
+	g2       TEXT    NOT NULL,
 	value    TEXT    NOT NULL,
-	type     TEXT    NOT NULL,
 	modified BOOLEAN,
 	item_id  INTEGER NOT NULL
 		CONSTRAINT fk_item_id
 			REFERENCES items
 			ON DELETE CASCADE,
 	CHECK (modified IN (0, 1)),
-	PRIMARY KEY (key, item_id)
+	PRIMARY KEY (id, name, g0, g1, g2, item_id)
 );
 
 CREATE TABLE collections

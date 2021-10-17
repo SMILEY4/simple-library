@@ -10,6 +10,7 @@ export interface LabelProps extends BaseProps, ClickableProps {
 	disabled?: boolean,
 	italic?: boolean,
 	bold?: boolean,
+	underline?: boolean,
 	noSelect?: boolean,
 	smallIcon?: boolean,
 	overflow?: "wrap" | "nowrap" | "nowrap-hidden" | "cutoff"
@@ -39,6 +40,7 @@ export function Label(props: React.PropsWithChildren<LabelProps>): React.ReactEl
 			getIf(props.disabled, "label-disabled"),
 			getIf(props.italic, "label-italic"),
 			getIf(props.bold, "label-bold"),
+			getIf(props.underline, "label-underline"),
 			getIf(props.noSelect, "label-no-select"),
 		)
 	}

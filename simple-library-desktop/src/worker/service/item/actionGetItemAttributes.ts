@@ -1,5 +1,5 @@
 import {ActionGetItemById} from "./actionGetItemById";
-import {Attribute, Item, rowToAttribute} from "./itemCommon";
+import {Attribute, estimateSimpleTypeFromAttributeValue, Item, rowToAttribute} from "./itemCommon";
 import {DataRepository} from "../dataRepository";
 
 /**
@@ -15,6 +15,7 @@ export class ActionGetItemAttributes {
 		this.repository = repository;
 		this.actionGetById = actionGetById;
 	}
+
 
 	public perform(itemId: number): Promise<Attribute[]> {
 		return this.findItem(itemId)
@@ -32,7 +33,11 @@ export class ActionGetItemAttributes {
 
 	private getAttributes(item: Item): Promise<Attribute[]> {
 		return this.repository.getItemAttributesByItem(item.id)
-			.then((rows: any[]) => rows.map(row => rowToAttribute(row)));
+			.then((rows: any[]) => rows.map(row => rowToAttribute(row)))
+			.then((attribs: Attribute[]) => attribs.map(att => ({
+				...att,
+				type: estimateSimpleTypeFromAttributeValue(att.value)
+			})));
 	}
 
 }

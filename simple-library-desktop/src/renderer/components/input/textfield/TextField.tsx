@@ -7,7 +7,7 @@ import "./textfield.css";
 
 export type TFAcceptCause = "blur" | "escape" | "enter" | "change"
 
-export const NUMERIC_INPUT = /^[\d.]*$/;
+export const NUMERIC_INPUT = /^[\d.]*$/; // TODO: refine regex (currently allowed: "1.2.3.4")
 
 export const TIME_INPUT_CHANGE = /^[\d:]*$/;
 export const TIME_INPUT_ACCEPT = /^[0-2]\d:[0-5]\d$/;

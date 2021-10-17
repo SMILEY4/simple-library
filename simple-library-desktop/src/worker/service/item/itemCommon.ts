@@ -8,16 +8,65 @@ export interface Item {
 	attributes?: Attribute[]
 }
 
-export type AttributeType = "none" | "text" | "number" | "boolean" | "date" | "list"
-
-export type AttributeValue = null | string | number | boolean | Date | string[]
-
 export interface Attribute {
-	key: string,
-	value: AttributeValue,
-	type: AttributeType,
+	key: AttributeKey,
+	value: string | null,
+	type: string,
+	writable: boolean,
 	modified: boolean,
 }
+
+export interface AttributeMetadata {
+	key: AttributeKey,
+	type: string,
+	writable: boolean,
+}
+
+export interface AttributeKey {
+	id: string,
+	name: string,
+	g0: string,
+	g1: string,
+	g2: string,
+}
+
+export function attributeKeysEquals(a: AttributeKey, b: AttributeKey): boolean {
+	return a.id === b.id && a.name === b.name && a.g0 === b.g0 && a.g1 === b.g1 && a.g2 === b.g2;
+}
+
+export function attributeKey(id: string, name: string, g0: string, g1: string, g2: string): AttributeKey {
+	return {
+		id: id,
+		name: name,
+		g0: g0,
+		g1: g1,
+		g2: g2
+	};
+}
+
+export function attributeKeyFromArray(keyParts: string[]): AttributeKey {
+	if (keyParts.length !== 5) {
+		return null;
+	} else {
+		return {
+			id: keyParts[0],
+			name: keyParts[1],
+			g0: keyParts[2],
+			g1: keyParts[3],
+			g2: keyParts[4]
+		};
+	}
+}
+
+export function packAttributeKey(key: AttributeKey): [string, string, string, string, string,] {
+	return [key.id, key.name, key.g0, key.g1, key.g2];
+}
+
+
+export function rowsToItems(rows: any[]): Item[] {
+	return rows.map(row => rowToItem(row));
+}
+
 
 export function rowToItem(row: any | null): Item | null {
 	if (row) {
@@ -28,28 +77,32 @@ export function rowToItem(row: any | null): Item | null {
 			sourceFilepath: row.filepath,
 			hash: row.hash,
 			thumbnail: row.thumbnail,
-			attributes: concatAttributeColumnToEntries(row.attributes)
+			attributes: concatAttributeColumnToEntries(row.csv_attributes)
 		};
 	} else {
 		return null;
 	}
 }
 
-export function rowsToItems(rows: any[]): Item[] {
-	return rows.map(row => rowToItem(row));
-}
 
 export function concatAttributeColumnToEntries(str: string): Attribute[] {
 	if (str) {
-		const regexGlobal: RegExp = /"(.+?)"="(.+?)"-"(.+?)"-"(.+?)"/g;
-		const regex: RegExp = /"(.+?)"="(.+?)"-"(.+?)"-"(.+?)"/;
+		const regexGlobal: RegExp = /"(.+?):(.+?):(.+?):(.+?):(.+?)-(.+?)-(.+?)"="(.+?)"-"(.+?)"/g;
+		const regex: RegExp = /"(.+?):(.+?):(.+?):(.+?):(.+?)-(.+?)-(.+?)"="(.+?)"-"(.+?)"/;
 		return str.match(regexGlobal).map((strEntry: string) => {
 			const strEntryParts: string[] = strEntry.match(regex);
 			const entry: Attribute = {
-				key: strEntryParts[1],
-				value: stringToAttributeValue(strEntryParts[2], strEntryParts[3] as AttributeType),
-				type: strEntryParts[3] as AttributeType,
-				modified: strEntryParts[4] === "1"
+				key: {
+					id: strEntryParts[1],
+					name: strEntryParts[2],
+					g0: strEntryParts[3],
+					g1: strEntryParts[4],
+					g2: strEntryParts[5]
+				},
+				type: strEntryParts[6],
+				writable: strEntryParts[7] == "1",
+				value: strEntryParts[8],
+				modified: strEntryParts[9] === "1"
 			};
 			return entry;
 		});
@@ -58,85 +111,61 @@ export function concatAttributeColumnToEntries(str: string): Attribute[] {
 	}
 }
 
+
 export function rowToAttribute(row: any): Attribute {
 	return {
-		key: row.key,
-		value: stringToAttributeValue(row.value, row.type),
+		key: {
+			id: row.id,
+			name: row.name,
+			g0: row.g0,
+			g1: row.g1,
+			g2: row.g2
+		},
+		value: row.value,
 		type: row.type,
+		writable: row.writable === 1,
 		modified: row.modified === 1
 	};
 }
 
-export function stringToAttributeValue(strValue: string | null, type: AttributeType): AttributeValue {
-	if (strValue === null || strValue === undefined) {
-		return null;
-	} else {
-		switch (type) {
-			case "none":
-				return null;
-			case "text":
-				return strValue;
-			case "number":
-				return Number(strValue);
-			case "boolean":
-				return strValue.toLowerCase() === "true";
-			case "date":
-				return new Date(Date.parse(strValue));
-			case "list":
-				return strValue.split(";");
-		}
-	}
+
+export function rowsToAttributeMeta(rows: any[]): AttributeMetadata[] {
+	return rows.map(row => rowToAttributeMeta(row));
 }
 
-export function attributeValueToString(value: AttributeValue, type: AttributeType): string {
-	if (value === null || value === undefined) {
-		return null;
-	} else {
-		switch (type) {
-			case "none":
-				return null;
-			case "text":
-				return value as string;
-			case "number":
-				return (value as number).toString();
-			case "boolean":
-				return (value as boolean) ? "true" : "false";
-			case "date":
-				return dateToString(value as Date);
-			case "list":
-				return (value as string[]).join(";");
-		}
-	}
+
+export function rowToAttributeMeta(row: any): AttributeMetadata {
+	return {
+		key: {
+			id: row.id,
+			name: row.name,
+			g0: row.g0,
+			g1: row.g1,
+			g2: row.g2
+		},
+		type: row.type,
+		writable: row.writable === 1
+	};
 }
 
-export function valueToAttributeType(value: any): AttributeType {
-	if (value === null || value === undefined) {
-		return "none";
+export function estimateSimpleTypeFromAttributeValue(value: string): string {
+	if (value === null || value === undefined || value.trim().length === 0) {
+		return "_unknown";
 	}
-	const isISODate = !!("" + value).match(/\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d/);
-	if (isISODate) {
-		return "date";
+
+	if (["true", "false"].indexOf(value.toLowerCase()) !== -1) {
+		return "_boolean";
 	}
-	switch (typeof (value)) {
-		case "string":
-			return "text";
-		case "number":
-			return "number";
-		case "boolean":
-			return "boolean";
+
+	if (!!("" + value).match(/\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d/)) {
+		return "_date";
 	}
-	return "text";
+
+	if (!Number.isNaN(Number(value))) {
+		return "_number";
+	}
+
+	return "_text";
+
 }
 
-function dateToString(date: Date): string {
-	return date.getFullYear() + "-"
-		+ twoDigits(date.getMonth() + 1) + "-"
-		+ twoDigits(date.getDate()) + "T"
-		+ twoDigits(date.getHours()) + ":"
-		+ twoDigits(date.getMinutes()) + ":"
-		+ twoDigits(date.getSeconds());
-}
-
-function twoDigits(value: number): string {
-	return (value < 10 ? "0" : "") + value;
-}

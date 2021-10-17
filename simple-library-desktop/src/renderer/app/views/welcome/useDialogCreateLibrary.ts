@@ -1,6 +1,5 @@
 import {useValidatedForm, useValidatedState} from "../../../components/utils/commonHooks";
 import {useCreateLibrary} from "../../hooks/core/libraryCreate";
-import {useDispatchOpenConfirmationDialog} from "../../hooks/store/dialogState";
 
 const electron = window.require('electron');
 

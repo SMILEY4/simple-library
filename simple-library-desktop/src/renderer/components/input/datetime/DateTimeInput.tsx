@@ -13,10 +13,13 @@ import dateFormat from "dateformat";
 
 export interface DateTimeInputProps extends BaseProps {
 	value?: Date,
+	forceOpen?: boolean,
 	disabled?: boolean,
 	error?: boolean,
+	underline?: boolean,
 	groupPos?: "left" | "right" | "center",
 	onAccept?: (value: Date) => void | Promise<void>,
+	onCancel?: () => void,
 	showTimeSelect?: boolean,
 	toggleInputField?: boolean,
 	labelFillWidth?: boolean
@@ -48,7 +51,7 @@ export function DateTimeInput(props: React.PropsWithChildren<DateTimeInputProps>
 	}
 
 	const [value, setValue] = useState(initDateTime);
-	const [open, setOpen] = useState(false);
+	const [open, setOpen] = useState(props.forceOpen ? props.forceOpen : false);
 
 	const CustomInput = forwardRef((inputProps: any, ref: any) => {
 		if (!props.toggleInputField || open) {
@@ -79,7 +82,7 @@ export function DateTimeInput(props: React.PropsWithChildren<DateTimeInputProps>
 					}}
 					onDoubleClick={(e: any) => e.stopPropagation()}
 				>
-					<Label overflow="cutoff">
+					<Label overflow="cutoff" underline={props.underline}>
 						{dateFormat(value, DATE_FORMAT_LABEL)}
 					</Label>
 				</div>
@@ -178,6 +181,7 @@ export function DateTimeInput(props: React.PropsWithChildren<DateTimeInputProps>
 
 	function handleCancel() {
 		setValue(initDateTime);
+		props.onCancel && props.onCancel();
 		setOpen(false);
 	}
 

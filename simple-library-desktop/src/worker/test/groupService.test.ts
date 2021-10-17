@@ -15,7 +15,7 @@ import {ActionMoveAllGroups} from "../service/group/actionMoveAllGroups";
 import {ActionMoveAllCollections} from "../service/collection/actionMoveAllCollections";
 import {ActionCreateGroup} from "../service/group/actionCreateGroup";
 import {Group} from "../service/group/groupCommons";
-import {Collection, CollectionType} from "../service/collection/collectionCommons";
+import {Collection} from "../service/collection/collectionCommons";
 import {DataRepository} from "../service/dataRepository";
 import {SQLiteDataRepository} from "../persistence/sqliteRepository";
 

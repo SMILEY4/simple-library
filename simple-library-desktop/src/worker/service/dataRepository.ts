@@ -13,8 +13,6 @@ export interface DataRepository {
 
 	init(name: string, createDefaultCollection: boolean): Promise<any>;
 
-	insertAttributeMeta(entries: {name: string, type: string, writable: boolean, g0: string | undefined, g1: string | undefined, g2: string | undefined }[]): VoidResult;
-
 	getLibraryInfo(): QueryResultMany;
 
 	updateLibraryLastOpened(timestamp: number): CommandResultSingle;
@@ -23,11 +21,11 @@ export interface DataRepository {
 
 	getItemsByIds(itemIds: number[]): QueryResultMany;
 
-	getItemsAll(attributeKeys: string[]): QueryResultMany;
+	getItemsAll(attributeKeys: ([string, string, string, string, string])[]): QueryResultMany;
 
-	getItemsByCollection(collectionId: number, attributeKeys: string[]): QueryResultMany;
+	getItemsByCollection(collectionId: number, attributeKeys: ([string, string, string, string, string])[]): QueryResultMany;
 
-	getItemsByCustomQuery(query: string, attributeKeys: string[]): QueryResultMany;
+	getItemsByCustomQuery(query: string, attributeKeys: ([string, string, string, string, string])[]): QueryResultMany;
 
 	getItemByCustomQuery(query: string, attributeKeys: string[]): QueryResultSingle;
 
@@ -40,17 +38,21 @@ export interface DataRepository {
 	deleteItems(itemIds: number[]): VoidResult;
 
 
-	getItemAttribute(itemId: number, attributeKey: string): QueryResultSingle;
+	insertAttributeMeta(entries: {id: string, name: string, g0: string | undefined, g1: string | undefined, g2: string | undefined, type: string, writable: boolean }[]): VoidResult;
+
+	queryAttributeMeta(attributeKeys: ([string, string, string, string, string])[]): QueryResultMany;
+
+	existsItemAttribute(itemId: number, attributeKey: ([string, string, string, string, string])): QueryResultSingle;
+
+	getItemAttribute(itemId: number, attributeKey: ([string, string, string, string, string])): QueryResultSingle;
 
 	getItemAttributesByItem(itemId: number): QueryResultMany;
 
-	insertItemAttributes(itemId: number, attributes: ({ key: string, value: string, type: string })[]): CommandResultSingle;
+	insertItemAttributes(itemId: number, attributes: ({ id: string, name: string, g0: string, g1: string, g2: string, value: string })[]): CommandResultSingle;
 
-	updateItemAttributeValue(itemId: number, attributeKey: string, newValue: string): CommandResultSingle;
+	updateItemAttributeValue(itemId: number, attributeKey: ([string, string, string, string, string]), newValue: string): CommandResultSingle;
 
-	clearItemAttributeModifiedFlag(itemId: number, attributeKey: string): CommandResultSingle;
-
-	deleteItemAttribute(itemId: number, attributeKey: string): VoidResult;
+	deleteItemAttribute(itemId: number, attributeKey: ([string, string, string, string, string])): VoidResult;
 
 
 	relateItemsToCollection(collectionId: number, itemIds: number[]): CommandResultSingle;

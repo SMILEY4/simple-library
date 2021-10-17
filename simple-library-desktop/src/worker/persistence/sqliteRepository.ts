@@ -34,11 +34,6 @@ export class SQLiteDataRepository implements DataRepository {
         return this.dbAccess.runMultipleSeq(queries);
     }
 
-    insertAttributeMeta(entries: {name: string, type: string, writable: boolean, g0: string | undefined, g1: string | undefined, g2: string | undefined }[]): VoidResult {
-        return this.dbAccess.run(SQL.insertAttributeMeta(entries))
-            .then(voidThen);
-    }
-
     getLibraryInfo(): QueryResultMany {
         return this.dbAccess.queryAll(SQL.queryLibraryInfo());
     }
@@ -55,15 +50,15 @@ export class SQLiteDataRepository implements DataRepository {
         return this.dbAccess.queryAll(SQL.queryItemsByIds(itemIds));
     }
 
-    getItemsAll(attributeKeys: string[]): QueryResultMany {
+    getItemsAll(attributeKeys: ([string, string, string, string, string])[]): QueryResultMany {
         return this.dbAccess.queryAll(SQL.queryItemsAll(attributeKeys));
     }
 
-    getItemsByCollection(collectionId: number, attributeKeys: string[]): QueryResultMany {
+    getItemsByCollection(collectionId: number, attributeKeys: ([string, string, string, string, string])[]): QueryResultMany {
         return this.dbAccess.queryAll(SQL.queryItemsByCollection(collectionId, attributeKeys));
     }
 
-    getItemsByCustomQuery(query: string, attributeKeys: string[]): QueryResultMany {
+    getItemsByCustomQuery(query: string, attributeKeys: ([string, string, string, string, string])[]): QueryResultMany {
         return this.dbAccess.queryAll(SQL.queryItemsByCustomQuery(query, attributeKeys));
     }
 
@@ -90,7 +85,23 @@ export class SQLiteDataRepository implements DataRepository {
         ]).then(voidThen);
     }
 
-    getItemAttribute(itemId: number, attributeKey: string): QueryResultSingle {
+
+    insertAttributeMeta(entries: { id: string, name: string, type: string, writable: boolean, g0: string | undefined, g1: string | undefined, g2: string | undefined }[]): VoidResult {
+        return this.dbAccess.run(SQL.insertAttributeMeta(entries))
+            .then(voidThen);
+    }
+
+    queryAttributeMeta(attributeKeys: ([string, string, string, string, string])[]): QueryResultMany {
+        return this.dbAccess.queryAll(SQL.queryAttributeMeta(attributeKeys));
+    }
+
+
+    existsItemAttribute(itemId: number, attributeKey: ([string, string, string, string, string])): QueryResultSingle {
+        return this.dbAccess.querySingle(SQL.queryExistsItemAttribute(itemId, attributeKey))
+            .then((row: any | null) => row ? row.count > 0 : false);
+    }
+
+    getItemAttribute(itemId: number, attributeKey: ([string, string, string, string, string])): QueryResultSingle {
         return this.dbAccess.querySingle(SQL.queryItemAttribute(itemId, attributeKey));
     }
 
@@ -98,19 +109,19 @@ export class SQLiteDataRepository implements DataRepository {
         return this.dbAccess.queryAll(SQL.queryItemAttributes(itemId));
     }
 
-    insertItemAttributes(itemId: number, attributes: { key: string; value: string; type: string }[]): CommandResultSingle {
-        return this.dbAccess.run(SQL.insertItemAttributes(itemId, attributes));
+    insertItemAttributes(itemId: number, attributes: { id: string, name: string, g0: string, g1: string, g2: string, value: string }[]): CommandResultSingle {
+        if (attributes && attributes.length > 0) {
+            return this.dbAccess.run(SQL.insertItemAttributes(itemId, attributes));
+        } else {
+            return Promise.resolve(null);
+        }
     }
 
-    updateItemAttributeValue(itemId: number, attributeKey: string, newValue: string): CommandResultSingle {
+    updateItemAttributeValue(itemId: number, attributeKey: ([string, string, string, string, string]), newValue: string): CommandResultSingle {
         return this.dbAccess.run(SQL.updateItemAttribute(itemId, attributeKey, newValue));
     }
 
-    public clearItemAttributeModifiedFlag(itemId: number, attributeKey: string): CommandResultSingle {
-        return this.dbAccess.run(SQL.updateItemAttributeClearModified(itemId, attributeKey));
-    }
-
-    public deleteItemAttribute(itemId: number, attributeKey: string): VoidResult {
+    public deleteItemAttribute(itemId: number, attributeKey: ([string, string, string, string, string])): VoidResult {
         return this.dbAccess.run(SQL.deleteItemAttribute(itemId, attributeKey)).then(voidThen);
     }
 

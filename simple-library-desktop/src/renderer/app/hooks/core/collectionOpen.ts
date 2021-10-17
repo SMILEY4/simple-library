@@ -2,9 +2,10 @@ import {useCollectionActiveContext, useDispatchSetActiveCollection} from "../sto
 import {fetchItems} from "../../common/eventInterface";
 import {genNotificationId} from "../../common/notificationUtils";
 import {AppNotificationType, useThrowErrorWithNotification} from "../store/notificationState";
-import {ItemDTO} from "../../../../common/events/dtoModels";
+import {AttributeKeyDTO, ItemDTO} from "../../../../common/events/dtoModels";
 import {useDispatchSetItems} from "../store/itemsState";
 import {useDispatchItemSelectionClear} from "../store/itemSelectionState";
+import {TEMP_ATTRIBUTE_KEYS} from "./temp";
 
 export function useOpenCollection() {
 
@@ -14,7 +15,7 @@ export function useOpenCollection() {
 	const dispatchClearSelection = useDispatchItemSelectionClear();
 	const throwErrorNotification = useThrowErrorWithNotification();
 
-	const itemAttributeKeys: string[] = ["File.FileName", "File.FileCreateDate", "File.FileSize", "File.FileType", "JFIF.JFIFVersion", "PNG.Gamma"];
+	const itemAttributeKeys: AttributeKeyDTO[] = TEMP_ATTRIBUTE_KEYS
 
 	function hookFunction(collectionId: number) {
 		if (activeCollectionState.activeCollectionId !== collectionId) {

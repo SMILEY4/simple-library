@@ -2,17 +2,16 @@ import React, {useState} from "react";
 import {SidebarTab} from "../../../../../components/misc/app/AppLayout";
 import {IconType} from "../../../../../components/base/icon/Icon";
 import {VBox} from "../../../../../components/layout/box/Box";
-import {Accordion} from "../../../../../components/misc/accordion/Accordion";
 import {TextField} from "../../../../../components/input/textfield/TextField";
-import {MetadataListEntry} from "./MetadataListEntry";
 import {Label} from "../../../../../components/base/label/Label";
-import {AttributeDTO, AttributeValueDTO} from "../../../../../../common/events/dtoModels";
+import {AttributeDTO, AttributeKeyDTO, AttributeValueDTO} from "../../../../../../common/events/dtoModels";
 import {useMetadataSidebar} from "./useMetadataSidebar";
 import {useContextMenu} from "../../../../../components/menu/contextmenu/contextMenuHook";
 import {APP_ROOT_ID} from "../../../../Application";
 import {MetadataListEntryContextMenu} from "./MetadataListEntryContextMenu";
 import {ContextMenuBase} from "../../../../../components/menu/contextmenu/ContextMenuBase";
 import {useDispatchOpenConfirmationDialog} from "../../../../hooks/store/dialogState";
+import {MetadataGroupListEntry} from "./MetadataGroupListEntry";
 
 
 export const TAB_DATA_METADATA: SidebarTab = {
@@ -107,16 +106,16 @@ export function MetadataSidebar(props: React.PropsWithChildren<MetadataSidebarPr
         </>
     );
 
-    function handleOpenContextMenu(attributeKey: string, event: React.MouseEvent) {
+    function handleOpenContextMenu(attributeKey: AttributeKeyDTO, event: React.MouseEvent) {
         openContextMenuWithEvent(event, attributeKey);
     }
 
-    function handleCopyEntryValue(attributeKey: string) {
+    function handleCopyEntryValue(attributeKey: AttributeKeyDTO) {
         copyAttributeValueToClipboard(attributeKey);
         closeContextMenu();
     }
 
-    function handleDeleteEntry(attributeKey: string) {
+    function handleDeleteEntry(attributeKey: AttributeKeyDTO) {
         openConfirmation("Delete", "Deleting '" + attributeKey + "' is permanent and cannot be reversed.", "Delete",
             () => deleteAttribute(attributeKey));
         closeContextMenu();
@@ -140,62 +139,10 @@ export function MetadataSidebar(props: React.PropsWithChildren<MetadataSidebarPr
         }
 
         entries.forEach((entry: AttributeDTO) => {
-            const parts: string[] = entry.key.split(/\.(.+)/);
-            if (parts.length >= 2) {
-                insert(parts[0], parts[1], entry);
-            } else {
-                insert("Miscellaneous", entry.key, entry);
-            }
+            insert(entry.key.g0, entry.key.name, entry);
         });
 
         return groups;
     }
 
-
 }
-
-
-interface MetadataGroupListEntryProps {
-    searchFilter: string,
-    title: string,
-    entries: ([string, AttributeDTO])[];
-    onUpdateValue: (entry: AttributeDTO, prev: AttributeValueDTO, next: AttributeValueDTO) => void,
-    onContextMenu: (attributeKey: string, event: React.MouseEvent) => void,
-}
-
-
-function MetadataGroupListEntry(props: React.PropsWithChildren<MetadataGroupListEntryProps>): React.ReactElement {
-
-    const doSearch: boolean = !!props.searchFilter && props.searchFilter.trim().length > 0;
-
-    const displayEntries = props.entries
-        .filter(entry => !entry[1].key.startsWith("ExifTool."))
-        .filter(entry => !doSearch || entry[1].key.toLowerCase().includes(props.searchFilter.trim()));
-
-    if (displayEntries.length === 0) {
-        return null;
-    } else {
-        return (
-            <Accordion title={props.title}
-                       label={doSearch ? displayEntries.length + "/" + props.entries.length : "" + props.entries.length}>
-                <VBox spacing="0-5" padding="0-5" alignCross="stretch">
-                    {
-                        displayEntries
-                            .sort((a, b) => a[0].toLowerCase().localeCompare(b[0].toLowerCase()))
-                            .map((entry: [string, AttributeDTO]) => {
-                                return <MetadataListEntry
-                                    key={entry[1].key}
-                                    entry={entry[1]}
-                                    shortName={entry[0]}
-                                    onUpdateValue={(prev, next) => props.onUpdateValue(entry[1], prev, next)}
-                                    onContextMenu={props.onContextMenu}
-                                />;
-                            })
-                    }
-                </VBox>
-            </Accordion>
-        );
-    }
-
-}
-

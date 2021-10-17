@@ -6,6 +6,7 @@ import {useDispatchSetRootGroup} from "../store/collectionsState";
 import {useDispatchItemSelectionClear} from "../store/itemSelectionState";
 import {useDispatchSetItems} from "../store/itemsState";
 import {useActiveCollection} from "../store/collectionActiveState";
+import {TEMP_ATTRIBUTE_KEYS} from "./temp";
 
 export function useEditCollection() {
 
@@ -14,8 +15,6 @@ export function useEditCollection() {
 	const dispatchSetItems = useDispatchSetItems();
 	const dispatchClearSelection = useDispatchItemSelectionClear()
 	const throwErrorNotification = useThrowErrorWithNotification();
-
-	const itemAttributeKeys: string[] = ["File.FileName", "File.FileCreateDate", "File.FileSize", "File.FileType", "JFIF.JFIFVersion", "PNG.Gamma"];
 
 	function hookFunction(collectionId: number, name: string, query: string | null) {
 		return Promise.resolve()
@@ -44,7 +43,7 @@ export function useEditCollection() {
 	}
 
 	function updateItemState(collectionId: number) {
-		return fetchItems(collectionId, itemAttributeKeys, true)
+		return fetchItems(collectionId, TEMP_ATTRIBUTE_KEYS, true)
 			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_FETCH_FAILED, error))
 			.then((items: ItemDTO[]) => dispatchSetItems(items));
 	}

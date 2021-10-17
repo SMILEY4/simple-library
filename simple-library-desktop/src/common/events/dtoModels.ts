@@ -1,3 +1,5 @@
+import {AttributeKey} from "../../worker/service/item/itemCommon";
+
 export interface ExiftoolInfoDTO {
 	location: string | null;
 	defined: boolean;
@@ -53,17 +55,31 @@ export interface ItemDTO {
 }
 
 
-export type AttributeTypeDTO = "none" | "text" | "number" | "boolean" | "date" | "list"
-
-export type AttributeValueDTO = null | string | number | boolean | Date | string[]
+export type AttributeValueDTO = null | string
 
 export interface AttributeDTO {
-	key: string,
-	value: AttributeValueDTO,
-	type: AttributeTypeDTO,
+	key: AttributeKeyDTO,
+	value: string,
+	type: string,
+	writable: boolean,
 	modified: boolean,
 }
 
+export interface AttributeKeyDTO {
+	id: string,
+	name: string,
+	g0: string,
+	g1: string,
+	g2: string,
+}
+
+export function attributeKeysDtoEquals(a: AttributeKeyDTO, b: AttributeKeyDTO): boolean {
+	return a.id === b.id && a.name === b.name && a.g0 === b.g0 && a.g1 === b.g1 && a.g2 === b.g2;
+}
+
+export function attributeKeyString(key: AttributeKeyDTO) {
+	return key.id + "-" + key.name + "-" + key.g0 + "-" + key.g1 + "-" + key.g2;
+}
 
 export interface ImportStatusDTO {
 	totalAmountFiles: number,

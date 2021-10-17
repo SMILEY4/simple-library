@@ -1,5 +1,6 @@
-import {Attribute, rowToAttribute} from "./itemCommon";
+import {AttributeKey, packAttributeKey} from "./itemCommon";
 import {DataRepository} from "../dataRepository";
+import {voidThen} from "../../../common/utils";
 
 /**
  * Deletes the existing attribute of the given item
@@ -13,28 +14,25 @@ export class ActionDeleteItemAttribute {
 		this.repository = repository;
 	}
 
-	public perform(itemId: number, attributeKey: string): Promise<Attribute | null> {
-		return this.findAttribute(itemId, attributeKey)
-			.then((attrib: Attribute) => this.deleteAttribute(itemId, attrib));
+
+	public perform(itemId: number, attributeKey: AttributeKey): Promise<void> {
+		return this.existsAttribute(itemId, attributeKey)
+			.then((exists: boolean) => this.deleteAttribute(exists, itemId, attributeKey))
+			.then(voidThen);
 	}
 
 
-	private findAttribute(itemId: number, attributeKey: string): Promise<Attribute | null> {
-		return this.repository.getItemAttribute(itemId, attributeKey)
-			.then((row: any | null) => row
-				? rowToAttribute(row)
-				: null
-			);
+	private existsAttribute(itemId: number, key: AttributeKey): Promise<boolean> {
+		return this.repository.existsItemAttribute(itemId, packAttributeKey(key))
+			.then((row: any | null) => row ? row : false);
 	}
 
 
-	private deleteAttribute(itemId: number, attribute: Attribute | null): Promise<Attribute | null> {
-		if (attribute === null) {
-			return Promise.resolve(null);
+	private deleteAttribute(exists: boolean, itemId: number, key: AttributeKey): Promise<any> {
+		if (!exists) {
+			return Promise.resolve();
 		} else {
-			return Promise.resolve()
-				.then(() => this.repository.deleteItemAttribute(itemId, attribute.key))
-				.then(() => attribute);
+			return this.repository.deleteItemAttribute(itemId, packAttributeKey(key));
 		}
 	}
 

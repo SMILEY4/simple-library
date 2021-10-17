@@ -24,6 +24,10 @@
 	font-weight: bolder;
 }
 
+.label-underline {
+	text-decoration: underline;
+}
+
 .label-no-select {
 	-webkit-user-select: none;
 	-moz-user-select:    none;

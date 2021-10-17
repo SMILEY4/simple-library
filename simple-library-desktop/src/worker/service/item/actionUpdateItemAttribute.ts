@@ -1,4 +1,4 @@
-import {Attribute, AttributeValue, attributeValueToString, rowToAttribute} from "./itemCommon";
+import {Attribute, AttributeKey, packAttributeKey, rowToAttribute} from "./itemCommon";
 import {DataRepository} from "../dataRepository";
 
 /**
@@ -13,33 +13,34 @@ export class ActionUpdateItemAttribute {
 		this.repository = repository;
 	}
 
-	public perform(itemId: number, attributeKey: string, newValue: AttributeValue): Promise<Attribute> {
+	public perform(itemId: number, attributeKey: AttributeKey, newValue: string): Promise<Attribute> {
 		return this.findAttribute(itemId, attributeKey)
 			.then((attrib: Attribute) => this.update(attrib, itemId, attributeKey, newValue))
 			.then((attrib: Attribute) => this.buildUpdatedAttribute(attrib, newValue));
 	}
 
 
-	private findAttribute(itemId: number, attributeKey: string): Promise<Attribute> {
-		return this.repository.getItemAttribute(itemId, attributeKey)
-			.then((row: any | null) => row
-				? rowToAttribute(row)
-				: Promise.reject("No attribute with key " + attributeKey + " found for item with id " + itemId)
+	private findAttribute(itemId: number, attributeKey: AttributeKey): Promise<Attribute> {
+		return this.repository.getItemAttribute(itemId, packAttributeKey(attributeKey))
+			.then((row: any | null) => {
+					return row
+						? rowToAttribute(row)
+						: Promise.reject("No attribute with key " + attributeKey + " found for item with id " + itemId);
+				}
 			);
 	}
 
 
-	private update(attribute: Attribute, itemId: number, attributeKey: string, newValue: AttributeValue): Promise<Attribute> {
-		return this.repository.updateItemAttributeValue(itemId, attributeKey, attributeValueToString(newValue, attribute.type))
+	private update(attribute: Attribute, itemId: number, attributeKey: AttributeKey, newValue: string): Promise<Attribute> {
+		return this.repository.updateItemAttributeValue(itemId, packAttributeKey(attributeKey), "" + newValue)
 			.then(() => attribute);
 	}
 
 
-	private buildUpdatedAttribute(attribute: Attribute, newValue: AttributeValue): Attribute {
+	private buildUpdatedAttribute(attribute: Attribute, newValue: string): Attribute {
 		return {
-			key: attribute.key,
+			...attribute,
 			value: newValue,
-			type: attribute.type,
 			modified: true
 		};
 	}

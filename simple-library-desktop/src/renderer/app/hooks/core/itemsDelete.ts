@@ -6,6 +6,7 @@ import {GroupDTO, ItemDTO} from "../../../../common/events/dtoModels";
 import {useDispatchSetItems} from "../store/itemsState";
 import {useDispatchSetRootGroup} from "../store/collectionsState";
 import {useActiveCollection} from "../store/collectionActiveState";
+import {TEMP_ATTRIBUTE_KEYS} from "./temp";
 
 export function useDeleteItems() {
 
@@ -14,9 +15,6 @@ export function useDeleteItems() {
 	const dispatchSetItems = useDispatchSetItems();
 	const dispatchSelectionSet = useDispatchItemSelectionSet();
 	const throwErrorNotification = useThrowErrorWithNotification();
-
-	const itemAttributeKeys: string[] = ["File.FileName", "File.FileCreateDate", "File.FileSize", "File.FileType", "JFIF.JFIFVersion", "PNG.Gamma"];
-
 
 	function hookFunction(itemIds: number[]) {
 		deleteItems(itemIds)
@@ -38,7 +36,7 @@ export function useDeleteItems() {
 
 
 	function updateItemState() {
-		return fetchItems(activeCollectionId, itemAttributeKeys, true)
+		return fetchItems(activeCollectionId, TEMP_ATTRIBUTE_KEYS, true)
 			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_FETCH_FAILED, error))
 			.then((items: ItemDTO[]) => dispatchSetItems(items));
 	}

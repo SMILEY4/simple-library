@@ -1,5 +1,15 @@
 import {ActionGetCollectionById} from "../collection/actionGetCollectionById";
-import {Attribute, Item, rowsToItems} from "./itemCommon";
+import {
+	Attribute,
+	AttributeKey,
+	attributeKeysEquals,
+	AttributeMetadata,
+	estimateSimpleTypeFromAttributeValue,
+	Item,
+	packAttributeKey,
+	rowsToAttributeMeta,
+	rowsToItems
+} from "./itemCommon";
 import {Collection} from "../collection/collectionCommons";
 import {DataRepository} from "../dataRepository";
 
@@ -8,81 +18,104 @@ import {DataRepository} from "../dataRepository";
  */
 export class ActionGetItemsByCollection {
 
-    private readonly repository: DataRepository;
-    private readonly actionGetCollectionById: ActionGetCollectionById;
+	private readonly repository: DataRepository;
+	private readonly actionGetCollectionById: ActionGetCollectionById;
 
 
-    constructor(repository: DataRepository, actionGetCollectionById: ActionGetCollectionById) {
-        this.repository = repository;
-        this.actionGetCollectionById = actionGetCollectionById;
-    }
+	constructor(repository: DataRepository, actionGetCollectionById: ActionGetCollectionById) {
+		this.repository = repository;
+		this.actionGetCollectionById = actionGetCollectionById;
+	}
 
 
-    public perform(collectionId: number, attributeKeys: string[], includeMissingAttributes: boolean): Promise<Item[]> {
-        return this.findCollection(collectionId)
-            .then(collection => this.getItemData(collection, attributeKeys))
-            .then(rowsToItems)
-            .then(items => includeMissingAttributes ? this.appendMissingAttributes(items, attributeKeys) : items)
-    }
+	public perform(collectionId: number, attributeKeys: AttributeKey[], includeMissingAttributes: boolean): Promise<Item[]> {
+		return this.findCollection(collectionId)
+			.then(collection => this.getItemData(collection, attributeKeys))
+			.then(rowsToItems)
+			.then(items => includeMissingAttributes ? this.appendMissingAttributes(items, attributeKeys) : items)
+			.then(items => this.estimateSimpleAttributeTypes(items));
+	}
 
 
-    private findCollection(collectionId: number): Promise<Collection> {
-        return this.actionGetCollectionById.perform(collectionId)
-            .then((collection: Collection | null) => !collection
-                ? Promise.reject("Cant fetch items: collection with id " + collectionId + " not found")
-                : collection
-            );
-    }
+	private findCollection(collectionId: number): Promise<Collection> {
+		return this.actionGetCollectionById.perform(collectionId)
+			.then((collection: Collection | null) => !collection
+				? Promise.reject("Cant fetch items: collection with id " + collectionId + " not found")
+				: collection
+			);
+	}
 
 
-    private getItemData(collection: Collection, attributeKeys: string[]): Promise<any[]> {
-        switch (collection.type) {
-            case "normal":
-                return this.getItemDataFromNormal(collection, attributeKeys);
-            case "smart":
-                return this.getItemDataFromSmart(collection, attributeKeys);
-            default: {
-                throw "Unexpected collection type: " + collection.type;
-            }
-        }
-    }
+	private getItemData(collection: Collection, attributeKeys: AttributeKey[]): Promise<any[]> {
+		switch (collection.type) {
+			case "normal":
+				return this.getItemDataFromNormal(collection, attributeKeys);
+			case "smart":
+				return this.getItemDataFromSmart(collection, attributeKeys);
+			default: {
+				throw "Unexpected collection type: " + collection.type;
+			}
+		}
+	}
 
 
-    private getItemDataFromNormal(collection: Collection, attributeKeys: string[]): Promise<any[]> {
-        return this.repository.getItemsByCollection(collection.id, attributeKeys);
-    }
+	private getItemDataFromNormal(collection: Collection, attributeKeys: AttributeKey[]): Promise<any[]> {
+		return this.repository.getItemsByCollection(collection.id, attributeKeys.map(k => packAttributeKey(k)));
+	}
 
 
-    private getItemDataFromSmart(collection: Collection, attributeKeys: string[]): Promise<any[]> {
-        const fetchWithQuery = collection.smartQuery && collection.smartQuery.length > 0;
-        return fetchWithQuery
-            ? this.repository.getItemsByCustomQuery(collection.smartQuery, attributeKeys)
-            : this.repository.getItemsAll(attributeKeys);
-    }
+	private getItemDataFromSmart(collection: Collection, attributeKeys: AttributeKey[]): Promise<any[]> {
+		const fetchWithQuery = collection.smartQuery && collection.smartQuery.length > 0;
+		const keys: ([string, string, string, string, string])[] = attributeKeys.map(k => packAttributeKey(k));
+		return fetchWithQuery
+			? this.repository.getItemsByCustomQuery(collection.smartQuery, keys)
+			: this.repository.getItemsAll(keys);
+	}
 
 
-    private appendMissingAttributes(items: Item[], attributeKeys: string[]): Item[] {
-        return items.map(item => this.appendMissingAttributesToItem(item, attributeKeys));
-    }
+	private appendMissingAttributes(items: Item[], attributeKeys: AttributeKey[]): Promise<Item[]> {
+		return Promise.resolve(items)
+			.then(async items => {
+				for (let item of items) {
+					const missingAttribs = await this.getMissingAttributesForItem(item, attributeKeys);
+					item.attributes.push(...missingAttribs);
+				}
+				return items;
+			});
+	}
 
 
-    private appendMissingAttributesToItem(item: Item, attributeKeys: string[]): Item {
-        const itemKeys: string[] = item.attributes.map(att => att.key);
-        const missingAttributes: Attribute[] = attributeKeys
-            .filter(key => !itemKeys.find(k => k === key))
-            .map(key => this.buildMissingAttribute(key))
-        item.attributes.push(...missingAttributes);
-        return item;
-    }
+	private getMissingAttributesForItem(item: Item, attributeKeys: AttributeKey[]): Promise<Attribute[]> {
+
+		const existingKeys: AttributeKey[] = item.attributes.map(att => att.key);
+
+		const missingKeysPacked: ([string, string, string, string, string,])[] = attributeKeys
+			.filter(key => !existingKeys.find(k => attributeKeysEquals(k, key)))
+			.map(key => packAttributeKey(key));
+
+		return this.repository.queryAttributeMeta(missingKeysPacked)
+			.then(rowsToAttributeMeta)
+			.then(attMeta => attMeta.map(e => this.buildMissingAttribute(e)));
+	}
 
 
-    private buildMissingAttribute(key: string): Attribute {
-        return {
-            key: key,
-            value: null,
-            type: "none",
-            modified: false
-        };
-    }
+	private buildMissingAttribute(attribMeta: AttributeMetadata): Attribute {
+		return {
+			key: attribMeta.key,
+			type: attribMeta.type,
+			writable: attribMeta.writable,
+			value: null,
+			modified: false
+		};
+	}
+
+	private estimateSimpleAttributeTypes(items: Item[]): Promise<Item[]> {
+		items.forEach(item => {
+			item.attributes.forEach(att => {
+				att.type = estimateSimpleTypeFromAttributeValue(att.value);
+			});
+		});
+		return Promise.resolve(items);
+	}
 
 }

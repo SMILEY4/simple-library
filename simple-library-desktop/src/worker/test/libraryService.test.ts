@@ -16,7 +16,7 @@ describe("library-service", () => {
 	describe("create", () => {
 
 		test("create new valid library", async () => {
-			const EXPECTED_ATTRIB_META_TAG_COUNT = 24654;
+			const EXPECTED_ATTRIB_META_TAG_COUNT = 23364;
 			// given
 			const name = "My 1. Test Library!";
 			const dir = "my/test/directory";

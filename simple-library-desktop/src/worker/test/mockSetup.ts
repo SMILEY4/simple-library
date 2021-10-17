@@ -64,7 +64,6 @@ export function mockAttributeMetadataProvider(returnReal?: boolean) {
 	const attribMetaProvider = new AttributeMetadataProvider(true, false);
 	if (returnReal) {
 		attribMetaProvider["getAttributeMetadataXml"] = jest.fn().mockImplementation(() => {
-			console.log("DIRNAME", __dirname)
 			return require("fs").readFileSync(require('path').join(__dirname, "../../resourcefiles/attributeMetadata.xml"), "utf8");
 		}) as any;
 	} else {
