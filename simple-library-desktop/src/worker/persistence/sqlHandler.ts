@@ -37,7 +37,17 @@ import sqlDeleteItemAttribute from "./sqlscripts/item_attributes/delete_item_att
 import sqlInsertItem from "./sqlscripts/items/insert_item.sql";
 import sqlInsertAttributeMeta from "./sqlscripts/item_attributes/insert_attribute_meta.sql";
 import sqlQueryExistsItemAttribute from "./sqlscripts/item_attributes/query_exists_item_attribute.sql";
-import sqlQueryAttributeMetadata from "./sqlscripts/item_attributes/query_item_attribute_meta.sql"
+import sqlQueryAttributeMetadata from "./sqlscripts/item_attributes/query_item_attribute_meta.sql";
+import sqlQueryItemAttributesAll from "./sqlscripts/item_attributes/query_item_attributes_all.sql";
+import sqlQueryItemAttributesAllModified from "./sqlscripts/item_attributes/query_item_attributes_all_modified.sql";
+import sqlQueryItemAttributesByItems from "./sqlscripts/item_attributes/query_item_attributes_by_items.sql";
+import sqlQueryItemAttributesModifiedByItems
+	from "./sqlscripts/item_attributes/query_item_attributes_modified_by_items.sql";
+import sqlUpdateItemAttributeModifiedFlag from "./sqlscripts/item_attributes/update_item_attribute_modified.sql";
+import sqlUpdateItemAttributeModifiedFlagsByItemIds
+	from "./sqlscripts/item_attributes/update_item_attributes_modified_by_items.sql";
+import sqlUpdateItemAttributeModifiedFlagsAll
+	from "./sqlscripts/item_attributes/update_item_attributes_modified_all.sql";
 
 export module SQL {
 
@@ -282,6 +292,47 @@ export module SQL {
 		const entries: string[] = attributes.map(att => `(${str(att.id)}, ${str(att.name)}, ${str(att.g0)}, ${str(att.g1)}, ${str(att.g2)}, ${num(itemId)}, ${str(att.value)}, ${bool(att.modified)})`);
 		return sql(sqlInsertItemAttributes)
 			.replace(v("entries"), entries.join(", "));
+	}
+
+
+	export function queryExtendedItemAttributesAll(onlyModified: boolean): string {
+		if (onlyModified) {
+			return sql(sqlQueryItemAttributesAllModified);
+		} else {
+			return sql(sqlQueryItemAttributesAll);
+		}
+	}
+
+	export function queryExtendedItemAttributesByItemIds(itemIds: number[], onlyModified: boolean): string {
+		if (onlyModified) {
+			return sql(sqlQueryItemAttributesModifiedByItems)
+				.replace(v("itemIds"), numCsv(itemIds));
+		} else {
+			return sql(sqlQueryItemAttributesByItems)
+				.replace(v("itemIds"), numCsv(itemIds));
+		}
+	}
+
+	export function clearItemAttributeModifiedFlag(itemId: number, attributeKey: ([string, string, string, string, string])): string {
+		return sql(sqlUpdateItemAttributeModifiedFlag)
+			.replace(v("modified"), bool(false))
+			.replace(v("itemId"), num(itemId))
+			.replace(v("id"), str(attributeKey[0]))
+			.replace(v("name"), str(attributeKey[1]))
+			.replace(v("g0"), str(attributeKey[2]))
+			.replace(v("g1"), str(attributeKey[3]))
+			.replace(v("g2"), str(attributeKey[4]));
+	}
+
+	export function clearItemAttributeModifiedFlagsByItemIds(itemIds: number[]): string {
+		return sql(sqlUpdateItemAttributeModifiedFlagsByItemIds)
+			.replace(v("modified"), bool(false))
+			.replace(v("itemIds"), numCsv(itemIds));
+	}
+
+	export function clearItemAttributeModifiedFlagsAll(): string {
+		return sql(sqlUpdateItemAttributeModifiedFlagsAll)
+			.replace(v("modified"), bool(false));
 	}
 
 }

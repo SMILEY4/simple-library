@@ -16,6 +16,11 @@ export interface Attribute {
 	modified: boolean,
 }
 
+export interface ExtendedAttribute extends Attribute {
+	itemId: number,
+	filepath: string
+}
+
 export interface AttributeMetadata {
 	key: AttributeKey,
 	type: string,
@@ -125,6 +130,24 @@ export function rowToAttribute(row: any): Attribute {
 		type: row.type,
 		writable: row.writable === 1,
 		modified: row.modified === 1
+	};
+}
+
+export function rowToExtendedAttribute(row: any): ExtendedAttribute {
+	return {
+		key: {
+			id: row.id,
+			name: row.name,
+			g0: row.g0,
+			g1: row.g1,
+			g2: row.g2
+		},
+		value: row.value,
+		type: row.type,
+		writable: row.writable === 1,
+		modified: row.modified === 1,
+		itemId: row.item_id,
+		filepath: row.filepath
 	};
 }
 
