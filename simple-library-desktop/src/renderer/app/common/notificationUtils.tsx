@@ -239,6 +239,48 @@ export function toNotificationEntry(notificationData: AppNotification, onClose: 
                 onClose: () => onClose()
             };
         }
+        case AppNotificationType.ATTRIBUTES_EMBED_FAILED: {
+            return {
+                id: notificationData.id,
+                type: "error",
+                title: "Failed to embed attributes",
+                content: errorToString(notificationData.data),
+                closable: true,
+                onClose: () => onClose()
+            };
+        }
+        case AppNotificationType.ATTRIBUTES_EMBED_STATUS: {
+            return {
+                id: notificationData.id,
+                type: "info",
+                title: "Embedding...",
+                content: notificationData.data
+                    ? (notificationData.data.completedItems + "/" + notificationData.data.totalAmountItems + " files embedded.")
+                    : null,
+                closable: true,
+                onClose: () => onClose()
+            };
+        }
+        case AppNotificationType.ATTRIBUTES_EMBED_FINISHED: {
+            const message: ReactElement = (
+                <>
+                    <p>{"Embedded data of " + notificationData.data.amountProcessedItems + " files."}</p>
+                    <ul>
+                        {notificationData.data.errors.map((entry: ({ itemId: number, filepath: string, error: string })) => {
+                            return <li>{entry.filepath + ": " + entry.error}</li>;
+                        })}
+                    </ul>
+                </>
+            );
+            return {
+                id: notificationData.id,
+                type: "success",
+                title: "Finished Embedding",
+                content: message,
+                closable: true,
+                onClose: () => onClose()
+            };
+        }
     }
 }
 

@@ -1,10 +1,10 @@
 import {setItemMetadata} from "../../common/eventInterface";
 import {AttributeDTO, AttributeKeyDTO, AttributeValueDTO} from "../../../../common/events/dtoModels";
 import {useDispatchUpdateItemAttribute} from "../store/itemsState";
-import {useDispatchUpdateAttribute} from "../store/attributeStore";
 import {AppNotificationType, useThrowErrorWithNotification} from "../store/notificationState";
 import {genNotificationId} from "../../common/notificationUtils";
 import {voidThen} from "../../../../common/utils";
+import {useDispatchUpdateAttribute} from "../store/attributeStore";
 
 export function useUpdateAttribute() {
 

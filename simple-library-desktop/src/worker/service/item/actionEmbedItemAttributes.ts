@@ -1,9 +1,9 @@
 import {DataRepository} from "../dataRepository";
 import {ActionGetExiftoolInfo} from "../config/actionGetExiftoolInfo";
-import {ExifHandler} from "../exifHandler";
 import {ExtendedAttribute, rowToExtendedAttribute} from "./itemCommon";
 import {FileSystemWrapper} from "../fileSystemWrapper";
 import {EmbedStatusDTO} from "../../../common/events/dtoModels";
+import {ExifHandler} from "../exifHandler";
 
 export interface EmbedReport {
 	amountProcessedItems: number,
@@ -53,8 +53,7 @@ export class ActionEmbedItemAttributes {
 
 
 	private attributesToMetadataGroups(attributes: ExtendedAttribute[]): ({ itemId: number, filepath: string, metadata: object })[] {
-		return attributes.reduce(
-			(collector, attr, index) => {
+		return attributes.reduce((collector, attr, index) => {
 				if (collector.currentId === attr.itemId) {
 					collector.currentItemAttribs.push(attr);
 				} else {
@@ -90,7 +89,8 @@ export class ActionEmbedItemAttributes {
 
 	private attributesToMetadataObj(attributes: ExtendedAttribute[]): object {
 		return attributes.reduce((metadataObj, attr) => {
-			(metadataObj as any)[attr.key.name] = attr.value;
+			const keyName = attr.key.g0 + ":" + attr.key.g1 + ":" + attr.key.g2 + ":" + attr.key.name;
+			(metadataObj as any)[keyName] = attr.value;
 			return metadataObj;
 		}, {});
 	}
@@ -139,6 +139,7 @@ export class ActionEmbedItemAttributes {
 		});
 	}
 
+
 	private async clearModifiedFlags(report: EmbedReport, itemIds: number[] | null): Promise<EmbedReport> {
 		if (itemIds) {
 			return this.repository.clearItemAttributeModifiedFlagsByItemIds(itemIds)
@@ -164,6 +165,5 @@ export class ActionEmbedItemAttributes {
 				});
 		}
 	}
-
 
 }

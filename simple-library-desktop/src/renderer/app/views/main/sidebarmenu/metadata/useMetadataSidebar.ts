@@ -30,16 +30,17 @@ export function useMetadataSidebar() {
 }
 
 
-function useListenSelectionChanges(setItem: (item: ItemDTO | null) => void, setMetadata: (attribs: AttributeDTO[]) => void) {
+function useListenSelectionChanges(setItem: (item: ItemDTO | null) => void, setMetadata: (itemId: number | null, attribs: AttributeDTO[]) => void) {
 	const selectedItemIds = useSelectedItemIds();
 	useEffect(() => {
 		if (selectedItemIds && selectedItemIds.length === 1) {
-			fetchItemMetadata(selectedItemIds[0])
-				.then((entries: AttributeDTO[]) => setMetadata(entries))
+			const itemId: number = selectedItemIds[0];
+			fetchItemMetadata(itemId)
+				.then((entries: AttributeDTO[]) => setMetadata(itemId, entries))
 				.then(() => fetchItemById(selectedItemIds[0]))
 				.then(setItem);
 		} else {
-			setMetadata([]);
+			setMetadata(null, []);
 			setItem(null);
 		}
 	}, [selectedItemIds]);

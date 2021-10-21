@@ -1,6 +1,6 @@
 import {
     AttributeDTO, AttributeKeyDTO, AttributeValueDTO,
-    CollectionTypeDTO,
+    CollectionTypeDTO, EmbedReportDTO, EmbedStatusDTO,
     ExiftoolInfoDTO,
     GroupDTO,
     ImportProcessDataDTO,
@@ -22,7 +22,7 @@ const eventBroadcaster = new EventBroadcaster({
 });
 
 const eventConsumer = new EventConsumer({
-    eventIds: [EventIds.IMPORT_STATUS],
+    eventIds: [EventIds.IMPORT_STATUS, EventIds.EMBED_ITEM_ATTRIBUTES_STATUS],
     comPartner: {
         partner: "main"
     },
@@ -181,4 +181,19 @@ export function setTheme(theme: "dark" | "light"): Promise<void> {
 
 export function getTheme(): Promise<"dark" | "light"> {
     return eventBroadcaster.send(EventIds.GET_THEME);
+}
+
+export function requestEmbedAttributes(itemIds: number[] | null, allAttributes: boolean): Promise<EmbedReportDTO> {
+    return eventBroadcaster.send(EventIds.EMBED_ITEM_ATTRIBUTES, {
+        itemIds: itemIds,
+        allAttributes: allAttributes
+    });
+}
+
+export function addEmbedStatusListener(listener: (status: EmbedStatusDTO) => void): void {
+    eventConsumer.on<EmbedStatusDTO, void>(EventIds.EMBED_ITEM_ATTRIBUTES_STATUS, listener);
+}
+
+export function removeEmbedStatusListener(): void {
+    eventConsumer.clear(EventIds.EMBED_ITEM_ATTRIBUTES_STATUS);
 }
