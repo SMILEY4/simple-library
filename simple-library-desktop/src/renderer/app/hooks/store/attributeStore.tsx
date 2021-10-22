@@ -14,10 +14,12 @@ import {AttributeDTO, AttributeKeyDTO, attributeKeysDtoEquals} from "../../../..
 // STATE
 
 export interface AttributeState {
+	itemId: number | null;
 	attributes: AttributeDTO[];
 }
 
 const initialState: AttributeState = {
+	itemId: null,
 	attributes: []
 };
 
@@ -29,12 +31,14 @@ enum AttributeActionType {
 	ADD = "attributes.add",
 	REMOVE = "attributes.remove",
 	UPDATE = "attributes.update",
+	CLEAR_MODIFIED_FLAGS = "attributes.set-modified-flag"
 }
 
 const reducerConfigMap: ReducerConfigMap<AttributeActionType, AttributeState> = new ReducerConfigMap([
 	[AttributeActionType.SET, (state, payload) => ({
 		...state,
-		attributes: payload
+		itemId: payload.itemId,
+		attributes: payload.attributes
 	})],
 	[AttributeActionType.ADD, (state, payload) => ({
 		...state,
@@ -57,6 +61,13 @@ const reducerConfigMap: ReducerConfigMap<AttributeActionType, AttributeState> = 
 				return att;
 			}
 		})
+	})],
+	[AttributeActionType.CLEAR_MODIFIED_FLAGS, (state) => ({
+		...state,
+		attributes: state.attributes.map(att => ({
+			...att,
+			modified: false
+		}))
 	})]
 ]);
 
@@ -86,12 +97,20 @@ export function useStateAttributes() {
 	return state.attributes;
 }
 
+export function useStateAttributeStoreItemId() {
+	const [state] = useAttributeContext();
+	return state.itemId;
+}
+
 export function useDispatchSetAttributes() {
 	const dispatch = useAttributeDispatch();
-	return (attributes: AttributeDTO[]) => {
+	return (itemId: number | null, attributes: AttributeDTO[]) => {
 		dispatch({
 			type: AttributeActionType.SET,
-			payload: attributes
+			payload: {
+				itemId: itemId,
+				attributes: attributes
+			}
 		});
 	};
 }
@@ -129,3 +148,14 @@ export function useDispatchUpdateAttribute() {
 		});
 	};
 }
+
+export function useDispatchAttributesClearModifiedFlags() {
+	const dispatch = useAttributeDispatch();
+	return () => {
+		dispatch({
+			type: AttributeActionType.CLEAR_MODIFIED_FLAGS,
+			payload: undefined
+		});
+	};
+}
+

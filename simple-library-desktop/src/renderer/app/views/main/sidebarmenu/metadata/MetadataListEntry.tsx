@@ -36,18 +36,19 @@ export function MetadataListEntry(props: React.PropsWithChildren<MetadataListEnt
 
 	function renderInputField(attribute: AttributeDTO): ReactElement {
 		if (attribute.writable) {
-			switch (attribute.type) {
-				case "_text":
-					return renderInputText(attribute);
-				case "_number":
-					return renderInputNumber(attribute);
-				case "_boolean":
-					return renderInputBoolean(attribute);
-				case "_date":
-					return renderInputDate(attribute);
-				default:
-					return renderInputText(attribute);
-			}
+			return renderInputText(attribute);
+			// switch (attribute.type) {
+			// 	case "_text":
+			// 		return renderInputText(attribute);
+			// 	case "_number":
+			// 		return renderInputNumber(attribute);
+			// 	case "_boolean":
+			// 		return renderInputBoolean(attribute);
+			// 	case "_date":
+			// 		return renderInputDate(attribute);
+			// 	default:
+			// 		return renderInputText(attribute);
+			// }
 		} else {
 			return renderReadOnly(attribute);
 		}
@@ -70,40 +71,41 @@ export function MetadataListEntry(props: React.PropsWithChildren<MetadataListEnt
 	}
 
 
-	function renderInputNumber(attribute: AttributeDTO): ReactElement {
-		return (
-			<MultiTypeInput
-				type="number"
-				value={attribute.value}
-				onAccept={handleUpdateValue}
-			/>
-		);
-	}
-
-
-	function renderInputBoolean(attribute: AttributeDTO): ReactElement {
-		return (
-			<CheckBox
-				selected={attribute.value.toLowerCase() === "true"}
-				onToggle={(selected: boolean) => handleUpdateValue(selected ? "true" : "false")}
-			/>
-		);
-	}
-
-
-	function renderInputDate(attribute: AttributeDTO): ReactElement {
-		return (
-			<MultiTypeInput
-				type="date"
-				value={attribute.value}
-				onAccept={handleUpdateValue}
-			/>
-		);
-	}
-
-
 	function handleUpdateValue(value: AttributeValueDTO): void {
 		props.onUpdateValue(props.entry.value, value);
 	}
+
+
+	// function renderInputNumber(attribute: AttributeDTO): ReactElement {
+	// 	return (
+	// 		<MultiTypeInput
+	// 			type="number"
+	// 			value={attribute.value}
+	// 			onAccept={handleUpdateValue}
+	// 		/>
+	// 	);
+	// }
+	//
+	//
+	// function renderInputBoolean(attribute: AttributeDTO): ReactElement {
+	// 	return (
+	// 		<CheckBox
+	// 			selected={attribute.value.toLowerCase() === "true"}
+	// 			onToggle={(selected: boolean) => handleUpdateValue(selected ? "true" : "false")}
+	// 		/>
+	// 	);
+	// }
+	//
+	//
+	// function renderInputDate(attribute: AttributeDTO): ReactElement {
+	// 	return (
+	// 		<MultiTypeInput
+	// 			type="date"
+	// 			value={attribute.value}
+	// 			onAccept={handleUpdateValue}
+	// 		/>
+	// 	);
+	// }
+
 
 }

@@ -3,6 +3,7 @@ import {DbAccess} from "../persistence/dbAcces";
 import {FileSystemWrapper} from "../service/fileSystemWrapper";
 import {ConfigAccess} from "../persistence/configAccess";
 import {AttributeMetadataProvider} from "../persistence/attributeMetadata";
+import {ExifHandler} from "../service/exifHandler";
 
 
 export function mockFileSystemWrapper(): FileSystemWrapper {
@@ -72,3 +73,14 @@ export function mockAttributeMetadataProvider(returnReal?: boolean) {
 	return attribMetaProvider;
 }
 
+export function mockExiftoolProcess(readMetadataResult: any) {
+	// @ts-ignore
+	ExifHandler["createExiftoolProcess"] = jest.fn().mockReturnValue(
+		{
+			open: () => Promise.resolve(),
+			readMetadata: (path: any, options: any) => readMetadataResult,
+			writeMetadata: (path: string, replaceAll: boolean, data: any) => {throw "todo";},
+			close: () => Promise.resolve()
+		}
+	);
+}

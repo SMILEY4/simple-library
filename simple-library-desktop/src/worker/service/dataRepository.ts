@@ -42,6 +42,16 @@ export interface DataRepository {
 
 	queryAttributeMeta(attributeKeys: ([string, string, string, string, string])[]): QueryResultMany;
 
+	getAllExtendedItemAttributes(onlyModified: boolean): QueryResultMany;
+
+	getExtendedItemAttributesByItemIds(itemIds: number[], onlyModified: boolean): QueryResultMany;
+
+	clearItemAttributeModifiedFlag(itemId: number, attributeKey: ([string, string, string, string, string])): CommandResultSingle;
+
+	clearItemAttributeModifiedFlagsByItemIds(itemIds: number[]): CommandResultSingle;
+
+	clearItemAttributeModifiedFlagsAll(): CommandResultSingle;
+
 	existsItemAttribute(itemId: number, attributeKey: ([string, string, string, string, string])): QueryResultSingle;
 
 	getItemAttribute(itemId: number, attributeKey: ([string, string, string, string, string])): QueryResultSingle;

@@ -95,6 +95,25 @@ export class SQLiteDataRepository implements DataRepository {
         return this.dbAccess.queryAll(SQL.queryAttributeMeta(attributeKeys));
     }
 
+    getAllExtendedItemAttributes(onlyModified: boolean): QueryResultMany {
+        return this.dbAccess.queryAll(SQL.queryExtendedItemAttributesAll(onlyModified));
+    }
+
+    getExtendedItemAttributesByItemIds(itemIds: number[], onlyModified: boolean): QueryResultMany {
+        return this.dbAccess.queryAll(SQL.queryExtendedItemAttributesByItemIds(itemIds, onlyModified));
+    }
+
+    clearItemAttributeModifiedFlag(itemId: number, attributeKey: ([string, string, string, string, string])): CommandResultSingle {
+        return this.dbAccess.run(SQL.clearItemAttributeModifiedFlag(itemId, attributeKey));
+    }
+
+    clearItemAttributeModifiedFlagsByItemIds(itemIds: number[]): CommandResultSingle {
+        return this.dbAccess.run(SQL.clearItemAttributeModifiedFlagsByItemIds(itemIds));
+    }
+
+    clearItemAttributeModifiedFlagsAll(): CommandResultSingle {
+        return this.dbAccess.run(SQL.clearItemAttributeModifiedFlagsAll());
+    }
 
     existsItemAttribute(itemId: number, attributeKey: ([string, string, string, string, string])): QueryResultSingle {
         return this.dbAccess.querySingle(SQL.queryExistsItemAttribute(itemId, attributeKey))

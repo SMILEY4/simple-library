@@ -27,7 +27,8 @@ const initialState: ItemsState = {
 enum ItemsActionType {
     SET_ITEMS = "items.set",
     UPDATE_ITEM_ATTRIBUTE = "items.attributes.update",
-    REMOVE_ITEM_ATTRIBUTE = "items.attributes.remove"
+    REMOVE_ITEM_ATTRIBUTE = "items.attributes.remove",
+    CLEAR_ATTRIBUTE_MODIFIED_FLAGS = "items.attributes.clear-modified-flags"
 }
 
 const reducerConfigMap: ReducerConfigMap<ItemsActionType, ItemsState> = new ReducerConfigMap([
@@ -77,6 +78,25 @@ const reducerConfigMap: ReducerConfigMap<ItemsActionType, ItemsState> = new Redu
                             return attribute;
                         }
                     })
+                };
+            } else {
+                return item;
+            }
+        });
+        return {
+            ...state,
+            items: newItems
+        };
+    }],
+    [ItemsActionType.CLEAR_ATTRIBUTE_MODIFIED_FLAGS, (state, payload) => {
+        const newItems: ItemDTO[] = state.items.map((item: ItemDTO) => {
+            if (payload.clearAll || payload.itemIds.indexOf(item.id) !== -1) {
+                return {
+                    ...item,
+                    attributes: item.attributes.map((attribute: AttributeDTO) => ({
+                        ...attribute,
+                        modified: false
+                    }))
                 };
             } else {
                 return item;
@@ -152,6 +172,19 @@ export function useDispatchRemoveItemAttribute(): (itemId: number, attributeKey:
     };
 }
 
+export function useDispatchItemsClearAttributeModifiedFlags(): (itemIds: number[]) => void {
+    const dispatch = useItemsDispatch();
+    return (itemIds: number[] | null) => {
+        dispatch({
+            type: ItemsActionType.CLEAR_ATTRIBUTE_MODIFIED_FLAGS,
+            payload: {
+                clearAll: itemIds === null,
+                itemIds: itemIds
+            }
+        });
+    };
+}
+
 export function useItems() {
     const [itemsState] = useItemsContext();
     return itemsState.items;
@@ -161,3 +194,5 @@ export function useGetItemIds() {
     const [itemsState] = useItemsContext();
     return () => itemsState.items.map((item: ItemDTO) => item.id);
 }
+
+

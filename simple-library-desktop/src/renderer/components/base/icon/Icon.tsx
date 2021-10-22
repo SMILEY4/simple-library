@@ -4,9 +4,13 @@ import {
     AiFillCaretRight,
     AiFillHome,
     AiOutlineFileText,
-    AiOutlineFolder, AiOutlineSearch, AiOutlineTags,
+    AiOutlineFolder,
+    AiOutlineSearch,
+    AiOutlineTags,
+    BiExport,
     BiImages,
-    BiImport, BiPlus,
+    BiImport,
+    BiPlus,
     BsChevronDoubleLeft,
     BsChevronDoubleRight,
     BsChevronDown,
@@ -14,6 +18,8 @@ import {
     BsChevronRight,
     BsChevronUp,
     FaCheck,
+    FaFileExport,
+    FaFileImport,
     FiSettings,
     VscClose
 } from "react-icons/all";
@@ -39,6 +45,7 @@ export enum IconType {
     SEARCH,
     // REFRESH,
     IMPORT,
+    EXPORT,
     HOME,
     SETTINGS,
     CHECKMARK,
@@ -49,6 +56,8 @@ export enum IconType {
     COLLECTION,
     COLLECTIONS_SMART,
     TAGS,
+    FILE_IMPORT,
+    FILE_EXPORT
 }
 
 
@@ -65,6 +74,7 @@ const ICON_COLOR_TYPE = new Map<IconType, string>([
     [IconType.CHECKMARK, SVG_FILLED],
     [IconType.CARET_RIGHT, SVG_FILLED],
     [IconType.IMPORT, SVG_FILLED],
+    [IconType.EXPORT, SVG_FILLED],
     [IconType.SEARCH, SVG_OUTLINED],
     [IconType.SETTINGS, SVG_OUTLINED],
 
@@ -77,7 +87,11 @@ const ICON_COLOR_TYPE = new Map<IconType, string>([
 
     [IconType.COLLECTION, SVG_FILLED],
     [IconType.COLLECTIONS_SMART, SVG_FILLED],
-    [IconType.TAGS, SVG_OUTLINED]
+    [IconType.TAGS, SVG_OUTLINED],
+
+    [IconType.FILE_IMPORT, SVG_FILLED],
+    [IconType.FILE_EXPORT, SVG_FILLED]
+
 ]);
 
 export interface IconProps extends BaseProps {
@@ -124,6 +138,8 @@ export function Icon(props: React.PropsWithChildren<IconProps>): React.ReactElem
             return <AiOutlineFolder {...iconProps} />;
         case IconType.IMPORT:
             return <BiImport {...iconProps} />;
+        case IconType.EXPORT:
+            return <BiExport {...iconProps} />;
         case IconType.COLLECTION:
             return <BiImages {...iconProps} />;
         case IconType.COLLECTIONS_SMART:
@@ -134,6 +150,10 @@ export function Icon(props: React.PropsWithChildren<IconProps>): React.ReactElem
             return <AiOutlineSearch {...iconProps} />;
         case IconType.TAGS:
             return <AiOutlineTags {...iconProps} />;
+        case IconType.FILE_IMPORT:
+            return <FaFileImport {...iconProps}/>;
+        case IconType.FILE_EXPORT:
+            return <FaFileExport {...iconProps}/>;
         default:
             return null;
     }
@@ -148,7 +168,7 @@ export function Icon(props: React.PropsWithChildren<IconProps>): React.ReactElem
             getIf(isOutlined, "icon-color-outline-" + color),
             getIf(isFilled, "icon-color-fill-" + color),
             getIf(props.disabled, "icon-disabled"),
-            map(props.size, size => "icon-size-" + size),
+            map(props.size, size => "icon-size-" + size)
         );
     }
 

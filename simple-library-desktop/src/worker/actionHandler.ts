@@ -46,6 +46,8 @@ import {EventIds} from "../common/events/eventIds";
 import {DataRepository} from "./service/dataRepository";
 import {ActionDeleteItemAttribute} from "./service/item/actionDeleteItemAttribute";
 import {AttributeMetadataProvider} from "./persistence/attributeMetadata";
+import {ActionEmbedItemAttributes} from "./service/item/actionEmbedItemAttributes";
+import {EmbedStatusDTO} from "../common/events/dtoModels";
 
 export class ActionHandler {
 
@@ -62,6 +64,13 @@ export class ActionHandler {
 
 		const configAccess: ConfigAccess = new ConfigAccess();
 		const fsWrapper: FileSystemWrapper = new FileSystemWrapper();
+
+		const actionAddToLastOpened = new ActionAddToLastOpened(configAccess);
+		const actionGetExiftoolInfo = new ActionGetExiftoolInfo(configAccess);
+		const actionGetLastOpened = new ActionGetLastOpened(configAccess);
+		const actionGetTheme = new ActionGetTheme(configAccess);
+		const actionOpenConfig = new ActionOpenConfig(configAccess, fsWrapper);
+		const actionSetTheme = new ActionSetTheme(configAccess);
 
 		const actionGetAllCollections = new ActionGetAllCollections(dataRepository);
 		const actionGetCollectionById = new ActionGetCollectionById(dataRepository);
@@ -89,13 +98,12 @@ export class ActionHandler {
 		const actionOpenItemsExternal = new ActionOpenItemsExternal(dataRepository, fsWrapper);
 		const actionUpdateItemAttribute = new ActionUpdateItemAttribute(dataRepository);
 		const actionDeleteItemAttribute = new ActionDeleteItemAttribute(dataRepository);
-
-		const actionAddToLastOpened = new ActionAddToLastOpened(configAccess);
-		const actionGetExiftoolInfo = new ActionGetExiftoolInfo(configAccess);
-		const actionGetLastOpened = new ActionGetLastOpened(configAccess);
-		const actionGetTheme = new ActionGetTheme(configAccess);
-		const actionOpenConfig = new ActionOpenConfig(configAccess, fsWrapper);
-		const actionSetTheme = new ActionSetTheme(configAccess);
+		const actionEmbedItemAttributes = new ActionEmbedItemAttributes(
+			actionGetExiftoolInfo,
+			fsWrapper,
+			dataRepository,
+			(status: EmbedStatusDTO) => this.send(EventIds.EMBED_ITEM_ATTRIBUTES_STATUS, status)
+		);
 
 		const actionCloseLibrary = new ActionCloseLibrary(dataRepository);
 		const actionCreateLibrary = new ActionCreateLibrary(
@@ -156,7 +164,7 @@ export class ActionHandler {
 		this.eventHandler.on(EventIds.SET_ITEM_ATTRIBUTE, (payload) => actionUpdateItemAttribute.perform(payload.itemId, payload.entryKey, payload.newValue));
 		this.eventHandler.on(EventIds.DELETE_ITEM_ATTRIBUTE, (payload) => actionDeleteItemAttribute.perform(payload.itemId, payload.entryKey));
 		this.eventHandler.on(EventIds.IMPORT_ITEMS, (payload) => importService.import(payload));
-
+		this.eventHandler.on(EventIds.EMBED_ITEM_ATTRIBUTES, (payload) => actionEmbedItemAttributes.perform(payload.itemIds, payload.allAttributes));
 	}
 
 
