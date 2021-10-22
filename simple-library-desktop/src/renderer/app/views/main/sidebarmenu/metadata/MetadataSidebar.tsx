@@ -25,14 +25,14 @@ interface MetadataSidebarProps {
 
 export function MetadataSidebar(props: React.PropsWithChildren<MetadataSidebarProps>): React.ReactElement {
 
-    const [search, setSearch] = useState<string>("");
-
     const {
         displayedItem,
         metadataEntries,
         updateMetadataEntry,
         copyAttributeValueToClipboard,
-        deleteAttribute
+        deleteAttribute,
+        searchString,
+        setSearchString
     } = useMetadataSidebar();
 
     const {
@@ -63,13 +63,13 @@ export function MetadataSidebar(props: React.PropsWithChildren<MetadataSidebarPr
 
                 <TextField
                     placeholder={"Search"}
-                    value={search}
-                    onAccept={setSearch}
-                    onChange={setSearch}
+                    value={searchString}
+                    onAccept={setSearchString}
+                    onChange={setSearchString}
                     forceState
                     prependIcon={IconType.SEARCH}
                     appendIcon={IconType.CLOSE}
-                    onClickAppendIcon={() => setSearch("")}
+                    onClickAppendIcon={() => setSearchString("")}
                 />
 
                 {
@@ -80,7 +80,7 @@ export function MetadataSidebar(props: React.PropsWithChildren<MetadataSidebarPr
                                 key={group.title}
                                 title={group.title}
                                 entries={group.entries}
-                                searchFilter={search.toLowerCase()}
+                                searchFilter={searchString.toLowerCase()}
                                 onUpdateValue={handleOnUpdateEntryValue}
                                 onContextMenu={handleOpenContextMenu}
                             />;

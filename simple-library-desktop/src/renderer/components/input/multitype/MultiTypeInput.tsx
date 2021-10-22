@@ -1,5 +1,5 @@
 import {BaseProps, concatClasses} from "../../utils/common";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Label} from "../../base/label/Label";
 import "./multiTypeInput.css";
 import {NUMERIC_INPUT, TextField, TFAcceptCause} from "../textfield/TextField";
@@ -19,6 +19,11 @@ export function MultiTypeInput(props: React.PropsWithChildren<MultiTypeInputProp
 	const [type, setType] = useState<MultiTypeInputType>(props.type ? props.type : "text");
 	const [value, setValue] = useState(props.value ? props.value : "");
 
+	useEffect(() => {
+		if (!editMode) {
+			setValue(props.value);
+		}
+	}, [props.value]);
 
 	return editMode
 		? renderEditMode()
