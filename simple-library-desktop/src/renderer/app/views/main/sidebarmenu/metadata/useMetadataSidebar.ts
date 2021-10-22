@@ -14,6 +14,7 @@ import {useDeleteAttribute} from "../../../../hooks/core/attributeDelete";
 
 export function useMetadataSidebar() {
 
+	const [search, setSearch] = useState<string>("");
 	const [item, setItem] = useState<ItemDTO | null>(null);
 	const attributes: AttributeDTO[] = useStateAttributes();
 	const setAttributes = useDispatchSetAttributes();
@@ -25,7 +26,9 @@ export function useMetadataSidebar() {
 		metadataEntries: attributes,
 		updateMetadataEntry: useUpdateMetadataEntry(item ? item.id : null),
 		copyAttributeValueToClipboard: useCopyAttributeValueToClipboard(attributes),
-		deleteAttribute: useDeleteAttributeEntry(item ? item.id : null)
+		deleteAttribute: useDeleteAttributeEntry(item ? item.id : null),
+		searchString: search,
+		setSearchString: setSearch
 	};
 }
 
