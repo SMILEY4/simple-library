@@ -71,40 +71,41 @@ export function MetadataListEntry(props: React.PropsWithChildren<MetadataListEnt
 	}
 
 
-	function renderInputNumber(attribute: AttributeDTO): ReactElement {
-		return (
-			<MultiTypeInput
-				type="number"
-				value={attribute.value}
-				onAccept={handleUpdateValue}
-			/>
-		);
-	}
-
-
-	function renderInputBoolean(attribute: AttributeDTO): ReactElement {
-		return (
-			<CheckBox
-				selected={attribute.value.toLowerCase() === "true"}
-				onToggle={(selected: boolean) => handleUpdateValue(selected ? "true" : "false")}
-			/>
-		);
-	}
-
-
-	function renderInputDate(attribute: AttributeDTO): ReactElement {
-		return (
-			<MultiTypeInput
-				type="date"
-				value={attribute.value}
-				onAccept={handleUpdateValue}
-			/>
-		);
-	}
-
-
 	function handleUpdateValue(value: AttributeValueDTO): void {
 		props.onUpdateValue(props.entry.value, value);
 	}
+
+
+	// function renderInputNumber(attribute: AttributeDTO): ReactElement {
+	// 	return (
+	// 		<MultiTypeInput
+	// 			type="number"
+	// 			value={attribute.value}
+	// 			onAccept={handleUpdateValue}
+	// 		/>
+	// 	);
+	// }
+	//
+	//
+	// function renderInputBoolean(attribute: AttributeDTO): ReactElement {
+	// 	return (
+	// 		<CheckBox
+	// 			selected={attribute.value.toLowerCase() === "true"}
+	// 			onToggle={(selected: boolean) => handleUpdateValue(selected ? "true" : "false")}
+	// 		/>
+	// 	);
+	// }
+	//
+	//
+	// function renderInputDate(attribute: AttributeDTO): ReactElement {
+	// 	return (
+	// 		<MultiTypeInput
+	// 			type="date"
+	// 			value={attribute.value}
+	// 			onAccept={handleUpdateValue}
+	// 		/>
+	// 	);
+	// }
+
 
 }

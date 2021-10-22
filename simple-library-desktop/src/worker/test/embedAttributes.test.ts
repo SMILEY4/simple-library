@@ -44,15 +44,15 @@ describe("embed attributes", () => {
 		});
 		expect(funcWriteMetadata).toHaveBeenCalledTimes(3);
 		expect(funcWriteMetadata).toHaveBeenNthCalledWith(1, "/path/to/file/1", {
-			Comment: "Some Comment",
-			FileModifyDate: "2021:10:11 21:00:12+02:00",
+			"File:File:Image:Comment": "Some Comment",
+			"File:System:Time:FileModifyDate": "2021:10:11 21:00:12+02:00",
 		});
 		expect(funcWriteMetadata).toHaveBeenNthCalledWith(2, "/path/to/file/2", {
-			Comment: "Other Comment",
-			FileModifyDate: "2021:10:11 21:00:12+02:00",
+			"File:File:Image:Comment": "Other Comment",
+			"File:System:Time:FileModifyDate": "2021:10:11 21:00:12+02:00",
 		});
 		expect(funcWriteMetadata).toHaveBeenNthCalledWith(3, "/path/to/file/3", {
-			Comment: "Test Comment",
+			"File:File:Image:Comment": "Test Comment",
 		});
 		await expect(dbAccess.queryAll(SQL.queryExtendedItemAttributesAll(true)).then(attribs => attribs.length)).resolves.toEqual(0)
 	});
@@ -89,11 +89,11 @@ describe("embed attributes", () => {
 		});
 		expect(funcWriteMetadata).toHaveBeenCalledTimes(2);
 		expect(funcWriteMetadata).toHaveBeenNthCalledWith(1, "/path/to/file/1", {
-			Comment: "Some Comment",
+			"File:File:Image:Comment": "Some Comment",
 		});
 		expect(funcWriteMetadata).toHaveBeenNthCalledWith(2, "/path/to/file/2", {
-			Comment: "Other Comment",
-			FileModifyDate: "2021:10:11 21:00:12+02:00",
+			"File:File:Image:Comment": "Other Comment",
+			"File:System:Time:FileModifyDate": "2021:10:11 21:00:12+02:00",
 		});
 		await expect(dbAccess.queryAll(SQL.queryExtendedItemAttributesAll(true)).then(attribs => attribs.length)).resolves.toEqual(0)
 	});
@@ -130,12 +130,12 @@ describe("embed attributes", () => {
 		});
 		expect(funcWriteMetadata).toHaveBeenCalledTimes(2);
 		expect(funcWriteMetadata).toHaveBeenNthCalledWith(1, "/path/to/file/1", {
-			Comment: "Some Comment",
-			FileModifyDate: "2021:10:11 21:00:12+02:00",
+			"File:File:Image:Comment": "Some Comment",
+			"File:System:Time:FileModifyDate": "2021:10:11 21:00:12+02:00",
 		});
 		expect(funcWriteMetadata).toHaveBeenNthCalledWith(2, "/path/to/file/2", {
-			Comment: "Other Comment",
-			FileModifyDate: "2021:10:11 21:00:12+02:00",
+			"File:File:Image:Comment": "Other Comment",
+			"File:System:Time:FileModifyDate": "2021:10:11 21:00:12+02:00",
 		});
 		await expect(dbAccess.queryAll(SQL.queryExtendedItemAttributesAll(true)).then(attribs => attribs.length)).resolves.toEqual(1)
 	});
@@ -172,7 +172,7 @@ describe("embed attributes", () => {
 		});
 		expect(funcWriteMetadata).toHaveBeenCalledTimes(1);
 		expect(funcWriteMetadata).toHaveBeenNthCalledWith(1, "/path/to/file/1", {
-			Comment: "Some Comment",
+			"File:File:Image:Comment": "Some Comment",
 		});
 		await expect(dbAccess.queryAll(SQL.queryExtendedItemAttributesAll(true)).then(attribs => attribs.length)).resolves.toEqual(1)
 	});
@@ -213,11 +213,11 @@ describe("embed attributes", () => {
 		});
 		expect(funcWriteMetadata).toHaveBeenCalledTimes(2);
 		expect(funcWriteMetadata).toHaveBeenNthCalledWith(1, "/path/to/file/1", {
-			Comment: "Some Comment",
-			FileModifyDate: "2021:10:11 21:00:12+02:00"
+			"File:File:Image:Comment": "Some Comment",
+			"File:System:Time:FileModifyDate": "2021:10:11 21:00:12+02:00"
 		});
 		expect(funcWriteMetadata).toHaveBeenNthCalledWith(2, "/path/to/file/3", {
-			Comment: "Test Comment",
+			"File:File:Image:Comment": "Test Comment",
 		});
 		await expect(dbAccess.queryAll(SQL.queryExtendedItemAttributesAll(true)).then(attribs => attribs.length)).resolves.toEqual(0)
 	});
@@ -271,15 +271,15 @@ describe("embed attributes", () => {
 		});
 		expect(funcWriteMetadataException).toHaveBeenCalledTimes(3);
 		expect(funcWriteMetadataException).toHaveBeenNthCalledWith(1, "/path/to/file/1", {
-			Comment: "Some Comment",
-			FileModifyDate: "2021:10:11 21:00:12+02:00",
+			"File:File:Image:Comment": "Some Comment",
+			"File:System:Time:FileModifyDate": "2021:10:11 21:00:12+02:00",
 		});
 		expect(funcWriteMetadataException).toHaveBeenNthCalledWith(2, "/path/to/file/2", {
-			Comment: "Other Comment",
-			FileModifyDate: "2021:10:11 21:00:12+02:00",
+			"File:File:Image:Comment": "Other Comment",
+			"File:System:Time:FileModifyDate": "2021:10:11 21:00:12+02:00",
 		});
 		expect(funcWriteMetadataException).toHaveBeenNthCalledWith(3, "/path/to/file/3", {
-			Comment: "Test Comment",
+			"File:File:Image:Comment": "Test Comment",
 		});
 		await expect(dbAccess.queryAll(SQL.queryExtendedItemAttributesAll(true)).then(attribs => attribs.length)).resolves.toEqual(0)
 	});
