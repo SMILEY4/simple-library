@@ -1,14 +1,4 @@
-import React, {
-	Context,
-	createContext,
-	Dispatch,
-	ReactElement,
-	useCallback,
-	useContext,
-	useEffect,
-	useReducer,
-	useRef
-} from "react";
+import React, {Context, createContext, Dispatch, ReactElement, useContext, useReducer} from "react";
 
 export class ReducerConfigMap<ACTION_TYPE, STATE> extends Map<ACTION_TYPE, (state: STATE, payload: any) => STATE> {
 }
@@ -27,7 +17,7 @@ export function buildContext<ACTION_TYPE, STATE>(): [Context<STATE>, Context<Dis
 	const stateContext = createContext<STATE | undefined>(undefined);
 	const dispatchContext = createContext<Dispatch<GenericStateAction<ACTION_TYPE>>>(() => {
 	});
-	return [stateContext, dispatchContext]
+	return [stateContext, dispatchContext];
 }
 
 export function applyStateAction<ACTION_TYPE, STATE>(
@@ -73,9 +63,9 @@ export function GenericContextProvider<STATE, ACTION_TYPE>(
 }
 
 export function useGlobalStateReadWrite<STATE, ACTION_TYPE>(stateContext: Context<STATE>, dispatchContext: Context<Dispatch<GenericStateAction<ACTION_TYPE>>>): IStateHookResultReadWrite<STATE, ACTION_TYPE> {
-	const state: STATE = useGlobalStateReadOnly(stateContext)
-	const dispatch = useGlobalStateWriteOnly(dispatchContext)
-	return [state, dispatch]
+	const state: STATE = useGlobalStateReadOnly(stateContext);
+	const dispatch = useGlobalStateWriteOnly(dispatchContext);
+	return [state, dispatch];
 }
 
 export function useGlobalStateReadOnly<STATE>(stateContext: Context<STATE>): STATE {
@@ -83,7 +73,7 @@ export function useGlobalStateReadOnly<STATE>(stateContext: Context<STATE>): STA
 	if (state) {
 		return state;
 	} else {
-		throw "Error: No global read-only-state found"
+		throw "Error: No global read-only-state found";
 	}
 }
 
@@ -92,6 +82,6 @@ export function useGlobalStateWriteOnly<ACTION_TYPE>(dispatchContext: Context<Di
 	if (dispatch) {
 		return dispatch;
 	} else {
-		throw "Error: No global write-only-state found"
+		throw "Error: No global write-only-state found";
 	}
 }
