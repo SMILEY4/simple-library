@@ -1,8 +1,8 @@
-import { Hash } from 'crypto';
+import {Hash} from "crypto";
 import {FileSystemWrapper} from "../fileSystemWrapper";
 import {ItemData} from "./importService";
 
-const crypto = require('crypto');
+const crypto = require("crypto");
 
 export class ImportStepFileHash {
 
@@ -45,15 +45,15 @@ export class ImportStepFileHash {
     private computeHashWithAlgorithm(filepath: string, hashFunction: Hash): Promise<string> {
         return new Promise((resolve, reject) => {
             const rs = this.fsWrapper.createReadStream(filepath);
-            rs.on('error', (err: Error) => {
+            rs.on("error", (err: Error) => {
                 console.log("error while computing hash for file " + filepath + ": " + err);
                 reject(err);
             });
-            rs.on('data', (chunk: Buffer | string) => {
+            rs.on("data", (chunk: Buffer | string) => {
                 hashFunction = hashFunction.update(chunk);
             });
-            rs.on('end', () => {
-                resolve(hashFunction.digest('hex'));
+            rs.on("end", () => {
+                resolve(hashFunction.digest("hex"));
             });
         });
     }

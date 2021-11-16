@@ -48,6 +48,7 @@ import {ActionDeleteItemAttribute} from "./service/item/actionDeleteItemAttribut
 import {AttributeMetadataProvider} from "./persistence/attributeMetadata";
 import {ActionEmbedItemAttributes} from "./service/item/actionEmbedItemAttributes";
 import {EmbedStatusDTO} from "../common/events/dtoModels";
+import {ActionReadItemAttributesFromFile} from "./service/item/actionReadItemAttributesFromFile";
 
 export class ActionHandler {
 
@@ -121,7 +122,7 @@ export class ActionHandler {
 			new ImportStepThumbnail(),
 			new ImportStepRename(),
 			new ImportStepImportTarget(fsWrapper),
-			new ImportStepMetadata(actionGetExiftoolInfo),
+			new ImportStepMetadata(new ActionReadItemAttributesFromFile(actionGetExiftoolInfo)),
 			(status: any) => this.send(EventIds.IMPORT_STATUS, status)
 		);
 

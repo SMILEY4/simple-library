@@ -12,7 +12,6 @@ export class ExifHandler {
 
 	constructor(actionGetExiftoolInfo: ActionGetExiftoolInfo) {
 		this.exiftoolProcess = ExifHandler.createExiftoolProcess(actionGetExiftoolInfo);
-
 	}
 
 

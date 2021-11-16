@@ -1,6 +1,6 @@
 import {ItemData} from "./importService";
-import {Attribute} from "../item/itemCommon";
 import {ActionReadItemAttributesFromFile} from "../item/actionReadItemAttributesFromFile";
+import {Attribute} from "../item/itemCommon";
 
 export class ImportStepMetadata {
 
@@ -13,7 +13,7 @@ export class ImportStepMetadata {
 	public handle(itemData: ItemData): Promise<ItemData> {
 		return this.actionReadAttributes.perform(itemData.sourceFilepath)
 			.then((entries: Attribute[]) => itemData.attributes = entries)
-			.then(() => itemData);
+			.then(() => itemData)
 	}
 
 }

@@ -2,7 +2,6 @@ import {Attribute} from "./itemCommon";
 import {iterateObj} from "../../../common/utils";
 import {ActionGetExiftoolInfo} from "../config/actionGetExiftoolInfo";
 import {ExifHandler} from "../exifHandler";
-import {FileSystemWrapper} from "../fileSystemWrapper";
 
 /**
  * Read the file metadata and return as attributes
@@ -10,22 +9,16 @@ import {FileSystemWrapper} from "../fileSystemWrapper";
 export class ActionReadItemAttributesFromFile {
 
 	private readonly exifHandler: ExifHandler;
-	private readonly fsWrapper: FileSystemWrapper;
 
-	constructor(fsWrapper: FileSystemWrapper, actionGetExiftoolInfo: ActionGetExiftoolInfo) {
-		this.fsWrapper = fsWrapper;
+	constructor(actionGetExiftoolInfo: ActionGetExiftoolInfo) {
 		this.exifHandler = new ExifHandler(actionGetExiftoolInfo);
 	}
 
 
 	public perform(filepath: string): Promise<Attribute[]> {
-		if (this.fsWrapper.exists(filepath)) {
-			return this.exifHandler
-				.readMetadata(filepath)
-				.then((data: any) => this.dataToAttributes(data.data[0]));
-		} else {
-			return Promise.reject(new Error("Cant read metadata: file does not exists (" + filepath + ")"));
-		}
+		return this.exifHandler
+			.readMetadata(filepath)
+			.then((data: any) => this.dataToAttributes(data.data[0]));
 	}
 
 
