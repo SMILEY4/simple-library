@@ -27,13 +27,23 @@ export class ExifHandler {
 	}
 
 
-	public writeMetadata(filepath: string, metadata: object): Promise<any> {
+	public writeMetadata(filepath: string, metadata: object): Promise<undefined | string> {
 		return this.exiftoolProcess
 			.open()
-			.then(() => this.exiftoolProcess.writeMetadata(filepath, {...metadata}, ['overwrite_original'], false))
-			.then(console.log, console.error)
-			.then(() => this.exiftoolProcess.close())
-			.catch(console.error);
+			.then(() => this.exiftoolProcess.writeMetadata(filepath, {...metadata}, ["overwrite_original"], false))
+			.then((res: any) => {
+				if (res && res.error) {
+					console.log("exiftool write result:", res.error);
+					return res.error;
+				} else {
+					return undefined;
+				}
+			})
+			.then((res: any) => {
+				this.exiftoolProcess.close();
+				return res;
+			})
+			.catch((err: any) => console.error("error while closing exiftool:", err));
 	}
 
 }

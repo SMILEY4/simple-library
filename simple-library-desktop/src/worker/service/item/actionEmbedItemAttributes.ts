@@ -128,7 +128,11 @@ export class ActionEmbedItemAttributes {
 
 
 	private embedItem(filepath: string, metadata: object): Promise<void> {
-		return new ExifHandler(this.actionGetExiftoolInfo).writeMetadata(filepath, metadata);
+		return new ExifHandler(this.actionGetExiftoolInfo).writeMetadata(filepath, metadata).then((err) => {
+			if (err) {
+				throw new Error(err);
+			}
+		});
 	}
 
 
