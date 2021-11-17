@@ -25,7 +25,7 @@ export class ExifHandler {
 			.open()
 			.then(() => this.exiftoolProcess.readMetadata(filepath, this.EXIFTOOL_OPTIONS_READ))
 			.then((data: any) => {
-				console.log("exiftool read result:", JSON.stringify(data, null, "   "));
+				console.log("exiftool read result:", data);
 				return data;
 			})
 			.finally(() => this.exiftoolProcess.close());

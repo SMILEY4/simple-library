@@ -48,6 +48,7 @@ import sqlUpdateItemAttributeModifiedFlagsByItemIds
 	from "./sqlscripts/item_attributes/update_item_attributes_modified_by_items.sql";
 import sqlUpdateItemAttributeModifiedFlagsAll
 	from "./sqlscripts/item_attributes/update_item_attributes_modified_all.sql";
+import sqlDeleteItemAttributesByItemId from "./sqlscripts/item_attributes/delete_item_attributes.sql";
 
 export module SQL {
 
@@ -286,6 +287,11 @@ export module SQL {
 			.replace(v("g0"), str(attributeKey[2]))
 			.replace(v("g1"), str(attributeKey[3]))
 			.replace(v("g2"), str(attributeKey[4]));
+	}
+
+	export function deleteItemAttributes(itemId: number): string {
+		return sql(sqlDeleteItemAttributesByItemId)
+			.replace(v("itemId"), num(itemId));
 	}
 
 	export function insertItemAttributes(itemId: number, attributes: ({ id: string, name: string, g0: string, g1: string, g2: string, value: any, modified?: boolean })[]): string {

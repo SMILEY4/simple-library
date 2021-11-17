@@ -128,7 +128,7 @@ export class SQLiteDataRepository implements DataRepository {
         return this.dbAccess.queryAll(SQL.queryItemAttributes(itemId));
     }
 
-    insertItemAttributes(itemId: number, attributes: { id: string, name: string, g0: string, g1: string, g2: string, value: string }[]): CommandResultSingle {
+    insertItemAttributes(itemId: number, attributes: { id: string, name: string, g0: string, g1: string, g2: string, value: string, modified?: boolean }[]): CommandResultSingle {
         if (attributes && attributes.length > 0) {
             return this.dbAccess.run(SQL.insertItemAttributes(itemId, attributes));
         } else {
@@ -140,8 +140,12 @@ export class SQLiteDataRepository implements DataRepository {
         return this.dbAccess.run(SQL.updateItemAttribute(itemId, attributeKey, newValue));
     }
 
-    public deleteItemAttribute(itemId: number, attributeKey: ([string, string, string, string, string])): VoidResult {
+    deleteItemAttribute(itemId: number, attributeKey: ([string, string, string, string, string])): VoidResult {
         return this.dbAccess.run(SQL.deleteItemAttribute(itemId, attributeKey)).then(voidThen);
+    }
+
+    deleteItemAttributes(itemId: number): VoidResult {
+        return this.dbAccess.run(SQL.deleteItemAttributes(itemId)).then(voidThen);
     }
 
     relateItemsToCollection(collectionId: number, itemIds: number[]): CommandResultSingle {
