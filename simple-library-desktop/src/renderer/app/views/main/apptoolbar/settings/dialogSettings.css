@@ -1,0 +1,40 @@
+.settings-card * body {
+	overflow-y: hidden;
+}
+
+.settings-body {
+	overflow: hidden;
+	height: 100%;
+}
+
+.settings-nav {
+	flex-shrink:  0;
+	flex-grow:    0;
+	overflow-y: auto;
+	height: 100%;
+	border-right: 1px solid var(--color-border);
+}
+
+.settings-nav > * {
+	min-height:    var(--s-1-5);
+	max-height:    var(--s-1-5);
+	display:       flex;
+	align-items:   center;
+	padding-left:  var(--s-0-5);
+	padding-right: var(--s-0-5);
+	cursor:        pointer;
+}
+
+.settings-nav > *:hover {
+	background-color: var(--color-bg-raised-hover);
+}
+
+.settings-nav > *:active {
+	background-color: var(--color-bg-raised-active);
+}
+
+
+.settings-content {
+	flex-shrink: 0;
+	flex-grow:   1;
+}

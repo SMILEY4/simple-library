@@ -6,6 +6,7 @@ import {DialogImportFiles} from "./import/DialogImportFiles";
 import {useAppToolbar} from "./useAppToolbar";
 import {useDispatchCloseDialog, useDispatchOpenDialog} from "../../../hooks/store/dialogState";
 import {DialogEmbedAttributes} from "./embed/DialogEmbedAttributes";
+import {DialogSettings} from "./settings/DialogSettings";
 
 interface AppToolbarProps {
 	onClosedLibrary: () => void
@@ -18,17 +19,24 @@ export function AppToolbar(props: React.PropsWithChildren<AppToolbarProps>): Rea
 
 	const {
 		closeLibrary,
-		openConfigFile
+		openConfigFile // todo
 	} = useAppToolbar(props.onClosedLibrary)
 
 	return (
 		<Toolbar>
 			<IconButton label="Close" icon={IconType.CLOSE} large ghost onAction={closeLibrary}/>
-			<IconButton label="Config" icon={IconType.SETTINGS} large ghost onAction={openConfigFile}/>
+			<IconButton label="Settings" icon={IconType.SETTINGS} large ghost onAction={openDialogSettings}/>
 			<IconButton label="Import" icon={IconType.IMPORT} large ghost onAction={openDialogImport}/>
 			<IconButton label="Embed" icon={IconType.FILE_IMPORT} large ghost onAction={openDialogEmbed}/>
 		</Toolbar>
 	);
+
+	function openDialogSettings() {
+		openDialog(id => ({
+			blockOutside: true,
+			content: <DialogSettings onClose={() => closeDialog(id)}/>
+		}));
+	}
 
 	function openDialogImport() {
 		openDialog(id => ({

@@ -35,6 +35,9 @@
 	user-select:         none;
 }
 
+.label-clickable {
+	cursor: pointer;
+}
 
 .label,
 .label-overflow-wrap {
