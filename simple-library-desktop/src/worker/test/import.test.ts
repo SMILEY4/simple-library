@@ -14,6 +14,8 @@ import {SQL} from "../persistence/sqlHandler";
 import {ActionGetExiftoolInfo} from "../service/config/actionGetExiftoolInfo";
 import {ActionCreateLibrary} from "../service/library/actionCreateLibrary";
 import {SQLiteDataRepository} from "../persistence/sqliteRepository";
+import {ActionReadItemAttributesFromFile} from "../service/item/actionReadItemAttributesFromFile";
+import {ExifHandler} from "../service/exifHandler";
 
 describe("import", () => {
 
@@ -937,7 +939,7 @@ function mockImportService(): [ImportService, ActionCreateLibrary, FileSystemWra
 	stepThumbnail["createBase64Thumbnail"] = jest.fn().mockReturnValue(Promise.resolve("thumbnailMock"));
 
 	// @ts-ignore
-	ImportStepMetadata["createExiftoolProcess"] = jest.fn().mockReturnValue(mockExiftoolProcess());
+	ExifHandler["createExiftoolProcess"] = jest.fn().mockReturnValue(mockExiftoolProcess());
 
 	const importService: ImportService = new ImportService(
 		new SQLiteDataRepository(dbAccess),
@@ -946,7 +948,7 @@ function mockImportService(): [ImportService, ActionCreateLibrary, FileSystemWra
 		stepThumbnail,
 		new ImportStepRename(),
 		new ImportStepImportTarget(fsWrapper),
-		new ImportStepMetadata(new ActionGetExiftoolInfo(configAccess)),
+		new ImportStepMetadata(new ActionReadItemAttributesFromFile(new ActionGetExiftoolInfo(configAccess))),
 		() => Promise.resolve()
 	);
 	const actionCreateLibrary = new ActionCreateLibrary(new SQLiteDataRepository(dbAccess), fsWrapper, mockAttributeMetadataProvider(true));

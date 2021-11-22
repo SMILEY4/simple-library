@@ -4,6 +4,8 @@ import {ExtendedAttribute, rowToExtendedAttribute} from "./itemCommon";
 import {FileSystemWrapper} from "../fileSystemWrapper";
 import {EmbedStatusDTO} from "../../../common/events/dtoModels";
 import {ExifHandler} from "../exifHandler";
+import {ActionReadItemAttributesFromFile} from "./actionReadItemAttributesFromFile";
+import {ActionReloadItemAttributes} from "./actionReloadItemAttributes";
 
 export interface EmbedReport {
 	amountProcessedItems: number,
@@ -18,17 +20,23 @@ export type EmbedStatusSender = (status: EmbedStatusDTO) => Promise<void>;
 export class ActionEmbedItemAttributes {
 
 	private readonly actionGetExiftoolInfo: ActionGetExiftoolInfo;
+	private readonly actionReadFileAttributes: ActionReadItemAttributesFromFile;
+	private readonly actionReloadAttributes: ActionReloadItemAttributes;
 	private readonly fsWrapper: FileSystemWrapper;
 	private readonly repository: DataRepository;
 	private readonly embedStatusSender: EmbedStatusSender;
 
 
 	constructor(actionGetExiftoolInfo: ActionGetExiftoolInfo,
+				actionReadFileAttributes: ActionReadItemAttributesFromFile,
+				actionReloadAttributes: ActionReloadItemAttributes,
 				fsWrapper: FileSystemWrapper,
 				repository: DataRepository,
 				embedStatusSender: EmbedStatusSender
 	) {
 		this.actionGetExiftoolInfo = actionGetExiftoolInfo;
+		this.actionReadFileAttributes = actionReadFileAttributes;
+		this.actionReloadAttributes = actionReloadAttributes;
 		this.fsWrapper = fsWrapper;
 		this.repository = repository;
 		this.embedStatusSender = embedStatusSender;
@@ -98,28 +106,15 @@ export class ActionEmbedItemAttributes {
 
 	private async embedItems(items: ({ itemId: number, filepath: string, metadata: object })[]): Promise<EmbedReport> {
 		console.log("Start embedding attributes of " + items.length + " items.");
-		const report: EmbedReport = {
-			amountProcessedItems: items.length,
-			errors: []
-		};
+		const report: EmbedReport = this.emptyReport(items);
 		for (let i = 0; i < items.length; i++) {
 			const item = items[i];
 			if (this.fsWrapper.existsFile(item.filepath)) {
-				await this.embedItem(item.filepath, item.metadata)
-					.catch(err => {
-						report.errors.push({
-							itemId: item.itemId,
-							filepath: item.filepath,
-							error: "Error: " + err.toString()
-						});
-					});
+				await this.embedItem(item.filepath, item.metadata).catch(err => this.reportEmbedFailed(report, item, err));
 			} else {
-				report.errors.push({
-					itemId: item.itemId,
-					filepath: item.filepath,
-					error: "File not found."
-				});
+				this.reportFileNotFound(report, item);
 			}
+			await this.actionReloadAttributes.perform(item.itemId);
 			await this.sendStatus(items.length, i + 1);
 		}
 		console.log("Finished embedding attributes of " + items.length + " items.");
@@ -128,7 +123,11 @@ export class ActionEmbedItemAttributes {
 
 
 	private embedItem(filepath: string, metadata: object): Promise<void> {
-		return new ExifHandler(this.actionGetExiftoolInfo).writeMetadata(filepath, metadata);
+		return new ExifHandler(this.actionGetExiftoolInfo).writeMetadata(filepath, metadata).then((err) => {
+			if (err) {
+				throw new Error(err);
+			}
+		});
 	}
 
 
@@ -164,6 +163,29 @@ export class ActionEmbedItemAttributes {
 					return report;
 				});
 		}
+	}
+
+	private emptyReport(items: any[]): EmbedReport {
+		return {
+			amountProcessedItems: items.length,
+			errors: []
+		};
+	}
+
+	private reportEmbedFailed(report: EmbedReport, item: { itemId: number, filepath: string, metadata: object }, err: any) {
+		report.errors.push({
+			itemId: item.itemId,
+			filepath: item.filepath,
+			error: "Error: " + err.toString()
+		});
+	}
+
+	private reportFileNotFound(report: EmbedReport, item: { itemId: number, filepath: string, metadata: object }) {
+		report.errors.push({
+			itemId: item.itemId,
+			filepath: item.filepath,
+			error: "File not found."
+		});
 	}
 
 }

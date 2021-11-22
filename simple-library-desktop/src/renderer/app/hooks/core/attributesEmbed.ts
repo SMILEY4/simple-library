@@ -5,12 +5,20 @@ import {
 	useDispatchUpdateNotification,
 	useThrowErrorWithNotification
 } from "../store/notificationState";
-import {addEmbedStatusListener, removeEmbedStatusListener, requestEmbedAttributes} from "../../common/eventInterface";
+import {
+	addEmbedStatusListener,
+	fetchItemMetadata,
+	fetchItems,
+	removeEmbedStatusListener,
+	requestEmbedAttributes
+} from "../../common/eventInterface";
 import {genNotificationId} from "../../common/notificationUtils";
 import {useSelectedItemIds} from "../store/itemSelectionState";
-import {EmbedStatusDTO} from "../../../../common/events/dtoModels";
-import {useDispatchAttributesClearModifiedFlags, useStateAttributeStoreItemId} from "../store/attributeStore";
-import {useDispatchItemsClearAttributeModifiedFlags} from "../store/itemsState";
+import {EmbedStatusDTO, ItemDTO} from "../../../../common/events/dtoModels";
+import {useDispatchSetAttributes, useStateAttributeStoreItemId} from "../store/attributeStore";
+import {useDispatchSetItems} from "../store/itemsState";
+import {useActiveCollection} from "../store/collectionActiveState";
+import {TEMP_ATTRIBUTE_KEYS} from "./temp";
 
 export function useEmbedAttributes() {
 
@@ -31,9 +39,10 @@ export function useEmbedAttributesOfItemIds() {
 	const notificationRemove = useDispatchRemoveNotification();
 	const notificationUpdate = useDispatchUpdateNotification();
 	const throwErrorNotification = useThrowErrorWithNotification();
-	const dispatchAttributesClearModifiedFlags = useDispatchAttributesClearModifiedFlags();
-	const attributeStoreItemId = useStateAttributeStoreItemId();
-	const dispatchItemsClearAttributeModifiedFlags = useDispatchItemsClearAttributeModifiedFlags();
+	const attributeItemId = useStateAttributeStoreItemId();
+	const setAttributes = useDispatchSetAttributes();
+	const activeCollection = useActiveCollection();
+	const dispatchSetItems = useDispatchSetItems();
 
 	function hookFunction(itemIds: number[] | null, allAttributes: boolean): Promise<void> {
 
@@ -44,26 +53,29 @@ export function useEmbedAttributesOfItemIds() {
 
 		return requestEmbedAttributes(itemIds, allAttributes)
 			.then((report) => notificationAdd(genNotificationId(), AppNotificationType.ATTRIBUTES_EMBED_FINISHED, report))
-			.then(() => updateAttributeState(itemIds, allAttributes))
-			.then(() => updateItemState(itemIds))
+			.then(() => updateAttributeState())
+			.then(() => updateItemState())
 			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ATTRIBUTES_EMBED_FAILED, error))
 			.finally(() => {
 				notificationRemove(statusNotificationId);
 				removeEmbedStatusListener();
 			});
 
-		function updateAttributeState(itemIds: number[] | null, allAttributes: boolean): void {
-			if (allAttributes || itemIds === null) {
-				dispatchAttributesClearModifiedFlags();
+		function updateAttributeState(): Promise<any> {
+			if (attributeItemId) {
+				return fetchItemMetadata(attributeItemId).then(attribs => setAttributes(attributeItemId, attribs));
 			} else {
-				if (itemIds.indexOf(attributeStoreItemId) !== -1) {
-					dispatchAttributesClearModifiedFlags();
-				}
+				return Promise.resolve();
 			}
 		}
 
-		function updateItemState(itemIds: number[] | null): void {
-			dispatchItemsClearAttributeModifiedFlags(itemIds);
+		function updateItemState(): Promise<any> {
+			if (activeCollection) {
+				return fetchItems(activeCollection, TEMP_ATTRIBUTE_KEYS, true)
+					.then((items: ItemDTO[]) => dispatchSetItems(items));
+			} else {
+				return Promise.resolve();
+			}
 		}
 
 	}

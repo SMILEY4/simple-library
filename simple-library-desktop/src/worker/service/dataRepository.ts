@@ -58,11 +58,13 @@ export interface DataRepository {
 
 	getItemAttributesByItem(itemId: number): QueryResultMany;
 
-	insertItemAttributes(itemId: number, attributes: ({ id: string, name: string, g0: string, g1: string, g2: string, value: string })[]): CommandResultSingle;
+	insertItemAttributes(itemId: number, attributes: ({ id: string, name: string, g0: string, g1: string, g2: string, value: string, modified?: boolean })[]): CommandResultSingle;
 
 	updateItemAttributeValue(itemId: number, attributeKey: ([string, string, string, string, string]), newValue: string): CommandResultSingle;
 
 	deleteItemAttribute(itemId: number, attributeKey: ([string, string, string, string, string])): VoidResult;
+
+	deleteItemAttributes(itemId: number): VoidResult;
 
 
 	relateItemsToCollection(collectionId: number, itemIds: number[]): CommandResultSingle;

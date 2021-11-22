@@ -78,7 +78,7 @@ export function mockExiftoolProcess(readMetadataResult: any) {
 	ExifHandler["createExiftoolProcess"] = jest.fn().mockReturnValue(
 		{
 			open: () => Promise.resolve(),
-			readMetadata: (path: any, options: any) => readMetadataResult,
+			readMetadata: (path: any, options: any) => ({data: [readMetadataResult]}),
 			writeMetadata: (path: string, replaceAll: boolean, data: any) => {throw "todo";},
 			close: () => Promise.resolve()
 		}

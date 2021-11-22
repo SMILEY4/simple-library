@@ -48,6 +48,9 @@ import {ActionDeleteItemAttribute} from "./service/item/actionDeleteItemAttribut
 import {AttributeMetadataProvider} from "./persistence/attributeMetadata";
 import {ActionEmbedItemAttributes} from "./service/item/actionEmbedItemAttributes";
 import {EmbedStatusDTO} from "../common/events/dtoModels";
+import {ActionReadItemAttributesFromFile} from "./service/item/actionReadItemAttributesFromFile";
+import {ActionReloadItemAttributes} from "./service/item/actionReloadItemAttributes";
+import {ActionSetItemAttributes} from "./service/item/actionSetItemAttributes";
 
 export class ActionHandler {
 
@@ -91,6 +94,7 @@ export class ActionHandler {
 		const actionGetGroupTree = new ActionGetGroupTree(actionGetAllGroups);
 		const actionRenameGroup = new ActionRenameGroup(dataRepository, actionGetGroupById);
 
+		const actionReadFileAttributes = new ActionReadItemAttributesFromFile(actionGetExiftoolInfo);
 		const actionDeleteItems = new ActionDeleteItems(dataRepository);
 		const actionGetItemById = new ActionGetItemById(dataRepository);
 		const actionGetItemAttributes = new ActionGetItemAttributes(dataRepository, actionGetItemById);
@@ -100,6 +104,13 @@ export class ActionHandler {
 		const actionDeleteItemAttribute = new ActionDeleteItemAttribute(dataRepository);
 		const actionEmbedItemAttributes = new ActionEmbedItemAttributes(
 			actionGetExiftoolInfo,
+			actionReadFileAttributes,
+			new ActionReloadItemAttributes(
+				actionGetItemById,
+				actionGetExiftoolInfo,
+				actionReadFileAttributes,
+				new ActionSetItemAttributes(dataRepository)
+			),
 			fsWrapper,
 			dataRepository,
 			(status: EmbedStatusDTO) => this.send(EventIds.EMBED_ITEM_ATTRIBUTES_STATUS, status)
@@ -121,7 +132,7 @@ export class ActionHandler {
 			new ImportStepThumbnail(),
 			new ImportStepRename(),
 			new ImportStepImportTarget(fsWrapper),
-			new ImportStepMetadata(actionGetExiftoolInfo),
+			new ImportStepMetadata(new ActionReadItemAttributesFromFile(actionGetExiftoolInfo)),
 			(status: any) => this.send(EventIds.IMPORT_STATUS, status)
 		);
 
