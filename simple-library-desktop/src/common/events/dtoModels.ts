@@ -1,5 +1,3 @@
-import {AttributeKey} from "../../worker/service/item/itemCommon";
-
 export interface ExiftoolInfoDTO {
 	location: string | null;
 	defined: boolean;
@@ -148,4 +146,9 @@ export interface EmbedStatusDTO {
 export interface EmbedReportDTO {
 	amountProcessedItems: number,
 	errors: ({ itemId: number, filepath: string, error: string })[]
+}
+
+export interface ApplicationConfigDTO {
+	exiftoolPath: string | null,
+	theme: "dark" | "light"
 }

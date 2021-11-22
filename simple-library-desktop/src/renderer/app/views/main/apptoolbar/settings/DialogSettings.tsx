@@ -2,10 +2,11 @@ import React from "react";
 import {Slot} from "../../../../../components/base/slot/Slot";
 import {Button} from "../../../../../components/buttons/button/Button";
 import {Card} from "../../../../../components/layout/card/Card";
-import {useDialogSettings} from "./useDialogSettings";
+import {SettingsDialogTab, useDialogSettings} from "./useDialogSettings";
 import {HBox, VBox} from "../../../../../components/layout/box/Box";
 import "./dialogSettings.css";
 import {Label} from "../../../../../components/base/label/Label";
+import {ApplicationSettings} from "./ApplicationSettings";
 
 interface DialogSettingsProps {
 	onClose: () => void,
@@ -14,9 +15,13 @@ interface DialogSettingsProps {
 export function DialogSettings(props: React.PropsWithChildren<DialogSettingsProps>): React.ReactElement {
 
 	const {
+		currentTab,
+		setCurrentTab,
 		handleCancel,
 		handleSave,
-		handleOpenConfigFile
+		handleOpenConfigFile,
+		appConfig,
+		setAppConfig
 	} = useDialogSettings(props.onClose);
 
 	return (
@@ -29,18 +34,25 @@ export function DialogSettings(props: React.PropsWithChildren<DialogSettingsProp
 		>
 			<Slot name={"body"}>
 				<HBox className="settings-body">
-					<VBox className="settings-nav">
-						<div>Entry 1</div>
-						<div>Entry 2</div>
-						<div>Entry 3</div>
+					<VBox className="settings-nav" alignMain="start">
+						<div onClick={() => setCurrentTab(SettingsDialogTab.APP)}>Application</div>
+						<div onClick={() => setCurrentTab(SettingsDialogTab.PLACEHOLDER)}>Placeholder</div>
 					</VBox>
 					<VBox className="settings-content">
-						Settings
+						{currentTab === SettingsDialogTab.APP && (
+							<ApplicationSettings
+								config={appConfig}
+								onSetConfig={setAppConfig}
+								openConfigFile={handleOpenConfigFile}
+							/>
+						)}
+						{currentTab === SettingsDialogTab.PLACEHOLDER && (
+							<Label>Placeholder</Label>
+						)}
 					</VBox>
 				</HBox>
 			</Slot>
 			<Slot name={"footer"}>
-				<Label underline clickable onClick={handleOpenConfigFile}>Open Config File</Label>
 				<Button onAction={handleCancel}>Cancel</Button>
 				<Button variant="info" onAction={handleSave}>OK</Button>
 			</Slot>

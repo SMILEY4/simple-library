@@ -1,6 +1,5 @@
 import * as React from "react";
 import {ReactElement, useState} from "react";
-import {Theme} from "../../app/Application";
 import "./showcase.css";
 import {ShowcaseSection} from "./ShowcaseSection";
 import {BaseElementRaised} from "../base/element/BaseElementRaised";
@@ -56,8 +55,8 @@ import {DateTimeInput} from "../input/datetime/DateTimeInput";
 import {ListInputCard} from "../input/list/ListInputCard";
 
 interface ComponentShowcaseProps {
-	theme: Theme,
-	onChangeTheme: (theme: Theme) => void
+	theme: "light" | "dark",
+	onChangeTheme: (theme: "light" | "dark") => void
 }
 
 const eventBroadcaster = new EventBroadcaster({
@@ -81,11 +80,11 @@ export function ComponentShowcase(props: React.PropsWithChildren<ComponentShowca
 
 			<div className={"showcase-header"}>
 				<div onClick={() => {
-					setTheme("dark").then(() => props.onChangeTheme(Theme.DARK));
+					setTheme("dark").then(() => props.onChangeTheme("dark"));
 				}}>Dark
 				</div>
 				<div onClick={() => {
-					setTheme("light").then(() => props.onChangeTheme(Theme.DARK));
+					setTheme("light").then(() => props.onChangeTheme("light"));
 				}}>Light
 				</div>
 				<div onClick={() => setBackground("0")}>BG-0</div>
