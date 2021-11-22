@@ -47,10 +47,12 @@ import {DataRepository} from "./service/dataRepository";
 import {ActionDeleteItemAttribute} from "./service/item/actionDeleteItemAttribute";
 import {AttributeMetadataProvider} from "./persistence/attributeMetadata";
 import {ActionEmbedItemAttributes} from "./service/item/actionEmbedItemAttributes";
-import {EmbedStatusDTO} from "../common/events/dtoModels";
+import {ApplicationConfigDTO, EmbedStatusDTO} from "../common/events/dtoModels";
 import {ActionReadItemAttributesFromFile} from "./service/item/actionReadItemAttributesFromFile";
 import {ActionReloadItemAttributes} from "./service/item/actionReloadItemAttributes";
 import {ActionSetItemAttributes} from "./service/item/actionSetItemAttributes";
+import {ActionGetAppConfig} from "./service/config/actionGetAppConfig";
+import {ActionSetAppConfig} from "./service/config/actionSetAppConfig";
 
 export class ActionHandler {
 
@@ -74,6 +76,8 @@ export class ActionHandler {
 		const actionGetTheme = new ActionGetTheme(configAccess);
 		const actionOpenConfig = new ActionOpenConfig(configAccess, fsWrapper);
 		const actionSetTheme = new ActionSetTheme(configAccess);
+		const actionGetAppConfig = new ActionGetAppConfig(actionGetExiftoolInfo, actionGetTheme);
+		const actionSetAppConfig = new ActionSetAppConfig(configAccess, actionSetTheme);
 
 		const actionGetAllCollections = new ActionGetAllCollections(dataRepository);
 		const actionGetCollectionById = new ActionGetCollectionById(dataRepository);
@@ -135,6 +139,9 @@ export class ActionHandler {
 			new ImportStepMetadata(new ActionReadItemAttributesFromFile(actionGetExiftoolInfo)),
 			(status: any) => this.send(EventIds.IMPORT_STATUS, status)
 		);
+
+		this.eventHandler.on(EventIds.GET_APP_CONFIG, () => actionGetAppConfig.perform());
+		this.eventHandler.on(EventIds.SET_APP_CONFIG, (config) => actionSetAppConfig.perform(config));
 
 		this.eventHandler.on(EventIds.OPEN_CONFIG, () => actionOpenConfig.perform());
 		this.eventHandler.on(EventIds.GET_EXIFTOOL_INFO, () => actionGetExiftoolInfo.perform());

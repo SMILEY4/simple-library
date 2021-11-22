@@ -1,6 +1,8 @@
 
 export module EventIds {
 
+    export const GET_APP_CONFIG = "config.get";
+    export const SET_APP_CONFIG = "config.set";
     export const OPEN_CONFIG = "config.open";
     export const GET_EXIFTOOL_INFO = "config.exiftool.get";
     export const GET_THEME = "config.theme.get";
@@ -35,6 +37,8 @@ export module EventIds {
     export const GET_LIBRARY_INFO = "library.metadata.get";
 
     export const ALL_IDS = [
+        GET_APP_CONFIG,
+        SET_APP_CONFIG,
         OPEN_CONFIG,
         GET_EXIFTOOL_INFO,
         GET_THEME,

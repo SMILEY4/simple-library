@@ -13,3 +13,8 @@ export interface LastOpenedEntry {
 	name: string,
 	path: string
 }
+
+export interface ApplicationConfig {
+	exiftoolPath: string | null,
+	theme: AppTheme
+}

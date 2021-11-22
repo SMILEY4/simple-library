@@ -15,7 +15,6 @@ export class ActionSetTheme {
 
 	public perform(theme: AppTheme): void {
 		this.configAccess.setValue(CFG_THEME, theme);
-
 	}
 
 }

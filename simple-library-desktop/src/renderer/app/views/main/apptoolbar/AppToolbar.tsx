@@ -19,7 +19,6 @@ export function AppToolbar(props: React.PropsWithChildren<AppToolbarProps>): Rea
 
 	const {
 		closeLibrary,
-		openConfigFile // todo
 	} = useAppToolbar(props.onClosedLibrary)
 
 	return (

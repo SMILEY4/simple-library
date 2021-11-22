@@ -1,6 +1,10 @@
 import {
-    AttributeDTO, AttributeKeyDTO, AttributeValueDTO,
-    CollectionTypeDTO, EmbedReportDTO, EmbedStatusDTO,
+    ApplicationConfigDTO,
+    AttributeDTO,
+    AttributeKeyDTO,
+    CollectionTypeDTO,
+    EmbedReportDTO,
+    EmbedStatusDTO,
     ExiftoolInfoDTO,
     GroupDTO,
     ImportProcessDataDTO,
@@ -18,7 +22,7 @@ const eventBroadcaster = new EventBroadcaster({
         partner: "main"
     },
     eventIdPrefix: "r",
-    suppressPayloadLog: [EventIds.GET_ITEMS_BY_COLLECTION, EventIds.GET_ITEM_BY_ID],
+    suppressPayloadLog: [EventIds.GET_ITEMS_BY_COLLECTION, EventIds.GET_ITEM_BY_ID]
 });
 
 const eventConsumer = new EventConsumer({
@@ -27,11 +31,11 @@ const eventConsumer = new EventConsumer({
         partner: "main"
     },
     eventIdPrefix: "r",
-    suppressPayloadLog: [EventIds.GET_ITEMS_BY_COLLECTION, EventIds.GET_ITEM_BY_ID],
+    suppressPayloadLog: [EventIds.GET_ITEMS_BY_COLLECTION, EventIds.GET_ITEM_BY_ID]
 });
 
 export function addImportStatusListener(listener: (status: ImportStatusDTO) => void): void {
-    eventConsumer.on<ImportStatusDTO, void>(EventIds.IMPORT_STATUS, listener)
+    eventConsumer.on<ImportStatusDTO, void>(EventIds.IMPORT_STATUS, listener);
 }
 
 export function removeImportStatusListener(): void {
@@ -43,7 +47,7 @@ export function fetchLastOpenedLibraries(): Promise<LastOpenedLibraryDTO[]> {
 }
 
 export function requestOpenLibrary(filepath: string): Promise<void> {
-    return eventBroadcaster.send(EventIds.OPEN_LIBRARY, filepath)
+    return eventBroadcaster.send(EventIds.OPEN_LIBRARY, filepath);
 }
 
 export function requestCreateLibrary(name: string, targetDir: string): Promise<void> {
@@ -95,7 +99,7 @@ export function setItemMetadata(itemId: number, entryKey: AttributeKeyDTO, value
 }
 
 export function deleteItemMetadata(itemId: number, entryKey: AttributeKeyDTO): Promise<AttributeDTO | null> {
-    return eventBroadcaster.send(EventIds.DELETE_ITEM_ATTRIBUTE, {itemId: itemId, entryKey: entryKey})
+    return eventBroadcaster.send(EventIds.DELETE_ITEM_ATTRIBUTE, {itemId: itemId, entryKey: entryKey});
 }
 
 export function requestImport(
@@ -168,6 +172,14 @@ export function requestOpenItemsExternal(itemIds: number[]): Promise<void> {
 
 export function requestOpenConfigFile(): Promise<void> {
     return eventBroadcaster.send(EventIds.OPEN_CONFIG);
+}
+
+export function fetchApplicationConfig(): Promise<ApplicationConfigDTO> {
+    return eventBroadcaster.send(EventIds.GET_APP_CONFIG);
+}
+
+export function requestUpdateApplicationConfig(config: ApplicationConfigDTO): Promise<any> {
+    return eventBroadcaster.send(EventIds.SET_APP_CONFIG, config);
 }
 
 export function fetchExiftoolData(): Promise<[string | null, boolean]> {

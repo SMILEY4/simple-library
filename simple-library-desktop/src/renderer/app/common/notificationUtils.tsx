@@ -281,6 +281,27 @@ export function toNotificationEntry(notificationData: AppNotification, onClose: 
                 onClose: () => onClose()
             };
         }
+
+        case AppNotificationType.APP_CONFIG_FETCH_FAILED: {
+            return {
+                id: notificationData.id,
+                type: "error",
+                title: "Failed to fetch application config",
+                content: errorToString(notificationData.data),
+                closable: true,
+                onClose: () => onClose()
+            };
+        }
+        case AppNotificationType.APP_CONFIG_UPDATE_FAILED: {
+            return {
+                id: notificationData.id,
+                type: "error",
+                title: "Failed to update application config",
+                content: errorToString(notificationData.data),
+                closable: true,
+                onClose: () => onClose()
+            };
+        }
     }
 }
 
