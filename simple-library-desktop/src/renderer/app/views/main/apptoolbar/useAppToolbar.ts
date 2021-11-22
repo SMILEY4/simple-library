@@ -1,15 +1,12 @@
 import {useCloseLibrary} from "../../../hooks/core/libraryClose";
-import {useOpenConfigFile} from "../../../hooks/core/configFileOpen";
 
 
 export function useAppToolbar(closeLibraryCallback: () => void) {
 
-	const closeLibrary = useCloseLibrary(closeLibraryCallback)
-	const openConfigFile = useOpenConfigFile();
+	const closeLibrary = useCloseLibrary(closeLibraryCallback);
 
 	return {
-		closeLibrary: closeLibrary,
-		openConfigFile: openConfigFile
-	}
+		closeLibrary: closeLibrary
+	};
 
 }
