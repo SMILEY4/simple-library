@@ -1,7 +1,7 @@
 import {ImportDataValidator} from "./importDataValidator";
 import {ImportStepFileHash} from "./importStepFileHash";
 import {ImportStepThumbnail} from "./importStepThumbnail";
-import {ImportStepRename} from "./importStepRename";
+import {ImportStepTargetFilepath} from "./importStepTargetFilepath";
 import {ImportStepImportTarget} from "./importStepImportTarget";
 import {ImportStepMetadata} from "./importStepMetadata";
 import {Attribute} from "../item/itemCommon";
@@ -67,7 +67,7 @@ export class ImportService {
 	private readonly validator: ImportDataValidator;
 	private readonly importStepFileHash: ImportStepFileHash;
 	private readonly importStepThumbnail: ImportStepThumbnail;
-	private readonly importStepRename: ImportStepRename;
+	private readonly importStepTargetFilepath: ImportStepTargetFilepath;
 	private readonly importStepImportTarget: ImportStepImportTarget;
 	private readonly importStepMetadata: ImportStepMetadata;
 	private readonly importStatusSender: ImportStatusSender;
@@ -83,7 +83,7 @@ export class ImportService {
 		validator: ImportDataValidator,
 		importStepFileHash: ImportStepFileHash,
 		importStepThumbnail: ImportStepThumbnail,
-		importStepRename: ImportStepRename,
+		importStepTargetFilepath: ImportStepTargetFilepath,
 		importStepImportTarget: ImportStepImportTarget,
 		importStepMetadata: ImportStepMetadata,
 		importStatusSender: ImportStatusSender
@@ -92,7 +92,7 @@ export class ImportService {
 		this.validator = validator;
 		this.importStepFileHash = importStepFileHash;
 		this.importStepThumbnail = importStepThumbnail;
-		this.importStepRename = importStepRename;
+		this.importStepTargetFilepath = importStepTargetFilepath;
 		this.importStepImportTarget = importStepImportTarget;
 		this.importStepMetadata = importStepMetadata;
 		this.importStatusSender = importStatusSender;
@@ -158,7 +158,7 @@ export class ImportService {
 		return Promise.resolve()
 			.then(() => console.log("importing file: " + file))
 			.then(() => this.buildBaseItemData(file))
-			.then((item: ItemData) => this.importStepRename.handle(item, data.importTarget, data.renameInstructions, importIndex))
+			.then((item: ItemData) => this.importStepTargetFilepath.handle(item, data.importTarget, data.renameInstructions, importIndex))
 			.then((item: ItemData) => this.importStepImportTarget.handle(item, data.importTarget.action))
 			.then((item: ItemData) => this.importStepFileHash.handle(item))
 			.then((item: ItemData) => this.importStepThumbnail.handle(item))

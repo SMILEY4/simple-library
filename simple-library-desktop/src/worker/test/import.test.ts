@@ -5,7 +5,7 @@ import {DbAccess} from "../persistence/dbAcces";
 import {ImportDataValidator} from "../service/import/importDataValidator";
 import {ImportStepFileHash} from "../service/import/importStepFileHash";
 import {ImportStepThumbnail} from "../service/import/importStepThumbnail";
-import {ImportStepRename} from "../service/import/importStepRename";
+import {ImportStepTargetFilepath} from "../service/import/importStepTargetFilepath";
 import {ImportStepImportTarget} from "../service/import/importStepImportTarget";
 import {ImportStepMetadata} from "../service/import/importStepMetadata";
 import {jest} from "@jest/globals";
@@ -946,7 +946,7 @@ function mockImportService(): [ImportService, ActionCreateLibrary, FileSystemWra
 		new ImportDataValidator(fsWrapper),
 		stepHash,
 		stepThumbnail,
-		new ImportStepRename(),
+		new ImportStepTargetFilepath(),
 		new ImportStepImportTarget(fsWrapper),
 		new ImportStepMetadata(new ActionReadItemAttributesFromFile(new ActionGetExiftoolInfo(configAccess))),
 		() => Promise.resolve()

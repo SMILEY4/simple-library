@@ -37,7 +37,7 @@ import {ImportService} from "./service/import/importService";
 import {ImportDataValidator} from "./service/import/importDataValidator";
 import {ImportStepFileHash} from "./service/import/importStepFileHash";
 import {ImportStepThumbnail} from "./service/import/importStepThumbnail";
-import {ImportStepRename} from "./service/import/importStepRename";
+import {ImportStepTargetFilepath} from "./service/import/importStepTargetFilepath";
 import {ImportStepImportTarget} from "./service/import/importStepImportTarget";
 import {ImportStepMetadata} from "./service/import/importStepMetadata";
 import {voidThen} from "../common/utils";
@@ -130,7 +130,7 @@ export class ActionHandler {
 			new ImportDataValidator(fsWrapper),
 			new ImportStepFileHash(fsWrapper),
 			new ImportStepThumbnail(),
-			new ImportStepRename(),
+			new ImportStepTargetFilepath(),
 			new ImportStepImportTarget(fsWrapper),
 			new ImportStepMetadata(new ActionReadItemAttributesFromFile(actionGetExiftoolInfo)),
 			(status: any) => this.send(EventIds.IMPORT_STATUS, status)

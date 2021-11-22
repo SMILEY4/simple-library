@@ -1,7 +1,7 @@
 import path from "path";
 import {BulkRenameInstruction, ImportFileTarget, ImportTargetAction, ItemData, RenamePart} from "./importService";
 
-export class ImportStepRename {
+export class ImportStepTargetFilepath {
 
     /**
      * Calculates the target filepath with the new filename
@@ -39,7 +39,7 @@ export class ImportStepRename {
             const extension = path.extname(filename);
             const pureFilename = path.basename(filename, extension);
             const nextFilename = renameInstruction.parts
-                .map(part => ImportStepRename.getFilenamePart(part, pureFilename, counter))
+                .map(part => ImportStepTargetFilepath.getFilenamePart(part, pureFilename, counter))
                 .join("");
             return nextFilename + extension;
         } else {
