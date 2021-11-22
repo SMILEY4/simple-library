@@ -11,7 +11,7 @@ export class ImportStepMetadata {
 	}
 
 	public handle(itemData: ItemData): Promise<ItemData> {
-		return this.actionReadAttributes.perform(itemData.sourceFilepath)
+		return this.actionReadAttributes.perform(itemData.filepath)
 			.then((entries: Attribute[]) => itemData.attributes = entries)
 			.then(() => itemData)
 	}
