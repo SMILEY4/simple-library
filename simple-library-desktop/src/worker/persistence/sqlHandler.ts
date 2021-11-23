@@ -49,6 +49,8 @@ import sqlUpdateItemAttributeModifiedFlagsByItemIds
 import sqlUpdateItemAttributeModifiedFlagsAll
 	from "./sqlscripts/item_attributes/update_item_attributes_modified_all.sql";
 import sqlDeleteItemAttributesByItemId from "./sqlscripts/item_attributes/delete_item_attributes.sql";
+import sqlQueryItemAttributeMetaAll from "./sqlscripts/item_attributes/query_item_attribute_meta_all.sql";
+import sqlQueryItemAttributeMetaFiltered from "./sqlscripts/item_attributes/query_item_attribute_meta_filtered.sql";
 
 export module SQL {
 
@@ -243,6 +245,15 @@ export module SQL {
 			.replace(v("keys"), attribKeyList(keys));
 	}
 
+	export function queryAttributeMetaAll(filter: string | null): string {
+		if (filter && filter.trim().length > 0) {
+			return sql(sqlQueryItemAttributeMetaFiltered)
+				.replace(v("filter"), raw(filter));
+		} else {
+			return sql(sqlQueryItemAttributeMetaAll);
+		}
+	}
+
 	export function queryItemAttributes(itemId: number): string {
 		return sql(sqlQueryItemAttributes)
 			.replace(v("itemId"), num(itemId));
@@ -357,6 +368,12 @@ function vNull() {
 
 function isNull(): string {
 	return "IS NULL";
+}
+
+function raw(value: any): string {
+	return value === null || value === undefined
+		? "null"
+		: ("" + value).replace(/'/g, "''");
 }
 
 function str(value: any): string {

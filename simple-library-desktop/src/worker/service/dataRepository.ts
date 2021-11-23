@@ -42,6 +42,8 @@ export interface DataRepository {
 
 	queryAttributeMeta(attributeKeys: ([string, string, string, string, string])[]): QueryResultMany;
 
+	queryAttributeMetaAll(filter: string | null): QueryResultMany;
+
 	getAllExtendedItemAttributes(onlyModified: boolean): QueryResultMany;
 
 	getExtendedItemAttributesByItemIds(itemIds: number[], onlyModified: boolean): QueryResultMany;

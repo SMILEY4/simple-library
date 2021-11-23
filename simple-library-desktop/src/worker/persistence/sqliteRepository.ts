@@ -95,6 +95,10 @@ export class SQLiteDataRepository implements DataRepository {
         return this.dbAccess.queryAll(SQL.queryAttributeMeta(attributeKeys));
     }
 
+    queryAttributeMetaAll(filter: string | null): QueryResultMany {
+        return this.dbAccess.queryAll(SQL.queryAttributeMetaAll(filter));
+    }
+
     getAllExtendedItemAttributes(onlyModified: boolean): QueryResultMany {
         return this.dbAccess.queryAll(SQL.queryExtendedItemAttributesAll(onlyModified));
     }

@@ -1,8 +1,9 @@
-import React, {ReactElement, useState} from "react";
-import {useAppTheme} from "./hooks/store/appStore";
+import React, {ReactElement, useEffect, useState} from "react";
+import {useAppTheme, useDispatchSetTheme} from "./hooks/store/appStore";
 import {WelcomeView} from "./views/welcome/WelcomeView";
 import {AppDialogFrame} from "./views/AppDialogFrame";
 import {MainView} from "./views/main/MainView";
+import {getTheme} from "./common/eventInterface";
 
 export enum View {
 	WELCOME = "welcome",
@@ -14,7 +15,12 @@ export const APP_ROOT_ID = "root";
 export function Application(): React.ReactElement {
 
 	const [view, setView] = useState(View.WELCOME);
+
 	const theme = useAppTheme();
+	const setTheme = useDispatchSetTheme();
+	useEffect(() => {
+		getTheme().then(setTheme)
+	}, []);
 
 
 	switch (view) {

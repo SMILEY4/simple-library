@@ -1,7 +1,7 @@
 import {
     ApplicationConfigDTO,
     AttributeDTO,
-    AttributeKeyDTO,
+    AttributeKeyDTO, AttributeMetaDTO,
     CollectionTypeDTO,
     EmbedReportDTO,
     EmbedStatusDTO,
@@ -208,4 +208,8 @@ export function addEmbedStatusListener(listener: (status: EmbedStatusDTO) => voi
 
 export function removeEmbedStatusListener(): void {
     eventConsumer.clear(EventIds.EMBED_ITEM_ATTRIBUTES_STATUS);
+}
+
+export function fetchAllAttributeMeta(filter: string | null): Promise<AttributeMetaDTO[]> {
+    return eventBroadcaster.send(EventIds.GET_LIBRARY_ATTRIBUTE_META_ALL, filter);
 }

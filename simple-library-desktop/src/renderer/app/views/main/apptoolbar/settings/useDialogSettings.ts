@@ -5,7 +5,7 @@ import {ApplicationConfigDTO} from "../../../../../../common/events/dtoModels";
 
 export enum SettingsDialogTab {
 	APP,
-	PLACEHOLDER,
+	ATTRIBUTES,
 }
 
 export function useDialogSettings(onClose: () => void) {

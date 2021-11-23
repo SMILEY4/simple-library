@@ -47,12 +47,13 @@ import {DataRepository} from "./service/dataRepository";
 import {ActionDeleteItemAttribute} from "./service/item/actionDeleteItemAttribute";
 import {AttributeMetadataProvider} from "./persistence/attributeMetadata";
 import {ActionEmbedItemAttributes} from "./service/item/actionEmbedItemAttributes";
-import {ApplicationConfigDTO, EmbedStatusDTO} from "../common/events/dtoModels";
+import {EmbedStatusDTO} from "../common/events/dtoModels";
 import {ActionReadItemAttributesFromFile} from "./service/item/actionReadItemAttributesFromFile";
 import {ActionReloadItemAttributes} from "./service/item/actionReloadItemAttributes";
 import {ActionSetItemAttributes} from "./service/item/actionSetItemAttributes";
 import {ActionGetAppConfig} from "./service/config/actionGetAppConfig";
 import {ActionSetAppConfig} from "./service/config/actionSetAppConfig";
+import {ActionGetLibraryAttributeMeta} from "./service/library/actionGetLibraryAttributeMeta";
 
 export class ActionHandler {
 
@@ -128,6 +129,7 @@ export class ActionHandler {
 		);
 		const actionGetLibraryInfo = new ActionGetLibraryInfo(dataRepository);
 		const actionOpenLibrary = new ActionOpenLibrary(dataRepository, fsWrapper, actionGetLibraryInfo);
+		const actionGetLibraryAttributeMetaAll = new ActionGetLibraryAttributeMeta(dataRepository);
 
 		const importService: ImportService = new ImportService(
 			dataRepository,
@@ -159,6 +161,7 @@ export class ActionHandler {
 		});
 		this.eventHandler.on(EventIds.CLOSE_LIBRARY, () => actionCloseLibrary.perform());
 		this.eventHandler.on(EventIds.GET_LIBRARY_INFO, () => actionGetLibraryInfo.perform());
+		this.eventHandler.on(EventIds.GET_LIBRARY_ATTRIBUTE_META_ALL, (filter) => actionGetLibraryAttributeMetaAll.perform(filter));
 
 		this.eventHandler.on(EventIds.GET_GROUP_TREE, (payload) => actionGetGroupTree.perform(payload.includeCollections, payload.includeItemCount));
 		this.eventHandler.on(EventIds.CREATE_GROUP, (payload) => actionCreateGroup.perform(payload.name, payload.parentGroupId));

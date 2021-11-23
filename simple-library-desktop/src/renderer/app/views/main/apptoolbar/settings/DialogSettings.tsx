@@ -5,8 +5,8 @@ import {Card} from "../../../../../components/layout/card/Card";
 import {SettingsDialogTab, useDialogSettings} from "./useDialogSettings";
 import {HBox, VBox} from "../../../../../components/layout/box/Box";
 import "./dialogSettings.css";
-import {Label} from "../../../../../components/base/label/Label";
 import {ApplicationSettings} from "./ApplicationSettings";
+import {AttributeSettings} from "./AttributeSettings";
 
 interface DialogSettingsProps {
 	onClose: () => void,
@@ -30,13 +30,14 @@ export function DialogSettings(props: React.PropsWithChildren<DialogSettingsProp
 			onClose={handleCancel}
 			closable
 			noBodyPadding
+			fitHeight
 			className="settings-card"
 		>
 			<Slot name={"body"}>
 				<HBox className="settings-body">
-					<VBox className="settings-nav" alignMain="start">
+					<VBox className="settings-nav" alignMain="start" alignCross="stretch">
 						<div onClick={() => setCurrentTab(SettingsDialogTab.APP)}>Application</div>
-						<div onClick={() => setCurrentTab(SettingsDialogTab.PLACEHOLDER)}>Placeholder</div>
+						<div onClick={() => setCurrentTab(SettingsDialogTab.ATTRIBUTES)}>Metadata</div>
 					</VBox>
 					<VBox className="settings-content">
 						{currentTab === SettingsDialogTab.APP && (
@@ -46,8 +47,8 @@ export function DialogSettings(props: React.PropsWithChildren<DialogSettingsProp
 								openConfigFile={handleOpenConfigFile}
 							/>
 						)}
-						{currentTab === SettingsDialogTab.PLACEHOLDER && (
-							<Label>Placeholder</Label>
+						{currentTab === SettingsDialogTab.ATTRIBUTES && (
+							<AttributeSettings/>
 						)}
 					</VBox>
 				</HBox>
