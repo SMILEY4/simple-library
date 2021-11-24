@@ -1,7 +1,8 @@
 import {
     ApplicationConfigDTO,
     AttributeDTO,
-    AttributeKeyDTO, AttributeMetaDTO,
+    AttributeKeyDTO,
+    AttributeMetaDTO,
     CollectionTypeDTO,
     EmbedReportDTO,
     EmbedStatusDTO,
@@ -212,4 +213,15 @@ export function removeEmbedStatusListener(): void {
 
 export function fetchAllAttributeMeta(filter: string | null): Promise<AttributeMetaDTO[]> {
     return eventBroadcaster.send(EventIds.GET_LIBRARY_ATTRIBUTE_META_ALL, filter);
+}
+
+export function fetchHiddenAttributes(): Promise<AttributeKeyDTO[]> {
+    return eventBroadcaster.send(EventIds.GET_HIDDEN_ATTRIBUTES);
+}
+
+export function requestSetHiddenAttributes(attributes: AttributeKeyDTO[], mode: "hide" | "show"): Promise<void> {
+    return eventBroadcaster.send(EventIds.SET_HIDDEN_ATTRIBUTES, {
+        attributes: attributes,
+        mode: mode
+    });
 }

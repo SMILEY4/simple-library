@@ -29,6 +29,16 @@ CREATE TABLE attribute_meta
 	PRIMARY KEY (id, name, g0, g1, g2)
 );
 
+CREATE TABLE hidden_attributes
+(
+	id       TEXT    NOT NULL,
+	name     TEXT    NOT NULL,
+	g0       TEXT    NOT NULL,
+	g1       TEXT    NOT NULL,
+	g2       TEXT    NOT NULL,
+	PRIMARY KEY (id, name, g0, g1, g2)
+);
+
 CREATE TABLE item_attributes
 (
 	id       TEXT    NOT NULL,

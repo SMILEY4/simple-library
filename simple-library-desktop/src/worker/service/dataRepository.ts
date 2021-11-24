@@ -1,3 +1,5 @@
+import {SQL} from "../persistence/sqlHandler";
+
 export type QueryResultMany = Promise<any[]>
 export type QueryResultSingle = Promise<any | null>
 export type CommandResultMany = Promise<(number | null)[]>
@@ -43,6 +45,12 @@ export interface DataRepository {
 	queryAttributeMeta(attributeKeys: ([string, string, string, string, string])[]): QueryResultMany;
 
 	queryAttributeMetaAll(filter: string | null): QueryResultMany;
+
+	getHiddenAttributes(): QueryResultMany;
+
+	insertHiddenAttributes(entries: {id: string, name: string, g0: string | undefined, g1: string | undefined, g2: string | undefined}[]): VoidResult;
+
+	deleteHiddenAttribute(id: string, name: string, g0: string | undefined, g1: string | undefined, g2: string | undefined): VoidResult;
 
 	getAllExtendedItemAttributes(onlyModified: boolean): QueryResultMany;
 

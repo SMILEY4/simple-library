@@ -21,7 +21,10 @@ export function DialogSettings(props: React.PropsWithChildren<DialogSettingsProp
 		handleSave,
 		handleOpenConfigFile,
 		appConfig,
-		setAppConfig
+		setAppConfig,
+		hiddenAttributes,
+		hideAttribute,
+		showAttribute
 	} = useDialogSettings(props.onClose);
 
 	return (
@@ -48,14 +51,18 @@ export function DialogSettings(props: React.PropsWithChildren<DialogSettingsProp
 							/>
 						)}
 						{currentTab === SettingsDialogTab.ATTRIBUTES && (
-							<AttributeSettings/>
+							<AttributeSettings
+								hiddenAttributes={hiddenAttributes}
+								hideAttribute={hideAttribute}
+								showAttribute={showAttribute}
+							/>
 						)}
 					</VBox>
 				</HBox>
 			</Slot>
 			<Slot name={"footer"}>
 				<Button onAction={handleCancel}>Cancel</Button>
-				<Button variant="info" onAction={handleSave}>OK</Button>
+				<Button variant="info" onAction={handleSave}>Accept</Button>
 			</Slot>
 		</Card>
 	);

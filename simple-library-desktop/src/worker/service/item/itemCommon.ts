@@ -171,6 +171,21 @@ export function rowToAttributeMeta(row: any): AttributeMetadata {
 	};
 }
 
+export function rowsToAttributeKeys(rows: any[]): AttributeKey[] {
+	return rows.map(row => rowToAttributeKey(row));
+}
+
+
+export function rowToAttributeKey(row: any): AttributeKey {
+	return {
+		id: row.id,
+		name: row.name,
+		g0: row.g0,
+		g1: row.g1,
+		g2: row.g2
+	};
+}
+
 export function estimateSimpleTypeFromAttributeValue(value: string): string {
 	if (value === null || value === undefined || value.trim().length === 0) {
 		return "_unknown";
@@ -189,6 +204,5 @@ export function estimateSimpleTypeFromAttributeValue(value: string): string {
 	}
 
 	return "_text";
-
 }
 

@@ -51,6 +51,10 @@ import sqlUpdateItemAttributeModifiedFlagsAll
 import sqlDeleteItemAttributesByItemId from "./sqlscripts/item_attributes/delete_item_attributes.sql";
 import sqlQueryItemAttributeMetaAll from "./sqlscripts/item_attributes/query_item_attribute_meta_all.sql";
 import sqlQueryItemAttributeMetaFiltered from "./sqlscripts/item_attributes/query_item_attribute_meta_filtered.sql";
+import sqlQueryHiddenAttributes from "./sqlscripts/item_attributes/query_hidden_attributes_all.sql";
+import sqlInsertHiddenAttributes from "./sqlscripts/item_attributes/insert_hidden_attributes.sql";
+import sqlDeleteHiddenAttribute from "./sqlscripts/item_attributes/delete_hidden_attribute.sql";
+
 
 export module SQL {
 
@@ -252,6 +256,25 @@ export module SQL {
 		} else {
 			return sql(sqlQueryItemAttributeMetaAll);
 		}
+	}
+
+	export function queryHiddenAttributes(): string {
+		return sql(sqlQueryHiddenAttributes);
+	}
+
+	export function insertHiddenAttributes(attributes: { id: string, name: string, g0: string | undefined, g1: string | undefined, g2: string | undefined }[]): string {
+		const entries: string[] = attributes.map(att => `(${str(att.id)}, ${str(att.name)}, ${str(att.g0)}, ${str(att.g1)}, ${str(att.g2)})`);
+		return sql(sqlInsertHiddenAttributes)
+			.replace(v("entries"), entries.join(", "));
+	}
+
+	export function deleteHiddenAttributes(id: string, name: string, g0: string | undefined, g1: string | undefined, g2: string | undefined): string {
+		return sql(sqlDeleteHiddenAttribute)
+			.replace(v("id"), str(id))
+			.replace(v("name"), str(name))
+			.replace(v("g0"), str(g0))
+			.replace(v("g1"), str(g1))
+			.replace(v("g2"), str(g2));
 	}
 
 	export function queryItemAttributes(itemId: number): string {

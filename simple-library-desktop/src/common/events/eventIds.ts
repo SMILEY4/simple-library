@@ -35,6 +35,9 @@ export module EventIds {
 	export const CLOSE_LIBRARY = "library.close";
 	export const GET_LIBRARY_INFO = "library.metadata.get";
 	export const GET_LIBRARY_ATTRIBUTE_META_ALL = "library.attribute_meta.all";
+	export const SET_HIDDEN_ATTRIBUTES = "library.hidden_attributes.set";
+	export const GET_HIDDEN_ATTRIBUTES = "library.hidden_attributes.get";
+
 
 	export const ALL_IDS = [
 		GET_APP_CONFIG,
@@ -71,7 +74,9 @@ export module EventIds {
 		GET_LIBRARY_INFO,
 		EMBED_ITEM_ATTRIBUTES,
 		EMBED_ITEM_ATTRIBUTES_STATUS,
-        GET_LIBRARY_ATTRIBUTE_META_ALL
+        GET_LIBRARY_ATTRIBUTE_META_ALL,
+		SET_HIDDEN_ATTRIBUTES,
+		GET_HIDDEN_ATTRIBUTES
 	];
 
 }

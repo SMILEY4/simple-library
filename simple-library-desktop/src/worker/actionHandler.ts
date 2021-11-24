@@ -54,6 +54,8 @@ import {ActionSetItemAttributes} from "./service/item/actionSetItemAttributes";
 import {ActionGetAppConfig} from "./service/config/actionGetAppConfig";
 import {ActionSetAppConfig} from "./service/config/actionSetAppConfig";
 import {ActionGetLibraryAttributeMeta} from "./service/library/actionGetLibraryAttributeMeta";
+import {ActionSetHiddenAttributes} from "./service/library/actionSetHiddenAttributes";
+import {ActionGetHiddenAttributes} from "./service/library/actionGetHiddenAttributes";
 
 export class ActionHandler {
 
@@ -130,6 +132,8 @@ export class ActionHandler {
 		const actionGetLibraryInfo = new ActionGetLibraryInfo(dataRepository);
 		const actionOpenLibrary = new ActionOpenLibrary(dataRepository, fsWrapper, actionGetLibraryInfo);
 		const actionGetLibraryAttributeMetaAll = new ActionGetLibraryAttributeMeta(dataRepository);
+		const actionSetHiddenAttributes = new ActionSetHiddenAttributes(dataRepository);
+		const actionGetHiddenAttributes = new ActionGetHiddenAttributes(dataRepository);
 
 		const importService: ImportService = new ImportService(
 			dataRepository,
@@ -162,6 +166,8 @@ export class ActionHandler {
 		this.eventHandler.on(EventIds.CLOSE_LIBRARY, () => actionCloseLibrary.perform());
 		this.eventHandler.on(EventIds.GET_LIBRARY_INFO, () => actionGetLibraryInfo.perform());
 		this.eventHandler.on(EventIds.GET_LIBRARY_ATTRIBUTE_META_ALL, (filter) => actionGetLibraryAttributeMetaAll.perform(filter));
+		this.eventHandler.on(EventIds.SET_HIDDEN_ATTRIBUTES, (payload) => actionSetHiddenAttributes.perform(payload.attributes, payload.mode));
+		this.eventHandler.on(EventIds.GET_HIDDEN_ATTRIBUTES, () => actionGetHiddenAttributes.perform());
 
 		this.eventHandler.on(EventIds.GET_GROUP_TREE, (payload) => actionGetGroupTree.perform(payload.includeCollections, payload.includeItemCount));
 		this.eventHandler.on(EventIds.CREATE_GROUP, (payload) => actionCreateGroup.perform(payload.name, payload.parentGroupId));

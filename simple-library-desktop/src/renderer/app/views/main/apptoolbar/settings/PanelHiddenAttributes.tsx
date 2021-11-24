@@ -5,13 +5,14 @@ import {IconButton} from "../../../../../components/buttons/iconbutton/IconButto
 import {IconType} from "../../../../../components/base/icon/Icon";
 import "./panelHiddenAttributes.css";
 import {fetchAllAttributeMeta} from "../../../../common/eventInterface";
-import {AttributeMetaDTO} from "../../../../../../common/events/dtoModels";
+import {AttributeKeyDTO, AttributeMetaDTO} from "../../../../../../common/events/dtoModels";
 import {TextField} from "../../../../../components/input/textfield/TextField";
 
 
 interface PanelHiddenAttributes {
-	hiddenAttributes: AttributeMetaDTO[],
-	onSetHiddenAttributes: (attribs: AttributeMetaDTO[]) => void
+	hiddenAttributes: AttributeKeyDTO[],
+	hideAttribute: (attribute: AttributeKeyDTO) => void,
+	showAttribute: (attribute: AttributeKeyDTO) => void
 }
 
 export function PanelHiddenAttributes(props: React.PropsWithChildren<PanelHiddenAttributes>): React.ReactElement {
@@ -81,21 +82,11 @@ export function PanelHiddenAttributes(props: React.PropsWithChildren<PanelHidden
 	);
 
 	function hideField(attrib: AttributeMetaDTO) {
-		const next = props.hiddenAttributes.filter(e => !areEqual(e, attrib));
-		if (next.length === props.hiddenAttributes.length) {
-			props.onSetHiddenAttributes([...next, attrib].sort((a, b) => a.name.localeCompare(b.name)));
-		}
+		props.hideAttribute(attrib);
 	}
 
 	function showField(attrib: AttributeMetaDTO) {
-		const next = props.hiddenAttributes.filter(e => !areEqual(e, attrib));
-		if (next.length !== props.hiddenAttributes.length) {
-			props.onSetHiddenAttributes(next);
-		}
-	}
-
-	function areEqual(a: AttributeMetaDTO, b: AttributeMetaDTO): boolean {
-		return (a.id === b.id) && (a.g0 === b.g0) && (a.g1 === b.g1) && (a.g2 === b.g2) && (a.name === b.name);
+		props.showAttribute(attrib);
 	}
 
 }

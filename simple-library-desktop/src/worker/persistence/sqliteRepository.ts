@@ -99,6 +99,20 @@ export class SQLiteDataRepository implements DataRepository {
         return this.dbAccess.queryAll(SQL.queryAttributeMetaAll(filter));
     }
 
+    getHiddenAttributes(): QueryResultMany {
+        return this.dbAccess.queryAll(SQL.queryHiddenAttributes());
+    }
+
+    insertHiddenAttributes(entries: { id: string, name: string, g0: string | undefined, g1: string | undefined, g2: string | undefined }[]): VoidResult {
+        return this.dbAccess.run(SQL.insertHiddenAttributes(entries))
+            .then(voidThen);
+    }
+
+    deleteHiddenAttribute(id: string, name: string, g0: string | undefined, g1: string | undefined, g2: string | undefined): VoidResult {
+        return this.dbAccess.run(SQL.deleteHiddenAttributes(id, name, g0, g1, g2))
+            .then(voidThen);
+    }
+
     getAllExtendedItemAttributes(onlyModified: boolean): QueryResultMany {
         return this.dbAccess.queryAll(SQL.queryExtendedItemAttributesAll(onlyModified));
     }
