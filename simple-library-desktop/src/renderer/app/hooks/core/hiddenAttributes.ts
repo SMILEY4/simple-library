@@ -1,10 +1,14 @@
-import {fetchHiddenAttributes, requestSetHiddenAttributes} from "../../common/eventInterface";
-import {AttributeKeyDTO} from "../../../../common/events/dtoModels";
+import {fetchHiddenAttributes, fetchItems, requestSetHiddenAttributes} from "../../common/eventInterface";
+import {AttributeKeyDTO, ItemDTO} from "../../../../common/events/dtoModels";
 import {useEffect, useState} from "react";
 import {voidThen} from "../../../../common/utils";
 import {useDispatchRemoveAttribute} from "../store/attributeStore";
 import {useSelectedItemIds} from "../store/itemSelectionState";
 import {useLoadAttributes} from "./attributesLoad";
+import {useOpenCollection} from "./collectionOpen";
+import {TEMP_ATTRIBUTE_KEYS} from "./temp";
+import {useDispatchSetItems} from "../store/itemsState";
+import {useActiveCollection} from "../store/collectionActiveState";
 
 
 export function useHideAttributes() {
@@ -12,7 +16,8 @@ export function useHideAttributes() {
 	const dispatchRemoveAttribute = useDispatchRemoveAttribute();
 	const selectedItemIds = useSelectedItemIds();
 	const loadAttributes = useLoadAttributes();
-
+	const dispatchSetItems = useDispatchSetItems();
+	const activeCollection = useActiveCollection();
 
 	function get(): Promise<AttributeKeyDTO[]> {
 		return fetchHiddenAttributes();
@@ -25,12 +30,22 @@ export function useHideAttributes() {
 					? loadAttributes(selectedItemIds[0])
 					: loadAttributes(null);
 			})
+			.then(() => {
+				//todo: only if any attribute is displayed in list
+				return fetchItems(activeCollection, TEMP_ATTRIBUTE_KEYS, true, false)
+					.then((items: ItemDTO[]) => dispatchSetItems(items));
+			})
 			.then(voidThen);
 	}
 
 	function hide(attributes: AttributeKeyDTO[]): Promise<void> {
 		return setHiddenStatus(attributes, "hide")
 			.then(() => attributes.forEach(dispatchRemoveAttribute))
+			.then(() => {
+				//todo: only if any attribute is displayed in list
+				return fetchItems(activeCollection, TEMP_ATTRIBUTE_KEYS, true, false)
+					.then((items: ItemDTO[]) => dispatchSetItems(items));
+			})
 			.then(voidThen);
 	}
 

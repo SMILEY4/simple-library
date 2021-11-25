@@ -26,7 +26,7 @@ export function useOpenCollection() {
 	}
 
 	function loadItemState(collectionId: number) {
-		fetchItems(collectionId, itemAttributeKeys, true)
+		fetchItems(collectionId, itemAttributeKeys, true, false)
 			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_FETCH_FAILED, error))
 			.then((items: ItemDTO[]) => dispatchSetItems(items));
 	}

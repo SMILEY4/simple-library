@@ -101,11 +101,14 @@ export class ActionHandler {
 		const actionGetGroupTree = new ActionGetGroupTree(actionGetAllGroups);
 		const actionRenameGroup = new ActionRenameGroup(dataRepository, actionGetGroupById);
 
+		const actionSetHiddenAttributes = new ActionSetHiddenAttributes(dataRepository);
+		const actionGetHiddenAttributes = new ActionGetHiddenAttributes(dataRepository);
+
 		const actionReadFileAttributes = new ActionReadItemAttributesFromFile(actionGetExiftoolInfo);
 		const actionDeleteItems = new ActionDeleteItems(dataRepository);
 		const actionGetItemById = new ActionGetItemById(dataRepository);
 		const actionGetItemAttributes = new ActionGetItemAttributes(dataRepository, actionGetItemById);
-		const actionGetItemsByCollection = new ActionGetItemsByCollection(dataRepository, actionGetCollectionById);
+		const actionGetItemsByCollection = new ActionGetItemsByCollection(dataRepository, actionGetCollectionById, actionGetHiddenAttributes);
 		const actionOpenItemsExternal = new ActionOpenItemsExternal(dataRepository, fsWrapper);
 		const actionUpdateItemAttribute = new ActionUpdateItemAttribute(dataRepository);
 		const actionDeleteItemAttribute = new ActionDeleteItemAttribute(dataRepository);
@@ -132,8 +135,6 @@ export class ActionHandler {
 		const actionGetLibraryInfo = new ActionGetLibraryInfo(dataRepository);
 		const actionOpenLibrary = new ActionOpenLibrary(dataRepository, fsWrapper, actionGetLibraryInfo);
 		const actionGetLibraryAttributeMetaAll = new ActionGetLibraryAttributeMeta(dataRepository);
-		const actionSetHiddenAttributes = new ActionSetHiddenAttributes(dataRepository);
-		const actionGetHiddenAttributes = new ActionGetHiddenAttributes(dataRepository);
 
 		const importService: ImportService = new ImportService(
 			dataRepository,
@@ -183,7 +184,7 @@ export class ActionHandler {
 		this.eventHandler.on(EventIds.MOVE_ITEMS, (payload) => actionMoveItems.perform(payload.sourceCollectionId, payload.targetCollectionId, payload.itemIds, payload.copy));
 		this.eventHandler.on(EventIds.REMOVE_ITEMS, (payload) => actionRemoveItems.perform(payload.collectionId, payload.itemIds));
 
-		this.eventHandler.on(EventIds.GET_ITEMS_BY_COLLECTION, (payload) => actionGetItemsByCollection.perform(payload.collectionId, payload.itemAttributeKeys, payload.includeMissingAttributes));
+		this.eventHandler.on(EventIds.GET_ITEMS_BY_COLLECTION, (payload) => actionGetItemsByCollection.perform(payload.collectionId, payload.itemAttributeKeys, payload.includeMissingAttributes, payload.includeHiddenAttribs));
 		this.eventHandler.on(EventIds.GET_ITEM_BY_ID, (payload) => actionGetItemById.perform(payload));
 		this.eventHandler.on(EventIds.DELETE_ITEMS, (payload) => actionDeleteItems.perform(payload));
 		this.eventHandler.on(EventIds.OPEN_ITEMS, (payload) => actionOpenItemsExternal.perform(payload));

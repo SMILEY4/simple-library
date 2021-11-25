@@ -12,6 +12,8 @@ import {
 } from "./itemCommon";
 import {Collection} from "../collection/collectionCommons";
 import {DataRepository} from "../dataRepository";
+import {ActionGetHiddenAttributes} from "../library/actionGetHiddenAttributes";
+import {ArrayUtils} from "../../../common/arrayUtils";
 
 /**
  * Get all items of the given collection (with the attributes of the given keys)
@@ -20,20 +22,32 @@ export class ActionGetItemsByCollection {
 
 	private readonly repository: DataRepository;
 	private readonly actionGetCollectionById: ActionGetCollectionById;
+	private readonly actionGetHiddenAttributes: ActionGetHiddenAttributes;
 
-
-	constructor(repository: DataRepository, actionGetCollectionById: ActionGetCollectionById) {
+	constructor(
+		repository: DataRepository,
+		actionGetCollectionById: ActionGetCollectionById,
+		actionGetHiddenAttributes: ActionGetHiddenAttributes
+	) {
 		this.repository = repository;
 		this.actionGetCollectionById = actionGetCollectionById;
+		this.actionGetHiddenAttributes = actionGetHiddenAttributes;
 	}
 
 
-	public perform(collectionId: number, attributeKeys: AttributeKey[], includeMissingAttributes: boolean): Promise<Item[]> {
+	public async perform(collectionId: number, reqAttributeKeys: AttributeKey[], includeMissingAttributes: boolean, includeHiddenAttributes: boolean): Promise<Item[]> {
+		const attributeKeys = includeHiddenAttributes ? reqAttributeKeys : await this.filterAttributes(reqAttributeKeys)
 		return this.findCollection(collectionId)
 			.then(collection => this.getItemData(collection, attributeKeys))
 			.then(rowsToItems)
 			.then(items => includeMissingAttributes ? this.appendMissingAttributes(items, attributeKeys) : items)
 			.then(items => this.estimateSimpleAttributeTypes(items));
+	}
+
+
+	private filterAttributes(requestedAttributes: AttributeKey[]): Promise<AttributeKey[]> {
+		return this.actionGetHiddenAttributes.perform()
+			.then(hidden => ArrayUtils.complement(requestedAttributes, hidden, attributeKeysEquals));
 	}
 
 

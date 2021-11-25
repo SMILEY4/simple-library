@@ -16,6 +16,7 @@ import {Attribute, attributeKeyFromArray, Item} from "../service/item/itemCommon
 import {SQLiteDataRepository} from "../persistence/sqliteRepository";
 import {DataRepository} from "../service/dataRepository";
 import {ActionDeleteItemAttribute} from "../service/item/actionDeleteItemAttribute";
+import {ActionGetHiddenAttributes} from "../service/library/actionGetHiddenAttributes";
 
 describe("item-service", () => {
 
@@ -24,7 +25,7 @@ describe("item-service", () => {
 		test("get by normal collection without attributes", async () => {
 			// given
 			const [actionCreateLibrary, repository, dbAccess] = mockItemService();
-			const actionGetByCollection = new ActionGetItemsByCollection(repository, new ActionGetCollectionById(repository));
+			const actionGetByCollection = new ActionGetItemsByCollection(repository, new ActionGetCollectionById(repository), new ActionGetHiddenAttributes(repository));
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -45,7 +46,7 @@ describe("item-service", () => {
 				])
 			]);
 			// when
-			const result: Promise<Item[]> = actionGetByCollection.perform(1, [], false);
+			const result: Promise<Item[]> = actionGetByCollection.perform(1, [], false, true);
 			// then
 			await expect(result).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, []),
@@ -58,7 +59,7 @@ describe("item-service", () => {
 		test("get by normal collection", async () => {
 			// given
 			const [actionCreateLibrary, repository, dbAccess] = mockItemService();
-			const actionGetByCollection = new ActionGetItemsByCollection(repository, new ActionGetCollectionById(repository));
+			const actionGetByCollection = new ActionGetItemsByCollection(repository, new ActionGetCollectionById(repository), new ActionGetHiddenAttributes(repository));
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -80,7 +81,7 @@ describe("item-service", () => {
 			]);
 			// when
 			const requestedAttributeKeys = [attributeKeyFromArray(keyFileModifyDate()), attributeKeyFromArray(keyMIMEType())];
-			const result: Promise<Item[]> = actionGetByCollection.perform(1, requestedAttributeKeys, false);
+			const result: Promise<Item[]> = actionGetByCollection.perform(1, requestedAttributeKeys, false, true);
 			// then
 			await expect(result).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, [
@@ -98,7 +99,7 @@ describe("item-service", () => {
 		test("get by normal collection include missing", async () => {
 			// given
 			const [actionCreateLibrary, repository, dbAccess] = mockItemService();
-			const actionGetByCollection = new ActionGetItemsByCollection(repository, new ActionGetCollectionById(repository));
+			const actionGetByCollection = new ActionGetItemsByCollection(repository, new ActionGetCollectionById(repository), new ActionGetHiddenAttributes(repository));
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -120,7 +121,7 @@ describe("item-service", () => {
 			]);
 			// when
 			const requestedAttributeKeys = [attributeKeyFromArray(keyFileModifyDate()), attributeKeyFromArray(keyMIMEType())];
-			const result: Promise<Item[]> = actionGetByCollection.perform(1, requestedAttributeKeys, true);
+			const result: Promise<Item[]> = actionGetByCollection.perform(1, requestedAttributeKeys, true, true);
 			// then
 			await expect(result).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, [
@@ -141,7 +142,7 @@ describe("item-service", () => {
 		test("get by smart collection", async () => {
 			// given
 			const [actionCreateLibrary, repository, dbAccess] = mockItemService();
-			const actionGetByCollection = new ActionGetItemsByCollection(repository, new ActionGetCollectionById(repository));
+			const actionGetByCollection = new ActionGetItemsByCollection(repository, new ActionGetCollectionById(repository), new ActionGetHiddenAttributes(repository));
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -163,7 +164,7 @@ describe("item-service", () => {
 			]);
 			// when
 			const requestedAttributeKeys = [attributeKeyFromArray(keyFileModifyDate()), attributeKeyFromArray(keyMIMEType())];
-			const result: Promise<Item[]> = actionGetByCollection.perform(2, requestedAttributeKeys, false);
+			const result: Promise<Item[]> = actionGetByCollection.perform(2, requestedAttributeKeys, false, true);
 			// then
 			await expect(result).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, [
@@ -180,7 +181,7 @@ describe("item-service", () => {
 		test("get by smart collection with empty query", async () => {
 			// given
 			const [actionCreateLibrary, repository, dbAccess] = mockItemService();
-			const actionGetByCollection = new ActionGetItemsByCollection(repository, new ActionGetCollectionById(repository));
+			const actionGetByCollection = new ActionGetItemsByCollection(repository, new ActionGetCollectionById(repository), new ActionGetHiddenAttributes(repository));
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -202,7 +203,7 @@ describe("item-service", () => {
 			]);
 			// when
 			const requestedAttributeKeys = [attributeKeyFromArray(keyFileModifyDate()), attributeKeyFromArray(keyMIMEType())];
-			const result: Promise<Item[]> = actionGetByCollection.perform(2, requestedAttributeKeys, false);
+			const result: Promise<Item[]> = actionGetByCollection.perform(2, requestedAttributeKeys, false, true);
 			// then
 			await expect(result).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, [
@@ -221,7 +222,7 @@ describe("item-service", () => {
 		test("get by non-existing collection", async () => {
 			// given
 			const [actionCreateLibrary, repository, dbAccess] = mockItemService();
-			const actionGetByCollection = new ActionGetItemsByCollection(repository, new ActionGetCollectionById(repository));
+			const actionGetByCollection = new ActionGetItemsByCollection(repository, new ActionGetCollectionById(repository), new ActionGetHiddenAttributes(repository));
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -243,7 +244,7 @@ describe("item-service", () => {
 			]);
 			// when
 			const requestedAttributeKeys = [attributeKeyFromArray(keyFileAccessDate()), attributeKeyFromArray(keyMIMEType())];
-			const result: Promise<Item[]> = actionGetByCollection.perform(42, requestedAttributeKeys, false);
+			const result: Promise<Item[]> = actionGetByCollection.perform(42, requestedAttributeKeys, false, true);
 			// then
 			await expect(result).rejects.toBeDefined();
 		});

@@ -72,7 +72,7 @@ export function useEmbedAttributesOfItemIds() {
 
 		function updateItemState(): Promise<any> {
 			if (activeCollection) {
-				return fetchItems(activeCollection, TEMP_ATTRIBUTE_KEYS, true)
+				return fetchItems(activeCollection, TEMP_ATTRIBUTE_KEYS, true, false)
 					.then((items: ItemDTO[]) => dispatchSetItems(items));
 			} else {
 				return Promise.resolve();

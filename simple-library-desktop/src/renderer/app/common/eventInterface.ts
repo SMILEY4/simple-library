@@ -59,11 +59,17 @@ export function fetchRootGroup(): Promise<GroupDTO> {
     return eventBroadcaster.send(EventIds.GET_GROUP_TREE, {includeItemCount: true, includeCollections: true});
 }
 
-export function fetchItems(collectionId: number, itemAttributeKeys: AttributeKeyDTO[], includeMissingAttribs: boolean): Promise<ItemDTO[]> {
+export function fetchItems(
+    collectionId: number,
+    itemAttributeKeys: AttributeKeyDTO[],
+    includeMissingAttribs: boolean,
+    includeHiddenAttribs: boolean
+): Promise<ItemDTO[]> {
     return eventBroadcaster.send(EventIds.GET_ITEMS_BY_COLLECTION, {
         collectionId: collectionId,
         itemAttributeKeys: itemAttributeKeys,
-        includeMissingAttributes: includeMissingAttribs
+        includeMissingAttributes: includeMissingAttribs,
+        includeHiddenAttribs: includeHiddenAttribs
     });
 }
 

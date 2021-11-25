@@ -34,10 +34,7 @@ export function PanelHiddenAttributes(props: React.PropsWithChildren<PanelHidden
 				<TextField
 					placeholder={"Search"}
 					value={search}
-					onAccept={value => {
-						console.log("value", value);
-						setSearch(value.toLowerCase());
-					}}
+					onAccept={value => setSearch(value.toLowerCase())}
 				/>
 				<VBox spacing="0-25" alignMain="start" alignCross="stretch" padding="0-25" className="hidden-attribs-available">
 					{attributeMeta.filter(e => e.name.toLowerCase().includes(search)).map(e => {
