@@ -91,8 +91,11 @@ export function requestDeleteItems(itemIds: number[]): Promise<void> {
 }
 
 
-export function fetchItemMetadata(itemId: number): Promise<AttributeDTO[]> {
-    return eventBroadcaster.send(EventIds.GET_ITEM_ATTRIBUTES, itemId);
+export function fetchItemMetadata(itemId: number, includeHidden: boolean): Promise<AttributeDTO[]> {
+    return eventBroadcaster.send(EventIds.GET_ITEM_ATTRIBUTES, {
+        itemId: itemId,
+        includeHidden: includeHidden
+    });
 }
 
 export function setItemMetadata(itemId: number, entryKey: AttributeKeyDTO, value: string): Promise<AttributeDTO> {

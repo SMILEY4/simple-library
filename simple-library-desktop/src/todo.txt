@@ -1,0 +1,1 @@
+- hide attribute in items-list (not just sidebar)

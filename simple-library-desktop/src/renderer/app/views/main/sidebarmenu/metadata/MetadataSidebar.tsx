@@ -32,7 +32,8 @@ export function MetadataSidebar(props: React.PropsWithChildren<MetadataSidebarPr
         copyAttributeValueToClipboard,
         deleteAttribute,
         searchString,
-        setSearchString
+        setSearchString,
+        hideAttribute
     } = useMetadataSidebar();
 
     const {
@@ -99,6 +100,7 @@ export function MetadataSidebar(props: React.PropsWithChildren<MetadataSidebarPr
                 <MetadataListEntryContextMenu
                     attributeKey={contextMenuPayload}
                     onCopy={handleCopyEntryValue}
+                    onHide={handleHideEntry}
                     onDelete={handleDeleteEntry}
                 />
             </ContextMenuBase>
@@ -112,6 +114,11 @@ export function MetadataSidebar(props: React.PropsWithChildren<MetadataSidebarPr
 
     function handleCopyEntryValue(attributeKey: AttributeKeyDTO) {
         copyAttributeValueToClipboard(attributeKey);
+        closeContextMenu();
+    }
+
+    function handleHideEntry(attributeKey: AttributeKeyDTO) {
+        hideAttribute(attributeKey);
         closeContextMenu();
     }
 

@@ -63,7 +63,8 @@ export function useEmbedAttributesOfItemIds() {
 
 		function updateAttributeState(): Promise<any> {
 			if (attributeItemId) {
-				return fetchItemMetadata(attributeItemId).then(attribs => setAttributes(attributeItemId, attribs));
+				return fetchItemMetadata(attributeItemId, false)
+					.then(attribs => setAttributes(attributeItemId, attribs));
 			} else {
 				return Promise.resolve();
 			}

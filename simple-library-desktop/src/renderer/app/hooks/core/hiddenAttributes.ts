@@ -2,23 +2,39 @@ import {fetchHiddenAttributes, requestSetHiddenAttributes} from "../../common/ev
 import {AttributeKeyDTO} from "../../../../common/events/dtoModels";
 import {useEffect, useState} from "react";
 import {voidThen} from "../../../../common/utils";
+import {useDispatchRemoveAttribute} from "../store/attributeStore";
+import {useSelectedItemIds} from "../store/itemSelectionState";
+import {useLoadAttributes} from "./attributesLoad";
 
 
 export function useHideAttributes() {
+
+	const dispatchRemoveAttribute = useDispatchRemoveAttribute();
+	const selectedItemIds = useSelectedItemIds();
+	const loadAttributes = useLoadAttributes();
+
 
 	function get(): Promise<AttributeKeyDTO[]> {
 		return fetchHiddenAttributes();
 	}
 
 	function show(attributes: AttributeKeyDTO[]): Promise<void> {
-		return set(attributes, "show").then(voidThen);
+		return setHiddenStatus(attributes, "show")
+			.then(() => {
+				return (selectedItemIds && selectedItemIds.length === 1)
+					? loadAttributes(selectedItemIds[0])
+					: loadAttributes(null);
+			})
+			.then(voidThen);
 	}
 
 	function hide(attributes: AttributeKeyDTO[]): Promise<void> {
-		return set(attributes, "hide").then(voidThen);
+		return setHiddenStatus(attributes, "hide")
+			.then(() => attributes.forEach(dispatchRemoveAttribute))
+			.then(voidThen);
 	}
 
-	function set(attributes: AttributeKeyDTO[], mode: "show" | "hide"): Promise<AttributeKeyDTO[]> {
+	function setHiddenStatus(attributes: AttributeKeyDTO[], mode: "show" | "hide"): Promise<AttributeKeyDTO[]> {
 		return requestSetHiddenAttributes(attributes, mode)
 			.then(() => get());
 	}
@@ -26,8 +42,7 @@ export function useHideAttributes() {
 	return {
 		getHiddenAttributes: get,
 		hideAttributes: hide,
-		showAttributes: show,
-		setHiddenAttributes: set
+		showAttributes: show
 	};
 }
 

@@ -66,7 +66,7 @@ export interface DataRepository {
 
 	getItemAttribute(itemId: number, attributeKey: ([string, string, string, string, string])): QueryResultSingle;
 
-	getItemAttributesByItem(itemId: number): QueryResultMany;
+	getItemAttributesByItem(itemId: number, includeHidden: boolean): QueryResultMany;
 
 	insertItemAttributes(itemId: number, attributes: ({ id: string, name: string, g0: string, g1: string, g2: string, value: string, modified?: boolean })[]): CommandResultSingle;
 

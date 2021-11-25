@@ -142,8 +142,8 @@ export class SQLiteDataRepository implements DataRepository {
         return this.dbAccess.querySingle(SQL.queryItemAttribute(itemId, attributeKey));
     }
 
-    getItemAttributesByItem(itemId: number): QueryResultMany {
-        return this.dbAccess.queryAll(SQL.queryItemAttributes(itemId));
+    getItemAttributesByItem(itemId: number, includeHidden: boolean): QueryResultMany {
+        return this.dbAccess.queryAll(SQL.queryItemAttributes(itemId, includeHidden));
     }
 
     insertItemAttributes(itemId: number, attributes: { id: string, name: string, g0: string, g1: string, g2: string, value: string, modified?: boolean }[]): CommandResultSingle {

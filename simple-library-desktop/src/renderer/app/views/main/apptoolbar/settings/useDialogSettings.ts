@@ -65,12 +65,21 @@ export function useDialogSettings(onClose: () => void) {
 		const base = await getHiddenAttributes();
 
 		const added = hiddenAttributes.filter(a => base.findIndex(b => attributeKeysDtoEquals(a, b)) === -1);
-		const removed = base.filter(b => hiddenAttributes.findIndex(a => attributeKeysDtoEquals(a, b)) !== -1);
+		const removed = base.filter(b => hiddenAttributes.findIndex(a => attributeKeysDtoEquals(a, b)) === -1);
 
-		return showAttributes(removed)
-			.then(() => hideAttributes(added))
-			.then(() => getHiddenAttributes())
-			.then(setHiddenAttributes);
+		if (removed.length > 0) {
+			await showAttributes(removed);
+		}
+		if (added.length > 0) {
+			await hideAttributes(added);
+		}
+		if (removed.length > 0 && added.length > 0) {
+			return getHiddenAttributes()
+				.then(setHiddenAttributes);
+		} else {
+			return Promise.resolve();
+		}
+
 	}
 
 	return {

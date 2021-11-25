@@ -334,9 +334,9 @@ describe("item-service", () => {
 			await expect(dbAccess.queryAll(SQL.queryItemsAll([])).then((result => result.map(r => r.item_id)))).resolves.toEqual([1, 4]);
 			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(1, [])).then((result => result.map(r => r.item_id)))).resolves.toEqual([1]);
 			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(2, [])).then((result => result.map(r => r.item_id)))).resolves.toEqual([4]);
-			await expect(dbAccess.queryAll(SQL.queryItemAttributes(1))).resolves.toHaveLength(3);
-			await expect(dbAccess.queryAll(SQL.queryItemAttributes(2))).resolves.toEqual([]);
-			await expect(dbAccess.queryAll(SQL.queryItemAttributes(3))).resolves.toEqual([]);
+			await expect(dbAccess.queryAll(SQL.queryItemAttributes(1, true))).resolves.toHaveLength(3);
+			await expect(dbAccess.queryAll(SQL.queryItemAttributes(2, true))).resolves.toEqual([]);
+			await expect(dbAccess.queryAll(SQL.queryItemAttributes(3, true))).resolves.toEqual([]);
 		});
 
 
@@ -371,9 +371,9 @@ describe("item-service", () => {
 			await expect(dbAccess.queryAll(SQL.queryItemsAll([])).then((result => result.map(r => r.item_id)))).resolves.toEqual([1, 3, 4]);
 			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(1, [])).then((result => result.map(r => r.item_id)))).resolves.toEqual([1, 3]);
 			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(2, [])).then((result => result.map(r => r.item_id)))).resolves.toEqual([3, 4]);
-			await expect(dbAccess.queryAll(SQL.queryItemAttributes(1))).resolves.toHaveLength(3);
-			await expect(dbAccess.queryAll(SQL.queryItemAttributes(2))).resolves.toEqual([]);
-			await expect(dbAccess.queryAll(SQL.queryItemAttributes(3))).resolves.toEqual([]);
+			await expect(dbAccess.queryAll(SQL.queryItemAttributes(1, true))).resolves.toHaveLength(3);
+			await expect(dbAccess.queryAll(SQL.queryItemAttributes(2, true))).resolves.toEqual([]);
+			await expect(dbAccess.queryAll(SQL.queryItemAttributes(3, true))).resolves.toEqual([]);
 		});
 
 	});
@@ -471,7 +471,7 @@ describe("item-service", () => {
 				])
 			]);
 			// when
-			const result: Promise<Attribute[]> = actionGetAttribs.perform(2);
+			const result: Promise<Attribute[]> = actionGetAttribs.perform(2, false);
 			// then
 			await expect(result).resolves.toEqual([
 				attribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "_text", false, false),
@@ -501,7 +501,7 @@ describe("item-service", () => {
 				])
 			]);
 			// when
-			const result: Promise<Attribute[]> = actionGetAttribs.perform(100);
+			const result: Promise<Attribute[]> = actionGetAttribs.perform(100, false);
 			// then
 			await expect(result).rejects.toBeDefined();
 		});
@@ -530,7 +530,7 @@ describe("item-service", () => {
 			const result: Promise<Attribute> = actionUpdateAttrib.perform(1, updatedAttributeKey, "new value");
 			// then
 			await expect(result).resolves.toEqual(attribute(keyFileModifyDate(), "new value", "?", true, true));
-			await expect(actionGetAttribs.perform(1)).resolves.toEqual([
+			await expect(actionGetAttribs.perform(1, false)).resolves.toEqual([
 				attribute(keyFileModifyDate(), "new value", "_text", true, true),
 				attribute(keyFileExtension(), "jpg", "_text", false, false),
 				attribute(keyMIMEType(), "image/jpeg", "_text", false, false)
@@ -557,7 +557,7 @@ describe("item-service", () => {
 			const result: Promise<Attribute> = actionUpdateAttrib.perform(100, updatedAttributeKey, "new value");
 			// then
 			await expect(result).rejects.toBeDefined();
-			await expect(actionGetAttribs.perform(1)).resolves.toEqual([
+			await expect(actionGetAttribs.perform(1, false)).resolves.toEqual([
 				attribute(keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "_text", true, false),
 				attribute(keyFileExtension(), "jpg", "_text", false, false),
 				attribute(keyMIMEType(), "image/jpeg", "_text", false, false)
@@ -584,7 +584,7 @@ describe("item-service", () => {
 			const result: Promise<Attribute> = actionUpdateAttrib.perform(1, updatedAttributeKey, "new value");
 			// then
 			await expect(result).rejects.toBeDefined();
-			await expect(actionGetAttribs.perform(1)).resolves.toEqual([
+			await expect(actionGetAttribs.perform(1, false)).resolves.toEqual([
 				attribute(keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "_text", true, false),
 				attribute(keyFileExtension(), "jpg", "_text", false, true),
 				attribute(keyMIMEType(), "image/jpeg", "_text", false, false)
@@ -619,11 +619,11 @@ describe("item-service", () => {
 			const result: Promise<void> = actionDeleteAttrib.perform(1, deleteAttributeKey);
 			// then
 			await expect(result).resolves.toBeUndefined();
-			await expect(actionGetAttribs.perform(1)).resolves.toEqual([
+			await expect(actionGetAttribs.perform(1, false)).resolves.toEqual([
 				attribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "_text", false, false),
 				attribute(keyMIMEType(), "image/jpeg", "_text", false, true)
 			]);
-			await expect(actionGetAttribs.perform(2)).resolves.toEqual([
+			await expect(actionGetAttribs.perform(2, false)).resolves.toEqual([
 				attribute(keyFileExtension(), "jpg", "_text", false, false)
 			]);
 		});
@@ -648,7 +648,7 @@ describe("item-service", () => {
 			const result: Promise<void> = actionDeleteAttrib.perform(1, deleteAttributeKey);
 			// then
 			await expect(result).resolves.toBeUndefined();
-			await expect(actionGetAttribs.perform(1)).resolves.toEqual([
+			await expect(actionGetAttribs.perform(1, false)).resolves.toEqual([
 				attribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "_text", false, false),
 				attribute(keyFileExtension(), "jpg", "_text", false, true),
 				attribute(keyMIMEType(), "image/jpeg", "_text", false, false)

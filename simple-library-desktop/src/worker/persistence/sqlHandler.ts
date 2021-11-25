@@ -54,6 +54,7 @@ import sqlQueryItemAttributeMetaFiltered from "./sqlscripts/item_attributes/quer
 import sqlQueryHiddenAttributes from "./sqlscripts/item_attributes/query_hidden_attributes_all.sql";
 import sqlInsertHiddenAttributes from "./sqlscripts/item_attributes/insert_hidden_attributes.sql";
 import sqlDeleteHiddenAttribute from "./sqlscripts/item_attributes/delete_hidden_attribute.sql";
+import sqlQueryItemAttributesNoHidden from "./sqlscripts/items/query_item_attributes_no_hidden.sql";
 
 
 export module SQL {
@@ -277,8 +278,8 @@ export module SQL {
 			.replace(v("g2"), str(g2));
 	}
 
-	export function queryItemAttributes(itemId: number): string {
-		return sql(sqlQueryItemAttributes)
+	export function queryItemAttributes(itemId: number, includeHidden: boolean): string {
+		return sql(includeHidden ? sqlQueryItemAttributes : sqlQueryItemAttributesNoHidden)
 			.replace(v("itemId"), num(itemId));
 	}
 

@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {fetchItemById, fetchItemMetadata} from "../../../../common/eventInterface";
+import {fetchItemById} from "../../../../common/eventInterface";
 import {
 	AttributeDTO,
 	AttributeKeyDTO,
@@ -8,18 +8,20 @@ import {
 	ItemDTO
 } from "../../../../../../common/events/dtoModels";
 import {useSelectedItemIds} from "../../../../hooks/store/itemSelectionState";
-import {useDispatchSetAttributes, useStateAttributes} from "../../../../hooks/store/attributeStore";
+import {useStateAttributes} from "../../../../hooks/store/attributeStore";
 import {useUpdateAttribute} from "../../../../hooks/core/attributeUpdate";
 import {useDeleteAttribute} from "../../../../hooks/core/attributeDelete";
+import {useHideAttributes} from "../../../../hooks/core/hiddenAttributes";
+import {useLoadAttributes} from "../../../../hooks/core/attributesLoad";
 
 export function useMetadataSidebar() {
 
 	const [search, setSearch] = useState<string>("");
 	const [item, setItem] = useState<ItemDTO | null>(null);
 	const attributes: AttributeDTO[] = useStateAttributes();
-	const setAttributes = useDispatchSetAttributes();
+	const loadAttributes = useLoadAttributes();
 
-	useListenSelectionChanges(setItem, setAttributes);
+	useListenSelectionChanges(setItem, loadAttributes);
 
 	return {
 		displayedItem: item,
@@ -28,23 +30,23 @@ export function useMetadataSidebar() {
 		copyAttributeValueToClipboard: useCopyAttributeValueToClipboard(attributes),
 		deleteAttribute: useDeleteAttributeEntry(item ? item.id : null),
 		searchString: search,
-		setSearchString: setSearch
+		setSearchString: setSearch,
+		hideAttribute: useHideMetadataEntry()
 	};
 }
 
 
-function useListenSelectionChanges(setItem: (item: ItemDTO | null) => void, setMetadata: (itemId: number | null, attribs: AttributeDTO[]) => void) {
+function useListenSelectionChanges(setItem: (item: ItemDTO | null) => void, loadAttributes: (itemId: number | null) => Promise<void>) {
 	const selectedItemIds = useSelectedItemIds();
 	useEffect(() => {
 		if (selectedItemIds && selectedItemIds.length === 1) {
 			const itemId: number = selectedItemIds[0];
-			fetchItemMetadata(itemId)
-				.then((entries: AttributeDTO[]) => setMetadata(itemId, entries))
+			loadAttributes(itemId)
 				.then(() => fetchItemById(selectedItemIds[0]))
 				.then(setItem);
 		} else {
-			setMetadata(null, []);
-			setItem(null);
+			loadAttributes(null)
+				.then(() => setItem(null));
 		}
 	}, [selectedItemIds]);
 }
@@ -86,6 +88,18 @@ function useUpdateMetadataEntry(itemId: number | null) {
 		} else {
 			return Promise.resolve();
 		}
+	}
+
+	return hookFunction;
+}
+
+
+function useHideMetadataEntry() {
+
+	const {hideAttributes} = useHideAttributes();
+
+	function hookFunction(attributeKey: AttributeKeyDTO) {
+		return hideAttributes([attributeKey]);
 	}
 
 	return hookFunction;
