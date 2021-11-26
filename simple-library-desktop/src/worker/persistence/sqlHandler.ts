@@ -38,11 +38,11 @@ import sqlInsertItem from "./sqlscripts/items/insert_item.sql";
 import sqlInsertAttributeMeta from "./sqlscripts/item_attributes/insert_attribute_meta.sql";
 import sqlQueryExistsItemAttribute from "./sqlscripts/item_attributes/query_exists_item_attribute.sql";
 import sqlQueryAttributeMetadata from "./sqlscripts/item_attributes/query_item_attribute_meta.sql";
-import sqlQueryItemAttributesAll from "./sqlscripts/item_attributes/query_item_attributes_all.sql";
-import sqlQueryItemAttributesAllModified from "./sqlscripts/item_attributes/query_item_attributes_all_modified.sql";
-import sqlQueryItemAttributesByItems from "./sqlscripts/item_attributes/query_item_attributes_by_items.sql";
-import sqlQueryItemAttributesModifiedByItems
-	from "./sqlscripts/item_attributes/query_item_attributes_modified_by_items.sql";
+import sqlQueryItemAttributesAllNotHidden from "./sqlscripts/item_attributes/query_item_attributes_all_not_hidden.sql";
+import sqlQueryItemAttributesAllModifiedNotHidden from "./sqlscripts/item_attributes/query_item_attributes_all_modified_not_hidden.sql";
+import sqlQueryItemAttributesNotHiddenByItems from "./sqlscripts/item_attributes/query_item_attributes_not_hidden_by_items.sql";
+import sqlQueryItemAttributesModifiedNotHiddenByItems
+	from "./sqlscripts/item_attributes/query_item_attributes_modified_not_hidden_by_items.sql";
 import sqlUpdateItemAttributeModifiedFlag from "./sqlscripts/item_attributes/update_item_attribute_modified.sql";
 import sqlUpdateItemAttributeModifiedFlagsByItemIds
 	from "./sqlscripts/item_attributes/update_item_attributes_modified_by_items.sql";
@@ -338,18 +338,18 @@ export module SQL {
 
 	export function queryExtendedItemAttributesAll(onlyModified: boolean): string {
 		if (onlyModified) {
-			return sql(sqlQueryItemAttributesAllModified);
+			return sql(sqlQueryItemAttributesAllModifiedNotHidden);
 		} else {
-			return sql(sqlQueryItemAttributesAll);
+			return sql(sqlQueryItemAttributesAllNotHidden);
 		}
 	}
 
 	export function queryExtendedItemAttributesByItemIds(itemIds: number[], onlyModified: boolean): string {
 		if (onlyModified) {
-			return sql(sqlQueryItemAttributesModifiedByItems)
+			return sql(sqlQueryItemAttributesModifiedNotHiddenByItems)
 				.replace(v("itemIds"), numCsv(itemIds));
 		} else {
-			return sql(sqlQueryItemAttributesByItems)
+			return sql(sqlQueryItemAttributesNotHiddenByItems)
 				.replace(v("itemIds"), numCsv(itemIds));
 		}
 	}

@@ -52,9 +52,9 @@ export interface DataRepository {
 
 	deleteHiddenAttribute(id: string, name: string, g0: string | undefined, g1: string | undefined, g2: string | undefined): VoidResult;
 
-	getAllExtendedItemAttributes(onlyModified: boolean): QueryResultMany;
+	getAllExtendedItemAttributesNotHidden(onlyModified: boolean): QueryResultMany;
 
-	getExtendedItemAttributesByItemIds(itemIds: number[], onlyModified: boolean): QueryResultMany;
+	getExtendedItemAttributesNotHiddenByItemIds(itemIds: number[], onlyModified: boolean): QueryResultMany;
 
 	clearItemAttributeModifiedFlag(itemId: number, attributeKey: ([string, string, string, string, string])): CommandResultSingle;
 

@@ -35,6 +35,7 @@ describe("embed attributes", () => {
 		const [actionEmbed, actionCreateLibrary, dbAccess, funcWriteMetadata, fsWrapper] = mockEmbedAction();
 		await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 		await dbAccess.runMultipleSeq([
+			SQL.insertHiddenAttributes([{ id: "Author", name: "Author", g0: "PNG", g1: "PNG", g2: "Author" }]),
 			SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
 			SQL.insertItem("/path/to/file/2", 1001, "hash2", "thumbnail2"),
 			SQL.insertItem("/path/to/file/3", 1002, "hash3", "thumbnail3"),
@@ -46,6 +47,7 @@ describe("embed attributes", () => {
 				attComment("New Comment", true),
 				attFileExtension("jpg", false),
 				attMIMEType("image/jpeg", false),
+				attAuthor("me", true)
 			]),
 			SQL.insertItemAttributes(2, [
 				attFileCreateDate("2021:01:02 21:00:12+02:00", false),
@@ -54,6 +56,7 @@ describe("embed attributes", () => {
 				attComment("Some Comment", false),
 				attFileExtension("jpg", false),
 				attMIMEType("image/jpeg", false),
+				attAuthor("me", true)
 			]),
 			SQL.insertItemAttributes(3, [
 				attFileCreateDate("2021:01:02 21:00:12+02:00", false),
@@ -62,7 +65,8 @@ describe("embed attributes", () => {
 				attComment("Some Comment", false),
 				attFileExtension("jpg", false),
 				attMIMEType("image/jpeg", false),
-			])
+				attAuthor("me", true)
+			]),
 		]);
 		// when
 		const result: Promise<EmbedReport> = actionEmbed.perform(null, true);
@@ -95,6 +99,7 @@ describe("embed attributes", () => {
 		const [actionEmbed, actionCreateLibrary, dbAccess, funcWriteMetadata, fsWrapper] = mockEmbedAction();
 		await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 		await dbAccess.runMultipleSeq([
+			SQL.insertHiddenAttributes([{ id: "Author", name: "Author", g0: "PNG", g1: "PNG", g2: "Author" }]),
 			SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
 			SQL.insertItem("/path/to/file/2", 1001, "hash2", "thumbnail2"),
 			SQL.insertItem("/path/to/file/3", 1002, "hash3", "thumbnail3"),
@@ -106,6 +111,7 @@ describe("embed attributes", () => {
 				attComment("New Comment", true),
 				attFileExtension("jpg", false),
 				attMIMEType("image/jpeg", false),
+				attAuthor("me", true)
 			]),
 			SQL.insertItemAttributes(2, [
 				attFileCreateDate("2021:01:02 21:00:12+02:00", false),
@@ -114,6 +120,7 @@ describe("embed attributes", () => {
 				attComment("Some Comment", false),
 				attFileExtension("jpg", false),
 				attMIMEType("image/jpeg", false),
+				attAuthor("me", true)
 			]),
 			SQL.insertItemAttributes(3, [
 				attFileCreateDate("2021:01:02 21:00:12+02:00", false),
@@ -122,6 +129,7 @@ describe("embed attributes", () => {
 				attComment("Some Comment", false),
 				attFileExtension("jpg", false),
 				attMIMEType("image/jpeg", false),
+				attAuthor("me", true)
 			])
 		]);
 		// when
@@ -150,6 +158,7 @@ describe("embed attributes", () => {
 		const [actionEmbed, actionCreateLibrary, dbAccess, funcWriteMetadata, fsWrapper] = mockEmbedAction();
 		await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 		await dbAccess.runMultipleSeq([
+			SQL.insertHiddenAttributes([{ id: "Author", name: "Author", g0: "PNG", g1: "PNG", g2: "Author" }]),
 			SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
 			SQL.insertItem("/path/to/file/2", 1001, "hash2", "thumbnail2"),
 			SQL.insertItem("/path/to/file/3", 1002, "hash3", "thumbnail3"),
@@ -161,6 +170,7 @@ describe("embed attributes", () => {
 				attComment("New Comment", true),
 				attFileExtension("jpg", false),
 				attMIMEType("image/jpeg", false),
+				attAuthor("me", true)
 			]),
 			SQL.insertItemAttributes(2, [
 				attFileCreateDate("2021:01:02 21:00:12+02:00", false),
@@ -169,6 +179,7 @@ describe("embed attributes", () => {
 				attComment("Some Comment", false),
 				attFileExtension("jpg", false),
 				attMIMEType("image/jpeg", false),
+				attAuthor("me", true)
 			]),
 			SQL.insertItemAttributes(3, [
 				attFileCreateDate("2021:01:02 21:00:12+02:00", false),
@@ -177,6 +188,7 @@ describe("embed attributes", () => {
 				attComment("Some Comment", false),
 				attFileExtension("jpg", false),
 				attMIMEType("image/jpeg", false),
+				attAuthor("me", true)
 			])
 		]);
 		// when
@@ -368,6 +380,10 @@ function attFileModifyDate(value: string, modified: boolean) { // WRITABLE
 
 function attComment(value: string, modified: boolean) { // WRITABLE
 	return  sqlAttribute(["Comment", "Comment", "File", "File", "Image"], value, modified);
+}
+
+function attAuthor(value: string, modified: boolean) { // WRITABLE
+	return  sqlAttribute(["Author", "Author", "PNG", "PNG", "Author"], value, modified);
 }
 
 function attFileAccessDate(value: string, modified: boolean) { // read-only

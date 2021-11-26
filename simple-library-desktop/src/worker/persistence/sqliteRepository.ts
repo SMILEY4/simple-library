@@ -113,11 +113,11 @@ export class SQLiteDataRepository implements DataRepository {
             .then(voidThen);
     }
 
-    getAllExtendedItemAttributes(onlyModified: boolean): QueryResultMany {
+    getAllExtendedItemAttributesNotHidden(onlyModified: boolean): QueryResultMany {
         return this.dbAccess.queryAll(SQL.queryExtendedItemAttributesAll(onlyModified));
     }
 
-    getExtendedItemAttributesByItemIds(itemIds: number[], onlyModified: boolean): QueryResultMany {
+    getExtendedItemAttributesNotHiddenByItemIds(itemIds: number[], onlyModified: boolean): QueryResultMany {
         return this.dbAccess.queryAll(SQL.queryExtendedItemAttributesByItemIds(itemIds, onlyModified));
     }
 
