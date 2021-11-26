@@ -17,9 +17,9 @@ export class ActionGetItemAttributes {
 	}
 
 
-	public perform(itemId: number): Promise<Attribute[]> {
+	public perform(itemId: number, includeHidden: boolean): Promise<Attribute[]> {
 		return this.findItem(itemId)
-			.then(item => this.getAttributes(item));
+			.then(item => this.getAttributes(item, includeHidden));
 	}
 
 
@@ -31,8 +31,8 @@ export class ActionGetItemAttributes {
 	}
 
 
-	private getAttributes(item: Item): Promise<Attribute[]> {
-		return this.repository.getItemAttributesByItem(item.id)
+	private getAttributes(item: Item, includeHidden: boolean): Promise<Attribute[]> {
+		return this.repository.getItemAttributesByItem(item.id, includeHidden)
 			.then((rows: any[]) => rows.map(row => rowToAttribute(row)))
 			.then((attribs: Attribute[]) => attribs.map(att => ({
 				...att,

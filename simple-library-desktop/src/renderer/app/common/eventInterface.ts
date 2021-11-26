@@ -2,6 +2,7 @@ import {
     ApplicationConfigDTO,
     AttributeDTO,
     AttributeKeyDTO,
+    AttributeMetaDTO,
     CollectionTypeDTO,
     EmbedReportDTO,
     EmbedStatusDTO,
@@ -58,11 +59,17 @@ export function fetchRootGroup(): Promise<GroupDTO> {
     return eventBroadcaster.send(EventIds.GET_GROUP_TREE, {includeItemCount: true, includeCollections: true});
 }
 
-export function fetchItems(collectionId: number, itemAttributeKeys: AttributeKeyDTO[], includeMissingAttribs: boolean): Promise<ItemDTO[]> {
+export function fetchItems(
+    collectionId: number,
+    itemAttributeKeys: AttributeKeyDTO[],
+    includeMissingAttribs: boolean,
+    includeHiddenAttribs: boolean
+): Promise<ItemDTO[]> {
     return eventBroadcaster.send(EventIds.GET_ITEMS_BY_COLLECTION, {
         collectionId: collectionId,
         itemAttributeKeys: itemAttributeKeys,
-        includeMissingAttributes: includeMissingAttribs
+        includeMissingAttributes: includeMissingAttribs,
+        includeHiddenAttribs: includeHiddenAttribs
     });
 }
 
@@ -90,8 +97,11 @@ export function requestDeleteItems(itemIds: number[]): Promise<void> {
 }
 
 
-export function fetchItemMetadata(itemId: number): Promise<AttributeDTO[]> {
-    return eventBroadcaster.send(EventIds.GET_ITEM_ATTRIBUTES, itemId);
+export function fetchItemMetadata(itemId: number, includeHidden: boolean): Promise<AttributeDTO[]> {
+    return eventBroadcaster.send(EventIds.GET_ITEM_ATTRIBUTES, {
+        itemId: itemId,
+        includeHidden: includeHidden
+    });
 }
 
 export function setItemMetadata(itemId: number, entryKey: AttributeKeyDTO, value: string): Promise<AttributeDTO> {
@@ -208,4 +218,19 @@ export function addEmbedStatusListener(listener: (status: EmbedStatusDTO) => voi
 
 export function removeEmbedStatusListener(): void {
     eventConsumer.clear(EventIds.EMBED_ITEM_ATTRIBUTES_STATUS);
+}
+
+export function fetchAllAttributeMeta(filter: string | null): Promise<AttributeMetaDTO[]> {
+    return eventBroadcaster.send(EventIds.GET_LIBRARY_ATTRIBUTE_META_ALL, filter);
+}
+
+export function fetchHiddenAttributes(): Promise<AttributeKeyDTO[]> {
+    return eventBroadcaster.send(EventIds.GET_HIDDEN_ATTRIBUTES);
+}
+
+export function requestSetHiddenAttributes(attributes: AttributeKeyDTO[], mode: "hide" | "show"): Promise<void> {
+    return eventBroadcaster.send(EventIds.SET_HIDDEN_ATTRIBUTES, {
+        attributes: attributes,
+        mode: mode
+    });
 }

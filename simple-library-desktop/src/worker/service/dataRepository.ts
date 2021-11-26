@@ -1,3 +1,5 @@
+import {SQL} from "../persistence/sqlHandler";
+
 export type QueryResultMany = Promise<any[]>
 export type QueryResultSingle = Promise<any | null>
 export type CommandResultMany = Promise<(number | null)[]>
@@ -42,9 +44,17 @@ export interface DataRepository {
 
 	queryAttributeMeta(attributeKeys: ([string, string, string, string, string])[]): QueryResultMany;
 
-	getAllExtendedItemAttributes(onlyModified: boolean): QueryResultMany;
+	queryAttributeMetaAll(filter: string | null): QueryResultMany;
 
-	getExtendedItemAttributesByItemIds(itemIds: number[], onlyModified: boolean): QueryResultMany;
+	getHiddenAttributes(): QueryResultMany;
+
+	insertHiddenAttributes(entries: {id: string, name: string, g0: string | undefined, g1: string | undefined, g2: string | undefined}[]): VoidResult;
+
+	deleteHiddenAttribute(id: string, name: string, g0: string | undefined, g1: string | undefined, g2: string | undefined): VoidResult;
+
+	getAllExtendedItemAttributesNotHidden(onlyModified: boolean): QueryResultMany;
+
+	getExtendedItemAttributesNotHiddenByItemIds(itemIds: number[], onlyModified: boolean): QueryResultMany;
 
 	clearItemAttributeModifiedFlag(itemId: number, attributeKey: ([string, string, string, string, string])): CommandResultSingle;
 
@@ -56,7 +66,7 @@ export interface DataRepository {
 
 	getItemAttribute(itemId: number, attributeKey: ([string, string, string, string, string])): QueryResultSingle;
 
-	getItemAttributesByItem(itemId: number): QueryResultMany;
+	getItemAttributesByItem(itemId: number, includeHidden: boolean): QueryResultMany;
 
 	insertItemAttributes(itemId: number, attributes: ({ id: string, name: string, g0: string, g1: string, g2: string, value: string, modified?: boolean })[]): CommandResultSingle;
 

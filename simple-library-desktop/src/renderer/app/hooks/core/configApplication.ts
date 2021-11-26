@@ -36,10 +36,6 @@ export function useApplicationConfig() {
 
 	function fetchConfig(): Promise<ApplicationConfigDTO | void> {
 		return fetchApplicationConfig()
-			.then((cfg) => {
-				console.log("FETCH:", cfg);
-				return cfg;
-			})
 			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.GENERIC, error));
 	}
 

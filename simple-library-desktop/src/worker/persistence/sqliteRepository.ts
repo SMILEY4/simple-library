@@ -95,11 +95,29 @@ export class SQLiteDataRepository implements DataRepository {
         return this.dbAccess.queryAll(SQL.queryAttributeMeta(attributeKeys));
     }
 
-    getAllExtendedItemAttributes(onlyModified: boolean): QueryResultMany {
+    queryAttributeMetaAll(filter: string | null): QueryResultMany {
+        return this.dbAccess.queryAll(SQL.queryAttributeMetaAll(filter));
+    }
+
+    getHiddenAttributes(): QueryResultMany {
+        return this.dbAccess.queryAll(SQL.queryHiddenAttributes());
+    }
+
+    insertHiddenAttributes(entries: { id: string, name: string, g0: string | undefined, g1: string | undefined, g2: string | undefined }[]): VoidResult {
+        return this.dbAccess.run(SQL.insertHiddenAttributes(entries))
+            .then(voidThen);
+    }
+
+    deleteHiddenAttribute(id: string, name: string, g0: string | undefined, g1: string | undefined, g2: string | undefined): VoidResult {
+        return this.dbAccess.run(SQL.deleteHiddenAttributes(id, name, g0, g1, g2))
+            .then(voidThen);
+    }
+
+    getAllExtendedItemAttributesNotHidden(onlyModified: boolean): QueryResultMany {
         return this.dbAccess.queryAll(SQL.queryExtendedItemAttributesAll(onlyModified));
     }
 
-    getExtendedItemAttributesByItemIds(itemIds: number[], onlyModified: boolean): QueryResultMany {
+    getExtendedItemAttributesNotHiddenByItemIds(itemIds: number[], onlyModified: boolean): QueryResultMany {
         return this.dbAccess.queryAll(SQL.queryExtendedItemAttributesByItemIds(itemIds, onlyModified));
     }
 
@@ -124,8 +142,8 @@ export class SQLiteDataRepository implements DataRepository {
         return this.dbAccess.querySingle(SQL.queryItemAttribute(itemId, attributeKey));
     }
 
-    getItemAttributesByItem(itemId: number): QueryResultMany {
-        return this.dbAccess.queryAll(SQL.queryItemAttributes(itemId));
+    getItemAttributesByItem(itemId: number, includeHidden: boolean): QueryResultMany {
+        return this.dbAccess.queryAll(SQL.queryItemAttributes(itemId, includeHidden));
     }
 
     insertItemAttributes(itemId: number, attributes: { id: string, name: string, g0: string, g1: string, g2: string, value: string, modified?: boolean }[]): CommandResultSingle {

@@ -16,6 +16,7 @@ import {Attribute, attributeKeyFromArray, Item} from "../service/item/itemCommon
 import {SQLiteDataRepository} from "../persistence/sqliteRepository";
 import {DataRepository} from "../service/dataRepository";
 import {ActionDeleteItemAttribute} from "../service/item/actionDeleteItemAttribute";
+import {ActionGetHiddenAttributes} from "../service/library/actionGetHiddenAttributes";
 
 describe("item-service", () => {
 
@@ -24,7 +25,7 @@ describe("item-service", () => {
 		test("get by normal collection without attributes", async () => {
 			// given
 			const [actionCreateLibrary, repository, dbAccess] = mockItemService();
-			const actionGetByCollection = new ActionGetItemsByCollection(repository, new ActionGetCollectionById(repository));
+			const actionGetByCollection = new ActionGetItemsByCollection(repository, new ActionGetCollectionById(repository), new ActionGetHiddenAttributes(repository));
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -45,7 +46,7 @@ describe("item-service", () => {
 				])
 			]);
 			// when
-			const result: Promise<Item[]> = actionGetByCollection.perform(1, [], false);
+			const result: Promise<Item[]> = actionGetByCollection.perform(1, [], false, true);
 			// then
 			await expect(result).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, []),
@@ -58,7 +59,7 @@ describe("item-service", () => {
 		test("get by normal collection", async () => {
 			// given
 			const [actionCreateLibrary, repository, dbAccess] = mockItemService();
-			const actionGetByCollection = new ActionGetItemsByCollection(repository, new ActionGetCollectionById(repository));
+			const actionGetByCollection = new ActionGetItemsByCollection(repository, new ActionGetCollectionById(repository), new ActionGetHiddenAttributes(repository));
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -80,7 +81,7 @@ describe("item-service", () => {
 			]);
 			// when
 			const requestedAttributeKeys = [attributeKeyFromArray(keyFileModifyDate()), attributeKeyFromArray(keyMIMEType())];
-			const result: Promise<Item[]> = actionGetByCollection.perform(1, requestedAttributeKeys, false);
+			const result: Promise<Item[]> = actionGetByCollection.perform(1, requestedAttributeKeys, false, true);
 			// then
 			await expect(result).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, [
@@ -98,7 +99,7 @@ describe("item-service", () => {
 		test("get by normal collection include missing", async () => {
 			// given
 			const [actionCreateLibrary, repository, dbAccess] = mockItemService();
-			const actionGetByCollection = new ActionGetItemsByCollection(repository, new ActionGetCollectionById(repository));
+			const actionGetByCollection = new ActionGetItemsByCollection(repository, new ActionGetCollectionById(repository), new ActionGetHiddenAttributes(repository));
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -120,7 +121,7 @@ describe("item-service", () => {
 			]);
 			// when
 			const requestedAttributeKeys = [attributeKeyFromArray(keyFileModifyDate()), attributeKeyFromArray(keyMIMEType())];
-			const result: Promise<Item[]> = actionGetByCollection.perform(1, requestedAttributeKeys, true);
+			const result: Promise<Item[]> = actionGetByCollection.perform(1, requestedAttributeKeys, true, true);
 			// then
 			await expect(result).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, [
@@ -141,7 +142,7 @@ describe("item-service", () => {
 		test("get by smart collection", async () => {
 			// given
 			const [actionCreateLibrary, repository, dbAccess] = mockItemService();
-			const actionGetByCollection = new ActionGetItemsByCollection(repository, new ActionGetCollectionById(repository));
+			const actionGetByCollection = new ActionGetItemsByCollection(repository, new ActionGetCollectionById(repository), new ActionGetHiddenAttributes(repository));
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -163,7 +164,7 @@ describe("item-service", () => {
 			]);
 			// when
 			const requestedAttributeKeys = [attributeKeyFromArray(keyFileModifyDate()), attributeKeyFromArray(keyMIMEType())];
-			const result: Promise<Item[]> = actionGetByCollection.perform(2, requestedAttributeKeys, false);
+			const result: Promise<Item[]> = actionGetByCollection.perform(2, requestedAttributeKeys, false, true);
 			// then
 			await expect(result).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, [
@@ -180,7 +181,7 @@ describe("item-service", () => {
 		test("get by smart collection with empty query", async () => {
 			// given
 			const [actionCreateLibrary, repository, dbAccess] = mockItemService();
-			const actionGetByCollection = new ActionGetItemsByCollection(repository, new ActionGetCollectionById(repository));
+			const actionGetByCollection = new ActionGetItemsByCollection(repository, new ActionGetCollectionById(repository), new ActionGetHiddenAttributes(repository));
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -202,7 +203,7 @@ describe("item-service", () => {
 			]);
 			// when
 			const requestedAttributeKeys = [attributeKeyFromArray(keyFileModifyDate()), attributeKeyFromArray(keyMIMEType())];
-			const result: Promise<Item[]> = actionGetByCollection.perform(2, requestedAttributeKeys, false);
+			const result: Promise<Item[]> = actionGetByCollection.perform(2, requestedAttributeKeys, false, true);
 			// then
 			await expect(result).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, [
@@ -221,7 +222,7 @@ describe("item-service", () => {
 		test("get by non-existing collection", async () => {
 			// given
 			const [actionCreateLibrary, repository, dbAccess] = mockItemService();
-			const actionGetByCollection = new ActionGetItemsByCollection(repository, new ActionGetCollectionById(repository));
+			const actionGetByCollection = new ActionGetItemsByCollection(repository, new ActionGetCollectionById(repository), new ActionGetHiddenAttributes(repository));
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -243,7 +244,7 @@ describe("item-service", () => {
 			]);
 			// when
 			const requestedAttributeKeys = [attributeKeyFromArray(keyFileAccessDate()), attributeKeyFromArray(keyMIMEType())];
-			const result: Promise<Item[]> = actionGetByCollection.perform(42, requestedAttributeKeys, false);
+			const result: Promise<Item[]> = actionGetByCollection.perform(42, requestedAttributeKeys, false, true);
 			// then
 			await expect(result).rejects.toBeDefined();
 		});
@@ -334,9 +335,9 @@ describe("item-service", () => {
 			await expect(dbAccess.queryAll(SQL.queryItemsAll([])).then((result => result.map(r => r.item_id)))).resolves.toEqual([1, 4]);
 			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(1, [])).then((result => result.map(r => r.item_id)))).resolves.toEqual([1]);
 			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(2, [])).then((result => result.map(r => r.item_id)))).resolves.toEqual([4]);
-			await expect(dbAccess.queryAll(SQL.queryItemAttributes(1))).resolves.toHaveLength(3);
-			await expect(dbAccess.queryAll(SQL.queryItemAttributes(2))).resolves.toEqual([]);
-			await expect(dbAccess.queryAll(SQL.queryItemAttributes(3))).resolves.toEqual([]);
+			await expect(dbAccess.queryAll(SQL.queryItemAttributes(1, true))).resolves.toHaveLength(3);
+			await expect(dbAccess.queryAll(SQL.queryItemAttributes(2, true))).resolves.toEqual([]);
+			await expect(dbAccess.queryAll(SQL.queryItemAttributes(3, true))).resolves.toEqual([]);
 		});
 
 
@@ -371,9 +372,9 @@ describe("item-service", () => {
 			await expect(dbAccess.queryAll(SQL.queryItemsAll([])).then((result => result.map(r => r.item_id)))).resolves.toEqual([1, 3, 4]);
 			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(1, [])).then((result => result.map(r => r.item_id)))).resolves.toEqual([1, 3]);
 			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(2, [])).then((result => result.map(r => r.item_id)))).resolves.toEqual([3, 4]);
-			await expect(dbAccess.queryAll(SQL.queryItemAttributes(1))).resolves.toHaveLength(3);
-			await expect(dbAccess.queryAll(SQL.queryItemAttributes(2))).resolves.toEqual([]);
-			await expect(dbAccess.queryAll(SQL.queryItemAttributes(3))).resolves.toEqual([]);
+			await expect(dbAccess.queryAll(SQL.queryItemAttributes(1, true))).resolves.toHaveLength(3);
+			await expect(dbAccess.queryAll(SQL.queryItemAttributes(2, true))).resolves.toEqual([]);
+			await expect(dbAccess.queryAll(SQL.queryItemAttributes(3, true))).resolves.toEqual([]);
 		});
 
 	});
@@ -471,7 +472,7 @@ describe("item-service", () => {
 				])
 			]);
 			// when
-			const result: Promise<Attribute[]> = actionGetAttribs.perform(2);
+			const result: Promise<Attribute[]> = actionGetAttribs.perform(2, false);
 			// then
 			await expect(result).resolves.toEqual([
 				attribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "_text", false, false),
@@ -501,7 +502,7 @@ describe("item-service", () => {
 				])
 			]);
 			// when
-			const result: Promise<Attribute[]> = actionGetAttribs.perform(100);
+			const result: Promise<Attribute[]> = actionGetAttribs.perform(100, false);
 			// then
 			await expect(result).rejects.toBeDefined();
 		});
@@ -530,7 +531,7 @@ describe("item-service", () => {
 			const result: Promise<Attribute> = actionUpdateAttrib.perform(1, updatedAttributeKey, "new value");
 			// then
 			await expect(result).resolves.toEqual(attribute(keyFileModifyDate(), "new value", "?", true, true));
-			await expect(actionGetAttribs.perform(1)).resolves.toEqual([
+			await expect(actionGetAttribs.perform(1, false)).resolves.toEqual([
 				attribute(keyFileModifyDate(), "new value", "_text", true, true),
 				attribute(keyFileExtension(), "jpg", "_text", false, false),
 				attribute(keyMIMEType(), "image/jpeg", "_text", false, false)
@@ -557,7 +558,7 @@ describe("item-service", () => {
 			const result: Promise<Attribute> = actionUpdateAttrib.perform(100, updatedAttributeKey, "new value");
 			// then
 			await expect(result).rejects.toBeDefined();
-			await expect(actionGetAttribs.perform(1)).resolves.toEqual([
+			await expect(actionGetAttribs.perform(1, false)).resolves.toEqual([
 				attribute(keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "_text", true, false),
 				attribute(keyFileExtension(), "jpg", "_text", false, false),
 				attribute(keyMIMEType(), "image/jpeg", "_text", false, false)
@@ -584,7 +585,7 @@ describe("item-service", () => {
 			const result: Promise<Attribute> = actionUpdateAttrib.perform(1, updatedAttributeKey, "new value");
 			// then
 			await expect(result).rejects.toBeDefined();
-			await expect(actionGetAttribs.perform(1)).resolves.toEqual([
+			await expect(actionGetAttribs.perform(1, false)).resolves.toEqual([
 				attribute(keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "_text", true, false),
 				attribute(keyFileExtension(), "jpg", "_text", false, true),
 				attribute(keyMIMEType(), "image/jpeg", "_text", false, false)
@@ -619,11 +620,11 @@ describe("item-service", () => {
 			const result: Promise<void> = actionDeleteAttrib.perform(1, deleteAttributeKey);
 			// then
 			await expect(result).resolves.toBeUndefined();
-			await expect(actionGetAttribs.perform(1)).resolves.toEqual([
+			await expect(actionGetAttribs.perform(1, false)).resolves.toEqual([
 				attribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "_text", false, false),
 				attribute(keyMIMEType(), "image/jpeg", "_text", false, true)
 			]);
-			await expect(actionGetAttribs.perform(2)).resolves.toEqual([
+			await expect(actionGetAttribs.perform(2, false)).resolves.toEqual([
 				attribute(keyFileExtension(), "jpg", "_text", false, false)
 			]);
 		});
@@ -648,7 +649,7 @@ describe("item-service", () => {
 			const result: Promise<void> = actionDeleteAttrib.perform(1, deleteAttributeKey);
 			// then
 			await expect(result).resolves.toBeUndefined();
-			await expect(actionGetAttribs.perform(1)).resolves.toEqual([
+			await expect(actionGetAttribs.perform(1, false)).resolves.toEqual([
 				attribute(keyFileAccessDate(), "2021:10:11 21:00:12+02:00", "_text", false, false),
 				attribute(keyFileExtension(), "jpg", "_text", false, true),
 				attribute(keyMIMEType(), "image/jpeg", "_text", false, false)

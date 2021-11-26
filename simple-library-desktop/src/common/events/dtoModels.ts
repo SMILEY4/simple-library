@@ -152,3 +152,11 @@ export interface ApplicationConfigDTO {
 	exiftoolPath: string | null,
 	theme: "dark" | "light"
 }
+
+export interface AttributeMetaDTO {
+	name: string,
+	id: string,
+	g0: string,
+	g1: string,
+	g2: string
+}

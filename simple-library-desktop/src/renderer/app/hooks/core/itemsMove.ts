@@ -29,7 +29,7 @@ export function useMoveItems() {
 	}
 
 	function updateItemState(collectionId: number) {
-		return fetchItems(collectionId, TEMP_ATTRIBUTE_KEYS, true)
+		return fetchItems(collectionId, TEMP_ATTRIBUTE_KEYS, true, false)
 			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_FETCH_FAILED, error))
 			.then((items: ItemDTO[]) => dispatchSetItems(items));
 	}

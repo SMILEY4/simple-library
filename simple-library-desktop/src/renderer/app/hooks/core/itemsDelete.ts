@@ -36,7 +36,7 @@ export function useDeleteItems() {
 
 
 	function updateItemState() {
-		return fetchItems(activeCollectionId, TEMP_ATTRIBUTE_KEYS, true)
+		return fetchItems(activeCollectionId, TEMP_ATTRIBUTE_KEYS, true, false)
 			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_FETCH_FAILED, error))
 			.then((items: ItemDTO[]) => dispatchSetItems(items));
 	}

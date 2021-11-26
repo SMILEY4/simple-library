@@ -38,17 +38,24 @@ import sqlInsertItem from "./sqlscripts/items/insert_item.sql";
 import sqlInsertAttributeMeta from "./sqlscripts/item_attributes/insert_attribute_meta.sql";
 import sqlQueryExistsItemAttribute from "./sqlscripts/item_attributes/query_exists_item_attribute.sql";
 import sqlQueryAttributeMetadata from "./sqlscripts/item_attributes/query_item_attribute_meta.sql";
-import sqlQueryItemAttributesAll from "./sqlscripts/item_attributes/query_item_attributes_all.sql";
-import sqlQueryItemAttributesAllModified from "./sqlscripts/item_attributes/query_item_attributes_all_modified.sql";
-import sqlQueryItemAttributesByItems from "./sqlscripts/item_attributes/query_item_attributes_by_items.sql";
-import sqlQueryItemAttributesModifiedByItems
-	from "./sqlscripts/item_attributes/query_item_attributes_modified_by_items.sql";
+import sqlQueryItemAttributesAllNotHidden from "./sqlscripts/item_attributes/query_item_attributes_all_not_hidden.sql";
+import sqlQueryItemAttributesAllModifiedNotHidden from "./sqlscripts/item_attributes/query_item_attributes_all_modified_not_hidden.sql";
+import sqlQueryItemAttributesNotHiddenByItems from "./sqlscripts/item_attributes/query_item_attributes_not_hidden_by_items.sql";
+import sqlQueryItemAttributesModifiedNotHiddenByItems
+	from "./sqlscripts/item_attributes/query_item_attributes_modified_not_hidden_by_items.sql";
 import sqlUpdateItemAttributeModifiedFlag from "./sqlscripts/item_attributes/update_item_attribute_modified.sql";
 import sqlUpdateItemAttributeModifiedFlagsByItemIds
 	from "./sqlscripts/item_attributes/update_item_attributes_modified_by_items.sql";
 import sqlUpdateItemAttributeModifiedFlagsAll
 	from "./sqlscripts/item_attributes/update_item_attributes_modified_all.sql";
 import sqlDeleteItemAttributesByItemId from "./sqlscripts/item_attributes/delete_item_attributes.sql";
+import sqlQueryItemAttributeMetaAll from "./sqlscripts/item_attributes/query_item_attribute_meta_all.sql";
+import sqlQueryItemAttributeMetaFiltered from "./sqlscripts/item_attributes/query_item_attribute_meta_filtered.sql";
+import sqlQueryHiddenAttributes from "./sqlscripts/item_attributes/query_hidden_attributes_all.sql";
+import sqlInsertHiddenAttributes from "./sqlscripts/item_attributes/insert_hidden_attributes.sql";
+import sqlDeleteHiddenAttribute from "./sqlscripts/item_attributes/delete_hidden_attribute.sql";
+import sqlQueryItemAttributesNoHidden from "./sqlscripts/items/query_item_attributes_no_hidden.sql";
+
 
 export module SQL {
 
@@ -243,8 +250,36 @@ export module SQL {
 			.replace(v("keys"), attribKeyList(keys));
 	}
 
-	export function queryItemAttributes(itemId: number): string {
-		return sql(sqlQueryItemAttributes)
+	export function queryAttributeMetaAll(filter: string | null): string {
+		if (filter && filter.trim().length > 0) {
+			return sql(sqlQueryItemAttributeMetaFiltered)
+				.replace(v("filter"), raw(filter));
+		} else {
+			return sql(sqlQueryItemAttributeMetaAll);
+		}
+	}
+
+	export function queryHiddenAttributes(): string {
+		return sql(sqlQueryHiddenAttributes);
+	}
+
+	export function insertHiddenAttributes(attributes: { id: string, name: string, g0: string | undefined, g1: string | undefined, g2: string | undefined }[]): string {
+		const entries: string[] = attributes.map(att => `(${str(att.id)}, ${str(att.name)}, ${str(att.g0)}, ${str(att.g1)}, ${str(att.g2)})`);
+		return sql(sqlInsertHiddenAttributes)
+			.replace(v("entries"), entries.join(", "));
+	}
+
+	export function deleteHiddenAttributes(id: string, name: string, g0: string | undefined, g1: string | undefined, g2: string | undefined): string {
+		return sql(sqlDeleteHiddenAttribute)
+			.replace(v("id"), str(id))
+			.replace(v("name"), str(name))
+			.replace(v("g0"), str(g0))
+			.replace(v("g1"), str(g1))
+			.replace(v("g2"), str(g2));
+	}
+
+	export function queryItemAttributes(itemId: number, includeHidden: boolean): string {
+		return sql(includeHidden ? sqlQueryItemAttributes : sqlQueryItemAttributesNoHidden)
 			.replace(v("itemId"), num(itemId));
 	}
 
@@ -303,18 +338,18 @@ export module SQL {
 
 	export function queryExtendedItemAttributesAll(onlyModified: boolean): string {
 		if (onlyModified) {
-			return sql(sqlQueryItemAttributesAllModified);
+			return sql(sqlQueryItemAttributesAllModifiedNotHidden);
 		} else {
-			return sql(sqlQueryItemAttributesAll);
+			return sql(sqlQueryItemAttributesAllNotHidden);
 		}
 	}
 
 	export function queryExtendedItemAttributesByItemIds(itemIds: number[], onlyModified: boolean): string {
 		if (onlyModified) {
-			return sql(sqlQueryItemAttributesModifiedByItems)
+			return sql(sqlQueryItemAttributesModifiedNotHiddenByItems)
 				.replace(v("itemIds"), numCsv(itemIds));
 		} else {
-			return sql(sqlQueryItemAttributesByItems)
+			return sql(sqlQueryItemAttributesNotHiddenByItems)
 				.replace(v("itemIds"), numCsv(itemIds));
 		}
 	}
@@ -357,6 +392,12 @@ function vNull() {
 
 function isNull(): string {
 	return "IS NULL";
+}
+
+function raw(value: any): string {
+	return value === null || value === undefined
+		? "null"
+		: ("" + value).replace(/'/g, "''");
 }
 
 function str(value: any): string {

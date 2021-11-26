@@ -47,6 +47,7 @@ export function ContextMenuBase(props: React.PropsWithChildren<ContextMenuBasePr
 				style={{
 					left: props.pageX + "px",
 					top: props.pageY + "px",
+					position: "absolute",
 					...props.style,
 				}}
 				ref={props.menuRef}

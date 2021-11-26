@@ -18,7 +18,7 @@ export function useContextMenu() {
                 setY(y + offsets[1]);
             }
         }
-    });
+    }, []);
 
     function openWithEvent(event: React.MouseEvent, payload?: any) {
         event.preventDefault();

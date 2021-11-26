@@ -614,7 +614,7 @@ describe("import", () => {
 				item(2, "path\\to\\file2.png", TIMESTAMP),
 				item(3, "path\\to\\file3.png", TIMESTAMP)
 			]);
-			await expect(dbAccess.queryAll(SQL.queryItemAttributes(1))).resolves.toEqual([
+			await expect(dbAccess.queryAll(SQL.queryItemAttributes(1, true))).resolves.toEqual([
 				attribute(["FileModifyDate", "FileModifyDate", "File", "System", "Time"], "2020:08:08 19:55:50+02:00", 0, true),
 				attribute(["FileAccessDate", "FileAccessDate", "File", "System", "Time"], "2021:10:11 21:00:12+02:00", 0, false),
 				attribute(["FileCreateDate", "FileCreateDate", "File", "System", "Time"], "2021:10:10 21:23:43+02:00", 0, true),
@@ -622,8 +622,8 @@ describe("import", () => {
 				attribute(["FileTypeExtension", "FileTypeExtension", "File", "File", "Other"], "jpg", 0, false),
 				attribute(["MIMEType", "MIMEType", "File", "File", "Other"], "image/jpeg", 0, false),
 			]);
-			await expect(dbAccess.queryAll(SQL.queryItemAttributes(2))).resolves.toHaveLength(6);
-			await expect(dbAccess.queryAll(SQL.queryItemAttributes(3))).resolves.toHaveLength(6);
+			await expect(dbAccess.queryAll(SQL.queryItemAttributes(2, true))).resolves.toHaveLength(6);
+			await expect(dbAccess.queryAll(SQL.queryItemAttributes(3, true))).resolves.toHaveLength(6);
 		});
 
 
@@ -671,9 +671,9 @@ describe("import", () => {
 				item(2, "new\\target\\directory\\file2.png", TIMESTAMP),
 				item(3, "new\\target\\directory\\file3.png", TIMESTAMP)
 			]);
-			await expect(dbAccess.queryAll(SQL.queryItemAttributes(1))).resolves.toHaveLength(6);
-			await expect(dbAccess.queryAll(SQL.queryItemAttributes(2))).resolves.toHaveLength(6);
-			await expect(dbAccess.queryAll(SQL.queryItemAttributes(3))).resolves.toHaveLength(6);
+			await expect(dbAccess.queryAll(SQL.queryItemAttributes(1, true))).resolves.toHaveLength(6);
+			await expect(dbAccess.queryAll(SQL.queryItemAttributes(2, true))).resolves.toHaveLength(6);
+			await expect(dbAccess.queryAll(SQL.queryItemAttributes(3, true))).resolves.toHaveLength(6);
 		});
 
 
@@ -721,9 +721,9 @@ describe("import", () => {
 				item(2, "new\\target\\directory\\file2.png", TIMESTAMP),
 				item(3, "new\\target\\directory\\file3.png", TIMESTAMP)
 			]);
-			await expect(dbAccess.queryAll(SQL.queryItemAttributes(1))).resolves.toHaveLength(6);
-			await expect(dbAccess.queryAll(SQL.queryItemAttributes(2))).resolves.toHaveLength(6);
-			await expect(dbAccess.queryAll(SQL.queryItemAttributes(3))).resolves.toHaveLength(6);
+			await expect(dbAccess.queryAll(SQL.queryItemAttributes(1, true))).resolves.toHaveLength(6);
+			await expect(dbAccess.queryAll(SQL.queryItemAttributes(2, true))).resolves.toHaveLength(6);
+			await expect(dbAccess.queryAll(SQL.queryItemAttributes(3, true))).resolves.toHaveLength(6);
 		});
 
 
@@ -777,9 +777,9 @@ describe("import", () => {
 				item(2, "path\\to\\file2_txt_9.png", TIMESTAMP),
 				item(3, "path\\to\\file3_txt_10.png", TIMESTAMP)
 			]);
-			await expect(dbAccess.queryAll(SQL.queryItemAttributes(1))).resolves.toHaveLength(6);
-			await expect(dbAccess.queryAll(SQL.queryItemAttributes(2))).resolves.toHaveLength(6);
-			await expect(dbAccess.queryAll(SQL.queryItemAttributes(3))).resolves.toHaveLength(6);
+			await expect(dbAccess.queryAll(SQL.queryItemAttributes(1, true))).resolves.toHaveLength(6);
+			await expect(dbAccess.queryAll(SQL.queryItemAttributes(2, true))).resolves.toHaveLength(6);
+			await expect(dbAccess.queryAll(SQL.queryItemAttributes(3, true))).resolves.toHaveLength(6);
 		});
 
 
@@ -834,9 +834,9 @@ describe("import", () => {
 				item(2, "new\\target\\directory\\file2_txt_9.png", TIMESTAMP),
 				item(3, "new\\target\\directory\\file3_txt_10.png", TIMESTAMP)
 			]);
-			await expect(dbAccess.queryAll(SQL.queryItemAttributes(1))).resolves.toHaveLength(6);
-			await expect(dbAccess.queryAll(SQL.queryItemAttributes(2))).resolves.toHaveLength(6);
-			await expect(dbAccess.queryAll(SQL.queryItemAttributes(3))).resolves.toHaveLength(6);
+			await expect(dbAccess.queryAll(SQL.queryItemAttributes(1, true))).resolves.toHaveLength(6);
+			await expect(dbAccess.queryAll(SQL.queryItemAttributes(2, true))).resolves.toHaveLength(6);
+			await expect(dbAccess.queryAll(SQL.queryItemAttributes(3, true))).resolves.toHaveLength(6);
 		});
 
 
@@ -891,9 +891,9 @@ describe("import", () => {
 				item(2, "new\\target\\directory\\file2_txt_9.png", TIMESTAMP),
 				item(3, "new\\target\\directory\\file3_txt_10.png", TIMESTAMP)
 			]);
-			await expect(dbAccess.queryAll(SQL.queryItemAttributes(1))).resolves.toHaveLength(6);
-			await expect(dbAccess.queryAll(SQL.queryItemAttributes(2))).resolves.toHaveLength(6);
-			await expect(dbAccess.queryAll(SQL.queryItemAttributes(3))).resolves.toHaveLength(6);
+			await expect(dbAccess.queryAll(SQL.queryItemAttributes(1, true))).resolves.toHaveLength(6);
+			await expect(dbAccess.queryAll(SQL.queryItemAttributes(2, true))).resolves.toHaveLength(6);
+			await expect(dbAccess.queryAll(SQL.queryItemAttributes(3, true))).resolves.toHaveLength(6);
 		});
 
 	});
