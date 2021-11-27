@@ -46,7 +46,7 @@ const reducerConfigMap: ReducerConfigMap<AttributeActionType, AttributeState> = 
 	})],
 	[AttributeActionType.REMOVE, (state, payload) => ({
 		...state,
-		attributes: state.attributes.filter(att => att.attId === payload)
+		attributes: state.attributes.filter(att => att.attId !== payload)
 	})],
 	[AttributeActionType.UPDATE, (state, payload) => ({
 		...state,
