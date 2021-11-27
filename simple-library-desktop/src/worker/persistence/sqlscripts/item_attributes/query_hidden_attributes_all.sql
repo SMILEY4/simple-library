@@ -1,4 +1,4 @@
-SELECT hidden_attributes.att_id as attId,
+SELECT hidden_attributes.att_id as att_id,
 	   attribute_meta.id        as id,
 	   attribute_meta.name      as name,
 	   attribute_meta.g0        as g0,
@@ -8,5 +8,5 @@ SELECT hidden_attributes.att_id as attId,
 	   attribute_meta.writable  as writable
 FROM hidden_attributes,
 	 attribute_meta
-WHERE hidden_attributes.att_id = attribute_meta.attId
+WHERE hidden_attributes.att_id = attribute_meta.att_id
 ORDER BY attribute_meta.name

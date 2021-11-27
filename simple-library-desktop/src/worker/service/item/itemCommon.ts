@@ -121,7 +121,7 @@ export function concatAttributeColumnToEntries(str: string): Attribute[] {
 
 export function rowToAttribute(row: any): Attribute {
 	return {
-		attId: Number.parseInt(row.attId),
+		attId: Number.parseInt(row.att_id),
 		key: {
 			id: row.id,
 			name: row.name,
@@ -138,7 +138,7 @@ export function rowToAttribute(row: any): Attribute {
 
 export function rowToExtendedAttribute(row: any): ExtendedAttribute {
 	return {
-		attId: Number.parseInt(row.attId),
+		attId: Number.parseInt(row.att_id),
 		key: {
 			id: row.id,
 			name: row.name,

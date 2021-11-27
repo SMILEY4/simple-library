@@ -5,7 +5,7 @@ FROM items
 		 LEFT JOIN (
 			SELECT *,
 				   '"'
-					   || attribute_meta.attId
+					   || attribute_meta.att_id
 					   || ':'
 					   || attribute_meta.id
 					   || ':'
@@ -25,10 +25,10 @@ FROM items
 					   || '"-"'
 					   || item_attributes.modified
 					   || '"'
-					   AS str_attribute -- "attId:id:name:g0:g1:g2-type-writable"="myValue-1"
+					   AS str_attribute -- "att_id:id:name:g0:g1:g2-type-writable"="myValue-1"
 			FROM item_attributes,
 				 attribute_meta
-			WHERE item_attributes.att_id = attribute_meta.attId
+			WHERE item_attributes.att_id = attribute_meta.att_id
 			  AND item_attributes.att_id IN ($attributeIds)
 		) attribs ON items.item_id = attribs.item_id
 WHERE $query

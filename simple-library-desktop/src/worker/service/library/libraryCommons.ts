@@ -25,7 +25,7 @@ export function rowsToAttributeMeta(rows: any[]): AttributeMeta[] {
 
 export function rowToAttributeMeta(row: any): AttributeMeta {
 	return {
-		attId: Number.parseInt(row.attId),
+		attId: Number.parseInt(row.att_id),
 		key: {
 			id: row.id,
 			name: row.name,

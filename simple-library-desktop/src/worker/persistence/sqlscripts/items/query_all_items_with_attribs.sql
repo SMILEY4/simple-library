@@ -4,7 +4,7 @@ FROM items
 		 LEFT JOIN (
 			SELECT *,
 				   '"'
-					   || attribute_meta.attId
+					   || attribute_meta.att_id
 					   || ':'
 					   || attribute_meta.id
 					   || ':'
@@ -27,7 +27,7 @@ FROM items
 					   AS str_attribute -- "attId:id:name:g0:g1:g2-type-writable"="myValue-1"
 			FROM item_attributes,
 				 attribute_meta
-			WHERE item_attributes.att_id = attribute_meta.attId
+			WHERE item_attributes.att_id = attribute_meta.att_id
 			  AND item_attributes.att_id IN ($attributeIds)
 		) attribs ON items.item_id = attribs.item_id
 GROUP BY items.item_id;

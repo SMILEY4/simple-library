@@ -1,5 +1,5 @@
 -- itemIds (csv-numbers): the ids of the items to fetch the attributes for
-SELECT attribute_meta.attId      as attId,
+SELECT attribute_meta.att_id      as att_id,
 	   attribute_meta.id       as id,
 	   attribute_meta.name     as name,
 	   attribute_meta.g0       as g0,
@@ -15,7 +15,7 @@ FROM item_attributes
 	 attribute_meta,
 	 items
 WHERE hidden.att_id IS NULL
-  AND item_attributes.att_id = attribute_meta.attId
+  AND item_attributes.att_id = attribute_meta.att_id
   AND items.item_id = item_attributes.item_id
   AND attribute_meta.writable = 1
   AND item_attributes.modified = 1

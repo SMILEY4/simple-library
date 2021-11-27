@@ -19,7 +19,7 @@ CREATE TABLE items
 
 CREATE TABLE attribute_meta
 (
-	attId    INTEGER PRIMARY KEY AUTOINCREMENT,
+	att_id   INTEGER PRIMARY KEY AUTOINCREMENT,
 	id       TEXT    NOT NULL,
 	name     TEXT    NOT NULL,
 	g0       TEXT    NOT NULL,

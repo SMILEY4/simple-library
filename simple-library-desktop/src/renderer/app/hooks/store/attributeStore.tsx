@@ -138,6 +138,7 @@ export function useDispatchRemoveAttribute() {
 export function useDispatchUpdateAttribute() {
 	const dispatch = useAttributeDispatch();
 	return (attribute: AttributeDTO) => {
+		console.log("UPDATE:", attribute)
 		dispatch({
 			type: AttributeActionType.UPDATE,
 			payload: {
