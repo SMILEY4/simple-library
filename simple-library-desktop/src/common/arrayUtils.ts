@@ -100,7 +100,7 @@ export module ArrayUtils {
 		if (equality) {
 			return equality(a, b);
 		} else {
-			DEFAULT_EQUALITY(a, b);
+			return DEFAULT_EQUALITY(a, b);
 		}
 	}
 

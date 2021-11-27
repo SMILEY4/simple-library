@@ -57,6 +57,7 @@ import {ActionGetLibraryAttributeMeta} from "./service/library/actionGetLibraryA
 import {ActionSetHiddenAttributes} from "./service/library/actionSetHiddenAttributes";
 import {ActionGetHiddenAttributes} from "./service/library/actionGetHiddenAttributes";
 import {ActionGetLibraryAttributeMetaByKeys} from "./service/library/actionGetLibraryAttributeMetaByKeys";
+import {ImportDbWriter} from "./service/import/importDbWriter";
 
 export class ActionHandler {
 
@@ -148,8 +149,8 @@ export class ActionHandler {
 			new ImportStepTargetFilepath(),
 			new ImportStepImportTarget(fsWrapper),
 			new ImportStepMetadata(new ActionReadItemAttributesFromFile(actionGetExiftoolInfo)),
+			new ImportDbWriter(dataRepository, actionGetLibraryAttributeMetaByKeys),
 			(status: any) => this.send(EventIds.IMPORT_STATUS, status),
-			actionGetLibraryAttributeMetaByKeys
 		);
 
 		this.eventHandler.on(EventIds.GET_APP_CONFIG, () => actionGetAppConfig.perform());

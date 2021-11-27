@@ -97,13 +97,15 @@ export function MetadataSidebar(props: React.PropsWithChildren<MetadataSidebarPr
                 menuRef={contextMenuRef}
                 onRequestClose={closeContextMenu}
             >
-                <MetadataListEntryContextMenu
-                    attributeId={contextMenuPayload.attId}
-                    attributeName={contextMenuPayload.name}
-                    onCopy={handleCopyEntryValue}
-                    onHide={handleHideEntry}
-                    onDelete={handleDeleteEntry}
-                />
+                {contextMenuPayload && (
+                    <MetadataListEntryContextMenu
+                        attributeId={contextMenuPayload.attId}
+                        attributeName={contextMenuPayload.name}
+                        onCopy={handleCopyEntryValue}
+                        onHide={handleHideEntry}
+                        onDelete={handleDeleteEntry}
+                    />
+                )}
             </ContextMenuBase>
 
         </>

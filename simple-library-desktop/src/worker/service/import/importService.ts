@@ -9,6 +9,7 @@ import {ImportStatusDTO} from "../../../common/events/dtoModels";
 import {DataRepository} from "../dataRepository";
 import {ActionGetLibraryAttributeMetaByKeys} from "../library/actionGetLibraryAttributeMetaByKeys";
 import {AttributeMeta} from "../library/libraryCommons";
+import {ImportDbWriter} from "./importDbWriter";
 
 export interface ImportProcessData {
 	files: string[],
@@ -73,7 +74,7 @@ export class ImportService {
 	private readonly importStepImportTarget: ImportStepImportTarget;
 	private readonly importStepMetadata: ImportStepMetadata;
 	private readonly importStatusSender: ImportStatusSender;
-	private readonly actionGetAttributeMetaByKeys: ActionGetLibraryAttributeMetaByKeys;
+	private readonly importStepDbWriter: ImportDbWriter;
 
 	/**
 	 * True, when an import is currently running
@@ -89,8 +90,8 @@ export class ImportService {
 		importStepTargetFilepath: ImportStepTargetFilepath,
 		importStepImportTarget: ImportStepImportTarget,
 		importStepMetadata: ImportStepMetadata,
+		importStepDbWriter: ImportDbWriter,
 		importStatusSender: ImportStatusSender,
-		actionGetAttributeMetaByKeys: ActionGetLibraryAttributeMetaByKeys
 	) {
 		this.repository = repository;
 		this.validator = validator;
@@ -99,8 +100,8 @@ export class ImportService {
 		this.importStepTargetFilepath = importStepTargetFilepath;
 		this.importStepImportTarget = importStepImportTarget;
 		this.importStepMetadata = importStepMetadata;
+		this.importStepDbWriter = importStepDbWriter;
 		this.importStatusSender = importStatusSender;
-		this.actionGetAttributeMetaByKeys = actionGetAttributeMetaByKeys;
 	}
 
 
@@ -168,54 +169,12 @@ export class ImportService {
 			.then((item: ItemData) => this.importStepFileHash.handle(item))
 			.then((item: ItemData) => this.importStepThumbnail.handle(item))
 			.then((item: ItemData) => this.importStepMetadata.handle(item))
-			.then((item: ItemData) => this.saveItem(item))
+			.then((item: ItemData) => this.importStepDbWriter.handle(item))
 			.then(() => console.debug("done importing file: " + file))
 			.catch((error: any) => {
 				console.error("Error while importing file " + file + ": " + error);
 				throw [file, error];
 			});
-	}
-
-
-	private saveItem(item: ItemData): Promise<any> {
-		return this.insertItem(item)
-			.then((itemId: number) => item.attributes
-				? this.insertAttributes(itemId, item.attributes)
-				: Promise.resolve(null)
-			);
-	}
-
-
-	private insertItem(item: ItemData): Promise<number | null> {
-		return this.repository.insertItem(item.filepath, item.timestamp, item.hash, item.thumbnail)
-			.then((itemId: number | null) => itemId
-				? itemId
-				: Promise.reject("Could not save item: " + item.filepath));
-	}
-
-
-	private insertAttributes(itemId: number, attributes: Attribute[]): Promise<any> {
-		return this.actionGetAttributeMetaByKeys.perform(attributes.map(a => a.key))
-			.then(attributeMeta => {
-				return attributes
-					.map(attribute => this.enrichWithAttributeId(attribute, attributeMeta))
-					.filter(a => a !== null);
-			})
-			.then(attribEntries => this.repository.insertItemAttributes(itemId, attribEntries));
-	}
-
-
-	private enrichWithAttributeId(attribute: Attribute, attributeMeta: AttributeMeta[]): { attId: number, value: string, modified: boolean } | null {
-		const metaEntry = attributeMeta.find(am => attributeKeysEquals(am.key, attribute.key));
-		if (metaEntry) {
-			return {
-				attId: metaEntry.attId,
-				value: "" + attribute.value,
-				modified: false
-			};
-		} else {
-			return null;
-		}
 	}
 
 

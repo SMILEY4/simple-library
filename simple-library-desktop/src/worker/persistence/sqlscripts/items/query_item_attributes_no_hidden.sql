@@ -13,5 +13,5 @@ FROM attribute_meta,
 	 item_attributes
 		 LEFT JOIN hidden_attributes hidden ON item_attributes.att_id = hidden.att_id
 WHERE item_id = $itemId
-  AND hidden.id IS NULL
+  AND hidden.att_id IS NULL
   AND item_attributes.att_id = attribute_meta.attId

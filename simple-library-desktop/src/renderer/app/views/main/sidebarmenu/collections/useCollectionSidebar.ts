@@ -275,7 +275,6 @@ function useExpandCollapseSidebarNode(): [string[], (nodeId: string, expand: boo
 	const dispatchCollapseNode = useDispatchCollapseNode();
 
 	function toggle(nodeId: string, expand: boolean) {
-		console.log("toggle: ", nodeId, expand)
 		if (expand) {
 			dispatchExpandNode(nodeId);
 		} else {

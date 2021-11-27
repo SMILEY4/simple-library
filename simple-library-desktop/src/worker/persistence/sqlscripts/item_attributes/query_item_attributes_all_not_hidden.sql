@@ -13,7 +13,7 @@ FROM item_attributes
 		 LEFT JOIN hidden_attributes hidden ON item_attributes.att_id = hidden.att_id,
 	 attribute_meta,
 	 items
-WHERE hidden.id IS NULL
+WHERE hidden.att_id IS NULL
   AND item_attributes.att_id = attribute_meta.attId
   AND items.item_id = item_attributes.item_id
   AND attribute_meta.writable = 1
