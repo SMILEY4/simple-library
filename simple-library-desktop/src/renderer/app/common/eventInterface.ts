@@ -1,7 +1,6 @@
 import {
     ApplicationConfigDTO,
-    AttributeDTO,
-    AttributeKeyDTO,
+    AttributeDTO, AttributeKeyDTO,
     AttributeMetaDTO,
     CollectionTypeDTO,
     EmbedReportDTO,
@@ -61,13 +60,13 @@ export function fetchRootGroup(): Promise<GroupDTO> {
 
 export function fetchItems(
     collectionId: number,
-    itemAttributeKeys: AttributeKeyDTO[],
+    itemAttributeIds: number[],
     includeMissingAttribs: boolean,
     includeHiddenAttribs: boolean
 ): Promise<ItemDTO[]> {
     return eventBroadcaster.send(EventIds.GET_ITEMS_BY_COLLECTION, {
         collectionId: collectionId,
-        itemAttributeKeys: itemAttributeKeys,
+        itemAttributeIds: itemAttributeIds,
         includeMissingAttributes: includeMissingAttribs,
         includeHiddenAttribs: includeHiddenAttribs
     });
@@ -104,12 +103,16 @@ export function fetchItemMetadata(itemId: number, includeHidden: boolean): Promi
     });
 }
 
-export function setItemMetadata(itemId: number, entryKey: AttributeKeyDTO, value: string): Promise<AttributeDTO> {
-    return eventBroadcaster.send(EventIds.SET_ITEM_ATTRIBUTE, {itemId: itemId, entryKey: entryKey, newValue: value});
+export function setItemMetadata(itemId: number, attributeId: number, value: string): Promise<AttributeDTO> {
+    return eventBroadcaster.send(EventIds.SET_ITEM_ATTRIBUTE, {
+        itemId: itemId,
+        attributeId: attributeId,
+        newValue: value
+    });
 }
 
-export function deleteItemMetadata(itemId: number, entryKey: AttributeKeyDTO): Promise<AttributeDTO | null> {
-    return eventBroadcaster.send(EventIds.DELETE_ITEM_ATTRIBUTE, {itemId: itemId, entryKey: entryKey});
+export function deleteItemMetadata(itemId: number, attributeId: number): Promise<AttributeDTO | null> {
+    return eventBroadcaster.send(EventIds.DELETE_ITEM_ATTRIBUTE, {itemId: itemId, attributeId: attributeId});
 }
 
 export function requestImport(
@@ -220,17 +223,22 @@ export function removeEmbedStatusListener(): void {
     eventConsumer.clear(EventIds.EMBED_ITEM_ATTRIBUTES_STATUS);
 }
 
-export function fetchAllAttributeMeta(filter: string | null): Promise<AttributeMetaDTO[]> {
-    return eventBroadcaster.send(EventIds.GET_LIBRARY_ATTRIBUTE_META_ALL, filter);
+export function fetchAllAttributeMetaFilterName(filter: string | null): Promise<AttributeMetaDTO[]> {
+    return eventBroadcaster.send(EventIds.GET_LIBRARY_ATTRIBUTE_META_ALL_FILTER_NAME, filter);
 }
 
-export function fetchHiddenAttributes(): Promise<AttributeKeyDTO[]> {
+
+export function fetchAllAttributeMetaByKeys(attributeKeys: AttributeKeyDTO[]): Promise<AttributeMetaDTO[]> {
+    return eventBroadcaster.send(EventIds.GET_LIBRARY_ATTRIBUTE_META_BY_KEYS, attributeKeys);
+}
+
+export function fetchHiddenAttributes(): Promise<AttributeMetaDTO[]> {
     return eventBroadcaster.send(EventIds.GET_HIDDEN_ATTRIBUTES);
 }
 
-export function requestSetHiddenAttributes(attributes: AttributeKeyDTO[], mode: "hide" | "show"): Promise<void> {
+export function requestSetHiddenAttributes(attributeIds: number[], mode: "hide" | "show"): Promise<void> {
     return eventBroadcaster.send(EventIds.SET_HIDDEN_ATTRIBUTES, {
-        attributes: attributes,
+        attributeIds: attributeIds,
         mode: mode
     });
 }

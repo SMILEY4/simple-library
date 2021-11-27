@@ -39,8 +39,10 @@ import sqlInsertAttributeMeta from "./sqlscripts/item_attributes/insert_attribut
 import sqlQueryExistsItemAttribute from "./sqlscripts/item_attributes/query_exists_item_attribute.sql";
 import sqlQueryAttributeMetadata from "./sqlscripts/item_attributes/query_item_attribute_meta.sql";
 import sqlQueryItemAttributesAllNotHidden from "./sqlscripts/item_attributes/query_item_attributes_all_not_hidden.sql";
-import sqlQueryItemAttributesAllModifiedNotHidden from "./sqlscripts/item_attributes/query_item_attributes_all_modified_not_hidden.sql";
-import sqlQueryItemAttributesNotHiddenByItems from "./sqlscripts/item_attributes/query_item_attributes_not_hidden_by_items.sql";
+import sqlQueryItemAttributesAllModifiedNotHidden
+	from "./sqlscripts/item_attributes/query_item_attributes_all_modified_not_hidden.sql";
+import sqlQueryItemAttributesNotHiddenByItems
+	from "./sqlscripts/item_attributes/query_item_attributes_not_hidden_by_items.sql";
 import sqlQueryItemAttributesModifiedNotHiddenByItems
 	from "./sqlscripts/item_attributes/query_item_attributes_modified_not_hidden_by_items.sql";
 import sqlUpdateItemAttributeModifiedFlag from "./sqlscripts/item_attributes/update_item_attribute_modified.sql";
@@ -55,6 +57,7 @@ import sqlQueryHiddenAttributes from "./sqlscripts/item_attributes/query_hidden_
 import sqlInsertHiddenAttributes from "./sqlscripts/item_attributes/insert_hidden_attributes.sql";
 import sqlDeleteHiddenAttribute from "./sqlscripts/item_attributes/delete_hidden_attribute.sql";
 import sqlQueryItemAttributesNoHidden from "./sqlscripts/items/query_item_attributes_no_hidden.sql";
+import sqlQueryAttributeMetaByKeys from "./sqlscripts/item_attributes/query_item_attribute_meta_by_keys.sql";
 
 
 export module SQL {
@@ -176,11 +179,11 @@ export module SQL {
 		return sql(sqlQueryItemCountTotal);
 	}
 
-	export function queryItemsByCustomQuery(query: string, attributeKeys?: ([string, string, string, string, string])[]): string {
-		if (attributeKeys && attributeKeys.length > 0) {
+	export function queryItemsByCustomQuery(query: string, attributeIds?: number[]): string {
+		if (attributeIds && attributeIds.length > 0) {
 			return sql(sqlQueryItemsByCustomQueryWithAttribs)
 				.replace(v("query"), query)
-				.replace(v("attributeKeys"), attribKeyList(attributeKeys));
+				.replace(v("attributeIds"), numCsv(attributeIds));
 		} else {
 			return sql(sqlQueryItemsByCustomQuery)
 				.replace(v("query"), query);
@@ -197,15 +200,15 @@ export module SQL {
 			.replace(v("itemIds"), numCsv(itemIds));
 	}
 
-	export function queryItemsByCollection(collectionId: number, attributeKeys: ([string, string, string, string, string])[]): string {
+	export function queryItemsByCollection(collectionId: number, attributeIds: number[]): string {
 		return sql(sqlQueryItemsByCollectionWithAttribs)
 			.replace(v("collectionId"), num(collectionId))
-			.replace(v("attributeKeys"), attribKeyList(attributeKeys));
+			.replace(v("attributeIds"), numCsv(attributeIds));
 	}
 
-	export function queryItemsAll(attributeKeys: ([string, string, string, string, string])[]): string {
+	export function queryItemsAll(attributeIds: number[]): string {
 		return sql(sqlQueryItemsAllWithAttribs)
-			.replace(v("attributeKeys"), attribKeyList(attributeKeys));
+			.replace(v("attributeIds"), numCsv(attributeIds));
 	}
 
 
@@ -245,12 +248,12 @@ export module SQL {
 			.replace(v("entries"), entriesStr.join(", "));
 	}
 
-	export function queryAttributeMeta(keys: ([string, string, string, string, string])[]): string {
+	export function queryAttributeMeta(ids: number[]): string {
 		return sql(sqlQueryAttributeMetadata)
-			.replace(v("keys"), attribKeyList(keys));
+			.replace(v("attIds"), numCsv(ids));
 	}
 
-	export function queryAttributeMetaAll(filter: string | null): string {
+	export function queryAttributeMetaAllFilterName(filter: string | null): string {
 		if (filter && filter.trim().length > 0) {
 			return sql(sqlQueryItemAttributeMetaFiltered)
 				.replace(v("filter"), raw(filter));
@@ -259,23 +262,24 @@ export module SQL {
 		}
 	}
 
+	export function queryAttributeMetaByKeys(keys: ({ id: string, name: string, g0: string, g1: string, g2: string })[]): string {
+		return sql(sqlQueryAttributeMetaByKeys)
+			.replace(v("keys"), attribKeyList(keys));
+	}
+
 	export function queryHiddenAttributes(): string {
 		return sql(sqlQueryHiddenAttributes);
 	}
 
-	export function insertHiddenAttributes(attributes: { id: string, name: string, g0: string | undefined, g1: string | undefined, g2: string | undefined }[]): string {
-		const entries: string[] = attributes.map(att => `(${str(att.id)}, ${str(att.name)}, ${str(att.g0)}, ${str(att.g1)}, ${str(att.g2)})`);
+	export function insertHiddenAttributes(attributeIds: number[]): string {
+		const entries: string[] = attributeIds.map(attId => `(${num(attId)})`);
 		return sql(sqlInsertHiddenAttributes)
 			.replace(v("entries"), entries.join(", "));
 	}
 
-	export function deleteHiddenAttributes(id: string, name: string, g0: string | undefined, g1: string | undefined, g2: string | undefined): string {
+	export function deleteHiddenAttributes(attributeId: number): string {
 		return sql(sqlDeleteHiddenAttribute)
-			.replace(v("id"), str(id))
-			.replace(v("name"), str(name))
-			.replace(v("g0"), str(g0))
-			.replace(v("g1"), str(g1))
-			.replace(v("g2"), str(g2));
+			.replace(v("attId"), num(attributeId));
 	}
 
 	export function queryItemAttributes(itemId: number, includeHidden: boolean): string {
@@ -283,45 +287,29 @@ export module SQL {
 			.replace(v("itemId"), num(itemId));
 	}
 
-	export function queryExistsItemAttribute(itemId: number, attributeKey: ([string, string, string, string, string])): string {
+	export function queryExistsItemAttribute(itemId: number, attributeId: number): string {
 		return sql(sqlQueryExistsItemAttribute)
 			.replace(v("itemId"), num(itemId))
-			.replace(v("id"), str(attributeKey[0]))
-			.replace(v("name"), str(attributeKey[1]))
-			.replace(v("g0"), str(attributeKey[2]))
-			.replace(v("g1"), str(attributeKey[3]))
-			.replace(v("g2"), str(attributeKey[4]));
+			.replace(v("attId"), num(attributeId));
 	}
 
-	export function queryItemAttribute(itemId: number, attributeKey: ([string, string, string, string, string])): string {
+	export function queryItemAttribute(itemId: number, attributeId: number): string {
 		return sql(sqlQueryItemAttribute)
 			.replace(v("itemId"), num(itemId))
-			.replace(v("id"), str(attributeKey[0]))
-			.replace(v("name"), str(attributeKey[1]))
-			.replace(v("g0"), str(attributeKey[2]))
-			.replace(v("g1"), str(attributeKey[3]))
-			.replace(v("g2"), str(attributeKey[4]));
+			.replace(v("attId"), num(attributeId));
 	}
 
-	export function updateItemAttribute(itemId: number, attributeKey: ([string, string, string, string, string]), value: string): string {
+	export function updateItemAttribute(itemId: number, attributeId: number, value: string): string {
 		return sql(sqlUpdateItemAttribute)
 			.replace(v("itemId"), num(itemId))
-			.replace(v("id"), str(attributeKey[0]))
-			.replace(v("name"), str(attributeKey[1]))
-			.replace(v("g0"), str(attributeKey[2]))
-			.replace(v("g1"), str(attributeKey[3]))
-			.replace(v("g2"), str(attributeKey[4]))
+			.replace(v("attId"), num(attributeId))
 			.replace(v("value"), str(value));
 	}
 
-	export function deleteItemAttribute(itemId: number, attributeKey: ([string, string, string, string, string])): string {
+	export function deleteItemAttribute(itemId: number, attributeId: number): string {
 		return sql(sqlDeleteItemAttribute)
 			.replace(v("itemId"), num(itemId))
-			.replace(v("id"), str(attributeKey[0]))
-			.replace(v("name"), str(attributeKey[1]))
-			.replace(v("g0"), str(attributeKey[2]))
-			.replace(v("g1"), str(attributeKey[3]))
-			.replace(v("g2"), str(attributeKey[4]));
+			.replace(v("attId"), num(attributeId));
 	}
 
 	export function deleteItemAttributes(itemId: number): string {
@@ -329,8 +317,8 @@ export module SQL {
 			.replace(v("itemId"), num(itemId));
 	}
 
-	export function insertItemAttributes(itemId: number, attributes: ({ id: string, name: string, g0: string, g1: string, g2: string, value: any, modified?: boolean })[]): string {
-		const entries: string[] = attributes.map(att => `(${str(att.id)}, ${str(att.name)}, ${str(att.g0)}, ${str(att.g1)}, ${str(att.g2)}, ${num(itemId)}, ${str(att.value)}, ${bool(att.modified)})`);
+	export function insertItemAttributes(itemId: number, attributes: ({ attId: number, value: any, modified?: boolean })[]): string {
+		const entries: string[] = attributes.map(att => `(${num(att.attId)}, ${num(itemId)}, ${str(att.value)}, ${bool(att.modified)})`);
 		return sql(sqlInsertItemAttributes)
 			.replace(v("entries"), entries.join(", "));
 	}
@@ -354,15 +342,12 @@ export module SQL {
 		}
 	}
 
-	export function clearItemAttributeModifiedFlag(itemId: number, attributeKey: ([string, string, string, string, string])): string {
+	export function clearItemAttributeModifiedFlag(itemId: number, attributeId: number): string {
 		return sql(sqlUpdateItemAttributeModifiedFlag)
 			.replace(v("modified"), bool(false))
 			.replace(v("itemId"), num(itemId))
-			.replace(v("id"), str(attributeKey[0]))
-			.replace(v("name"), str(attributeKey[1]))
-			.replace(v("g0"), str(attributeKey[2]))
-			.replace(v("g1"), str(attributeKey[3]))
-			.replace(v("g2"), str(attributeKey[4]));
+			.replace(v("attId"), num(attributeId));
+
 	}
 
 	export function clearItemAttributeModifiedFlagsByItemIds(itemIds: number[]): string {
@@ -426,9 +411,9 @@ function bool(value?: boolean): string {
 	return value === true ? "1" : "0";
 }
 
-function attribKeyList(attributeKeys: ([string, string, string, string, string])[]): string {
-	return (attributeKeys && attributeKeys.length > 0)
-		? attributeKeys.map(key => "('" + key[0] + "','" + key[1] + "','" + key[2] + "','" + key[3] + "','" + key[4] + "')").join(",")
+function attribKeyList(keys: ({ id: string, name: string, g0: string, g1: string, g2: string })[]): string {
+	return (keys && keys.length > 0)
+		? keys.map(k => "('" + k.id + "','" + k.name + "','" + k.g0 + "','" + k.g1 + "','" + k.g2 + "')").join(",")
 		: "('','','','','')";
 }
 

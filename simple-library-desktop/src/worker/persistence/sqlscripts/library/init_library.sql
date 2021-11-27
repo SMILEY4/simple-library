@@ -19,41 +19,38 @@ CREATE TABLE items
 
 CREATE TABLE attribute_meta
 (
+	attId    INTEGER PRIMARY KEY AUTOINCREMENT,
 	id       TEXT    NOT NULL,
 	name     TEXT    NOT NULL,
 	g0       TEXT    NOT NULL,
 	g1       TEXT    NOT NULL,
 	g2       TEXT    NOT NULL,
 	type     TEXT    NOT NULL,
-	writable BOOLEAN NOT NULL,
-	PRIMARY KEY (id, name, g0, g1, g2)
+	writable BOOLEAN NOT NULL
 );
 
 CREATE TABLE hidden_attributes
 (
-	id       TEXT    NOT NULL,
-	name     TEXT    NOT NULL,
-	g0       TEXT    NOT NULL,
-	g1       TEXT    NOT NULL,
-	g2       TEXT    NOT NULL,
-	PRIMARY KEY (id, name, g0, g1, g2)
+	att_id INTEGER PRIMARY KEY
+		CONSTRAINT fk_att_id
+			REFERENCES attribute_meta
+			ON DELETE CASCADE
 );
 
 CREATE TABLE item_attributes
 (
-	id       TEXT    NOT NULL,
-	name     TEXT    NOT NULL,
-	g0       TEXT    NOT NULL,
-	g1       TEXT    NOT NULL,
-	g2       TEXT    NOT NULL,
-	value    TEXT    NOT NULL,
-	modified BOOLEAN,
+	att_id   INTEGER NOT NULL
+		CONSTRAINT fk_att_id
+			REFERENCES attribute_meta
+			ON DELETE CASCADE,
 	item_id  INTEGER NOT NULL
 		CONSTRAINT fk_item_id
 			REFERENCES items
 			ON DELETE CASCADE,
+	value    TEXT    NOT NULL,
+	modified BOOLEAN,
 	CHECK (modified IN (0, 1)),
-	PRIMARY KEY (id, name, g0, g1, g2, item_id)
+	PRIMARY KEY (att_id, item_id)
 );
 
 CREATE TABLE collections

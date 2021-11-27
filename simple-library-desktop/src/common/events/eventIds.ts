@@ -34,7 +34,8 @@ export module EventIds {
 	export const OPEN_LIBRARY = "library.open";
 	export const CLOSE_LIBRARY = "library.close";
 	export const GET_LIBRARY_INFO = "library.metadata.get";
-	export const GET_LIBRARY_ATTRIBUTE_META_ALL = "library.attribute_meta.all";
+	export const GET_LIBRARY_ATTRIBUTE_META_ALL_FILTER_NAME = "library.attribute_meta.all";
+	export const GET_LIBRARY_ATTRIBUTE_META_BY_KEYS = "library.attribute_meta.by-keys";
 	export const SET_HIDDEN_ATTRIBUTES = "library.hidden_attributes.set";
 	export const GET_HIDDEN_ATTRIBUTES = "library.hidden_attributes.get";
 
@@ -74,7 +75,8 @@ export module EventIds {
 		GET_LIBRARY_INFO,
 		EMBED_ITEM_ATTRIBUTES,
 		EMBED_ITEM_ATTRIBUTES_STATUS,
-        GET_LIBRARY_ATTRIBUTE_META_ALL,
+        GET_LIBRARY_ATTRIBUTE_META_ALL_FILTER_NAME,
+		GET_LIBRARY_ATTRIBUTE_META_BY_KEYS,
 		SET_HIDDEN_ATTRIBUTES,
 		GET_HIDDEN_ATTRIBUTES
 	];

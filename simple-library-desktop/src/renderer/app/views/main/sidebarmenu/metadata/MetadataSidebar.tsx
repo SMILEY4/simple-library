@@ -1,10 +1,10 @@
-import React, {useState} from "react";
+import React from "react";
 import {SidebarTab} from "../../../../../components/misc/app/AppLayout";
 import {IconType} from "../../../../../components/base/icon/Icon";
 import {VBox} from "../../../../../components/layout/box/Box";
 import {TextField} from "../../../../../components/input/textfield/TextField";
 import {Label} from "../../../../../components/base/label/Label";
-import {AttributeDTO, AttributeKeyDTO, AttributeValueDTO} from "../../../../../../common/events/dtoModels";
+import {AttributeDTO, AttributeValueDTO} from "../../../../../../common/events/dtoModels";
 import {useMetadataSidebar} from "./useMetadataSidebar";
 import {useContextMenu} from "../../../../../components/menu/contextmenu/contextMenuHook";
 import {APP_ROOT_ID} from "../../../../Application";
@@ -98,7 +98,8 @@ export function MetadataSidebar(props: React.PropsWithChildren<MetadataSidebarPr
                 onRequestClose={closeContextMenu}
             >
                 <MetadataListEntryContextMenu
-                    attributeKey={contextMenuPayload}
+                    attributeId={contextMenuPayload.attId}
+                    attributeName={contextMenuPayload.name}
                     onCopy={handleCopyEntryValue}
                     onHide={handleHideEntry}
                     onDelete={handleDeleteEntry}
@@ -108,28 +109,28 @@ export function MetadataSidebar(props: React.PropsWithChildren<MetadataSidebarPr
         </>
     );
 
-    function handleOpenContextMenu(attributeKey: AttributeKeyDTO, event: React.MouseEvent) {
-        openContextMenuWithEvent(event, attributeKey);
+    function handleOpenContextMenu(attributeId: number, attributeName: string, event: React.MouseEvent) {
+        openContextMenuWithEvent(event, {name: attributeName, attId: attributeId});
     }
 
-    function handleCopyEntryValue(attributeKey: AttributeKeyDTO) {
-        copyAttributeValueToClipboard(attributeKey);
+    function handleCopyEntryValue(attributeId: number) {
+        copyAttributeValueToClipboard(attributeId);
         closeContextMenu();
     }
 
-    function handleHideEntry(attributeKey: AttributeKeyDTO) {
-        hideAttribute(attributeKey);
+    function handleHideEntry(attributeId: number) {
+        hideAttribute(attributeId);
         closeContextMenu();
     }
 
-    function handleDeleteEntry(attributeKey: AttributeKeyDTO) {
-        openConfirmation("Delete", "Deleting '" + attributeKey + "' is permanent and cannot be reversed.", "Delete",
-            () => deleteAttribute(attributeKey));
+    function handleDeleteEntry(attributeId: number) {
+        openConfirmation("Delete", "Deleting '" + attributeId + "' is permanent and cannot be reversed.", "Delete",
+            () => deleteAttribute(attributeId));
         closeContextMenu();
     }
 
     function handleOnUpdateEntryValue(entry: AttributeDTO, prev: AttributeValueDTO, next: AttributeValueDTO) {
-        return updateMetadataEntry(entry.key, prev, next);
+        return updateMetadataEntry(entry.attId, prev, next);
     }
 
     function group(entries: AttributeDTO[]): ({ title: string, entries: ([string, AttributeDTO])[] })[] {

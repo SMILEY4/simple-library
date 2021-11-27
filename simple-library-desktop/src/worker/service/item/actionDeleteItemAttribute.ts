@@ -1,4 +1,3 @@
-import {AttributeKey, packAttributeKey} from "./itemCommon";
 import {DataRepository} from "../dataRepository";
 import {voidThen} from "../../../common/utils";
 
@@ -15,24 +14,24 @@ export class ActionDeleteItemAttribute {
 	}
 
 
-	public perform(itemId: number, attributeKey: AttributeKey): Promise<void> {
-		return this.existsAttribute(itemId, attributeKey)
-			.then((exists: boolean) => this.deleteAttribute(exists, itemId, attributeKey))
+	public perform(itemId: number, attributeId: number): Promise<void> {
+		return this.existsAttribute(itemId, attributeId)
+			.then((exists: boolean) => this.deleteAttribute(exists, itemId, attributeId))
 			.then(voidThen);
 	}
 
 
-	private existsAttribute(itemId: number, key: AttributeKey): Promise<boolean> {
-		return this.repository.existsItemAttribute(itemId, packAttributeKey(key))
+	private existsAttribute(itemId: number, attributeId: number): Promise<boolean> {
+		return this.repository.existsItemAttribute(itemId, attributeId)
 			.then((row: any | null) => row ? row : false);
 	}
 
 
-	private deleteAttribute(exists: boolean, itemId: number, key: AttributeKey): Promise<any> {
+	private deleteAttribute(exists: boolean, itemId: number, attributeId: number): Promise<any> {
 		if (!exists) {
 			return Promise.resolve();
 		} else {
-			return this.repository.deleteItemAttribute(itemId, packAttributeKey(key));
+			return this.repository.deleteItemAttribute(itemId, attributeId);
 		}
 	}
 

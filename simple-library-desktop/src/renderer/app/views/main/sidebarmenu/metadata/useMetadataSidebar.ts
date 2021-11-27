@@ -1,12 +1,6 @@
 import {useEffect, useState} from "react";
 import {fetchItemById} from "../../../../common/eventInterface";
-import {
-	AttributeDTO,
-	AttributeKeyDTO,
-	attributeKeysDtoEquals,
-	AttributeValueDTO,
-	ItemDTO
-} from "../../../../../../common/events/dtoModels";
+import {AttributeDTO, AttributeValueDTO, ItemDTO} from "../../../../../../common/events/dtoModels";
 import {useSelectedItemIds} from "../../../../hooks/store/itemSelectionState";
 import {useStateAttributes} from "../../../../hooks/store/attributeStore";
 import {useUpdateAttribute} from "../../../../hooks/core/attributeUpdate";
@@ -54,8 +48,8 @@ function useListenSelectionChanges(setItem: (item: ItemDTO | null) => void, load
 
 function useCopyAttributeValueToClipboard(attributes: AttributeDTO[]) {
 
-	function hookFunction(attributeKey: AttributeKeyDTO) {
-		const attribute = attributes.find(a => attributeKeysDtoEquals(a.key, attributeKey));
+	function hookFunction(attributeId: number) {
+		const attribute = attributes.find(a => a.attId === attributeId);
 		const attribValue = (attribute && attribute.value) ? attribute.value.toString() : "";
 		navigator.clipboard.writeText(attribValue).then();
 	}
@@ -68,9 +62,9 @@ function useDeleteAttributeEntry(itemId: number | null) {
 
 	const deleteAttribute = useDeleteAttribute();
 
-	function hookFunction(attributeKey: AttributeKeyDTO) {
-		if (itemId && attributeKey) {
-			deleteAttribute(itemId, attributeKey).then();
+	function hookFunction(attributeId: number) {
+		if (itemId && attributeId) {
+			deleteAttribute(itemId, attributeId).then();
 		}
 	}
 
@@ -82,9 +76,9 @@ function useUpdateMetadataEntry(itemId: number | null) {
 
 	const updateAttribute = useUpdateAttribute();
 
-	function hookFunction(attributeKey: AttributeKeyDTO, prevValue: AttributeValueDTO, newValue: AttributeValueDTO) {
-		if (itemId && attributeKey) {
-			return updateAttribute(itemId, attributeKey, prevValue, newValue);
+	function hookFunction(attributeId: number, prevValue: AttributeValueDTO, newValue: AttributeValueDTO) {
+		if (itemId && attributeId) {
+			return updateAttribute(itemId, attributeId, prevValue, newValue);
 		} else {
 			return Promise.resolve();
 		}
@@ -98,8 +92,8 @@ function useHideMetadataEntry() {
 
 	const {hideAttributes} = useHideAttributes();
 
-	function hookFunction(attributeKey: AttributeKeyDTO) {
-		return hideAttributes([attributeKey]);
+	function hookFunction(attributeId: number) {
+		return hideAttributes([attributeId]);
 	}
 
 	return hookFunction;

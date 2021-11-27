@@ -1,5 +1,3 @@
-import {SQL} from "../persistence/sqlHandler";
-
 export type QueryResultMany = Promise<any[]>
 export type QueryResultSingle = Promise<any | null>
 export type CommandResultMany = Promise<(number | null)[]>
@@ -23,13 +21,13 @@ export interface DataRepository {
 
 	getItemsByIds(itemIds: number[]): QueryResultMany;
 
-	getItemsAll(attributeKeys: ([string, string, string, string, string])[]): QueryResultMany;
+	getItemsAll(attributeIds: number[]): QueryResultMany;
 
-	getItemsByCollection(collectionId: number, attributeKeys: ([string, string, string, string, string])[]): QueryResultMany;
+	getItemsByCollection(collectionId: number, attributeIds: number[]): QueryResultMany;
 
-	getItemsByCustomQuery(query: string, attributeKeys: ([string, string, string, string, string])[]): QueryResultMany;
+	getItemsByCustomQuery(query: string, attributeIds: number[]): QueryResultMany;
 
-	getItemByCustomQuery(query: string, attributeKeys: string[]): QueryResultSingle;
+	getItemByCustomQuery(query: string): QueryResultSingle;
 
 	getItemCountTotal(): QueryResultSingle;
 
@@ -40,39 +38,41 @@ export interface DataRepository {
 	deleteItems(itemIds: number[]): VoidResult;
 
 
-	insertAttributeMeta(entries: {id: string, name: string, g0: string | undefined, g1: string | undefined, g2: string | undefined, type: string, writable: boolean }[]): VoidResult;
+	insertAttributeMeta(entries: { id: string, name: string, g0: string | undefined, g1: string | undefined, g2: string | undefined, type: string, writable: boolean }[]): VoidResult;
 
-	queryAttributeMeta(attributeKeys: ([string, string, string, string, string])[]): QueryResultMany;
+	queryAttributeMeta(attributeIds: number[]): QueryResultMany;
 
-	queryAttributeMetaAll(filter: string | null): QueryResultMany;
+	queryAttributeMetaAllFilterName(filter: string | null): QueryResultMany;
+
+	queryAttributeMetaByKeys(keys: ({ id: string, name: string, g0: string, g1: string, g2: string })[]): QueryResultMany;
 
 	getHiddenAttributes(): QueryResultMany;
 
-	insertHiddenAttributes(entries: {id: string, name: string, g0: string | undefined, g1: string | undefined, g2: string | undefined}[]): VoidResult;
+	insertHiddenAttributes(attributeIds: number[]): VoidResult;
 
-	deleteHiddenAttribute(id: string, name: string, g0: string | undefined, g1: string | undefined, g2: string | undefined): VoidResult;
+	deleteHiddenAttribute(attributeId: number): VoidResult;
 
 	getAllExtendedItemAttributesNotHidden(onlyModified: boolean): QueryResultMany;
 
 	getExtendedItemAttributesNotHiddenByItemIds(itemIds: number[], onlyModified: boolean): QueryResultMany;
 
-	clearItemAttributeModifiedFlag(itemId: number, attributeKey: ([string, string, string, string, string])): CommandResultSingle;
+	clearItemAttributeModifiedFlag(itemId: number, attributeId: number): CommandResultSingle;
 
 	clearItemAttributeModifiedFlagsByItemIds(itemIds: number[]): CommandResultSingle;
 
 	clearItemAttributeModifiedFlagsAll(): CommandResultSingle;
 
-	existsItemAttribute(itemId: number, attributeKey: ([string, string, string, string, string])): QueryResultSingle;
+	existsItemAttribute(itemId: number, attributeId: number): QueryResultSingle;
 
-	getItemAttribute(itemId: number, attributeKey: ([string, string, string, string, string])): QueryResultSingle;
+	getItemAttribute(itemId: number, attributeId: number): QueryResultSingle;
 
 	getItemAttributesByItem(itemId: number, includeHidden: boolean): QueryResultMany;
 
-	insertItemAttributes(itemId: number, attributes: ({ id: string, name: string, g0: string, g1: string, g2: string, value: string, modified?: boolean })[]): CommandResultSingle;
+	insertItemAttributes(itemId: number, attributes: ({ attId: number, value: any, modified?: boolean })[]): CommandResultSingle;
 
-	updateItemAttributeValue(itemId: number, attributeKey: ([string, string, string, string, string]), newValue: string): CommandResultSingle;
+	updateItemAttributeValue(itemId: number, attributeId: number, newValue: string): CommandResultSingle;
 
-	deleteItemAttribute(itemId: number, attributeKey: ([string, string, string, string, string])): VoidResult;
+	deleteItemAttribute(itemId: number, attributeId: number): VoidResult;
 
 	deleteItemAttributes(itemId: number): VoidResult;
 

@@ -34,6 +34,7 @@ export class ActionReadItemAttributesFromFile {
 		const value = entry.val;
 		const id = entry.id;
 		return {
+			attId: null,
 			key: {
 				id: id ? id : this.findGroup(groups, 3),
 				name: this.findGroup(groups, 3),

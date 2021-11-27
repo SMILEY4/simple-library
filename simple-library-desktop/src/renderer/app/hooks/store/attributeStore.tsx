@@ -8,7 +8,7 @@ import {
 	useGlobalStateWriteOnly
 } from "../../../components/utils/storeUtils";
 import React from "react";
-import {AttributeDTO, AttributeKeyDTO, attributeKeysDtoEquals} from "../../../../common/events/dtoModels";
+import {AttributeDTO} from "../../../../common/events/dtoModels";
 
 
 // STATE
@@ -46,12 +46,12 @@ const reducerConfigMap: ReducerConfigMap<AttributeActionType, AttributeState> = 
 	})],
 	[AttributeActionType.REMOVE, (state, payload) => ({
 		...state,
-		attributes: state.attributes.filter(att => !attributeKeysDtoEquals(att.key, payload))
+		attributes: state.attributes.filter(att => att.attId === payload)
 	})],
 	[AttributeActionType.UPDATE, (state, payload) => ({
 		...state,
 		attributes: state.attributes.map(att => {
-			if (attributeKeysDtoEquals(att.key, payload.key)) {
+			if (att.attId === payload.attId) {
 				return {
 					...att,
 					value: payload.value,
@@ -127,10 +127,10 @@ export function useDispatchAddAttribute() {
 
 export function useDispatchRemoveAttribute() {
 	const dispatch = useAttributeDispatch();
-	return (key: AttributeKeyDTO) => {
+	return (attributeId: number) => {
 		dispatch({
 			type: AttributeActionType.REMOVE,
-			payload: key
+			payload: attributeId
 		});
 	};
 }
@@ -141,7 +141,7 @@ export function useDispatchUpdateAttribute() {
 		dispatch({
 			type: AttributeActionType.UPDATE,
 			payload: {
-				key: attribute.key,
+				attId: attribute.attId,
 				value: attribute.value,
 				modified: attribute.modified
 			}

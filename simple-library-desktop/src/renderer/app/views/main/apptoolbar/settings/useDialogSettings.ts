@@ -1,8 +1,9 @@
 import {useOpenConfigFile} from "../../../../hooks/core/configFileOpen";
 import {useApplicationConfig} from "../../../../hooks/core/configApplication";
 import {useEffect, useState} from "react";
-import {ApplicationConfigDTO, AttributeKeyDTO, attributeKeysDtoEquals} from "../../../../../../common/events/dtoModels";
+import {ApplicationConfigDTO, AttributeMetaDTO} from "../../../../../../common/events/dtoModels";
 import {useHideAttributes} from "../../../../hooks/core/hiddenAttributes";
+import {ArrayUtils} from "../../../../../../common/arrayUtils";
 
 export enum SettingsDialogTab {
 	APP,
@@ -12,7 +13,7 @@ export enum SettingsDialogTab {
 export function useDialogSettings(onClose: () => void) {
 
 	const [currentTab, setCurrentTab] = useState(SettingsDialogTab.APP);
-	const [hiddenAttributes, setHiddenAttributes] = useState<AttributeKeyDTO[]>([]);
+	const [hiddenAttributes, setHiddenAttributes] = useState<AttributeMetaDTO[]>([]);
 
 	const openConfigFile = useOpenConfigFile();
 	const {
@@ -47,13 +48,13 @@ export function useDialogSettings(onClose: () => void) {
 		setAppConfig(config);
 	}
 
-	function handleHideAttribute(attribute: AttributeKeyDTO) {
-		const attribs = [...hiddenAttributes.filter(a => !attributeKeysDtoEquals(a, attribute)), attribute];
-		setHiddenAttributes(attribs.sort((a, b) => a.name.localeCompare(b.name)));
+	function handleHideAttribute(attribute: AttributeMetaDTO) {
+		const attribs = [...hiddenAttributes.filter(a => a.attId !== attribute.attId), attribute];
+		setHiddenAttributes(attribs.sort((a, b) => a.key.name.localeCompare(b.key.name)));
 	}
 
-	function handleShowAttribute(attribute: AttributeKeyDTO) {
-		const attribs = hiddenAttributes.filter(a => !attributeKeysDtoEquals(a, attribute));
+	function handleShowAttribute(attribute: AttributeMetaDTO) {
+		const attribs = hiddenAttributes.filter(a => a.attId !== attribute.attId);
 		setHiddenAttributes(attribs);
 	}
 
@@ -62,10 +63,11 @@ export function useDialogSettings(onClose: () => void) {
 	}
 
 	async function commitHiddenAttributes(): Promise<any> {
-		const base = await getHiddenAttributes();
+		const currIds = (await getHiddenAttributes()).map(a => a.attId);
+		const newIds = hiddenAttributes.map(a => a.attId);
 
-		const added = hiddenAttributes.filter(a => base.findIndex(b => attributeKeysDtoEquals(a, b)) === -1);
-		const removed = base.filter(b => hiddenAttributes.findIndex(a => attributeKeysDtoEquals(a, b)) === -1);
+		const added = newIds.filter(e => ArrayUtils.containsNot(currIds, e));
+		const removed = currIds.filter(e => ArrayUtils.containsNot(newIds, e));
 
 		if (removed.length > 0) {
 			await showAttributes(removed);
@@ -79,7 +81,6 @@ export function useDialogSettings(onClose: () => void) {
 		} else {
 			return Promise.resolve();
 		}
-
 	}
 
 	return {

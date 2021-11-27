@@ -1,3 +1,3 @@
-SELECT DISTINCT id, g0, g1, g2, name
+SELECT DISTINCT attId, id, g0, g1, g2, name, type, writable
 FROM attribute_meta
 ORDER BY id

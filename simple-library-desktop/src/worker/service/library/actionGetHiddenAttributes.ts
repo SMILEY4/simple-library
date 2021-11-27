@@ -1,5 +1,5 @@
 import {DataRepository} from "../dataRepository";
-import {AttributeKey, rowsToAttributeKeys} from "../item/itemCommon";
+import {AttributeMeta, rowsToAttributeMeta} from "./libraryCommons";
 
 /**
  * Get all hidden attributes
@@ -12,9 +12,9 @@ export class ActionGetHiddenAttributes {
 		this.repository = repository;
 	}
 
-	public perform(): Promise<AttributeKey[]> {
+	public perform(): Promise<AttributeMeta[]> {
 		return this.repository.getHiddenAttributes()
-			.then(rowsToAttributeKeys);
+			.then(rowsToAttributeMeta);
 	}
 
 }

@@ -8,17 +8,17 @@ import {
 	useGlobalStateWriteOnly
 } from "../../../components/utils/storeUtils";
 import React from "react";
-import {unique} from "../../common/arrayUtils";
+import {ArrayUtils} from "../../../../common/arrayUtils";
 
 
 // STATE
 
 export interface CollectionSidebarState {
-	expandedNodes: string[]
+	expandedNodes: string[];
 }
 
 const initialState: CollectionSidebarState = {
-	expandedNodes: [],
+	expandedNodes: []
 };
 
 
@@ -33,17 +33,17 @@ export enum CollectionSidebarActionType {
 const reducerConfigMap: ReducerConfigMap<CollectionSidebarActionType, CollectionSidebarState> = new ReducerConfigMap([
 	[CollectionSidebarActionType.COLLECTION_SIDEBAR_EXPANDED_SET, (state, payload) => ({
 		...state,
-		expandedNodes: payload,
+		expandedNodes: payload
 	})],
 	[CollectionSidebarActionType.COLLECTION_SIDEBAR_EXPANDED_ADD, (state, payload) => ({
 		...state,
-		expandedNodes: unique<number>([...state.expandedNodes, payload]),
+		expandedNodes: ArrayUtils.unique<number>([...state.expandedNodes, payload])
 	})],
 	[CollectionSidebarActionType.COLLECTION_SIDEBAR_EXPANDED_REMOVE, (state, payload) => ({
 		...state,
-		expandedNodes: state.expandedNodes.filter(id => id !== payload),
-	})],
-])
+		expandedNodes: state.expandedNodes.filter(id => id !== payload)
+	})]
+]);
 
 
 // CONTEXT
@@ -51,18 +51,18 @@ const reducerConfigMap: ReducerConfigMap<CollectionSidebarActionType, Collection
 const [
 	stateContext,
 	dispatchContext
-] = buildContext<CollectionSidebarActionType, CollectionSidebarState>()
+] = buildContext<CollectionSidebarActionType, CollectionSidebarState>();
 
 export function CollectionSidebarStateProvider(props: { children: any }) {
 	return GenericContextProvider(props.children, initialState, reducerConfigMap, stateContext, dispatchContext);
 }
 
 export function useCollectionSidebarState(): IStateHookResultReadWrite<CollectionSidebarState, CollectionSidebarActionType> {
-	return useGlobalStateReadWrite<CollectionSidebarState, CollectionSidebarActionType>(stateContext, dispatchContext)
+	return useGlobalStateReadWrite<CollectionSidebarState, CollectionSidebarActionType>(stateContext, dispatchContext);
 }
 
 function useCollectionSidebarStateDispatch(): IStateHookResultWriteOnly<CollectionSidebarActionType> {
-	return useGlobalStateWriteOnly<CollectionSidebarActionType>(dispatchContext)
+	return useGlobalStateWriteOnly<CollectionSidebarActionType>(dispatchContext);
 }
 
 export function useDispatchExpandNode(): (nodeId: string) => void {
@@ -72,7 +72,7 @@ export function useDispatchExpandNode(): (nodeId: string) => void {
 			type: CollectionSidebarActionType.COLLECTION_SIDEBAR_EXPANDED_ADD,
 			payload: nodeId
 		});
-	}
+	};
 }
 
 export function useDispatchCollapseNode(): (nodeId: string) => void {
@@ -82,7 +82,7 @@ export function useDispatchCollapseNode(): (nodeId: string) => void {
 			type: CollectionSidebarActionType.COLLECTION_SIDEBAR_EXPANDED_REMOVE,
 			payload: nodeId
 		});
-	}
+	};
 }
 
 export function useDispatchSetExpandedNodes(): (nodeIds: string[]) => void {
@@ -92,5 +92,5 @@ export function useDispatchSetExpandedNodes(): (nodeIds: string[]) => void {
 			type: CollectionSidebarActionType.COLLECTION_SIDEBAR_EXPANDED_SET,
 			payload: nodeIds
 		});
-	}
+	};
 }

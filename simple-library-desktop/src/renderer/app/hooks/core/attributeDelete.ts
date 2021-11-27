@@ -3,7 +3,6 @@ import {useDispatchRemoveItemAttribute} from "../store/itemsState";
 import {useDispatchRemoveAttribute} from "../store/attributeStore";
 import {AppNotificationType, useThrowErrorWithNotification} from "../store/notificationState";
 import {genNotificationId} from "../../common/notificationUtils";
-import {AttributeKeyDTO} from "../../../../common/events/dtoModels";
 import {voidThen} from "../../../../common/utils";
 
 export function useDeleteAttribute() {
@@ -13,20 +12,20 @@ export function useDeleteAttribute() {
 	const dispatchRemoveItemAttribute = useDispatchRemoveItemAttribute();
 
 
-	function hookFunction(itemId: number, attributeKey: AttributeKeyDTO): Promise<void> {
-		return deleteItemMetadata(itemId, attributeKey)
-			.then(() => updateAttributeState(attributeKey))
-			.then(() => updateItemState(itemId, attributeKey))
+	function hookFunction(itemId: number, attributeId: number): Promise<void> {
+		return deleteItemMetadata(itemId, attributeId)
+			.then(() => updateAttributeState(attributeId))
+			.then(() => updateItemState(itemId, attributeId))
 			.then(voidThen)
 			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.GENERIC, error));
 	}
 
-	function updateAttributeState(attributeKey: AttributeKeyDTO): void {
-		dispatchRemoveAttribute(attributeKey);
+	function updateAttributeState(attributeId: number): void {
+		dispatchRemoveAttribute(attributeId);
 	}
 
-	function updateItemState(itemId: number, attributeKey: AttributeKeyDTO): void {
-		dispatchRemoveItemAttribute(itemId, attributeKey);
+	function updateItemState(itemId: number, attributeId: number): void {
+		dispatchRemoveItemAttribute(itemId, attributeId);
 	}
 
 	return hookFunction;

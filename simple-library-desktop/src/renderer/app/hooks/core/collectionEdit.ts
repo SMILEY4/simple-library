@@ -6,26 +6,26 @@ import {useDispatchSetRootGroup} from "../store/collectionsState";
 import {useDispatchItemSelectionClear} from "../store/itemSelectionState";
 import {useDispatchSetItems} from "../store/itemsState";
 import {useActiveCollection} from "../store/collectionActiveState";
-import {TEMP_ATTRIBUTE_KEYS} from "./temp";
+import {TEMP_ATTRIBUTE_IDS} from "./temp";
 
 export function useEditCollection() {
 
 	const activeCollectionId = useActiveCollection();
 	const dispatchSetRootGroup = useDispatchSetRootGroup();
 	const dispatchSetItems = useDispatchSetItems();
-	const dispatchClearSelection = useDispatchItemSelectionClear()
+	const dispatchClearSelection = useDispatchItemSelectionClear();
 	const throwErrorNotification = useThrowErrorWithNotification();
 
 	function hookFunction(collectionId: number, name: string, query: string | null) {
 		return Promise.resolve()
 			.then(() => edit(collectionId, name, query))
 			.then(() => updateGroupState())
-			.then(() => handleActiveCollection(collectionId))
+			.then(() => handleActiveCollection(collectionId));
 	}
 
 	function edit(collectionId: number, name: string, query: string | null) {
 		return requestEditCollection(collectionId, name, query)
-			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.COLLECTION_EDIT_FAILED, error))
+			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.COLLECTION_EDIT_FAILED, error));
 
 	}
 
@@ -38,12 +38,12 @@ export function useEditCollection() {
 	function handleActiveCollection(collectionId: number) {
 		if (activeCollectionId === collectionId) {
 			dispatchClearSelection();
-			return updateItemState(collectionId)
+			return updateItemState(collectionId);
 		}
 	}
 
 	function updateItemState(collectionId: number) {
-		return fetchItems(collectionId, TEMP_ATTRIBUTE_KEYS, true, false)
+		return fetchItems(collectionId, TEMP_ATTRIBUTE_IDS, true, false)
 			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_FETCH_FAILED, error))
 			.then((items: ItemDTO[]) => dispatchSetItems(items));
 	}

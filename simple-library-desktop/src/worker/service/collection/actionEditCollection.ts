@@ -48,7 +48,7 @@ export class ActionEditCollection {
 	}
 
 	private testExecSmartQuery(query: string): Promise<any | null> {
-		return this.repository.getItemByCustomQuery(query, [])
+		return this.repository.getItemByCustomQuery(query)
 	}
 
 	private editCollection(collection: Collection, newName: string, newSmartQuery: string | null): Promise<any> {

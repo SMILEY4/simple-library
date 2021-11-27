@@ -49,6 +49,8 @@ export function CollectionSidebar(props: React.PropsWithChildren<CollectionSideb
 		handleDoubleClick,
 	} = useCollectionSidebar();
 
+	console.log(rootGroup)
+
 	return !!rootGroup ? (
 		<TreeView
 			rootNode={buildTree(rootGroup)}

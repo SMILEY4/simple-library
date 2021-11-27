@@ -1,7 +1,12 @@
-SELECT hidden_attributes.id   as id,
-	   hidden_attributes.name as name,
-	   hidden_attributes.g0   as g0,
-	   hidden_attributes.g1   as g1,
-	   hidden_attributes.g2   as g2
-FROM hidden_attributes
-ORDER BY hidden_attributes.name
+SELECT hidden_attributes.att_id as attId,
+	   attribute_meta.id        as id,
+	   attribute_meta.name      as name,
+	   attribute_meta.g0        as g0,
+	   attribute_meta.g1        as g1,
+	   attribute_meta.g2        as g2,
+	   attribute_meta.type      as type,
+	   attribute_meta.writable  as writable
+FROM hidden_attributes,
+	 attribute_meta
+WHERE hidden_attributes.att_id = attribute_meta.attId
+ORDER BY attribute_meta.name

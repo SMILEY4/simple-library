@@ -10,7 +10,8 @@ import {
 	AppNotificationType,
 	useDispatchAddNotification,
 	useDispatchRemoveNotification,
-	useDispatchUpdateNotification, useThrowErrorWithNotification
+	useDispatchUpdateNotification,
+	useThrowErrorWithNotification
 } from "../store/notificationState";
 import {
 	addImportStatusListener,
@@ -22,7 +23,7 @@ import {
 import {useDispatchSetRootGroup} from "../store/collectionsState";
 import {useDispatchSetItems} from "../store/itemsState";
 import {useActiveCollection} from "../store/collectionActiveState";
-import {TEMP_ATTRIBUTE_KEYS} from "./temp";
+import {TEMP_ATTRIBUTE_IDS} from "./temp";
 
 export function useImportItems() {
 
@@ -38,7 +39,7 @@ export function useImportItems() {
 	function hookFunction(data: ImportProcessDataDTO) {
 		importItems(data)
 			.then(() => updateGroupState())
-			.then(() => updateItemState())
+			.then(() => updateItemState());
 	}
 
 
@@ -69,7 +70,7 @@ export function useImportItems() {
 
 	function updateItemState() {
 		if (activeCollectionId) {
-			return fetchItems(activeCollectionId, TEMP_ATTRIBUTE_KEYS, true, false)
+			return fetchItems(activeCollectionId, TEMP_ATTRIBUTE_IDS, true, false)
 				.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_FETCH_FAILED, error))
 				.then((items: ItemDTO[]) => dispatchSetItems(items));
 		} else {

@@ -1,5 +1,5 @@
 import {DataRepository} from "../dataRepository";
-import {Attribute} from "./itemCommon";
+import {MiniAttribute} from "./itemCommon";
 import {voidThen} from "../../../common/utils";
 
 /**
@@ -15,7 +15,7 @@ export class ActionSetItemAttributes {
 	}
 
 
-	public perform(itemId: number, attributes: Attribute[]): Promise<void> {
+	public perform(itemId: number, attributes: MiniAttribute[]): Promise<void> {
 		return this.deleteAll(itemId)
 			.then(() => this.insertAll(itemId, attributes))
 			.then(voidThen);
@@ -25,19 +25,16 @@ export class ActionSetItemAttributes {
 		return this.repository.deleteItemAttributes(itemId);
 	}
 
-	private insertAll(itemId: number, attributes: Attribute[]): Promise<any> {
+	private insertAll(itemId: number, attributes: MiniAttribute[]): Promise<any> {
 		const entries = attributes
-			.filter(att => att.value !== null)
+			.filter(att => att.value !== null && att.attId !== null)
 			.map(att => ({
-				id: att.key.id,
-				name: att.key.name,
-				g0: att.key.g0,
-				g1: att.key.g1,
-				g2: att.key.g2,
+				attId: att.attId,
 				value: att.value,
 				modified: false
 			}));
 		return this.repository.insertItemAttributes(itemId, entries);
 	}
+
 
 }

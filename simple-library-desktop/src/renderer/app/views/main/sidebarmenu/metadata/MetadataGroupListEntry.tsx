@@ -1,9 +1,4 @@
-import {
-	AttributeDTO,
-	AttributeKeyDTO,
-	attributeKeyString,
-	AttributeValueDTO
-} from "../../../../../../common/events/dtoModels";
+import {AttributeDTO, AttributeValueDTO} from "../../../../../../common/events/dtoModels";
 import React from "react";
 import {Accordion} from "../../../../../components/misc/accordion/Accordion";
 import {VBox} from "../../../../../components/layout/box/Box";
@@ -14,7 +9,7 @@ interface MetadataGroupListEntryProps {
 	title: string,
 	entries: ([string, AttributeDTO])[];
 	onUpdateValue: (entry: AttributeDTO, prev: AttributeValueDTO, next: AttributeValueDTO) => void,
-	onContextMenu: (attributeKey: AttributeKeyDTO, event: React.MouseEvent) => void,
+	onContextMenu: (attributeId: number, attributeName: string, event: React.MouseEvent) => void,
 }
 
 
@@ -38,7 +33,7 @@ export function MetadataGroupListEntry(props: React.PropsWithChildren<MetadataGr
 							.sort((a, b) => a[0].toLowerCase().localeCompare(b[0].toLowerCase()))
 							.map((entry: [string, AttributeDTO]) => {
 								return <MetadataListEntry
-									key={attributeKeyString(entry[1].key)}
+									key={entry[1].attId}
 									entry={entry[1]}
 									shortName={entry[0]}
 									onUpdateValue={(prev, next) => props.onUpdateValue(entry[1], prev, next)}

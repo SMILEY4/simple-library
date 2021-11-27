@@ -4,15 +4,15 @@ import {Label} from "../../../../../components/base/label/Label";
 import {IconButton} from "../../../../../components/buttons/iconbutton/IconButton";
 import {IconType} from "../../../../../components/base/icon/Icon";
 import "./panelHiddenAttributes.css";
-import {fetchAllAttributeMeta} from "../../../../common/eventInterface";
-import {AttributeKeyDTO, AttributeMetaDTO} from "../../../../../../common/events/dtoModels";
+import {fetchAllAttributeMetaFilterName} from "../../../../common/eventInterface";
+import {AttributeMetaDTO} from "../../../../../../common/events/dtoModels";
 import {TextField} from "../../../../../components/input/textfield/TextField";
 
 
 interface PanelHiddenAttributes {
-	hiddenAttributes: AttributeKeyDTO[],
-	hideAttribute: (attribute: AttributeKeyDTO) => void,
-	showAttribute: (attribute: AttributeKeyDTO) => void
+	hiddenAttributes: AttributeMetaDTO[],
+	hideAttribute: (attribute: AttributeMetaDTO) => void,
+	showAttribute: (attribute: AttributeMetaDTO) => void
 }
 
 export function PanelHiddenAttributes(props: React.PropsWithChildren<PanelHiddenAttributes>): React.ReactElement {
@@ -22,7 +22,7 @@ export function PanelHiddenAttributes(props: React.PropsWithChildren<PanelHidden
 
 	useEffect(() => {
 		if (search && search.trim().length >= 3) {
-			fetchAllAttributeMeta(search).then(setAttributeMeta);
+			fetchAllAttributeMetaFilterName(search).then(setAttributeMeta);
 		} else {
 			setAttributeMeta([]);
 		}
@@ -37,15 +37,15 @@ export function PanelHiddenAttributes(props: React.PropsWithChildren<PanelHidden
 					onAccept={value => setSearch(value.toLowerCase())}
 				/>
 				<VBox spacing="0-25" alignMain="start" alignCross="stretch" padding="0-25" className="hidden-attribs-available">
-					{attributeMeta.filter(e => e.name.toLowerCase().includes(search)).map(e => {
+					{attributeMeta.filter(e => e.key.name.toLowerCase().includes(search)).map(e => {
 						return (
-							<HBox spacing="0-25" alignMain="space-between" alignCross="center" key={e.g0 + "." + e.g1 + "." + e.g2 + "." + e.id + "." + e.name} className="attrib-entry">
+							<HBox spacing="0-25" alignMain="space-between" alignCross="center" key={e.attId} className="attrib-entry">
 								<VBox alignCross="start" alignMain="center">
 									<Label overflow="cutoff">
-										{e.name}
+										{e.key.name}
 									</Label>
 									<Label type="caption" variant="secondary" overflow="cutoff">
-										{e.g0 + ", " + e.g1 + ", " + e.g2}
+										{e.key.g0 + ", " + e.key.g1 + ", " + e.key.g2}
 									</Label>
 								</VBox>
 								<IconButton ghost icon={IconType.CARET_RIGHT} onAction={() => hideField(e)}/>
@@ -61,13 +61,13 @@ export function PanelHiddenAttributes(props: React.PropsWithChildren<PanelHidden
 			<VBox spacing="0-25" alignMain="start" alignCross="stretch" padding="0-25" className="hidden-attribs-selected">
 				{props.hiddenAttributes.map(e => {
 					return (
-						<HBox spacing="0-25" alignMain="space-between" alignCross="center" key={e.g0 + "." + e.g1 + "." + e.g2 + "." + e.id + "." + e.name} className="attrib-entry">
+						<HBox spacing="0-25" alignMain="space-between" alignCross="center" key={e.attId} className="attrib-entry">
 							<VBox alignCross="start" alignMain="center">
 								<Label overflow="cutoff">
-									{e.name}
+									{e.key.name}
 								</Label>
 								<Label type="caption" variant="secondary" overflow="cutoff">
-									{e.g0 + ", " + e.g1 + ", " + e.g2}
+									{e.key.g0 + ", " + e.key.g1 + ", " + e.key.g2}
 								</Label>
 							</VBox>
 							<IconButton ghost icon={IconType.CLOSE} onAction={() => showField(e)}/>

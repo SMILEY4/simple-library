@@ -1,5 +1,5 @@
 import React from "react";
-import {ItemList, MemoizedItemList} from "./ItemList";
+import {MemoizedItemList} from "./ItemList";
 import {VBox} from "../../../../components/layout/box/Box";
 import {useContentArea} from "./useContentArea";
 
@@ -10,7 +10,7 @@ export function ContentArea(props: React.PropsWithChildren<ContentAreaProps>): R
 
 	const {
 		activeCollection
-	} = useContentArea()
+	} = useContentArea();
 
 	return activeCollection && (
 		<VBox alignMain="start" alignCross="stretch" fill>

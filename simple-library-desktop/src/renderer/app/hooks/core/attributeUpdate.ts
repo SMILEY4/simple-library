@@ -1,5 +1,5 @@
 import {setItemMetadata} from "../../common/eventInterface";
-import {AttributeDTO, AttributeKeyDTO, AttributeValueDTO} from "../../../../common/events/dtoModels";
+import {AttributeDTO, AttributeValueDTO} from "../../../../common/events/dtoModels";
 import {useDispatchUpdateItemAttribute} from "../store/itemsState";
 import {AppNotificationType, useThrowErrorWithNotification} from "../store/notificationState";
 import {genNotificationId} from "../../common/notificationUtils";
@@ -13,12 +13,12 @@ export function useUpdateAttribute() {
 	const dispatchUpdateItemAttribute = useDispatchUpdateItemAttribute();
 
 
-	function hookFunction(itemId: number, attributeKey: AttributeKeyDTO, prevValue: AttributeValueDTO, newValue: AttributeValueDTO): Promise<void> {
+	function hookFunction(itemId: number, attributeId: number, prevValue: AttributeValueDTO, newValue: AttributeValueDTO): Promise<void> {
 		if (prevValue === newValue) {
 			return Promise.resolve();
 		} else {
 			return Promise.resolve(newValue)
-				.then((value: AttributeValueDTO) => setItemMetadata(itemId, attributeKey, ""+value))
+				.then((value: AttributeValueDTO) => setItemMetadata(itemId, attributeId, "" + value))
 				.then((newEntry: AttributeDTO) => updateAttributeState(newEntry))
 				.then((newEntry: AttributeDTO) => updateItemState(newEntry, itemId))
 				.then(voidThen)

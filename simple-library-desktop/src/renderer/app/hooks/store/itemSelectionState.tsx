@@ -8,7 +8,7 @@ import {
 	useGlobalStateWriteOnly
 } from "../../../components/utils/storeUtils";
 import React from "react";
-import {unique} from "../../common/arrayUtils";
+import {ArrayUtils} from "../../../../common/arrayUtils";
 
 
 // STATE
@@ -41,7 +41,7 @@ const reducerConfigMap: ReducerConfigMap<ItemSelectionActionType, ItemSelectionS
 	})],
 	[ItemSelectionActionType.ITEM_SELECTION_ADD, (state, payload) => ({
 		...state,
-		selectedItemIds: unique<number>([...state.selectedItemIds, ...payload])
+		selectedItemIds: ArrayUtils.unique<number>([...state.selectedItemIds, ...payload])
 	})],
 	[ItemSelectionActionType.ITEM_SELECTION_REMOVE, (state, payload) => ({
 		...state,
@@ -93,9 +93,9 @@ export function useDispatchItemSelectionSet(): (itemIds: number[]) => void {
 	return (itemIds: number[]) => {
 		dispatch({
 			type: ItemSelectionActionType.ITEM_SELECTION_SET,
-			payload: itemIds,
+			payload: itemIds
 		});
-	}
+	};
 }
 
 export function useDispatchItemSelectionAdd(): (itemIds: number[]) => void {
@@ -103,9 +103,9 @@ export function useDispatchItemSelectionAdd(): (itemIds: number[]) => void {
 	return (itemIds: number[]) => {
 		dispatch({
 			type: ItemSelectionActionType.ITEM_SELECTION_ADD,
-			payload: itemIds,
+			payload: itemIds
 		});
-	}
+	};
 }
 
 export function useDispatchItemSelectionRemove(): (itemIds: number[]) => void {
@@ -113,9 +113,9 @@ export function useDispatchItemSelectionRemove(): (itemIds: number[]) => void {
 	return (itemIds: number[]) => {
 		dispatch({
 			type: ItemSelectionActionType.ITEM_SELECTION_REMOVE,
-			payload: itemIds,
+			payload: itemIds
 		});
-	}
+	};
 }
 
 export function useDispatchItemSelectionToggle(): (itemIds: number[]) => void {
@@ -123,16 +123,16 @@ export function useDispatchItemSelectionToggle(): (itemIds: number[]) => void {
 	return (itemIds: number[]) => {
 		dispatch({
 			type: ItemSelectionActionType.ITEM_SELECTION_TOGGLE,
-			payload: itemIds,
+			payload: itemIds
 		});
-	}
+	};
 }
 
 export function useDispatchItemSelectionClear(): () => void {
 	const dispatchSet = useDispatchItemSelectionSet();
 	return () => {
 		dispatchSet([]);
-	}
+	};
 }
 
 export function useDispatchItemSelectionSetLast(): (itemId: number | null) => void {
@@ -140,9 +140,9 @@ export function useDispatchItemSelectionSetLast(): (itemId: number | null) => vo
 	return (itemId: number | null) => {
 		dispatch({
 			type: ItemSelectionActionType.ITEM_SELECTION_SET_LAST,
-			payload: itemId,
+			payload: itemId
 		});
-	}
+	};
 }
 
 export function useSelectedItemIds() {

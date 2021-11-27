@@ -1,6 +1,4 @@
-import {DbAccess} from "../../persistence/dbAcces";
 import {ActionGetGroupById} from "./actionGetGroupById";
-import {SQL} from "../../persistence/sqlHandler";
 import {voidThen} from "../../../common/utils";
 import {Group} from "./groupCommons";
 import {DataRepository} from "../dataRepository";

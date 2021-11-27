@@ -4,9 +4,11 @@ import {ImportStepThumbnail} from "./importStepThumbnail";
 import {ImportStepTargetFilepath} from "./importStepTargetFilepath";
 import {ImportStepImportTarget} from "./importStepImportTarget";
 import {ImportStepMetadata} from "./importStepMetadata";
-import {Attribute} from "../item/itemCommon";
+import {Attribute, attributeKeysEquals} from "../item/itemCommon";
 import {ImportStatusDTO} from "../../../common/events/dtoModels";
 import {DataRepository} from "../dataRepository";
+import {ActionGetLibraryAttributeMetaByKeys} from "../library/actionGetLibraryAttributeMetaByKeys";
+import {AttributeMeta} from "../library/libraryCommons";
 
 export interface ImportProcessData {
 	files: string[],
@@ -71,6 +73,7 @@ export class ImportService {
 	private readonly importStepImportTarget: ImportStepImportTarget;
 	private readonly importStepMetadata: ImportStepMetadata;
 	private readonly importStatusSender: ImportStatusSender;
+	private readonly actionGetAttributeMetaByKeys: ActionGetLibraryAttributeMetaByKeys;
 
 	/**
 	 * True, when an import is currently running
@@ -86,7 +89,8 @@ export class ImportService {
 		importStepTargetFilepath: ImportStepTargetFilepath,
 		importStepImportTarget: ImportStepImportTarget,
 		importStepMetadata: ImportStepMetadata,
-		importStatusSender: ImportStatusSender
+		importStatusSender: ImportStatusSender,
+		actionGetAttributeMetaByKeys: ActionGetLibraryAttributeMetaByKeys
 	) {
 		this.repository = repository;
 		this.validator = validator;
@@ -96,6 +100,7 @@ export class ImportService {
 		this.importStepImportTarget = importStepImportTarget;
 		this.importStepMetadata = importStepMetadata;
 		this.importStatusSender = importStatusSender;
+		this.actionGetAttributeMetaByKeys = actionGetAttributeMetaByKeys;
 	}
 
 
@@ -189,16 +194,28 @@ export class ImportService {
 	}
 
 
-	private insertAttributes(itemId: number, attributes: Attribute[]) {
-		return this.repository.insertItemAttributes(itemId, attributes.map(att => ({
-			id: att.key.id,
-			name: att.key.name,
-			g0: att.key.g0,
-			g1: att.key.g1,
-			g2: att.key.g2,
-			value: "" + att.value,
-			modified: false
-		})));
+	private insertAttributes(itemId: number, attributes: Attribute[]): Promise<any> {
+		return this.actionGetAttributeMetaByKeys.perform(attributes.map(a => a.key))
+			.then(attributeMeta => {
+				return attributes
+					.map(attribute => this.enrichWithAttributeId(attribute, attributeMeta))
+					.filter(a => a !== null);
+			})
+			.then(attribEntries => this.repository.insertItemAttributes(itemId, attribEntries));
+	}
+
+
+	private enrichWithAttributeId(attribute: Attribute, attributeMeta: AttributeMeta[]): { attId: number, value: string, modified: boolean } | null {
+		const metaEntry = attributeMeta.find(am => attributeKeysEquals(am.key, attribute.key));
+		if (metaEntry) {
+			return {
+				attId: metaEntry.attId,
+				value: "" + attribute.value,
+				modified: false
+			};
+		} else {
+			return null;
+		}
 	}
 
 

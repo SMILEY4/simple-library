@@ -1,4 +1,4 @@
-import {Attribute, AttributeKey, packAttributeKey, rowToAttribute} from "./itemCommon";
+import {Attribute, rowToAttribute} from "./itemCommon";
 import {DataRepository} from "../dataRepository";
 
 /**
@@ -13,26 +13,26 @@ export class ActionUpdateItemAttribute {
 		this.repository = repository;
 	}
 
-	public perform(itemId: number, attributeKey: AttributeKey, newValue: string): Promise<Attribute> {
-		return this.findAttribute(itemId, attributeKey)
-			.then((attrib: Attribute) => this.update(attrib, itemId, attributeKey, newValue))
+	public perform(itemId: number, attributeId: number, newValue: string): Promise<Attribute> {
+		return this.findAttribute(itemId, attributeId)
+			.then((attrib: Attribute) => this.update(attrib, itemId, attributeId, newValue))
 			.then((attrib: Attribute) => this.buildUpdatedAttribute(attrib, newValue));
 	}
 
 
-	private findAttribute(itemId: number, attributeKey: AttributeKey): Promise<Attribute> {
-		return this.repository.getItemAttribute(itemId, packAttributeKey(attributeKey))
+	private findAttribute(itemId: number, attributeId: number): Promise<Attribute> {
+		return this.repository.getItemAttribute(itemId, attributeId)
 			.then((row: any | null) => {
 					return row
 						? rowToAttribute(row)
-						: Promise.reject("No attribute with key " + attributeKey + " found for item with id " + itemId);
+						: Promise.reject("No attribute with id " + attributeId + " found for item with id " + itemId);
 				}
 			);
 	}
 
 
-	private update(attribute: Attribute, itemId: number, attributeKey: AttributeKey, newValue: string): Promise<Attribute> {
-		return this.repository.updateItemAttributeValue(itemId, packAttributeKey(attributeKey), "" + newValue)
+	private update(attribute: Attribute, itemId: number, attributeId: number, newValue: string): Promise<Attribute> {
+		return this.repository.updateItemAttributeValue(itemId, attributeId, "" + newValue)
 			.then(() => attribute);
 	}
 
