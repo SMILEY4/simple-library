@@ -1,16 +1,4 @@
-
-.hidden-attribs-base {
-	height: 200px;
-	width:  500px;
-}
-
-.hidden-attribs-base > * {
-	height:    100%;
-	flex-grow: 1;
-	width:     0;
-}
-
-.hidden-attribs-selected {
+.attrib-meta-selection-list-content {
 	border-radius:    var(--radius-0);
 	border:           1px solid var(--color-border);
 	background-color: var(--color-background-1);
@@ -19,13 +7,13 @@
 	overflow-x:       hidden;
 }
 
-.attrib-entry {
+.attrib-meta-selection-list-entry {
 	border-radius:    var(--radius-0);
 	border:           1px solid var(--color-border);
 	background-color: var(--color-background-0);
 	padding-left:     var(--s-0-25);
 }
 
-.attrib-entry > .box {
+.attrib-meta-selection-list-entry > .box {
 	overflow-x: hidden;
 }

@@ -1,4 +1,5 @@
 import {AttributeKey} from "../item/itemCommon";
+import {AttributeMetaDTO} from "../../../common/events/dtoModels";
 
 export interface LibraryFileHandle {
 	path: string,
@@ -38,31 +39,21 @@ export function rowToAttributeMeta(row: any): AttributeMeta {
 	};
 }
 
-// export interface AttributeMeta {
-// 	attId: number | null,
-// 	name: string,
-// 	id: string,
-// 	g0: string,
-// 	g1: string,
-// 	g2: string
-// }
-//
-// export function rowsToAttributeMetas(rows: any[]): AttributeMeta[] {
-// 	return rows.map(row => rowToAttributeMeta(row));
-// }
-//
-//
-// export function rowToAttributeMeta(row: any | null): AttributeMeta | null {
-// 	if (row) {
-// 		return {
-// 			attId: row.attId,
-// 			name: row.name,
-// 			id: row.id,
-// 			g0: row.g0,
-// 			g1: row.g1,
-// 			g2: row.g2
-// 		};
-// 	} else {
-// 		return null;
-// 	}
-// }
+export interface DefaultAttributeValueEntry {
+	attributeMeta: AttributeMeta,
+	defaultValue: string,
+	allowOverwrite: boolean
+}
+
+export function rowsToDefaultAttributeValueEntry(rows: any[]): DefaultAttributeValueEntry[] {
+	return rows.map(row => rowToDefaultAttributeValueEntry(row));
+}
+
+
+export function rowToDefaultAttributeValueEntry(row: any): DefaultAttributeValueEntry {
+	return {
+		attributeMeta: rowToAttributeMeta(row),
+		defaultValue: row.value,
+		allowOverwrite: row.allowOverwrite === 1
+	};
+}

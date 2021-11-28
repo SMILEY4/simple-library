@@ -20,11 +20,18 @@ export function DialogSettings(props: React.PropsWithChildren<DialogSettingsProp
 		handleCancel,
 		handleSave,
 		handleOpenConfigFile,
+
 		appConfig,
 		setAppConfig,
+
 		hiddenAttributes,
 		hideAttribute,
-		showAttribute
+		showAttribute,
+
+		defaultAttributeValues,
+		setDefaultAttributeValue,
+		deleteDefaultAttributeValue
+
 	} = useDialogSettings(props.onClose);
 
 	return (
@@ -42,7 +49,7 @@ export function DialogSettings(props: React.PropsWithChildren<DialogSettingsProp
 						<div onClick={() => setCurrentTab(SettingsDialogTab.APP)}>Application</div>
 						<div onClick={() => setCurrentTab(SettingsDialogTab.ATTRIBUTES)}>Metadata</div>
 					</VBox>
-					<VBox className="settings-content">
+					<VBox className="settings-content" alignMain="start">
 						{currentTab === SettingsDialogTab.APP && (
 							<ApplicationSettings
 								config={appConfig}
@@ -55,6 +62,9 @@ export function DialogSettings(props: React.PropsWithChildren<DialogSettingsProp
 								hiddenAttributes={hiddenAttributes}
 								hideAttribute={hideAttribute}
 								showAttribute={showAttribute}
+								defaultAttributeValues={defaultAttributeValues}
+								onSetDefaultAttributeValue={setDefaultAttributeValue}
+								onDeleteDefaultAttributeValue={deleteDefaultAttributeValue}
 							/>
 						)}
 					</VBox>
