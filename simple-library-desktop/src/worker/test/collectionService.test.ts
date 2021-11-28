@@ -1,4 +1,4 @@
-import {mockAttributeMetadataProvider, mockFileSystemWrapper} from "./mockSetup";
+import {mockAttributeMetadataProvider, mockFileSystemWrapper} from "./testUtils";
 import {DbAccess} from "../persistence/dbAcces";
 import {SQL} from "../persistence/sqlHandler";
 import {MemDbAccess} from "./memDbAccess";

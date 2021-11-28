@@ -1,5 +1,5 @@
 import {FileSystemWrapper} from "../service/fileSystemWrapper";
-import {mockConfigAccess, mockFileSystemWrapper} from "./mockSetup";
+import {mockConfigAccess, mockFileSystemWrapper} from "./testUtils";
 import {ConfigAccess} from "../persistence/configAccess";
 import {jest} from "@jest/globals";
 import {ActionOpenConfig} from "../service/config/actionOpenConfig";
