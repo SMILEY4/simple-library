@@ -3,7 +3,7 @@ import {ActionReadItemAttributesFromFile} from "./actionReadItemAttributesFromFi
 import {Attribute, attributeKeysEquals, MiniAttribute} from "./itemCommon";
 import {ActionGetItemById} from "./actionGetItemById";
 import {ItemDTO} from "../../../common/events/dtoModels";
-import {voidThen} from "../../../common/utils";
+import {logThen, voidThen} from "../../../common/utils";
 import {ActionSetItemAttributes} from "./actionSetItemAttributes";
 import {ActionGetLibraryAttributeMetaByKeys} from "../library/actionGetLibraryAttributeMetaByKeys";
 import {AttributeMeta} from "../library/libraryCommons";
@@ -50,14 +50,12 @@ export class ActionReloadItemAttributes {
 	}
 
 	private enrichWithAttributeIds(attributes: Attribute[]): Promise<MiniAttribute[]> {
-		this.actionGetAttributeMetaByKeys.perform(attributes.map(a => a.key))
+		return this.actionGetAttributeMetaByKeys.perform(attributes.map(a => a.key))
 			.then(attributeMeta => {
 				return attributes
 					.map(attribute => this.enrichWithAttributeId(attribute, attributeMeta))
 					.filter(a => a !== null);
 			});
-
-		return Promise.resolve(attributes);
 	}
 
 	private enrichWithAttributeId(attribute: Attribute, attributeMeta: AttributeMeta[]): MiniAttribute | null {

@@ -65,7 +65,7 @@ export function mockAttributeMetadataProvider(returnReal?: boolean) {
 	const attribMetaProvider = new AttributeMetadataProvider(true, false);
 	if (returnReal) {
 		attribMetaProvider["getAttributeMetadataXml"] = jest.fn().mockImplementation(() => {
-			return require("fs").readFileSync(require('path').join(__dirname, "../../resourcefiles/attributeMetadata.xml"), "utf8");
+			return require("fs").readFileSync(require("path").join(__dirname, "../../resourcefiles/attributeMetadata.xml"), "utf8");
 		}) as any;
 	} else {
 		attribMetaProvider["getAttributeMetadataXml"] = jest.fn().mockReturnValue("") as any;
@@ -84,3 +84,19 @@ export function mockExiftoolProcess(readMetadataResult: any) {
 		}
 	);
 }
+
+export function mockExiftoolProcessMultiFiles(readMetadataFileResults: any) {
+	// @ts-ignore
+	ExifHandler["createExiftoolProcess"] = jest.fn().mockReturnValue(
+		{
+			open: () => Promise.resolve(),
+			readMetadata: (path: any, options: any) => {
+				const fileData = readMetadataFileResults[path];
+				return fileData ? {data: [fileData]} : undefined;
+			},
+			writeMetadata: (path: string, replaceAll: boolean, data: any) => {throw "todo";},
+			close: () => Promise.resolve()
+		}
+	);
+}
+

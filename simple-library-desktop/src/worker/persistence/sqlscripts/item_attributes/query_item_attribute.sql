@@ -2,7 +2,7 @@
 -- attId (number): the (unique) id of the attribute
 SELECT item_attributes.value    as value,
 	   item_attributes.modified as modified,
-	   attribute_meta.att_id     as att_id,
+	   attribute_meta.att_id    as att_id,
 	   attribute_meta.name      as name,
 	   attribute_meta.id        as id,
 	   attribute_meta.g0        as g0,

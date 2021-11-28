@@ -111,10 +111,10 @@ export class ActionEmbedItemAttributes {
 			const item = items[i];
 			if (this.fsWrapper.existsFile(item.filepath)) {
 				await this.embedItem(item.filepath, item.metadata).catch(err => this.reportEmbedFailed(report, item, err));
+				await this.actionReloadAttributes.perform(item.itemId);
 			} else {
 				this.reportFileNotFound(report, item);
 			}
-			await this.actionReloadAttributes.perform(item.itemId);
 			await this.sendStatus(items.length, i + 1);
 		}
 		console.log("Finished embedding attributes of " + items.length + " items.");
