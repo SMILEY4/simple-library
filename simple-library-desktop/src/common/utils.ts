@@ -2,6 +2,15 @@ export function voidThen(): void {
 	return undefined;
 }
 
+export function logThen<T>(data: T, msg?: string): T {
+	if (msg) {
+		console.log(msg, data);
+	} else {
+		console.log("log-then:", data);
+	}
+	return data;
+}
+
 export function iterateObj(obj: any, onAttrib: (key: string, value: any) => void) {
 	for (let key in obj) {
 		if (obj.hasOwnProperty(key)) {

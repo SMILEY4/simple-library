@@ -1,22 +1,22 @@
 import React from "react";
 import {Menu} from "../../../../../components/menu/menu/Menu";
 import {MenuItem} from "../../../../../components/menu/menuitem/MenuItem";
-import {AttributeKeyDTO} from "../../../../../../common/events/dtoModels";
 
 interface MetadataListEntryContextMenuProps {
-	attributeKey: AttributeKeyDTO,
-	onCopy: (attributeKey: AttributeKeyDTO) => void,
-	onDelete: (attributeKey: AttributeKeyDTO) => void,
-	onHide: (attributeKey: AttributeKeyDTO) => void,
+	attributeName: string,
+	attributeId: number,
+	onCopy: (attributeId: number) => void,
+	onDelete: (attributeId: number) => void,
+	onHide: (attributeId: number) => void,
 	__onActionInternal?: (itemId: string) => void,
 }
 
 export function MetadataListEntryContextMenu(props: React.PropsWithChildren<MetadataListEntryContextMenuProps>): React.ReactElement {
 	return (
-		<Menu __onActionInternal={props.__onActionInternal} title={props.attributeKey.name}>
-			<MenuItem itemId={"copy"} onAction={() => props.onCopy(props.attributeKey)}>Copy Value</MenuItem>
-			<MenuItem itemId={"hide"} onAction={() => props.onHide(props.attributeKey)}>Hide Attribute</MenuItem>
-			<MenuItem itemId={"delete"} onAction={() => props.onDelete(props.attributeKey)}>Delete Entry</MenuItem>
+		<Menu __onActionInternal={props.__onActionInternal} title={props.attributeName}>
+			<MenuItem itemId={"copy"} onAction={() => props.onCopy(props.attributeId)}>Copy Value</MenuItem>
+			<MenuItem itemId={"hide"} onAction={() => props.onHide(props.attributeId)}>Hide Attribute</MenuItem>
+			<MenuItem itemId={"delete"} onAction={() => props.onDelete(props.attributeId)}>Delete Entry</MenuItem>
 		</Menu>
 	);
 }

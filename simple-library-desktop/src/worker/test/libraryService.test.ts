@@ -1,5 +1,5 @@
 import {jest} from "@jest/globals";
-import {mockAttributeMetadataProvider, mockDateNow, mockFileSystemWrapper} from "./mockSetup";
+import {mockAttributeMetadataProvider, mockDateNow, mockFileSystemWrapper} from "./testUtils";
 import {DbAccess} from "../persistence/dbAcces";
 import {FileSystemWrapper} from "../service/fileSystemWrapper";
 import {MemDbAccess} from "./memDbAccess";
@@ -16,7 +16,7 @@ describe("library-service", () => {
 	describe("create", () => {
 
 		test("create new valid library", async () => {
-			const EXPECTED_ATTRIB_META_TAG_COUNT = 23364;
+			const EXPECTED_ATTRIB_META_TAG_COUNT = 24654;
 			// given
 			const name = "My 1. Test Library!";
 			const dir = "my/test/directory";

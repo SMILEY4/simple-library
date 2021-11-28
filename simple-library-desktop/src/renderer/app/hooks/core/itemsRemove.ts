@@ -6,7 +6,7 @@ import {GroupDTO, ItemDTO} from "../../../../common/events/dtoModels";
 import {useDispatchSetItems} from "../store/itemsState";
 import {useDispatchSetRootGroup} from "../store/collectionsState";
 import {useActiveCollection} from "../store/collectionActiveState";
-import {TEMP_ATTRIBUTE_KEYS} from "./temp";
+import {TEMP_ATTRIBUTE_IDS} from "./temp";
 
 export function useRemoveItems() {
 
@@ -22,13 +22,13 @@ export function useRemoveItems() {
 		removeItems(itemIds, collectionId)
 			.then(() => updateSelection(itemIds))
 			.then(() => updateItemState(collectionId))
-			.then(() => updateGroupState())
+			.then(() => updateGroupState());
 	}
 
 
 	function removeItems(itemIds: number[], collectionId: number) {
 		return requestRemoveItems(collectionId, itemIds)
-			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_REMOVE_FAILED, error))
+			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_REMOVE_FAILED, error));
 	}
 
 
@@ -39,7 +39,7 @@ export function useRemoveItems() {
 
 	function updateItemState(collectionId: number) {
 		if (activeCollectionId === collectionId) {
-			return fetchItems(activeCollectionId, TEMP_ATTRIBUTE_KEYS, true, false)
+			return fetchItems(activeCollectionId, TEMP_ATTRIBUTE_IDS, true, false)
 				.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_FETCH_FAILED, error))
 				.then((items: ItemDTO[]) => dispatchSetItems(items));
 		}

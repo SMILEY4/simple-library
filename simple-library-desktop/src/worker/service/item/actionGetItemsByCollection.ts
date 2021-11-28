@@ -1,22 +1,13 @@
 import {ActionGetCollectionById} from "../collection/actionGetCollectionById";
-import {
-	Attribute,
-	AttributeKey,
-	attributeKeysEquals,
-	AttributeMetadata,
-	estimateSimpleTypeFromAttributeValue,
-	Item,
-	packAttributeKey,
-	rowsToAttributeMeta,
-	rowsToItems
-} from "./itemCommon";
+import {Attribute, estimateSimpleTypeFromAttributeValue, Item, rowsToItems} from "./itemCommon";
 import {Collection} from "../collection/collectionCommons";
 import {DataRepository} from "../dataRepository";
 import {ActionGetHiddenAttributes} from "../library/actionGetHiddenAttributes";
 import {ArrayUtils} from "../../../common/arrayUtils";
+import {AttributeMeta, rowsToAttributeMeta} from "../library/libraryCommons";
 
 /**
- * Get all items of the given collection (with the attributes of the given keys)
+ * Get all items of the given collection (with the requested attributes)
  */
 export class ActionGetItemsByCollection {
 
@@ -35,19 +26,19 @@ export class ActionGetItemsByCollection {
 	}
 
 
-	public async perform(collectionId: number, reqAttributeKeys: AttributeKey[], includeMissingAttributes: boolean, includeHiddenAttributes: boolean): Promise<Item[]> {
-		const attributeKeys = includeHiddenAttributes ? reqAttributeKeys : await this.filterAttributes(reqAttributeKeys)
+	public async perform(collectionId: number, reqAttributeIds: number[], includeMissingAttributes: boolean, includeHiddenAttributes: boolean): Promise<Item[]> {
+		const attributeIds: number[] = includeHiddenAttributes ? reqAttributeIds : await this.filterAttributes(reqAttributeIds);
 		return this.findCollection(collectionId)
-			.then(collection => this.getItemData(collection, attributeKeys))
+			.then(collection => this.getItemData(collection, attributeIds))
 			.then(rowsToItems)
-			.then(items => includeMissingAttributes ? this.appendMissingAttributes(items, attributeKeys) : items)
+			.then(items => includeMissingAttributes ? this.appendMissingAttributes(items, attributeIds) : items)
 			.then(items => this.estimateSimpleAttributeTypes(items));
 	}
 
 
-	private filterAttributes(requestedAttributes: AttributeKey[]): Promise<AttributeKey[]> {
+	private filterAttributes(reqAttributeIds: number[]): Promise<number[]> {
 		return this.actionGetHiddenAttributes.perform()
-			.then(hidden => ArrayUtils.complement(requestedAttributes, hidden, attributeKeysEquals));
+			.then(hidden => ArrayUtils.complement(reqAttributeIds, hidden.map(h => h.attId)));
 	}
 
 
@@ -60,12 +51,12 @@ export class ActionGetItemsByCollection {
 	}
 
 
-	private getItemData(collection: Collection, attributeKeys: AttributeKey[]): Promise<any[]> {
+	private getItemData(collection: Collection, attributeIds: number[]): Promise<any[]> {
 		switch (collection.type) {
 			case "normal":
-				return this.getItemDataFromNormal(collection, attributeKeys);
+				return this.getItemDataFromNormal(collection, attributeIds);
 			case "smart":
-				return this.getItemDataFromSmart(collection, attributeKeys);
+				return this.getItemDataFromSmart(collection, attributeIds);
 			default: {
 				throw "Unexpected collection type: " + collection.type;
 			}
@@ -73,25 +64,24 @@ export class ActionGetItemsByCollection {
 	}
 
 
-	private getItemDataFromNormal(collection: Collection, attributeKeys: AttributeKey[]): Promise<any[]> {
-		return this.repository.getItemsByCollection(collection.id, attributeKeys.map(k => packAttributeKey(k)));
+	private getItemDataFromNormal(collection: Collection, attributeIds: number[]): Promise<any[]> {
+		return this.repository.getItemsByCollection(collection.id, attributeIds);
 	}
 
 
-	private getItemDataFromSmart(collection: Collection, attributeKeys: AttributeKey[]): Promise<any[]> {
+	private getItemDataFromSmart(collection: Collection, attributeIds: number[]): Promise<any[]> {
 		const fetchWithQuery = collection.smartQuery && collection.smartQuery.length > 0;
-		const keys: ([string, string, string, string, string])[] = attributeKeys.map(k => packAttributeKey(k));
 		return fetchWithQuery
-			? this.repository.getItemsByCustomQuery(collection.smartQuery, keys)
-			: this.repository.getItemsAll(keys);
+			? this.repository.getItemsByCustomQuery(collection.smartQuery, attributeIds)
+			: this.repository.getItemsAll(attributeIds);
 	}
 
 
-	private appendMissingAttributes(items: Item[], attributeKeys: AttributeKey[]): Promise<Item[]> {
+	private appendMissingAttributes(items: Item[], attributeIds: number[]): Promise<Item[]> {
 		return Promise.resolve(items)
 			.then(async items => {
 				for (let item of items) {
-					const missingAttribs = await this.getMissingAttributesForItem(item, attributeKeys);
+					const missingAttribs = await this.getMissingAttributesForItem(item, attributeIds);
 					item.attributes.push(...missingAttribs);
 				}
 				return items;
@@ -99,22 +89,20 @@ export class ActionGetItemsByCollection {
 	}
 
 
-	private getMissingAttributesForItem(item: Item, attributeKeys: AttributeKey[]): Promise<Attribute[]> {
+	private getMissingAttributesForItem(item: Item, attributeIds: number[]): Promise<Attribute[]> {
 
-		const existingKeys: AttributeKey[] = item.attributes.map(att => att.key);
+		const existingIds = item.attributes.map(att => att.attId);
+		const missingIds = ArrayUtils.complement(attributeIds, existingIds);
 
-		const missingKeysPacked: ([string, string, string, string, string,])[] = attributeKeys
-			.filter(key => !existingKeys.find(k => attributeKeysEquals(k, key)))
-			.map(key => packAttributeKey(key));
-
-		return this.repository.queryAttributeMeta(missingKeysPacked)
+		return this.repository.queryAttributeMeta(missingIds)
 			.then(rowsToAttributeMeta)
 			.then(attMeta => attMeta.map(e => this.buildMissingAttribute(e)));
 	}
 
 
-	private buildMissingAttribute(attribMeta: AttributeMetadata): Attribute {
+	private buildMissingAttribute(attribMeta: AttributeMeta): Attribute {
 		return {
+			attId: attribMeta.attId,
 			key: attribMeta.key,
 			type: attribMeta.type,
 			writable: attribMeta.writable,
@@ -122,6 +110,7 @@ export class ActionGetItemsByCollection {
 			modified: false
 		};
 	}
+
 
 	private estimateSimpleAttributeTypes(items: Item[]): Promise<Item[]> {
 		items.forEach(item => {

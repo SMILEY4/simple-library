@@ -56,6 +56,7 @@ export interface ItemDTO {
 export type AttributeValueDTO = null | string
 
 export interface AttributeDTO {
+	attId: number,
 	key: AttributeKeyDTO,
 	value: string,
 	type: string,
@@ -69,14 +70,6 @@ export interface AttributeKeyDTO {
 	g0: string,
 	g1: string,
 	g2: string,
-}
-
-export function attributeKeysDtoEquals(a: AttributeKeyDTO, b: AttributeKeyDTO): boolean {
-	return a.id === b.id && a.name === b.name && a.g0 === b.g0 && a.g1 === b.g1 && a.g2 === b.g2;
-}
-
-export function attributeKeyString(key: AttributeKeyDTO) {
-	return key.id + "-" + key.name + "-" + key.g0 + "-" + key.g1 + "-" + key.g2;
 }
 
 export interface ImportStatusDTO {
@@ -122,7 +115,6 @@ export interface RenamePartDTO {
 	value: string
 }
 
-
 export type RenamePartTypeDTO = "nothing" | "text" | "number_from" | "original_filename";
 
 export function renamePartTypeAllowsUserInput(type: RenamePartTypeDTO): boolean {
@@ -154,9 +146,8 @@ export interface ApplicationConfigDTO {
 }
 
 export interface AttributeMetaDTO {
-	name: string,
-	id: string,
-	g0: string,
-	g1: string,
-	g2: string
+	attId: number | null,
+	key: AttributeKeyDTO,
+	type: string,
+	writable: boolean,
 }

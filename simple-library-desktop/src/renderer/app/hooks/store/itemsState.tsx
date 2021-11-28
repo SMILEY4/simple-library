@@ -8,7 +8,7 @@ import {
     useGlobalStateWriteOnly
 } from "../../../components/utils/storeUtils";
 import React from "react";
-import {AttributeDTO, AttributeKeyDTO, attributeKeysDtoEquals, ItemDTO} from "../../../../common/events/dtoModels";
+import {AttributeDTO, ItemDTO} from "../../../../common/events/dtoModels";
 
 
 // STATE
@@ -42,7 +42,7 @@ const reducerConfigMap: ReducerConfigMap<ItemsActionType, ItemsState> = new Redu
                 return {
                     ...item,
                     attributes: item.attributes.map((attribute: AttributeDTO) => {
-                        if (attributeKeysDtoEquals(attribute.key, payload.key)) {
+                        if (attribute.attId === payload.attId) {
                             return {
                                 ...attribute,
                                 value: payload.newValue,
@@ -68,7 +68,7 @@ const reducerConfigMap: ReducerConfigMap<ItemsActionType, ItemsState> = new Redu
                 return {
                     ...item,
                     attributes: item.attributes.map((attribute: AttributeDTO) => {
-                        if (attributeKeysDtoEquals(attribute.key, payload.key)) {
+                        if (attribute.attId === payload.attId) {
                             return {
                                 ...attribute,
                                 value: null,
@@ -151,7 +151,7 @@ export function useDispatchUpdateItemAttribute(): (itemId: number, attribute: At
             type: ItemsActionType.UPDATE_ITEM_ATTRIBUTE,
             payload: {
                 itemId: itemId,
-                key: attribute.key,
+                attId: attribute.attId,
                 newValue: attribute.value,
                 modified: attribute.modified
             }
@@ -159,14 +159,14 @@ export function useDispatchUpdateItemAttribute(): (itemId: number, attribute: At
     };
 }
 
-export function useDispatchRemoveItemAttribute(): (itemId: number, attributeKey: AttributeKeyDTO) => void {
+export function useDispatchRemoveItemAttribute(): (itemId: number, attributeId: number) => void {
     const dispatch = useItemsDispatch();
-    return (itemId: number, attributeKey: AttributeKeyDTO) => {
+    return (itemId: number, attributeId: number) => {
         dispatch({
             type: ItemsActionType.REMOVE_ITEM_ATTRIBUTE,
             payload: {
                 itemId: itemId,
-                key: attributeKey
+                attId: attributeId
             }
         });
     };

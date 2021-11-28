@@ -6,7 +6,7 @@ import {GroupDTO, ItemDTO} from "../../../../common/events/dtoModels";
 import {useDispatchSetItems} from "../store/itemsState";
 import {useDispatchSetRootGroup} from "../store/collectionsState";
 import {useActiveCollection} from "../store/collectionActiveState";
-import {TEMP_ATTRIBUTE_KEYS} from "./temp";
+import {TEMP_ATTRIBUTE_IDS} from "./temp";
 
 export function useDeleteItems() {
 
@@ -20,7 +20,7 @@ export function useDeleteItems() {
 		deleteItems(itemIds)
 			.then(() => clearSelection())
 			.then(() => updateItemState())
-			.then(() => updateGroupState())
+			.then(() => updateGroupState());
 	}
 
 
@@ -36,7 +36,7 @@ export function useDeleteItems() {
 
 
 	function updateItemState() {
-		return fetchItems(activeCollectionId, TEMP_ATTRIBUTE_KEYS, true, false)
+		return fetchItems(activeCollectionId, TEMP_ATTRIBUTE_IDS, true, false)
 			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_FETCH_FAILED, error))
 			.then((items: ItemDTO[]) => dispatchSetItems(items));
 	}

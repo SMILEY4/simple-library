@@ -56,6 +56,8 @@ import {ActionSetAppConfig} from "./service/config/actionSetAppConfig";
 import {ActionGetLibraryAttributeMeta} from "./service/library/actionGetLibraryAttributeMeta";
 import {ActionSetHiddenAttributes} from "./service/library/actionSetHiddenAttributes";
 import {ActionGetHiddenAttributes} from "./service/library/actionGetHiddenAttributes";
+import {ActionGetLibraryAttributeMetaByKeys} from "./service/library/actionGetLibraryAttributeMetaByKeys";
+import {ImportDbWriter} from "./service/import/importDbWriter";
 
 export class ActionHandler {
 
@@ -104,6 +106,9 @@ export class ActionHandler {
 		const actionSetHiddenAttributes = new ActionSetHiddenAttributes(dataRepository);
 		const actionGetHiddenAttributes = new ActionGetHiddenAttributes(dataRepository);
 
+		const actionGetLibraryAttributeMetaAll = new ActionGetLibraryAttributeMeta(dataRepository);
+		const actionGetLibraryAttributeMetaByKeys = new ActionGetLibraryAttributeMetaByKeys(dataRepository);
+
 		const actionReadFileAttributes = new ActionReadItemAttributesFromFile(actionGetExiftoolInfo);
 		const actionDeleteItems = new ActionDeleteItems(dataRepository);
 		const actionGetItemById = new ActionGetItemById(dataRepository);
@@ -119,6 +124,7 @@ export class ActionHandler {
 				actionGetItemById,
 				actionGetExiftoolInfo,
 				actionReadFileAttributes,
+				actionGetLibraryAttributeMetaByKeys,
 				new ActionSetItemAttributes(dataRepository)
 			),
 			fsWrapper,
@@ -134,7 +140,6 @@ export class ActionHandler {
 		);
 		const actionGetLibraryInfo = new ActionGetLibraryInfo(dataRepository);
 		const actionOpenLibrary = new ActionOpenLibrary(dataRepository, fsWrapper, actionGetLibraryInfo);
-		const actionGetLibraryAttributeMetaAll = new ActionGetLibraryAttributeMeta(dataRepository);
 
 		const importService: ImportService = new ImportService(
 			dataRepository,
@@ -144,7 +149,8 @@ export class ActionHandler {
 			new ImportStepTargetFilepath(),
 			new ImportStepImportTarget(fsWrapper),
 			new ImportStepMetadata(new ActionReadItemAttributesFromFile(actionGetExiftoolInfo)),
-			(status: any) => this.send(EventIds.IMPORT_STATUS, status)
+			new ImportDbWriter(dataRepository, actionGetLibraryAttributeMetaByKeys),
+			(status: any) => this.send(EventIds.IMPORT_STATUS, status),
 		);
 
 		this.eventHandler.on(EventIds.GET_APP_CONFIG, () => actionGetAppConfig.perform());
@@ -166,8 +172,9 @@ export class ActionHandler {
 		});
 		this.eventHandler.on(EventIds.CLOSE_LIBRARY, () => actionCloseLibrary.perform());
 		this.eventHandler.on(EventIds.GET_LIBRARY_INFO, () => actionGetLibraryInfo.perform());
-		this.eventHandler.on(EventIds.GET_LIBRARY_ATTRIBUTE_META_ALL, (filter) => actionGetLibraryAttributeMetaAll.perform(filter));
-		this.eventHandler.on(EventIds.SET_HIDDEN_ATTRIBUTES, (payload) => actionSetHiddenAttributes.perform(payload.attributes, payload.mode));
+		this.eventHandler.on(EventIds.GET_LIBRARY_ATTRIBUTE_META_ALL_FILTER_NAME, (filter) => actionGetLibraryAttributeMetaAll.perform(filter));
+		this.eventHandler.on(EventIds.GET_LIBRARY_ATTRIBUTE_META_BY_KEYS, (keys) => actionGetLibraryAttributeMetaByKeys.perform(keys));
+		this.eventHandler.on(EventIds.SET_HIDDEN_ATTRIBUTES, (payload) => actionSetHiddenAttributes.perform(payload.attributeIds, payload.mode));
 		this.eventHandler.on(EventIds.GET_HIDDEN_ATTRIBUTES, () => actionGetHiddenAttributes.perform());
 
 		this.eventHandler.on(EventIds.GET_GROUP_TREE, (payload) => actionGetGroupTree.perform(payload.includeCollections, payload.includeItemCount));
@@ -184,13 +191,13 @@ export class ActionHandler {
 		this.eventHandler.on(EventIds.MOVE_ITEMS, (payload) => actionMoveItems.perform(payload.sourceCollectionId, payload.targetCollectionId, payload.itemIds, payload.copy));
 		this.eventHandler.on(EventIds.REMOVE_ITEMS, (payload) => actionRemoveItems.perform(payload.collectionId, payload.itemIds));
 
-		this.eventHandler.on(EventIds.GET_ITEMS_BY_COLLECTION, (payload) => actionGetItemsByCollection.perform(payload.collectionId, payload.itemAttributeKeys, payload.includeMissingAttributes, payload.includeHiddenAttribs));
+		this.eventHandler.on(EventIds.GET_ITEMS_BY_COLLECTION, (payload) => actionGetItemsByCollection.perform(payload.collectionId, payload.itemAttributeIds, payload.includeMissingAttributes, payload.includeHiddenAttribs));
 		this.eventHandler.on(EventIds.GET_ITEM_BY_ID, (payload) => actionGetItemById.perform(payload));
 		this.eventHandler.on(EventIds.DELETE_ITEMS, (payload) => actionDeleteItems.perform(payload));
 		this.eventHandler.on(EventIds.OPEN_ITEMS, (payload) => actionOpenItemsExternal.perform(payload));
 		this.eventHandler.on(EventIds.GET_ITEM_ATTRIBUTES, (payload) => actionGetItemAttributes.perform(payload.itemId, payload.includeHidden));
-		this.eventHandler.on(EventIds.SET_ITEM_ATTRIBUTE, (payload) => actionUpdateItemAttribute.perform(payload.itemId, payload.entryKey, payload.newValue));
-		this.eventHandler.on(EventIds.DELETE_ITEM_ATTRIBUTE, (payload) => actionDeleteItemAttribute.perform(payload.itemId, payload.entryKey));
+		this.eventHandler.on(EventIds.SET_ITEM_ATTRIBUTE, (payload) => actionUpdateItemAttribute.perform(payload.itemId, payload.attributeId, payload.newValue));
+		this.eventHandler.on(EventIds.DELETE_ITEM_ATTRIBUTE, (payload) => actionDeleteItemAttribute.perform(payload.itemId, payload.attributeId));
 		this.eventHandler.on(EventIds.IMPORT_ITEMS, (payload) => importService.import(payload));
 		this.eventHandler.on(EventIds.EMBED_ITEM_ATTRIBUTES, (payload) => actionEmbedItemAttributes.perform(payload.itemIds, payload.allAttributes));
 	}

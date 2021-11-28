@@ -2,12 +2,12 @@ import React from "react";
 import {VBox} from "../../../../../components/layout/box/Box";
 import {PanelHiddenAttributes} from "./PanelHiddenAttributes";
 import {Label} from "../../../../../components/base/label/Label";
-import {AttributeKeyDTO} from "../../../../../../common/events/dtoModels";
+import {AttributeMetaDTO} from "../../../../../../common/events/dtoModels";
 
 interface AttributeSettingsProps {
-	hiddenAttributes: AttributeKeyDTO[],
-	hideAttribute: (attribute: AttributeKeyDTO) => void,
-	showAttribute: (attribute: AttributeKeyDTO) => void
+	hiddenAttributes: AttributeMetaDTO[],
+	hideAttribute: (attribute: AttributeMetaDTO) => void,
+	showAttribute: (attribute: AttributeMetaDTO) => void
 }
 
 export function AttributeSettings(props: React.PropsWithChildren<AttributeSettingsProps>): React.ReactElement {

@@ -5,7 +5,7 @@ import {useDispatchSetRootGroup} from "../store/collectionsState";
 import {GroupDTO, ItemDTO} from "../../../../common/events/dtoModels";
 import {useDispatchSetItems} from "../store/itemsState";
 import {useActiveCollection} from "../store/collectionActiveState";
-import {TEMP_ATTRIBUTE_KEYS} from "./temp";
+import {TEMP_ATTRIBUTE_IDS} from "./temp";
 
 export function useMoveItems() {
 
@@ -29,7 +29,7 @@ export function useMoveItems() {
 	}
 
 	function updateItemState(collectionId: number) {
-		return fetchItems(collectionId, TEMP_ATTRIBUTE_KEYS, true, false)
+		return fetchItems(collectionId, TEMP_ATTRIBUTE_IDS, true, false)
 			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_FETCH_FAILED, error))
 			.then((items: ItemDTO[]) => dispatchSetItems(items));
 	}
@@ -37,7 +37,7 @@ export function useMoveItems() {
 	function updateGroupState() {
 		return fetchRootGroup()
 			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ROOT_GROUP_FETCH_FAILED, error))
-			.then((group: GroupDTO) => dispatchSetRootGroup(group))
+			.then((group: GroupDTO) => dispatchSetRootGroup(group));
 	}
 
 	return hookFunction;

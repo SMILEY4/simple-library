@@ -1,5 +1,5 @@
-import {AttributeMeta, rowsToAttributeMetas} from "./libraryCommons";
 import {DataRepository} from "../dataRepository";
+import {AttributeMeta, rowsToAttributeMeta} from "./libraryCommons";
 
 /**
  * Get metadata about all available attributes
@@ -12,9 +12,9 @@ export class ActionGetLibraryAttributeMeta {
 		this.repository = repository;
 	}
 
-	public perform(filter: string | null): Promise<AttributeMeta[]> {
-		return this.repository.queryAttributeMetaAll(filter)
-			.then(rowsToAttributeMetas);
+	public perform(nameFilter: string | null): Promise<AttributeMeta[]> {
+		return this.repository.queryAttributeMetaAllFilterName(nameFilter)
+			.then(rowsToAttributeMeta);
 	}
 
 }

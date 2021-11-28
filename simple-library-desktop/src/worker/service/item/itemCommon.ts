@@ -8,7 +8,14 @@ export interface Item {
 	attributes?: Attribute[]
 }
 
+
+export interface MiniAttribute {
+	attId: number | null,
+	value: string | null,
+}
+
 export interface Attribute {
+	attId: number | null,
 	key: AttributeKey,
 	value: string | null,
 	type: string,
@@ -19,12 +26,6 @@ export interface Attribute {
 export interface ExtendedAttribute extends Attribute {
 	itemId: number,
 	filepath: string
-}
-
-export interface AttributeMetadata {
-	key: AttributeKey,
-	type: string,
-	writable: boolean,
 }
 
 export interface AttributeKey {
@@ -92,22 +93,23 @@ export function rowToItem(row: any | null): Item | null {
 
 export function concatAttributeColumnToEntries(str: string): Attribute[] {
 	if (str) {
-		const regexGlobal: RegExp = /"(.+?):(.+?):(.+?):(.+?):(.+?)-(.+?)-(.+?)"="(.+?)"-"(.+?)"/g;
-		const regex: RegExp = /"(.+?):(.+?):(.+?):(.+?):(.+?)-(.+?)-(.+?)"="(.+?)"-"(.+?)"/;
+		const regexGlobal: RegExp = /"(.+?):(.+?):(.+?):(.+?):(.+?):(.+?)-(.+?)-(.+?)"="(.+?)"-"(.+?)"/g;
+		const regex: RegExp = /"(.+?):(.+?):(.+?):(.+?):(.+?):(.+?)-(.+?)-(.+?)"="(.+?)"-"(.+?)"/;
 		return str.match(regexGlobal).map((strEntry: string) => {
 			const strEntryParts: string[] = strEntry.match(regex);
 			const entry: Attribute = {
+				attId: Number.parseInt(strEntryParts[1]),
 				key: {
-					id: strEntryParts[1],
-					name: strEntryParts[2],
-					g0: strEntryParts[3],
-					g1: strEntryParts[4],
-					g2: strEntryParts[5]
+					id: strEntryParts[2],
+					name: strEntryParts[3],
+					g0: strEntryParts[4],
+					g1: strEntryParts[5],
+					g2: strEntryParts[6]
 				},
-				type: strEntryParts[6],
-				writable: strEntryParts[7] == "1",
-				value: strEntryParts[8],
-				modified: strEntryParts[9] === "1"
+				type: strEntryParts[7],
+				writable: strEntryParts[8] == "1",
+				value: strEntryParts[9],
+				modified: strEntryParts[10] === "1"
 			};
 			return entry;
 		});
@@ -119,6 +121,7 @@ export function concatAttributeColumnToEntries(str: string): Attribute[] {
 
 export function rowToAttribute(row: any): Attribute {
 	return {
+		attId: Number.parseInt(row.att_id),
 		key: {
 			id: row.id,
 			name: row.name,
@@ -135,6 +138,7 @@ export function rowToAttribute(row: any): Attribute {
 
 export function rowToExtendedAttribute(row: any): ExtendedAttribute {
 	return {
+		attId: Number.parseInt(row.att_id),
 		key: {
 			id: row.id,
 			name: row.name,
@@ -148,26 +152,6 @@ export function rowToExtendedAttribute(row: any): ExtendedAttribute {
 		modified: row.modified === 1,
 		itemId: row.item_id,
 		filepath: row.filepath
-	};
-}
-
-
-export function rowsToAttributeMeta(rows: any[]): AttributeMetadata[] {
-	return rows.map(row => rowToAttributeMeta(row));
-}
-
-
-export function rowToAttributeMeta(row: any): AttributeMetadata {
-	return {
-		key: {
-			id: row.id,
-			name: row.name,
-			g0: row.g0,
-			g1: row.g1,
-			g2: row.g2
-		},
-		type: row.type,
-		writable: row.writable === 1
 	};
 }
 

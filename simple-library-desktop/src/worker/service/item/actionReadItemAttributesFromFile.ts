@@ -32,8 +32,9 @@ export class ActionReadItemAttributesFromFile {
 	private entryToAttribute(key: string, entry: any): Attribute {
 		const groups = key.split(":");
 		const value = entry.val;
-		const id = entry.id;
+		const id = ""+entry.id;
 		return {
+			attId: null,
 			key: {
 				id: id ? id : this.findGroup(groups, 3),
 				name: this.findGroup(groups, 3),

@@ -2,13 +2,7 @@ import React, {CSSProperties} from "react";
 import {HBox, VBox} from "../../../../components/layout/box/Box";
 import {concatClasses, getIf, getSelectModifier, SelectModifier} from "../../../../components/utils/common";
 import "./listItemEntry.css";
-import {
-	AttributeDTO,
-	AttributeKeyDTO, attributeKeyString,
-	AttributeValueDTO,
-	CollectionTypeDTO,
-	ItemDTO
-} from "../../../../../common/events/dtoModels";
+import {AttributeDTO, AttributeValueDTO, CollectionTypeDTO, ItemDTO} from "../../../../../common/events/dtoModels";
 import {MetadataListEntry} from "../sidebarmenu/metadata/MetadataListEntry";
 
 interface ItemListEntryProps {
@@ -19,7 +13,7 @@ interface ItemListEntryProps {
 	onOpen: (itemId: number) => void,
 	onDragStart: (itemId: number, event: React.DragEvent) => void
 	onContextMenu: (itemId: number, event: React.MouseEvent) => void,
-	onUpdateAttributeValue: (itemId: number, attribKey: AttributeKeyDTO, prevValue: AttributeValueDTO, nextValue: AttributeValueDTO) => Promise<void>
+	onUpdateAttributeValue: (itemId: number, attributeId: number, prevValue: AttributeValueDTO, nextValue: AttributeValueDTO) => Promise<void>
 	onLoadImage?: () => void,
 	style?: CSSProperties
 }
@@ -58,13 +52,13 @@ export function ItemListEntry(props: React.PropsWithChildren<ItemListEntryProps>
 						.sort((a, b) => a.key.name.toLowerCase().localeCompare(b.key.name.toLowerCase()))
 						.map((entry: AttributeDTO) => (
 							<MetadataListEntry
-								key={attributeKeyString(entry.key)}
+								key={entry.attId}
 								isEmpty={entry.type === "none" || entry.value === null || entry.value === undefined}
 								entry={entry}
 								shortName={entry.key.name}
 								keyDisplayLength={30}
 								styleType="focus-value"
-								onUpdateValue={(prev, next) => handleUpdateAttributeValue(entry.key, prev, next)}
+								onUpdateValue={(prev, next) => handleUpdateAttributeValue(entry.attId, prev, next)}
 							/>
 						))}
 				</VBox>
@@ -90,9 +84,9 @@ export function ItemListEntry(props: React.PropsWithChildren<ItemListEntryProps>
 		props.onContextMenu(props.item.id, event);
 	}
 
-	function handleUpdateAttributeValue(key: AttributeKeyDTO, prevValue: AttributeValueDTO, nextValue: AttributeValueDTO): Promise<void> {
+	function handleUpdateAttributeValue(attributeId: number, prevValue: AttributeValueDTO, nextValue: AttributeValueDTO): Promise<void> {
 		if (prevValue !== nextValue) {
-			return props.onUpdateAttributeValue(props.item.id, key, prevValue, nextValue);
+			return props.onUpdateAttributeValue(props.item.id, attributeId, prevValue, nextValue);
 		} else {
 			return Promise.resolve();
 		}

@@ -18,7 +18,7 @@ import {EmbedStatusDTO, ItemDTO} from "../../../../common/events/dtoModels";
 import {useDispatchSetAttributes, useStateAttributeStoreItemId} from "../store/attributeStore";
 import {useDispatchSetItems} from "../store/itemsState";
 import {useActiveCollection} from "../store/collectionActiveState";
-import {TEMP_ATTRIBUTE_KEYS} from "./temp";
+import {TEMP_ATTRIBUTE_IDS} from "./temp";
 
 export function useEmbedAttributes() {
 
@@ -72,7 +72,7 @@ export function useEmbedAttributesOfItemIds() {
 
 		function updateItemState(): Promise<any> {
 			if (activeCollection) {
-				return fetchItems(activeCollection, TEMP_ATTRIBUTE_KEYS, true, false)
+				return fetchItems(activeCollection, TEMP_ATTRIBUTE_IDS, true, false)
 					.then((items: ItemDTO[]) => dispatchSetItems(items));
 			} else {
 				return Promise.resolve();

@@ -1,7 +1,7 @@
 import {DbAccess} from "../persistence/dbAcces";
 import {MemDbAccess} from "./memDbAccess";
 import {SQL} from "../persistence/sqlHandler";
-import {mockAttributeMetadataProvider, mockFileSystemWrapper} from "./mockSetup";
+import {mockAttributeMetadataProvider, mockFileSystemWrapper} from "./testUtils";
 import {jest} from "@jest/globals";
 import {ActionGetAllCollections} from "../service/collection/actionGetAllCollections";
 import {ActionCreateLibrary} from "../service/library/actionCreateLibrary";

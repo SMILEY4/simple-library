@@ -1,6 +1,14 @@
 import {ImportProcessData, ImportResult, ImportService} from "../service/import/importService";
 import {FileSystemWrapper} from "../service/fileSystemWrapper";
-import {mockAttributeMetadataProvider, mockConfigAccess, mockDateNow, mockFileSystemWrapper} from "./mockSetup";
+import {
+	ATT_ID_FILE_ACCESS_DATE, ATT_ID_FILE_CREATE_DATE, ATT_ID_FILE_EXTENSION,
+	ATT_ID_FILE_MODIFY_DATE, ATT_ID_FILE_TYPE,
+	ATT_ID_MIME_TYPE,
+	mockAttributeMetadataProvider,
+	mockConfigAccess,
+	mockDateNow,
+	mockFileSystemWrapper
+} from "./testUtils";
 import {DbAccess} from "../persistence/dbAcces";
 import {ImportDataValidator} from "../service/import/importDataValidator";
 import {ImportStepFileHash} from "../service/import/importStepFileHash";
@@ -16,6 +24,8 @@ import {ActionCreateLibrary} from "../service/library/actionCreateLibrary";
 import {SQLiteDataRepository} from "../persistence/sqliteRepository";
 import {ActionReadItemAttributesFromFile} from "../service/item/actionReadItemAttributesFromFile";
 import {ExifHandler} from "../service/exifHandler";
+import {ImportDbWriter} from "../service/import/importDbWriter";
+import {ActionGetLibraryAttributeMetaByKeys} from "../service/library/actionGetLibraryAttributeMetaByKeys";
 
 describe("import", () => {
 
@@ -615,12 +625,12 @@ describe("import", () => {
 				item(3, "path\\to\\file3.png", TIMESTAMP)
 			]);
 			await expect(dbAccess.queryAll(SQL.queryItemAttributes(1, true))).resolves.toEqual([
-				attribute(["FileModifyDate", "FileModifyDate", "File", "System", "Time"], "2020:08:08 19:55:50+02:00", 0, true),
-				attribute(["FileAccessDate", "FileAccessDate", "File", "System", "Time"], "2021:10:11 21:00:12+02:00", 0, false),
-				attribute(["FileCreateDate", "FileCreateDate", "File", "System", "Time"], "2021:10:10 21:23:43+02:00", 0, true),
-				attribute(["FileType", "FileType", "File", "File", "Other"], "JPEG", 0, false),
-				attribute(["FileTypeExtension", "FileTypeExtension", "File", "File", "Other"], "jpg", 0, false),
-				attribute(["MIMEType", "MIMEType", "File", "File", "Other"], "image/jpeg", 0, false),
+				attribute(ATT_ID_FILE_MODIFY_DATE, ["FileModifyDate", "FileModifyDate", "File", "System", "Time"], "2020:08:08 19:55:50+02:00", 0, true),
+				attribute(ATT_ID_FILE_ACCESS_DATE, ["FileAccessDate", "FileAccessDate", "File", "System", "Time"], "2021:10:11 21:00:12+02:00", 0, false),
+				attribute(ATT_ID_FILE_CREATE_DATE, ["FileCreateDate", "FileCreateDate", "File", "System", "Time"], "2021:10:10 21:23:43+02:00", 0, true),
+				attribute(ATT_ID_FILE_TYPE, ["FileType", "FileType", "File", "File", "Other"], "JPEG", 0, false),
+				attribute(ATT_ID_FILE_EXTENSION, ["FileTypeExtension", "FileTypeExtension", "File", "File", "Other"], "jpg", 0, false),
+				attribute(ATT_ID_MIME_TYPE, ["MIMEType", "MIMEType", "File", "File", "Other"], "image/jpeg", 0, false),
 			]);
 			await expect(dbAccess.queryAll(SQL.queryItemAttributes(2, true))).resolves.toHaveLength(6);
 			await expect(dbAccess.queryAll(SQL.queryItemAttributes(3, true))).resolves.toHaveLength(6);
@@ -911,8 +921,9 @@ function item(id: number, path: string, timestampImported: number): any {
 	};
 }
 
-function attribute(key: [string,string,string,string,string], value: any, modified: boolean | number, writable: boolean) {
+function attribute(attId: number, key: [string,string,string,string,string], value: any, modified: boolean | number, writable: boolean) {
 	return {
+		att_id: attId,
 		id: key[0],
 		name: key[1],
 		g0: key[2],
@@ -949,6 +960,10 @@ function mockImportService(): [ImportService, ActionCreateLibrary, FileSystemWra
 		new ImportStepTargetFilepath(),
 		new ImportStepImportTarget(fsWrapper),
 		new ImportStepMetadata(new ActionReadItemAttributesFromFile(new ActionGetExiftoolInfo(configAccess))),
+		new ImportDbWriter(
+			new SQLiteDataRepository(dbAccess),
+			new ActionGetLibraryAttributeMetaByKeys(new SQLiteDataRepository(dbAccess))
+		),
 		() => Promise.resolve()
 	);
 	const actionCreateLibrary = new ActionCreateLibrary(new SQLiteDataRepository(dbAccess), fsWrapper, mockAttributeMetadataProvider(true));

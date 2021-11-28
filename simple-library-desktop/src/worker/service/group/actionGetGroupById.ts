@@ -1,5 +1,3 @@
-import {DbAccess} from "../../persistence/dbAcces";
-import {SQL} from "../../persistence/sqlHandler";
 import {Group, rowToMinGroup} from "./groupCommons";
 import {DataRepository} from "../dataRepository";
 

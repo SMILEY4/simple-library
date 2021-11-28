@@ -1,8 +1,7 @@
 import React, {ReactElement} from "react";
-import {AttributeDTO, AttributeKeyDTO, AttributeValueDTO} from "../../../../../../common/events/dtoModels";
+import {AttributeDTO, AttributeValueDTO} from "../../../../../../common/events/dtoModels";
 import {KeyValuePair} from "../../../../../components/misc/keyvaluepair/KeyValuePair";
 import {Label} from "../../../../../components/base/label/Label";
-import {CheckBox} from "../../../../../components/buttons/checkbox/CheckBox";
 import {MultiTypeInput} from "../../../../../components/input/multitype/MultiTypeInput";
 
 interface MetadataListEntryProps {
@@ -12,7 +11,7 @@ interface MetadataListEntryProps {
 	keyDisplayLength?: number,
 	styleType?: "focus-key" | "focus-value",
 	onUpdateValue: (prev: AttributeValueDTO, next: AttributeValueDTO) => void,
-	onContextMenu?: (attributeKey: AttributeKeyDTO, event: React.MouseEvent) => void,
+	onContextMenu?: (attributeId: number, attributeName: string, event: React.MouseEvent) => void,
 }
 
 
@@ -22,7 +21,7 @@ export function MetadataListEntry(props: React.PropsWithChildren<MetadataListEnt
 		<KeyValuePair
 			keyValue={props.shortName}
 			styleType={props.styleType ? props.styleType : "focus-key"}
-			onContextMenu={event => props.onContextMenu && props.onContextMenu(props.entry.key, event)}
+			onContextMenu={event => props.onContextMenu && props.onContextMenu(props.entry.attId, props.entry.key.name, event)}
 			showOverflow={props.entry.type === "_date"}
 			keySize={props.keyDisplayLength}
 			modified={props.entry.modified}
