@@ -4,11 +4,16 @@ import {DbAccess} from "../persistence/dbAcces";
 import {ExifHandler} from "../service/exifHandler";
 import {FileSystemWrapper} from "../service/fileSystemWrapper";
 import {
+	ATT_ID_AUTHOR, ATT_ID_COMMENT,
+	attAuthor,
+	attComment, attFileAccessDate,
+	attFileCreateDate, attFileExtension,
+	buildMetadata, metaAuthor, metaComment, metaFileAccessDate, metaFileCreateDate, metaFileExtension,
 	mockAttributeMetadataProvider,
 	mockConfigAccess,
 	mockExiftoolProcessMultiFiles,
 	mockFileSystemWrapper
-} from "./mockSetup";
+} from "./testUtils";
 import {MemDbAccess} from "./memDbAccess";
 import {SQLiteDataRepository} from "../persistence/sqliteRepository";
 import {ActionGetExiftoolInfo} from "../service/config/actionGetExiftoolInfo";
@@ -408,102 +413,3 @@ function mockEmbedAction(metadata: any): [ActionEmbedItemAttributes, ActionCreat
 	return [embedAction, actionCreateLibrary, dbAccess, embedAction["embedItem"], fsWrapper];
 }
 
-function sqlAttribute(attId: number, value: any, modified: boolean) {
-	return {attId: attId, value: value, modified: modified};
-}
-
-
-const ATT_ID_FILE_CREATE_DATE = 7161;
-const ATT_ID_FILE_MODIFY_DATE = 7168;
-const ATT_ID_COMMENT = 7148;
-const ATT_ID_AUTHOR = 16472;
-const ATT_ID_FILE_ACCESS_DATE = 7157;
-const ATT_ID_FILE_EXTENSION = 7175;
-const ATT_ID_MIME_TYPE = 7190;
-
-function attFileCreateDate(value: string, modified: boolean) { // WRITABLE
-	return sqlAttribute(ATT_ID_FILE_CREATE_DATE, value, modified);
-}
-
-function attFileModifyDate(value: string, modified: boolean) { // WRITABLE
-	return sqlAttribute(ATT_ID_FILE_MODIFY_DATE, value, modified);
-}
-
-function attComment(value: string, modified: boolean) { // WRITABLE
-	return sqlAttribute(ATT_ID_COMMENT, value, modified);
-}
-
-function attAuthor(value: string, modified: boolean) { // WRITABLE
-	return sqlAttribute(ATT_ID_AUTHOR, value, modified);
-}
-
-function attFileAccessDate(value: string, modified: boolean) { // read-only
-	return sqlAttribute(ATT_ID_FILE_ACCESS_DATE, value, modified);
-}
-
-function attFileExtension(value: string, modified: boolean) { // read-only
-	return sqlAttribute(ATT_ID_FILE_EXTENSION, value, modified);
-}
-
-function attMIMEType(value: string, modified: boolean) { // read-only
-	return sqlAttribute(ATT_ID_MIME_TYPE, value, modified);
-}
-
-function metaFileCreateDate(value: string): MetadataMockEntry {
-	return fileMetadataEntry("File", "System", "Time", "FileCreateDate", "FileCreateDate", value);
-}
-
-function metaFileModifyDate(value: string): MetadataMockEntry {
-	return fileMetadataEntry("File", "System", "Time", "FileModifyDate", "FileModifyDate", value);
-}
-
-function metaComment(value: string): MetadataMockEntry {
-	return fileMetadataEntry("File", "File", "Image", "Comment", "Comment", value);
-}
-
-function metaAuthor(value: string): MetadataMockEntry {
-	return fileMetadataEntry("PNG", "PNG", "Author", "Author", "Author", value);
-}
-
-function metaFileAccessDate(value: string): MetadataMockEntry {
-	return fileMetadataEntry("File", "System", "Time", "FileAccessDate", "FileAccessDate", value);
-}
-
-function metaFileExtension(value: string): MetadataMockEntry {
-	return fileMetadataEntry("File", "File", "Other", "FileTypeExtension", "FileTypeExtension", value);
-}
-
-function metaMIMEType(value: string): MetadataMockEntry {
-	return fileMetadataEntry("File", "File", "Other", "MIMEType", "MIMEType", value);
-}
-
-
-type MetadataMockEntry = [string, { "id": string, "val": string }];
-
-function fileMetadataEntry(g0: string, g1: string, g2: string, name: string, id: string, value: string): MetadataMockEntry {
-	return [
-		g0 + ":" + g1 + ":" + g2 + ":" + name,
-		{
-			"id": id,
-			"val": value
-		}
-	];
-}
-
-function buildFileMetadata(entries: MetadataMockEntry[]) {
-	const data: any = {};
-	entries.forEach(entry => {
-		data[entry[0]] = entry[1];
-	});
-	return data;
-}
-
-
-function buildMetadata(fileEntries: ({ path: string, entries: MetadataMockEntry[] })[]) {
-	const data: any = {};
-	fileEntries.forEach(fileEntry => {
-		const fileData = buildFileMetadata(fileEntry.entries);
-		data[fileEntry.path] = fileData;
-	});
-	return data;
-}
