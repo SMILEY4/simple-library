@@ -108,6 +108,7 @@ export const ATT_ID_AUTHOR = 16472;
 export const ATT_ID_FILE_ACCESS_DATE = 7157;
 export const ATT_ID_FILE_EXTENSION = 7175;
 export const ATT_ID_MIME_TYPE = 7190;
+export const ATT_ID_FILE_TYPE = 7174;
 
 export function sqlAttribute(attId: number, value: any, modified: boolean) {
 	return {attId: attId, value: value, modified: modified};

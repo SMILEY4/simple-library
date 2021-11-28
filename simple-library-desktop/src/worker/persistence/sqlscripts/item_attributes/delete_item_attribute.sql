@@ -3,5 +3,4 @@
 DELETE
 FROM item_attributes
 WHERE item_id = $itemId
-  AND att_id = $attId
-  AND name = $name;
+  AND att_id = $attId;
