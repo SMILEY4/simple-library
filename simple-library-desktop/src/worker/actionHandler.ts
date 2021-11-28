@@ -60,6 +60,7 @@ import {ActionGetLibraryAttributeMetaByKeys} from "./service/library/actionGetLi
 import {ImportDbWriter} from "./service/import/importDbWriter";
 import {ActionGetDefaultAttributeValues} from "./service/library/actionGetDefaultAttributeValues";
 import {ActionSetDefaultAttributeValues} from "./service/library/actionSetDefaultAttributeValues";
+import {ImportStepWriteDefaultValues} from "./service/import/importStepWriteDefaultValues";
 
 export class ActionHandler {
 
@@ -150,6 +151,7 @@ export class ActionHandler {
 			new ImportDataValidator(fsWrapper),
 			new ImportStepFileHash(fsWrapper),
 			new ImportStepThumbnail(),
+			new ImportStepWriteDefaultValues(actionGetDefaultAttributeValues, actionGetExiftoolInfo),
 			new ImportStepTargetFilepath(),
 			new ImportStepImportTarget(fsWrapper),
 			new ImportStepMetadata(new ActionReadItemAttributesFromFile(actionGetExiftoolInfo)),

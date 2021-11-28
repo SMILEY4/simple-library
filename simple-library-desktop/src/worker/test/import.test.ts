@@ -1,12 +1,29 @@
 import {ImportProcessData, ImportResult, ImportService} from "../service/import/importService";
 import {FileSystemWrapper} from "../service/fileSystemWrapper";
 import {
-	ATT_ID_FILE_ACCESS_DATE, ATT_ID_FILE_CREATE_DATE, ATT_ID_FILE_EXTENSION,
-	ATT_ID_FILE_MODIFY_DATE, ATT_ID_FILE_TYPE,
+	ATT_ID_AUTHOR,
+	ATT_ID_COMMENT,
+	ATT_ID_FILE_ACCESS_DATE,
+	ATT_ID_FILE_CREATE_DATE,
+	ATT_ID_FILE_EXTENSION,
+	ATT_ID_FILE_MODIFY_DATE,
+	ATT_ID_FILE_TYPE,
 	ATT_ID_MIME_TYPE,
+	buildFileMetadata,
+	buildMetadata,
+	metaAuthor,
+	metaComment,
+	metaFileAccessDate,
+	metaFileCreateDate,
+	metaFileExtension,
+	metaFileModifyDate,
+	metaFileType,
+	metaMIMEType,
 	mockAttributeMetadataProvider,
 	mockConfigAccess,
 	mockDateNow,
+	mockExiftoolProcess,
+	mockExiftoolProcessMultiFiles,
 	mockFileSystemWrapper
 } from "./testUtils";
 import {DbAccess} from "../persistence/dbAcces";
@@ -23,9 +40,10 @@ import {ActionGetExiftoolInfo} from "../service/config/actionGetExiftoolInfo";
 import {ActionCreateLibrary} from "../service/library/actionCreateLibrary";
 import {SQLiteDataRepository} from "../persistence/sqliteRepository";
 import {ActionReadItemAttributesFromFile} from "../service/item/actionReadItemAttributesFromFile";
-import {ExifHandler} from "../service/exifHandler";
 import {ImportDbWriter} from "../service/import/importDbWriter";
 import {ActionGetLibraryAttributeMetaByKeys} from "../service/library/actionGetLibraryAttributeMetaByKeys";
+import {ImportStepWriteDefaultValues} from "../service/import/importStepWriteDefaultValues";
+import {ActionGetDefaultAttributeValues} from "../service/library/actionGetDefaultAttributeValues";
 
 describe("import", () => {
 
@@ -630,7 +648,7 @@ describe("import", () => {
 				attribute(ATT_ID_FILE_CREATE_DATE, ["FileCreateDate", "FileCreateDate", "File", "System", "Time"], "2021:10:10 21:23:43+02:00", 0, true),
 				attribute(ATT_ID_FILE_TYPE, ["FileType", "FileType", "File", "File", "Other"], "JPEG", 0, false),
 				attribute(ATT_ID_FILE_EXTENSION, ["FileTypeExtension", "FileTypeExtension", "File", "File", "Other"], "jpg", 0, false),
-				attribute(ATT_ID_MIME_TYPE, ["MIMEType", "MIMEType", "File", "File", "Other"], "image/jpeg", 0, false),
+				attribute(ATT_ID_MIME_TYPE, ["MIMEType", "MIMEType", "File", "File", "Other"], "image/jpeg", 0, false)
 			]);
 			await expect(dbAccess.queryAll(SQL.queryItemAttributes(2, true))).resolves.toHaveLength(6);
 			await expect(dbAccess.queryAll(SQL.queryItemAttributes(3, true))).resolves.toHaveLength(6);
@@ -906,6 +924,96 @@ describe("import", () => {
 			await expect(dbAccess.queryAll(SQL.queryItemAttributes(3, true))).resolves.toHaveLength(6);
 		});
 
+
+		test("import with default values", async () => {
+			// given
+			const TIMESTAMP = mockDateNow(1234);
+			const [importService, actionCreateLibrary, fsWrapper, dbAccess, stepWriteDefaultValues] = mockImportService(
+				buildMetadata([
+					{
+						path: "path\\to\\file1.png",
+						entries: [
+							metaFileModifyDate("2020:08:08 19:55:50+02:00"),
+							metaFileAccessDate("2021:10:11 21:00:12+02:00"),
+							metaFileCreateDate("2021:10:10 21:23:43+02:00"),
+							metaFileType("JPEG"),
+							metaFileExtension("jpg"),
+							metaMIMEType("image/jpeg"),
+							metaAuthor("Somebody")
+						]
+					},
+					{
+						path: "path\\to\\file2.png",
+						entries: [
+							metaFileModifyDate("2020:08:08 19:55:50+02:00"),
+							metaFileAccessDate("2021:10:11 21:00:12+02:00"),
+							metaFileCreateDate("2021:10:10 21:23:43+02:00"),
+							metaFileType("JPEG"),
+							metaFileExtension("jpg"),
+							metaMIMEType("image/jpeg"),
+							metaComment("Old Comment")
+						]
+					}
+				]),
+				true
+			);
+			mockFilesExist(fsWrapper, []);
+			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
+			await dbAccess.runMultipleSeq([
+				SQL.insertDefaultAttributeValues([
+					{attId: ATT_ID_AUTHOR, value: "Myself", allowOverwrite: true},
+					{attId: ATT_ID_COMMENT, value: "New Comment", allowOverwrite: false}
+				])
+			]);
+			const importData: ImportProcessData = {
+				files: [
+					"path/to/file1.png",
+					"path/to/file2.png"
+				],
+				importTarget: {
+					action: "keep",
+					targetDir: ""
+				},
+				renameInstructions: {
+					doRename: false,
+					parts: []
+				}
+			};
+			// when
+			const result: Promise<ImportResult> = importService.import(importData);
+			// then
+			await expect(result).resolves.toEqual({
+				timestamp: TIMESTAMP,
+				amountFiles: 2,
+				failed: false,
+				failureReason: "",
+				encounteredErrors: false,
+				filesWithErrors: []
+			});
+			expect(stepWriteDefaultValues["writeDataObject"]).toHaveBeenCalledTimes(4);
+			expect(stepWriteDefaultValues["writeDataObject"]).toHaveBeenNthCalledWith(1,
+				"path\\to\\file1.png",
+				{"PNG:PNG:Author:Author": "Myself"},
+				false
+			);
+			expect(stepWriteDefaultValues["writeDataObject"]).toHaveBeenNthCalledWith(2,
+				"path\\to\\file1.png",
+				{"File:File:Image:Comment": "New Comment"},
+				true
+			);
+			expect(stepWriteDefaultValues["writeDataObject"]).toHaveBeenNthCalledWith(3,
+				"path\\to\\file2.png",
+				{"PNG:PNG:Author:Author": "Myself"},
+				false
+			);
+			expect(stepWriteDefaultValues["writeDataObject"]).toHaveBeenNthCalledWith(4,
+				"path\\to\\file2.png",
+				{"File:File:Image:Comment": "New Comment"},
+				true
+			);
+		});
+
+
 	});
 
 });
@@ -921,7 +1029,7 @@ function item(id: number, path: string, timestampImported: number): any {
 	};
 }
 
-function attribute(attId: number, key: [string,string,string,string,string], value: any, modified: boolean | number, writable: boolean) {
+function attribute(attId: number, key: [string, string, string, string, string], value: any, modified: boolean | number, writable: boolean) {
 	return {
 		att_id: attId,
 		id: key[0],
@@ -936,7 +1044,7 @@ function attribute(attId: number, key: [string,string,string,string,string], val
 	};
 }
 
-function mockImportService(): [ImportService, ActionCreateLibrary, FileSystemWrapper, DbAccess] {
+function mockImportService(metadata?: any, mockMultipleFiles?: boolean): [ImportService, ActionCreateLibrary, FileSystemWrapper, DbAccess, ImportStepWriteDefaultValues] {
 	const fsWrapper = mockFileSystemWrapper();
 	const dbAccess = new MemDbAccess();
 	const configAccess = mockConfigAccess();
@@ -949,14 +1057,32 @@ function mockImportService(): [ImportService, ActionCreateLibrary, FileSystemWra
 	// @ts-ignore
 	stepThumbnail["createBase64Thumbnail"] = jest.fn().mockReturnValue(Promise.resolve("thumbnailMock"));
 
+	const stepWriteDefaultValues = new ImportStepWriteDefaultValues(
+		new ActionGetDefaultAttributeValues(new SQLiteDataRepository(dbAccess)),
+		new ActionGetExiftoolInfo(configAccess)
+	);
 	// @ts-ignore
-	ExifHandler["createExiftoolProcess"] = jest.fn().mockReturnValue(mockExiftoolProcess());
+	stepWriteDefaultValues["writeDataObject"] = jest.fn().mockReturnValue(Promise.resolve());
+
+	if (mockMultipleFiles === true && metadata) {
+		mockExiftoolProcessMultiFiles(metadata);
+	} else {
+		mockExiftoolProcess(metadata ? metadata : buildFileMetadata([
+			metaFileModifyDate("2020:08:08 19:55:50+02:00"),
+			metaFileAccessDate("2021:10:11 21:00:12+02:00"),
+			metaFileCreateDate("2021:10:10 21:23:43+02:00"),
+			metaFileType("JPEG"),
+			metaFileExtension("jpg"),
+			metaMIMEType("image/jpeg")
+		]));
+	}
 
 	const importService: ImportService = new ImportService(
 		new SQLiteDataRepository(dbAccess),
 		new ImportDataValidator(fsWrapper),
 		stepHash,
 		stepThumbnail,
+		stepWriteDefaultValues,
 		new ImportStepTargetFilepath(),
 		new ImportStepImportTarget(fsWrapper),
 		new ImportStepMetadata(new ActionReadItemAttributesFromFile(new ActionGetExiftoolInfo(configAccess))),
@@ -967,43 +1093,9 @@ function mockImportService(): [ImportService, ActionCreateLibrary, FileSystemWra
 		() => Promise.resolve()
 	);
 	const actionCreateLibrary = new ActionCreateLibrary(new SQLiteDataRepository(dbAccess), fsWrapper, mockAttributeMetadataProvider(true));
-	return [importService, actionCreateLibrary, fsWrapper, dbAccess];
+	return [importService, actionCreateLibrary, fsWrapper, dbAccess, stepWriteDefaultValues];
 }
 
-function mockExiftoolProcess(): any {
-	return {
-		open: () => Promise.resolve(),
-		readMetadata: (path: any, options: any) => ({
-			data: [{
-				"File:System:Time:FileModifyDate": {
-					"id": "FileModifyDate",
-					"val": "2020:08:08 19:55:50+02:00"
-				},
-				"File:System:Time:FileAccessDate": {
-					"id": "FileAccessDate",
-					"val": "2021:10:11 21:00:12+02:00"
-				},
-				"File:System:Time:FileCreateDate": {
-					"id": "FileCreateDate",
-					"val": "2021:10:10 21:23:43+02:00"
-				},
-				"File:Other:FileType": {
-					"id": "FileType",
-					"val": "JPEG"
-				},
-				"File:Other:FileTypeExtension": {
-					"id": "FileTypeExtension",
-					"val": "jpg"
-				},
-				"File:Other:MIMEType": {
-					"id": "MIMEType",
-					"val": "image/jpeg"
-				}
-			}]
-		}),
-		close: () => Promise.resolve()
-	};
-}
 
 function mockFilesExist(fsWrapper: FileSystemWrapper, paths: string[]) {
 	fsWrapper["existsFile"] = jest.fn().mockImplementation((path: string) => {

@@ -4,12 +4,11 @@ import {ImportStepThumbnail} from "./importStepThumbnail";
 import {ImportStepTargetFilepath} from "./importStepTargetFilepath";
 import {ImportStepImportTarget} from "./importStepImportTarget";
 import {ImportStepMetadata} from "./importStepMetadata";
-import {Attribute, attributeKeysEquals} from "../item/itemCommon";
+import {Attribute} from "../item/itemCommon";
 import {ImportStatusDTO} from "../../../common/events/dtoModels";
 import {DataRepository} from "../dataRepository";
-import {ActionGetLibraryAttributeMetaByKeys} from "../library/actionGetLibraryAttributeMetaByKeys";
-import {AttributeMeta} from "../library/libraryCommons";
 import {ImportDbWriter} from "./importDbWriter";
+import {ImportStepWriteDefaultValues} from "./importStepWriteDefaultValues";
 
 export interface ImportProcessData {
 	files: string[],
@@ -70,6 +69,7 @@ export class ImportService {
 	private readonly validator: ImportDataValidator;
 	private readonly importStepFileHash: ImportStepFileHash;
 	private readonly importStepThumbnail: ImportStepThumbnail;
+	private readonly importStepWriteDefaultValues: ImportStepWriteDefaultValues;
 	private readonly importStepTargetFilepath: ImportStepTargetFilepath;
 	private readonly importStepImportTarget: ImportStepImportTarget;
 	private readonly importStepMetadata: ImportStepMetadata;
@@ -87,16 +87,18 @@ export class ImportService {
 		validator: ImportDataValidator,
 		importStepFileHash: ImportStepFileHash,
 		importStepThumbnail: ImportStepThumbnail,
+		importStepWriteDefaultValues: ImportStepWriteDefaultValues,
 		importStepTargetFilepath: ImportStepTargetFilepath,
 		importStepImportTarget: ImportStepImportTarget,
 		importStepMetadata: ImportStepMetadata,
 		importStepDbWriter: ImportDbWriter,
-		importStatusSender: ImportStatusSender,
+		importStatusSender: ImportStatusSender
 	) {
 		this.repository = repository;
 		this.validator = validator;
 		this.importStepFileHash = importStepFileHash;
 		this.importStepThumbnail = importStepThumbnail;
+		this.importStepWriteDefaultValues = importStepWriteDefaultValues;
 		this.importStepTargetFilepath = importStepTargetFilepath;
 		this.importStepImportTarget = importStepImportTarget;
 		this.importStepMetadata = importStepMetadata;
@@ -168,6 +170,7 @@ export class ImportService {
 			.then((item: ItemData) => this.importStepImportTarget.handle(item, data.importTarget.action))
 			.then((item: ItemData) => this.importStepFileHash.handle(item))
 			.then((item: ItemData) => this.importStepThumbnail.handle(item))
+			.then((item: ItemData) => this.importStepWriteDefaultValues.handle(item))
 			.then((item: ItemData) => this.importStepMetadata.handle(item))
 			.then((item: ItemData) => this.importStepDbWriter.handle(item))
 			.then(() => console.debug("done importing file: " + file))

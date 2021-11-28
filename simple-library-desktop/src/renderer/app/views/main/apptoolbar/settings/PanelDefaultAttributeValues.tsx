@@ -8,6 +8,7 @@ import {IconButton} from "../../../../../components/buttons/iconbutton/IconButto
 import {IconType} from "../../../../../components/base/icon/Icon";
 import {TextField} from "../../../../../components/input/textfield/TextField";
 import {CheckBox} from "../../../../../components/buttons/checkbox/CheckBox";
+import {Button} from "../../../../../components/buttons/button/Button";
 
 
 interface PanelDefaultAttributeValuesProps {
@@ -43,8 +44,8 @@ export function PanelDefaultAttributeValues(props: React.PropsWithChildren<Panel
 					<IconButton ghost icon={IconType.CLOSE} onAction={() => onDeleteDefaultValueEntry(entry.attributeMeta.attId)}/>
 				</HBox>
 
-				<VBox alignCross="start" spacing="0-25" className={"attrib-value-entry-content"}>
-					<HBox spacing="0-25">
+				<VBox alignCross="stretch" spacing="0-25" className={"attrib-value-entry-content"}>
+					<HBox spacing="0-25" alignMain="start">
 						<Label>Value:</Label>
 						<TextField
 							placeholder={"Default Value"}
@@ -53,7 +54,6 @@ export function PanelDefaultAttributeValues(props: React.PropsWithChildren<Panel
 							onChange={value => onSetValue(entry, value)}
 						/>
 					</HBox>
-
 					<CheckBox
 						selected={entry.allowOverwrite}
 						onToggle={(selected) => onSetOverwrite(entry, selected)}

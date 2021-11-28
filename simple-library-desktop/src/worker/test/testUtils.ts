@@ -79,22 +79,31 @@ export function mockExiftoolProcess(readMetadataResult: any) {
 		{
 			open: () => Promise.resolve(),
 			readMetadata: (path: any, options: any) => ({data: [readMetadataResult]}),
-			writeMetadata: (path: string, replaceAll: boolean, data: any) => {throw "todo";},
+			writeMetadata: (path: string, replaceAll: boolean, data: any) => {
+				throw "todo";
+			},
 			close: () => Promise.resolve()
 		}
 	);
 }
 
-export function mockExiftoolProcessMultiFiles(readMetadataFileResults: any) {
+export function mockExiftoolProcessMultiFiles(readMetadataFileResults: any, throwOnWrite?: boolean) {
 	// @ts-ignore
 	ExifHandler["createExiftoolProcess"] = jest.fn().mockReturnValue(
 		{
 			open: () => Promise.resolve(),
 			readMetadata: (path: any, options: any) => {
 				const fileData = readMetadataFileResults[path];
+				console.log("MOCK EXIF", path, fileData);
 				return fileData ? {data: [fileData]} : undefined;
 			},
-			writeMetadata: (path: string, replaceAll: boolean, data: any) => {throw "todo";},
+			writeMetadata: (path: string, replaceAll: boolean, data: any) => {
+				if (throwOnWrite === true) {
+					throw "exiftool write not allowed with this mock";
+				} else {
+					return undefined as any;
+				}
+			},
 			close: () => Promise.resolve()
 		}
 	);
@@ -164,6 +173,10 @@ export function metaFileAccessDate(value: string): MetadataMockEntry {
 
 export function metaFileExtension(value: string): MetadataMockEntry {
 	return fileMetadataEntry("File", "File", "Other", "FileTypeExtension", "FileTypeExtension", value);
+}
+
+export function metaFileType(value: string): MetadataMockEntry {
+	return fileMetadataEntry("File", "File", "Other", "FileType", "FileType", value);
 }
 
 export function metaMIMEType(value: string): MetadataMockEntry {
