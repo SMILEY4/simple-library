@@ -86,7 +86,7 @@ describe("import", () => {
 				expect(fsWrapper.copy).toBeCalledTimes(0);
 				expect(fsWrapper.move).toBeCalledTimes(0);
 				expect(importService.isImportRunning()).toBeFalsy();
-				await expect(dbAccess.queryAll(SQL.queryItemsAll([]))).resolves.toEqual([]);
+				await expect(dbAccess.queryAll(SQL.queryItemsAll([], 0, 999))).resolves.toEqual([]);
 			});
 
 
@@ -125,7 +125,7 @@ describe("import", () => {
 				expect(fsWrapper.copy).toBeCalledTimes(0);
 				expect(fsWrapper.move).toBeCalledTimes(0);
 				expect(importService.isImportRunning()).toBeFalsy();
-				await expect(dbAccess.queryAll(SQL.queryItemsAll([]))).resolves.toEqual([]);
+				await expect(dbAccess.queryAll(SQL.queryItemsAll([], 0, 999))).resolves.toEqual([]);
 			});
 		});
 
@@ -166,7 +166,7 @@ describe("import", () => {
 				expect(fsWrapper.copy).toBeCalledTimes(0);
 				expect(fsWrapper.move).toBeCalledTimes(0);
 				expect(importService.isImportRunning()).toBeFalsy();
-				await expect(dbAccess.queryAll(SQL.queryItemsAll([]))).resolves.toEqual([]);
+				await expect(dbAccess.queryAll(SQL.queryItemsAll([], 0, 999))).resolves.toEqual([]);
 			});
 
 
@@ -207,7 +207,7 @@ describe("import", () => {
 				expect(fsWrapper.copy).toBeCalledTimes(0);
 				expect(fsWrapper.move).toBeCalledTimes(0);
 				expect(importService.isImportRunning()).toBeFalsy();
-				await expect(dbAccess.queryAll(SQL.queryItemsAll([]))).resolves.toEqual([]);
+				await expect(dbAccess.queryAll(SQL.queryItemsAll([], 0, 999))).resolves.toEqual([]);
 			});
 
 
@@ -248,7 +248,7 @@ describe("import", () => {
 				expect(fsWrapper.copy).toBeCalledTimes(0);
 				expect(fsWrapper.move).toBeCalledTimes(0);
 				expect(importService.isImportRunning()).toBeFalsy();
-				await expect(dbAccess.queryAll(SQL.queryItemsAll([]))).resolves.toEqual([]);
+				await expect(dbAccess.queryAll(SQL.queryItemsAll([], 0, 999))).resolves.toEqual([]);
 			});
 
 
@@ -289,7 +289,7 @@ describe("import", () => {
 				expect(fsWrapper.copy).toBeCalledTimes(0);
 				expect(fsWrapper.move).toBeCalledTimes(0);
 				expect(importService.isImportRunning()).toBeFalsy();
-				await expect(dbAccess.queryAll(SQL.queryItemsAll([]))).resolves.toEqual([]);
+				await expect(dbAccess.queryAll(SQL.queryItemsAll([], 0, 999))).resolves.toEqual([]);
 			});
 
 
@@ -330,7 +330,7 @@ describe("import", () => {
 				expect(fsWrapper.copy).toBeCalledTimes(0);
 				expect(fsWrapper.move).toBeCalledTimes(0);
 				expect(importService.isImportRunning()).toBeFalsy();
-				await expect(dbAccess.queryAll(SQL.queryItemsAll([]))).resolves.toEqual([]);
+				await expect(dbAccess.queryAll(SQL.queryItemsAll([], 0, 999))).resolves.toEqual([]);
 			});
 
 			test("invalid number-from part: number must be >= 0", async () => {
@@ -370,7 +370,7 @@ describe("import", () => {
 				expect(fsWrapper.copy).toBeCalledTimes(0);
 				expect(fsWrapper.move).toBeCalledTimes(0);
 				expect(importService.isImportRunning()).toBeFalsy();
-				await expect(dbAccess.queryAll(SQL.queryItemsAll([]))).resolves.toEqual([]);
+				await expect(dbAccess.queryAll(SQL.queryItemsAll([], 0, 999))).resolves.toEqual([]);
 			});
 
 		});
@@ -414,7 +414,7 @@ describe("import", () => {
 			expect(fsWrapper.copy).toBeCalledTimes(0);
 			expect(fsWrapper.move).toBeCalledTimes(0);
 			expect(importService.isImportRunning()).toBeFalsy();
-			await expect(dbAccess.queryAll(SQL.queryItemsAll([]))).resolves.toEqual([]);
+			await expect(dbAccess.queryAll(SQL.queryItemsAll([], 0, 999))).resolves.toEqual([]);
 		});
 
 		test("import already running", async () => {
@@ -452,7 +452,7 @@ describe("import", () => {
 			expect(fsWrapper.copy).toBeCalledTimes(0);
 			expect(fsWrapper.move).toBeCalledTimes(0);
 			expect(importService.isImportRunning()).toBeTruthy();
-			await expect(dbAccess.queryAll(SQL.queryItemsAll([]))).resolves.toEqual([]);
+			await expect(dbAccess.queryAll(SQL.queryItemsAll([], 0, 999))).resolves.toEqual([]);
 		});
 
 
@@ -499,7 +499,7 @@ describe("import", () => {
 			expect(fsWrapper.move).toHaveBeenCalledWith("path/to/file3.png", "new\\target\\directory\\file3.png", false);
 			expect(fsWrapper.copy).toBeCalledTimes(0);
 			expect(importService.isImportRunning()).toBeFalsy();
-			await expect(dbAccess.queryAll(SQL.queryItemsAll([]))).resolves.toEqual([
+			await expect(dbAccess.queryAll(SQL.queryItemsAll([], 0, 999))).resolves.toEqual([
 				item(1, "new\\target\\directory\\file1.png", TIMESTAMP),
 				item(2, "new\\target\\directory\\file3.png", TIMESTAMP)
 			]);
@@ -544,7 +544,7 @@ describe("import", () => {
 			expect(fsWrapper.copy).toHaveBeenCalledWith("path/to/file3.png", "new\\target\\directory\\file3.png", false);
 			expect(fsWrapper.move).toBeCalledTimes(0);
 			expect(importService.isImportRunning()).toBeFalsy();
-			await expect(dbAccess.queryAll(SQL.queryItemsAll([]))).resolves.toEqual([
+			await expect(dbAccess.queryAll(SQL.queryItemsAll([], 0, 999))).resolves.toEqual([
 				item(1, "new\\target\\directory\\file1.png", TIMESTAMP),
 				item(2, "new\\target\\directory\\file3.png", TIMESTAMP)
 			]);
@@ -591,7 +591,7 @@ describe("import", () => {
 			expect(fsWrapper.copy).toHaveBeenCalledWith("path/to/file3.png", "new\\target\\directory\\file3_renamed.png", false);
 			expect(fsWrapper.move).toBeCalledTimes(0);
 			expect(importService.isImportRunning()).toBeFalsy();
-			await expect(dbAccess.queryAll(SQL.queryItemsAll([]))).resolves.toEqual([
+			await expect(dbAccess.queryAll(SQL.queryItemsAll([], 0, 999))).resolves.toEqual([
 				item(1, "new\\target\\directory\\file1_renamed.png", TIMESTAMP),
 				item(2, "new\\target\\directory\\file3_renamed.png", TIMESTAMP)
 			]);
@@ -637,7 +637,7 @@ describe("import", () => {
 			expect(fsWrapper.copy).toBeCalledTimes(0);
 			expect(fsWrapper.move).toBeCalledTimes(0);
 			expect(importService.isImportRunning()).toBeFalsy();
-			await expect(dbAccess.queryAll(SQL.queryItemsAll([]))).resolves.toEqual([
+			await expect(dbAccess.queryAll(SQL.queryItemsAll([], 0, 999))).resolves.toEqual([
 				item(1, "path\\to\\file1.png", TIMESTAMP),
 				item(2, "path\\to\\file2.png", TIMESTAMP),
 				item(3, "path\\to\\file3.png", TIMESTAMP)
@@ -694,7 +694,7 @@ describe("import", () => {
 			expect(fsWrapper.copy).toHaveBeenCalledWith("path/to/file3.png", "new\\target\\directory\\file3.png", false);
 			expect(fsWrapper.move).toBeCalledTimes(0);
 			expect(importService.isImportRunning()).toBeFalsy();
-			await expect(dbAccess.queryAll(SQL.queryItemsAll([]))).resolves.toEqual([
+			await expect(dbAccess.queryAll(SQL.queryItemsAll([], 0, 999))).resolves.toEqual([
 				item(1, "new\\target\\directory\\file1.png", TIMESTAMP),
 				item(2, "new\\target\\directory\\file2.png", TIMESTAMP),
 				item(3, "new\\target\\directory\\file3.png", TIMESTAMP)
@@ -744,7 +744,7 @@ describe("import", () => {
 			expect(fsWrapper.move).toHaveBeenCalledWith("path/to/file3.png", "new\\target\\directory\\file3.png", false);
 			expect(fsWrapper.copy).toBeCalledTimes(0);
 			expect(importService.isImportRunning()).toBeFalsy();
-			await expect(dbAccess.queryAll(SQL.queryItemsAll([]))).resolves.toEqual([
+			await expect(dbAccess.queryAll(SQL.queryItemsAll([], 0, 999))).resolves.toEqual([
 				item(1, "new\\target\\directory\\file1.png", TIMESTAMP),
 				item(2, "new\\target\\directory\\file2.png", TIMESTAMP),
 				item(3, "new\\target\\directory\\file3.png", TIMESTAMP)
@@ -800,7 +800,7 @@ describe("import", () => {
 			expect(fsWrapper.move).toHaveBeenCalledWith("path/to/file3.png", "path\\to\\file3_txt_10.png", false);
 			expect(fsWrapper.copy).toBeCalledTimes(0);
 			expect(importService.isImportRunning()).toBeFalsy();
-			await expect(dbAccess.queryAll(SQL.queryItemsAll([]))).resolves.toEqual([
+			await expect(dbAccess.queryAll(SQL.queryItemsAll([], 0, 999))).resolves.toEqual([
 				item(1, "path\\to\\file1_txt_8.png", TIMESTAMP),
 				item(2, "path\\to\\file2_txt_9.png", TIMESTAMP),
 				item(3, "path\\to\\file3_txt_10.png", TIMESTAMP)
@@ -857,7 +857,7 @@ describe("import", () => {
 			expect(fsWrapper.copy).toHaveBeenCalledWith("path/to/file3.png", "new\\target\\directory\\file3_txt_10.png", false);
 			expect(fsWrapper.move).toBeCalledTimes(0);
 			expect(importService.isImportRunning()).toBeFalsy();
-			await expect(dbAccess.queryAll(SQL.queryItemsAll([]))).resolves.toEqual([
+			await expect(dbAccess.queryAll(SQL.queryItemsAll([], 0, 999))).resolves.toEqual([
 				item(1, "new\\target\\directory\\file1_txt_8.png", TIMESTAMP),
 				item(2, "new\\target\\directory\\file2_txt_9.png", TIMESTAMP),
 				item(3, "new\\target\\directory\\file3_txt_10.png", TIMESTAMP)
@@ -914,7 +914,7 @@ describe("import", () => {
 			expect(fsWrapper.move).toHaveBeenCalledWith("path/to/file3.png", "new\\target\\directory\\file3_txt_10.png", false);
 			expect(fsWrapper.copy).toBeCalledTimes(0);
 			expect(importService.isImportRunning()).toBeFalsy();
-			await expect(dbAccess.queryAll(SQL.queryItemsAll([]))).resolves.toEqual([
+			await expect(dbAccess.queryAll(SQL.queryItemsAll([], 0, 999))).resolves.toEqual([
 				item(1, "new\\target\\directory\\file1_txt_8.png", TIMESTAMP),
 				item(2, "new\\target\\directory\\file2_txt_9.png", TIMESTAMP),
 				item(3, "new\\target\\directory\\file3_txt_10.png", TIMESTAMP)

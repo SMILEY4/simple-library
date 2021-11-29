@@ -29,7 +29,7 @@ export function useHideAttributes() {
 			.then(() => fetchItemListAttributes())
 			.then((itemListAttribs) => {
 				if (ArrayUtils.containsSomeOf(itemListAttribs.map(e => e.attId), attributeIds)) {
-					return loadItems();
+					return loadItems({});
 				}
 			})
 			.then(voidThen);
@@ -41,7 +41,7 @@ export function useHideAttributes() {
 			.then(() => fetchItemListAttributes())
 			.then((itemListAttribs) => {
 				if (ArrayUtils.containsSomeOf(itemListAttribs.map(e => e.attId), attributeIds)) {
-					return loadItems();
+					return loadItems({});
 				}
 			})
 			.then(voidThen);

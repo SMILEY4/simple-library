@@ -50,20 +50,20 @@ export class SQLiteDataRepository implements DataRepository {
         return this.dbAccess.queryAll(SQL.queryItemsByIds(itemIds));
     }
 
-    getItemsAll(attributeIds: number[]): QueryResultMany {
-        return this.dbAccess.queryAll(SQL.queryItemsAll(attributeIds));
+    getItemsAll(attributeIds: number[], pageIndex: number, pageSize: number): QueryResultMany {
+        return this.dbAccess.queryAll(SQL.queryItemsAll(attributeIds, pageIndex, pageSize));
     }
 
-    getItemsByCollection(collectionId: number, attributeIds: number[]): QueryResultMany {
-        return this.dbAccess.queryAll(SQL.queryItemsByCollection(collectionId, attributeIds));
+    getItemsByCollection(collectionId: number, attributeIds: number[], pageIndex: number, pageSize: number): QueryResultMany {
+        return this.dbAccess.queryAll(SQL.queryItemsByCollection(collectionId, attributeIds, pageIndex, pageSize));
     }
 
-    getItemsByCustomQuery(query: string, attributeIds: number[]): QueryResultMany {
-        return this.dbAccess.queryAll(SQL.queryItemsByCustomQuery(query, attributeIds));
+    getItemsByCustomQuery(query: string, attributeIds: number[], pageIndex: number, pageSize: number): QueryResultMany {
+        return this.dbAccess.queryAll(SQL.queryItemsByCustomQuery(query, pageIndex, pageSize, attributeIds));
     }
 
     getItemByCustomQuery(query: string): QueryResultSingle {
-        return this.dbAccess.querySingle(SQL.queryItemsByCustomQuery(query));
+        return this.dbAccess.querySingle(SQL.queryItemsByCustomQuery(query, 0, 1));
     }
 
     getItemCountTotal(): QueryResultSingle {
@@ -72,6 +72,10 @@ export class SQLiteDataRepository implements DataRepository {
 
     getItemCountByCustomQuery(query: string): QueryResultSingle {
         return this.dbAccess.querySingle(SQL.queryItemCountByQuery(query));
+    }
+
+    getItemCountByNormalCollection(collectionId: number): QueryResultSingle {
+        return this.dbAccess.querySingle(SQL.queryItemCountByNormalCollection(collectionId));
     }
 
     insertItem(filepath: string, timestamp: number, hash: string, thumbnail: string): CommandResultSingle {

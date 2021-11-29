@@ -3,7 +3,6 @@ import {genNotificationId} from "../../common/notificationUtils";
 import {AppNotificationType, useThrowErrorWithNotification} from "../store/notificationState";
 import {useDispatchItemSelectionRemove} from "../store/itemSelectionState";
 import {GroupDTO} from "../../../../common/events/dtoModels";
-import {useDispatchSetItems} from "../store/itemsState";
 import {useDispatchSetRootGroup} from "../store/collectionsState";
 import {useActiveCollection} from "../store/collectionActiveState";
 import {useLoadItems} from "./itemsLoad";
@@ -39,7 +38,7 @@ export function useRemoveItems() {
 
 	function updateItemState(collectionId: number) {
 		if (activeCollectionId === collectionId) {
-			return loadItems();
+			return loadItems({});
 		}
 	}
 

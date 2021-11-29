@@ -21,17 +21,19 @@ export interface DataRepository {
 
 	getItemsByIds(itemIds: number[]): QueryResultMany;
 
-	getItemsAll(attributeIds: number[]): QueryResultMany;
+	getItemsAll(attributeIds: number[], pageIndex: number, pageSize: number): QueryResultMany;
 
-	getItemsByCollection(collectionId: number, attributeIds: number[]): QueryResultMany;
+	getItemsByCollection(collectionId: number, attributeIds: number[], pageIndex: number, pageSize: number): QueryResultMany;
 
-	getItemsByCustomQuery(query: string, attributeIds: number[]): QueryResultMany;
+	getItemsByCustomQuery(query: string, attributeIds: number[], pageIndex: number, pageSize: number): QueryResultMany;
 
 	getItemByCustomQuery(query: string): QueryResultSingle;
 
 	getItemCountTotal(): QueryResultSingle;
 
 	getItemCountByCustomQuery(query: string): QueryResultSingle;
+
+	getItemCountByNormalCollection(collectionId: number): QueryResultSingle;
 
 	insertItem(filepath: string, timestamp: number, hash: string, thumbnail: string): CommandResultSingle;
 

@@ -1,5 +1,7 @@
 -- attributeIds (csv-numbers): the (unique) ids of the attributes to fetch
 -- query: the custom query / where-expression
+-- pageIndex (integer): the index for pagination
+-- pageSize (integer): the size of a page for pagination
 SELECT items.*, group_concat(attribs.str_attribute, ';') AS csv_attributes
 FROM items
 		 LEFT JOIN (
@@ -34,4 +36,5 @@ FROM items
 			  AND item_attributes.att_id IN ($attributeIds)
 		) attribs ON items.item_id = attribs.item_id
 WHERE $query
-GROUP BY items.item_id;
+GROUP BY items.item_id
+LIMIT $pageSize OFFSET $pageIndex * $pageSize;

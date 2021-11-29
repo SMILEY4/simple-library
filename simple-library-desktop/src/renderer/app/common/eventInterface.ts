@@ -10,7 +10,7 @@ import {
     ImportProcessDataDTO,
     ImportResultDTO,
     ImportStatusDTO,
-    ItemDTO,
+    ItemDTO, ItemPageDTO,
     LastOpenedLibraryDTO
 } from "../../../common/events/dtoModels";
 import {EventBroadcaster} from "../../../common/events/core/eventBroadcaster";
@@ -61,12 +61,16 @@ export function fetchRootGroup(): Promise<GroupDTO> {
 export function fetchItems(
     collectionId: number,
     includeMissingAttribs: boolean,
-    includeHiddenAttribs: boolean
-): Promise<ItemDTO[]> {
+    includeHiddenAttribs: boolean,
+    pageIndex: number,
+    pageSize: number
+): Promise<ItemPageDTO> {
     return eventBroadcaster.send(EventIds.GET_ITEMS_BY_COLLECTION, {
         collectionId: collectionId,
         includeMissingAttributes: includeMissingAttribs,
-        includeHiddenAttribs: includeHiddenAttribs
+        includeHiddenAttribs: includeHiddenAttribs,
+        pageIndex: pageIndex,
+        pageSize: pageSize,
     });
 }
 

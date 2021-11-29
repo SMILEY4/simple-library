@@ -270,7 +270,7 @@ export function useListAppearanceSettingsDialog() {
 
 	function commit() {
 		return requestSetItemListAttributes(entries.map(e => e.attId))
-			.then(() => loadItems());
+			.then(() => loadItems({}));
 	}
 
 	return {

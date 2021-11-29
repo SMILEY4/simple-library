@@ -1,5 +1,7 @@
 -- collectionId (number): the id of the collection
 -- attributeIds (csv-numbers): the (unique) ids of the attributes to fetch
+-- pageIndex (integer): the index for pagination
+-- pageSize (integer): the size of a page for pagination
 SELECT items.*, group_concat(attribs.str_attribute, ';') AS csv_attributes
 FROM collection_items,
 	 items
@@ -36,4 +38,5 @@ FROM collection_items,
 		 ) attribs ON items.item_id = attribs.item_id
 WHERE items.item_id = collection_items.item_id
   AND collection_items.collection_id = $collectionId
-GROUP BY items.item_id;
+GROUP BY items.item_id
+LIMIT $pageSize OFFSET $pageIndex * $pageSize;

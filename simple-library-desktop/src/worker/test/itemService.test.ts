@@ -24,12 +24,13 @@ import {ActionDeleteItems} from "../service/item/actionDeleteItems";
 import {ActionOpenItemsExternal} from "../service/item/actionOpenItemsExternal";
 import {ActionGetItemAttributes} from "../service/item/actionGetItemAttributes";
 import {ActionUpdateItemAttribute} from "../service/item/actionUpdateItemAttribute";
-import {Attribute, attributeKeyFromArray, Item} from "../service/item/itemCommon";
+import {Attribute, attributeKeyFromArray, Item, ItemPage} from "../service/item/itemCommon";
 import {SQLiteDataRepository} from "../persistence/sqliteRepository";
 import {DataRepository} from "../service/dataRepository";
 import {ActionDeleteItemAttribute} from "../service/item/actionDeleteItemAttribute";
 import {ActionGetHiddenAttributes} from "../service/library/actionGetHiddenAttributes";
 import {ActionGetItemListAttributes} from "../service/library/actionGetItemListAttributes";
+import {ItemPageDTO} from "../../common/events/dtoModels";
 
 describe("item-service", () => {
 
@@ -59,9 +60,9 @@ describe("item-service", () => {
 				])
 			]);
 			// when
-			const result: Promise<Item[]> = actionGetByCollection.perform(1, false, true);
+			const result: Promise<ItemPage> = actionGetByCollection.perform(1, false, true, 0, 999);
 			// then
-			await expect(result).resolves.toEqual([
+			await expect(result.then(p => p.items)).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, []),
 				item(2, "/path/to/file/2", "thumbnail2", "hash2", 1001, []),
 				item(3, "/path/to/file/3", "thumbnail3", "hash3", 1002, [])
@@ -94,9 +95,9 @@ describe("item-service", () => {
 				SQL.insertItemListAttributes([ATT_ID_FILE_MODIFY_DATE, ATT_ID_MIME_TYPE])
 			]);
 			// when
-			const result: Promise<Item[]> = actionGetByCollection.perform(1, false, true);
+			const result: Promise<ItemPage> = actionGetByCollection.perform(1, false, true, 0, 999);
 			// then
-			await expect(result).resolves.toEqual([
+			await expect(result.then(p => p.items)).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, [
 					attribute(ATT_ID_FILE_MODIFY_DATE, keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "_text", true, false, 0),
 					attribute(ATT_ID_MIME_TYPE, keyMIMEType(), "image/jpeg", "_text", false, true, 1)
@@ -134,9 +135,9 @@ describe("item-service", () => {
 				SQL.insertItemListAttributes([ATT_ID_FILE_MODIFY_DATE, ATT_ID_MIME_TYPE])
 			]);
 			// when
-			const result: Promise<Item[]> = actionGetByCollection.perform(1, true, true);
+			const result: Promise<ItemPage> = actionGetByCollection.perform(1, true, true, 0, 999);
 			// then
-			await expect(result).resolves.toEqual([
+			await expect(result.then(p => p.items)).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, [
 					attribute(ATT_ID_FILE_MODIFY_DATE, keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "_text", true, false, 0),
 					attribute(ATT_ID_MIME_TYPE, keyMIMEType(), "image/jpeg", "_text", false, true, 1)
@@ -177,9 +178,9 @@ describe("item-service", () => {
 				SQL.insertItemListAttributes([ATT_ID_FILE_MODIFY_DATE, ATT_ID_MIME_TYPE])
 			]);
 			// when
-			const result: Promise<Item[]> = actionGetByCollection.perform(2, false, true);
+			const result: Promise<ItemPage> = actionGetByCollection.perform(2, false, true, 0, 999);
 			// then
-			await expect(result).resolves.toEqual([
+			await expect(result.then(p => p.items)).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, [
 					attribute(ATT_ID_FILE_MODIFY_DATE, keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "_text", true, false, 0),
 					attribute(ATT_ID_MIME_TYPE, keyMIMEType(), "image/jpeg", "_text", false, true, 1)
@@ -216,9 +217,9 @@ describe("item-service", () => {
 				SQL.insertItemListAttributes([ATT_ID_FILE_MODIFY_DATE, ATT_ID_MIME_TYPE])
 			]);
 			// when
-			const result: Promise<Item[]> = actionGetByCollection.perform(2, false, true);
+			const result: Promise<ItemPage> = actionGetByCollection.perform(2, false, true, 0, 999);
 			// then
-			await expect(result).resolves.toEqual([
+			await expect(result.then(p => p.items)).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, [
 					attribute(ATT_ID_FILE_MODIFY_DATE, keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "_text", true, false, 0),
 					attribute(ATT_ID_MIME_TYPE, keyMIMEType(), "image/jpeg", "_text", false, true, 1)
@@ -257,7 +258,7 @@ describe("item-service", () => {
 				SQL.insertItemListAttributes([ATT_ID_FILE_ACCESS_DATE, ATT_ID_MIME_TYPE])
 			]);
 			// when
-			const result: Promise<Item[]> = actionGetByCollection.perform(42, false, true);
+			const result: Promise<ItemPage> = actionGetByCollection.perform(42, false, true, 0, 999);
 			// then
 			await expect(result).rejects.toBeDefined();
 		});
@@ -345,9 +346,9 @@ describe("item-service", () => {
 			const result: Promise<void> = actionDelete.perform([2, 3]);
 			// then
 			await expect(result).resolves.toBeUndefined();
-			await expect(dbAccess.queryAll(SQL.queryItemsAll([])).then((result => result.map(r => r.item_id)))).resolves.toEqual([1, 4]);
-			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(1, [])).then((result => result.map(r => r.item_id)))).resolves.toEqual([1]);
-			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(2, [])).then((result => result.map(r => r.item_id)))).resolves.toEqual([4]);
+			await expect(dbAccess.queryAll(SQL.queryItemsAll([], 0, 999)).then((result => result.map(r => r.item_id)))).resolves.toEqual([1, 4]);
+			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(1, [], 0, 999)).then((result => result.map(r => r.item_id)))).resolves.toEqual([1]);
+			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(2, [], 0, 999)).then((result => result.map(r => r.item_id)))).resolves.toEqual([4]);
 			await expect(dbAccess.queryAll(SQL.queryItemAttributes(1, true))).resolves.toHaveLength(3);
 			await expect(dbAccess.queryAll(SQL.queryItemAttributes(2, true))).resolves.toEqual([]);
 			await expect(dbAccess.queryAll(SQL.queryItemAttributes(3, true))).resolves.toEqual([]);
@@ -382,9 +383,9 @@ describe("item-service", () => {
 			const result: Promise<void> = actionDelete.perform([2, 100]);
 			// then
 			await expect(result).resolves.toBeUndefined();
-			await expect(dbAccess.queryAll(SQL.queryItemsAll([])).then((result => result.map(r => r.item_id)))).resolves.toEqual([1, 3, 4]);
-			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(1, [])).then((result => result.map(r => r.item_id)))).resolves.toEqual([1, 3]);
-			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(2, [])).then((result => result.map(r => r.item_id)))).resolves.toEqual([3, 4]);
+			await expect(dbAccess.queryAll(SQL.queryItemsAll([], 0, 999)).then((result => result.map(r => r.item_id)))).resolves.toEqual([1, 3, 4]);
+			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(1, [], 0, 999)).then((result => result.map(r => r.item_id)))).resolves.toEqual([1, 3]);
+			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(2, [], 0, 999)).then((result => result.map(r => r.item_id)))).resolves.toEqual([3, 4]);
 			await expect(dbAccess.queryAll(SQL.queryItemAttributes(1, true))).resolves.toHaveLength(3);
 			await expect(dbAccess.queryAll(SQL.queryItemAttributes(2, true))).resolves.toEqual([]);
 			await expect(dbAccess.queryAll(SQL.queryItemAttributes(3, true))).resolves.toEqual([]);

@@ -8,6 +8,12 @@ export interface Item {
 	attributes?: Attribute[]
 }
 
+export interface ItemPage {
+	items: Item[],
+	pageIndex: number,
+	pageSize: number,
+	totalCount: number,
+}
 
 export interface MiniAttribute {
 	attId: number | null,

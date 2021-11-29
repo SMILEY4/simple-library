@@ -28,7 +28,7 @@ export function useMoveItems() {
 	}
 
 	function updateItemState(collectionId: number) {
-		return loadItems(collectionId);
+		return loadItems({collectionId: collectionId});
 	}
 
 	function updateGroupState() {
