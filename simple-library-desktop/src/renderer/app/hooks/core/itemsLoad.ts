@@ -4,6 +4,7 @@ import {useDispatchSetItems} from "../store/itemsState";
 import {useActiveCollection} from "../store/collectionActiveState";
 import {genNotificationId} from "../../common/notificationUtils";
 import {AppNotificationType, useThrowErrorWithNotification} from "../store/notificationState";
+import {voidThen} from "../../../../common/utils";
 
 export function useLoadItems() {
 
@@ -11,14 +12,14 @@ export function useLoadItems() {
 	const dispatchSetItems = useDispatchSetItems();
 	const throwErrorNotification = useThrowErrorWithNotification();
 
-	function hookFunction(collectionId?: number) {
+	function hookFunction(collectionId?: number): Promise<void> {
 		if (collectionId !== undefined) {
-			return loadItems(collectionId)
+			return loadItems(collectionId);
 		} else {
 			if (activeCollection === null || activeCollection === undefined) {
-				return clearItems()
+				return clearItems();
 			} else {
-				return loadItems(activeCollection)
+				return loadItems(activeCollection);
 			}
 		}
 	}
@@ -26,11 +27,13 @@ export function useLoadItems() {
 	function loadItems(collectionId: number) {
 		return fetchItems(collectionId, true, false)
 			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_FETCH_FAILED, error))
-			.then((items: ItemDTO[]) => dispatchSetItems(items));
+			.then((items: ItemDTO[]) => dispatchSetItems(items))
+			.then(voidThen);
 	}
 
 	function clearItems() {
 		dispatchSetItems([]);
+		return Promise.resolve();
 	}
 
 	return hookFunction;
