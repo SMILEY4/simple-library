@@ -40,6 +40,8 @@ export module EventIds {
 	export const GET_HIDDEN_ATTRIBUTES = "library.hidden_attributes.get";
 	export const SET_DEFAULT_ATTRIBUTE_VALUES = "library.default_attribute_values.set";
 	export const GET_DEFAULT_ATTRIBUTE_VALUES = "library.default_attribute_values.get";
+	export const GET_ITEM_LIST_ATTRIBUTES = "library.item-list-attributes.get";
+	export const SET_ITEM_LIST_ATTRIBUTES = "library.item-list-attributes.set";
 
 
 	export const ALL_IDS = [
@@ -77,12 +79,14 @@ export module EventIds {
 		GET_LIBRARY_INFO,
 		EMBED_ITEM_ATTRIBUTES,
 		EMBED_ITEM_ATTRIBUTES_STATUS,
-        GET_LIBRARY_ATTRIBUTE_META_ALL_FILTER_NAME,
+		GET_LIBRARY_ATTRIBUTE_META_ALL_FILTER_NAME,
 		GET_LIBRARY_ATTRIBUTE_META_BY_KEYS,
 		SET_HIDDEN_ATTRIBUTES,
 		GET_HIDDEN_ATTRIBUTES,
 		SET_DEFAULT_ATTRIBUTE_VALUES,
-		GET_DEFAULT_ATTRIBUTE_VALUES
+		GET_DEFAULT_ATTRIBUTE_VALUES,
+		GET_ITEM_LIST_ATTRIBUTES,
+		SET_ITEM_LIST_ATTRIBUTES
 	];
 
 }

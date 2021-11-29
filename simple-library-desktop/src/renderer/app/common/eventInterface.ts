@@ -250,3 +250,12 @@ export function fetchDefaultAttributeValues(): Promise<DefaultAttributeValueEntr
 export function requestSetDefaultAttributeValues(entries: DefaultAttributeValueEntryDTO[]): Promise<void> {
     return eventBroadcaster.send(EventIds.SET_DEFAULT_ATTRIBUTE_VALUES, entries);
 }
+
+
+export function fetchItemListAttributes(): Promise<AttributeMetaDTO[]> {
+    return eventBroadcaster.send(EventIds.GET_ITEM_LIST_ATTRIBUTES);
+}
+
+export function requestSetItemListAttributes(entries: number[]): Promise<void> {
+    return eventBroadcaster.send(EventIds.SET_ITEM_LIST_ATTRIBUTES, entries);
+}

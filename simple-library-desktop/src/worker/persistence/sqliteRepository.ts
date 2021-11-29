@@ -131,6 +131,20 @@ export class SQLiteDataRepository implements DataRepository {
             .then(voidThen);
     }
 
+    getItemListAttributes(): QueryResultMany {
+        return this.dbAccess.queryAll(SQL.queryItemListAttributes());
+    }
+
+    insertItemListAttributes(attributeIds: number[]): VoidResult {
+        return this.dbAccess.run(SQL.insertItemListAttributes(attributeIds))
+            .then(voidThen);
+    }
+
+    deleteAllItemListAttributes(): VoidResult {
+        return this.dbAccess.run(SQL.deleteAllItemListAttributes())
+            .then(voidThen);
+    }
+
     getAllExtendedItemAttributesNotHidden(onlyModified: boolean): QueryResultMany {
         return this.dbAccess.queryAll(SQL.queryExtendedItemAttributesAll(onlyModified));
     }

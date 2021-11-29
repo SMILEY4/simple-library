@@ -58,10 +58,12 @@ import sqlInsertHiddenAttributes from "./sqlscripts/item_attributes/insert_hidde
 import sqlDeleteHiddenAttribute from "./sqlscripts/item_attributes/delete_hidden_attribute.sql";
 import sqlQueryItemAttributesNoHidden from "./sqlscripts/items/query_item_attributes_no_hidden.sql";
 import sqlQueryAttributeMetaByKeys from "./sqlscripts/item_attributes/query_item_attribute_meta_by_keys.sql";
-
 import sqlDeleteDefaultAttributeValues from "./sqlscripts/item_attributes/delete_default_attribute_values.sql";
 import sqlInsertDefaultAttributeValues from "./sqlscripts/item_attributes/insert_default_attribute_values.sql";
 import sqlQueryDefaultAttributeValues from "./sqlscripts/item_attributes/query_default_attribute_values.sql";
+import sqlQueryItemListAttributes from "./sqlscripts/item_attributes/query_item_list_attributes.sql"
+import sqlInsertItemListAttributes from "./sqlscripts/item_attributes/insert_item_list_attributes.sql"
+import sqlDeleteItemListAttributes from "./sqlscripts/item_attributes/delete_item_list_attributes.sql"
 
 export module SQL {
 
@@ -297,6 +299,20 @@ export module SQL {
 
 	export function deleteDefaultAttributeValues(): string {
 		return sql(sqlDeleteDefaultAttributeValues);
+	}
+
+
+	export function queryItemListAttributes(): string {
+		return sql(sqlQueryItemListAttributes);
+	}
+
+	export function insertItemListAttributes(attributeIds: number[]): string {
+		return sql(sqlInsertItemListAttributes)
+			.replace(v("attributeIds"), attributeIds.map(e => "(" + e + ")").join(","));
+	}
+
+	export function deleteAllItemListAttributes(): string {
+		return sql(sqlDeleteItemListAttributes);
 	}
 
 	export function queryItemAttributes(itemId: number, includeHidden: boolean): string {

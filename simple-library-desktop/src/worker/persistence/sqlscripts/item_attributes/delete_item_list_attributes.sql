@@ -1,0 +1,1 @@
+DELETE FROM item_list_attributes;

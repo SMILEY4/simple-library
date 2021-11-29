@@ -9,10 +9,12 @@ import {
 import {useHideAttributes} from "../../../../hooks/core/hiddenAttributes";
 import {ArrayUtils} from "../../../../../../common/arrayUtils";
 import {useDefaultAttributeValues} from "../../../../hooks/core/defaultAttributeValues";
+import {fetchItemListAttributes, requestSetItemListAttributes} from "../../../../common/eventInterface";
 
 export enum SettingsDialogTab {
 	APP,
 	ATTRIBUTES,
+	APPEARANCE
 }
 
 export function useDialogSettings(onClose: () => void) {
@@ -20,6 +22,11 @@ export function useDialogSettings(onClose: () => void) {
 	const [currentTab, setCurrentTab] = useState(SettingsDialogTab.APP);
 
 	const openConfigFile = useOpenConfigFile();
+
+	const {
+		commitAppConfig,
+		discardAppConfig
+	} = useApplicationConfig();
 
 	const {
 		config,
@@ -43,14 +50,20 @@ export function useDialogSettings(onClose: () => void) {
 	} = useDefaultAttributeValuesSettingsDialog();
 
 	const {
-		commitAppConfig,
-		discardAppConfig
-	} = useApplicationConfig();
+		listAppearanceEntries,
+		addListAppearanceEntry,
+		deleteListAppearanceEntry,
+		moveListAppearanceEntryUp,
+		moveListAppearanceEntryDown,
+		discardListAppearanceEntries,
+		commitListAppearanceEntries
+	} = useListAppearanceSettingsDialog();
 
 	function handleCancel() {
 		discardAppConfig()
 			.then(() => discardHiddenAttributes())
 			.then(() => discardDefaultAttributeValues())
+			.then(() => discardListAppearanceEntries())
 			.then(() => onClose());
 	}
 
@@ -58,6 +71,7 @@ export function useDialogSettings(onClose: () => void) {
 		commitAppConfig()
 			.then(() => commitHiddenAttributes())
 			.then(() => commitDefaultAttributeValues())
+			.then(() => commitListAppearanceEntries())
 			.then(() => onClose());
 	}
 
@@ -66,15 +80,24 @@ export function useDialogSettings(onClose: () => void) {
 		setCurrentTab: setCurrentTab,
 		handleCancel: handleCancel,
 		handleSave: handleSave,
+
 		handleOpenConfigFile: openConfigFile,
 		appConfig: config,
 		setAppConfig: setAppConfig,
+
 		hiddenAttributes: hiddenAttributes,
 		hideAttribute: hideAttribute,
 		showAttribute: showAttribute,
+
 		defaultAttributeValues: defaultAttributeValueEntries,
 		setDefaultAttributeValue: setDefaultAttributeValue,
-		deleteDefaultAttributeValue: deleteDefaultAttributeValue
+		deleteDefaultAttributeValue: deleteDefaultAttributeValue,
+
+		listAppearanceEntries: listAppearanceEntries,
+		addListAppearanceEntry: addListAppearanceEntry,
+		deleteListAppearanceEntry: deleteListAppearanceEntry,
+		moveListAppearanceEntryUp: moveListAppearanceEntryUp,
+		moveListAppearanceEntryDown: moveListAppearanceEntryDown
 	};
 }
 
@@ -205,3 +228,56 @@ export function useDefaultAttributeValuesSettingsDialog() {
 }
 
 
+export function useListAppearanceSettingsDialog() {
+
+	const [entries, setEntries] = useState<AttributeMetaDTO[]>([]);
+
+	useEffect(() => {
+		fetchItemListAttributes().then(setEntries);
+	}, []);
+
+	function addEntry(entry: AttributeMetaDTO) {
+		if (ArrayUtils.containsNot(entries, entry, (a, b) => a.attId === b.attId)) {
+			setEntries([...entries, entry]);
+		}
+	}
+
+	function deleteEntry(entry: AttributeMetaDTO) {
+		setEntries(ArrayUtils.remove(entries, entry, (a, b) => a.attId === b.attId));
+	}
+
+	function moveUp(entry: AttributeMetaDTO) {
+		const currentIndex = ArrayUtils.removeInPlace(entries, entry, (a, b) => a.attId === b.attId);
+		if (currentIndex !== null) {
+			const newIndex = Math.max(0, currentIndex - 1);
+			setEntries(ArrayUtils.insertAt(entries, entry, newIndex));
+		}
+	}
+
+	function moveDown(entry: AttributeMetaDTO) {
+		const currentIndex = ArrayUtils.removeInPlace(entries, entry, (a, b) => a.attId === b.attId);
+		if (currentIndex !== null) {
+			const newIndex = currentIndex + 1;
+			setEntries(ArrayUtils.insertAt(entries, entry, newIndex));
+		}
+	}
+
+	function discard() {
+		fetchItemListAttributes().then(setEntries);
+	}
+
+	function commit() {
+		return requestSetItemListAttributes(entries.map(e => e.attId));
+	}
+
+	return {
+		listAppearanceEntries: entries,
+		addListAppearanceEntry: addEntry,
+		deleteListAppearanceEntry: deleteEntry,
+		moveListAppearanceEntryUp: moveUp,
+		moveListAppearanceEntryDown: moveDown,
+		discardListAppearanceEntries: discard,
+		commitListAppearanceEntries: commit
+	};
+
+}

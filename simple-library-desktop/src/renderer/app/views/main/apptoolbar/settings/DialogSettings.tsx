@@ -7,6 +7,7 @@ import {HBox, VBox} from "../../../../../components/layout/box/Box";
 import "./dialogSettings.css";
 import {ApplicationSettings} from "./ApplicationSettings";
 import {AttributeSettings} from "./AttributeSettings";
+import {AppearanceSettings} from "./AppearanceSettings";
 
 interface DialogSettingsProps {
 	onClose: () => void,
@@ -30,7 +31,13 @@ export function DialogSettings(props: React.PropsWithChildren<DialogSettingsProp
 
 		defaultAttributeValues,
 		setDefaultAttributeValue,
-		deleteDefaultAttributeValue
+		deleteDefaultAttributeValue,
+
+		listAppearanceEntries,
+		addListAppearanceEntry,
+		deleteListAppearanceEntry,
+		moveListAppearanceEntryUp,
+		moveListAppearanceEntryDown
 
 	} = useDialogSettings(props.onClose);
 
@@ -48,6 +55,7 @@ export function DialogSettings(props: React.PropsWithChildren<DialogSettingsProp
 					<VBox className="settings-nav" alignMain="start" alignCross="stretch">
 						<div onClick={() => setCurrentTab(SettingsDialogTab.APP)}>Application</div>
 						<div onClick={() => setCurrentTab(SettingsDialogTab.ATTRIBUTES)}>Metadata</div>
+						<div onClick={() => setCurrentTab(SettingsDialogTab.APPEARANCE)}>Appearance</div>
 					</VBox>
 					<VBox className="settings-content" alignMain="start">
 						{currentTab === SettingsDialogTab.APP && (
@@ -65,6 +73,15 @@ export function DialogSettings(props: React.PropsWithChildren<DialogSettingsProp
 								defaultAttributeValues={defaultAttributeValues}
 								onSetDefaultAttributeValue={setDefaultAttributeValue}
 								onDeleteDefaultAttributeValue={deleteDefaultAttributeValue}
+							/>
+						)}
+						{currentTab === SettingsDialogTab.APPEARANCE && (
+							<AppearanceSettings
+								listAppearanceEntries={listAppearanceEntries}
+								onAddListAppearanceEntry={addListAppearanceEntry}
+								onDeleteListAppearanceEntry={deleteListAppearanceEntry}
+								onMoveListAppearanceEntryUp={moveListAppearanceEntryUp}
+								onMoveListAppearanceEntryDown={moveListAppearanceEntryDown}
 							/>
 						)}
 					</VBox>
