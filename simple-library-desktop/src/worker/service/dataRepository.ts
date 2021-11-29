@@ -58,6 +58,12 @@ export interface DataRepository {
 
 	deleteAllDefaultAttributeValues(): VoidResult;
 
+	getItemListAttributes(): QueryResultMany;
+
+	insertItemListAttributes(attributeIds: number[]): VoidResult;
+
+	deleteAllItemListAttributes(): VoidResult;
+
 	getAllExtendedItemAttributesNotHidden(onlyModified: boolean): QueryResultMany;
 
 	getExtendedItemAttributesNotHiddenByItemIds(itemIds: number[], onlyModified: boolean): QueryResultMany;

@@ -21,6 +21,7 @@ export interface Attribute {
 	type: string,
 	writable: boolean,
 	modified: boolean,
+	orderIndex?: number
 }
 
 export interface ExtendedAttribute extends Attribute {
@@ -93,8 +94,8 @@ export function rowToItem(row: any | null): Item | null {
 
 export function concatAttributeColumnToEntries(str: string): Attribute[] {
 	if (str) {
-		const regexGlobal: RegExp = /"(.+?):(.+?):(.+?):(.+?):(.+?):(.+?)-(.+?)-(.+?)"="(.+?)"-"(.+?)"/g;
-		const regex: RegExp = /"(.+?):(.+?):(.+?):(.+?):(.+?):(.+?)-(.+?)-(.+?)"="(.+?)"-"(.+?)"/;
+		const regexGlobal: RegExp = /"(.+?):(.+?):(.+?):(.+?):(.+?):(.+?)-(.+?)-(.+?)-(.+?)"="(.+?)"-"(.+?)"/g;
+		const regex: RegExp = /"(.+?):(.+?):(.+?):(.+?):(.+?):(.+?)-(.+?)-(.+?)-(.+?)"="(.+?)"-"(.+?)"/;
 		return str.match(regexGlobal).map((strEntry: string) => {
 			const strEntryParts: string[] = strEntry.match(regex);
 			const entry: Attribute = {
@@ -108,8 +109,9 @@ export function concatAttributeColumnToEntries(str: string): Attribute[] {
 				},
 				type: strEntryParts[7],
 				writable: strEntryParts[8] == "1",
-				value: strEntryParts[9],
-				modified: strEntryParts[10] === "1"
+				orderIndex: Number.parseInt(strEntryParts[9]),
+				value: strEntryParts[10],
+				modified: strEntryParts[11] === "1"
 			};
 			return entry;
 		});

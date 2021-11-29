@@ -1,16 +1,15 @@
-
-.default-attrib-values-base {
+.list-appearance-base {
 	height: 300px;
 	width:  500px;
 }
 
-.default-attrib-values-base > * {
+.list-appearance-base > * {
 	height:    100%;
 	flex-grow: 1;
 	width:     0;
 }
 
-.default-attrib-values-selected {
+.list-appearance-selected {
 	border-radius:    var(--radius-0);
 	border:           1px solid var(--color-border);
 	background-color: var(--color-background-1);
@@ -19,18 +18,18 @@
 	overflow-x:       hidden;
 }
 
-.attrib-value-entry {
+.list-appearance-entry {
 	border-radius:    var(--radius-0);
 	border:           1px solid var(--color-border);
 	background-color: var(--color-background-0);
 	padding-left:     var(--s-0-25);
 }
 
-.attrib-value-entry > .box {
+.list-appearance-entry > .box {
 	overflow-x: hidden;
 }
 
-.attrib-value-entry-content {
+.list-appearance-entry-content {
 	border-top: 1px solid var(--color-border);
 	padding:    var(--s-0-5);
 }

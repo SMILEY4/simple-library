@@ -1,10 +1,4 @@
-import {
-	GroupDTO,
-	ImportProcessDataDTO,
-	ImportResultDTO,
-	ImportStatusDTO,
-	ItemDTO
-} from "../../../../common/events/dtoModels";
+import {GroupDTO, ImportProcessDataDTO, ImportResultDTO, ImportStatusDTO} from "../../../../common/events/dtoModels";
 import {genNotificationId} from "../../common/notificationUtils";
 import {
 	AppNotificationType,
@@ -15,25 +9,23 @@ import {
 } from "../store/notificationState";
 import {
 	addImportStatusListener,
-	fetchItems,
 	fetchRootGroup,
 	removeImportStatusListener,
 	requestImport
 } from "../../common/eventInterface";
 import {useDispatchSetRootGroup} from "../store/collectionsState";
-import {useDispatchSetItems} from "../store/itemsState";
 import {useActiveCollection} from "../store/collectionActiveState";
-import {TEMP_ATTRIBUTE_IDS} from "./temp";
+import {useLoadItems} from "./itemsLoad";
 
 export function useImportItems() {
 
 	const activeCollectionId = useActiveCollection();
 	const dispatchSetRootGroup = useDispatchSetRootGroup();
-	const dispatchSetItems = useDispatchSetItems();
 	const notificationAdd = useDispatchAddNotification();
 	const notificationRemove = useDispatchRemoveNotification();
 	const notificationUpdate = useDispatchUpdateNotification();
 	const throwErrorNotification = useThrowErrorWithNotification();
+	const loadItems = useLoadItems();
 
 
 	function hookFunction(data: ImportProcessDataDTO) {
@@ -70,9 +62,7 @@ export function useImportItems() {
 
 	function updateItemState() {
 		if (activeCollectionId) {
-			return fetchItems(activeCollectionId, TEMP_ATTRIBUTE_IDS, true, false)
-				.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_FETCH_FAILED, error))
-				.then((items: ItemDTO[]) => dispatchSetItems(items));
+			return loadItems();
 		} else {
 			return Promise.resolve();
 		}

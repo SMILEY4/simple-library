@@ -61,6 +61,8 @@ import {ImportDbWriter} from "./service/import/importDbWriter";
 import {ActionGetDefaultAttributeValues} from "./service/library/actionGetDefaultAttributeValues";
 import {ActionSetDefaultAttributeValues} from "./service/library/actionSetDefaultAttributeValues";
 import {ImportStepWriteDefaultValues} from "./service/import/importStepWriteDefaultValues";
+import {ActionGetItemListAttributes} from "./service/library/actionGetItemListAttributes";
+import {ActionSetItemListAttributes} from "./service/library/actionSetItemListAttributes";
 
 export class ActionHandler {
 
@@ -114,11 +116,14 @@ export class ActionHandler {
 		const actionGetLibraryAttributeMetaAll = new ActionGetLibraryAttributeMeta(dataRepository);
 		const actionGetLibraryAttributeMetaByKeys = new ActionGetLibraryAttributeMetaByKeys(dataRepository);
 
+		const actionGetItemListAttributes = new ActionGetItemListAttributes(dataRepository);
+		const actionSetItemListAttributes = new ActionSetItemListAttributes(dataRepository);
+
 		const actionReadFileAttributes = new ActionReadItemAttributesFromFile(actionGetExiftoolInfo);
 		const actionDeleteItems = new ActionDeleteItems(dataRepository);
 		const actionGetItemById = new ActionGetItemById(dataRepository);
 		const actionGetItemAttributes = new ActionGetItemAttributes(dataRepository, actionGetItemById);
-		const actionGetItemsByCollection = new ActionGetItemsByCollection(dataRepository, actionGetCollectionById, actionGetHiddenAttributes);
+		const actionGetItemsByCollection = new ActionGetItemsByCollection(dataRepository, actionGetCollectionById, actionGetHiddenAttributes, actionGetItemListAttributes);
 		const actionOpenItemsExternal = new ActionOpenItemsExternal(dataRepository, fsWrapper);
 		const actionUpdateItemAttribute = new ActionUpdateItemAttribute(dataRepository);
 		const actionDeleteItemAttribute = new ActionDeleteItemAttribute(dataRepository);
@@ -185,6 +190,9 @@ export class ActionHandler {
 		this.eventHandler.on(EventIds.SET_DEFAULT_ATTRIBUTE_VALUES, (entries) => actionSetDefaultAttributeValues.perform(entries));
 		this.eventHandler.on(EventIds.GET_DEFAULT_ATTRIBUTE_VALUES, () => actionGetDefaultAttributeValues.perform());
 
+		this.eventHandler.on(EventIds.SET_ITEM_LIST_ATTRIBUTES, (attributeIds) => actionSetItemListAttributes.perform(attributeIds));
+		this.eventHandler.on(EventIds.GET_ITEM_LIST_ATTRIBUTES, () => actionGetItemListAttributes.perform());
+
 		this.eventHandler.on(EventIds.GET_GROUP_TREE, (payload) => actionGetGroupTree.perform(payload.includeCollections, payload.includeItemCount));
 		this.eventHandler.on(EventIds.CREATE_GROUP, (payload) => actionCreateGroup.perform(payload.name, payload.parentGroupId));
 		this.eventHandler.on(EventIds.DELETE_GROUP, (payload) => actionDeleteGroup.perform(payload.groupId, payload.deleteChildren));
@@ -199,7 +207,7 @@ export class ActionHandler {
 		this.eventHandler.on(EventIds.MOVE_ITEMS, (payload) => actionMoveItems.perform(payload.sourceCollectionId, payload.targetCollectionId, payload.itemIds, payload.copy));
 		this.eventHandler.on(EventIds.REMOVE_ITEMS, (payload) => actionRemoveItems.perform(payload.collectionId, payload.itemIds));
 
-		this.eventHandler.on(EventIds.GET_ITEMS_BY_COLLECTION, (payload) => actionGetItemsByCollection.perform(payload.collectionId, payload.itemAttributeIds, payload.includeMissingAttributes, payload.includeHiddenAttribs));
+		this.eventHandler.on(EventIds.GET_ITEMS_BY_COLLECTION, (payload) => actionGetItemsByCollection.perform(payload.collectionId, payload.includeMissingAttributes, payload.includeHiddenAttribs));
 		this.eventHandler.on(EventIds.GET_ITEM_BY_ID, (payload) => actionGetItemById.perform(payload));
 		this.eventHandler.on(EventIds.DELETE_ITEMS, (payload) => actionDeleteItems.perform(payload));
 		this.eventHandler.on(EventIds.OPEN_ITEMS, (payload) => actionOpenItemsExternal.perform(payload));

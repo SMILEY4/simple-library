@@ -8,17 +8,15 @@ import {
 import {
 	addEmbedStatusListener,
 	fetchItemMetadata,
-	fetchItems,
 	removeEmbedStatusListener,
 	requestEmbedAttributes
 } from "../../common/eventInterface";
 import {genNotificationId} from "../../common/notificationUtils";
 import {useSelectedItemIds} from "../store/itemSelectionState";
-import {EmbedStatusDTO, ItemDTO} from "../../../../common/events/dtoModels";
+import {EmbedStatusDTO} from "../../../../common/events/dtoModels";
 import {useDispatchSetAttributes, useStateAttributeStoreItemId} from "../store/attributeStore";
-import {useDispatchSetItems} from "../store/itemsState";
 import {useActiveCollection} from "../store/collectionActiveState";
-import {TEMP_ATTRIBUTE_IDS} from "./temp";
+import {useLoadItems} from "./itemsLoad";
 
 export function useEmbedAttributes() {
 
@@ -42,7 +40,7 @@ export function useEmbedAttributesOfItemIds() {
 	const attributeItemId = useStateAttributeStoreItemId();
 	const setAttributes = useDispatchSetAttributes();
 	const activeCollection = useActiveCollection();
-	const dispatchSetItems = useDispatchSetItems();
+	const loadItems = useLoadItems();
 
 	function hookFunction(itemIds: number[] | null, allAttributes: boolean): Promise<void> {
 
@@ -72,8 +70,7 @@ export function useEmbedAttributesOfItemIds() {
 
 		function updateItemState(): Promise<any> {
 			if (activeCollection) {
-				return fetchItems(activeCollection, TEMP_ATTRIBUTE_IDS, true, false)
-					.then((items: ItemDTO[]) => dispatchSetItems(items));
+				return loadItems();
 			} else {
 				return Promise.resolve();
 			}

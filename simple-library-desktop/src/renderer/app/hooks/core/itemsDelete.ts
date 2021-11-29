@@ -1,20 +1,17 @@
-import {fetchItems, fetchRootGroup, requestDeleteItems} from "../../common/eventInterface";
+import {fetchRootGroup, requestDeleteItems} from "../../common/eventInterface";
 import {genNotificationId} from "../../common/notificationUtils";
 import {AppNotificationType, useThrowErrorWithNotification} from "../store/notificationState";
 import {useDispatchItemSelectionSet} from "../store/itemSelectionState";
-import {GroupDTO, ItemDTO} from "../../../../common/events/dtoModels";
-import {useDispatchSetItems} from "../store/itemsState";
+import {GroupDTO} from "../../../../common/events/dtoModels";
 import {useDispatchSetRootGroup} from "../store/collectionsState";
-import {useActiveCollection} from "../store/collectionActiveState";
-import {TEMP_ATTRIBUTE_IDS} from "./temp";
+import {useLoadItems} from "./itemsLoad";
 
 export function useDeleteItems() {
 
-	const activeCollectionId = useActiveCollection();
 	const dispatchSetRootGroup = useDispatchSetRootGroup();
-	const dispatchSetItems = useDispatchSetItems();
 	const dispatchSelectionSet = useDispatchItemSelectionSet();
 	const throwErrorNotification = useThrowErrorWithNotification();
+	const loadItems = useLoadItems();
 
 	function hookFunction(itemIds: number[]) {
 		deleteItems(itemIds)
@@ -36,9 +33,7 @@ export function useDeleteItems() {
 
 
 	function updateItemState() {
-		return fetchItems(activeCollectionId, TEMP_ATTRIBUTE_IDS, true, false)
-			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_FETCH_FAILED, error))
-			.then((items: ItemDTO[]) => dispatchSetItems(items));
+		return loadItems();
 	}
 
 

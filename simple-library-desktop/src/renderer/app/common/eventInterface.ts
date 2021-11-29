@@ -60,13 +60,11 @@ export function fetchRootGroup(): Promise<GroupDTO> {
 
 export function fetchItems(
     collectionId: number,
-    itemAttributeIds: number[],
     includeMissingAttribs: boolean,
     includeHiddenAttribs: boolean
 ): Promise<ItemDTO[]> {
     return eventBroadcaster.send(EventIds.GET_ITEMS_BY_COLLECTION, {
         collectionId: collectionId,
-        itemAttributeIds: itemAttributeIds,
         includeMissingAttributes: includeMissingAttribs,
         includeHiddenAttribs: includeHiddenAttribs
     });
@@ -249,4 +247,13 @@ export function fetchDefaultAttributeValues(): Promise<DefaultAttributeValueEntr
 
 export function requestSetDefaultAttributeValues(entries: DefaultAttributeValueEntryDTO[]): Promise<void> {
     return eventBroadcaster.send(EventIds.SET_DEFAULT_ATTRIBUTE_VALUES, entries);
+}
+
+
+export function fetchItemListAttributes(): Promise<AttributeMetaDTO[]> {
+    return eventBroadcaster.send(EventIds.GET_ITEM_LIST_ATTRIBUTES);
+}
+
+export function requestSetItemListAttributes(entries: number[]): Promise<void> {
+    return eventBroadcaster.send(EventIds.SET_ITEM_LIST_ATTRIBUTES, entries);
 }

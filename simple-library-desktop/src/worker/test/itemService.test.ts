@@ -29,6 +29,7 @@ import {SQLiteDataRepository} from "../persistence/sqliteRepository";
 import {DataRepository} from "../service/dataRepository";
 import {ActionDeleteItemAttribute} from "../service/item/actionDeleteItemAttribute";
 import {ActionGetHiddenAttributes} from "../service/library/actionGetHiddenAttributes";
+import {ActionGetItemListAttributes} from "../service/library/actionGetItemListAttributes";
 
 describe("item-service", () => {
 
@@ -37,7 +38,7 @@ describe("item-service", () => {
 		test("get by normal collection without attributes", async () => {
 			// given
 			const [actionCreateLibrary, repository, dbAccess] = mockItemService();
-			const actionGetByCollection = new ActionGetItemsByCollection(repository, new ActionGetCollectionById(repository), new ActionGetHiddenAttributes(repository));
+			const actionGetByCollection = new ActionGetItemsByCollection(repository, new ActionGetCollectionById(repository), new ActionGetHiddenAttributes(repository), new ActionGetItemListAttributes(repository));
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -58,7 +59,7 @@ describe("item-service", () => {
 				])
 			]);
 			// when
-			const result: Promise<Item[]> = actionGetByCollection.perform(1, [], false, true);
+			const result: Promise<Item[]> = actionGetByCollection.perform(1, false, true);
 			// then
 			await expect(result).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, []),
@@ -71,7 +72,7 @@ describe("item-service", () => {
 		test("get by normal collection", async () => {
 			// given
 			const [actionCreateLibrary, repository, dbAccess] = mockItemService();
-			const actionGetByCollection = new ActionGetItemsByCollection(repository, new ActionGetCollectionById(repository), new ActionGetHiddenAttributes(repository));
+			const actionGetByCollection = new ActionGetItemsByCollection(repository, new ActionGetCollectionById(repository), new ActionGetHiddenAttributes(repository), new ActionGetItemListAttributes(repository));
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -89,18 +90,19 @@ describe("item-service", () => {
 				SQL.insertItemAttributes(2, [
 					attFileModifyDate("2021:10:11 21:00:12+02:00", false),
 					attFileExtension("jpg", false)
-				])
+				]),
+				SQL.insertItemListAttributes([ATT_ID_FILE_MODIFY_DATE, ATT_ID_MIME_TYPE])
 			]);
 			// when
-			const result: Promise<Item[]> = actionGetByCollection.perform(1, [ATT_ID_FILE_MODIFY_DATE, ATT_ID_MIME_TYPE], false, true);
+			const result: Promise<Item[]> = actionGetByCollection.perform(1, false, true);
 			// then
 			await expect(result).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, [
-					attribute(ATT_ID_FILE_MODIFY_DATE, keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "_text", true, false),
-					attribute(ATT_ID_MIME_TYPE, keyMIMEType(), "image/jpeg", "_text", false, true)
+					attribute(ATT_ID_FILE_MODIFY_DATE, keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "_text", true, false, 0),
+					attribute(ATT_ID_MIME_TYPE, keyMIMEType(), "image/jpeg", "_text", false, true, 1)
 				]),
 				item(2, "/path/to/file/2", "thumbnail2", "hash2", 1001, [
-					attribute(ATT_ID_FILE_MODIFY_DATE, keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "_text", true, false)
+					attribute(ATT_ID_FILE_MODIFY_DATE, keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "_text", true, false, 0)
 				]),
 				item(3, "/path/to/file/3", "thumbnail3", "hash3", 1002)
 			]);
@@ -110,7 +112,7 @@ describe("item-service", () => {
 		test("get by normal collection include missing", async () => {
 			// given
 			const [actionCreateLibrary, repository, dbAccess] = mockItemService();
-			const actionGetByCollection = new ActionGetItemsByCollection(repository, new ActionGetCollectionById(repository), new ActionGetHiddenAttributes(repository));
+			const actionGetByCollection = new ActionGetItemsByCollection(repository, new ActionGetCollectionById(repository), new ActionGetHiddenAttributes(repository), new ActionGetItemListAttributes(repository));
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -128,23 +130,24 @@ describe("item-service", () => {
 				SQL.insertItemAttributes(2, [
 					attFileModifyDate("2021:10:11 21:00:12+02:00", false),
 					attFileExtension("jpg", false)
-				])
+				]),
+				SQL.insertItemListAttributes([ATT_ID_FILE_MODIFY_DATE, ATT_ID_MIME_TYPE])
 			]);
 			// when
-			const result: Promise<Item[]> = actionGetByCollection.perform(1, [ATT_ID_FILE_MODIFY_DATE, ATT_ID_MIME_TYPE], true, true);
+			const result: Promise<Item[]> = actionGetByCollection.perform(1, true, true);
 			// then
 			await expect(result).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, [
-					attribute(ATT_ID_FILE_MODIFY_DATE, keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "_text", true, false),
-					attribute(ATT_ID_MIME_TYPE, keyMIMEType(), "image/jpeg", "_text", false, true)
+					attribute(ATT_ID_FILE_MODIFY_DATE, keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "_text", true, false, 0),
+					attribute(ATT_ID_MIME_TYPE, keyMIMEType(), "image/jpeg", "_text", false, true, 1)
 				]),
 				item(2, "/path/to/file/2", "thumbnail2", "hash2", 1001, [
-					attribute(ATT_ID_FILE_MODIFY_DATE, keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "_text", true, false),
-					attribute(ATT_ID_MIME_TYPE, keyMIMEType(), null, "_unknown", false, false)
+					attribute(ATT_ID_FILE_MODIFY_DATE, keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "_text", true, false, 0),
+					attribute(ATT_ID_MIME_TYPE, keyMIMEType(), null, "_unknown", false, false, 1)
 				]),
 				item(3, "/path/to/file/3", "thumbnail3", "hash3", 1002, [
-					attribute(ATT_ID_FILE_MODIFY_DATE, keyFileModifyDate(), null, "_unknown", true, false),
-					attribute(ATT_ID_MIME_TYPE, keyMIMEType(), null, "_unknown", false, false)
+					attribute(ATT_ID_FILE_MODIFY_DATE, keyFileModifyDate(), null, "_unknown", true, false, 0),
+					attribute(ATT_ID_MIME_TYPE, keyMIMEType(), null, "_unknown", false, false, 1)
 				])
 			]);
 		});
@@ -152,7 +155,7 @@ describe("item-service", () => {
 		test("get by smart collection", async () => {
 			// given
 			const [actionCreateLibrary, repository, dbAccess] = mockItemService();
-			const actionGetByCollection = new ActionGetItemsByCollection(repository, new ActionGetCollectionById(repository), new ActionGetHiddenAttributes(repository));
+			const actionGetByCollection = new ActionGetItemsByCollection(repository, new ActionGetCollectionById(repository), new ActionGetHiddenAttributes(repository), new ActionGetItemListAttributes(repository));
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -170,18 +173,19 @@ describe("item-service", () => {
 				SQL.insertItemAttributes(2, [
 					attFileModifyDate("2021:10:11 21:00:12+02:00", false),
 					attFileExtension("jpg", false)
-				])
+				]),
+				SQL.insertItemListAttributes([ATT_ID_FILE_MODIFY_DATE, ATT_ID_MIME_TYPE])
 			]);
 			// when
-			const result: Promise<Item[]> = actionGetByCollection.perform(2, [ATT_ID_FILE_MODIFY_DATE, ATT_ID_MIME_TYPE], false, true);
+			const result: Promise<Item[]> = actionGetByCollection.perform(2, false, true);
 			// then
 			await expect(result).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, [
-					attribute(ATT_ID_FILE_MODIFY_DATE, keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "_text", true, false),
-					attribute(ATT_ID_MIME_TYPE, keyMIMEType(), "image/jpeg", "_text", false, true)
+					attribute(ATT_ID_FILE_MODIFY_DATE, keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "_text", true, false, 0),
+					attribute(ATT_ID_MIME_TYPE, keyMIMEType(), "image/jpeg", "_text", false, true, 1)
 				]),
 				item(2, "/path/to/file/2", "thumbnail2", "hash2", 1001, [
-					attribute(ATT_ID_FILE_MODIFY_DATE, keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "_text", true, false)
+					attribute(ATT_ID_FILE_MODIFY_DATE, keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "_text", true, false, 0)
 				])
 			]);
 		});
@@ -190,7 +194,7 @@ describe("item-service", () => {
 		test("get by smart collection with empty query", async () => {
 			// given
 			const [actionCreateLibrary, repository, dbAccess] = mockItemService();
-			const actionGetByCollection = new ActionGetItemsByCollection(repository, new ActionGetCollectionById(repository), new ActionGetHiddenAttributes(repository));
+			const actionGetByCollection = new ActionGetItemsByCollection(repository, new ActionGetCollectionById(repository), new ActionGetHiddenAttributes(repository), new ActionGetItemListAttributes(repository));
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -208,18 +212,19 @@ describe("item-service", () => {
 				SQL.insertItemAttributes(2, [
 					attFileModifyDate("2021:10:11 21:00:12+02:00", false),
 					attFileExtension("jpg", false)
-				])
+				]),
+				SQL.insertItemListAttributes([ATT_ID_FILE_MODIFY_DATE, ATT_ID_MIME_TYPE])
 			]);
 			// when
-			const result: Promise<Item[]> = actionGetByCollection.perform(2, [ATT_ID_FILE_MODIFY_DATE, ATT_ID_MIME_TYPE], false, true);
+			const result: Promise<Item[]> = actionGetByCollection.perform(2, false, true);
 			// then
 			await expect(result).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, [
-					attribute(ATT_ID_FILE_MODIFY_DATE, keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "_text", true, false),
-					attribute(ATT_ID_MIME_TYPE, keyMIMEType(), "image/jpeg", "_text", false, true)
+					attribute(ATT_ID_FILE_MODIFY_DATE, keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "_text", true, false, 0),
+					attribute(ATT_ID_MIME_TYPE, keyMIMEType(), "image/jpeg", "_text", false, true, 1)
 				]),
 				item(2, "/path/to/file/2", "thumbnail2", "hash2", 1001, [
-					attribute(ATT_ID_FILE_MODIFY_DATE, keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "_text", true, false)
+					attribute(ATT_ID_FILE_MODIFY_DATE, keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "_text", true, false, 0)
 				]),
 				item(3, "/path/to/file/3", "thumbnail3", "hash3", 1002, []),
 				item(4, "/path/to/file/4", "thumbnail4", "hash4", 1003, [])
@@ -230,7 +235,7 @@ describe("item-service", () => {
 		test("get by non-existing collection", async () => {
 			// given
 			const [actionCreateLibrary, repository, dbAccess] = mockItemService();
-			const actionGetByCollection = new ActionGetItemsByCollection(repository, new ActionGetCollectionById(repository), new ActionGetHiddenAttributes(repository));
+			const actionGetByCollection = new ActionGetItemsByCollection(repository, new ActionGetCollectionById(repository), new ActionGetHiddenAttributes(repository), new ActionGetItemListAttributes(repository));
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 			await dbAccess.runMultipleSeq([
 				SQL.insertCollection("Collection 1", "normal", null, null),
@@ -248,10 +253,11 @@ describe("item-service", () => {
 				SQL.insertItemAttributes(2, [
 					attFileAccessDate("2021:10:11 21:00:12+02:00", false),
 					attFileExtension("jpg", false)
-				])
+				]),
+				SQL.insertItemListAttributes([ATT_ID_FILE_ACCESS_DATE, ATT_ID_MIME_TYPE])
 			]);
 			// when
-			const result: Promise<Item[]> = actionGetByCollection.perform(42, [ATT_ID_FILE_ACCESS_DATE, ATT_ID_MIME_TYPE], false, true);
+			const result: Promise<Item[]> = actionGetByCollection.perform(42, false, true);
 			// then
 			await expect(result).rejects.toBeDefined();
 		});
@@ -689,15 +695,27 @@ function item(id: number, path: string, thumbnail: string, hash: string, timesta
 }
 
 
-function attribute(attId: number, key: [string, string, string, string, string], value: any, type: string, writable: boolean, modified: boolean): Attribute {
-	return {
-		attId: attId,
-		key: attributeKeyFromArray(key),
-		value: value,
-		type: type,
-		modified: modified,
-		writable: writable
-	};
+function attribute(attId: number, key: [string, string, string, string, string], value: any, type: string, writable: boolean, modified: boolean, orderIndex?: number): Attribute {
+	if(orderIndex !== undefined) {
+		return {
+			attId: attId,
+			key: attributeKeyFromArray(key),
+			value: value,
+			type: type,
+			modified: modified,
+			writable: writable,
+			orderIndex: orderIndex
+		};
+	} else {
+		return {
+			attId: attId,
+			key: attributeKeyFromArray(key),
+			value: value,
+			type: type,
+			modified: modified,
+			writable: writable
+		};
+	}
 }
 
 function keyFileAccessDate(): [string, string, string, string, string] {
