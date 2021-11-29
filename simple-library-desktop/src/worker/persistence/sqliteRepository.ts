@@ -117,6 +117,20 @@ export class SQLiteDataRepository implements DataRepository {
             .then(voidThen);
     }
 
+    getDefaultAttributeValues(): QueryResultMany {
+        return this.dbAccess.queryAll(SQL.queryDefaultAttributeValues());
+    }
+
+    insertDefaultAttributeValues(defaultValues: ({ attId: number, value: string, allowOverwrite: boolean })[]): VoidResult {
+        return this.dbAccess.run(SQL.insertDefaultAttributeValues(defaultValues))
+            .then(voidThen);
+    }
+
+    deleteAllDefaultAttributeValues(): VoidResult {
+        return this.dbAccess.run(SQL.deleteDefaultAttributeValues())
+            .then(voidThen);
+    }
+
     getAllExtendedItemAttributesNotHidden(onlyModified: boolean): QueryResultMany {
         return this.dbAccess.queryAll(SQL.queryExtendedItemAttributesAll(onlyModified));
     }

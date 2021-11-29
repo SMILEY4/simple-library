@@ -1,9 +1,14 @@
 import {useOpenConfigFile} from "../../../../hooks/core/configFileOpen";
 import {useApplicationConfig} from "../../../../hooks/core/configApplication";
 import {useEffect, useState} from "react";
-import {ApplicationConfigDTO, AttributeMetaDTO} from "../../../../../../common/events/dtoModels";
+import {
+	ApplicationConfigDTO,
+	AttributeMetaDTO,
+	DefaultAttributeValueEntryDTO
+} from "../../../../../../common/events/dtoModels";
 import {useHideAttributes} from "../../../../hooks/core/hiddenAttributes";
 import {ArrayUtils} from "../../../../../../common/arrayUtils";
+import {useDefaultAttributeValues} from "../../../../hooks/core/defaultAttributeValues";
 
 export enum SettingsDialogTab {
 	APP,
@@ -13,15 +18,90 @@ export enum SettingsDialogTab {
 export function useDialogSettings(onClose: () => void) {
 
 	const [currentTab, setCurrentTab] = useState(SettingsDialogTab.APP);
-	const [hiddenAttributes, setHiddenAttributes] = useState<AttributeMetaDTO[]>([]);
 
 	const openConfigFile = useOpenConfigFile();
+
 	const {
 		config,
-		setAppConfig,
+		setAppConfig
+	} = useApplicationSettingsDialog();
+
+	const {
+		hiddenAttributes,
+		hideAttribute,
+		showAttribute,
+		discardHiddenAttributes,
+		commitHiddenAttributes
+	} = useHiddenAttributeSettingsDialog();
+
+	const {
+		defaultAttributeValueEntries,
+		setDefaultAttributeValue,
+		deleteDefaultAttributeValue,
+		discardDefaultAttributeValues,
+		commitDefaultAttributeValues
+	} = useDefaultAttributeValuesSettingsDialog();
+
+	const {
 		commitAppConfig,
 		discardAppConfig
 	} = useApplicationConfig();
+
+	function handleCancel() {
+		discardAppConfig()
+			.then(() => discardHiddenAttributes())
+			.then(() => discardDefaultAttributeValues())
+			.then(() => onClose());
+	}
+
+	function handleSave() {
+		commitAppConfig()
+			.then(() => commitHiddenAttributes())
+			.then(() => commitDefaultAttributeValues())
+			.then(() => onClose());
+	}
+
+	return {
+		currentTab: currentTab,
+		setCurrentTab: setCurrentTab,
+		handleCancel: handleCancel,
+		handleSave: handleSave,
+		handleOpenConfigFile: openConfigFile,
+		appConfig: config,
+		setAppConfig: setAppConfig,
+		hiddenAttributes: hiddenAttributes,
+		hideAttribute: hideAttribute,
+		showAttribute: showAttribute,
+		defaultAttributeValues: defaultAttributeValueEntries,
+		setDefaultAttributeValue: setDefaultAttributeValue,
+		deleteDefaultAttributeValue: deleteDefaultAttributeValue
+	};
+}
+
+
+export function useApplicationSettingsDialog() {
+
+	const {
+		config,
+		setAppConfig
+	} = useApplicationConfig();
+
+	function handleSetAppConfig(config: ApplicationConfigDTO) {
+		setAppConfig(config);
+	}
+
+	return {
+		config: config,
+		setAppConfig: handleSetAppConfig
+	};
+
+}
+
+
+export function useHiddenAttributeSettingsDialog() {
+
+	const [hiddenAttributes, setHiddenAttributes] = useState<AttributeMetaDTO[]>([]);
+
 	const {
 		showAttributes,
 		hideAttributes,
@@ -32,37 +112,22 @@ export function useDialogSettings(onClose: () => void) {
 		getHiddenAttributes().then(setHiddenAttributes);
 	}, []);
 
-	function handleCancel() {
-		discardAppConfig()
-			.then(() => discardHiddenAttributes())
-			.then(() => onClose());
-	}
 
-	function handleSave() {
-		commitAppConfig()
-			.then(() => commitHiddenAttributes())
-			.then(() => onClose());
-	}
-
-	function handleSetAppConfig(config: ApplicationConfigDTO) {
-		setAppConfig(config);
-	}
-
-	function handleHideAttribute(attribute: AttributeMetaDTO) {
+	function hide(attribute: AttributeMetaDTO) {
 		const attribs = [...hiddenAttributes.filter(a => a.attId !== attribute.attId), attribute];
 		setHiddenAttributes(attribs.sort((a, b) => a.key.name.localeCompare(b.key.name)));
 	}
 
-	function handleShowAttribute(attribute: AttributeMetaDTO) {
+	function show(attribute: AttributeMetaDTO) {
 		const attribs = hiddenAttributes.filter(a => a.attId !== attribute.attId);
 		setHiddenAttributes(attribs);
 	}
 
-	function discardHiddenAttributes(): Promise<any> {
+	function discard(): Promise<any> {
 		return getHiddenAttributes().then(setHiddenAttributes);
 	}
 
-	async function commitHiddenAttributes(): Promise<any> {
+	async function commit(): Promise<any> {
 		const currIds = (await getHiddenAttributes()).map(a => a.attId);
 		const newIds = hiddenAttributes.map(a => a.attId);
 
@@ -84,17 +149,59 @@ export function useDialogSettings(onClose: () => void) {
 	}
 
 	return {
-		currentTab: currentTab,
-		setCurrentTab: setCurrentTab,
-		handleCancel: handleCancel,
-		handleSave: handleSave,
-		handleOpenConfigFile: openConfigFile,
-		appConfig: config,
-		setAppConfig: handleSetAppConfig,
 		hiddenAttributes: hiddenAttributes,
-		hideAttribute: handleHideAttribute,
-		showAttribute: handleShowAttribute
+		hideAttribute: hide,
+		showAttribute: show,
+		discardHiddenAttributes: discard,
+		commitHiddenAttributes: commit
 	};
 
+}
+
+
+export function useDefaultAttributeValuesSettingsDialog() {
+
+	const [entries, setEntries] = useState<DefaultAttributeValueEntryDTO[]>([]);
+
+	const {
+		getDefaultAttributeValues,
+		setDefaultAttributeValues
+	} = useDefaultAttributeValues();
+
+
+	useEffect(() => {
+		getDefaultAttributeValues().then(setEntries);
+	}, []);
+
+
+	function setEntry(entry: DefaultAttributeValueEntryDTO) {
+		if (ArrayUtils.contains(entries, entry, (a, b) => a.attributeMeta.attId === b.attributeMeta.attId)) {
+			setEntries(entries.map(e => e.attributeMeta.attId === entry.attributeMeta.attId ? entry : e));
+		} else {
+			setEntries([...entries, entry].sort((a, b) => a.attributeMeta.key.name.localeCompare(b.attributeMeta.key.name)));
+		}
+	}
+
+	function deleteEntry(attId: number) {
+		setEntries(entries.filter(e => e.attributeMeta.attId !== attId));
+	}
+
+	function discard(): Promise<any> {
+		return getDefaultAttributeValues().then(setEntries);
+	}
+
+	async function commit(): Promise<any> {
+		return setDefaultAttributeValues(entries);
+	}
+
+	return {
+		defaultAttributeValueEntries: entries,
+		setDefaultAttributeValue: setEntry,
+		deleteDefaultAttributeValue: deleteEntry,
+		discardDefaultAttributeValues: discard,
+		commitDefaultAttributeValues: commit
+	};
 
 }
+
+

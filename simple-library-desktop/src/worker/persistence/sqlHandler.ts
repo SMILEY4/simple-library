@@ -59,6 +59,9 @@ import sqlDeleteHiddenAttribute from "./sqlscripts/item_attributes/delete_hidden
 import sqlQueryItemAttributesNoHidden from "./sqlscripts/items/query_item_attributes_no_hidden.sql";
 import sqlQueryAttributeMetaByKeys from "./sqlscripts/item_attributes/query_item_attribute_meta_by_keys.sql";
 
+import sqlDeleteDefaultAttributeValues from "./sqlscripts/item_attributes/delete_default_attribute_values.sql";
+import sqlInsertDefaultAttributeValues from "./sqlscripts/item_attributes/insert_default_attribute_values.sql";
+import sqlQueryDefaultAttributeValues from "./sqlscripts/item_attributes/query_default_attribute_values.sql";
 
 export module SQL {
 
@@ -280,6 +283,20 @@ export module SQL {
 	export function deleteHiddenAttributes(attributeId: number): string {
 		return sql(sqlDeleteHiddenAttribute)
 			.replace(v("attId"), num(attributeId));
+	}
+
+	export function queryDefaultAttributeValues(): string {
+		return sql(sqlQueryDefaultAttributeValues);
+	}
+
+	export function insertDefaultAttributeValues(defaultValues: ({ attId: number, value: string, allowOverwrite: boolean })[]): string {
+		const entries: string[] = defaultValues.map(e => `(${num(e.attId)}, ${str(e.value)}, ${bool(e.allowOverwrite)})`);
+		return sql(sqlInsertDefaultAttributeValues)
+			.replace(v("entries"), entries.join(", "));
+	}
+
+	export function deleteDefaultAttributeValues(): string {
+		return sql(sqlDeleteDefaultAttributeValues);
 	}
 
 	export function queryItemAttributes(itemId: number, includeHidden: boolean): string {

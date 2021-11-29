@@ -58,6 +58,9 @@ import {ActionSetHiddenAttributes} from "./service/library/actionSetHiddenAttrib
 import {ActionGetHiddenAttributes} from "./service/library/actionGetHiddenAttributes";
 import {ActionGetLibraryAttributeMetaByKeys} from "./service/library/actionGetLibraryAttributeMetaByKeys";
 import {ImportDbWriter} from "./service/import/importDbWriter";
+import {ActionGetDefaultAttributeValues} from "./service/library/actionGetDefaultAttributeValues";
+import {ActionSetDefaultAttributeValues} from "./service/library/actionSetDefaultAttributeValues";
+import {ImportStepWriteDefaultValues} from "./service/import/importStepWriteDefaultValues";
 
 export class ActionHandler {
 
@@ -105,6 +108,8 @@ export class ActionHandler {
 
 		const actionSetHiddenAttributes = new ActionSetHiddenAttributes(dataRepository);
 		const actionGetHiddenAttributes = new ActionGetHiddenAttributes(dataRepository);
+		const actionGetDefaultAttributeValues = new ActionGetDefaultAttributeValues(dataRepository);
+		const actionSetDefaultAttributeValues = new ActionSetDefaultAttributeValues(dataRepository);
 
 		const actionGetLibraryAttributeMetaAll = new ActionGetLibraryAttributeMeta(dataRepository);
 		const actionGetLibraryAttributeMetaByKeys = new ActionGetLibraryAttributeMetaByKeys(dataRepository);
@@ -146,11 +151,12 @@ export class ActionHandler {
 			new ImportDataValidator(fsWrapper),
 			new ImportStepFileHash(fsWrapper),
 			new ImportStepThumbnail(),
+			new ImportStepWriteDefaultValues(actionGetDefaultAttributeValues, actionGetExiftoolInfo),
 			new ImportStepTargetFilepath(),
 			new ImportStepImportTarget(fsWrapper),
 			new ImportStepMetadata(new ActionReadItemAttributesFromFile(actionGetExiftoolInfo)),
 			new ImportDbWriter(dataRepository, actionGetLibraryAttributeMetaByKeys),
-			(status: any) => this.send(EventIds.IMPORT_STATUS, status),
+			(status: any) => this.send(EventIds.IMPORT_STATUS, status)
 		);
 
 		this.eventHandler.on(EventIds.GET_APP_CONFIG, () => actionGetAppConfig.perform());
@@ -176,6 +182,8 @@ export class ActionHandler {
 		this.eventHandler.on(EventIds.GET_LIBRARY_ATTRIBUTE_META_BY_KEYS, (keys) => actionGetLibraryAttributeMetaByKeys.perform(keys));
 		this.eventHandler.on(EventIds.SET_HIDDEN_ATTRIBUTES, (payload) => actionSetHiddenAttributes.perform(payload.attributeIds, payload.mode));
 		this.eventHandler.on(EventIds.GET_HIDDEN_ATTRIBUTES, () => actionGetHiddenAttributes.perform());
+		this.eventHandler.on(EventIds.SET_DEFAULT_ATTRIBUTE_VALUES, (entries) => actionSetDefaultAttributeValues.perform(entries));
+		this.eventHandler.on(EventIds.GET_DEFAULT_ATTRIBUTE_VALUES, () => actionGetDefaultAttributeValues.perform());
 
 		this.eventHandler.on(EventIds.GET_GROUP_TREE, (payload) => actionGetGroupTree.perform(payload.includeCollections, payload.includeItemCount));
 		this.eventHandler.on(EventIds.CREATE_GROUP, (payload) => actionCreateGroup.perform(payload.name, payload.parentGroupId));

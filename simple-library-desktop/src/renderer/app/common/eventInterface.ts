@@ -2,7 +2,7 @@ import {
     ApplicationConfigDTO,
     AttributeDTO, AttributeKeyDTO,
     AttributeMetaDTO,
-    CollectionTypeDTO,
+    CollectionTypeDTO, DefaultAttributeValueEntryDTO,
     EmbedReportDTO,
     EmbedStatusDTO,
     ExiftoolInfoDTO,
@@ -241,4 +241,12 @@ export function requestSetHiddenAttributes(attributeIds: number[], mode: "hide" 
         attributeIds: attributeIds,
         mode: mode
     });
+}
+
+export function fetchDefaultAttributeValues(): Promise<DefaultAttributeValueEntryDTO[]> {
+    return eventBroadcaster.send(EventIds.GET_DEFAULT_ATTRIBUTE_VALUES);
+}
+
+export function requestSetDefaultAttributeValues(entries: DefaultAttributeValueEntryDTO[]): Promise<void> {
+    return eventBroadcaster.send(EventIds.SET_DEFAULT_ATTRIBUTE_VALUES, entries);
 }

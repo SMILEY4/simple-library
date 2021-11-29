@@ -151,3 +151,9 @@ export interface AttributeMetaDTO {
 	type: string,
 	writable: boolean,
 }
+
+export interface DefaultAttributeValueEntryDTO {
+	attributeMeta: AttributeMetaDTO,
+	defaultValue: string,
+	allowOverwrite: boolean
+}

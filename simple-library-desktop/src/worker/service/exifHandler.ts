@@ -4,8 +4,9 @@ const exiftool = require("node-exiftool");
 
 export class ExifHandler {
 
-	private readonly EXIFTOOL_OPTIONS_WRITE = ["overwrite_original"];
-	private readonly EXIFTOOL_OPTIONS_READ = ["G0:1:2", "D", "d %Y-%m-%dT%H:%M:%S"];
+	private readonly EXIFTOOL_OPTIONS_WRITE: string[] = ["overwrite_original"];
+	private readonly EXIFTOOL_OPTIONS_WRITE_NO_OVERWRITE: string[] = [];
+	private readonly EXIFTOOL_OPTIONS_READ: string[] = ["G0:1:2", "D", "d %Y-%m-%dT%H:%M:%S"];
 
 	exiftoolProcess: any;
 
@@ -32,13 +33,14 @@ export class ExifHandler {
 	}
 
 
-	public writeMetadata(filepath: string, metadata: object): Promise<undefined | string> {
+	public writeMetadata(filepath: string, metadata: object, preventOverwrite?: boolean): Promise<undefined | string> {
+		const options = preventOverwrite === true ? this.EXIFTOOL_OPTIONS_WRITE_NO_OVERWRITE : this.EXIFTOOL_OPTIONS_WRITE;
 		return this.exiftoolProcess
 			.open()
-			.then(() => this.exiftoolProcess.writeMetadata(filepath, {...metadata}, this.EXIFTOOL_OPTIONS_WRITE, false))
+			.then(() => this.exiftoolProcess.writeMetadata(filepath, {...metadata}, options, false))
 			.then((res: any) => {
 				if (res && res.error) {
-					console.log("exiftool write result:", res.error);
+					console.log("exiftool write result (preventOverwrite="+preventOverwrite+"):", JSON.stringify(res.error));
 					return res.error;
 				} else {
 					return undefined;
