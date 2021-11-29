@@ -10,6 +10,7 @@ import {useHideAttributes} from "../../../../hooks/core/hiddenAttributes";
 import {ArrayUtils} from "../../../../../../common/arrayUtils";
 import {useDefaultAttributeValues} from "../../../../hooks/core/defaultAttributeValues";
 import {fetchItemListAttributes, requestSetItemListAttributes} from "../../../../common/eventInterface";
+import {useLoadItems} from "../../../../hooks/core/itemsLoad";
 
 export enum SettingsDialogTab {
 	APP,
@@ -231,6 +232,7 @@ export function useDefaultAttributeValuesSettingsDialog() {
 export function useListAppearanceSettingsDialog() {
 
 	const [entries, setEntries] = useState<AttributeMetaDTO[]>([]);
+	const loadItems = useLoadItems();
 
 	useEffect(() => {
 		fetchItemListAttributes().then(setEntries);
@@ -267,7 +269,8 @@ export function useListAppearanceSettingsDialog() {
 	}
 
 	function commit() {
-		return requestSetItemListAttributes(entries.map(e => e.attId));
+		return requestSetItemListAttributes(entries.map(e => e.attId))
+			.then(() => loadItems());
 	}
 
 	return {

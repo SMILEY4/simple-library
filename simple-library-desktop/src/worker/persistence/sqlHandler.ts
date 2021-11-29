@@ -61,9 +61,9 @@ import sqlQueryAttributeMetaByKeys from "./sqlscripts/item_attributes/query_item
 import sqlDeleteDefaultAttributeValues from "./sqlscripts/item_attributes/delete_default_attribute_values.sql";
 import sqlInsertDefaultAttributeValues from "./sqlscripts/item_attributes/insert_default_attribute_values.sql";
 import sqlQueryDefaultAttributeValues from "./sqlscripts/item_attributes/query_default_attribute_values.sql";
-import sqlQueryItemListAttributes from "./sqlscripts/item_attributes/query_item_list_attributes.sql"
-import sqlInsertItemListAttributes from "./sqlscripts/item_attributes/insert_item_list_attributes.sql"
-import sqlDeleteItemListAttributes from "./sqlscripts/item_attributes/delete_item_list_attributes.sql"
+import sqlQueryItemListAttributes from "./sqlscripts/item_attributes/query_item_list_attributes.sql";
+import sqlInsertItemListAttributes from "./sqlscripts/item_attributes/insert_item_list_attributes.sql";
+import sqlDeleteItemListAttributes from "./sqlscripts/item_attributes/delete_item_list_attributes.sql";
 
 export module SQL {
 
@@ -308,7 +308,7 @@ export module SQL {
 
 	export function insertItemListAttributes(attributeIds: number[]): string {
 		return sql(sqlInsertItemListAttributes)
-			.replace(v("attributeIds"), attributeIds.map(e => "(" + e + ")").join(","));
+			.replace(v("attributeIds"), attributeIds.map((e, i) => "(" + e + "," + i + ")").join(","));
 	}
 
 	export function deleteAllItemListAttributes(): string {

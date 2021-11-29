@@ -1,1 +1,0 @@
-export const TEMP_ATTRIBUTE_IDS: number[] = [7169, 7161, 7174]; // TODO: replace / load from backend

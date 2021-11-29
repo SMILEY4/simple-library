@@ -1,18 +1,17 @@
-import {fetchItems, fetchRootGroup, requestMoveItems} from "../../common/eventInterface";
+import {fetchRootGroup, requestMoveItems} from "../../common/eventInterface";
 import {genNotificationId} from "../../common/notificationUtils";
 import {AppNotificationType, useThrowErrorWithNotification} from "../store/notificationState";
 import {useDispatchSetRootGroup} from "../store/collectionsState";
-import {GroupDTO, ItemDTO} from "../../../../common/events/dtoModels";
-import {useDispatchSetItems} from "../store/itemsState";
+import {GroupDTO} from "../../../../common/events/dtoModels";
 import {useActiveCollection} from "../store/collectionActiveState";
-import {TEMP_ATTRIBUTE_IDS} from "./temp";
+import {useLoadItems} from "./itemsLoad";
 
 export function useMoveItems() {
 
 	const activeCollectionId = useActiveCollection();
-	const dispatchSetItems = useDispatchSetItems();
 	const dispatchSetRootGroup = useDispatchSetRootGroup();
 	const throwErrorNotification = useThrowErrorWithNotification();
+	const loadItems = useLoadItems();
 
 	function hookFunction(itemIds: number[], srcCollectionId: number, tgtCollectionId: number, copy: boolean) {
 		Promise.resolve()
@@ -29,9 +28,7 @@ export function useMoveItems() {
 	}
 
 	function updateItemState(collectionId: number) {
-		return fetchItems(collectionId, TEMP_ATTRIBUTE_IDS, true, false)
-			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_FETCH_FAILED, error))
-			.then((items: ItemDTO[]) => dispatchSetItems(items));
+		return loadItems(collectionId);
 	}
 
 	function updateGroupState() {

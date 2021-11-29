@@ -37,6 +37,15 @@ CREATE TABLE hidden_attributes
 			ON DELETE CASCADE
 );
 
+CREATE TABLE item_list_attributes
+(
+	att_id    INTEGER PRIMARY KEY
+		CONSTRAINT fk_att_id
+			REFERENCES attribute_meta
+			ON DELETE CASCADE,
+	att_index INTEGER NOT NULL
+);
+
 CREATE TABLE default_attribute_values
 (
 	att_id         INTEGER PRIMARY KEY

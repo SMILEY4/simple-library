@@ -48,9 +48,7 @@ export function ItemListEntry(props: React.PropsWithChildren<ItemListEntryProps>
 				</div>
 
 				<VBox spacing="0-5" padding="0-75" alignMain="start" alignCross="stretch" fill>
-					{props.item.attributes
-						.sort((a, b) => a.key.name.toLowerCase().localeCompare(b.key.name.toLowerCase()))
-						.map((entry: AttributeDTO) => (
+					{props.item.attributes.map((entry: AttributeDTO) => (
 							<MetadataListEntry
 								key={entry.attId}
 								isEmpty={entry.type === "none" || entry.value === null || entry.value === undefined}

@@ -123,7 +123,7 @@ export class ActionHandler {
 		const actionDeleteItems = new ActionDeleteItems(dataRepository);
 		const actionGetItemById = new ActionGetItemById(dataRepository);
 		const actionGetItemAttributes = new ActionGetItemAttributes(dataRepository, actionGetItemById);
-		const actionGetItemsByCollection = new ActionGetItemsByCollection(dataRepository, actionGetCollectionById, actionGetHiddenAttributes);
+		const actionGetItemsByCollection = new ActionGetItemsByCollection(dataRepository, actionGetCollectionById, actionGetHiddenAttributes, actionGetItemListAttributes);
 		const actionOpenItemsExternal = new ActionOpenItemsExternal(dataRepository, fsWrapper);
 		const actionUpdateItemAttribute = new ActionUpdateItemAttribute(dataRepository);
 		const actionDeleteItemAttribute = new ActionDeleteItemAttribute(dataRepository);
@@ -207,7 +207,7 @@ export class ActionHandler {
 		this.eventHandler.on(EventIds.MOVE_ITEMS, (payload) => actionMoveItems.perform(payload.sourceCollectionId, payload.targetCollectionId, payload.itemIds, payload.copy));
 		this.eventHandler.on(EventIds.REMOVE_ITEMS, (payload) => actionRemoveItems.perform(payload.collectionId, payload.itemIds));
 
-		this.eventHandler.on(EventIds.GET_ITEMS_BY_COLLECTION, (payload) => actionGetItemsByCollection.perform(payload.collectionId, payload.itemAttributeIds, payload.includeMissingAttributes, payload.includeHiddenAttribs));
+		this.eventHandler.on(EventIds.GET_ITEMS_BY_COLLECTION, (payload) => actionGetItemsByCollection.perform(payload.collectionId, payload.includeMissingAttributes, payload.includeHiddenAttribs));
 		this.eventHandler.on(EventIds.GET_ITEM_BY_ID, (payload) => actionGetItemById.perform(payload));
 		this.eventHandler.on(EventIds.DELETE_ITEMS, (payload) => actionDeleteItems.perform(payload));
 		this.eventHandler.on(EventIds.OPEN_ITEMS, (payload) => actionOpenItemsExternal.perform(payload));

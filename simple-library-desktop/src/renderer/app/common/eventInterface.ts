@@ -60,13 +60,11 @@ export function fetchRootGroup(): Promise<GroupDTO> {
 
 export function fetchItems(
     collectionId: number,
-    itemAttributeIds: number[],
     includeMissingAttribs: boolean,
     includeHiddenAttribs: boolean
 ): Promise<ItemDTO[]> {
     return eventBroadcaster.send(EventIds.GET_ITEMS_BY_COLLECTION, {
         collectionId: collectionId,
-        itemAttributeIds: itemAttributeIds,
         includeMissingAttributes: includeMissingAttribs,
         includeHiddenAttribs: includeHiddenAttribs
     });
