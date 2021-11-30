@@ -1,11 +1,12 @@
 import {ActionGetCollectionById} from "../collection/actionGetCollectionById";
-import {Attribute, estimateSimpleTypeFromAttributeValue, Item, rowsToItems} from "./itemCommon";
+import {Attribute, estimateSimpleTypeFromAttributeValue, Item, ItemPage, rowsToItems} from "./itemCommon";
 import {Collection} from "../collection/collectionCommons";
 import {DataRepository} from "../dataRepository";
 import {ActionGetHiddenAttributes} from "../library/actionGetHiddenAttributes";
 import {ArrayUtils} from "../../../common/arrayUtils";
 import {AttributeMeta, rowsToAttributeMeta} from "../library/libraryCommons";
 import {ActionGetItemListAttributes} from "../library/actionGetItemListAttributes";
+import {voidThen} from "../../../common/utils";
 
 /**
  * Get all items of the given collection (with the requested attributes)
@@ -30,15 +31,24 @@ export class ActionGetItemsByCollection {
 	}
 
 
-	public async perform(collectionId: number, includeMissingAttributes: boolean, includeHiddenAttributes: boolean): Promise<Item[]> {
+	public async perform(collectionId: number, includeMissingAttributes: boolean, includeHiddenAttributes: boolean, pageIndex: number, pageSize: number): Promise<ItemPage> {
 		const itemListAttributeIds = (await this.actionGetItemListAttributes.perform()).map(a => a.attId);
 		const attributeIds: number[] = includeHiddenAttributes ? itemListAttributeIds : await this.filterAttributes(itemListAttributeIds);
-		return this.findCollection(collectionId)
-			.then(collection => this.getItemData(collection, attributeIds))
+		const collection = await this.findCollection(collectionId);
+		return Promise.resolve(collection)
+			.then(collection => this.getItemData(collection, attributeIds, pageIndex, pageSize))
 			.then(rowsToItems)
 			.then(items => includeMissingAttributes ? this.appendMissingAttributes(items, attributeIds) : items)
 			.then(items => this.estimateSimpleAttributeTypes(items))
-			.then(items => this.sortItemAttributes(items));
+			.then(items => this.sortItemAttributes(items))
+			.then(async items => {
+				return {
+					items: items,
+					pageIndex: pageIndex,
+					pageSize: pageSize,
+					totalCount: (await this.getTotalItemCount(collection))
+				};
+			});
 	}
 
 
@@ -57,12 +67,12 @@ export class ActionGetItemsByCollection {
 	}
 
 
-	private getItemData(collection: Collection, attributeIds: number[]): Promise<any[]> {
+	private getItemData(collection: Collection, attributeIds: number[], pageIndex: number, pageSize: number): Promise<any[]> {
 		switch (collection.type) {
 			case "normal":
-				return this.getItemDataFromNormal(collection, attributeIds);
+				return this.getItemDataFromNormal(collection, attributeIds, pageIndex, pageSize);
 			case "smart":
-				return this.getItemDataFromSmart(collection, attributeIds);
+				return this.getItemDataFromSmart(collection, attributeIds, pageIndex, pageSize);
 			default: {
 				throw "Unexpected collection type: " + collection.type;
 			}
@@ -70,16 +80,16 @@ export class ActionGetItemsByCollection {
 	}
 
 
-	private getItemDataFromNormal(collection: Collection, attributeIds: number[]): Promise<any[]> {
-		return this.repository.getItemsByCollection(collection.id, attributeIds);
+	private getItemDataFromNormal(collection: Collection, attributeIds: number[], pageIndex: number, pageSize: number): Promise<any[]> {
+		return this.repository.getItemsByCollection(collection.id, attributeIds, pageIndex, pageSize);
 	}
 
 
-	private getItemDataFromSmart(collection: Collection, attributeIds: number[]): Promise<any[]> {
+	private getItemDataFromSmart(collection: Collection, attributeIds: number[], pageIndex: number, pageSize: number): Promise<any[]> {
 		const fetchWithQuery = collection.smartQuery && collection.smartQuery.length > 0;
 		return fetchWithQuery
-			? this.repository.getItemsByCustomQuery(collection.smartQuery, attributeIds)
-			: this.repository.getItemsAll(attributeIds);
+			? this.repository.getItemsByCustomQuery(collection.smartQuery, attributeIds, pageIndex, pageSize)
+			: this.repository.getItemsAll(attributeIds, pageIndex, pageSize);
 	}
 
 
@@ -131,9 +141,24 @@ export class ActionGetItemsByCollection {
 
 	private sortItemAttributes(items: Item[]): Promise<Item[]> {
 		items.forEach(item => {
-			item.attributes.sort((a,b) => a.orderIndex - b.orderIndex)
+			item.attributes.sort((a, b) => a.orderIndex - b.orderIndex);
 		});
 		return Promise.resolve(items);
+	}
+
+
+	private getTotalItemCount(collection: Collection): Promise<number> {
+		switch (collection.type) {
+			case "normal":
+				return this.repository.getItemCountByNormalCollection(collection.id).then(row => row.count);
+			case "smart":
+				return collection.smartQuery && collection.smartQuery.length > 0
+					? this.repository.getItemCountByCustomQuery(collection.smartQuery).then(row => row.count)
+					: this.repository.getItemCountTotal().then(row => row.count);
+			default: {
+				throw "Unexpected collection type: " + collection.type;
+			}
+		}
 	}
 
 }

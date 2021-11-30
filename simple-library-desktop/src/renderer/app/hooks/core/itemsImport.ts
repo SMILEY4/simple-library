@@ -62,7 +62,7 @@ export function useImportItems() {
 
 	function updateItemState() {
 		if (activeCollectionId) {
-			return loadItems();
+			return loadItems({});
 		} else {
 			return Promise.resolve();
 		}

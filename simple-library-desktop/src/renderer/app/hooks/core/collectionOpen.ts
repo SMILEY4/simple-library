@@ -19,7 +19,7 @@ export function useOpenCollection() {
 	}
 
 	function loadItemState(collectionId: number) {
-		loadItems(collectionId).then();
+		loadItems({collectionId: collectionId}).then();
 	}
 
 	return hookFunction;

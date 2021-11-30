@@ -9,16 +9,25 @@ import {useOpenItemsExternal} from "../../../hooks/core/itemsOpenExternal";
 import {useRemoveItems} from "../../../hooks/core/itemsRemove";
 import {useUpdateAttribute} from "../../../hooks/core/attributeUpdate";
 import {useActiveCollection} from "../../../hooks/store/collectionActiveState";
-import {useGetItemIds, useItems} from "../../../hooks/store/itemsState";
+import {useGetItemIds, useItemPage, useItems} from "../../../hooks/store/itemsState";
 import {useIsItemSelected, useSelectedItemIds} from "../../../hooks/store/itemSelectionState";
 import {AttributeValueDTO} from "../../../../../common/events/dtoModels";
+import {useLoadItems} from "../../../hooks/core/itemsLoad";
+
+export const DEFAULT_PAGE_SIZE = 50;
 
 export function useItemList(activeCollectionId: number) {
 
 	const items = useItems();
+	const page = useItemPage();
 	const selectedItemIds = useSelectedItemIds();
 	const isSelected = useIsItemSelected();
 	const itemSelectionClear = useItemSelectionClear();
+
+	const {
+		gotoPage,
+		setPageSize
+	} = useItemPagination(page);
 
 	useEffect(() => {
 		itemSelectionClear();
@@ -26,6 +35,9 @@ export function useItemList(activeCollectionId: number) {
 
 	return {
 		items: items,
+		page: page,
+		gotoPage: gotoPage,
+		setPageSize: setPageSize,
 		isSelected: isSelected,
 		itemIdsSelected: selectedItemIds,
 		handleOnKeyDown: useKeyboardShortcuts(),
@@ -155,4 +167,28 @@ function useDragItems() {
 	}
 
 	return hookFunction;
+}
+
+
+function useItemPagination(currentPage: { index: number, size: number, total: number }) {
+
+	const loadItems = useLoadItems();
+
+	function gotoPage(pageIndex: number) {
+		if (pageIndex !== currentPage.index) {
+			loadItems({pageIndex: pageIndex}).then();
+		}
+	}
+
+	function setPageSize(pageSize: number) {
+		if (pageSize !== currentPage.size) {
+			loadItems({pageSize: pageSize}).then();
+		}
+	}
+
+	return {
+		gotoPage: gotoPage,
+		setPageSize: setPageSize
+	};
+
 }

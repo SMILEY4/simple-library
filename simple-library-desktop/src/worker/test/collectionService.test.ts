@@ -220,9 +220,9 @@ describe("collection-service", () => {
 				groupId: null,
 				smartQuery: null
 			}]);
-			await expect(dbAccess.queryAll(SQL.queryItemsAll([]))).resolves.toHaveLength(6);
-			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(1, []))).resolves.toHaveLength(0);
-			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(2, []))).resolves.toHaveLength(3);
+			await expect(dbAccess.queryAll(SQL.queryItemsAll([], 0, 999))).resolves.toHaveLength(6);
+			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(1, [], 0, 999))).resolves.toHaveLength(0);
+			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(2, [], 0, 999))).resolves.toHaveLength(3);
 			await expect(dbAccess.queryAll(SQL.queryAllGroups())).resolves.toHaveLength(1);
 			await expect(actionGetById.perform(1)).resolves.toBeNull();
 		});
@@ -258,9 +258,9 @@ describe("collection-service", () => {
 				groupId: null,
 				smartQuery: null
 			}]);
-			await expect(dbAccess.queryAll(SQL.queryItemsAll([]))).resolves.toHaveLength(6);
-			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(1, []))).resolves.toHaveLength(0);
-			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(2, []))).resolves.toHaveLength(3);
+			await expect(dbAccess.queryAll(SQL.queryItemsAll([], 0, 999))).resolves.toHaveLength(6);
+			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(1, [], 0, 999))).resolves.toHaveLength(0);
+			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(2, [], 0, 999))).resolves.toHaveLength(3);
 			await expect(dbAccess.queryAll(SQL.queryAllGroups())).resolves.toHaveLength(1);
 			await expect(actionGetById.perform(1)).resolves.toBeNull();
 		});
@@ -286,8 +286,8 @@ describe("collection-service", () => {
 			// then
 			await expect(result).resolves.toBeUndefined();
 			await expect(actionGetAll.perform(true)).resolves.toHaveLength(2);
-			await expect(dbAccess.queryAll(SQL.queryItemsAll([]))).resolves.toHaveLength(3);
-			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(2, []))).resolves.toHaveLength(2);
+			await expect(dbAccess.queryAll(SQL.queryItemsAll([], 0, 999))).resolves.toHaveLength(3);
+			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(2, [], 0, 999))).resolves.toHaveLength(2);
 			await expect(dbAccess.queryAll(SQL.queryAllGroups())).resolves.toHaveLength(1);
 			await expect(actionGetById.perform(1)).resolves.toBeDefined();
 			await expect(actionGetById.perform(2)).resolves.toBeDefined();
@@ -630,9 +630,9 @@ describe("collection-service", () => {
 			const result = actionMoveItems.perform(1, 2, [2, 3], false);
 			// then
 			await expect(result).resolves.toBeUndefined();
-			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(1, [])).then(mapToItemIds)).resolves.toStrictEqual([1]);
-			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(2, [])).then(mapToItemIds)).resolves.toStrictEqual([2, 3, 4, 5]);
-			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(3, [])).then(mapToItemIds)).resolves.toStrictEqual([1, 6]);
+			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(1, [], 0, 999)).then(mapToItemIds)).resolves.toStrictEqual([1]);
+			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(2, [], 0, 999)).then(mapToItemIds)).resolves.toStrictEqual([2, 3, 4, 5]);
+			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(3, [], 0, 999)).then(mapToItemIds)).resolves.toStrictEqual([1, 6]);
 		});
 
 		test("copy items to collection", async () => {
@@ -660,9 +660,9 @@ describe("collection-service", () => {
 			const result = actionMoveItems.perform(1, 2, [2, 3], true);
 			// then
 			await expect(result).resolves.toBeUndefined();
-			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(1, [])).then(mapToItemIds)).resolves.toStrictEqual([1, 2, 3]);
-			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(2, [])).then(mapToItemIds)).resolves.toStrictEqual([2, 3, 4, 5]);
-			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(3, [])).then(mapToItemIds)).resolves.toStrictEqual([1, 6]);
+			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(1, [], 0, 999)).then(mapToItemIds)).resolves.toStrictEqual([1, 2, 3]);
+			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(2, [], 0, 999)).then(mapToItemIds)).resolves.toStrictEqual([2, 3, 4, 5]);
+			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(3, [], 0, 999)).then(mapToItemIds)).resolves.toStrictEqual([1, 6]);
 		});
 
 		test("move items to non-existing collection", async () => {
@@ -688,7 +688,7 @@ describe("collection-service", () => {
 			const result = actionMoveItems.perform(1, 42, [2, 3], false);
 			// then
 			await expect(result).rejects.toBeDefined();
-			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(1, [])).then(mapToItemIds)).resolves.toStrictEqual([1, 2, 3]);
+			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(1, [], 0, 999)).then(mapToItemIds)).resolves.toStrictEqual([1, 2, 3]);
 		});
 
 		test("move items from non-existing collection", async () => {
@@ -714,7 +714,7 @@ describe("collection-service", () => {
 			const result = actionMoveItems.perform(42, 1, [4, 5], false);
 			// then
 			await expect(result).rejects.toBeDefined();
-			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(1, [])).then(mapToItemIds)).resolves.toStrictEqual([1, 2, 3]);
+			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(1, [], 0, 999)).then(mapToItemIds)).resolves.toStrictEqual([1, 2, 3]);
 		});
 
 		test("move items same collection", async () => {
@@ -740,7 +740,7 @@ describe("collection-service", () => {
 			const result = actionMoveItems.perform(1, 1, [2, 3], false);
 			// then
 			await expect(result).resolves.toBeUndefined();
-			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(1, [])).then(mapToItemIds)).resolves.toStrictEqual([1, 2, 3]);
+			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(1, [], 0, 999)).then(mapToItemIds)).resolves.toStrictEqual([1, 2, 3]);
 		});
 
 		test("move non-existing items to collection", async () => {
@@ -767,8 +767,8 @@ describe("collection-service", () => {
 			const result = actionMoveItems.perform(1, 2, [10, 11], false);
 			// then
 			await expect(result).resolves.toBeUndefined();
-			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(1, [])).then(mapToItemIds)).resolves.toStrictEqual([1, 2, 3]);
-			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(2, [])).then(mapToItemIds)).resolves.toStrictEqual([3, 4, 5]);
+			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(1, [], 0, 999)).then(mapToItemIds)).resolves.toStrictEqual([1, 2, 3]);
+			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(2, [], 0, 999)).then(mapToItemIds)).resolves.toStrictEqual([3, 4, 5]);
 		});
 
 		test("move items to smart collection", async () => {
@@ -794,8 +794,8 @@ describe("collection-service", () => {
 			const result = actionMoveItems.perform(1, 2, [10, 11], false);
 			// then
 			await expect(result).rejects.toBeDefined();
-			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(1, [])).then(mapToItemIds)).resolves.toStrictEqual([1, 2, 3]);
-			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(2, [])).then(mapToItemIds)).resolves.toStrictEqual([3, 4, 5]);
+			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(1, [], 0, 999)).then(mapToItemIds)).resolves.toStrictEqual([1, 2, 3]);
+			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(2, [], 0, 999)).then(mapToItemIds)).resolves.toStrictEqual([3, 4, 5]);
 		});
 
 		test("move items from smart collection", async () => {
@@ -820,7 +820,7 @@ describe("collection-service", () => {
 			const result = actionMoveItems.perform(1, 2, [3, 4, 5], false);
 			// then
 			await expect(result).resolves.toBeUndefined();
-			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(2, [])).then(mapToItemIds)).resolves.toStrictEqual([1, 2, 3, 4, 5]);
+			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(2, [], 0, 999)).then(mapToItemIds)).resolves.toStrictEqual([1, 2, 3, 4, 5]);
 		});
 
 	});
@@ -852,8 +852,8 @@ describe("collection-service", () => {
 			const result = actionRemoveItems.perform(1, [2, 3, 4]);
 			// then
 			await expect(result).resolves.toBeUndefined();
-			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(1, [])).then(mapToItemIds)).resolves.toStrictEqual([1]);
-			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(2, [])).then(mapToItemIds)).resolves.toStrictEqual([1, 6]);
+			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(1, [], 0, 999)).then(mapToItemIds)).resolves.toStrictEqual([1]);
+			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(2, [], 0, 999)).then(mapToItemIds)).resolves.toStrictEqual([1, 6]);
 		});
 
 		test("remove some items from non-existing collection", async () => {
@@ -877,7 +877,7 @@ describe("collection-service", () => {
 			const result = actionRemoveItems.perform(42, [2, 3, 4]);
 			// then
 			await expect(result).rejects.toBeDefined();
-			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(1, [])).then(mapToItemIds)).resolves.toStrictEqual([1, 2, 3]);
+			await expect(dbAccess.queryAll(SQL.queryItemsByCollection(1, [], 0, 999)).then(mapToItemIds)).resolves.toStrictEqual([1, 2, 3]);
 		});
 
 		test("remove some items from smart collection", async () => {

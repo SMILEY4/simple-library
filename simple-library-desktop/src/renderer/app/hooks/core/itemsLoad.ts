@@ -1,6 +1,6 @@
 import {fetchItems} from "../../common/eventInterface";
-import {ItemDTO} from "../../../../common/events/dtoModels";
-import {useDispatchSetItems} from "../store/itemsState";
+import {ItemPageDTO} from "../../../../common/events/dtoModels";
+import {useDispatchSetItems, useItemPage} from "../store/itemsState";
 import {useActiveCollection} from "../store/collectionActiveState";
 import {genNotificationId} from "../../common/notificationUtils";
 import {AppNotificationType, useThrowErrorWithNotification} from "../store/notificationState";
@@ -9,30 +9,37 @@ import {voidThen} from "../../../../common/utils";
 export function useLoadItems() {
 
 	const activeCollection = useActiveCollection();
+	const currentPage = useItemPage();
 	const dispatchSetItems = useDispatchSetItems();
 	const throwErrorNotification = useThrowErrorWithNotification();
 
-	function hookFunction(collectionId?: number): Promise<void> {
-		if (collectionId !== undefined) {
-			return loadItems(collectionId);
+	function hookFunction(data: ({ pageIndex?: number, pageSize?: number, collectionId?: number })): Promise<void> {
+		const collectionId = data.collectionId !== undefined ? data.collectionId : activeCollection;
+		const pageIndex = data.pageIndex !== undefined ? data.pageIndex : currentPage.index;
+		const pageSize = data.pageSize !== undefined ? data.pageSize : currentPage.size;
+		if (collectionId === null || collectionId === undefined) {
+			return clearItems();
 		} else {
-			if (activeCollection === null || activeCollection === undefined) {
-				return clearItems();
-			} else {
-				return loadItems(activeCollection);
-			}
+			return loadItems(collectionId, pageIndex, pageSize);
 		}
 	}
 
-	function loadItems(collectionId: number) {
-		return fetchItems(collectionId, true, false)
+	function loadItems(collectionId: number, pageIndex: number, pageSize: number) {
+		return fetchItems(collectionId, true, true, pageIndex, pageSize)
 			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_FETCH_FAILED, error))
-			.then((items: ItemDTO[]) => dispatchSetItems(items))
+			.then((itemPage: ItemPageDTO) => dispatchSetItems(
+				itemPage.items,
+				{
+					index: itemPage.pageIndex,
+					size: itemPage.pageSize,
+					total: itemPage.totalCount
+				}
+			))
 			.then(voidThen);
 	}
 
 	function clearItems() {
-		dispatchSetItems([]);
+		dispatchSetItems([], {index: 0, size: 0, total: 0});
 		return Promise.resolve();
 	}
 

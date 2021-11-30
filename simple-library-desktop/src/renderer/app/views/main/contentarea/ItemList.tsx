@@ -11,6 +11,7 @@ import {useItemList} from "./useItemList";
 import {useDispatchCloseDialog, useDispatchOpenDialog} from "../../../hooks/store/dialogState";
 import {AutoSizer, CellMeasurer, CellMeasurerCache, List} from "react-virtualized";
 import {ItemListEntry} from "./ItemListEntry";
+import {ItemListPagination} from "./ItemListPagination";
 
 interface ItemListProps {
 	activeCollection: CollectionDTO;
@@ -34,6 +35,9 @@ export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.R
 
 	const {
 		items,
+		page,
+		gotoPage,
+		setPageSize,
 		isSelected,
 		itemIdsSelected,
 		handleOnKeyDown,
@@ -81,6 +85,13 @@ export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.R
 						)}
 					</AutoSizer>
 				</div>
+				<ItemListPagination
+					itemCount={page.total}
+					currentPage={page.index}
+					pageSize={page.size}
+					onGotoPage={gotoPage}
+					onSetPageSize={setPageSize}
+				/>
 			</VBox>
 
 			<ContextMenuBase
@@ -112,7 +123,7 @@ export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.R
 				rowIndex={data.index}
 				parent={data.parent}
 			>
-				{({ measure, registerChild }) => (
+				{({measure, registerChild}) => (
 					<div ref={registerChild} style={data.style}>
 						<ItemListEntry
 							item={item}

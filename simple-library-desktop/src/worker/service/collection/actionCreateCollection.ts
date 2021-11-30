@@ -38,7 +38,7 @@ export class ActionCreateCollection {
 		if (!query || query.trim().length === 0) {
 			return Promise.resolve();
 		} else {
-			return this.repository.getItemsByCustomQuery(query, []);
+			return this.repository.getItemsByCustomQuery(query, [], 0, 1);
 		}
 	}
 

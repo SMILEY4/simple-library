@@ -70,7 +70,7 @@ export function useEmbedAttributesOfItemIds() {
 
 		function updateItemState(): Promise<any> {
 			if (activeCollection) {
-				return loadItems();
+				return loadItems({});
 			} else {
 				return Promise.resolve();
 			}

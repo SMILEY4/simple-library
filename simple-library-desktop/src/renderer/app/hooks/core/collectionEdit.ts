@@ -42,7 +42,7 @@ export function useEditCollection() {
 	}
 
 	function updateItemState(collectionId: number) {
-		return loadItems(collectionId);
+		return loadItems({collectionId: collectionId});
 	}
 
 	return hookFunction;

@@ -41,6 +41,12 @@ export interface GroupDTO {
 	children: GroupDTO[],
 }
 
+export interface ItemPageDTO {
+	items: ItemDTO[],
+	pageIndex: number,
+	pageSize: number,
+	totalCount: number,
+}
 
 export interface ItemDTO {
 	id: number,

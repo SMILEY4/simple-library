@@ -1,5 +1,5 @@
 import {BaseProps} from "../../utils/common";
-import React, {MutableRefObject, useRef, useState} from "react";
+import React, {MutableRefObject, useEffect, useRef, useState} from "react";
 import "./choicebox.css"
 import {useClickOutside, useStateRef} from "../../utils/commonHooks";
 import {ChoiceBoxSelector} from "./ChoiceBoxSelector";
@@ -7,6 +7,7 @@ import {Manager, Popper, Reference} from "react-popper";
 import {ChoiceBoxMenu} from "./ChoiceBoxMenu";
 import {mergeRefs} from "../../utils/common";
 import {sameWidthModifier} from "../../utils/popperUtils";
+import {ArrayUtils} from "../../../../common/arrayUtils";
 
 export interface ChoiceBoxItem {
 	id: string,

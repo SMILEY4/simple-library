@@ -64,6 +64,7 @@ import sqlQueryDefaultAttributeValues from "./sqlscripts/item_attributes/query_d
 import sqlQueryItemListAttributes from "./sqlscripts/item_attributes/query_item_list_attributes.sql";
 import sqlInsertItemListAttributes from "./sqlscripts/item_attributes/insert_item_list_attributes.sql";
 import sqlDeleteItemListAttributes from "./sqlscripts/item_attributes/delete_item_list_attributes.sql";
+import sqlQueryItemCountByNormalCollection from "./sqlscripts/items/query_itemcount_by_collection_id.sql"
 
 export module SQL {
 
@@ -180,15 +181,22 @@ export module SQL {
 			.replace(v("query"), query);
 	}
 
+	export function queryItemCountByNormalCollection(collectionId: number): string {
+		return sql(sqlQueryItemCountByNormalCollection)
+			.replace(v("collectionId"), num(collectionId));
+	}
+
 	export function queryItemCountTotal(): string {
 		return sql(sqlQueryItemCountTotal);
 	}
 
-	export function queryItemsByCustomQuery(query: string, attributeIds?: number[]): string {
+	export function queryItemsByCustomQuery(query: string, pageIndex: number, pageSize: number, attributeIds?: number[]): string {
 		if (attributeIds && attributeIds.length > 0) {
 			return sql(sqlQueryItemsByCustomQueryWithAttribs)
 				.replace(v("query"), query)
-				.replace(v("attributeIds"), numCsv(attributeIds));
+				.replace(v("attributeIds"), numCsv(attributeIds))
+				.replace(v("pageIndex"), num(pageIndex))
+				.replace(v("pageSize"), num(pageSize));
 		} else {
 			return sql(sqlQueryItemsByCustomQuery)
 				.replace(v("query"), query);
@@ -205,15 +213,19 @@ export module SQL {
 			.replace(v("itemIds"), numCsv(itemIds));
 	}
 
-	export function queryItemsByCollection(collectionId: number, attributeIds: number[]): string {
+	export function queryItemsByCollection(collectionId: number, attributeIds: number[], pageIndex: number, pageSize: number): string {
 		return sql(sqlQueryItemsByCollectionWithAttribs)
 			.replace(v("collectionId"), num(collectionId))
-			.replace(v("attributeIds"), numCsv(attributeIds));
+			.replace(v("attributeIds"), numCsv(attributeIds))
+			.replace(v("pageIndex"), num(pageIndex))
+			.replace(v("pageSize"), num(pageSize));
 	}
 
-	export function queryItemsAll(attributeIds: number[]): string {
+	export function queryItemsAll(attributeIds: number[], pageIndex: number, pageSize: number): string {
 		return sql(sqlQueryItemsAllWithAttribs)
-			.replace(v("attributeIds"), numCsv(attributeIds));
+			.replace(v("attributeIds"), numCsv(attributeIds))
+			.replace(v("pageIndex"), num(pageIndex))
+			.replace(v("pageSize"), num(pageSize));
 	}
 
 
@@ -425,19 +437,19 @@ function str(value: any): string {
 }
 
 function num(value: number | null): string {
-	return !!value ? "" + value : "null";
+	return (value !== null && value !== undefined) ? "" + value : "null";
 }
 
 function eqNum(value: number | null): string {
-	return !!value ? "" + value : "$null";
+	return (value !== null && value !== undefined) ? "" + value : "$null";
 }
 
 function strCsv(values: any[]): string {
-	return !!values ? values.map((value: any) => str(value)).join(", ") : "null";
+	return (values !== null && values !== undefined) ? values.map((value: any) => str(value)).join(", ") : "null";
 }
 
 function numCsv(values: number[]): string {
-	return !!values ? values.map((value: number) => num(value)).join(", ") : "null";
+	return (values !== null && values !== undefined) ? values.map((value: number) => num(value)).join(", ") : "null";
 }
 
 function bool(value?: boolean): string {

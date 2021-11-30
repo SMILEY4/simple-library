@@ -33,7 +33,7 @@ export function useDeleteItems() {
 
 
 	function updateItemState() {
-		return loadItems();
+		return loadItems({});
 	}
 
 

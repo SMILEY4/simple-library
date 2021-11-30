@@ -9,16 +9,23 @@ import {
 } from "../../../components/utils/storeUtils";
 import React from "react";
 import {AttributeDTO, ItemDTO} from "../../../../common/events/dtoModels";
+import {DEFAULT_PAGE_SIZE} from "../../views/main/contentarea/useItemList";
 
 
 // STATE
 
 export interface ItemsState {
     items: ItemDTO[];
+    page: {
+        index: number,
+        size: number,
+        total: number
+    };
 }
 
 const initialState: ItemsState = {
-    items: []
+    items: [],
+    page: {index: 0, size: DEFAULT_PAGE_SIZE, total: 0}
 };
 
 
@@ -28,13 +35,15 @@ enum ItemsActionType {
     SET_ITEMS = "items.set",
     UPDATE_ITEM_ATTRIBUTE = "items.attributes.update",
     REMOVE_ITEM_ATTRIBUTE = "items.attributes.remove",
-    CLEAR_ATTRIBUTE_MODIFIED_FLAGS = "items.attributes.clear-modified-flags"
+    CLEAR_ATTRIBUTE_MODIFIED_FLAGS = "items.attributes.clear-modified-flags",
+    SET_PAGE = "items.page.set",
 }
 
 const reducerConfigMap: ReducerConfigMap<ItemsActionType, ItemsState> = new ReducerConfigMap([
     [ItemsActionType.SET_ITEMS, (state, payload) => ({
         ...state,
-        items: payload
+        items: payload.items,
+        page: payload.page
     })],
     [ItemsActionType.UPDATE_ITEM_ATTRIBUTE, (state, payload) => {
         const newItems: ItemDTO[] = state.items.map((item: ItemDTO) => {
@@ -106,7 +115,11 @@ const reducerConfigMap: ReducerConfigMap<ItemsActionType, ItemsState> = new Redu
             ...state,
             items: newItems
         };
-    }]
+    }],
+    [ItemsActionType.SET_PAGE, (state, payload) => ({
+        ...state,
+        page: payload
+    })]
 ]);
 
 
@@ -129,19 +142,17 @@ function useItemsDispatch(): IStateHookResultWriteOnly<ItemsActionType> {
     return useGlobalStateWriteOnly<ItemsActionType>(dispatchContext);
 }
 
-export function useDispatchSetItems(): (items: ItemDTO[]) => void {
+export function useDispatchSetItems(): (items: ItemDTO[], page: { index: number, size: number, total: number }) => void {
     const dispatch = useItemsDispatch();
-    return (items: ItemDTO[]) => {
+    return (items: ItemDTO[], page: { index: number, size: number }) => {
         dispatch({
             type: ItemsActionType.SET_ITEMS,
-            payload: items
+            payload: {
+                items: items,
+                page: page
+            }
         });
     };
-}
-
-export function useDispatchClearItems(): () => void {
-    const dispatchSetItems = useDispatchSetItems();
-    return () => dispatchSetItems([]);
 }
 
 export function useDispatchUpdateItemAttribute(): (itemId: number, attribute: AttributeDTO) => void {
@@ -185,9 +196,26 @@ export function useDispatchItemsClearAttributeModifiedFlags(): (itemIds: number[
     };
 }
 
+// export function useDispatchSetItemPage(): (page: { index: number, size: number, total: number }) => void {
+//     const dispatch = useItemsDispatch();
+//     return (page: { index: number, size: number, total: number }) => {
+//         dispatch({
+//             type: ItemsActionType.SET_PAGE,
+//             payload: page
+//         });
+//     };
+// }
+
 export function useItems() {
     const [itemsState] = useItemsContext();
     return itemsState.items;
+}
+
+
+export function useItemPage() {
+    // TODO: move to own state -> no updates for components that just want to "re-loadItems" (-> that use the hook) / or create new hook "useReloadItems"
+    const [itemsState] = useItemsContext();
+    return itemsState.page;
 }
 
 export function useGetItemIds() {
