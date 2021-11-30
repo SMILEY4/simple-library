@@ -31,6 +31,8 @@ jobs:
         run:
             npm run dist
 
+      - name: List Content
+        uses: enricomarino/actions@v2
 
       - uses: actions/upload-artifact@v2
         with:

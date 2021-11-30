@@ -5,6 +5,7 @@
   "description": "A simple digital asset library.",
   "author": "Lukas Ruegner",
   "private": true,
+  "repository": "github:SMILEY4/simple-library",
   "scripts": {
     "postinstall": "electron-builder install-app-deps",
     "build": "webpack --config webpack.config.prod.js",
