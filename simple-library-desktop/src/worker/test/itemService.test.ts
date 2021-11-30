@@ -1,11 +1,13 @@
 import {DbAccess} from "../persistence/dbAcces";
 import {MemDbAccess} from "./memDbAccess";
 import {
+	ATT_ID_AUTHOR,
+	ATT_ID_COMMENT,
 	ATT_ID_FILE_ACCESS_DATE,
 	ATT_ID_FILE_EXTENSION,
 	ATT_ID_FILE_MODIFY_DATE,
 	ATT_ID_FILE_TYPE,
-	ATT_ID_MIME_TYPE,
+	ATT_ID_MIME_TYPE, attAuthor, attComment,
 	attFileAccessDate,
 	attFileExtension,
 	attFileModifyDate,
@@ -30,7 +32,6 @@ import {DataRepository} from "../service/dataRepository";
 import {ActionDeleteItemAttribute} from "../service/item/actionDeleteItemAttribute";
 import {ActionGetHiddenAttributes} from "../service/library/actionGetHiddenAttributes";
 import {ActionGetItemListAttributes} from "../service/library/actionGetItemListAttributes";
-import {ItemPageDTO} from "../../common/events/dtoModels";
 
 describe("item-service", () => {
 
@@ -153,6 +154,42 @@ describe("item-service", () => {
 			]);
 		});
 
+
+		test("get by normal collection paged include missing", async () => {
+			// given
+			const [actionCreateLibrary, repository, dbAccess] = mockItemService();
+			const actionGetByCollection = new ActionGetItemsByCollection(repository, new ActionGetCollectionById(repository), new ActionGetHiddenAttributes(repository), new ActionGetItemListAttributes(repository));
+			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
+			await dbAccess.runMultipleSeq([
+				SQL.insertCollection("Collection 1", "normal", null, null),
+				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
+				SQL.insertItem("/path/to/file/2", 1001, "hash2", "thumbnail2"),
+				SQL.insertItem("/path/to/file/3", 1002, "hash3", "thumbnail3"),
+				SQL.insertItem("/path/to/file/4", 1003, "hash4", "thumbnail4"),
+				SQL.insertItem("/path/to/file/5", 1004, "hash5", "thumbnail5"),
+				SQL.insertItem("/path/to/file/6", 1005, "hash6", "thumbnail6"),
+				SQL.insertItem("/path/to/file/7", 1006, "hash7", "thumbnail7"),
+				SQL.insertItemsIntoCollection(1, [1, 2, 3, 4, 5, 6, 7]),
+				SQL.insertItemAttributes(1, [attComment("My Comment 1", false)]),
+				SQL.insertItemAttributes(2, [attComment("My Comment 2", false)]),
+				SQL.insertItemAttributes(3, [attComment("My Comment 3", false)]),
+				SQL.insertItemAttributes(4, [attComment("My Comment 4", false)]),
+				SQL.insertItemAttributes(5, [attComment("My Comment 5", false)]),
+				SQL.insertItemAttributes(6, [attComment("My Comment 6", false)]),
+				SQL.insertItemAttributes(7, [attComment("My Comment 7", false)]),
+				SQL.insertItemListAttributes([ATT_ID_COMMENT, ATT_ID_AUTHOR])
+			]);
+			// when
+			const result1: Promise<ItemPage> = actionGetByCollection.perform(1, true, true, 0, 3);
+			// then
+			await expect(result1.then(p => p.items.map(i => i.id))).resolves.toEqual([1, 2, 3]);
+			// when
+			const result2: Promise<ItemPage> = actionGetByCollection.perform(1, true, true, 1, 3);
+			// then
+			await expect(result2.then(p => p.items.map(i => i.id))).resolves.toEqual([4, 5, 6]);
+		});
+
+
 		test("get by smart collection", async () => {
 			// given
 			const [actionCreateLibrary, repository, dbAccess] = mockItemService();
@@ -189,6 +226,41 @@ describe("item-service", () => {
 					attribute(ATT_ID_FILE_MODIFY_DATE, keyFileModifyDate(), "2021:10:11 21:00:12+02:00", "_text", true, false, 0)
 				])
 			]);
+		});
+
+
+		test("get by smart collection paged", async () => {
+			// given
+			const [actionCreateLibrary, repository, dbAccess] = mockItemService();
+			const actionGetByCollection = new ActionGetItemsByCollection(repository, new ActionGetCollectionById(repository), new ActionGetHiddenAttributes(repository), new ActionGetItemListAttributes(repository));
+			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
+			await dbAccess.runMultipleSeq([
+				SQL.insertCollection("Collection 1", "smart", null, "items.item_id >= 2"),
+				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
+				SQL.insertItem("/path/to/file/2", 1001, "hash2", "thumbnail2"),
+				SQL.insertItem("/path/to/file/3", 1002, "hash3", "thumbnail3"),
+				SQL.insertItem("/path/to/file/4", 1003, "hash4", "thumbnail4"),
+				SQL.insertItem("/path/to/file/5", 1004, "hash5", "thumbnail5"),
+				SQL.insertItem("/path/to/file/6", 1005, "hash6", "thumbnail6"),
+				SQL.insertItem("/path/to/file/7", 1006, "hash7", "thumbnail7"),
+				SQL.insertItemsIntoCollection(1, [1, 2, 3, 4, 5, 6, 7]),
+				SQL.insertItemAttributes(1, [attComment("My Comment 1", false)]),
+				SQL.insertItemAttributes(2, [attComment("My Comment 2", false)]),
+				SQL.insertItemAttributes(3, [attComment("My Comment 3", false)]),
+				SQL.insertItemAttributes(4, [attComment("My Comment 4", false)]),
+				SQL.insertItemAttributes(5, [attComment("My Comment 5", false)]),
+				SQL.insertItemAttributes(6, [attComment("My Comment 6", false)]),
+				SQL.insertItemAttributes(7, [attComment("My Comment 7", false)]),
+				SQL.insertItemListAttributes([ATT_ID_COMMENT, ATT_ID_AUTHOR])
+			]);
+			// when
+			const result1: Promise<ItemPage> = actionGetByCollection.perform(1, false, true, 0, 3);
+			// then
+			await expect(result1.then(p => p.items.map(i => i.id))).resolves.toEqual([2, 3, 4]);
+			// when
+			const result2: Promise<ItemPage> = actionGetByCollection.perform(1, false, true, 1, 3);
+			// then
+			await expect(result2.then(p => p.items.map(i => i.id))).resolves.toEqual([5, 6, 7]);
 		});
 
 

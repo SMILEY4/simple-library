@@ -14,6 +14,8 @@ import {useIsItemSelected, useSelectedItemIds} from "../../../hooks/store/itemSe
 import {AttributeValueDTO} from "../../../../../common/events/dtoModels";
 import {useLoadItems} from "../../../hooks/core/itemsLoad";
 
+export const DEFAULT_PAGE_SIZE = 50;
+
 export function useItemList(activeCollectionId: number) {
 
 	const items = useItems();
@@ -22,6 +24,11 @@ export function useItemList(activeCollectionId: number) {
 	const isSelected = useIsItemSelected();
 	const itemSelectionClear = useItemSelectionClear();
 
+	const {
+		gotoPage,
+		setPageSize
+	} = useItemPagination(page);
+
 	useEffect(() => {
 		itemSelectionClear();
 	}, [activeCollectionId]);
@@ -29,7 +36,8 @@ export function useItemList(activeCollectionId: number) {
 	return {
 		items: items,
 		page: page,
-		gotoPage: useItemPagination(page),
+		gotoPage: gotoPage,
+		setPageSize: setPageSize,
 		isSelected: isSelected,
 		itemIdsSelected: selectedItemIds,
 		handleOnKeyDown: useKeyboardShortcuts(),
@@ -166,12 +174,21 @@ function useItemPagination(currentPage: { index: number, size: number, total: nu
 
 	const loadItems = useLoadItems();
 
-	function hookFunction(pageIndex: number) {
+	function gotoPage(pageIndex: number) {
 		if (pageIndex !== currentPage.index) {
-			loadItems({page: pageIndex}).then();
+			loadItems({pageIndex: pageIndex}).then();
 		}
 	}
 
-	return hookFunction;
+	function setPageSize(pageSize: number) {
+		if (pageSize !== currentPage.size) {
+			loadItems({pageSize: pageSize}).then();
+		}
+	}
+
+	return {
+		gotoPage: gotoPage,
+		setPageSize: setPageSize
+	};
 
 }

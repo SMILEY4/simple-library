@@ -37,6 +37,7 @@ export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.R
 		items,
 		page,
 		gotoPage,
+		setPageSize,
 		isSelected,
 		itemIdsSelected,
 		handleOnKeyDown,
@@ -89,6 +90,7 @@ export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.R
 					currentPage={page.index}
 					pageSize={page.size}
 					onGotoPage={gotoPage}
+					onSetPageSize={setPageSize}
 				/>
 			</VBox>
 

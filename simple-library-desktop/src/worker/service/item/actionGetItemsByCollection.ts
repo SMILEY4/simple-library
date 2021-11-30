@@ -6,6 +6,7 @@ import {ActionGetHiddenAttributes} from "../library/actionGetHiddenAttributes";
 import {ArrayUtils} from "../../../common/arrayUtils";
 import {AttributeMeta, rowsToAttributeMeta} from "../library/libraryCommons";
 import {ActionGetItemListAttributes} from "../library/actionGetItemListAttributes";
+import {voidThen} from "../../../common/utils";
 
 /**
  * Get all items of the given collection (with the requested attributes)

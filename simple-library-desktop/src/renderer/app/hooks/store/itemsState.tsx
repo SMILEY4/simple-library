@@ -9,6 +9,7 @@ import {
 } from "../../../components/utils/storeUtils";
 import React from "react";
 import {AttributeDTO, ItemDTO} from "../../../../common/events/dtoModels";
+import {DEFAULT_PAGE_SIZE} from "../../views/main/contentarea/useItemList";
 
 
 // STATE
@@ -24,7 +25,7 @@ export interface ItemsState {
 
 const initialState: ItemsState = {
     items: [],
-    page: {index: 0, size: 0, total: 0}
+    page: {index: 0, size: DEFAULT_PAGE_SIZE, total: 0}
 };
 
 

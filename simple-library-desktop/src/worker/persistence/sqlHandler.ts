@@ -194,7 +194,9 @@ export module SQL {
 		if (attributeIds && attributeIds.length > 0) {
 			return sql(sqlQueryItemsByCustomQueryWithAttribs)
 				.replace(v("query"), query)
-				.replace(v("attributeIds"), numCsv(attributeIds));
+				.replace(v("attributeIds"), numCsv(attributeIds))
+				.replace(v("pageIndex"), num(pageIndex))
+				.replace(v("pageSize"), num(pageSize));
 		} else {
 			return sql(sqlQueryItemsByCustomQuery)
 				.replace(v("query"), query);

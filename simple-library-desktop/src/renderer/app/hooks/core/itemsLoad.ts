@@ -8,25 +8,24 @@ import {voidThen} from "../../../../common/utils";
 
 export function useLoadItems() {
 
-	const PAGE_SIZE = 3;
-
 	const activeCollection = useActiveCollection();
 	const currentPage = useItemPage();
 	const dispatchSetItems = useDispatchSetItems();
 	const throwErrorNotification = useThrowErrorWithNotification();
 
-	function hookFunction(data: ({ page?: number, collectionId?: number })): Promise<void> {
+	function hookFunction(data: ({ pageIndex?: number, pageSize?: number, collectionId?: number })): Promise<void> {
 		const collectionId = data.collectionId !== undefined ? data.collectionId : activeCollection;
-		const page = data.page !== undefined ? data.page : currentPage.index;
+		const pageIndex = data.pageIndex !== undefined ? data.pageIndex : currentPage.index;
+		const pageSize = data.pageSize !== undefined ? data.pageSize : currentPage.size;
 		if (collectionId === null || collectionId === undefined) {
 			return clearItems();
 		} else {
-			return loadItems(collectionId, page);
+			return loadItems(collectionId, pageIndex, pageSize);
 		}
 	}
 
-	function loadItems(collectionId: number, page: number) {
-		return fetchItems(collectionId, true, true, page, PAGE_SIZE)
+	function loadItems(collectionId: number, pageIndex: number, pageSize: number) {
+		return fetchItems(collectionId, true, true, pageIndex, pageSize)
 			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_FETCH_FAILED, error))
 			.then((itemPage: ItemPageDTO) => dispatchSetItems(
 				itemPage.items,
