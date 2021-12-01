@@ -1,20 +1,20 @@
-import React, {ReactElement} from "react";
-import {VBox} from "../../../../components/layout/box/Box";
-import {ContextMenuBase} from "../../../../components/menu/contextmenu/ContextMenuBase";
-import {APP_ROOT_ID} from "../../../Application";
-import {ItemListEntryContextMenu} from "./ItemListEntryContextMenu";
-import {useContextMenu} from "../../../../components/menu/contextmenu/contextMenuHook";
-import {SelectModifier} from "../../../../components/utils/common";
-import {DialogDeleteItems} from "./DialogDeleteItems";
-import {CollectionDTO, ItemDTO} from "../../../../../common/events/dtoModels";
-import {useItemList} from "./useItemList";
-import {useDispatchCloseDialog, useDispatchOpenDialog} from "../../../hooks/store/dialogState";
+import React, {ReactElement, useImperativeHandle, useState} from "react";
+import {VBox} from "../../../../../components/layout/box/Box";
+import {ContextMenuBase} from "../../../../../components/menu/contextmenu/ContextMenuBase";
+import {APP_ROOT_ID} from "../../../../Application";
+import {ItemListEntryContextMenu} from "../ItemListEntryContextMenu";
+import {useContextMenu} from "../../../../../components/menu/contextmenu/contextMenuHook";
+import {SelectModifier} from "../../../../../components/utils/common";
+import {DialogDeleteItems} from "../DialogDeleteItems";
+import {CollectionDTO, ItemDTO} from "../../../../../../common/events/dtoModels";
+import {useItemList} from "../useItemList";
+import {useDispatchCloseDialog, useDispatchOpenDialog} from "../../../../hooks/store/dialogState";
 import {AutoSizer, CellMeasurer, CellMeasurerCache, List} from "react-virtualized";
 import {ItemListEntry} from "./ItemListEntry";
-import {ItemListPagination} from "./ItemListPagination";
 
 interface ItemListProps {
-	activeCollection: CollectionDTO;
+	activeCollection: CollectionDTO,
+	scrollContentRef: any;
 }
 
 export const MemoizedItemList = React.memo(ItemList,
@@ -30,14 +30,19 @@ const cache = new CellMeasurerCache({
 
 export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.ReactElement {
 
+	const [scrollY, setScrollY] = useState(undefined);
+
+	useImperativeHandle(props.scrollContentRef, () => ({
+		scrollToTop() {
+			setScrollY(0);
+		}
+	}));
+
 	const openDialog = useDispatchOpenDialog();
 	const closeDialog = useDispatchCloseDialog();
 
 	const {
 		items,
-		page,
-		gotoPage,
-		setPageSize,
 		isSelected,
 		itemIdsSelected,
 		handleOnKeyDown,
@@ -75,6 +80,8 @@ export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.R
 					<AutoSizer>
 						{({height, width}) => (
 							<List
+								onScroll={() => setScrollY(undefined)}
+								scrollTop={scrollY}
 								width={width}
 								height={height}
 								deferredMeasurementCache={cache}
@@ -86,13 +93,6 @@ export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.R
 						)}
 					</AutoSizer>
 				</div>
-				<ItemListPagination
-					itemCount={page.total}
-					currentPage={page.index}
-					pageSize={page.size}
-					onGotoPage={gotoPage}
-					onSetPageSize={setPageSize}
-				/>
 			</VBox>
 
 			<ContextMenuBase

@@ -1,20 +1,22 @@
 import React from "react";
-import "./listItemEntry.css";
 import "./itemListPagination.css";
 import {HBox} from "../../../../components/layout/box/Box";
 import {Button} from "../../../../components/buttons/button/Button";
 import {Icon, IconType} from "../../../../components/base/icon/Icon";
 import {ChoiceBox} from "../../../../components/buttons/choicebox/ChoiceBox";
 import {Label} from "../../../../components/base/label/Label";
-import {DEFAULT_PAGE_SIZE} from "./useItemList";
 import {ArrayUtils} from "../../../../../common/arrayUtils";
+import {DEFAULT_PAGE_SIZE} from "../../../hooks/store/itemsPageState";
+import {IconButton} from "../../../../components/buttons/iconbutton/IconButton";
 
 interface ItemListPaginationProps {
 	itemCount: number,
 	currentPage: number,
 	pageSize: number,
 	onGotoPage: (page: number) => void,
-	onSetPageSize: (size: number) => void
+	onSetPageSize: (size: number) => void,
+	view: "list" | "grid",
+	onSetView: (view: "list" | "grid") => void
 }
 
 
@@ -60,6 +62,11 @@ export function ItemListPagination(props: React.PropsWithChildren<ItemListPagina
 					selectedItemId={("" + props.pageSize)}
 					onAction={(itemId: string) => props.onSetPageSize(Number.parseInt(itemId))}
 				/>
+			</HBox>
+
+			<HBox alignCross="stretch">
+				<IconButton icon={IconType.LIST} groupPos="left" onAction={() => props.onSetView("list")}/>
+				<IconButton icon={IconType.GRID} groupPos="right"onAction={() => props.onSetView("grid")}/>
 			</HBox>
 
 		</HBox>

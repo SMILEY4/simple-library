@@ -1,7 +1,9 @@
 import React from "react";
-import {MemoizedItemList} from "./ItemList";
+import {MemoizedItemList} from "./itemlist/ItemList";
 import {VBox} from "../../../../components/layout/box/Box";
 import {useContentArea} from "./useContentArea";
+import {MemoizedItemGrid} from "./itemgrid/ItemGrid";
+import {ItemListPagination} from "./ItemListPagination";
 
 interface ContentAreaProps {
 }
@@ -9,7 +11,13 @@ interface ContentAreaProps {
 export function ContentArea(props: React.PropsWithChildren<ContentAreaProps>): React.ReactElement {
 
 	const {
-		activeCollection
+		activeCollection,
+		page,
+		gotoPage,
+		setPageSize,
+		view,
+		setView,
+		scrollContentRef
 	} = useContentArea();
 
 	return activeCollection && (
@@ -23,7 +31,18 @@ export function ContentArea(props: React.PropsWithChildren<ContentAreaProps>): R
 				{activeCollection.name}
 			</div>
 
-			<MemoizedItemList activeCollection={activeCollection}/>
+			{view === "list" && <MemoizedItemList activeCollection={activeCollection} scrollContentRef={scrollContentRef}/>}
+			{view === "grid" && <MemoizedItemGrid activeCollection={activeCollection} scrollContentRef={scrollContentRef}/>}
+
+			<ItemListPagination
+				itemCount={page.total}
+				currentPage={page.index}
+				pageSize={page.size}
+				onGotoPage={gotoPage}
+				onSetPageSize={setPageSize}
+				view={view}
+				onSetView={setView}
+			/>
 
 		</VBox>
 	);
