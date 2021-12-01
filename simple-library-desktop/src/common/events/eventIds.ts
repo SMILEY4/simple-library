@@ -29,6 +29,7 @@ export module EventIds {
 	export const EMBED_ITEM_ATTRIBUTES = "item.attributes.embed";
 	export const EMBED_ITEM_ATTRIBUTES_STATUS = "item.attributes.embed.status";
 	export const OPEN_ITEMS = "item.open-external";
+	export const SHOW_ITEM_IN_FOLDER= "item.show-in-folder";
 	export const GET_LAST_OPENED_LIBS = "library.last-opened.get";
 	export const CREATE_LIBRARY = "library.create";
 	export const OPEN_LIBRARY = "library.open";
@@ -72,6 +73,7 @@ export module EventIds {
 		SET_ITEM_ATTRIBUTE,
 		DELETE_ITEM_ATTRIBUTE,
 		OPEN_ITEMS,
+		SHOW_ITEM_IN_FOLDER,
 		GET_LAST_OPENED_LIBS,
 		CREATE_LIBRARY,
 		OPEN_LIBRARY,

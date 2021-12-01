@@ -14,6 +14,7 @@ export function mockFileSystemWrapper(): FileSystemWrapper {
 	fsWrapper["existsFile"] = jest.fn().mockReturnValue(undefined) as any;
 	fsWrapper["existsDir"] = jest.fn().mockReturnValue(undefined) as any;
 	fsWrapper["open"] = jest.fn().mockReturnValue(Promise.resolve(undefined)) as any;
+	fsWrapper["showInFolder"] = jest.fn().mockReturnValue(undefined) as any;
 	// fsWrapper["readFile"] = jest.fn().mockReturnValue(undefined) as any; dont need to mock this
 	return fsWrapper;
 }
