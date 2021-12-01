@@ -22,6 +22,10 @@
 	align-items:     center;
 }
 
+.grid-item-thumbnail-container > img {
+	max-height: 200px;
+}
+
 .grid-item-label {
 	padding:         var(--s-0-25);
 	justify-content: center;

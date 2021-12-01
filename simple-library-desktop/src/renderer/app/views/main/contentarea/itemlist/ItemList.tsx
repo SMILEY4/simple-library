@@ -1,4 +1,4 @@
-import React, {ReactElement} from "react";
+import React, {ReactElement, useImperativeHandle, useState} from "react";
 import {VBox} from "../../../../../components/layout/box/Box";
 import {ContextMenuBase} from "../../../../../components/menu/contextmenu/ContextMenuBase";
 import {APP_ROOT_ID} from "../../../../Application";
@@ -11,10 +11,10 @@ import {useItemList} from "../useItemList";
 import {useDispatchCloseDialog, useDispatchOpenDialog} from "../../../../hooks/store/dialogState";
 import {AutoSizer, CellMeasurer, CellMeasurerCache, List} from "react-virtualized";
 import {ItemListEntry} from "./ItemListEntry";
-import {ItemListPagination} from "../ItemListPagination";
 
 interface ItemListProps {
-	activeCollection: CollectionDTO;
+	activeCollection: CollectionDTO,
+	scrollContentRef: any;
 }
 
 export const MemoizedItemList = React.memo(ItemList,
@@ -29,6 +29,14 @@ const cache = new CellMeasurerCache({
 });
 
 export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.ReactElement {
+
+	const [scrollY, setScrollY] = useState(undefined);
+
+	useImperativeHandle(props.scrollContentRef, () => ({
+		scrollToTop() {
+			setScrollY(0);
+		}
+	}));
 
 	const openDialog = useDispatchOpenDialog();
 	const closeDialog = useDispatchCloseDialog();
@@ -72,6 +80,8 @@ export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.R
 					<AutoSizer>
 						{({height, width}) => (
 							<List
+								onScroll={() => setScrollY(undefined)}
+								scrollTop={scrollY}
 								width={width}
 								height={height}
 								deferredMeasurementCache={cache}

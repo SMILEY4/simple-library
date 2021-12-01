@@ -3,7 +3,7 @@ import {useActiveCollection} from "../../../hooks/store/collectionActiveState";
 import {useFindCollection} from "../../../hooks/store/collectionsState";
 import {useLoadItems} from "../../../hooks/core/itemsLoad";
 import {useItemPage} from "../../../hooks/store/itemsPageState";
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 
 export function useContentArea() {
 
@@ -12,6 +12,7 @@ export function useContentArea() {
 	const findCollection = useFindCollection();
 	const loadItems = useLoadItems();
 	const [view, setView] = useState<"list" | "grid">("grid");
+	const scrollContentRef = useRef();
 
 	const activeCollection: CollectionDTO | null = findCollection(activeCollectionId);
 
@@ -23,6 +24,14 @@ export function useContentArea() {
 	function gotoPage(pageIndex: number) {
 		if (pageIndex !== page.index) {
 			loadItems({pageIndex: pageIndex}).then();
+			if (scrollContentRef.current) {
+				if (view === "grid") {
+					(scrollContentRef.current as any).scrollTop = 0;
+				}
+				if (view === "list") {
+					(scrollContentRef.current as any).scrollToTop();
+				}
+			}
 		}
 	}
 
@@ -42,7 +51,8 @@ export function useContentArea() {
 		gotoPage: gotoPage,
 		setPageSize: setPageSize,
 		view: view,
-		setView: setContentView
+		setView: setContentView,
+		scrollContentRef: scrollContentRef
 	};
 }
 

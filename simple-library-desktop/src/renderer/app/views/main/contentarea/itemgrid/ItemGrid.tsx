@@ -14,6 +14,7 @@ import {ItemGridEntry} from "./ItemGridEntry";
 
 interface ItemGridProps {
 	activeCollection: CollectionDTO;
+	scrollContentRef: any
 }
 
 export const MemoizedItemGrid = React.memo(ItemGrid,
@@ -63,7 +64,7 @@ export function ItemGrid(props: React.PropsWithChildren<ItemGridProps>): React.R
 				onKeyDown={handleOnKeyDown}
 				style={{minHeight: 0}}
 			>
-				<div className={"item-grid-container"}>
+				<div className={"item-grid-container"} ref={props.scrollContentRef}>
 					{items.map(item => {
 						return (
 							<div className={"item-grid-cell"} key={item.id}>
