@@ -1,13 +1,12 @@
 import React from "react";
-import "./listItemEntry.css";
 import "./itemListPagination.css";
 import {HBox} from "../../../../components/layout/box/Box";
 import {Button} from "../../../../components/buttons/button/Button";
 import {Icon, IconType} from "../../../../components/base/icon/Icon";
 import {ChoiceBox} from "../../../../components/buttons/choicebox/ChoiceBox";
 import {Label} from "../../../../components/base/label/Label";
-import {DEFAULT_PAGE_SIZE} from "./useItemList";
 import {ArrayUtils} from "../../../../../common/arrayUtils";
+import {DEFAULT_PAGE_SIZE} from "../../../hooks/store/itemsPageState";
 
 interface ItemListPaginationProps {
 	itemCount: number,

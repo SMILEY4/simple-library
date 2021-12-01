@@ -1,17 +1,17 @@
 import React, {ReactElement} from "react";
-import {VBox} from "../../../../components/layout/box/Box";
-import {ContextMenuBase} from "../../../../components/menu/contextmenu/ContextMenuBase";
-import {APP_ROOT_ID} from "../../../Application";
-import {ItemListEntryContextMenu} from "./ItemListEntryContextMenu";
-import {useContextMenu} from "../../../../components/menu/contextmenu/contextMenuHook";
-import {SelectModifier} from "../../../../components/utils/common";
-import {DialogDeleteItems} from "./DialogDeleteItems";
-import {CollectionDTO, ItemDTO} from "../../../../../common/events/dtoModels";
-import {useItemList} from "./useItemList";
-import {useDispatchCloseDialog, useDispatchOpenDialog} from "../../../hooks/store/dialogState";
+import {VBox} from "../../../../../components/layout/box/Box";
+import {ContextMenuBase} from "../../../../../components/menu/contextmenu/ContextMenuBase";
+import {APP_ROOT_ID} from "../../../../Application";
+import {ItemListEntryContextMenu} from "../ItemListEntryContextMenu";
+import {useContextMenu} from "../../../../../components/menu/contextmenu/contextMenuHook";
+import {SelectModifier} from "../../../../../components/utils/common";
+import {DialogDeleteItems} from "../DialogDeleteItems";
+import {CollectionDTO, ItemDTO} from "../../../../../../common/events/dtoModels";
+import {useItemList} from "../useItemList";
+import {useDispatchCloseDialog, useDispatchOpenDialog} from "../../../../hooks/store/dialogState";
 import {AutoSizer, CellMeasurer, CellMeasurerCache, List} from "react-virtualized";
 import {ItemListEntry} from "./ItemListEntry";
-import {ItemListPagination} from "./ItemListPagination";
+import {ItemListPagination} from "../ItemListPagination";
 
 interface ItemListProps {
 	activeCollection: CollectionDTO;
@@ -35,9 +35,6 @@ export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.R
 
 	const {
 		items,
-		page,
-		gotoPage,
-		setPageSize,
 		isSelected,
 		itemIdsSelected,
 		handleOnKeyDown,
@@ -86,13 +83,6 @@ export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.R
 						)}
 					</AutoSizer>
 				</div>
-				<ItemListPagination
-					itemCount={page.total}
-					currentPage={page.index}
-					pageSize={page.size}
-					onGotoPage={gotoPage}
-					onSetPageSize={setPageSize}
-				/>
 			</VBox>
 
 			<ContextMenuBase

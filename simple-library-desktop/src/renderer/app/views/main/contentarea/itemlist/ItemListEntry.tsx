@@ -1,9 +1,9 @@
 import React, {CSSProperties} from "react";
-import {HBox, VBox} from "../../../../components/layout/box/Box";
-import {concatClasses, getIf, getSelectModifier, SelectModifier} from "../../../../components/utils/common";
+import {HBox, VBox} from "../../../../../components/layout/box/Box";
+import {concatClasses, getIf, getSelectModifier, SelectModifier} from "../../../../../components/utils/common";
 import "./listItemEntry.css";
-import {AttributeDTO, AttributeValueDTO, CollectionTypeDTO, ItemDTO} from "../../../../../common/events/dtoModels";
-import {MetadataListEntry} from "../sidebarmenu/metadata/MetadataListEntry";
+import {AttributeDTO, AttributeValueDTO, CollectionTypeDTO, ItemDTO} from "../../../../../../common/events/dtoModels";
+import {MetadataListEntry} from "../../sidebarmenu/metadata/MetadataListEntry";
 
 interface ItemListEntryProps {
 	item: ItemDTO,

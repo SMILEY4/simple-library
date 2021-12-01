@@ -1,0 +1,22 @@
+.item-grid-container {
+	overflow-y:            auto;
+	display:               grid;
+	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	grid-auto-rows:        1fr;
+	gap:                   var(--s-0-5)
+}
+
+.item-grid-cell {
+	display: grid;
+}
+
+.item-grid-cell::before {
+	content:        "";
+	padding-bottom: 100%;
+	display:        block;
+}
+
+.item-grid-cell::before,
+.item-grid-cell > div {
+	grid-area: 1 / 1 / 2 / 2;
+}

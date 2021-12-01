@@ -5,7 +5,7 @@ export module ArrayUtils {
 	/**
 	 * @return the index of the given element or null
 	 */
-	export function indexOf<T,E>(array: T[], element: E, equality?: (a: T, b: E) => boolean): number {
+	export function indexOf<T, E>(array: T[], element: E, equality?: (a: T, b: E) => boolean): number {
 		const index = array.findIndex(e => isEq(e, element, equality));
 		return index === -1 ? null : index;
 	}
@@ -43,7 +43,7 @@ export module ArrayUtils {
 	 */
 	export function removeInPlace<T, E>(array: T[], element: E, equality?: (a: T, b: E) => boolean): number {
 		const index = ArrayUtils.indexOf(array, element, equality);
-		if(index !== null) {
+		if (index !== null) {
 			array.splice(index, 1);
 		}
 		return index;
@@ -136,6 +136,14 @@ export module ArrayUtils {
 			return equality(a, b);
 		} else {
 			return DEFAULT_EQUALITY(a, b);
+		}
+	}
+
+	export function last<T>(array: T[]): T | null {
+		if (array && array.length > 0) {
+			return array[array.length - 1];
+		} else {
+			return null;
 		}
 	}
 

@@ -1,16 +1,18 @@
 import {fetchItems} from "../../common/eventInterface";
 import {ItemPageDTO} from "../../../../common/events/dtoModels";
-import {useDispatchSetItems, useItemPage} from "../store/itemsState";
+import {useDispatchSetItems} from "../store/itemsState";
 import {useActiveCollection} from "../store/collectionActiveState";
 import {genNotificationId} from "../../common/notificationUtils";
 import {AppNotificationType, useThrowErrorWithNotification} from "../store/notificationState";
 import {voidThen} from "../../../../common/utils";
+import {useDispatchSetItemPage, useItemPage} from "../store/itemsPageState";
 
 export function useLoadItems() {
 
 	const activeCollection = useActiveCollection();
 	const currentPage = useItemPage();
 	const dispatchSetItems = useDispatchSetItems();
+	const dispatchSetPage = useDispatchSetItemPage();
 	const throwErrorNotification = useThrowErrorWithNotification();
 
 	function hookFunction(data: ({ pageIndex?: number, pageSize?: number, collectionId?: number })): Promise<void> {
@@ -27,19 +29,20 @@ export function useLoadItems() {
 	function loadItems(collectionId: number, pageIndex: number, pageSize: number) {
 		return fetchItems(collectionId, true, true, pageIndex, pageSize)
 			.catch(error => throwErrorNotification(genNotificationId(), AppNotificationType.ITEMS_FETCH_FAILED, error))
-			.then((itemPage: ItemPageDTO) => dispatchSetItems(
-				itemPage.items,
-				{
+			.then((itemPage: ItemPageDTO) => {
+				dispatchSetItems(itemPage.items);
+				dispatchSetPage({
 					index: itemPage.pageIndex,
 					size: itemPage.pageSize,
 					total: itemPage.totalCount
-				}
-			))
+				});
+			})
 			.then(voidThen);
 	}
 
 	function clearItems() {
-		dispatchSetItems([], {index: 0, size: 0, total: 0});
+		dispatchSetItems([]);
+		dispatchSetPage({index: 0, size: 0, total: 0});
 		return Promise.resolve();
 	}
 
