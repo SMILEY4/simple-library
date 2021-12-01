@@ -13,8 +13,9 @@
 }
 
 .kv-pair > .kv-pair-value {
-	overflow: hidden;
-	display:  flex;
+	overflow:    hidden;
+	display:     flex;
+	align-items: center;
 }
 
 .kv-pair > .kv-pair-value-show-overflow {
