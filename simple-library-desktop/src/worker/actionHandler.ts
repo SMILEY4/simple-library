@@ -63,6 +63,8 @@ import {ActionSetDefaultAttributeValues} from "./service/library/actionSetDefaul
 import {ImportStepWriteDefaultValues} from "./service/import/importStepWriteDefaultValues";
 import {ActionGetItemListAttributes} from "./service/library/actionGetItemListAttributes";
 import {ActionSetItemListAttributes} from "./service/library/actionSetItemListAttributes";
+import {ActionShowItemInFolder} from "./service/item/actionShowItemInFolder";
+import * as fs from "fs";
 
 export class ActionHandler {
 
@@ -125,6 +127,7 @@ export class ActionHandler {
 		const actionGetItemAttributes = new ActionGetItemAttributes(dataRepository, actionGetItemById);
 		const actionGetItemsByCollection = new ActionGetItemsByCollection(dataRepository, actionGetCollectionById, actionGetHiddenAttributes, actionGetItemListAttributes);
 		const actionOpenItemsExternal = new ActionOpenItemsExternal(dataRepository, fsWrapper);
+		const actionShowItemInFolder = new ActionShowItemInFolder(dataRepository, fsWrapper);
 		const actionUpdateItemAttribute = new ActionUpdateItemAttribute(dataRepository);
 		const actionDeleteItemAttribute = new ActionDeleteItemAttribute(dataRepository);
 		const actionEmbedItemAttributes = new ActionEmbedItemAttributes(
@@ -211,6 +214,7 @@ export class ActionHandler {
 		this.eventHandler.on(EventIds.GET_ITEM_BY_ID, (payload) => actionGetItemById.perform(payload));
 		this.eventHandler.on(EventIds.DELETE_ITEMS, (payload) => actionDeleteItems.perform(payload));
 		this.eventHandler.on(EventIds.OPEN_ITEMS, (payload) => actionOpenItemsExternal.perform(payload));
+		this.eventHandler.on(EventIds.SHOW_ITEM_IN_FOLDER, (payload) => actionShowItemInFolder.perform(payload))
 		this.eventHandler.on(EventIds.GET_ITEM_ATTRIBUTES, (payload) => actionGetItemAttributes.perform(payload.itemId, payload.includeHidden));
 		this.eventHandler.on(EventIds.SET_ITEM_ATTRIBUTE, (payload) => actionUpdateItemAttribute.perform(payload.itemId, payload.attributeId, payload.newValue));
 		this.eventHandler.on(EventIds.DELETE_ITEM_ATTRIBUTE, (payload) => actionDeleteItemAttribute.perform(payload.itemId, payload.attributeId));

@@ -43,6 +43,7 @@ export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.R
 		handleOnKeyDown,
 		handleSelectItem,
 		openItemExternal,
+		showSelectedItem,
 		openSelectedItemsExternal,
 		handleDragItem,
 		handleRemoveSelectedItems,
@@ -103,10 +104,12 @@ export function ItemList(props: React.PropsWithChildren<ItemListProps>): React.R
 				onRequestClose={closeContextMenu}
 			>
 				<ItemListEntryContextMenu
+					selectedItemsCount={itemIdsSelected.length}
 					canRemove={props.activeCollection.type !== "smart"}
 					onRemove={handleRemoveSelectedItems}
 					onDelete={() => openDialogDeleteItems(itemIdsSelected, props.activeCollection.id)}
 					onOpen={openSelectedItemsExternal}
+					onShow={showSelectedItem}
 				/>
 			</ContextMenuBase>
 

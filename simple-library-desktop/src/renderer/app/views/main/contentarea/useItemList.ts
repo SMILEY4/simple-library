@@ -13,6 +13,7 @@ import {useGetItemIds, useItemPage, useItems} from "../../../hooks/store/itemsSt
 import {useIsItemSelected, useSelectedItemIds} from "../../../hooks/store/itemSelectionState";
 import {AttributeValueDTO} from "../../../../../common/events/dtoModels";
 import {useLoadItems} from "../../../hooks/core/itemsLoad";
+import {useShowItemsFolder} from "../../../hooks/core/itemsShowFolder";
 
 export const DEFAULT_PAGE_SIZE = 50;
 
@@ -43,6 +44,7 @@ export function useItemList(activeCollectionId: number) {
 		handleOnKeyDown: useKeyboardShortcuts(),
 		handleSelectItem: useSelectItems(),
 		openItemExternal: useOpenItemExternal(),
+		showSelectedItem: useShowItemInFolder(),
 		openSelectedItemsExternal: useOpenSelectedItemsExternal(),
 		handleDragItem: useDragItems(),
 		handleRemoveSelectedItems: useRemoveSelectedItems(),
@@ -69,6 +71,20 @@ function useOpenSelectedItemsExternal() {
 
 	function hookFunction() {
 		openItemsExternal(selectedItemIds);
+	}
+
+	return hookFunction;
+}
+
+
+function useShowItemInFolder() {
+	const selectedItemIds = useSelectedItemIds();
+	const showItems = useShowItemsFolder();
+
+	function hookFunction() {
+		if (selectedItemIds && selectedItemIds.length > 0) {
+			showItems(selectedItemIds[0]);
+		}
 	}
 
 	return hookFunction;

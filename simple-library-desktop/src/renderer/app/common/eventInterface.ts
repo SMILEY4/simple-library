@@ -185,6 +185,10 @@ export function requestOpenItemsExternal(itemIds: number[]): Promise<void> {
     return eventBroadcaster.send(EventIds.OPEN_ITEMS, itemIds);
 }
 
+export function requestShowItemInFolder(itemId: number): Promise<void> {
+    return eventBroadcaster.send(EventIds.SHOW_ITEM_IN_FOLDER, itemId);
+}
+
 export function requestOpenConfigFile(): Promise<void> {
     return eventBroadcaster.send(EventIds.OPEN_CONFIG);
 }

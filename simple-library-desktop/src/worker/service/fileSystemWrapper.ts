@@ -108,4 +108,12 @@ export class FileSystemWrapper {
 		return shell.openPath(path).then();
 	}
 
+	/**
+	 * Opens the folder and focuses on the given file
+	 * @param path the path to the file to show
+	 */
+	public showInFolder(path: string): Promise<void> {
+		return shell.showItemInFolder(path);
+	}
+
 }
