@@ -16,10 +16,10 @@ import {
     BsChevronDown,
     BsChevronLeft,
     BsChevronRight,
-    BsChevronUp,
+    BsChevronUp, BsFillGrid3X3GapFill,
     FaCheck,
     FaFileExport,
-    FaFileImport,
+    FaFileImport, FaThList,
     FiSettings,
     VscClose
 } from "react-icons/all";
@@ -57,7 +57,10 @@ export enum IconType {
     COLLECTIONS_SMART,
     TAGS,
     FILE_IMPORT,
-    FILE_EXPORT
+    FILE_EXPORT,
+
+    LIST,
+    GRID,
 }
 
 
@@ -90,7 +93,10 @@ const ICON_COLOR_TYPE = new Map<IconType, string>([
     [IconType.TAGS, SVG_OUTLINED],
 
     [IconType.FILE_IMPORT, SVG_FILLED],
-    [IconType.FILE_EXPORT, SVG_FILLED]
+    [IconType.FILE_EXPORT, SVG_FILLED],
+
+    [IconType.LIST, SVG_FILLED],
+    [IconType.GRID, SVG_FILLED]
 
 ]);
 
@@ -154,6 +160,12 @@ export function Icon(props: React.PropsWithChildren<IconProps>): React.ReactElem
             return <FaFileImport {...iconProps}/>;
         case IconType.FILE_EXPORT:
             return <FaFileExport {...iconProps}/>;
+
+        case IconType.LIST:
+            return <FaThList{...iconProps}/>;
+        case IconType.GRID:
+            return <BsFillGrid3X3GapFill {...iconProps}/>;
+
         default:
             return null;
     }

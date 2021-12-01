@@ -66,7 +66,7 @@ export function ItemGrid(props: React.PropsWithChildren<ItemGridProps>): React.R
 				<div className={"item-grid-container"}>
 					{items.map(item => {
 						return (
-							<div className={"item-grid-cell"}>
+							<div className={"item-grid-cell"} key={item.id}>
 								<ItemGridEntry
 									item={item}
 									activeCollectionType={props.activeCollection ? props.activeCollection.type : undefined}
