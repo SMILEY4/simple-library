@@ -8,6 +8,7 @@ import {
     AiOutlineSearch,
     AiOutlineTags,
     BiExport,
+    BiFilterAlt,
     BiImages,
     BiImport,
     BiPlus,
@@ -16,10 +17,12 @@ import {
     BsChevronDown,
     BsChevronLeft,
     BsChevronRight,
-    BsChevronUp, BsFillGrid3X3GapFill,
+    BsChevronUp,
+    BsFillGrid3X3GapFill,
     FaCheck,
     FaFileExport,
-    FaFileImport, FaThList,
+    FaFileImport,
+    FaThList,
     FiSettings,
     VscClose
 } from "react-icons/all";
@@ -61,6 +64,8 @@ export enum IconType {
 
     LIST,
     GRID,
+
+    FILTER,
 }
 
 
@@ -96,7 +101,9 @@ const ICON_COLOR_TYPE = new Map<IconType, string>([
     [IconType.FILE_EXPORT, SVG_FILLED],
 
     [IconType.LIST, SVG_FILLED],
-    [IconType.GRID, SVG_FILLED]
+    [IconType.GRID, SVG_FILLED],
+
+    [IconType.FILTER, SVG_FILLED]
 
 ]);
 
@@ -165,6 +172,10 @@ export function Icon(props: React.PropsWithChildren<IconProps>): React.ReactElem
             return <FaThList{...iconProps}/>;
         case IconType.GRID:
             return <BsFillGrid3X3GapFill {...iconProps}/>;
+
+        case IconType.FILTER:
+            return <BiFilterAlt {...iconProps}/>;
+
 
         default:
             return null;

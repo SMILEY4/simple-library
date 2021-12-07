@@ -3,7 +3,8 @@ import {MemoizedItemList} from "./itemlist/ItemList";
 import {VBox} from "../../../../components/layout/box/Box";
 import {useContentArea} from "./useContentArea";
 import {MemoizedItemGrid} from "./itemgrid/ItemGrid";
-import {ItemListPagination} from "./ItemListPagination";
+import {ItemListFooter} from "./ItemListFooter";
+import {ItemFilterDTO} from "../../../../../common/events/dtoModels";
 
 interface ContentAreaProps {
 }
@@ -17,7 +18,9 @@ export function ContentArea(props: React.PropsWithChildren<ContentAreaProps>): R
 		setPageSize,
 		view,
 		setView,
-		scrollContentRef
+		scrollContentRef,
+		filter,
+		setFilter
 	} = useContentArea();
 
 	return activeCollection && (
@@ -34,7 +37,7 @@ export function ContentArea(props: React.PropsWithChildren<ContentAreaProps>): R
 			{view === "list" && <MemoizedItemList activeCollection={activeCollection} scrollContentRef={scrollContentRef}/>}
 			{view === "grid" && <MemoizedItemGrid activeCollection={activeCollection} scrollContentRef={scrollContentRef}/>}
 
-			<ItemListPagination
+			<ItemListFooter
 				itemCount={page.total}
 				currentPage={page.index}
 				pageSize={page.size}
@@ -42,6 +45,8 @@ export function ContentArea(props: React.PropsWithChildren<ContentAreaProps>): R
 				onSetPageSize={setPageSize}
 				view={view}
 				onSetView={setView}
+				currentFilter={filter}
+				onSetFilter={setFilter}
 			/>
 
 		</VBox>

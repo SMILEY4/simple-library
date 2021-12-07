@@ -8,6 +8,9 @@ import {Label} from "../../../../components/base/label/Label";
 import {ArrayUtils} from "../../../../../common/arrayUtils";
 import {DEFAULT_PAGE_SIZE} from "../../../hooks/store/itemsPageState";
 import {IconButton} from "../../../../components/buttons/iconbutton/IconButton";
+import {ItemFilterDTO} from "../../../../../common/events/dtoModels";
+import {useDispatchCloseDialog, useDispatchOpenDialog} from "../../../hooks/store/dialogState";
+import {DialogItemFilter} from "./itemfilter/DialogItemFilter";
 
 interface ItemListPaginationProps {
 	itemCount: number,
@@ -16,11 +19,16 @@ interface ItemListPaginationProps {
 	onGotoPage: (page: number) => void,
 	onSetPageSize: (size: number) => void,
 	view: "list" | "grid",
-	onSetView: (view: "list" | "grid") => void
+	onSetView: (view: "list" | "grid") => void,
+	currentFilter: null | ItemFilterDTO
+	onSetFilter: (filter: null | ItemFilterDTO) => void
 }
 
 
-export function ItemListPagination(props: React.PropsWithChildren<ItemListPaginationProps>): React.ReactElement {
+export function ItemListFooter(props: React.PropsWithChildren<ItemListPaginationProps>): React.ReactElement {
+
+	const openDialog = useDispatchOpenDialog();
+	const closeDialog = useDispatchCloseDialog();
 
 	const totalPageCount = Math.ceil(props.itemCount / props.pageSize);
 	const isFirstPage = props.currentPage === 0;
@@ -66,11 +74,28 @@ export function ItemListPagination(props: React.PropsWithChildren<ItemListPagina
 
 			<HBox alignCross="stretch">
 				<IconButton icon={IconType.LIST} groupPos="left" onAction={() => props.onSetView("list")}/>
-				<IconButton icon={IconType.GRID} groupPos="right"onAction={() => props.onSetView("grid")}/>
+				<IconButton icon={IconType.GRID} groupPos="right" onAction={() => props.onSetView("grid")}/>
 			</HBox>
+
+			<IconButton icon={IconType.FILTER} variant={props.currentFilter ? "info" : undefined} onAction={openFilterDialog}/>
 
 		</HBox>
 	);
 
+	function openFilterDialog() {
+		openDialog(id => ({
+			blockOutside: true,
+			content: <DialogItemFilter
+				initFilter={props.currentFilter}
+				onClose={() => closeDialog(id)}
+				onApply={(filter: null | ItemFilterDTO) => {
+					closeDialog(id);
+					if (filter !== props.currentFilter) {
+						props.onSetFilter(filter);
+					}
+				}}
+			/>
+		}));
+	}
 
 }

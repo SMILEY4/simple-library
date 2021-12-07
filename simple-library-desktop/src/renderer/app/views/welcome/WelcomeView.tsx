@@ -16,10 +16,9 @@ import {useGetNotificationStackEntries} from "../../hooks/store/notificationStat
 import {useDispatchCloseDialog, useDispatchOpenDialog} from "../../hooks/store/dialogState";
 import {DialogCreateLibrary} from "./DialogCreateLibrary";
 import {useExiftoolMissingError} from "./useExiftoolMissingError";
-import {DialogItemFilter} from "../main/contentarea/itemfilter/DialogItemFilter";
 
 interface WelcomeViewControllerProps {
-	onLoadProject: () => void
+	onLoadProject: () => void;
 }
 
 export function WelcomeView(props: React.PropsWithChildren<WelcomeViewControllerProps>): React.ReactElement {
@@ -30,7 +29,7 @@ export function WelcomeView(props: React.PropsWithChildren<WelcomeViewController
 
 	const {
 		lastOpenedLibraries,
-		browseLibraryAndOpen,
+		browseLibraryAndOpen
 	} = useWelcomeView(props.onLoadProject);
 
 	const showErrorExiftool = useExiftoolMissingError();
@@ -58,16 +57,6 @@ export function WelcomeView(props: React.PropsWithChildren<WelcomeViewController
 						{lastOpenedLibraries.length === 0 && (
 							<Label type="body" disabled align="center">Empty</Label>
 						)}
-
-						<Spacer size="0-5" dir="horizontal" line/>
-						<Button onAction={() => {
-							openDialog(id => ({
-								blockOutside: true,
-								content: <DialogItemFilter onClose={() => closeDialog(id)}/>
-							}));
-						}}>
-							Filter Dialog
-						</Button>
 
 					</VBox>
 					<Image url={imgWelcome}/>

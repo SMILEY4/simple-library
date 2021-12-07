@@ -1,4 +1,4 @@
-import {CollectionDTO} from "../../../../../common/events/dtoModels";
+import {CollectionDTO, ItemFilterDTO} from "../../../../../common/events/dtoModels";
 import {useActiveCollection} from "../../../hooks/store/collectionActiveState";
 import {useFindCollection} from "../../../hooks/store/collectionsState";
 import {useLoadItems} from "../../../hooks/core/itemsLoad";
@@ -11,14 +11,14 @@ export function useContentArea() {
 	const page = useItemPage();
 	const findCollection = useFindCollection();
 	const loadItems = useLoadItems();
-	const [view, setView] = useState<"list" | "grid">("grid");
-	const scrollContentRef = useRef();
-
 	const activeCollection: CollectionDTO | null = findCollection(activeCollectionId);
-
+	const scrollContentRef = useRef();
+	const [view, setView] = useState<"list" | "grid">("grid");
+	const [filter, setFilterState] = useState<ItemFilterDTO | null>(null);
 
 	useEffect(() => {
 		gotoPage(0);
+		setFilterState(null);
 	}, [activeCollectionId]);
 
 	function gotoPage(pageIndex: number) {
@@ -45,6 +45,11 @@ export function useContentArea() {
 		setView(view);
 	}
 
+	function setFilter(filter: ItemFilterDTO | null) {
+		setFilterState(filter);
+		return loadItems({pageIndex: 0})
+	}
+
 	return {
 		activeCollection: activeCollection,
 		page: page,
@@ -52,7 +57,9 @@ export function useContentArea() {
 		setPageSize: setPageSize,
 		view: view,
 		setView: setContentView,
-		scrollContentRef: scrollContentRef
+		scrollContentRef: scrollContentRef,
+		filter: filter,
+		setFilter: setFilter
 	};
 }
 
