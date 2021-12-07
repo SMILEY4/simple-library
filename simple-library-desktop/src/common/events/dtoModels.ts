@@ -163,3 +163,24 @@ export interface DefaultAttributeValueEntryDTO {
 	defaultValue: string,
 	allowOverwrite: boolean
 }
+
+
+
+export type ItemFilterDTO = ItemFilterConditionDTO | ItemFilterExpressionDTO;
+
+export type FilterOperationTypeDTO = "eq" | "like"
+export type FilterExpressionTypeDTO = "and" | "or" | "not" | "condition"
+
+export interface ItemFilterConditionDTO {
+	id: string,
+	type: FilterExpressionTypeDTO,
+	attributeId: string,
+	operation: FilterOperationTypeDTO,
+	value: string,
+}
+
+export interface ItemFilterExpressionDTO {
+	id: string,
+	type: FilterExpressionTypeDTO,
+	childFilters: ItemFilterDTO[]
+}

@@ -43,6 +43,24 @@ export interface AttributeKey {
 	g2: string,
 }
 
+export type ItemFilter = ItemFilterCondition | ItemFilterExpression;
+
+export type FilterOperationType = "eq" | "like"
+export type FilterExpressionType = "and" | "or" | "not" | "condition"
+
+export interface ItemFilterCondition {
+	type: FilterExpressionType,
+	attributeId: string,
+	operation: FilterOperationType,
+	value: string,
+}
+
+export interface ItemFilterExpression {
+	type: FilterExpressionType,
+	childFilters: ItemFilter[]
+}
+
+
 export function attributeKeysEquals(a: AttributeKey, b: AttributeKey): boolean {
 	return a.id === b.id && a.name === b.name && a.g0 === b.g0 && a.g1 === b.g1 && a.g2 === b.g2;
 }
@@ -197,4 +215,59 @@ export function estimateSimpleTypeFromAttributeValue(value: string): string {
 
 	return "_text";
 }
+
+export function convertItemFilterToSqlQuery(itemFilter: ItemFilter): string {
+	const sqlFilter = itemFilterToSqlQuery(itemFilter);
+	return sqlFilter ? sqlFilter : "";
+}
+
+function itemFilterToSqlQuery(itemFilter: ItemFilter): string | null {
+	return itemFilter.type === "condition"
+		? itemFilterConditionToSqlQuery(itemFilter as ItemFilterCondition)
+		: itemFilterExpressionToSqlQuery(itemFilter as ItemFilterExpression);
+}
+
+function itemFilterExpressionToSqlQuery(expression: ItemFilterExpression): string | null {
+	const sqlChildren: string[] = expression.childFilters
+		.map(child => itemFilterToSqlQuery(child))
+		.filter(str => str !== null)
+		.map(str => "(" + str + ")");
+	if (sqlChildren.length > 0) {
+		switch (expression.type) {
+			case "and": {
+				return sqlChildren.join(" AND ");
+			}
+			case "or": {
+				return sqlChildren.join(" OR ");
+			}
+			case "not": {
+				return "NOT " + sqlChildren[0];
+			}
+			default: {
+				throw new Error("Unknown item-filter-expression-type: " + expression.type);
+			}
+		}
+	} else {
+		return null;
+	}
+}
+
+
+function itemFilterConditionToSqlQuery(condition: ItemFilterCondition): string | null {
+	const KEY_ATTRIBUTE_IDENTIFIER = "attribs.attribute_identifier"
+	const KEY_ATTRIBUTE_VALUE = "attribs.value"
+	switch (condition.operation) {
+		case "eq": {
+			return `${KEY_ATTRIBUTE_IDENTIFIER} = '${condition.attributeId}' AND ${KEY_ATTRIBUTE_VALUE} = '${condition.value}'`;
+		}
+		case "like": {
+			return `${KEY_ATTRIBUTE_IDENTIFIER} = '${condition.attributeId}' AND ${KEY_ATTRIBUTE_VALUE} LIKE '${condition.value}'`;
+		}
+		default: {
+			throw new Error("Unknown item-filter-condition-operation: " + condition.operation);
+		}
+	}
+}
+
+
 

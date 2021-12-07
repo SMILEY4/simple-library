@@ -18,7 +18,7 @@ import {DialogCreateLibrary} from "./DialogCreateLibrary";
 import {useExiftoolMissingError} from "./useExiftoolMissingError";
 
 interface WelcomeViewControllerProps {
-	onLoadProject: () => void
+	onLoadProject: () => void;
 }
 
 export function WelcomeView(props: React.PropsWithChildren<WelcomeViewControllerProps>): React.ReactElement {
@@ -29,7 +29,7 @@ export function WelcomeView(props: React.PropsWithChildren<WelcomeViewController
 
 	const {
 		lastOpenedLibraries,
-		browseLibraryAndOpen,
+		browseLibraryAndOpen
 	} = useWelcomeView(props.onLoadProject);
 
 	const showErrorExiftool = useExiftoolMissingError();

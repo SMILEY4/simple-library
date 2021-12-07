@@ -16,7 +16,6 @@ import {ItemsStateProvider} from "./app/hooks/store/itemsState";
 import {AttributeStateProvider} from "./app/hooks/store/attributeStore";
 import {NotificationStateProvider} from "./app/hooks/store/notificationState";
 import {DialogStateProvider} from "./app/hooks/store/dialogState";
-import {ItemsPageStateProvider} from "./app/hooks/store/itemsPageState";
 
 const log = require("electron-log");
 Object.assign(console, log.functions);
@@ -41,7 +40,6 @@ function withStateProviders(element: ReactElement): ReactElement {
 			CollectionsStateProvider,
 			ItemSelectionStateProvider,
 			ItemsStateProvider,
-			ItemsPageStateProvider,
 			AttributeStateProvider,
 			NotificationStateProvider,
 			DialogStateProvider

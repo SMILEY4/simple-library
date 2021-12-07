@@ -1,8 +1,10 @@
 import {
     ApplicationConfigDTO,
-    AttributeDTO, AttributeKeyDTO,
+    AttributeDTO,
+    AttributeKeyDTO,
     AttributeMetaDTO,
-    CollectionTypeDTO, DefaultAttributeValueEntryDTO,
+    CollectionTypeDTO,
+    DefaultAttributeValueEntryDTO,
     EmbedReportDTO,
     EmbedStatusDTO,
     ExiftoolInfoDTO,
@@ -10,7 +12,9 @@ import {
     ImportProcessDataDTO,
     ImportResultDTO,
     ImportStatusDTO,
-    ItemDTO, ItemPageDTO,
+    ItemDTO,
+    ItemFilterDTO,
+    ItemPageDTO,
     LastOpenedLibraryDTO
 } from "../../../common/events/dtoModels";
 import {EventBroadcaster} from "../../../common/events/core/eventBroadcaster";
@@ -63,7 +67,8 @@ export function fetchItems(
     includeMissingAttribs: boolean,
     includeHiddenAttribs: boolean,
     pageIndex: number,
-    pageSize: number
+    pageSize: number,
+    filter: ItemFilterDTO | null
 ): Promise<ItemPageDTO> {
     return eventBroadcaster.send(EventIds.GET_ITEMS_BY_COLLECTION, {
         collectionId: collectionId,
@@ -71,6 +76,7 @@ export function fetchItems(
         includeHiddenAttribs: includeHiddenAttribs,
         pageIndex: pageIndex,
         pageSize: pageSize,
+        filter: filter
     });
 }
 
