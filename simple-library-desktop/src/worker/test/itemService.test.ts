@@ -61,7 +61,7 @@ describe("item-service", () => {
 				])
 			]);
 			// when
-			const result: Promise<ItemPage> = actionGetByCollection.perform(1, false, true, 0, 999);
+			const result: Promise<ItemPage> = actionGetByCollection.perform(1, false, true, 0, 999, null);
 			// then
 			await expect(result.then(p => p.items)).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, []),
@@ -96,7 +96,7 @@ describe("item-service", () => {
 				SQL.insertItemListAttributes([ATT_ID_FILE_MODIFY_DATE, ATT_ID_MIME_TYPE])
 			]);
 			// when
-			const result: Promise<ItemPage> = actionGetByCollection.perform(1, false, true, 0, 999);
+			const result: Promise<ItemPage> = actionGetByCollection.perform(1, false, true, 0, 999, null);
 			// then
 			await expect(result.then(p => p.items)).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, [
@@ -136,7 +136,7 @@ describe("item-service", () => {
 				SQL.insertItemListAttributes([ATT_ID_FILE_MODIFY_DATE, ATT_ID_MIME_TYPE])
 			]);
 			// when
-			const result: Promise<ItemPage> = actionGetByCollection.perform(1, true, true, 0, 999);
+			const result: Promise<ItemPage> = actionGetByCollection.perform(1, true, true, 0, 999, null);
 			// then
 			await expect(result.then(p => p.items)).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, [
@@ -180,11 +180,11 @@ describe("item-service", () => {
 				SQL.insertItemListAttributes([ATT_ID_COMMENT, ATT_ID_AUTHOR])
 			]);
 			// when
-			const result1: Promise<ItemPage> = actionGetByCollection.perform(1, true, true, 0, 3);
+			const result1: Promise<ItemPage> = actionGetByCollection.perform(1, true, true, 0, 3, null);
 			// then
 			await expect(result1.then(p => p.items.map(i => i.id))).resolves.toEqual([1, 2, 3]);
 			// when
-			const result2: Promise<ItemPage> = actionGetByCollection.perform(1, true, true, 1, 3);
+			const result2: Promise<ItemPage> = actionGetByCollection.perform(1, true, true, 1, 3, null);
 			// then
 			await expect(result2.then(p => p.items.map(i => i.id))).resolves.toEqual([4, 5, 6]);
 		});
@@ -215,7 +215,7 @@ describe("item-service", () => {
 				SQL.insertItemListAttributes([ATT_ID_FILE_MODIFY_DATE, ATT_ID_MIME_TYPE])
 			]);
 			// when
-			const result: Promise<ItemPage> = actionGetByCollection.perform(2, false, true, 0, 999);
+			const result: Promise<ItemPage> = actionGetByCollection.perform(2, false, true, 0, 999, null);
 			// then
 			await expect(result.then(p => p.items)).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, [
@@ -254,11 +254,11 @@ describe("item-service", () => {
 				SQL.insertItemListAttributes([ATT_ID_COMMENT, ATT_ID_AUTHOR])
 			]);
 			// when
-			const result1: Promise<ItemPage> = actionGetByCollection.perform(1, false, true, 0, 3);
+			const result1: Promise<ItemPage> = actionGetByCollection.perform(1, false, true, 0, 3, null);
 			// then
 			await expect(result1.then(p => p.items.map(i => i.id))).resolves.toEqual([2, 3, 4]);
 			// when
-			const result2: Promise<ItemPage> = actionGetByCollection.perform(1, false, true, 1, 3);
+			const result2: Promise<ItemPage> = actionGetByCollection.perform(1, false, true, 1, 3, null);
 			// then
 			await expect(result2.then(p => p.items.map(i => i.id))).resolves.toEqual([5, 6, 7]);
 		});
@@ -289,7 +289,7 @@ describe("item-service", () => {
 				SQL.insertItemListAttributes([ATT_ID_FILE_MODIFY_DATE, ATT_ID_MIME_TYPE])
 			]);
 			// when
-			const result: Promise<ItemPage> = actionGetByCollection.perform(2, false, true, 0, 999);
+			const result: Promise<ItemPage> = actionGetByCollection.perform(2, false, true, 0, 999, null);
 			// then
 			await expect(result.then(p => p.items)).resolves.toEqual([
 				item(1, "/path/to/file/1", "thumbnail1", "hash1", 1000, [
@@ -330,7 +330,7 @@ describe("item-service", () => {
 				SQL.insertItemListAttributes([ATT_ID_FILE_ACCESS_DATE, ATT_ID_MIME_TYPE])
 			]);
 			// when
-			const result: Promise<ItemPage> = actionGetByCollection.perform(42, false, true, 0, 999);
+			const result: Promise<ItemPage> = actionGetByCollection.perform(42, false, true, 0, 999, null);
 			// then
 			await expect(result).rejects.toBeDefined();
 		});

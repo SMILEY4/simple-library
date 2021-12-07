@@ -38,12 +38,21 @@ export function useDialogItemFilter(initFilter: ItemFilterDTO | null) {
 			() => true,
 			(current: ItemFilterExpressionDTO) => {
 				if (current.id === parentId) {
-					current.childFilters = [{
-						id: Math.random() + "" + Date.now(),
-						type: addedType,
-						value: "",
-						childFilters: []
-					}, ...current.childFilters];
+					if(addedType === "condition") {
+						current.childFilters = [{
+							id: Math.random() + "" + Date.now(),
+							type: "condition",
+							attributeId: "",
+							operation: "eq",
+							value: ""
+						}, ...current.childFilters];
+					} else {
+						current.childFilters = [{
+							id: Math.random() + "" + Date.now(),
+							type: addedType,
+							childFilters: []
+						}, ...current.childFilters];
+					}
 					return false;
 				} else {
 					return true;
