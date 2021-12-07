@@ -8,6 +8,7 @@ import {
 	useGlobalStateWriteOnly
 } from "../../../components/utils/storeUtils";
 import React from "react";
+import {ItemFilterDTO} from "../../../../common/events/dtoModels";
 
 
 // STATE
@@ -19,7 +20,8 @@ export interface CollectionActiveState {
 		index: number,
 		size: number,
 		total: number
-	}
+	},
+	filter: null | ItemFilterDTO
 }
 
 const initialState: CollectionActiveState = {
@@ -28,7 +30,8 @@ const initialState: CollectionActiveState = {
 		index: 0,
 		size: DEFAULT_PAGE_SIZE,
 		total: 0
-	}
+	},
+	filter: null
 };
 
 
@@ -37,6 +40,7 @@ const initialState: CollectionActiveState = {
 enum CollectionActiveActionType {
 	SET_CURRENT_COLLECTION_ID = "collection.active.set",
 	SET_PAGE = "collection.page.set",
+	SET_FILTER = "collection.filter.set"
 }
 
 const reducerConfigMap: ReducerConfigMap<CollectionActiveActionType, CollectionActiveState> = new ReducerConfigMap([
@@ -47,6 +51,10 @@ const reducerConfigMap: ReducerConfigMap<CollectionActiveActionType, CollectionA
 	[CollectionActiveActionType.SET_PAGE, (state, payload) => ({
 		...state,
 		page: payload
+	})],
+	[CollectionActiveActionType.SET_FILTER, (state, payload) => ({
+		...state,
+		filter: payload
 	})]
 ]);
 
@@ -110,4 +118,20 @@ export function useDispatchSetItemPage(): (page: { index: number, size: number, 
 export function useItemPage() {
 	const [state] = useCollectionActiveContext();
 	return state.page;
+}
+
+
+export function useDispatchSetItemFilter(): (filter: ItemFilterDTO | null) => void {
+	const dispatch = useCollectionActiveDispatch();
+	return (filter: ItemFilterDTO | null) => {
+		dispatch({
+			type: CollectionActiveActionType.SET_FILTER,
+			payload: filter
+		});
+	};
+}
+
+export function useItemFilter() {
+	const [state] = useCollectionActiveContext();
+	return state.filter;
 }

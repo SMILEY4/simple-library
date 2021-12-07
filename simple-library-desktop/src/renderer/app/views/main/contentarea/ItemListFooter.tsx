@@ -6,11 +6,11 @@ import {Icon, IconType} from "../../../../components/base/icon/Icon";
 import {ChoiceBox} from "../../../../components/buttons/choicebox/ChoiceBox";
 import {Label} from "../../../../components/base/label/Label";
 import {ArrayUtils} from "../../../../../common/arrayUtils";
-import {DEFAULT_PAGE_SIZE} from "../../../hooks/store/itemsPageState";
 import {IconButton} from "../../../../components/buttons/iconbutton/IconButton";
 import {ItemFilterDTO} from "../../../../../common/events/dtoModels";
 import {useDispatchCloseDialog, useDispatchOpenDialog} from "../../../hooks/store/dialogState";
 import {DialogItemFilter} from "./itemfilter/DialogItemFilter";
+import {DEFAULT_PAGE_SIZE} from "../../../hooks/store/collectionActiveState";
 
 interface ItemListPaginationProps {
 	itemCount: number,

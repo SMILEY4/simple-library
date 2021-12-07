@@ -1,7 +1,7 @@
 import {fetchItems} from "../../common/eventInterface";
 import {ItemFilterDTO, ItemPageDTO} from "../../../../common/events/dtoModels";
 import {useDispatchSetItems} from "../store/itemsState";
-import {useActiveCollection, useDispatchSetItemPage, useItemPage} from "../store/collectionActiveState";
+import {useActiveCollection, useDispatchSetItemPage, useItemFilter, useItemPage} from "../store/collectionActiveState";
 import {genNotificationId} from "../../common/notificationUtils";
 import {AppNotificationType, useThrowErrorWithNotification} from "../store/notificationState";
 import {voidThen} from "../../../../common/utils";
@@ -10,6 +10,7 @@ export function useLoadItems() {
 
 	const activeCollection = useActiveCollection();
 	const currentPage = useItemPage();
+	const currentFilter = useItemFilter();
 	const dispatchSetItems = useDispatchSetItems();
 	const dispatchSetPage = useDispatchSetItemPage();
 	const throwErrorNotification = useThrowErrorWithNotification();
@@ -18,7 +19,7 @@ export function useLoadItems() {
 		const collectionId = data.collectionId !== undefined ? data.collectionId : activeCollection;
 		const pageIndex = data.pageIndex !== undefined ? data.pageIndex : currentPage.index;
 		const pageSize = data.pageSize !== undefined ? data.pageSize : currentPage.size;
-		const filter = data.filter !== undefined ? data.filter : null;
+		const filter = data.filter !== undefined ? data.filter : currentFilter;
 		if (collectionId === null || collectionId === undefined) {
 			return clearItems();
 		} else {

@@ -1,5 +1,10 @@
 import {CollectionDTO, ItemFilterDTO} from "../../../../../common/events/dtoModels";
-import {useActiveCollection, useItemPage} from "../../../hooks/store/collectionActiveState";
+import {
+	useActiveCollection,
+	useDispatchSetItemFilter,
+	useItemFilter,
+	useItemPage
+} from "../../../hooks/store/collectionActiveState";
 import {useFindCollection} from "../../../hooks/store/collectionsState";
 import {useLoadItems} from "../../../hooks/core/itemsLoad";
 import {useEffect, useRef, useState} from "react";
@@ -8,16 +13,17 @@ export function useContentArea() {
 
 	const activeCollectionId = useActiveCollection();
 	const page = useItemPage();
+	const filter = useItemFilter();
+	const dispatchSetFilter = useDispatchSetItemFilter();
 	const findCollection = useFindCollection();
 	const loadItems = useLoadItems();
 	const activeCollection: CollectionDTO | null = findCollection(activeCollectionId);
 	const scrollContentRef = useRef();
 	const [view, setView] = useState<"list" | "grid">("grid");
-	const [filter, setFilterState] = useState<ItemFilterDTO | null>(null);
 
 	useEffect(() => {
 		gotoPage(0);
-		setFilterState(null);
+		dispatchSetFilter(null);
 	}, [activeCollectionId]);
 
 	function gotoPage(pageIndex: number) {
@@ -45,8 +51,8 @@ export function useContentArea() {
 	}
 
 	function setFilter(filter: ItemFilterDTO | null) {
-		setFilterState(filter);
-		return loadItems({pageIndex: 0})
+		dispatchSetFilter(filter);
+		return loadItems({pageIndex: 0, filter: filter})
 	}
 
 	return {
