@@ -1,0 +1,39 @@
+.filter-container {
+	width:            400px;
+	height:           400px;
+	overflow-y:       auto;
+
+	padding:          var(--s-0-5);
+	border-radius:    var(--radius-0);
+	border:           1px solid var(--color-border);
+	background-color: var(--color-bg-inset);
+}
+
+.filter-condition,
+.filter-expression {
+	padding:          var(--s-0-25);
+	border-radius:    var(--radius-0);
+	border:           1px solid var(--color-border);
+	background-color: var(--color-bg-raised);
+}
+
+.filter-condition:hover,
+.filter-expression:hover {
+	background-color: var(--color-bg-raised-hover);
+}
+
+.filter-expression-container {
+	padding:          var(--s-0-5);
+	border-radius:    var(--radius-0);
+	border:           1px solid var(--color-border);
+	background-color: var(--color-bg-inset);
+}
+
+.filter-condition-content > * {
+	flex-grow: 1;
+	width:     33%
+}
+
+.btn-remove-expr {
+	margin-left: auto;
+}
