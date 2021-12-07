@@ -1,8 +1,7 @@
 import {CollectionDTO, ItemFilterDTO} from "../../../../../common/events/dtoModels";
-import {useActiveCollection} from "../../../hooks/store/collectionActiveState";
+import {useActiveCollection, useItemPage} from "../../../hooks/store/collectionActiveState";
 import {useFindCollection} from "../../../hooks/store/collectionsState";
 import {useLoadItems} from "../../../hooks/core/itemsLoad";
-import {useItemPage} from "../../../hooks/store/itemsPageState";
 import {useEffect, useRef, useState} from "react";
 
 export function useContentArea() {

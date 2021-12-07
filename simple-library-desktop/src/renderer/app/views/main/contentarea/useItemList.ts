@@ -12,9 +12,7 @@ import {useActiveCollection} from "../../../hooks/store/collectionActiveState";
 import {useGetItemIds, useItems} from "../../../hooks/store/itemsState";
 import {useIsItemSelected, useSelectedItemIds} from "../../../hooks/store/itemSelectionState";
 import {AttributeValueDTO} from "../../../../../common/events/dtoModels";
-import {useLoadItems} from "../../../hooks/core/itemsLoad";
 import {useShowItemsFolder} from "../../../hooks/core/itemsShowFolder";
-import {useItemPage} from "../../../hooks/store/itemsPageState";
 
 
 export function useItemList(activeCollectionId: number) {

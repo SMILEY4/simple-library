@@ -1,11 +1,10 @@
 import {fetchItems} from "../../common/eventInterface";
 import {ItemFilterDTO, ItemPageDTO} from "../../../../common/events/dtoModels";
 import {useDispatchSetItems} from "../store/itemsState";
-import {useActiveCollection} from "../store/collectionActiveState";
+import {useActiveCollection, useDispatchSetItemPage, useItemPage} from "../store/collectionActiveState";
 import {genNotificationId} from "../../common/notificationUtils";
 import {AppNotificationType, useThrowErrorWithNotification} from "../store/notificationState";
 import {voidThen} from "../../../../common/utils";
-import {useDispatchSetItemPage, useItemPage} from "../store/itemsPageState";
 
 export function useLoadItems() {
 
