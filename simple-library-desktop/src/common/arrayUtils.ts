@@ -13,14 +13,14 @@ export module ArrayUtils {
 	/**
 	 * @return true, if the given element is in the given array
 	 */
-	export function contains<T>(array: T[], element: T, equality?: (a: T, b: T) => boolean): boolean {
+	export function contains<T,E>(array: T[], element: E, equality?: (a: T, b: E) => boolean): boolean {
 		return ArrayUtils.indexOf(array, element, equality) !== null;
 	}
 
 	/**
 	 * @return true, if the given element is NOT in the given array
 	 */
-	export function containsNot<T>(array: T[], element: T, equality?: (a: T, b: T) => boolean): boolean {
+	export function containsNot<T,E>(array: T[], element: E, equality?: (a: T, b: E) => boolean): boolean {
 		return !contains(array, element, equality);
 	}
 

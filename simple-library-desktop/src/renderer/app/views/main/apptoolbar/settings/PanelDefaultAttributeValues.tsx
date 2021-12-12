@@ -8,7 +8,6 @@ import {IconButton} from "../../../../../components/buttons/iconbutton/IconButto
 import {IconType} from "../../../../../components/base/icon/Icon";
 import {TextField} from "../../../../../components/input/textfield/TextField";
 import {CheckBox} from "../../../../../components/buttons/checkbox/CheckBox";
-import {Button} from "../../../../../components/buttons/button/Button";
 
 
 interface PanelDefaultAttributeValuesProps {

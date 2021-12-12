@@ -4,6 +4,7 @@ import {PanelHiddenAttributes} from "./PanelHiddenAttributes";
 import {Label} from "../../../../../components/base/label/Label";
 import {AttributeMetaDTO, DefaultAttributeValueEntryDTO} from "../../../../../../common/events/dtoModels";
 import {PanelDefaultAttributeValues} from "./PanelDefaultAttributeValues";
+import {PanelCustomAttributes} from "./PanelCustomAttributes";
 
 interface AttributeSettingsProps {
 	hiddenAttributes: AttributeMetaDTO[],
@@ -35,6 +36,11 @@ export function AttributeSettings(props: React.PropsWithChildren<AttributeSettin
 					onSetDefaultAttributeValue={props.onSetDefaultAttributeValue}
 					onDeleteDefaultAttributeValue={props.onDeleteDefaultAttributeValue}
 				/>
+			</VBox>
+
+			<VBox spacing="0-25" alignMain="start" alignCross="stretch">
+				<Label bold>Custom Fields</Label>
+				<PanelCustomAttributes/>
 			</VBox>
 
 		</VBox>
