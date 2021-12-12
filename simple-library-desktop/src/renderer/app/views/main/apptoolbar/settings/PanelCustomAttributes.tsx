@@ -10,12 +10,14 @@ import {Button} from "../../../../../components/buttons/button/Button";
 import {ArrayUtils} from "../../../../../../common/arrayUtils";
 
 interface PanelCustomAttributesProps {
+	customAttributes: AttributeMetaDTO[],
+	onCreateCustomAttribute: (key: AttributeKeyDTO) => void
+	onDeleteCustomAttribute: (attribute: AttributeMetaDTO) => void
 }
 
 
 export function PanelCustomAttributes(props: React.PropsWithChildren<PanelCustomAttributesProps>): React.ReactElement {
 
-	const [customAttributes, setCustomAttributes] = useState<AttributeMetaDTO[]>([]);
 	const [formData, setFormData] = useState<AttributeKeyDTO>({
 		id: "",
 		name: "",
@@ -26,8 +28,7 @@ export function PanelCustomAttributes(props: React.PropsWithChildren<PanelCustom
 
 	return (
 		<HBox spacing="0-5" alignMain="space-between" alignCross="start" className="custom-attributes-base">
-			<VBox spacing="0-5" alignMain="start" alignCross="stretch" padding="0-25"
-				  className="custom-attributes-form">
+			<VBox spacing="0-5" alignMain="start" alignCross="stretch" padding="0-25" className="custom-attributes-form">
 				<VBox spacing="0-15" alignMain="start" alignCross="stretch">
 					<Label type="caption">Name</Label>
 					<TextField
@@ -70,9 +71,8 @@ export function PanelCustomAttributes(props: React.PropsWithChildren<PanelCustom
 				</VBox>
 				<Button onAction={onCreateCustomAttribute}>Create</Button>
 			</VBox>
-			<VBox spacing="0-25" alignMain="start" alignCross="stretch" padding="0-25"
-				  className="custom-attributes-list">
-				{customAttributes.map(e => {
+			<VBox spacing="0-25" alignMain="start" alignCross="stretch" padding="0-25" className="custom-attributes-list">
+				{props.customAttributes.map(e => {
 					return (
 						<HBox spacing="0-25" padding="0-25" alignMain="space-between" alignCross="center" key={e.attId}
 							  className="attrib-entry">
@@ -98,56 +98,40 @@ export function PanelCustomAttributes(props: React.PropsWithChildren<PanelCustom
 			...formData,
 			name: value,
 			id: value
-		})
+		});
 	}
 
 	function onFormSetG0(value: string) {
 		setFormData({
 			...formData,
 			g0: value
-		})
+		});
 	}
 
 	function onFormSetG1(value: string) {
 		setFormData({
 			...formData,
 			g1: value
-		})
+		});
 	}
 
 	function onFormSetG2(value: string) {
 		setFormData({
 			...formData,
 			g2: value
-		})
+		});
 	}
 
 	function onCreateCustomAttribute() {
 		if (isFormDataValid()) {
-			if (!keyExists(formData)) {
-				setCustomAttributes([
-					...customAttributes,
-					{
-						attId: null,
-						key: {
-							id: formData.id.trim(),
-							name: formData.name.trim(),
-							g0: (formData.g0 && formData.g0.trim().length > 0) ? formData.g0.trim() : "Custom",
-							g1: (formData.g1 && formData.g1.trim().length > 0) ? formData.g1.trim() : "Custom",
-							g2: (formData.g2 && formData.g2.trim().length > 0) ? formData.g2.trim() : "Custom",
-						},
-						type: "?",
-						writable: true,
-					}
-				]);
-			}
+			props.onCreateCustomAttribute(formData);
 			clearFormData();
 		}
 	}
 
 
 	function onDeleteCustomAttribute(entry: AttributeMetaDTO) {
-		setCustomAttributes(ArrayUtils.remove(customAttributes, entry, attributeMetaEquals))
+		props.onDeleteCustomAttribute(entry);
 	}
 
 
@@ -167,30 +151,5 @@ export function PanelCustomAttributes(props: React.PropsWithChildren<PanelCustom
 	}
 
 
-	function keyExists(key: AttributeKeyDTO) {
-		return ArrayUtils.contains(customAttributes, key, (a, b) => {
-			const keyA = a.key;
-			return keyA.id === b.id
-				&& keyA.name === b.name
-				&& keyA.g0 === b.g0
-				&& keyA.g1 === b.g1
-				&& keyA.g2 === b.g2;
-		});
-	}
-
-
-	function attributeMetaEquals(b: AttributeMetaDTO, a: AttributeMetaDTO) {
-		if (a.attId === null || a.attId === undefined || b.attId === null || b.attId === undefined) {
-			const keyA = a.key;
-			const keyB = b.key;
-			return keyA.id === keyB.id
-				&& keyA.name === keyB.name
-				&& keyA.g0 === keyB.g0
-				&& keyA.g1 === keyB.g1
-				&& keyA.g2 === keyB.g2;
-		} else {
-			return a.attId === b.attId;
-		}
-	}
 
 }

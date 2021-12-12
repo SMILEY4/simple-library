@@ -3,6 +3,7 @@ import {useApplicationConfig} from "../../../../hooks/core/configApplication";
 import {useEffect, useState} from "react";
 import {
 	ApplicationConfigDTO,
+	AttributeKeyDTO,
 	AttributeMetaDTO,
 	DefaultAttributeValueEntryDTO
 } from "../../../../../../common/events/dtoModels";
@@ -11,6 +12,7 @@ import {ArrayUtils} from "../../../../../../common/arrayUtils";
 import {useDefaultAttributeValues} from "../../../../hooks/core/defaultAttributeValues";
 import {fetchItemListAttributes, requestSetItemListAttributes} from "../../../../common/eventInterface";
 import {useLoadItems} from "../../../../hooks/core/itemsLoad";
+import {useCustomAttributes} from "../../../../hooks/core/customAttributes";
 
 export enum SettingsDialogTab {
 	APP,
@@ -51,6 +53,14 @@ export function useDialogSettings(onClose: () => void) {
 	} = useDefaultAttributeValuesSettingsDialog();
 
 	const {
+		customAttributes,
+		createCustomAttribute,
+		deleteCustomAttribute,
+		discardCustomAttributes,
+		commitCustomAttributes
+	} = useCreateCustomAttributesSettingsDialog();
+
+	const {
 		listAppearanceEntries,
 		addListAppearanceEntry,
 		deleteListAppearanceEntry,
@@ -64,6 +74,7 @@ export function useDialogSettings(onClose: () => void) {
 		discardAppConfig()
 			.then(() => discardHiddenAttributes())
 			.then(() => discardDefaultAttributeValues())
+			.then(() => discardCustomAttributes())
 			.then(() => discardListAppearanceEntries())
 			.then(() => onClose());
 	}
@@ -72,6 +83,7 @@ export function useDialogSettings(onClose: () => void) {
 		commitAppConfig()
 			.then(() => commitHiddenAttributes())
 			.then(() => commitDefaultAttributeValues())
+			.then(() => commitCustomAttributes())
 			.then(() => commitListAppearanceEntries())
 			.then(() => onClose());
 	}
@@ -93,6 +105,10 @@ export function useDialogSettings(onClose: () => void) {
 		defaultAttributeValues: defaultAttributeValueEntries,
 		setDefaultAttributeValue: setDefaultAttributeValue,
 		deleteDefaultAttributeValue: deleteDefaultAttributeValue,
+
+		customAttributes: customAttributes,
+		createCustomAttribute: createCustomAttribute,
+		deleteCustomAttribute: deleteCustomAttribute,
 
 		listAppearanceEntries: listAppearanceEntries,
 		addListAppearanceEntry: addListAppearanceEntry,
@@ -224,6 +240,111 @@ export function useDefaultAttributeValuesSettingsDialog() {
 		deleteDefaultAttributeValue: deleteEntry,
 		discardDefaultAttributeValues: discard,
 		commitDefaultAttributeValues: commit
+	};
+
+}
+
+
+export function useCreateCustomAttributesSettingsDialog() {
+
+	const [customAttributes, setCustomAttributes] = useState<AttributeMetaDTO[]>([]);
+	const [addedCustomAttributes, setAddedCustomAttributes] = useState<AttributeMetaDTO[]>([]);
+	const [deletedCustomAttributes, setDeletedCustomAttributes] = useState<AttributeMetaDTO[]>([]);
+
+	const {
+		getCustomAttributes,
+		addCustomAttributes,
+		deleteCustomAttributes
+	} = useCustomAttributes();
+
+	useEffect(() => {
+		getCustomAttributes().then(attribs => {
+			setCustomAttributes(attribs);
+			setAddedCustomAttributes([]);
+			setDeletedCustomAttributes([]);
+		})
+	}, []);
+
+
+	function createAttribute(entry: AttributeKeyDTO) {
+		if (!keyExists(entry)) {
+			const attribute: AttributeMetaDTO = {
+				attId: null,
+				key: {
+					id: entry.id.trim(),
+					name: entry.name.trim(),
+					g0: (entry.g0 && entry.g0.trim().length > 0) ? entry.g0.trim() : "Custom",
+					g1: (entry.g1 && entry.g1.trim().length > 0) ? entry.g1.trim() : "Custom",
+					g2: (entry.g2 && entry.g2.trim().length > 0) ? entry.g2.trim() : "Custom",
+				},
+				type: "?",
+				writable: true,
+			};
+			setCustomAttributes([...customAttributes, attribute].sort((a, b) => a.key.name.localeCompare(b.key.name)));
+			markAdded(attribute);
+		}
+	}
+
+	function deleteAttribute(attribute: AttributeMetaDTO) {
+		setCustomAttributes(ArrayUtils.remove(customAttributes, attribute, attributeMetaEquals))
+		markDeleted(attribute);
+	}
+
+	function discard(): Promise<any> {
+		return getCustomAttributes().then(attribs => {
+			setCustomAttributes(attribs);
+			setAddedCustomAttributes([]);
+			setDeletedCustomAttributes([]);
+		})
+	}
+
+	function markAdded(attribute: AttributeMetaDTO) {
+		setDeletedCustomAttributes(ArrayUtils.remove(customAttributes, attribute, attributeMetaEquals))
+		setAddedCustomAttributes([...addedCustomAttributes, attribute]);
+	}
+
+	function markDeleted(attribute: AttributeMetaDTO) {
+		setAddedCustomAttributes(ArrayUtils.remove(customAttributes, attribute, attributeMetaEquals))
+		setDeletedCustomAttributes([...addedCustomAttributes, attribute]);
+	}
+
+	async function commit(): Promise<any> {
+		return Promise.resolve()
+			.then(() => addCustomAttributes(addedCustomAttributes.map(a => a.key)))
+			.then(() => deleteCustomAttributes(deletedCustomAttributes.map(a => a.attId)))
+	}
+
+	function keyExists(key: AttributeKeyDTO) {
+		return ArrayUtils.contains(customAttributes, key, (a, b) => {
+			const keyA = a.key;
+			return keyA.id === b.id
+				&& keyA.name === b.name
+				&& keyA.g0 === b.g0
+				&& keyA.g1 === b.g1
+				&& keyA.g2 === b.g2;
+		});
+	}
+
+	function attributeMetaEquals(b: AttributeMetaDTO, a: AttributeMetaDTO) {
+		if (a.attId === null || a.attId === undefined || b.attId === null || b.attId === undefined) {
+			const keyA = a.key;
+			const keyB = b.key;
+			return keyA.id === keyB.id
+				&& keyA.name === keyB.name
+				&& keyA.g0 === keyB.g0
+				&& keyA.g1 === keyB.g1
+				&& keyA.g2 === keyB.g2;
+		} else {
+			return a.attId === b.attId;
+		}
+	}
+
+	return {
+		customAttributes: customAttributes,
+		createCustomAttribute: createAttribute,
+		deleteCustomAttribute: deleteAttribute,
+		discardCustomAttributes: discard,
+		commitCustomAttributes: commit
 	};
 
 }

@@ -33,12 +33,15 @@ export function DialogSettings(props: React.PropsWithChildren<DialogSettingsProp
 		setDefaultAttributeValue,
 		deleteDefaultAttributeValue,
 
+		customAttributes,
+		createCustomAttribute,
+		deleteCustomAttribute,
+
 		listAppearanceEntries,
 		addListAppearanceEntry,
 		deleteListAppearanceEntry,
 		moveListAppearanceEntryUp,
 		moveListAppearanceEntryDown
-
 	} = useDialogSettings(props.onClose);
 
 	return (
@@ -73,6 +76,9 @@ export function DialogSettings(props: React.PropsWithChildren<DialogSettingsProp
 								defaultAttributeValues={defaultAttributeValues}
 								onSetDefaultAttributeValue={setDefaultAttributeValue}
 								onDeleteDefaultAttributeValue={deleteDefaultAttributeValue}
+								customAttributes={customAttributes}
+								onCreateCustomAttribute={createCustomAttribute}
+								onDeleteCustomAttribute={deleteCustomAttribute}
 							/>
 						)}
 						{currentTab === SettingsDialogTab.APPEARANCE && (

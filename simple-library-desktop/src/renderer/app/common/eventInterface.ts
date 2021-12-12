@@ -271,3 +271,17 @@ export function fetchItemListAttributes(): Promise<AttributeMetaDTO[]> {
 export function requestSetItemListAttributes(entries: number[]): Promise<void> {
     return eventBroadcaster.send(EventIds.SET_ITEM_LIST_ATTRIBUTES, entries);
 }
+
+
+export function fetchCustomAttributes(): Promise<AttributeMetaDTO[]> {
+    return eventBroadcaster.send(EventIds.GET_CUSTOM_ATTRIBUTES);
+}
+
+
+export function requestCreateCustomAttributes(attributeKeys: AttributeKeyDTO[]): Promise<void> {
+    return eventBroadcaster.send(EventIds.CREATE_CUSTOM_ATTRIBUTES, attributeKeys);
+}
+
+export function requestDeleteCustomAttributes(attributeIds: number[]): Promise<void> {
+    return eventBroadcaster.send(EventIds.DELETE_CUSTOM_ATTRIBUTES, attributeIds);
+}

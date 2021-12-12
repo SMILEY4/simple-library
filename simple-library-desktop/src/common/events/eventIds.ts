@@ -43,7 +43,9 @@ export module EventIds {
 	export const GET_DEFAULT_ATTRIBUTE_VALUES = "library.default_attribute_values.get";
 	export const GET_ITEM_LIST_ATTRIBUTES = "library.item-list-attributes.get";
 	export const SET_ITEM_LIST_ATTRIBUTES = "library.item-list-attributes.set";
-
+	export const GET_CUSTOM_ATTRIBUTES = "library.attribute_meta.custom.get"; // TODO: implement backend
+	export const CREATE_CUSTOM_ATTRIBUTES = "library.attribute_meta.custom.create"; // TODO: implement backend
+	export const DELETE_CUSTOM_ATTRIBUTES = "library.attribute_meta.custom.delete"; // TODO: implement backend
 
 	export const ALL_IDS = [
 		GET_APP_CONFIG,
@@ -88,7 +90,10 @@ export module EventIds {
 		SET_DEFAULT_ATTRIBUTE_VALUES,
 		GET_DEFAULT_ATTRIBUTE_VALUES,
 		GET_ITEM_LIST_ATTRIBUTES,
-		SET_ITEM_LIST_ATTRIBUTES
+		SET_ITEM_LIST_ATTRIBUTES,
+		GET_CUSTOM_ATTRIBUTES,
+		CREATE_CUSTOM_ATTRIBUTES,
+		DELETE_CUSTOM_ATTRIBUTES
 	];
 
 }

@@ -2,7 +2,11 @@ import React from "react";
 import {VBox} from "../../../../../components/layout/box/Box";
 import {PanelHiddenAttributes} from "./PanelHiddenAttributes";
 import {Label} from "../../../../../components/base/label/Label";
-import {AttributeMetaDTO, DefaultAttributeValueEntryDTO} from "../../../../../../common/events/dtoModels";
+import {
+	AttributeKeyDTO,
+	AttributeMetaDTO,
+	DefaultAttributeValueEntryDTO
+} from "../../../../../../common/events/dtoModels";
 import {PanelDefaultAttributeValues} from "./PanelDefaultAttributeValues";
 import {PanelCustomAttributes} from "./PanelCustomAttributes";
 
@@ -10,9 +14,14 @@ interface AttributeSettingsProps {
 	hiddenAttributes: AttributeMetaDTO[],
 	hideAttribute: (attribute: AttributeMetaDTO) => void,
 	showAttribute: (attribute: AttributeMetaDTO) => void,
+
 	defaultAttributeValues: DefaultAttributeValueEntryDTO[];
 	onSetDefaultAttributeValue: (entry: DefaultAttributeValueEntryDTO) => void;
 	onDeleteDefaultAttributeValue: (attId: number) => void;
+
+	customAttributes: AttributeMetaDTO[],
+	onCreateCustomAttribute: (key: AttributeKeyDTO) => void
+	onDeleteCustomAttribute: (attribute: AttributeMetaDTO) => void
 }
 
 export function AttributeSettings(props: React.PropsWithChildren<AttributeSettingsProps>): React.ReactElement {
@@ -40,7 +49,11 @@ export function AttributeSettings(props: React.PropsWithChildren<AttributeSettin
 
 			<VBox spacing="0-25" alignMain="start" alignCross="stretch">
 				<Label bold>Custom Fields</Label>
-				<PanelCustomAttributes/>
+				<PanelCustomAttributes
+					customAttributes={props.customAttributes}
+					onCreateCustomAttribute={props.onCreateCustomAttribute}
+					onDeleteCustomAttribute={props.onDeleteCustomAttribute}
+				/>
 			</VBox>
 
 		</VBox>
