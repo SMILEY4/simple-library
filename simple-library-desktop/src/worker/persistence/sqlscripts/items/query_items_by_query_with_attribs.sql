@@ -37,10 +37,10 @@ FROM items
                        || attribute_meta.custom
                        || '-'
 					   || item_list_attributes.att_index
+                       || '-'
+                       || item_attributes.modified
 					   || '"="'
 					   || item_attributes.value
-					   || '"-"'
-					   || item_attributes.modified
 					   || '"'
 					   AS str_attribute -- "att_id:id:name:g0:g1:g2-type-writable-custom-attIndex"="myValue-1"
 			FROM item_attributes

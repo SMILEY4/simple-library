@@ -9,6 +9,7 @@ export type MultiTypeInputType = "text" | "number" | "date" | "boolean";
 
 export interface MultiTypeInputProps extends BaseProps {
 	value?: string,
+	displayPlaceholder?: string,
 	type?: MultiTypeInputType,
 	onAccept?: (value: string) => void,
 }
@@ -37,9 +38,13 @@ export function MultiTypeInput(props: React.PropsWithChildren<MultiTypeInputProp
 				onClick={handleEnterEditMode}
 				onDoubleClick={(e: any) => e.stopPropagation()}
 			>
-				<Label overflow="cutoff" underline>
-					{value}
-				</Label>
+				{props.displayPlaceholder
+					? (value
+							? (<Label overflow="cutoff" underline>{value}</Label>)
+							: (<Label overflow="cutoff" underline disabled italic>empty</Label>)
+					)
+					: (<Label overflow="cutoff" underline>{value}</Label>)
+				}
 			</div>
 		);
 	}

@@ -2,7 +2,7 @@ import {ImportProcessData, ImportResult, ImportService} from "../service/import/
 import {FileSystemWrapper} from "../service/fileSystemWrapper";
 import {
 	ATT_ID_AUTHOR,
-	ATT_ID_COMMENT,
+	ATT_ID_COMMENT, ATT_ID_CUSTOM_1,
 	ATT_ID_FILE_ACCESS_DATE,
 	ATT_ID_FILE_CREATE_DATE,
 	ATT_ID_FILE_EXTENSION,
@@ -44,6 +44,7 @@ import {ImportDbWriter} from "../service/import/importDbWriter";
 import {ActionGetLibraryAttributeMetaByKeys} from "../service/library/actionGetLibraryAttributeMetaByKeys";
 import {ImportStepWriteDefaultValues} from "../service/import/importStepWriteDefaultValues";
 import {ActionGetDefaultAttributeValues} from "../service/library/actionGetDefaultAttributeValues";
+import {ActionGetCustomAttributeMeta} from "../service/library/actionGetCustomAttributeMeta";
 
 describe("import", () => {
 
@@ -602,12 +603,34 @@ describe("import", () => {
 
 	describe("successfully import", () => {
 
-		test("keep, no rename", async () => {
+		test("keep, no rename, with custom", async () => {
 			// given
 			const TIMESTAMP = mockDateNow(1234);
 			const [importService, actionCreateLibrary, fsWrapper, dbAccess] = mockImportService();
 			mockFilesExist(fsWrapper, []);
 			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
+			await dbAccess.runMultipleSeq([
+				SQL.insertAttributeMeta([{
+					id: "Custom1",
+					name: "Custom1",
+					g0: "Custom",
+					g1: "Custom",
+					g2: "Custom",
+					type: "?",
+					writable: true,
+					custom: true
+				}]),
+				SQL.insertAttributeMeta([{
+					id: "Custom2",
+					name: "Custom2",
+					g0: "Custom",
+					g1: "Custom",
+					g2: "Custom",
+					type: "?",
+					writable: true,
+					custom: true
+				}])
+			]);
 			const importData: ImportProcessData = {
 				files: [
 					"path/to/file1.png",
@@ -648,10 +671,12 @@ describe("import", () => {
 				attribute(ATT_ID_FILE_CREATE_DATE, ["FileCreateDate", "FileCreateDate", "File", "System", "Time"], "2021:10:10 21:23:43+02:00", 0, true),
 				attribute(ATT_ID_FILE_TYPE, ["FileType", "FileType", "File", "File", "Other"], "JPEG", 0, false),
 				attribute(ATT_ID_FILE_EXTENSION, ["FileTypeExtension", "FileTypeExtension", "File", "File", "Other"], "jpg", 0, false),
-				attribute(ATT_ID_MIME_TYPE, ["MIMEType", "MIMEType", "File", "File", "Other"], "image/jpeg", 0, false)
+				attribute(ATT_ID_MIME_TYPE, ["MIMEType", "MIMEType", "File", "File", "Other"], "image/jpeg", 0, false),
+				attribute(ATT_ID_CUSTOM_1, ["Custom1", "Custom1", "Custom", "Custom", "Custom"], "", 0, true, true),
+				attribute(ATT_ID_CUSTOM_1+1, ["Custom2", "Custom2", "Custom", "Custom", "Custom"], "", 0, true, true),
 			]);
-			await expect(dbAccess.queryAll(SQL.queryItemAttributes(2, true))).resolves.toHaveLength(6);
-			await expect(dbAccess.queryAll(SQL.queryItemAttributes(3, true))).resolves.toHaveLength(6);
+			await expect(dbAccess.queryAll(SQL.queryItemAttributes(2, true))).resolves.toHaveLength(6+2);
+			await expect(dbAccess.queryAll(SQL.queryItemAttributes(3, true))).resolves.toHaveLength(6+2);
 		});
 
 
@@ -1029,7 +1054,7 @@ function item(id: number, path: string, timestampImported: number): any {
 	};
 }
 
-function attribute(attId: number, key: [string, string, string, string, string], value: any, modified: boolean | number, writable: boolean) {
+function attribute(attId: number, key: [string, string, string, string, string], value: any, modified: boolean | number, writable: boolean, custom?: boolean) {
 	return {
 		att_id: attId,
 		id: key[0],
@@ -1041,7 +1066,7 @@ function attribute(attId: number, key: [string, string, string, string, string],
 		modified: modified,
 		writable: writable ? 1 : 0,
 		type: "?",
-		custom: 0,
+		custom: custom === true ? 1 : 0,
 	};
 }
 
@@ -1086,7 +1111,10 @@ function mockImportService(metadata?: any, mockMultipleFiles?: boolean): [Import
 		stepWriteDefaultValues,
 		new ImportStepTargetFilepath(),
 		new ImportStepImportTarget(fsWrapper),
-		new ImportStepMetadata(new ActionReadItemAttributesFromFile(new ActionGetExiftoolInfo(configAccess))),
+		new ImportStepMetadata(
+			new ActionReadItemAttributesFromFile(new ActionGetExiftoolInfo(configAccess)),
+			new ActionGetCustomAttributeMeta(new SQLiteDataRepository(dbAccess))
+		),
 		new ImportDbWriter(
 			new SQLiteDataRepository(dbAccess),
 			new ActionGetLibraryAttributeMetaByKeys(new SQLiteDataRepository(dbAccess))

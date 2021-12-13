@@ -40,18 +40,33 @@ export function ChoiceBoxSelector(props: PropsWithChildren<ChoiceBoxSelectorProp
 	);
 
 	function renderSelectedItem(item: ChoiceBoxItem): ReactElement {
-		return (
-			<Label
-				type="body"
-				variant={getSelectedLabelVariant()}
-				disabled={props.disabled}
-				noSelect
-				overflow="cutoff"
-				key={item.id}
-			>
-				{item.text}
-			</Label>
-		);
+		if(item) {
+			return (
+				<Label
+					type="body"
+					variant={getSelectedLabelVariant()}
+					disabled={props.disabled}
+					noSelect
+					overflow="cutoff"
+					key={item.id}
+				>
+					{item.text}
+				</Label>
+			);
+		} else {
+			return (
+				<Label
+					type="body"
+					variant={getSelectedLabelVariant()}
+					disabled={true}
+					noSelect
+					overflow="cutoff"
+					key={"___none"}
+				>
+					none
+				</Label>
+			);
+		}
 	}
 
 	function getSelectedLabelVariant() {

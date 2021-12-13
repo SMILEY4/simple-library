@@ -119,8 +119,8 @@ export function rowToItem(row: any | null): Item | null {
 
 export function concatAttributeColumnToEntries(str: string): Attribute[] {
 	if (str) {
-		const regexGlobal: RegExp = /"(.+?):(.+?):(.+?):(.+?):(.+?):(.+?)-(.+?)-(.+?)-(.+?)-(.+?)"="(.+?)"-"(.+?)"/g;
-		const regex: RegExp = /"(.+?):(.+?):(.+?):(.+?):(.+?):(.+?)-(.+?)-(.+?)-(.+?)-(.+?)"="(.+?)"-"(.+?)"/;
+		const regexGlobal: RegExp = /"(.+?):(.+?):(.+?):(.+?):(.+?):(.+?)-(.+?)-(.+?)-(.+?)-(.+?)-(.+?)"="(.*?)"/g;
+		const regex: RegExp = /"(.+?):(.+?):(.+?):(.+?):(.+?):(.+?)-(.+?)-(.+?)-(.+?)-(.+?)-(.+?)"="(.*?)"/;
 		return str.match(regexGlobal).map((strEntry: string) => {
 			const strEntryParts: string[] = strEntry.match(regex);
 			const entry: Attribute = {
@@ -136,8 +136,8 @@ export function concatAttributeColumnToEntries(str: string): Attribute[] {
 				writable: strEntryParts[8] == "1",
 				custom: strEntryParts[9] === "1",
 				orderIndex: Number.parseInt(strEntryParts[10]),
-				value: strEntryParts[11],
-				modified: strEntryParts[12] === "1"
+				modified: strEntryParts[11] === "1",
+				value: strEntryParts[12]
 			};
 			return entry;
 		});

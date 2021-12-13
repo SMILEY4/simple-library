@@ -35,7 +35,8 @@ export class ImportStepWriteDefaultValues {
 
 	private buildMetadata(): Promise<{ overwrite: object | null, optional: object | null }> {
 		return this.actionGetDefaultAttributeValues.perform()
-			.then(attribs => this.attributesToMetadataObj(attribs));
+			.then((attribs: DefaultAttributeValueEntry[]) => attribs.filter(a => a.attributeMeta.custom !== true))
+			.then((attribs: DefaultAttributeValueEntry[]) => this.attributesToMetadataObj(attribs));
 	}
 
 	private attributesToMetadataObj(attributes: DefaultAttributeValueEntry[]): { overwrite: object | null, optional: object | null } {

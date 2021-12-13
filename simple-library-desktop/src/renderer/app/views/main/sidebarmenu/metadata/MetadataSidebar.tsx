@@ -56,7 +56,7 @@ export function MetadataSidebar(props: React.PropsWithChildren<MetadataSidebarPr
                 {displayedItem && (
                     <VBox spacing="0-5" padding="0-5" alignCross="center">
                         <Label type="header-3">
-                            {displayedItem.filepath}
+                            {displayedItem.filepath.substring(displayedItem.filepath.lastIndexOf("\\")+1)}
                         </Label>
                         <img src={displayedItem.thumbnail} alt="img" draggable={false}/>
                     </VBox>
