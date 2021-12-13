@@ -90,6 +90,8 @@ export interface DataRepository {
 
 	insertItemAttributes(itemId: number, attributes: ({ attId: number, value: any, modified?: boolean })[]): CommandResultSingle;
 
+	insertItemAttributeWhereMissing(attributeId: number, value: string): CommandResultSingle;
+
 	updateItemAttributeValue(itemId: number, attributeId: number, newValue: string, modified?: boolean): CommandResultSingle;
 
 	deleteItemAttribute(itemId: number, attributeId: number): VoidResult;

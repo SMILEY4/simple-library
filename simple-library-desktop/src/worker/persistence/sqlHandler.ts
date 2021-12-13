@@ -69,6 +69,7 @@ import sqlDeleteItemAttributesMeta from "./sqlscripts/item_attributes/delete_ite
 import sqlQueryCustomItemAttributesMeta from "./sqlscripts/item_attributes/query_custom_item_attributes_meta.sql"
 import sqlDeleteAttributes from "./sqlscripts/item_attributes/delete_attributes.sql"
 import sqlDeleteDefaultAttributeValues from "./sqlscripts/item_attributes/delete_default_attribute_values.sql"
+import sqlInsertItemAttributeWhereMissing from "./sqlscripts/item_attributes/insert_item_attribute_all_where_missing.sql"
 
 export module SQL {
 
@@ -394,6 +395,11 @@ export module SQL {
 			.replace(v("entries"), entries.join(", "));
 	}
 
+	export function insertItemAttributeWhereMissing(attributeId: number, value: string): string {
+		return sql(sqlInsertItemAttributeWhereMissing)
+			.replace(v("attributeId"), num(attributeId))
+			.replace(v("value"), str(value))
+	}
 
 	export function queryExtendedBaseItemAttributesAll(onlyModified: boolean): string {
 		if (onlyModified) {

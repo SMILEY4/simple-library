@@ -205,6 +205,10 @@ export class SQLiteDataRepository implements DataRepository {
         }
     }
 
+    insertItemAttributeWhereMissing(attributeId: number, value: string): CommandResultSingle {
+        return this.dbAccess.run(SQL.insertItemAttributeWhereMissing(attributeId, value));
+    }
+
     updateItemAttributeValue(itemId: number, attributeId: number, newValue: string, modified?: boolean): CommandResultSingle {
         return this.dbAccess.run(SQL.updateItemAttribute(itemId, attributeId, newValue, modified));
     }

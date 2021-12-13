@@ -123,7 +123,12 @@ export class ActionHandler {
 
 		const actionGetCustomAttributeMeta = new ActionGetCustomAttributeMeta(dataRepository);
 		const actionDeleteCustomAttributeMeta = new ActionDeleteCustomAttributeMeta(dataRepository)
-		const actionCreateCustomAttributeMeta = new ActionCreateCustomAttributeMeta(dataRepository, actionGetCustomAttributeMeta)
+		const actionCreateCustomAttributeMeta = new ActionCreateCustomAttributeMeta(
+			dataRepository,
+			actionGetCustomAttributeMeta,
+			actionGetLibraryAttributeMetaByKeys,
+			actionGetDefaultAttributeValues
+		)
 
 		const actionGetItemListAttributes = new ActionGetItemListAttributes(dataRepository);
 		const actionSetItemListAttributes = new ActionSetItemListAttributes(dataRepository);
