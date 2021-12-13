@@ -38,12 +38,12 @@ import sqlInsertItem from "./sqlscripts/items/insert_item.sql";
 import sqlInsertAttributeMeta from "./sqlscripts/item_attributes/insert_attribute_meta.sql";
 import sqlQueryExistsItemAttribute from "./sqlscripts/item_attributes/query_exists_item_attribute.sql";
 import sqlQueryAttributeMetadata from "./sqlscripts/item_attributes/query_item_attribute_meta.sql";
-import sqlQueryItemAttributesAllNotHidden from "./sqlscripts/item_attributes/query_item_attributes_all_not_hidden.sql";
-import sqlQueryItemAttributesAllModifiedNotHidden
+import sqlQueryBaseItemAttributesAllNotHidden from "./sqlscripts/item_attributes/query_item_attributes_all_not_hidden.sql";
+import sqlQueryBaseItemAttributesAllModifiedNotHidden
 	from "./sqlscripts/item_attributes/query_item_attributes_all_modified_not_hidden.sql";
-import sqlQueryItemAttributesNotHiddenByItems
+import sqlQueryBaseItemAttributesNotHiddenByItems
 	from "./sqlscripts/item_attributes/query_item_attributes_not_hidden_by_items.sql";
-import sqlQueryItemAttributesModifiedNotHiddenByItems
+import sqlQueryBaseItemAttributesModifiedNotHiddenByItems
 	from "./sqlscripts/item_attributes/query_item_attributes_modified_not_hidden_by_items.sql";
 import sqlUpdateItemAttributeModifiedFlag from "./sqlscripts/item_attributes/update_item_attribute_modified.sql";
 import sqlUpdateItemAttributeModifiedFlagsByItemIds
@@ -357,11 +357,12 @@ export module SQL {
 			.replace(v("attId"), num(attributeId));
 	}
 
-	export function updateItemAttribute(itemId: number, attributeId: number, value: string): string {
+	export function updateItemAttribute(itemId: number, attributeId: number, value: string, modified?: boolean): string {
 		return sql(sqlUpdateItemAttribute)
 			.replace(v("itemId"), num(itemId))
 			.replace(v("attId"), num(attributeId))
-			.replace(v("value"), str(value));
+			.replace(v("value"), str(value))
+			.replace(v("modified"), bool(modified === true || modified === undefined || modified === null));
 	}
 
 	export function deleteItemAttribute(itemId: number, attributeId: number): string {
@@ -382,20 +383,20 @@ export module SQL {
 	}
 
 
-	export function queryExtendedItemAttributesAll(onlyModified: boolean): string {
+	export function queryExtendedBaseItemAttributesAll(onlyModified: boolean): string {
 		if (onlyModified) {
-			return sql(sqlQueryItemAttributesAllModifiedNotHidden);
+			return sql(sqlQueryBaseItemAttributesAllModifiedNotHidden);
 		} else {
-			return sql(sqlQueryItemAttributesAllNotHidden);
+			return sql(sqlQueryBaseItemAttributesAllNotHidden);
 		}
 	}
 
-	export function queryExtendedItemAttributesByItemIds(itemIds: number[], onlyModified: boolean): string {
+	export function queryExtendedBaseItemAttributesByItemIds(itemIds: number[], onlyModified: boolean): string {
 		if (onlyModified) {
-			return sql(sqlQueryItemAttributesModifiedNotHiddenByItems)
+			return sql(sqlQueryBaseItemAttributesModifiedNotHiddenByItems)
 				.replace(v("itemIds"), numCsv(itemIds));
 		} else {
-			return sql(sqlQueryItemAttributesNotHiddenByItems)
+			return sql(sqlQueryBaseItemAttributesNotHiddenByItems)
 				.replace(v("itemIds"), numCsv(itemIds));
 		}
 	}

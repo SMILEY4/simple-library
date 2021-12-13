@@ -53,8 +53,8 @@ export class ActionEmbedItemAttributes {
 
 	private getItemAttributes(itemIds: number[] | null, onlyModified: boolean): Promise<ExtendedAttribute[]> {
 		const rows: Promise<any[]> = itemIds === null
-			? this.repository.getAllExtendedItemAttributesNotHidden(onlyModified)
-			: this.repository.getExtendedItemAttributesNotHiddenByItemIds(itemIds, onlyModified);
+			? this.repository.getAllExtendedBaseItemAttributesNotHidden(onlyModified)
+			: this.repository.getExtendedBaseItemAttributesNotHiddenByItemIds(itemIds, onlyModified);
 		return rows
 			.then(rows => rows.map(row => rowToExtendedAttribute(row)));
 	}

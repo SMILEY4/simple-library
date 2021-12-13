@@ -119,6 +119,7 @@ export const ATT_ID_FILE_ACCESS_DATE = 7157;
 export const ATT_ID_FILE_EXTENSION = 7175;
 export const ATT_ID_MIME_TYPE = 7190;
 export const ATT_ID_FILE_TYPE = 7174;
+export const ATT_ID_CUSTOM_1 = 24655
 
 export function sqlAttribute(attId: number, value: any, modified: boolean) {
 	return {attId: attId, value: value, modified: modified};
@@ -150,6 +151,10 @@ export function attFileExtension(value: string, modified: boolean) { // read-onl
 
 export function attMIMEType(value: string, modified: boolean) { // read-only
 	return sqlAttribute(ATT_ID_MIME_TYPE, value, modified);
+}
+
+export function attCustom1(value: string, modified: boolean) { // read-only
+	return sqlAttribute(ATT_ID_CUSTOM_1, value, modified);
 }
 
 export function metaFileCreateDate(value: string): MetadataMockEntry {

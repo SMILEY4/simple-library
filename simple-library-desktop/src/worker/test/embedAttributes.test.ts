@@ -4,11 +4,19 @@ import {DbAccess} from "../persistence/dbAcces";
 import {ExifHandler} from "../service/exifHandler";
 import {FileSystemWrapper} from "../service/fileSystemWrapper";
 import {
-	ATT_ID_AUTHOR, ATT_ID_COMMENT,
+	ATT_ID_AUTHOR,
+	ATT_ID_COMMENT,
 	attAuthor,
-	attComment, attFileAccessDate,
-	attFileCreateDate, attFileExtension,
-	buildMetadata, metaAuthor, metaComment, metaFileAccessDate, metaFileCreateDate, metaFileExtension,
+	attComment, attCustom1,
+	attFileAccessDate,
+	attFileCreateDate,
+	attFileExtension,
+	buildMetadata,
+	metaAuthor,
+	metaComment,
+	metaFileAccessDate,
+	metaFileCreateDate,
+	metaFileExtension,
 	mockAttributeMetadataProvider,
 	mockConfigAccess,
 	mockExiftoolProcessMultiFiles,
@@ -24,6 +32,7 @@ import {ActionSetItemAttributes} from "../service/item/actionSetItemAttributes";
 import {jest} from "@jest/globals";
 import {SQL} from "../persistence/sqlHandler";
 import {ActionGetLibraryAttributeMetaByKeys} from "../service/library/actionGetLibraryAttributeMetaByKeys";
+import {ActionGetCustomAttributeMeta} from "../service/library/actionGetCustomAttributeMeta";
 
 describe("embed attributes", () => {
 
@@ -77,6 +86,16 @@ describe("embed attributes", () => {
 		);
 		await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 		await dbAccess.runMultipleSeq([
+			SQL.insertAttributeMeta([{
+				id: "Custom1",
+				name: "Custom1",
+				g0: "Custom",
+				g1: "Custom",
+				g2: "Custom",
+				type: "?",
+				writable: true,
+				custom: true
+			}]),
 			SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
 			SQL.insertItem("/path/to/file/2", 1001, "hash2", "thumbnail2"),
 			SQL.insertItem("/path/to/file/3", 1002, "hash3", "thumbnail3"),
@@ -85,22 +104,29 @@ describe("embed attributes", () => {
 				attFileCreateDate("2021:01:02 21:00:12+02:00", false),
 				attComment("New Comment", true),
 				attFileExtension("jpg", false),
-				attAuthor("me", true)
+				attAuthor("me", true),
+				attCustom1("custom", true)
 			]),
 			SQL.insertItemAttributes(2, [
 				attFileCreateDate("2021:01:02 21:00:12+02:00", false),
 				attComment("Some Comment", false),
 				attFileExtension("jpg", false),
-				attAuthor("me", true)
+				attAuthor("me", true),
+				attCustom1("custom", true)
 			]),
 			SQL.insertItemAttributes(3, [
 				attFileCreateDate("2021:01:02 21:00:12+02:00", false),
 				attComment("Some Comment", false),
 				attFileExtension("jpg", false),
-				attAuthor("me", true)
+				attAuthor("me", true),
+				attCustom1("custom", true)
 			]),
 			SQL.insertHiddenAttributes([ATT_ID_AUTHOR])
 		]);
+
+		const custom = await new ActionGetCustomAttributeMeta(new SQLiteDataRepository(dbAccess)).perform()
+		console.log("CUSTOM: ", JSON.stringify(custom, null, "   "))
+
 		// when
 		const result: Promise<EmbedReport> = actionEmbed.perform(null, true);
 		// then
@@ -121,7 +147,7 @@ describe("embed attributes", () => {
 			"File:System:Time:FileCreateDate": "2021:01:02 21:00:12+02:00",
 			"File:File:Image:Comment": "Some Comment"
 		});
-		await expect(dbAccess.queryAll(SQL.queryExtendedItemAttributesAll(true)).then(attribs => attribs.length)).resolves.toEqual(0);
+		await expect(dbAccess.queryAll(SQL.queryExtendedBaseItemAttributesAll(true)).then(attribs => attribs.length)).resolves.toEqual(0);
 	});
 
 	test("embed all attributes of selected items and hidden field", async () => {
@@ -199,7 +225,7 @@ describe("embed attributes", () => {
 			"File:System:Time:FileCreateDate": "2021:01:02 21:00:12+02:00",
 			"File:File:Image:Comment": "Some Comment"
 		});
-		await expect(dbAccess.queryAll(SQL.queryExtendedItemAttributesAll(true)).then(attribs => attribs.length)).resolves.toEqual(1);
+		await expect(dbAccess.queryAll(SQL.queryExtendedBaseItemAttributesAll(true)).then(attribs => attribs.length)).resolves.toEqual(1);
 	});
 
 
@@ -238,6 +264,16 @@ describe("embed attributes", () => {
 		);
 		await actionCreateLibrary.perform("TestLib", "path/to/test", false);
 		await dbAccess.runMultipleSeq([
+			SQL.insertAttributeMeta([{
+				id: "Custom1",
+				name: "Custom1",
+				g0: "Custom",
+				g1: "Custom",
+				g2: "Custom",
+				type: "?",
+				writable: true,
+				custom: true
+			}]),
 			SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
 			SQL.insertItem("/path/to/file/2", 1001, "hash2", "thumbnail2"),
 			SQL.insertItem("/path/to/file/3", 1002, "hash3", "thumbnail3"),
@@ -246,19 +282,22 @@ describe("embed attributes", () => {
 				attFileCreateDate("2021:01:02 21:00:12+02:00", false),
 				attComment("New Comment", true),
 				attFileExtension("jpg", false),
-				attAuthor("me", true)
+				attAuthor("me", true),
+				attCustom1("custom", true)
 			]),
 			SQL.insertItemAttributes(2, [
 				attFileCreateDate("2021:01:02 21:00:12+02:00", false),
 				attComment("New Comment", true),
 				attFileExtension("jpg", false),
-				attAuthor("me", true)
+				attAuthor("me", true),
+				attCustom1("custom", true)
 			]),
 			SQL.insertItemAttributes(3, [
 				attFileCreateDate("2021:01:02 21:00:12+02:00", false),
 				attComment("Some Comment", false),
 				attFileExtension("jpg", false),
-				attAuthor("me", true)
+				attAuthor("me", true),
+				attCustom1("custom", true)
 			]),
 			SQL.insertHiddenAttributes([ATT_ID_AUTHOR])
 		]);
@@ -273,7 +312,7 @@ describe("embed attributes", () => {
 		expect(funcWriteMetadata).toHaveBeenNthCalledWith(1, "/path/to/file/2", {
 			"File:File:Image:Comment": "New Comment"
 		});
-		await expect(dbAccess.queryAll(SQL.queryExtendedItemAttributesAll(true)).then(attribs => attribs.length)).resolves.toEqual(1);
+		await expect(dbAccess.queryAll(SQL.queryExtendedBaseItemAttributesAll(true)).then(attribs => attribs.length)).resolves.toEqual(1);
 	});
 
 	test("embed attribute refreshes value", async () => {
@@ -302,7 +341,7 @@ describe("embed attributes", () => {
 		expect(funcWriteMetadata).toHaveBeenNthCalledWith(1, "/path/to/file/1", {
 			"File:File:Image:Comment": "New Comment"
 		});
-		await expect(dbAccess.queryAll(SQL.queryExtendedItemAttributesAll(true)).then(attribs => attribs.length)).resolves.toEqual(0);
+		await expect(dbAccess.queryAll(SQL.queryExtendedBaseItemAttributesAll(true)).then(attribs => attribs.length)).resolves.toEqual(0);
 		await expect(dbAccess.querySingle(SQL.queryItemAttribute(1, ATT_ID_COMMENT)).then(a => a.value)).resolves.toEqual("Refreshed Comment");
 	});
 
@@ -373,7 +412,7 @@ describe("embed attributes", () => {
 			"File:System:Time:FileCreateDate": "2021:01:02 21:00:12+02:00",
 			"File:File:Image:Comment": "New Comment"
 		});
-		await expect(dbAccess.queryAll(SQL.queryExtendedItemAttributesAll(true)).then(attribs => attribs.length)).resolves.toEqual(0);
+		await expect(dbAccess.queryAll(SQL.queryExtendedBaseItemAttributesAll(true)).then(attribs => attribs.length)).resolves.toEqual(0);
 	});
 
 });

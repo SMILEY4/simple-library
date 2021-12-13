@@ -268,7 +268,6 @@ export function useCreateCustomAttributesSettingsDialog() {
 
 	function createAttribute(entry: AttributeKeyDTO) {
 		if (!keyExists(entry)) {
-		console.log("create", entry, "from", customAttributes)
 			const attribute: AttributeMetaDTO = {
 				attId: null,
 				key: {

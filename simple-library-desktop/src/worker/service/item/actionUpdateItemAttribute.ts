@@ -32,7 +32,8 @@ export class ActionUpdateItemAttribute {
 
 
 	private update(attribute: Attribute, itemId: number, attributeId: number, newValue: string): Promise<Attribute> {
-		return this.repository.updateItemAttributeValue(itemId, attributeId, "" + newValue)
+		const modified = attribute.custom !== true;
+		return this.repository.updateItemAttributeValue(itemId, attributeId, "" + newValue, modified)
 			.then(() => attribute);
 	}
 
@@ -41,7 +42,7 @@ export class ActionUpdateItemAttribute {
 		return {
 			...attribute,
 			value: newValue,
-			modified: true
+			modified: attribute.custom !== true
 		};
 	}
 

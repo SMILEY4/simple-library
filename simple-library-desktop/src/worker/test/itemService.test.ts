@@ -2,12 +2,12 @@ import {DbAccess} from "../persistence/dbAcces";
 import {MemDbAccess} from "./memDbAccess";
 import {
 	ATT_ID_AUTHOR,
-	ATT_ID_COMMENT,
+	ATT_ID_COMMENT, ATT_ID_CUSTOM_1,
 	ATT_ID_FILE_ACCESS_DATE,
 	ATT_ID_FILE_EXTENSION,
 	ATT_ID_FILE_MODIFY_DATE,
 	ATT_ID_FILE_TYPE,
-	ATT_ID_MIME_TYPE, attAuthor, attComment,
+	ATT_ID_MIME_TYPE, attAuthor, attComment, attCustom1,
 	attFileAccessDate,
 	attFileExtension,
 	attFileModifyDate,
@@ -638,6 +638,51 @@ describe("item-service", () => {
 		});
 
 
+		test("update custom attribute", async () => {
+			// given
+			const [actionCreateLibrary, repository, dbAccess] = mockItemService();
+			const actionUpdateAttrib = new ActionUpdateItemAttribute(repository);
+			const actionGetAttribs = new ActionGetItemAttributes(repository, new ActionGetItemById(repository));
+			await actionCreateLibrary.perform("TestLib", "path/to/test", false);
+			await dbAccess.runMultipleSeq([
+				SQL.insertAttributeMeta([{
+					id: "Custom1",
+					name: "Custom1",
+					g0: "Custom",
+					g1: "Custom",
+					g2: "Custom",
+					type: "?",
+					writable: true,
+					custom: true
+				}]),
+				SQL.insertItem("/path/to/file/1", 1000, "hash1", "thumbnail1"),
+				SQL.insertItemAttributes(1, [
+					attCustom1("old custom", false)
+				])
+			]);
+			// when
+			const result: Promise<Attribute> = actionUpdateAttrib.perform(1, ATT_ID_CUSTOM_1, "new custom");
+			// then
+			await expect(result).resolves.toEqual({
+				attId: ATT_ID_CUSTOM_1,
+				key: {
+					id: "Custom1",
+					name: "Custom1",
+					g0: "Custom",
+					g1: "Custom",
+					g2: "Custom"
+				},
+				value: "new custom",
+				type: "?",
+				writable: true,
+				modified: false,
+				custom: true
+			});
+			await expect(actionGetAttribs.perform(1, false)).resolves.toEqual([
+				customAttribute(ATT_ID_CUSTOM_1, keyCustom1(), "new custom", "_text", true, false)
+			]);
+		});
+
 		test("update attributes for non existing item", async () => {
 			// given
 			const [actionCreateLibrary, repository, dbAccess] = mockItemService();
@@ -794,6 +839,31 @@ function attribute(attId: number, key: [string, string, string, string, string],
 	}
 }
 
+function customAttribute(attId: number, key: [string, string, string, string, string], value: any, type: string, writable: boolean, modified: boolean, orderIndex?: number): Attribute {
+	if(orderIndex !== undefined) {
+		return {
+			attId: attId,
+			key: attributeKeyFromArray(key),
+			value: value,
+			type: type,
+			modified: modified,
+			writable: writable,
+			orderIndex: orderIndex,
+			custom: true,
+		};
+	} else {
+		return {
+			attId: attId,
+			key: attributeKeyFromArray(key),
+			value: value,
+			type: type,
+			modified: modified,
+			writable: writable,
+			custom: true,
+		};
+	}
+}
+
 function keyFileAccessDate(): [string, string, string, string, string] {
 	return ["FileAccessDate", "FileAccessDate", "File", "System", "Time"];
 }
@@ -809,6 +879,11 @@ function keyFileExtension(): [string, string, string, string, string] {
 function keyMIMEType(): [string, string, string, string, string] {
 	return ["MIMEType", "MIMEType", "File", "File", "Other"];
 }
+
+function keyCustom1(): [string, string, string, string, string] {
+	return ["Custom1", "Custom1", "Custom", "Custom", "Custom"];
+}
+
 
 function mockItemService(): [ActionCreateLibrary, DataRepository, DbAccess, FileSystemWrapper] {
 	const dbAccess = new MemDbAccess();

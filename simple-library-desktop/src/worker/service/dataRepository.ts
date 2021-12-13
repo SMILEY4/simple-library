@@ -70,9 +70,9 @@ export interface DataRepository {
 
 	deleteAllItemListAttributes(): VoidResult;
 
-	getAllExtendedItemAttributesNotHidden(onlyModified: boolean): QueryResultMany;
+	getAllExtendedBaseItemAttributesNotHidden(onlyModified: boolean): QueryResultMany;
 
-	getExtendedItemAttributesNotHiddenByItemIds(itemIds: number[], onlyModified: boolean): QueryResultMany;
+	getExtendedBaseItemAttributesNotHiddenByItemIds(itemIds: number[], onlyModified: boolean): QueryResultMany;
 
 	clearItemAttributeModifiedFlag(itemId: number, attributeId: number): CommandResultSingle;
 
@@ -88,7 +88,7 @@ export interface DataRepository {
 
 	insertItemAttributes(itemId: number, attributes: ({ attId: number, value: any, modified?: boolean })[]): CommandResultSingle;
 
-	updateItemAttributeValue(itemId: number, attributeId: number, newValue: string): CommandResultSingle;
+	updateItemAttributeValue(itemId: number, attributeId: number, newValue: string, modified?: boolean): CommandResultSingle;
 
 	deleteItemAttribute(itemId: number, attributeId: number): VoidResult;
 

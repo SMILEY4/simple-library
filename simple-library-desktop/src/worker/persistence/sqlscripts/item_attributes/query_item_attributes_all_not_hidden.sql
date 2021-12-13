@@ -15,6 +15,7 @@ FROM item_attributes
 	 attribute_meta,
 	 items
 WHERE hidden.att_id IS NULL
+  AND attribute_meta.custom = 0
   AND item_attributes.att_id = attribute_meta.att_id
   AND items.item_id = item_attributes.item_id
   AND attribute_meta.writable = 1

@@ -159,12 +159,12 @@ export class SQLiteDataRepository implements DataRepository {
             .then(voidThen);
     }
 
-    getAllExtendedItemAttributesNotHidden(onlyModified: boolean): QueryResultMany {
-        return this.dbAccess.queryAll(SQL.queryExtendedItemAttributesAll(onlyModified));
+    getAllExtendedBaseItemAttributesNotHidden(onlyModified: boolean): QueryResultMany {
+        return this.dbAccess.queryAll(SQL.queryExtendedBaseItemAttributesAll(onlyModified));
     }
 
-    getExtendedItemAttributesNotHiddenByItemIds(itemIds: number[], onlyModified: boolean): QueryResultMany {
-        return this.dbAccess.queryAll(SQL.queryExtendedItemAttributesByItemIds(itemIds, onlyModified));
+    getExtendedBaseItemAttributesNotHiddenByItemIds(itemIds: number[], onlyModified: boolean): QueryResultMany {
+        return this.dbAccess.queryAll(SQL.queryExtendedBaseItemAttributesByItemIds(itemIds, onlyModified));
     }
 
     clearItemAttributeModifiedFlag(itemId: number, attributeId: number): CommandResultSingle {
@@ -200,8 +200,8 @@ export class SQLiteDataRepository implements DataRepository {
         }
     }
 
-    updateItemAttributeValue(itemId: number, attributeId: number, newValue: string): CommandResultSingle {
-        return this.dbAccess.run(SQL.updateItemAttribute(itemId, attributeId, newValue));
+    updateItemAttributeValue(itemId: number, attributeId: number, newValue: string, modified?: boolean): CommandResultSingle {
+        return this.dbAccess.run(SQL.updateItemAttribute(itemId, attributeId, newValue, modified));
     }
 
     deleteItemAttribute(itemId: number, attributeId: number): VoidResult {
