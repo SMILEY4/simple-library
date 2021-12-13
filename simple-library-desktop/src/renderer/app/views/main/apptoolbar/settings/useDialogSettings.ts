@@ -268,6 +268,7 @@ export function useCreateCustomAttributesSettingsDialog() {
 
 	function createAttribute(entry: AttributeKeyDTO) {
 		if (!keyExists(entry)) {
+		console.log("create", entry, "from", customAttributes)
 			const attribute: AttributeMetaDTO = {
 				attId: null,
 				key: {
@@ -286,6 +287,7 @@ export function useCreateCustomAttributesSettingsDialog() {
 	}
 
 	function deleteAttribute(attribute: AttributeMetaDTO) {
+		console.log("delete", attribute, "from", customAttributes)
 		setCustomAttributes(ArrayUtils.remove(customAttributes, attribute, attributeMetaEquals))
 		markDeleted(attribute);
 	}
@@ -299,19 +301,19 @@ export function useCreateCustomAttributesSettingsDialog() {
 	}
 
 	function markAdded(attribute: AttributeMetaDTO) {
-		setDeletedCustomAttributes(ArrayUtils.remove(customAttributes, attribute, attributeMetaEquals))
 		setAddedCustomAttributes([...addedCustomAttributes, attribute]);
+		setDeletedCustomAttributes(ArrayUtils.remove(deletedCustomAttributes, attribute, attributeMetaEquals))
 	}
 
 	function markDeleted(attribute: AttributeMetaDTO) {
-		setAddedCustomAttributes(ArrayUtils.remove(customAttributes, attribute, attributeMetaEquals))
-		setDeletedCustomAttributes([...addedCustomAttributes, attribute]);
+		setAddedCustomAttributes(ArrayUtils.remove(addedCustomAttributes, attribute, attributeMetaEquals))
+		setDeletedCustomAttributes([...deletedCustomAttributes, attribute]);
 	}
 
 	async function commit(): Promise<any> {
 		return Promise.resolve()
 			.then(() => addCustomAttributes(addedCustomAttributes.map(a => a.key)))
-			.then(() => deleteCustomAttributes(deletedCustomAttributes.map(a => a.attId)))
+			.then(() => deleteCustomAttributes(deletedCustomAttributes.map(a => a.attId).filter(id => id !== null)))
 	}
 
 	function keyExists(key: AttributeKeyDTO) {

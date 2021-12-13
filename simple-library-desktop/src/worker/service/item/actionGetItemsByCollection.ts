@@ -177,7 +177,8 @@ export class ActionGetItemsByCollection {
 			writable: attribMeta.writable,
 			value: null,
 			modified: false,
-			orderIndex: orderIndex
+			orderIndex: orderIndex,
+			custom: attribMeta.custom
 		};
 	}
 

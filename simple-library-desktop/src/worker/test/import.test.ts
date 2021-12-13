@@ -1040,7 +1040,8 @@ function attribute(attId: number, key: [string, string, string, string, string],
 		value: value,
 		modified: modified,
 		writable: writable ? 1 : 0,
-		type: "?"
+		type: "?",
+		custom: 0,
 	};
 }
 

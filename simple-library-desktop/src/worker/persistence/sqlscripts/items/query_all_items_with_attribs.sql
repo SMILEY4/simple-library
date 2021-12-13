@@ -22,13 +22,15 @@ FROM items
 					   || '-'
 					   || attribute_meta.writable
 					   || '-'
+                       || attribute_meta.custom
+                       || '-'
 					   || item_list_attributes.att_index
 					   || '"="'
 					   || item_attributes.value
 					   || '"-"'
 					   || item_attributes.modified
 					   || '"'
-					   AS str_attribute -- "attId:id:name:g0:g1:g2-type-writable"="myValue-1"
+					   AS str_attribute -- "attId:id:name:g0:g1:g2-type-writable-custom-attIndex"="myValue-1"
 			FROM item_attributes LEFT JOIN item_list_attributes ON item_list_attributes.att_id = item_attributes.att_id,
 				 attribute_meta
 			WHERE item_attributes.att_id = attribute_meta.att_id

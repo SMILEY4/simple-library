@@ -11,6 +11,7 @@ export interface AttribMetaEntry {
 	g2: string | undefined
 	type: string,
 	writable: boolean,
+	custom: boolean
 }
 
 export class AttributeMetadataProvider {
@@ -53,11 +54,12 @@ export class AttributeMetadataProvider {
 						tags.push({
 							id: attribs.id,
 							name: attribs.name,
-							type: attribs.type,
-							writable: attribs.writable === "true",
 							g0: attribs.g0 ? attribs.g0 : lastGroup.g0,
 							g1: attribs.g1 ? attribs.g1 : lastGroup.g1,
-							g2: attribs.g2 ? attribs.g2 : lastGroup.g2
+							g2: attribs.g2 ? attribs.g2 : lastGroup.g2,
+							type: attribs.type,
+							writable: attribs.writable === "true",
+							custom: false,
 						});
 					}
 					if (tags.length >= blockSize) {

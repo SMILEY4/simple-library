@@ -627,7 +627,8 @@ describe("item-service", () => {
 				value: "new value",
 				type: "?",
 				writable: true,
-				modified: true
+				modified: true,
+				custom: false
 			});
 			await expect(actionGetAttribs.perform(1, false)).resolves.toEqual([
 				attribute(ATT_ID_FILE_MODIFY_DATE, keyFileModifyDate(), "new value", "_text", true, true),
@@ -777,7 +778,8 @@ function attribute(attId: number, key: [string, string, string, string, string],
 			type: type,
 			modified: modified,
 			writable: writable,
-			orderIndex: orderIndex
+			orderIndex: orderIndex,
+			custom: false,
 		};
 	} else {
 		return {
@@ -786,7 +788,8 @@ function attribute(attId: number, key: [string, string, string, string, string],
 			value: value,
 			type: type,
 			modified: modified,
-			writable: writable
+			writable: writable,
+			custom: false,
 		};
 	}
 }

@@ -65,6 +65,8 @@ import sqlQueryItemListAttributes from "./sqlscripts/item_attributes/query_item_
 import sqlInsertItemListAttributes from "./sqlscripts/item_attributes/insert_item_list_attributes.sql";
 import sqlDeleteItemListAttributes from "./sqlscripts/item_attributes/delete_item_list_attributes.sql";
 import sqlQueryItemCountByNormalCollection from "./sqlscripts/items/query_itemcount_by_collection_id.sql"
+import sqlDeleteItemAttributesMeta from "./sqlscripts/item_attributes/delete_item_attributes_meta.sql"
+import sqlQueryCustomItemAttributesMeta from "./sqlscripts/item_attributes/query_custom_item_attributes_meta.sql"
 
 export module SQL {
 
@@ -259,10 +261,15 @@ export module SQL {
 			.replace(v("itemIds"), numCsv(itemIds));
 	}
 
-	export function insertAttributeMeta(entries: { id: string, name: string, type: string, writable: boolean, g0: string | undefined, g1: string | undefined, g2: string | undefined }[]): string {
-		const entriesStr: string[] = entries.map(e => `(${str(e.id)}, ${str(e.name)}, ${str(e.type)}, ${bool(e.writable)}, ${str(e.g0)}, ${str(e.g1)}, ${str(e.g2)})`);
+	export function insertAttributeMeta(entries: { id: string, name: string, type: string, writable: boolean, g0: string | undefined, g1: string | undefined, g2: string | undefined, custom: boolean | undefined }[]): string {
+		const entriesStr: string[] = entries.map(e => `(${str(e.id)}, ${str(e.name)}, ${str(e.type)}, ${bool(e.writable)}, ${bool(e.custom)}, ${str(e.g0)}, ${str(e.g1)}, ${str(e.g2)})`);
 		return sql(sqlInsertAttributeMeta)
 			.replace(v("entries"), entriesStr.join(", "));
+	}
+
+	export function deleteCustomAttributeMeta(attributeIds: number[]): string {
+		return sql(sqlDeleteItemAttributesMeta)
+			.replace(v("attIds"), numCsv(attributeIds))
 	}
 
 	export function queryAttributeMeta(ids: number[]): string {
@@ -283,6 +290,12 @@ export module SQL {
 		return sql(sqlQueryAttributeMetaByKeys)
 			.replace(v("keys"), attribKeyList(keys));
 	}
+
+
+	export function queryAttributeMetaCustom(): string {
+		return sql(sqlQueryCustomItemAttributesMeta);
+	}
+
 
 	export function queryHiddenAttributes(): string {
 		return sql(sqlQueryHiddenAttributes);

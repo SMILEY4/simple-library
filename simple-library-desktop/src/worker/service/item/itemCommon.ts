@@ -27,7 +27,8 @@ export interface Attribute {
 	type: string,
 	writable: boolean,
 	modified: boolean,
-	orderIndex?: number
+	orderIndex?: number,
+	custom?: boolean,
 }
 
 export interface ExtendedAttribute extends Attribute {
@@ -118,8 +119,8 @@ export function rowToItem(row: any | null): Item | null {
 
 export function concatAttributeColumnToEntries(str: string): Attribute[] {
 	if (str) {
-		const regexGlobal: RegExp = /"(.+?):(.+?):(.+?):(.+?):(.+?):(.+?)-(.+?)-(.+?)-(.+?)"="(.+?)"-"(.+?)"/g;
-		const regex: RegExp = /"(.+?):(.+?):(.+?):(.+?):(.+?):(.+?)-(.+?)-(.+?)-(.+?)"="(.+?)"-"(.+?)"/;
+		const regexGlobal: RegExp = /"(.+?):(.+?):(.+?):(.+?):(.+?):(.+?)-(.+?)-(.+?)-(.+?)-(.+?)"="(.+?)"-"(.+?)"/g;
+		const regex: RegExp = /"(.+?):(.+?):(.+?):(.+?):(.+?):(.+?)-(.+?)-(.+?)-(.+?)-(.+?)"="(.+?)"-"(.+?)"/;
 		return str.match(regexGlobal).map((strEntry: string) => {
 			const strEntryParts: string[] = strEntry.match(regex);
 			const entry: Attribute = {
@@ -133,9 +134,10 @@ export function concatAttributeColumnToEntries(str: string): Attribute[] {
 				},
 				type: strEntryParts[7],
 				writable: strEntryParts[8] == "1",
-				orderIndex: Number.parseInt(strEntryParts[9]),
-				value: strEntryParts[10],
-				modified: strEntryParts[11] === "1"
+				custom: strEntryParts[9] === "1",
+				orderIndex: Number.parseInt(strEntryParts[10]),
+				value: strEntryParts[11],
+				modified: strEntryParts[12] === "1"
 			};
 			return entry;
 		});
@@ -158,7 +160,8 @@ export function rowToAttribute(row: any): Attribute {
 		value: row.value,
 		type: row.type,
 		writable: row.writable === 1,
-		modified: row.modified === 1
+		modified: row.modified === 1,
+		custom: row.custom === 1
 	};
 }
 
@@ -176,6 +179,7 @@ export function rowToExtendedAttribute(row: any): ExtendedAttribute {
 		type: row.type,
 		writable: row.writable === 1,
 		modified: row.modified === 1,
+		custom: row.custom === 1,
 		itemId: row.item_id,
 		filepath: row.filepath
 	};

@@ -6,6 +6,7 @@ SELECT attribute_meta.att_id      as att_id,
 	   attribute_meta.g2       as g2,
 	   attribute_meta.type     as type,
 	   attribute_meta.writable as writable,
+       attribute_meta.custom   as custom,
 	   item_attributes.value   as value,
 	   item_attributes.item_id as item_id,
 	   items.filepath          as filepath

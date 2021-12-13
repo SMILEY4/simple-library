@@ -90,8 +90,13 @@ export class SQLiteDataRepository implements DataRepository {
     }
 
 
-    insertAttributeMeta(entries: { id: string, name: string, type: string, writable: boolean, g0: string | undefined, g1: string | undefined, g2: string | undefined }[]): VoidResult {
+    insertAttributeMeta(entries: { id: string, name: string, type: string, writable: boolean, g0: string | undefined, g1: string | undefined, g2: string | undefined, custom: boolean | undefined }[]): VoidResult {
         return this.dbAccess.run(SQL.insertAttributeMeta(entries))
+            .then(voidThen);
+    }
+
+    deleteCustomAttributeMeta(attributeIds: number[]): VoidResult {
+        return this.dbAccess.run(SQL.deleteCustomAttributeMeta(attributeIds))
             .then(voidThen);
     }
 
@@ -106,6 +111,11 @@ export class SQLiteDataRepository implements DataRepository {
     queryAttributeMetaByKeys(keys: ({ id: string, name: string, g0: string, g1: string, g2: string })[]): QueryResultMany {
         return this.dbAccess.queryAll(SQL.queryAttributeMetaByKeys(keys));
     }
+
+    queryAttributeMetaCustom(): QueryResultMany {
+        return this.dbAccess.queryAll(SQL.queryAttributeMetaCustom());
+    }
+
 
     getHiddenAttributes(): QueryResultMany {
         return this.dbAccess.queryAll(SQL.queryHiddenAttributes());

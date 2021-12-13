@@ -38,6 +38,7 @@ describe("hidden-attributes", () => {
 					},
 					type: "?",
 					writable: true,
+					custom: false
 				},
 				{
 					attId: ATT_ID_FILE_EXTENSION,
@@ -50,6 +51,7 @@ describe("hidden-attributes", () => {
 					},
 					type: "?",
 					writable: false,
+					custom: false
 				},
 				{
 					attId: ATT_ID_MIME_TYPE,
@@ -62,6 +64,7 @@ describe("hidden-attributes", () => {
 					},
 					type: "?",
 					writable: false,
+					custom: false
 				}
 			]);
 		});
@@ -87,6 +90,7 @@ describe("hidden-attributes", () => {
 					},
 					type: "?",
 					writable: true,
+					custom: false
 				},
 				{
 					attId: ATT_ID_FILE_EXTENSION,
@@ -99,6 +103,7 @@ describe("hidden-attributes", () => {
 					},
 					type: "?",
 					writable: false,
+					custom: false
 				},
 				{
 					attId: ATT_ID_MIME_TYPE,
@@ -111,6 +116,7 @@ describe("hidden-attributes", () => {
 					},
 					type: "?",
 					writable: false,
+					custom: false
 				}
 			]);
 		});
@@ -151,6 +157,7 @@ describe("hidden-attributes", () => {
 					},
 					type: "?",
 					writable: false,
+					custom: false
 				}
 			]);
 		});
@@ -176,6 +183,7 @@ describe("hidden-attributes", () => {
 					},
 					type: "?",
 					writable: false,
+					custom: false
 				}
 			]);
 		});

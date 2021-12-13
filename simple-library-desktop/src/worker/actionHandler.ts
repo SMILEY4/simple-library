@@ -64,7 +64,10 @@ import {ImportStepWriteDefaultValues} from "./service/import/importStepWriteDefa
 import {ActionGetItemListAttributes} from "./service/library/actionGetItemListAttributes";
 import {ActionSetItemListAttributes} from "./service/library/actionSetItemListAttributes";
 import {ActionShowItemInFolder} from "./service/item/actionShowItemInFolder";
-import * as fs from "fs";
+import {AttributeKey} from "./service/item/itemCommon";
+import {ActionGetCustomAttributeMeta} from "./service/library/actionGetCustomAttributeMeta";
+import {ActionDeleteCustomAttributeMeta} from "./service/library/actionDeleteCustomAttributeMeta";
+import {ActionCreateCustomAttributeMeta} from "./service/library/actionCreateCustomAttributeMeta";
 
 export class ActionHandler {
 
@@ -117,6 +120,10 @@ export class ActionHandler {
 
 		const actionGetLibraryAttributeMetaAll = new ActionGetLibraryAttributeMeta(dataRepository);
 		const actionGetLibraryAttributeMetaByKeys = new ActionGetLibraryAttributeMetaByKeys(dataRepository);
+
+		const actionGetCustomAttributeMeta = new ActionGetCustomAttributeMeta(dataRepository);
+		const actionDeleteCustomAttributeMeta = new ActionDeleteCustomAttributeMeta(dataRepository)
+		const actionCreateCustomAttributeMeta = new ActionCreateCustomAttributeMeta(dataRepository, actionGetCustomAttributeMeta)
 
 		const actionGetItemListAttributes = new ActionGetItemListAttributes(dataRepository);
 		const actionSetItemListAttributes = new ActionSetItemListAttributes(dataRepository);
@@ -192,6 +199,10 @@ export class ActionHandler {
 		this.eventHandler.on(EventIds.GET_HIDDEN_ATTRIBUTES, () => actionGetHiddenAttributes.perform());
 		this.eventHandler.on(EventIds.SET_DEFAULT_ATTRIBUTE_VALUES, (entries) => actionSetDefaultAttributeValues.perform(entries));
 		this.eventHandler.on(EventIds.GET_DEFAULT_ATTRIBUTE_VALUES, () => actionGetDefaultAttributeValues.perform());
+
+		this.eventHandler.on(EventIds.GET_CUSTOM_ATTRIBUTES, () => actionGetCustomAttributeMeta.perform());
+		this.eventHandler.on(EventIds.CREATE_CUSTOM_ATTRIBUTES, (attributeKeys: AttributeKey[]) => actionCreateCustomAttributeMeta.perform(attributeKeys));
+		this.eventHandler.on(EventIds.DELETE_CUSTOM_ATTRIBUTES, (attributeIds: number[]) => actionDeleteCustomAttributeMeta.perform(attributeIds));
 
 		this.eventHandler.on(EventIds.SET_ITEM_LIST_ATTRIBUTES, (attributeIds) => actionSetItemListAttributes.perform(attributeIds));
 		this.eventHandler.on(EventIds.GET_ITEM_LIST_ATTRIBUTES, () => actionGetItemListAttributes.perform());

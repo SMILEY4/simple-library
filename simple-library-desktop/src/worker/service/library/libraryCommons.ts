@@ -17,6 +17,7 @@ export interface AttributeMeta {
 	key: AttributeKey,
 	type: string,
 	writable: boolean,
+	custom: boolean // TODO: set for all queries
 }
 
 export function rowsToAttributeMeta(rows: any[]): AttributeMeta[] {
@@ -35,7 +36,8 @@ export function rowToAttributeMeta(row: any): AttributeMeta {
 			g2: row.g2
 		},
 		type: row.type,
-		writable: row.writable === 1
+		writable: row.writable === 1,
+		custom: row.custom === 1,
 	};
 }
 

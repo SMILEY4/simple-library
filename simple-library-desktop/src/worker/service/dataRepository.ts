@@ -40,13 +40,17 @@ export interface DataRepository {
 	deleteItems(itemIds: number[]): VoidResult;
 
 
-	insertAttributeMeta(entries: { id: string, name: string, g0: string | undefined, g1: string | undefined, g2: string | undefined, type: string, writable: boolean }[]): VoidResult;
+	insertAttributeMeta(entries: { id: string, name: string, g0: string | undefined, g1: string | undefined, g2: string | undefined, type: string, writable: boolean, custom: boolean | undefined }[]): VoidResult;
+
+	deleteCustomAttributeMeta(attributeIds: number[]): VoidResult;
 
 	queryAttributeMeta(attributeIds: number[]): QueryResultMany;
 
 	queryAttributeMetaAllFilterName(filter: string | null): QueryResultMany;
 
 	queryAttributeMetaByKeys(keys: ({ id: string, name: string, g0: string, g1: string, g2: string })[]): QueryResultMany;
+
+	queryAttributeMetaCustom(): QueryResultMany;
 
 	getHiddenAttributes(): QueryResultMany;
 

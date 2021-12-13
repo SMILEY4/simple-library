@@ -74,7 +74,7 @@ export function PanelCustomAttributes(props: React.PropsWithChildren<PanelCustom
 			<VBox spacing="0-25" alignMain="start" alignCross="stretch" padding="0-25" className="custom-attributes-list">
 				{props.customAttributes.map(e => {
 					return (
-						<HBox spacing="0-25" padding="0-25" alignMain="space-between" alignCross="center" key={e.attId}
+						<HBox spacing="0-25" padding="0-25" alignMain="space-between" alignCross="center" key={e.attId + "-" + e.key.id}
 							  className="attrib-entry">
 							<VBox alignCross="start" alignMain="center">
 								<Label overflow="cutoff">
