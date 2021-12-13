@@ -62,6 +62,8 @@ export interface DataRepository {
 
 	insertDefaultAttributeValues(defaultValues: ({ attId: number, value: string, allowOverwrite: boolean })[]): VoidResult;
 
+	deleteDefaultAttributeValues(attributeIds: number[]): VoidResult;
+
 	deleteAllDefaultAttributeValues(): VoidResult;
 
 	getItemListAttributes(): QueryResultMany;
@@ -93,6 +95,8 @@ export interface DataRepository {
 	deleteItemAttribute(itemId: number, attributeId: number): VoidResult;
 
 	deleteItemAttributes(itemId: number): VoidResult;
+
+	deleteAttributes(attributeIds: number[]): VoidResult;
 
 
 	relateItemsToCollection(collectionId: number, itemIds: number[]): CommandResultSingle;

@@ -1,8 +1,5 @@
 import {DataRepository} from "../dataRepository";
-import {AttributeMeta, rowsToAttributeMeta} from "./libraryCommons";
-import {AttributeKey} from "../item/itemCommon";
 import {voidThen} from "../../../common/utils";
-import {ArrayUtils} from "../../../common/arrayUtils";
 
 /**
  * Create custom attribute metadata
@@ -16,10 +13,27 @@ export class ActionDeleteCustomAttributeMeta {
 	}
 
 	public perform(attributeIds: number[]): Promise<void> {
-		console.log("DELETE", attributeIds)
-		return this.repository.deleteCustomAttributeMeta(attributeIds)
+		return this.deleteFromCustomAttributes(attributeIds)
+			.then(() => this.deleteFromItemAttribute(attributeIds))
+			.then(() => this.deleteFromHiddenAttributes(attributeIds))
+			.then(() => this.deleteFromDefaultValues(attributeIds))
 			.then(voidThen)
 	}
 
+	private deleteFromCustomAttributes(attributeIds: number[]) {
+		return this.repository.deleteCustomAttributeMeta(attributeIds);
+	}
+
+	private deleteFromItemAttribute(attributeIds: number[]) {
+		return this.repository.deleteAttributes(attributeIds);
+	}
+
+	private deleteFromHiddenAttributes(attributeIds: number[]) {
+		return Promise.all(attributeIds.map(aid => this.repository.deleteHiddenAttribute(aid)))
+	}
+
+	private deleteFromDefaultValues(attributeIds: number[]) {
+		return this.repository.deleteDefaultAttributeValues(attributeIds);
+	}
 
 }

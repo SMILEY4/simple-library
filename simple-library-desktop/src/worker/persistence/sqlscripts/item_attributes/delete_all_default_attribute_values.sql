@@ -1,0 +1,1 @@
+DELETE FROM default_attribute_values;

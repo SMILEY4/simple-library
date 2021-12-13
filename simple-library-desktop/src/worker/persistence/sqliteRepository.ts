@@ -140,8 +140,13 @@ export class SQLiteDataRepository implements DataRepository {
             .then(voidThen);
     }
 
+    deleteDefaultAttributeValues(attributeIds: number[]): VoidResult {
+        return this.dbAccess.run(SQL.deleteDefaultAttributeValues(attributeIds))
+            .then(voidThen);
+    }
+
     deleteAllDefaultAttributeValues(): VoidResult {
-        return this.dbAccess.run(SQL.deleteDefaultAttributeValues())
+        return this.dbAccess.run(SQL.deleteAllDefaultAttributeValues())
             .then(voidThen);
     }
 
@@ -211,6 +216,11 @@ export class SQLiteDataRepository implements DataRepository {
     deleteItemAttributes(itemId: number): VoidResult {
         return this.dbAccess.run(SQL.deleteItemAttributes(itemId)).then(voidThen);
     }
+
+    deleteAttributes(attributeIds: number[]): VoidResult {
+        return this.dbAccess.run(SQL.deleteAttributes(attributeIds)).then(voidThen);
+    }
+
 
     relateItemsToCollection(collectionId: number, itemIds: number[]): CommandResultSingle {
         return this.dbAccess.run(SQL.insertItemsIntoCollection(collectionId, itemIds));

@@ -169,7 +169,11 @@ export class ActionHandler {
 			new ImportStepWriteDefaultValues(actionGetDefaultAttributeValues, actionGetExiftoolInfo),
 			new ImportStepTargetFilepath(),
 			new ImportStepImportTarget(fsWrapper),
-			new ImportStepMetadata(new ActionReadItemAttributesFromFile(actionGetExiftoolInfo), actionGetCustomAttributeMeta),
+			new ImportStepMetadata(
+				new ActionReadItemAttributesFromFile(actionGetExiftoolInfo),
+				actionGetCustomAttributeMeta,
+				actionGetDefaultAttributeValues
+			),
 			new ImportDbWriter(dataRepository, actionGetLibraryAttributeMetaByKeys),
 			(status: any) => this.send(EventIds.IMPORT_STATUS, status)
 		);

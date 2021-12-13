@@ -58,7 +58,7 @@ import sqlInsertHiddenAttributes from "./sqlscripts/item_attributes/insert_hidde
 import sqlDeleteHiddenAttribute from "./sqlscripts/item_attributes/delete_hidden_attribute.sql";
 import sqlQueryItemAttributesNoHidden from "./sqlscripts/items/query_item_attributes_no_hidden.sql";
 import sqlQueryAttributeMetaByKeys from "./sqlscripts/item_attributes/query_item_attribute_meta_by_keys.sql";
-import sqlDeleteDefaultAttributeValues from "./sqlscripts/item_attributes/delete_default_attribute_values.sql";
+import sqlDeleteAllDefaultAttributeValues from "./sqlscripts/item_attributes/delete_all_default_attribute_values.sql";
 import sqlInsertDefaultAttributeValues from "./sqlscripts/item_attributes/insert_default_attribute_values.sql";
 import sqlQueryDefaultAttributeValues from "./sqlscripts/item_attributes/query_default_attribute_values.sql";
 import sqlQueryItemListAttributes from "./sqlscripts/item_attributes/query_item_list_attributes.sql";
@@ -67,6 +67,8 @@ import sqlDeleteItemListAttributes from "./sqlscripts/item_attributes/delete_ite
 import sqlQueryItemCountByNormalCollection from "./sqlscripts/items/query_itemcount_by_collection_id.sql"
 import sqlDeleteItemAttributesMeta from "./sqlscripts/item_attributes/delete_item_attributes_meta.sql"
 import sqlQueryCustomItemAttributesMeta from "./sqlscripts/item_attributes/query_custom_item_attributes_meta.sql"
+import sqlDeleteAttributes from "./sqlscripts/item_attributes/delete_attributes.sql"
+import sqlDeleteDefaultAttributeValues from "./sqlscripts/item_attributes/delete_default_attribute_values.sql"
 
 export module SQL {
 
@@ -322,8 +324,13 @@ export module SQL {
 			.replace(v("entries"), entries.join(", "));
 	}
 
-	export function deleteDefaultAttributeValues(): string {
-		return sql(sqlDeleteDefaultAttributeValues);
+	export function deleteDefaultAttributeValues(attributeIds: number[]): string {
+		return sql(sqlDeleteDefaultAttributeValues)
+			.replace(v("attributeIds"), numCsv(attributeIds));
+	}
+
+	export function deleteAllDefaultAttributeValues(): string {
+		return sql(sqlDeleteAllDefaultAttributeValues);
 	}
 
 
@@ -374,6 +381,11 @@ export module SQL {
 	export function deleteItemAttributes(itemId: number): string {
 		return sql(sqlDeleteItemAttributesByItemId)
 			.replace(v("itemId"), num(itemId));
+	}
+
+	export function deleteAttributes(attributeIds: number[]): string {
+		return sql(sqlDeleteAttributes)
+			.replace(v("attributeIds"), numCsv(attributeIds));
 	}
 
 	export function insertItemAttributes(itemId: number, attributes: ({ attId: number, value: any, modified?: boolean })[]): string {

@@ -1113,7 +1113,8 @@ function mockImportService(metadata?: any, mockMultipleFiles?: boolean): [Import
 		new ImportStepImportTarget(fsWrapper),
 		new ImportStepMetadata(
 			new ActionReadItemAttributesFromFile(new ActionGetExiftoolInfo(configAccess)),
-			new ActionGetCustomAttributeMeta(new SQLiteDataRepository(dbAccess))
+			new ActionGetCustomAttributeMeta(new SQLiteDataRepository(dbAccess)),
+			new ActionGetDefaultAttributeValues(new SQLiteDataRepository(dbAccess))
 		),
 		new ImportDbWriter(
 			new SQLiteDataRepository(dbAccess),
